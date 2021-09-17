@@ -49,6 +49,8 @@ const RANKS = {
             14: "double Rage Powers gain.",
             17: "make rank 6 effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
             34: "make mass upgrade 3 softcap starts 1.2x later.",
+            41: "adds tickspeed power based on ranks.",
+            46: "ranks boosts Rage Powers gain.",
         },
         tier: {
             1: "reduce rank reqirements by 20%.",
@@ -71,6 +73,14 @@ const RANKS = {
                 let ret = player.ranks.rank.add(1).pow(player.ranks.rank.gte(17)?player.ranks.rank.add(1).root(3):2)
                 return ret
             },
+            41() {
+                let ret = player.ranks.rank.root(2).div(100)
+                return ret
+            },
+            46() {
+                let ret = player.ranks.rank.add(1).pow(1.5)
+                return ret
+            },
         },
         tier: {
             4() {
@@ -84,6 +94,8 @@ const RANKS = {
             3(x) { return "+"+format(x) },
             5(x) { return "+"+format(x) },
             6(x) { return format(x)+"x" },
+            41(x) {  return "+"+format(x.mul(100))+"%" },
+            46(x) { return format(x)+"x" },
         },
         tier: {
             4(x) { return "+"+format(x.mul(100))+"%" },

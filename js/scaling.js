@@ -75,5 +75,10 @@ function getScalingStart(type, name) {
 
 function getScalingPower(type, name) {
 	let power = E(1)
+	if (type=="super") {
+		if (name=="massUpg") {
+			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:E(1))
+		}
+	}
 	return power
 }

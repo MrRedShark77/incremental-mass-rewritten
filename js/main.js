@@ -35,6 +35,7 @@ const FORMS = {
         effect() {
             let step = E(1.5)
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
+            if (player.ranks.rank.gte(41)) step = step.add(RANKS.effect.rank[41]())
             let eff = step.pow(player.tickspeed)
             return {step: step, eff: eff}
         },
@@ -44,6 +45,7 @@ const FORMS = {
             if (player.mass.lt(1e15)) return E(0)
             let gain = player.mass.div(1e15).root(3)
             if (player.ranks.rank.gte(14)) gain = gain.mul(2)
+            if (player.ranks.rank.gte(46)) gain = gain.mul(RANKS.effect.rank[46]())
             return gain.floor()
         },
         reset() {
@@ -231,7 +233,7 @@ const UPGS = {
                     player.mainUpg.rp.push(x)
                 }
             },
-            lens: 7,
+            lens: 8,
             1: {
                 desc: "Booster adds Musclar.",
                 cost: E(1),
@@ -279,6 +281,17 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Stronger"
+                },
+            },
+            8: {
+                desc: "Super Mass Upgrades scaling weaker by Rage Points.",
+                cost: E(1e15),
+                effect() {
+                    let ret = E(0.9).pow(player.rp.points.max(1).log10().max(1).log10().pow(1.25))
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(E(1).sub(x).mul(100))+"% weaker"
                 },
             },
         },  
