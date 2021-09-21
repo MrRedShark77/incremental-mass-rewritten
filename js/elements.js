@@ -73,13 +73,13 @@ function setupHTML() {
 	table = ""
 	for (let x = 1; x <= UPGS.main.cols; x++) {
 		let id = UPGS.main.ids[x]
-		table += `<div id="main_upg_${x}_div" style="width: 230px;"><b>${UPGS.main[x].title}</b><br><br><div class="table_center" style="justify-content: start;">`
+		table += `<div id="main_upg_${x}_div" style="width: 230px; margin: 0px 10px;"><b>${UPGS.main[x].title}</b><br><br><div class="table_center" style="justify-content: start;">`
 		for (let y = 1; y <= UPGS.main[x].lens; y++) {
 			let key = UPGS.main[x][y]
 			table += `<img onclick="UPGS.main[${x}].buy(${y})" onmouseover="UPGS.main.over(${x},${y})" onmouseleave="UPGS.main.reset()"
 			 style="margin: 3px;" class="img_btn" id="main_upg_${x}_${y}" src="images/main_upg_${id+y}.png">`
 		}
-		table += `</div></div>`
+		table += `</div><br><button id="main_upg_${x}_auto" class="btn" style="width: 80px;" onclick="player.auto_mainUpg.${id} = !player.auto_mainUpg.${id}">OFF</button></div>`
 	}
 	main_upgs_table.setHTML(table)
 
@@ -123,9 +123,15 @@ function updateTabsHTML() {
 }
 
 function updateUpperHTML() {
-	tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain, true))
-	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>(+"+format(FORMS.rp.gain(),0)+")")
 	tmp.el.reset_desc.setHTML(player.reset_msg)
+	tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain, true))
+	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)?formatGain(player.rp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"))
+	let unl = FORMS.bh.see()
+	tmp.el.dm_div.changeStyle('visibility', unl?'visible':'hidden')
+	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>(+"+format(tmp.bh.dm_gain,0)+")")
+	unl = player.bh.unl
+	tmp.el.bh_div.changeStyle('visibility', unl?'visible':'hidden')
+	if (unl) tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
 }
 
 function updateRanksHTML() {
@@ -166,11 +172,15 @@ function updateTickspeedHTML() {
 	let unl = player.rp.unl
 	tmp.el.tickspeed_div.setDisplay(unl)
 	if (unl) {
+		tmp.el.tickspeed_scale.setTxt(getScalingName('tickspeed'))
 		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0))
 		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
-		tmp.el.tickspeed_cost.setTxt(format(FORMS.tickspeed.cost(),0))
+		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
 		tmp.el.tickspeed_step.setTxt(tmp.tickspeedEffect.step.gte(10)?format(tmp.tickspeedEffect.step):format(tmp.tickspeedEffect.step.sub(1).mul(100))+"%")
 		tmp.el.tickspeed_eff.setTxt(format(tmp.tickspeedEffect.eff))
+
+		tmp.el.tickspeed_auto.setDisplay(FORMS.tickspeed.autoUnl())
+		tmp.el.tickspeed_auto.setTxt(player.autoTickspeed?"ON":"OFF")
 	}
 }
 
@@ -204,10 +214,25 @@ function updateMainUpgradesHTML() {
 		tmp.el["main_upg_"+x+"_div"].changeStyle("visibility", unl?"visible":"hidden")
 		if (unl) {
 			for (let y = 1; y <= UPGS.main[x].lens; y++) {
-				tmp.el["main_upg_"+x+"_"+y].setClasses({img_btn: true, locked: !UPGS.main[x].can(y), bought: player.mainUpg[id].includes(y)})
+				let unl2 = UPGS.main[x][y].unl ? UPGS.main[x][y].unl() : true
+				tmp.el["main_upg_"+x+"_"+y].changeStyle("visibility", unl2?"visible":"hidden")
+				if (unl2) tmp.el["main_upg_"+x+"_"+y].setClasses({img_btn: true, locked: !UPGS.main[x].can(y), bought: player.mainUpg[id].includes(y)})
 			}
+			tmp.el["main_upg_"+x+"_auto"].setDisplay(UPGS.main[x].auto_unl ? UPGS.main[x].auto_unl() : false)
+			tmp.el["main_upg_"+x+"_auto"].setTxt(player.auto_mainUpg[id]?"ON":"OFF")
 		}
 	}
+}
+
+function updateBlackHoleHTML() {
+	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
+	tmp.el.bhEffect.setTxt(format(tmp.bh.effect))
+
+	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0))
+	tmp.el.bhCondenser_btn.setClasses({btn: true, locked: !FORMS.bh.condenser.can()})
+	tmp.el.bhCondenser_cost.setTxt(format(FORMS.bh.condenser.cost(),0))
+	tmp.el.bhCondenser_pow.setTxt(format(tmp.bh.condenser_eff.pow))
+	tmp.el.bhCondenserEffect.setTxt(format(tmp.bh.condenser_eff.eff))
 }
 
 function updateHTML() {
@@ -224,5 +249,8 @@ function updateHTML() {
 	}
 	if (player.tab[0] == 2) {
 		updateMainUpgradesHTML()
+	}
+	if (player.tab[0] == 3) {
+		updateBlackHoleHTML()
 	}
 }

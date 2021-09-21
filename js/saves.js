@@ -11,15 +11,23 @@ Decimal.prototype.softcap = function (start, power, mode) {
 
 function calc(dt) {
     player.mass = player.mass.add(tmp.massGain.mul(dt))
-    if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x]) UPGS.mass.buyMax(x)
+    if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && player.ranks.rank.gte(x)) UPGS.mass.buyMax(x)
+    if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
         if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
     }
+    for (let x = 1; x <= UPGS.main.cols; x++) {
+        let id = UPGS.main.ids[x]
+        let upg = UPGS.main[x]
+        if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) if (upg[y].unl ? upg[y].unl() : true) upg.buy(y)
+    }
+    if (player.mainUpg.bh.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
+    if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
 }
 
 function getPlayerData() {
-    return {
+    let s = {
         mass: E(0),
         ranks: {
             rank: E(0),
@@ -29,10 +37,14 @@ function getPlayerData() {
             rank: false,
             tier: false,
         },
+        auto_mainUpg: {
+            
+        },
         massUpg: {},
         autoMassUpg: [null,false,false,false],
+        autoTickspeed: false,
         mainUpg: {
-            rp: [],
+            
         },
         tab: [0,0],
         ranks_reward: 0,
@@ -41,10 +53,21 @@ function getPlayerData() {
             points: E(0),
             unl: false,
         },
+        bh: {
+            unl: false,
+            dm: E(0),
+            mass: E(0),
+            condenser: E(0),
+        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
     }
+    for (let x = 1; x <= UPGS.main.cols; x++) {
+        s.auto_mainUpg[UPGS.main.ids[x]] = false
+        s.mainUpg[UPGS.main.ids[x]] = []
+    }
+    return s
 }
 
 function wipe() {
@@ -53,6 +76,7 @@ function wipe() {
 
 function loadPlayer(load) {
     player = Object.assign(getPlayerData(), load)
+    player.mainUpg = Object.assign(getPlayerData().mainUpg, load.mainUpg)
     convertStringToDecimal()
     player.tab = [0,0]
     player.ranks_reward = 0
@@ -65,6 +89,10 @@ function convertStringToDecimal() {
     player.mass = E(player.mass)
     player.tickspeed = E(player.tickspeed)
     player.rp.points = E(player.rp.points)
+
+    player.bh.dm = E(player.bh.dm)
+    player.bh.mass = E(player.bh.mass)
+    player.bh.condenser = E(player.bh.condenser)
     for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
 }

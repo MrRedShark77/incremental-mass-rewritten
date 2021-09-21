@@ -1,8 +1,9 @@
 const SCALE_START = {
     super: {
         rank: E(50),
-		tier: E(8),
+		tier: E(10),
         massUpg: E(100),
+		tickspeed: E(100),
     },
 }
 
@@ -12,6 +13,7 @@ const FULL_SCALE_NAME = ['Super']
 const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },
 	tier(x=0) { return player.ranks.tier },
+	tickspeed(x=0) { return player.tickspeed },
     massUpg(x=1) { return E(player.massUpg[x]||0) },
 }
 
@@ -19,6 +21,7 @@ const NAME_FROM_RES = {
 	rank: "Rank",
 	tier: "Tier",
 	massUpg: "Mass Upgrades",
+	tickspeed: "Tickspeed",
 }
 
 function updateScalingHTML() {
@@ -70,12 +73,20 @@ function getScalingName(name, x=0) {
 
 function getScalingStart(type, name) {
 	let start = E(SCALE_START[type][name])
+	if (type=="super") {
+		if (name=="massUpg") {
+			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:E(0):E(0))
+		}
+	}
 	return start
 }
 
 function getScalingPower(type, name) {
 	let power = E(1)
 	if (type=="super") {
+		if (name=="rank") {
+			if (player.mainUpg.rp.includes(10)) power = power.mul(0.8)
+		}
 		if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:E(1))
 		}

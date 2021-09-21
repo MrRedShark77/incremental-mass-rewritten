@@ -35,6 +35,14 @@
                         <img src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="rpAmt">X</span>
                     </div>
+                </div><div>
+                    <div class="resources sml yellow" id="dm_div">
+                        <img src="images/dm.png" onclick="FORMS.bh.reset()" onmousemove="FORMS.reset_msg.set('dm')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                        <span style="margin-left: 5px; text-align: left;" id="dmAmt">X</span>
+                    </div><div class="resources yellow" id="bh_div">
+                        <img src="images/bh.png">
+                        <span style="margin-left: 5px; text-align: left;" id="bhMass">X</span>
+                    </div>
                 </div>
             </div><span id="reset_desc"></span>
         </div><div id="tabs" class="table_center" style="height: 30px"></div>
@@ -52,6 +60,7 @@
                     </div>
                 </div><button id="tickspeed_btn" class="btn" style="width: 200px;" onclick="FORMS.tickspeed.buy()">Cost: <span id="tickspeed_cost">X</span> Rage Points</button>
                 <button class="btn" style="width: 120px;" onclick="FORMS.tickspeed.buyMax()">Buy Max</button>
+                <button id="tickspeed_auto" class="btn" style="width: 80px;" onclick="FORMS.tickspeed.autoSwitch()">OFF</button>
                 <div style="margin-left: 5px; text-align: left; width: 400px">
                     Tickspeed Power: <span id="tickspeed_step">X</span><br>
                     Tickspeed Effect: <span id="tickspeed_eff">X</span>x to mass gain
@@ -69,12 +78,28 @@
             <div id="main_upg_msg" style="min-height: 100px;"></div>
             <div id="main_upgs_table" class="table_center"></div>
         </div><div id="tab_frame3">
+            You have <span id="bhMass2">X</span> of Black Hole<br>
+            Which multiples mass gain by <span id="bhEffect">X</span><br><br>
+            Mass of Black Hole gain formula - (x + 1)<sup>0.33</sup> * <span id="bhCondenserEffect">X</span><br><br>
+            <div style="width: 100%; margin-bottom: 5px;" class="table_center">
+                <div style="width: 400px">
+                    <div class="resources">
+                        <img src="images/bhCondenser.png">
+                        <span style="margin-left: 5px; text-align: left;">Black Hole Condenser [<span id="bhCondenser_lvl">X</span>]</span>
+                    </div>
+                </div><button id="bhCondenser_btn" class="btn" style="width: 200px;" onclick="FORMS.bh.condenser.buy()">Cost: <span id="bhCondenser_cost">X</span> Dark Matters</button>
+                <button class="btn" style="width: 120px;" onclick="FORMS.bh.condenser.buyMax()">Buy Max</button>
+                <div style="margin-left: 5px; text-align: left; width: 400px">
+                    BH Condenser Power: <span id="bhCondenser_pow">X</span><br>
+                </div>
+            </div>
+        </div><div id="tab_frame4">
             <button class="btn" onclick="save()">Save</button>
             <button class="btn" onclick="if (confirm('You wanted to RESET your progress to new game?')) {wipe(); save(); location.reload()}">Hard Reset</button>
             <button class="btn" onclick="exporty()">Export</button>
             <button class="btn" onclick="importy()">Import</button>
             <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button><br><br>
-            Incremental Mass Rewritten v0.1.1 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.2 - made by MrRedShark77<br>
             The game inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...
         </div>

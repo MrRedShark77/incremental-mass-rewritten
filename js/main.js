@@ -12,45 +12,48 @@ const FORMS = {
         if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         x = x.mul(tmp.tickspeedEffect.eff||E(1))
+        if (player.bh.unl) x = x.mul(tmp.bh.effect)
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         return x
     },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
-        can() { return player.rp.points.gte(this.cost()) },
+        can() { return player.rp.points.gte(tmp.tickspeedCost) },
         buy() {
             if (this.can()) {
-                player.rp.points = player.rp.points.sub(this.cost())
+                player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
                 player.tickspeed = player.tickspeed.add(1)
             }
         },
         buyMax() { 
             if (this.can()) {
-                if (player.rp.points.lt(1)) return
-                let bulk = player.rp.points.max(1).log(2).add(1).floor()
-                player.tickspeed = bulk
-                player.rp.points = player.rp.points.sub(this.cost(bulk.sub(1)))
+                player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
+                player.tickspeed = tmp.tickspeedBulk
             }
         },
         effect() {
             let step = E(1.5)
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
-            if (player.ranks.rank.gte(41)) step = step.add(RANKS.effect.rank[41]())
+            if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
             let eff = step.pow(player.tickspeed)
             return {step: step, eff: eff}
         },
+        autoUnl() { return player.mainUpg.bh.includes(5) },
+        autoSwitch() { player.autoTickspeed = !player.autoTickspeed },
     },
     rp: {
         gain() {
             if (player.mass.lt(1e15)) return E(0)
             let gain = player.mass.div(1e15).root(3)
             if (player.ranks.rank.gte(14)) gain = gain.mul(2)
-            if (player.ranks.rank.gte(46)) gain = gain.mul(RANKS.effect.rank[46]())
+            if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
+            if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
+            if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
             return gain.floor()
         },
         reset() {
             if (tmp.rp.can) if (confirm("Are you sure to reset?")) {
-                player.rp.points = player.rp.points.add(this.gain())
+                player.rp.points = player.rp.points.add(tmp.rp.gain)
                 player.rp.unl = true
                 this.doReset()
             }
@@ -58,11 +61,69 @@ const FORMS = {
         doReset() {
             player.ranks[RANKS.names[RANKS.names.length-1]] = E(0)
             RANKS.doReset[RANKS.names[RANKS.names.length-1]]()
-        }
+        },
+    },
+    bh: {
+        see() { return player.rp.unl },
+        DM_gain() {
+            let gain = player.rp.points.div(1e20)
+            if (gain.lt(1)) return E(0)
+            gain = gain.root(4)
+            return gain.floor()
+        },
+        massGain() {
+            let x = player.bh.mass.add(1).pow(0.33).mul(this.condenser.effect().eff)
+            return x
+        },
+        reset() {
+            if (tmp.bh.dm_can) if (confirm("Are you sure to reset?")) {
+                player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain)
+                player.bh.unl = true
+                this.doReset()
+            }
+        },
+        doReset() {
+            let keep = []
+            for (let x = 0; x < player.mainUpg.rp.length; x++) if ([3,5,6].includes(player.mainUpg.rp[x])) keep.push(player.mainUpg.rp[x])
+            player.mainUpg.rp = keep
+            player.rp.points = E(0)
+            player.tickspeed = E(0)
+            player.bh.mass = E(0)
+            FORMS.rp.doReset()
+        },
+        effect() {
+            let x = player.bh.mass.add(1).root(4)
+            return x
+        },
+        condenser: {
+            cost(x=player.bh.condenser) { return E(1.75).pow(x).floor() },
+            bulk(x=player.bh.dm) { return x.lt(1) ? E(0) : x.max(1).log(1.75).add(1).floor() },
+            can() { return player.bh.dm.gte(this.cost()) },
+            buy() {
+                if (this.can()) {
+                    player.bh.dm = player.bh.dm.sub(this.cost())
+                    player.bh.condenser = player.bh.condenser.add(1)
+                }
+            },
+            buyMax() {
+                if (this.can()) {
+                    let bulk = this.bulk()
+                    player.bh.condenser = bulk
+                    player.bh.dm = player.bh.dm.sub(this.cost(bulk.sub(1)))
+                }
+            },
+            effect() {
+                let pow = E(2)
+                if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
+                let eff = pow.pow(player.bh.condenser)
+                return {pow: pow, eff: eff}
+            },
+        },
     },
     reset_msg: {
         msgs: {
-            rp: "Require 1e9 tonne of mass to reset previous features for gain Rage Powers",
+            rp: "Require over 1e9 tonne of mass to reset previous features for gain Rage Powers",
+            dm: "Require over 1e20 Rage Power to reset all previous features for gain Dark Matters",
         },
         set(id) { player.reset_msg = this.msgs[id] },
         reset() { player.reset_msg = "" },
@@ -72,6 +133,7 @@ const FORMS = {
 const UPGS = {
     mass: {
         cols: 3,
+        autoOnly: [0,1,2],
         temp() {
             if (!tmp.upgs.mass) tmp.upgs.mass = {}
             for (let x = this.cols; x >= 1; x--) {
@@ -91,7 +153,7 @@ const UPGS = {
         buy(x, manual=false) {
             let cost = manual ? this.getData(x).cost : tmp.upgs.mass[x].cost
             if (player.mass.gte(cost)) {
-                player.mass = player.mass.sub(cost)
+                if (!player.mainUpg.bh.includes(1)) player.mass = player.mass.sub(cost)
                 if (!player.massUpg[x]) player.massUpg[x] = E(0)
                 player.massUpg[x] = player.massUpg[x].add(1)
             }
@@ -102,7 +164,7 @@ const UPGS = {
             if (player.mass.gte(cost)) {
                 if (!player.massUpg[x]) player.massUpg[x] = E(0)
                 player.massUpg[x] = player.massUpg[x].max(bulk.floor().max(player.massUpg[x].plus(1)))
-                player.mass = player.mass.sub(cost)
+                if (!player.mainUpg.bh.includes(1)) player.mass = player.mass.sub(cost)
             }
         },
         getData(i) {
@@ -194,6 +256,7 @@ const UPGS = {
                 let ss = E(10)
                 if (player.ranks.rank.gte(34)) ss = ss.mul(1.2)
                 let step = E(1)
+                if (player.mainUpg.rp.includes(9)) step = step.mul(1.25)
                 let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,0.5,0)
                 return {step: step, eff: ret, ss: ss}
             },
@@ -218,8 +281,8 @@ const UPGS = {
                 for (let y = 1; y <= UPGS.main[x].lens; y++) if (UPGS.main[x][y].effDesc) tmp.upgs.main[x][y] = { effect: UPGS.main[x][y].effect(), effDesc: UPGS.main[x][y].effDesc() }
             }
         },
-        ids: [null, 'rp'],
-        cols: 1,
+        ids: [null, 'rp', 'bh'],
+        cols: 2,
         over(x,y) { player.main_upg_msg = [x,y] },
         reset() { player.main_upg_msg = [0,0] },
         1: {
@@ -233,7 +296,8 @@ const UPGS = {
                     player.mainUpg.rp.push(x)
                 }
             },
-            lens: 8,
+            auto_unl() { return player.mainUpg.bh.includes(5) },
+            lens: 10,
             1: {
                 desc: "Booster adds Musclar.",
                 cost: E(1),
@@ -284,7 +348,7 @@ const UPGS = {
                 },
             },
             8: {
-                desc: "Super Mass Upgrades scaling weaker by Rage Points.",
+                desc: "Super Mass Upgrades scaling is weaker by Rage Points.",
                 cost: E(1e15),
                 effect() {
                     let ret = E(0.9).pow(player.rp.points.max(1).log10().max(1).log10().pow(1.25))
@@ -294,9 +358,91 @@ const UPGS = {
                     return format(E(1).sub(x).mul(100))+"% weaker"
                 },
             },
-        },  
+            9: {
+                unl() { return player.bh.unl },
+                desc: "Stronger are 25% stronger.",
+                cost: E(1e31),
+            },
+            10: {
+                unl() { return player.bh.unl },
+                desc: "Super Rank scaling is 20% weaker.",
+                cost: E(1e43),
+            },
+        },
+        2: {
+            title: "Black Hole Upgrades",
+            res: "Dark Matters",
+            unl() { return player.bh.unl },
+            can(x) { return player.bh.dm.gte(this[x].cost) && !player.mainUpg.bh.includes(x) },
+            buy(x) {
+                if (this.can(x)) {
+                    player.bh.dm = player.bh.dm.sub(this[x].cost)
+                    player.mainUpg.bh.push(x)
+                }
+            },
+            lens: 6,
+            1: {
+                desc: "Mass Upgardes no longer spends mass.",
+                cost: E(1),
+            },
+            2: {
+                desc: "Tickspeed boost BH Condenser Power.",
+                cost: E(10),
+                effect() {
+                    let ret = player.tickspeed.add(1).root(8)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
+                },
+            },
+            3: {
+                desc: "Super Mass Upgrades scaling starts later based on mass of Black Hole.",
+                cost: E(100),
+                effect() {
+                    let ret = player.bh.mass.max(1).log10().pow(1.5).floor()
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return "+"+format(x,0)+" later"
+                },
+            },
+            4: {
+                desc: "Tiers no longer resets anything.",
+                cost: E(1e4),
+            },
+            5: {
+                desc: "You can automatically buy tickspeed and Rage Power upgrades.",
+                cost: E(5e5),
+            },
+            6: {
+                desc: "Gain 100% of Rage Powers gained from reset per second. Rage Powers are boosted by mass of Black Hole.",
+                cost: E(2e6),
+                effect() {
+                    let ret = player.bh.mass.max(1).log10().add(1).pow(2)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
+                },
+            },
+        },
     },
 }
+
+/*
+1: {
+    desc: "Placeholder.",
+    cost: E(1),
+    effect() {
+        let ret = E(1)
+        return ret
+    },
+    effDesc(x=this.effect()) {
+        return format(x)+"x"
+    },
+},
+*/
 
 function loop() {
     diff = Date.now()-date;
