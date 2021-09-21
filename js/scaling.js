@@ -5,10 +5,13 @@ const SCALE_START = {
         massUpg: E(100),
 		tickspeed: E(100),
     },
+	hyper: {
+		massUpg: E(500),
+	},
 }
 
-const SCALE_TYPE = ['super'] // super, hyper, ultra, meta
-const FULL_SCALE_NAME = ['Super']
+const SCALE_TYPE = ['super', 'hyper'] // super, hyper, ultra, meta
+const FULL_SCALE_NAME = ['Super', 'Hyper']
 
 const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },

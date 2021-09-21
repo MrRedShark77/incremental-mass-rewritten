@@ -196,6 +196,28 @@ const UPGS = {
                     .add(1)
                     .floor();
             }
+            if (scalingActive("massUpg", lvl.max(bulk), "hyper")) {
+                let start = getScalingStart("super", "massUpg");
+                let power = getScalingPower("super", "massUpg");
+                let start2 = getScalingStart("hyper", "massUpg");
+                let power2 = getScalingPower("hyper", "massUpg");
+                let exp = E(2.5).pow(power);
+                let exp2 = E(4).pow(power);
+                cost =
+                    inc.pow(
+                        lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1)))
+                    ).mul(upg.start)
+                bulk = player.mass
+                    .div(upg.start)
+                    .max(1)
+                    .log(inc)
+                    .times(start.pow(exp.sub(1)))
+                    .root(exp)
+                    .times(start2.pow(exp2.sub(1)))
+                    .root(exp2)
+                    .add(1)
+                    .floor();
+            }
             return {cost: cost, bulk: bulk}
         },
         1: {
@@ -400,7 +422,7 @@ const UPGS = {
                 desc: "Super Mass Upgrades scaling starts later based on mass of Black Hole.",
                 cost: E(100),
                 effect() {
-                    let ret = player.bh.mass.max(1).log10().pow(1.5).floor()
+                    let ret = player.bh.mass.max(1).log10().pow(1.5).softcap(100,1/3,0).floor()
                     return ret
                 },
                 effDesc(x=this.effect()) {
