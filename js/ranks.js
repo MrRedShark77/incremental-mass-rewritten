@@ -6,6 +6,7 @@ const RANKS = {
             player.ranks[type] = player.ranks[type].add(1)
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
+            if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -15,6 +16,7 @@ const RANKS = {
             player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
+            if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
