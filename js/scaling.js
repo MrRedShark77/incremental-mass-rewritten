@@ -59,6 +59,7 @@ function updateScalingTemp() {
 }
 
 function scalingActive(name, amt, type) {
+	if (SCALE_START[type][name] === undefined) return false
 	amt = E(amt);
 	return amt.gte(getScalingStart(type, name));
 }
