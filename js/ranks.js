@@ -49,10 +49,11 @@ const RANKS = {
             6: "make mass gain is boosted by (x+1)^2, where x is rank.",
             13: "triple mass gain.",
             14: "double Rage Powers gain.",
-            17: "make rank 6 effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
+            17: "make rank 6 reward effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
             34: "make mass upgrade 3 softcap starts 1.2x later.",
             40: "adds tickspeed power based on ranks.",
             45: "ranks boosts Rage Powers gain.",
+            90: "rank 40 reward are stronger.",
         },
         tier: {
             1: "reduce rank reqirements by 20%.",
@@ -60,6 +61,7 @@ const RANKS = {
             3: "reduce all mass upgrades cost scaled by 20%.",
             4: "adds +5% tickspeed power for every tiers you have, softcaps at +40%.",
             6: "make rage powers are boosted by tiers.",
+            8: "make tier 6 reward effect is stronger by dark matters.",
         },
     },
     effect: {
@@ -78,6 +80,7 @@ const RANKS = {
             },
             40() {
                 let ret = player.ranks.rank.root(2).div(100)
+                if (player.ranks.rank.gte(90)) ret = player.ranks.rank.root(1.6).div(100)
                 return ret
             },
             45() {
@@ -92,6 +95,11 @@ const RANKS = {
             },
             6() {
                 let ret = E(2).pow(player.ranks.tier)
+                if (player.ranks.tier.gte(8)) ret = ret.pow(RANKS.effect.tier[8]())
+                return ret
+            },
+            8() {
+                let ret = player.bh.dm.max(1).log10().add(1).root(2)
                 return ret
             },
         },
@@ -107,6 +115,7 @@ const RANKS = {
         tier: {
             4(x) { return "+"+format(x.mul(100))+"%" },
             6(x) { return format(x)+"x" },
+            8(x) { return "^"+format(x) },
         },
     },
     fp: {

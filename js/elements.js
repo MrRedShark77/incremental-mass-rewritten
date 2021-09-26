@@ -95,6 +95,8 @@ function setupHTML() {
 	}
 	scaling_table.setHTML(table)
 
+	setupChalHTML()
+
     tmp.el = {}
 	let all = document.getElementsByTagName("*")
 	for (let i=0;i<all.length;i++) {
@@ -132,6 +134,9 @@ function updateUpperHTML() {
 	unl = player.bh.unl
 	tmp.el.bh_div.changeStyle('visibility', unl?'visible':'hidden')
 	if (unl) tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
+	unl = !CHALS.inChal(0)
+	tmp.el.chal_upper.setVisible(unl)
+	if (unl) tmp.el.chal_upper.setHTML(`You are now in ${CHALS[player.chal.active].title} Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])} to complete.<br>${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(CHALS[player.chal.active].goal(tmp.chal.bulk.max(player.chal.comps[player.chal.active])))})`)
 }
 
 function updateRanksHTML() {
@@ -236,12 +241,16 @@ function updateBlackHoleHTML() {
 }
 
 function updateHTML() {
+	document.documentElement.style.setProperty('--font', player.options.font)
 	updateUpperHTML()
     updateTabsHTML()
 	if (player.tab[0] == 0) {
 		updateRanksHTML()
 		updateMassUpgradesHTML()
 		updateTickspeedHTML()
+		
+		tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
+		tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
 	}
 	if (player.tab[0] == 1) {
 		if (player.tab[1] == 0) updateRanksRewardHTML()
@@ -252,5 +261,8 @@ function updateHTML() {
 	}
 	if (player.tab[0] == 3) {
 		updateBlackHoleHTML()
+	}
+	if (player.tab[0] == 4) {
+		updateChalHTML()
 	}
 }

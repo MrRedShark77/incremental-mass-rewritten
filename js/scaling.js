@@ -78,11 +78,19 @@ function getScalingName(name, x=0) {
 function getScalingStart(type, name) {
 	let start = E(SCALE_START[type][name])
 	if (type=="super") {
+		if (name=="rank") {
+			if (CHALS.inChal(1)) return E(25)
+			start = start.add(tmp.chal?tmp.chal.eff[1].rank:0)
+		}
 		if (name=="massUpg") {
-			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:E(0):E(0))
+			if (CHALS.inChal(1)) return E(25)
+			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:0:0)
+		}
+		if (name=='tickspeed') {
+			if (CHALS.inChal(1)) return E(50)
 		}
 	}
-	return start
+	return start.floor()
 }
 
 function getScalingPower(type, name) {
@@ -92,7 +100,10 @@ function getScalingPower(type, name) {
 			if (player.mainUpg.rp.includes(10)) power = power.mul(0.8)
 		}
 		if (name=="massUpg") {
-			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:E(1))
+			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)
+		}
+		if (name=='tickspeed') {
+			power = power.mul(tmp.chal?tmp.chal.eff[1].tick:1)
 		}
 	}
 	return power

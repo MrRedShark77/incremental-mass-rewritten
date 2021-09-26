@@ -66,6 +66,13 @@ class Element {
 		new Element(id).setClasses(data);
 	}
 
+	setVisible(bool) {
+		this.el.style.visibility = bool ? "visible" : "hidden";
+	}
+	static setVisible(id, bool) {
+		new Element(id).setVisible(bool);
+	}
+
 	changeStyle(type, input) {
 		this.el.style[type] = input;
 	}

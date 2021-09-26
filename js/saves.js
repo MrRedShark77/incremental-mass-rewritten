@@ -24,6 +24,7 @@ function calc(dt) {
     }
     if (player.mainUpg.bh.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
+    if (player.mass.gte(1.5e156)) player.chal.unl = true
 }
 
 function getPlayerData() {
@@ -59,14 +60,24 @@ function getPlayerData() {
             mass: E(0),
             condenser: E(0),
         },
+        chal: {
+            unl: false,
+            active: 0,
+            choosed: 0,
+            comps: {},
+        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
+        options: {
+            font: 'Verdana',
+        },
     }
     for (let x = 1; x <= UPGS.main.cols; x++) {
         s.auto_mainUpg[UPGS.main.ids[x]] = false
         s.mainUpg[UPGS.main.ids[x]] = []
     }
+    for (let x = 1; x <= CHALS.cols; x++) s.chal.comps[x] = E(0)
     return s
 }
 
@@ -76,13 +87,17 @@ function wipe() {
 
 function loadPlayer(load) {
     player = Object.assign(getPlayerData(), load)
-    player.mainUpg = Object.assign(getPlayerData().mainUpg, load.mainUpg)
+    for (let x = 0; x < Object.keys(player).length; x++) {
+        let k = Object.keys(player)[x]
+        if (typeof player[k] == 'object') player[k] = Object.assign(getPlayerData()[k], load[k])
+    }
     convertStringToDecimal()
     player.tab = [0,0]
     player.ranks_reward = 0
     player.scaling_ch = 0
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
+    player.chal.choosed = 0
 }
 
 function convertStringToDecimal() {
@@ -95,6 +110,7 @@ function convertStringToDecimal() {
     player.bh.condenser = E(player.bh.condenser)
     for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
+    for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
 }
 
 function save(){

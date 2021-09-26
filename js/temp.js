@@ -1,4 +1,5 @@
 function updateMassTemp() {
+    tmp.massSoftGain = FORMS.massSoftGain()
     tmp.massGain = FORMS.massGain()
 }
 
@@ -50,6 +51,7 @@ function updateBlackHoleTemp() {
 
 function updateTemp() {
     updateScalingTemp()
+    updateChalTemp()
     updateUpgradesTemp()
     updateRagePowerTemp()
     updateBlackHoleTemp()

@@ -14,11 +14,16 @@ const FORMS = {
         x = x.mul(tmp.tickspeedEffect.eff||E(1))
         if (player.bh.unl) x = x.mul(tmp.bh.effect)
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
-        return x
+        return x.softcap(tmp.massSoftGain,0.75,0)
+    },
+    massSoftGain() {
+        let s = E(1.5e156)
+        if (player.mainUpg.bh.includes(7)) s = s.mul(tmp.upgs.main?tmp.upgs.main[2][7].effect:E(1))
+        return s
     },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
-        can() { return player.rp.points.gte(tmp.tickspeedCost) },
+        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) },
         buy() {
             if (this.can()) {
                 player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
@@ -33,6 +38,7 @@ const FORMS = {
         },
         effect() {
             let step = E(1.5)
+            step = step.add(tmp.chal.eff[2])
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
             if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
             let eff = step.pow(player.tickspeed)
@@ -202,7 +208,7 @@ const UPGS = {
                 let start2 = getScalingStart("hyper", "massUpg");
                 let power2 = getScalingPower("hyper", "massUpg");
                 let exp = E(2.5).pow(power);
-                let exp2 = E(4).pow(power);
+                let exp2 = E(5).pow(power);
                 cost =
                     inc.pow(
                         lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1)))
@@ -373,7 +379,7 @@ const UPGS = {
                 desc: "Super Mass Upgrades scaling is weaker by Rage Points.",
                 cost: E(1e15),
                 effect() {
-                    let ret = E(0.9).pow(player.rp.points.max(1).log10().max(1).log10().pow(1.25))
+                    let ret = E(0.9).pow(player.rp.points.max(1).log10().max(1).log10().pow(1.25).softcap(2.5,0.5,0))
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -402,7 +408,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 6,
+            lens: 7,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -446,6 +452,17 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
+                },
+            },
+            7: {
+                desc: "Mass gain softcap starts later based on mass of Black Hole.",
+                cost: E(1e13),
+                effect() {
+                    let ret = player.bh.mass.add(1).root(3)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x later"
                 },
             },
         },

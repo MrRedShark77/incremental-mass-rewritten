@@ -8,6 +8,7 @@ const TABS = {
         { id: "Stats" },
         { id: "Upgrades", unl() { return player.rp.unl } },
         { id: "Black Hole", unl() { return player.bh.unl } },
+        { id: "Challenges", unl() { return player.chal.unl } },
         { id: "Options" },
     ],
     2: {

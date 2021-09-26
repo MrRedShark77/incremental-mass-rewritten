@@ -1,7 +1,20 @@
+:root {
+    --font: 'Verdana';
+}
+
+@font-face {
+	font-family: 'Monospace-Typewritter';
+	src: url('fonts/MonospaceTypewriter.ttf');
+}
+
 * {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-family: var(--font);
     table-align: center;
 	text-align: center;
+}
+
+p {
+	line-height: 0.6;
 }
 
 body {
@@ -33,12 +46,27 @@ button {
 	transition-duration: 0.15s;
 }
 
+.img_chal {
+	cursor: pointer;
+	background-color: #171717;
+	transition-duration: 0.15s;
+	margin: 3px;
+}
+
+.img_chal.ch {
+	background-color: #444;
+}
+
 .red {
 	color: red;
 }
 
 .yellow {
-	color: rgb(255, 230, 0);
+	color: yellow;
+}
+
+.green {
+	color: green;
 }
 
 .sml {

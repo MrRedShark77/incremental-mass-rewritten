@@ -9,6 +9,7 @@
     <script src="js/Element.js"></script>
     <script src="js/elements.js"></script>
     <script src="js/saves.js"></script>
+    <script src="js/challenges.js"></script>
     <script src="js/tabs.js"></script>
     <script src="js/scaling.js"></script>
     <script src="js/temp.js"></script>
@@ -24,9 +25,10 @@
         </div>
     </div>
     <div id='app' style='display: none'>
-        <div style="height: 140px">
-            <br>
-            <div class="table_center" style="margin-bottom: 5px;">
+        <div style='height: 5px'></div>
+        <div style="height: 180px">
+            <div id="chal_upper" style='height: 50px'></div>
+            <div class="table_center" style="margin: 5px 0px;">
                 <div>
                     <div class="resources sml">
                         <img src="images/mass.png">
@@ -65,6 +67,8 @@
                     Tickspeed Power: <span id="tickspeed_step">X</span><br>
                     Tickspeed Effect: <span id="tickspeed_eff">X</span>x to mass gain
                 </div>
+            </div><br><div>
+                <p id="massSoft1" class="red">After <b id="massSoftStart1">X</b> of mass gain will softcap mass gain!</p>
             </div>
         </div><div id="tab_frame1">
             <div id="stab_frame0">
@@ -94,12 +98,29 @@
                 </div>
             </div>
         </div><div id="tab_frame4">
+            Hint: Click any image for show challenge description.<br><br>
+            <button class="btn" id="chal_exit" onclick="CHALS.exit()">Exit Challenge</button><br><br>
+            <div style="min-height: 120px;" id="chals_table" class="table_center"></div><br><br>
+            <div id="chal_desc_div">
+                <button class="btn" id="chal_enter" onclick="CHALS.enter()">Enter Challenge</button>
+                <p id="chal_ch_title"></p>
+                <p class="red" id="chal_ch_desc"></p>
+                <p id="chal_ch_goal"></p>
+                <p class="green" id="chal_ch_reward"></p>
+                <p class="green" id="chal_ch_eff"></p>
+            </div>
+        </div><div id="tab_frame5">
             <button class="btn" onclick="save()">Save</button>
             <button class="btn" onclick="if (confirm('You wanted to RESET your progress to new game?')) {wipe(); save(); location.reload()}">Hard Reset</button>
             <button class="btn" onclick="exporty()">Export</button>
             <button class="btn" onclick="importy()">Import</button>
             <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button><br><br>
-            Incremental Mass Rewritten v0.2 - made by MrRedShark77<br>
+            <h2>Font Settings</h2><br>
+            <button class="btn" onclick="player.options.font = 'Verdana'">Verdana</button>
+            <button class="btn" onclick="player.options.font = 'Courier'">Courier</button>
+            <button class="btn" onclick="player.options.font = 'Monospace-Typewritter'">Monospace Typewritter</button>
+            <br><br>
+            Incremental Mass Rewritten v0.2.1 - made by MrRedShark77<br>
             The game inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...
         </div>
