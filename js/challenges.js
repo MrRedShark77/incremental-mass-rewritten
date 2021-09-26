@@ -25,6 +25,7 @@ function updateChalHTML() {
         let chal = CHALS[player.chal.choosed]
         tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}] ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+chal.max} Completions]`)
         tmp.el.chal_ch_desc.setTxt(chal.desc)
+        tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed]))
         tmp.el.chal_ch_reward.setTxt("Reward: "+chal.reward)
         tmp.el.chal_ch_eff.setTxt("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
@@ -74,6 +75,9 @@ const CHALS = {
     getFormat(x) {
         return formatMass
     },
+    getReset(x) {
+        return "Entering challenge will reset with Dark Matters!"
+    }, 
     1: {
         title: "Instant Scale",
         desc: "Super Ranks, Mass Upgrades starts at 25. In addtional, Super Tickspeed start at 50.",
