@@ -4,9 +4,12 @@ const SCALE_START = {
 		tier: E(10),
         massUpg: E(100),
 		tickspeed: E(100),
+		bh_condenser: E(100),
     },
 	hyper: {
+		rank: E(120),
 		massUpg: E(500),
+		tickspeed: E(250),
 	},
 }
 
@@ -18,6 +21,7 @@ const SCALING_RES = {
 	tier(x=0) { return player.ranks.tier },
 	tickspeed(x=0) { return player.tickspeed },
     massUpg(x=1) { return E(player.massUpg[x]||0) },
+	bh_condenser(x=0) { return player.bh.condenser },
 }
 
 const NAME_FROM_RES = {
@@ -25,6 +29,7 @@ const NAME_FROM_RES = {
 	tier: "Tier",
 	massUpg: "Mass Upgrades",
 	tickspeed: "Tickspeed",
+	bh_condenser: "Black Hole Condenser",
 }
 
 function updateScalingHTML() {

@@ -166,7 +166,7 @@ function updateMassUpgradesHTML() {
 			tmp.el["massUpg_btn_"+x].setClasses({btn: true, locked: player.mass.lt(tmp.upgs.mass[x].cost)})
 			tmp.el["massUpg_cost_"+x].setTxt(formatMass(tmp.upgs.mass[x].cost))
 			tmp.el["massUpg_step_"+x].setTxt(tmp.upgs.mass[x].effDesc.step)
-			tmp.el["massUpg_eff_"+x].setTxt(tmp.upgs.mass[x].effDesc.eff)
+			tmp.el["massUpg_eff_"+x].setHTML(tmp.upgs.mass[x].effDesc.eff+(tmp.upgs.mass[x].eff.ss ? (tmp.upgs.mass[x].eff.eff.gte(tmp.upgs.mass[x].eff.ss)?" <span class='soft'>(softcapped)</span>":"") : ""))
 			tmp.el["massUpg_auto_"+x].setDisplay(player.mainUpg.rp.includes(3))
 			tmp.el["massUpg_auto_"+x].setTxt(player.autoMassUpg[x]?"ON":"OFF")
 		}
@@ -235,9 +235,10 @@ function updateBlackHoleHTML() {
 
 	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0))
 	tmp.el.bhCondenser_btn.setClasses({btn: true, locked: !FORMS.bh.condenser.can()})
-	tmp.el.bhCondenser_cost.setTxt(format(FORMS.bh.condenser.cost(),0))
+	tmp.el.bhCondenser_scale.setTxt(getScalingName('bh_condenser'))
+	tmp.el.bhCondenser_cost.setTxt(format(tmp.bh.condenser_cost,0))
 	tmp.el.bhCondenser_pow.setTxt(format(tmp.bh.condenser_eff.pow))
-	tmp.el.bhCondenserEffect.setTxt(format(tmp.bh.condenser_eff.eff))
+	tmp.el.bhCondenserEffect.setHTML(format(tmp.bh.condenser_eff.eff))
 }
 
 function updateHTML() {

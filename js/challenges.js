@@ -28,7 +28,7 @@ function updateChalHTML() {
         tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed]))
         tmp.el.chal_ch_reward.setTxt("Reward: "+chal.reward)
-        tmp.el.chal_ch_eff.setTxt("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
+        tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
     }
 }
 
@@ -53,7 +53,7 @@ function updateChalTemp() {
 
 const CHALS = {
     inChal(x) { return player.chal.active == x },
-    cols: 2,
+    cols: 3,
     exit() {
         if (!player.chal.active == 0) {
             if (tmp.chal.canFinish) {
@@ -83,11 +83,11 @@ const CHALS = {
         desc: "Super Ranks, Mass Upgrades starts at 25. In addtional, Super Tickspeed start at 50.",
         reward: `Super Ranks starts later, Super Tickspeed scaling weaker by completions.`,
         max: 100,
-        goal(x) { return E(5).pow(x.pow(1.25)).mul(1.5e58) },
+        goal(x) { return E(5).pow(x.pow(1.3)).mul(1.5e58) },
         bulk(x) {
             let b = x.div(1.5e58)
             if (b.lt(1)) return E(0)
-            return b.log(5).root(1.25).add(1).floor()
+            return b.log(5).root(1.3).add(1).floor()
         },
         effect(x) {
             let rank = x.softcap(20,4,1).floor()
@@ -102,16 +102,54 @@ const CHALS = {
         desc: "You cannot buy Tickspeed.",
         reward: `For every completions adds +7.5% to Tickspeed Power.`,
         max: 100,
-        goal(x) { return E(10).pow(x.pow(1.25)).mul(1.989e40) },
+        goal(x) { return E(10).pow(x.pow(1.3)).mul(1.989e40) },
         bulk(x) {
             let b = x.div(1.989e40)
             if (b.lt(1)) return E(0)
-            return b.log10().root(1.25).add(1).floor()
+            return b.log10().root(1.3).add(1).floor()
         },
         effect(x) {
-            let ret = x.mul(0.075)
+            let ret = x.mul(0.075).add(1).softcap(1.3,0.5,0).sub(1)
             return ret
         },
-        effDesc(x) { return "+"+format(x.mul(100))+"%" },
+        effDesc(x) { return "+"+format(x.mul(100))+"%"+(x.gte(0.3)?" <span class='soft'>(softcapped)</span>":"") },
+    },
+    3: {
+        unl() { return player.chal.comps[2].gte(1) },
+        title: "Melted Mass",
+        desc: "Mass gain softcap is divided by 1e150, and is stronger.",
+        reward: `Mass gain are raised by completions, but cannot append while in this challenge!`,
+        max: 100,
+        goal(x) { return E(25).pow(x.pow(1.25)).mul(2.9835e49) },
+        bulk(x) {
+            let b = x.div(2.9835e49)
+            if (b.lt(1)) return E(0)
+            return b.log(25).root(1.25).add(1).floor()
+        },
+        effect(x) {
+            let ret = x.root(1.5).mul(0.01).add(1)
+            return ret
+        },
+        effDesc(x) { return "^"+format(x) },
     },
 }
+
+/*
+3: {
+    unl() { return player.chal.comps[2].gte(1) },
+    title: "Placeholder",
+    desc: "Placeholder.",
+    reward: `Placeholder.`,
+    max: 100,
+    goal(x) { return E(1/0) },
+    bulk(x) {
+        return E(0)
+    },
+    effect(x) {
+        let ret = E(1)
+        return ret
+    },
+    effDesc(x) { return format(x)+"x" },
+},
+*/
+

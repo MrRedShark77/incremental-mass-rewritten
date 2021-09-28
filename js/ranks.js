@@ -60,7 +60,7 @@ const RANKS = {
             2: "raise mass gain by 1.15",
             3: "reduce all mass upgrades cost scaled by 20%.",
             4: "adds +5% tickspeed power for every tiers you have, softcaps at +40%.",
-            6: "make rage powers are boosted by tiers.",
+            6: "make rage powers boosted by tiers.",
             8: "make tier 6 reward effect is stronger by dark matters.",
         },
     },
@@ -158,6 +158,37 @@ function updateRanksTemp() {
 			.add(1)
 			.floor();
 	}
+    if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "hyper")) {
+		let start = getScalingStart("super", "rank");
+		let power = getScalingPower("super", "rank");
+		let exp = E(1.5).pow(power);
+        let start2 = getScalingStart("hyper", "rank");
+		let power2 = getScalingPower("hyper", "rank");
+		let exp2 = E(2.5).pow(power2);
+		tmp.ranks.rank.req =
+			E(10).pow(
+				player.ranks.rank
+                    .pow(exp2)
+                    .div(start2.pow(exp2.sub(1)))
+					.pow(exp)
+					.div(start.pow(exp.sub(1)))
+                    .div(fp)
+					.pow(1.15)
+			).mul(10)
+		tmp.ranks.rank.bulk = player.mass
+            .div(10)
+			.max(1)
+			.log10()
+            
+			.root(1.15)
+            .mul(fp)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
+			.add(1)
+			.floor();
+	}
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req)
 
     tmp.ranks.tier.req = player.ranks.tier.add(2).pow(2).floor()
@@ -171,7 +202,7 @@ function updateRanksTemp() {
 			.pow(exp)
 			.div(start.pow(exp.sub(1)))
 			.add(2).pow(2).floor()
-		tmp.ranks.tier.bulk = player.mass
+		tmp.ranks.tier.bulk = player.ranks.rank
             .max(0)
             .root(2)
             .sub(2)
