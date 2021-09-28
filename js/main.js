@@ -400,11 +400,12 @@ const UPGS = {
                 cost: E(1e31),
             },
             10: {
-                unl() { return player.bh.unl },
+                unl() { return player.bh.unl && player.chal.unl },
                 desc: "Super Rank scaling is 20% weaker.",
                 cost: E(1e43),
             },
             11: {
+                unl() { return player.bh.unl && player.chal.unl },
                 desc: "Mass gain of Black Hole is boosted by Rage Points.",
                 cost: E(1e72),
                 effect() {
@@ -416,6 +417,7 @@ const UPGS = {
                 },
             },
             12: {
+                unl() { return player.bh.unl && player.chal.unl },
                 desc: "For every OoMs of Rage Powers adds Stronger Power at a reduced rate.",
                 cost: E(1e120),
                 effect() {
@@ -485,6 +487,7 @@ const UPGS = {
                 },
             },
             7: {
+                unl() { return player.chal.unl },
                 desc: "Mass gain softcap starts later based on mass of Black Hole.",
                 cost: E(1e13),
                 effect() {
@@ -496,10 +499,12 @@ const UPGS = {
                 },
             },
             8: {
+                unl() { return player.chal.unl },
                 desc: "Raise Rage Powers gain by 1.15.",
                 cost: E(1e17),
             },
             9: {
+                unl() { return player.chal.unl },
                 desc: "Stronger Effect softcap starts later based on unspent Dark Matters.",
                 cost: E(1e27),
                 effect() {
