@@ -278,6 +278,7 @@ const UPGS = {
             bouns() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][2].effect:E(0))
+                if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.mass[3].bouns)
                 return x
             },
         },
@@ -400,7 +401,7 @@ const UPGS = {
                 cost: E(1e31),
             },
             10: {
-                unl() { return player.bh.unl && player.chal.unl },
+                unl() { return player.bh.unl },
                 desc: "Super Rank scaling is 20% weaker.",
                 cost: E(1e43),
             },
