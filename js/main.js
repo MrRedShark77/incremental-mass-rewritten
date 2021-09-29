@@ -293,7 +293,7 @@ const UPGS = {
             inc: E(9),
             effect(x) {
                 let ss = E(10)
-                if (player.ranks.rank.gte(34)) ss = ss.add(0.2)
+                if (player.ranks.rank.gte(34)) ss = ss.add(2)
                 if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
                 let step = E(1)
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
