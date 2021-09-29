@@ -53,7 +53,7 @@ function updateChalTemp() {
 
 const CHALS = {
     inChal(x) { return player.chal.active == x },
-    cols: 3,
+    cols: 4,
     exit() {
         if (!player.chal.active == 0) {
             if (tmp.chal.canFinish) {
@@ -125,6 +125,24 @@ const CHALS = {
             let b = x.div(2.9835e49)
             if (b.lt(1)) return E(0)
             return b.log(25).root(1.25).add(1).floor()
+        },
+        effect(x) {
+            let ret = x.root(1.5).mul(0.01).add(1)
+            return ret
+        },
+        effDesc(x) { return "^"+format(x) },
+    },
+    4: {
+        unl() { return player.chal.comps[3].gte(1) },
+        title: "Weakened Rage",
+        desc: "Rage Points gain is rooted by 10. In addtional, mass gain softcap is divided by 1e100.",
+        reward: `Rage Powers gain are raised by completions.`,
+        max: 100,
+        goal(x) { return E(30).pow(x.pow(1.25)).mul(1.736881338559743e133) },
+        bulk(x) {
+            let b = x.div(1.736881338559743e133)
+            if (b.lt(1)) return E(0)
+            return b.log(30).root(1.25).add(1).floor()
         },
         effect(x) {
             let ret = x.root(1.5).mul(0.01).add(1)

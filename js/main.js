@@ -13,6 +13,7 @@ const FORMS = {
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         x = x.mul(tmp.tickspeedEffect.eff||E(1))
         if (player.bh.unl) x = x.mul(tmp.bh.effect)
+        if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
@@ -20,6 +21,7 @@ const FORMS = {
     massSoftGain() {
         let s = E(1.5e156)
         if (CHALS.inChal(3)) s = s.div(1e150)
+        if (CHALS.inChal(4)) s = s.div(1e100)
         if (player.mainUpg.bh.includes(7)) s = s.mul(tmp.upgs.main?tmp.upgs.main[2][7].effect:E(1))
         return s
     },
@@ -63,6 +65,8 @@ const FORMS = {
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
+            gain = gain.pow(tmp.chal.eff[4])
+            if (CHALS.inChal(4)) gain = gain.root(10)
             return gain.floor()
         },
         reset() {
@@ -406,7 +410,7 @@ const UPGS = {
                 cost: E(1e43),
             },
             11: {
-                unl() { return player.bh.unl && player.chal.unl },
+                unl() { return player.chal.unl },
                 desc: "Mass gain of Black Hole is boosted by Rage Points.",
                 cost: E(1e72),
                 effect() {
@@ -418,7 +422,7 @@ const UPGS = {
                 },
             },
             12: {
-                unl() { return player.bh.unl && player.chal.unl },
+                unl() { return player.chal.unl },
                 desc: "For every OoMs of Rage Powers adds Stronger Power at a reduced rate.",
                 cost: E(1e120),
                 effect() {
@@ -441,7 +445,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 9,
+            lens: 10,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -514,6 +518,18 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x)+" later"
+                },
+            },
+            10: {
+                unl() { return player.chal.unl },
+                desc: "Mass gain is boosted by OoMs of Dark Matters.",
+                cost: E(1e33),
+                effect() {
+                    let ret = E(2).pow(player.bh.dm.add(1).log10())
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
                 },
             },
         },
