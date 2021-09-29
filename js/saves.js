@@ -24,7 +24,7 @@ function calc(dt) {
     }
     if (player.mainUpg.bh.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
-    if (player.mass.gte(1.5e156)) player.chal.unl = true
+    if (player.mass.gte(1.5e136)) player.chal.unl = true
 }
 
 function getPlayerData() {
