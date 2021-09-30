@@ -5,6 +5,8 @@ var tmp = {
     
 }
 
+const CONFIRMS = ['rp', 'bh']
+
 const FORMS = {
     massGain() {
         let x = E(1)
@@ -23,6 +25,7 @@ const FORMS = {
         if (CHALS.inChal(3)) s = s.div(1e150)
         if (CHALS.inChal(4)) s = s.div(1e100)
         if (player.mainUpg.bh.includes(7)) s = s.mul(tmp.upgs.main?tmp.upgs.main[2][7].effect:E(1))
+        if (player.mainUpg.rp.includes(13)) s = s.mul(tmp.upgs.main?tmp.upgs.main[1][13].effect:E(1))
         return s
     },
     massSoftPower() {
@@ -70,7 +73,7 @@ const FORMS = {
             return gain.floor()
         },
         reset() {
-            if (tmp.rp.can) if (confirm("Are you sure to reset?")) {
+            if (tmp.rp.can) if (player.confirms.rp?confirm("Are you sure to reset?"):true) {
                 player.rp.points = player.rp.points.add(tmp.rp.gain)
                 player.rp.unl = true
                 this.doReset()
@@ -95,7 +98,7 @@ const FORMS = {
             return x
         },
         reset() {
-            if (tmp.bh.dm_can) if (confirm("Are you sure to reset?")) {
+            if (tmp.bh.dm_can) if (player.confirms.bh?confirm("Are you sure to reset?"):true) {
                 player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain)
                 player.bh.unl = true
                 this.doReset()
@@ -338,7 +341,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) },
-            lens: 12,
+            lens: 13,
             1: {
                 desc: "Booster adds Musclar.",
                 cost: E(1),
@@ -431,6 +434,18 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return "+^"+format(x)+(x.gte(0.2)?" <span class='soft'>(softcapped)</span>":"")
+                },
+            },
+            13: {
+                unl() { return player.chal.unl },
+                desc: "Mass gain softcap starts 3x later for every Ranks you have.",
+                cost: E(1e180),
+                effect() {
+                    let ret = E(3).pow(player.ranks.rank)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return "x"+format(x)
                 },
             },
         },

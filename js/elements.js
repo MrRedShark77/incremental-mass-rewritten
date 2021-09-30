@@ -97,6 +97,13 @@ function setupHTML() {
 
 	setupChalHTML()
 
+	let confirm_table = new Element("confirm_table")
+	table = ""
+	for (let x = 0; x < CONFIRMS.length; x++) {
+		table += `<div style="width: 100px" id="confirm_div_${x}"><img src="images/${CONFIRMS[x]}.png"><br><button onclick="player.confirms.${CONFIRMS[x]} = !player.confirms.${CONFIRMS[x]}" class="btn" id="confirm_btn_${x}">OFF</button></div>`
+	}
+	confirm_table.setHTML(table)
+
     tmp.el = {}
 	let all = document.getElementsByTagName("*")
 	for (let i=0;i<all.length;i++) {
@@ -241,6 +248,13 @@ function updateBlackHoleHTML() {
 	tmp.el.bhCondenserEffect.setHTML(format(tmp.bh.condenser_eff.eff))
 }
 
+function updateOptionsHTML() {
+	for (let x = 0; x < CONFIRMS.length; x++) {
+		tmp.el["confirm_div_"+x].setDisplay(player[CONFIRMS[x]].unl)
+		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
+	}
+}
+
 function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
 	updateUpperHTML()
@@ -265,5 +279,8 @@ function updateHTML() {
 	}
 	if (player.tab[0] == 4) {
 		updateChalHTML()
+	}
+	if (player.tab[0] == 5) {
+		updateOptionsHTML()
 	}
 }

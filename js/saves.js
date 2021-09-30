@@ -72,12 +72,14 @@ function getPlayerData() {
         options: {
             font: 'Verdana',
         },
+        confirms: {},
     }
     for (let x = 1; x <= UPGS.main.cols; x++) {
         s.auto_mainUpg[UPGS.main.ids[x]] = false
         s.mainUpg[UPGS.main.ids[x]] = []
     }
     for (let x = 1; x <= CHALS.cols; x++) s.chal.comps[x] = E(0)
+    for (let x = 0; x < CONFIRMS.length; x++) s.confirms[CONFIRMS[x]] = true
     return s
 }
 
@@ -86,10 +88,11 @@ function wipe() {
 }
 
 function loadPlayer(load) {
-    player = Object.assign(getPlayerData(), load)
+    let data = getPlayerData()
+    player = Object.assign(data, load)
     for (let x = 0; x < Object.keys(player).length; x++) {
         let k = Object.keys(player)[x]
-        if (typeof player[k] == 'object') player[k] = Object.assign(getPlayerData()[k], load[k])
+        if (typeof player[k] == 'object' && data[k]) player[k] = Object.assign(data[k], load[k])
     }
     convertStringToDecimal()
     player.tab = [0,0]
@@ -132,7 +135,7 @@ function exporty() {
     window.URL = window.URL || window.webkitURL;
     let a = document.createElement("a")
     a.href = window.URL.createObjectURL(file)
-    a.download = "Incremental Mass Rewritten Save.txt"
+    a.download = "Incremental Mass Rewritten Save - "+new Date().toGMTString()+".txt"
     a.click()
 }
 
