@@ -12,6 +12,7 @@ const SCALE_START = {
 		rank: E(120),
 		massUpg: E(500),
 		tickspeed: E(250),
+		bh_condenser: E(300),
 	},
 }
 

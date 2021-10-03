@@ -47,13 +47,12 @@ function updateChalTemp() {
         tmp.chal.eff[x] = CHALS[x].effect(player.chal.comps[x])
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
-    tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].sub(player.chal.comps[player.chal.active].min(CHALS[player.chal.active].max)).max(0).floor() : E(0)
+    tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(CHALS[player.chal.active].max).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
     tmp.chal.canFinish = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].gt(player.chal.comps[player.chal.active]) : false
 }
 
 const CHALS = {
     inChal(x) { return player.chal.active == x },
-    cols: 5,
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
         else ATOM.doReset(chal_reset)
@@ -179,7 +178,7 @@ const CHALS = {
         title: "No Rank",
         desc: "You cannot rank up.",
         reward: `Rank requirement are weaker by completions.`,
-        max: 100,
+        max: 50,
         inc: E(50),
         pow: E(1.25),
         start: E(1.5e136),
@@ -189,6 +188,22 @@ const CHALS = {
         },
         effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
     },
+    6: {
+        unl() { return player.chal.comps[5].gte(1) },
+        title: "No Tickspeed & Condenser",
+        desc: "You cannot buy Tickspeed & BH Condenser.",
+        reward: `For every completions adds +10% to Tickspeed & BH Condenser Power.`,
+        max: 50,
+        inc: E(64),
+        pow: E(1.25),
+        start: E(1.989e38),
+        effect(x) {
+            let ret = x.mul(0.1).add(1).softcap(1.5,0.5,0).sub(1)
+            return ret
+        },
+        effDesc(x) { return "+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
+    },
+    cols: 6,
 }
 
 /*

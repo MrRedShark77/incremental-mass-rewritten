@@ -23,7 +23,8 @@ function calc(dt) {
         let upg = UPGS.main[x]
         if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) if (upg[y].unl ? upg[y].unl() : true) upg.buy(y)
     }
-    if (player.mainUpg.bh.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
+    if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
+    if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
     if (player.atom.unl) {
         player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))

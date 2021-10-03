@@ -101,7 +101,7 @@ function setupHTML() {
 	let confirm_table = new Element("confirm_table")
 	table = ""
 	for (let x = 0; x < CONFIRMS.length; x++) {
-		table += `<div style="width: 100px" id="confirm_div_${x}"><img src="images/${CONFIRMS[x]}.png"><br><button onclick="player.confirms.${CONFIRMS[x]} = !player.confirms.${CONFIRMS[x]}" class="btn" id="confirm_btn_${x}">OFF</button></div>`
+		table += `<div style="width: 100px" id="confirm_div_${x}"><img src="images/${x == 1 ? "dm" : CONFIRMS[x]}.png"><br><button onclick="player.confirms.${CONFIRMS[x]} = !player.confirms.${CONFIRMS[x]}" class="btn" id="confirm_btn_${x}">OFF</button></div>`
 	}
 	confirm_table.setHTML(table)
 
@@ -135,10 +135,10 @@ function updateTabsHTML() {
 function updateUpperHTML() {
 	tmp.el.reset_desc.setHTML(player.reset_msg)
 	tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain, true))
-	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)?formatGain(player.rp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"))
+	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.rp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"))
 	let unl = FORMS.bh.see()
 	tmp.el.dm_div.setVisible(unl)
-	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>(+"+format(tmp.bh.dm_gain,0)+")")
+	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>"+(player.mainUpg.atom.includes(6)?formatGain(player.bh.dm, tmp.bh.dm_gain):"(+"+format(tmp.bh.dm_gain,0)+")"))
 	unl = player.bh.unl
 	tmp.el.bh_div.setVisible(unl)
 	tmp.el.atom_div.setVisible(unl)

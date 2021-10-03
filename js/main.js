@@ -39,7 +39,7 @@ const FORMS = {
     },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
-        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) },
+        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) },
         buy() {
             if (this.can()) {
                 if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
@@ -56,6 +56,7 @@ const FORMS = {
             let bouns = E(0)
             if (player.atom.unl) bouns = bouns.add(tmp.atom.atomicEff)
             let step = E(1.5)
+            step = step.add(tmp.chal.eff[6])
             step = step.add(tmp.chal.eff[2])
             step = step.add(tmp.atom.particles[0].powerEffect.eff2)
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
@@ -108,6 +109,7 @@ const FORMS = {
         },
         massSoftGain() {
             let s = E(1.5e156)
+            if (player.mainUpg.atom.includes(6)) s = s.mul(tmp.upgs.main?tmp.upgs.main[3][6].effect:E(1))
             return s
         },
         massSoftPower() {
@@ -137,7 +139,7 @@ const FORMS = {
         condenser: {
             autoSwitch() { player.bh.autoCondenser = !player.bh.autoCondenser },
             autoUnl() { return player.mainUpg.atom.includes(2) },
-            can() { return player.bh.dm.gte(tmp.bh.condenser_cost) },
+            can() { return player.bh.dm.gte(tmp.bh.condenser_cost) && !CHALS.inChal(6) },
             buy() {
                 if (this.can()) {
                     player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost)
@@ -152,6 +154,7 @@ const FORMS = {
             },
             effect() {
                 let pow = E(2)
+                pow = pow.add(tmp.chal.eff[6])
                 if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                 pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
                 let eff = pow.pow(player.bh.condenser)
@@ -608,7 +611,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            lens: 5,
+            lens: 6,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -635,6 +638,17 @@ const UPGS = {
             5: {
                 desc: "You can automatically Tetr up. Super Tier starts 10 later.",
                 cost: E(1e16),
+            },
+            6: {
+                desc: "Gain 100% of Dark Matters gained from reset per second. Mass gain from Black Hole softcap starts later based on Atomic Powers.",
+                cost: E(1e18),
+                effect() {
+                    let ret = player.atom.atomic.add(1).pow(0.5)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x later"
+                },
             },
         },
     },

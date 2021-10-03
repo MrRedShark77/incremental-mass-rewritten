@@ -96,14 +96,39 @@ function updateBlackHoleTemp() {
 			.add(1)
 			.floor();
 	}
+    if (scalingActive("bh_condenser", player.bh.condenser.max(tmp.bh.condenser_bulk), "hyper")) {
+		let start = getScalingStart("super", "bh_condenser");
+		let power = getScalingPower("super", "bh_condenser");
+        let start2 = getScalingStart("hyper", "bh_condenser");
+		let power2 = getScalingPower("hyper", "bh_condenser");
+		let exp = E(2).pow(power);
+        let exp2 = E(2).pow(power2);
+		tmp.bh.condenser_cost =
+			E(1.75).pow(
+                player.bh.condenser
+                .pow(exp2)
+			    .div(start2.pow(exp2.sub(1)))
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+            ).floor()
+        tmp.bh.condenser_bulk = player.bh.dm
+            .max(1)
+            .log(1.75)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
+			.add(1)
+			.floor();
+	}
     tmp.bh.condenser_eff = FORMS.bh.condenser.effect()
 }
 
 function updateTemp() {
     updateUpgradesTemp()
     updateScalingTemp()
-    updateAtomTemp()
     updateChalTemp()
+    updateAtomTemp()
     updateRagePowerTemp()
     updateBlackHoleTemp()
     updateTickspeedTemp()
