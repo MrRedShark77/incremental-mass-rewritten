@@ -79,6 +79,22 @@ button {
 	color: skyblue;
 }
 
+.quark_color {
+	animation: quark_color 6s cubic-bezier(0.37, 0, 0.63, 1) infinite
+}
+
+@keyframes quark_color {
+	0%, 100% {
+		color: red;
+	}
+	33.3% {
+		color: blue;
+	}
+	66.7% {
+		color: limegreen;
+	}
+}
+
 .sml {
 	margin-bottom: 5px;
 }

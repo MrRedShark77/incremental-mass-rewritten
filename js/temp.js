@@ -69,13 +69,15 @@ function updateRagePowerTemp() {
 function updateBlackHoleTemp() {
     if (!tmp.bh) tmp.bh = {}
     tmp.bh.dm_gain = FORMS.bh.DM_gain()
+    tmp.bh.massSoftPower = FORMS.bh.massSoftPower()
+    tmp.bh.massSoftGain = FORMS.bh.massSoftGain()
     tmp.bh.mass_gain = FORMS.bh.massGain()
     tmp.bh.dm_can = tmp.bh.dm_gain.gte(1)
     tmp.bh.effect = FORMS.bh.effect()
 
     tmp.bh.condenser_cost = E(1.75).pow(player.bh.condenser).floor()
     tmp.bh.condenser_bulk = player.bh.dm.max(1).log(1.75).add(1).floor()
-    if (player.bh.dm.lt(1)) tmp.condenser_bulk = E(0)
+    if (player.bh.dm.lt(1)) tmp.bh.condenser_bulk = E(0)
     if (scalingActive("bh_condenser", player.bh.condenser.max(tmp.bh.condenser_bulk), "super")) {
 		let start = getScalingStart("super", "bh_condenser");
 		let power = getScalingPower("super", "bh_condenser");
@@ -100,6 +102,7 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     updateUpgradesTemp()
     updateScalingTemp()
+    updateAtomTemp()
     updateChalTemp()
     updateRagePowerTemp()
     updateBlackHoleTemp()

@@ -28,7 +28,7 @@ function setupHTML() {
 			<button id="ranks_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('${rn}')">OFF</button>
 			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <span id="ranks_amt_${x}">X</span><br><br>
 			<button onclick="RANKS.reset('${rn}')" class="btn reset" id="ranks_${x}">
-				Reset your mass and upgrades, but <span id="ranks_desc_${x}">X</span><br>
+				Reset your ${x>0?RANKS.fullNames[x-1]:'mass and upgrades'}, but <span id="ranks_desc_${x}">X</span><br>
 				Req: <span id="ranks_req_${x}">X</span>
 			</button>
 		</div>`
@@ -96,6 +96,7 @@ function setupHTML() {
 	scaling_table.setHTML(table)
 
 	setupChalHTML()
+	setupAtomHTML()
 
 	let confirm_table = new Element("confirm_table")
 	table = ""
@@ -125,7 +126,7 @@ function updateTabsHTML() {
 				let stab = TABS[2][x][y]
 				tmp.el["stab"+x+"_"+y].setDisplay(stab.unl ? stab.unl() : true)
 				tmp.el["stab"+x+"_"+y].setClasses({btn_tab: true, [stab.style ? stab.style : "normal"]: true, choosed: y == player.tab[1]})
-				if (tmp.el["stab_frame"+y]) tmp.el["stab_frame"+y].setDisplay(y == player.tab[1])
+				if (tmp.el["stab_frame"+x+"_"+y]) tmp.el["stab_frame"+x+"_"+y].setDisplay(y == player.tab[1])
 			}
 		}
 	}
@@ -136,14 +137,25 @@ function updateUpperHTML() {
 	tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain, true))
 	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)?formatGain(player.rp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"))
 	let unl = FORMS.bh.see()
-	tmp.el.dm_div.changeStyle('visibility', unl?'visible':'hidden')
+	tmp.el.dm_div.setVisible(unl)
 	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>(+"+format(tmp.bh.dm_gain,0)+")")
 	unl = player.bh.unl
-	tmp.el.bh_div.changeStyle('visibility', unl?'visible':'hidden')
-	if (unl) tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
+	tmp.el.bh_div.setVisible(unl)
+	tmp.el.atom_div.setVisible(unl)
+	if (unl) {
+		tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
+		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>(+"+format(tmp.atom.gain,0)+")")
+	}
 	unl = !CHALS.inChal(0)
 	tmp.el.chal_upper.setVisible(unl)
-	if (unl) tmp.el.chal_upper.setHTML(`You are now in ${CHALS[player.chal.active].title} Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])} to complete.<br>${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(CHALS[player.chal.active].goal(tmp.chal.bulk.max(player.chal.comps[player.chal.active])))})`)
+	if (unl) {
+		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
+		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
+		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
+	}
+	unl = player.atom.unl
+	tmp.el.quark_div.setVisible(unl)
+	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>(+"+format(tmp.atom.quarkGain,0)+")")
 }
 
 function updateRanksHTML() {
@@ -185,7 +197,7 @@ function updateTickspeedHTML() {
 	tmp.el.tickspeed_div.setDisplay(unl)
 	if (unl) {
 		tmp.el.tickspeed_scale.setTxt(getScalingName('tickspeed'))
-		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0))
+		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(tmp.atom.atomicEff.gte(1)?" + "+format(tmp.atom.atomicEff,0):""))
 		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
 		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
 		tmp.el.tickspeed_step.setTxt(tmp.tickspeedEffect.step.gte(10)?format(tmp.tickspeedEffect.step):format(tmp.tickspeedEffect.step.sub(1).mul(100))+"%")
@@ -238,6 +250,8 @@ function updateMainUpgradesHTML() {
 
 function updateBlackHoleHTML() {
 	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
+	tmp.el.massSoft2.setDisplay(tmp.bh.mass_gain.gte(tmp.bh.massSoftGain))
+	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 	tmp.el.bhEffect.setTxt(format(tmp.bh.effect))
 
 	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0))
@@ -246,6 +260,8 @@ function updateBlackHoleHTML() {
 	tmp.el.bhCondenser_cost.setTxt(format(tmp.bh.condenser_cost,0))
 	tmp.el.bhCondenser_pow.setTxt(format(tmp.bh.condenser_eff.pow))
 	tmp.el.bhCondenserEffect.setHTML(format(tmp.bh.condenser_eff.eff))
+	tmp.el.bhCondenser_auto.setDisplay(FORMS.bh.condenser.autoUnl())
+	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
 }
 
 function updateOptionsHTML() {
@@ -260,12 +276,20 @@ function updateHTML() {
 	updateUpperHTML()
     updateTabsHTML()
 	if (player.tab[0] == 0) {
-		updateRanksHTML()
-		updateMassUpgradesHTML()
-		updateTickspeedHTML()
-		
-		tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
-		tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
+		if (player.tab[1] == 0) {
+			updateRanksHTML()
+			updateMassUpgradesHTML()
+			updateTickspeedHTML()
+			
+			tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
+			tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
+		}
+		if (player.tab[1] == 1) {
+			updateBlackHoleHTML()
+		}
+		if (player.tab[1] == 2) {
+			updateAtomicHTML()
+		}
 	}
 	if (player.tab[0] == 1) {
 		if (player.tab[1] == 0) updateRanksRewardHTML()
@@ -275,10 +299,10 @@ function updateHTML() {
 		updateMainUpgradesHTML()
 	}
 	if (player.tab[0] == 3) {
-		updateBlackHoleHTML()
+		updateChalHTML()
 	}
 	if (player.tab[0] == 4) {
-		updateChalHTML()
+		updateAtomHTML()
 	}
 	if (player.tab[0] == 5) {
 		updateOptionsHTML()

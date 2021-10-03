@@ -11,8 +11,9 @@ Decimal.prototype.softcap = function (start, power, mode) {
 
 function calc(dt) {
     player.mass = player.mass.add(tmp.massGain.mul(dt))
-    if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && player.ranks.rank.gte(x)) UPGS.mass.buyMax(x)
+    if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
     if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
+    if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
         if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
@@ -24,6 +25,10 @@ function calc(dt) {
     }
     if (player.mainUpg.bh.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
+    if (player.atom.unl) {
+        player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
+        for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(dt))
+    }
     if (player.mass.gte(1.5e136)) player.chal.unl = true
 }
 
@@ -33,6 +38,7 @@ function getPlayerData() {
         ranks: {
             rank: E(0),
             tier: E(0),
+            tetr: E(0),
         },
         auto_ranks: {
             rank: false,
@@ -59,12 +65,23 @@ function getPlayerData() {
             dm: E(0),
             mass: E(0),
             condenser: E(0),
+            autoCondenser: false,
         },
         chal: {
             unl: false,
             active: 0,
             choosed: 0,
             comps: {},
+        },
+        atom: {
+            unl: false,
+            points: E(0),
+            atomic: E(0),
+            gamma_ray: E(0),
+            quarks: E(0),
+            particles: [E(0), E(0), E(0)],
+            powers: [E(0), E(0), E(0)],
+            ratio: 0,
         },
         reset_msg: "",
         main_upg_msg: [0,0],
@@ -88,11 +105,10 @@ function wipe() {
 }
 
 function loadPlayer(load) {
-    let data = getPlayerData()
-    player = Object.assign(data, load)
+    player = Object.assign(getPlayerData(), load)
     for (let x = 0; x < Object.keys(player).length; x++) {
         let k = Object.keys(player)[x]
-        if (typeof player[k] == 'object' && data[k]) player[k] = Object.assign(data[k], load[k])
+        if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
     }
     convertStringToDecimal()
     player.tab = [0,0]
@@ -111,6 +127,16 @@ function convertStringToDecimal() {
     player.bh.dm = E(player.bh.dm)
     player.bh.mass = E(player.bh.mass)
     player.bh.condenser = E(player.bh.condenser)
+
+    player.atom.points = E(player.atom.points)
+    player.atom.atomic = E(player.atom.atomic)
+    player.atom.gamma_ray = E(player.atom.gamma_ray)
+    player.atom.quarks = E(player.atom.quarks)
+    for (let x = 0; x < ATOM.particles.names.length; x++) {
+        player.atom.particles[x] = E(player.atom.particles[x])
+        player.atom.powers[x] = E(player.atom.powers[x])
+    }
+
     for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])

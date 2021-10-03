@@ -5,7 +5,7 @@ var tmp = {
     
 }
 
-const CONFIRMS = ['rp', 'bh']
+const CONFIRMS = ['rp', 'bh', 'atom']
 
 const FORMS = {
     massGain() {
@@ -16,6 +16,8 @@ const FORMS = {
         x = x.mul(tmp.tickspeedEffect.eff||E(1))
         if (player.bh.unl) x = x.mul(tmp.bh.effect)
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
+        x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
+        x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
@@ -31,6 +33,7 @@ const FORMS = {
     massSoftPower() {
         let p = E(1/3)
         if (CHALS.inChal(3)) p = p.mul(4)
+        if (player.mainUpg.bh.includes(11)) p = p.mul(0.9)
         return E(1).div(p.add(1))
     },
     tickspeed: {
@@ -38,23 +41,26 @@ const FORMS = {
         can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) },
         buy() {
             if (this.can()) {
-                player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
+                if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
                 player.tickspeed = player.tickspeed.add(1)
             }
         },
         buyMax() { 
             if (this.can()) {
-                player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
+                if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
                 player.tickspeed = tmp.tickspeedBulk
             }
         },
         effect() {
+            let bouns = E(0)
+            if (player.atom.unl) bouns = bouns.add(tmp.atom.atomicEff)
             let step = E(1.5)
             step = step.add(tmp.chal.eff[2])
+            step = step.add(tmp.atom.particles[0].powerEffect.eff2)
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
             if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
-            let eff = step.pow(player.tickspeed)
-            return {step: step, eff: eff}
+            let eff = step.pow(player.tickspeed.add(bouns))
+            return {step: step, eff: eff, bouns: bouns}
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
         autoSwitch() { player.autoTickspeed = !player.autoTickspeed },
@@ -67,6 +73,7 @@ const FORMS = {
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
+            gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4)) gain = gain.root(10)
@@ -90,12 +97,21 @@ const FORMS = {
             let gain = player.rp.points.div(1e20)
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
+            gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             return gain.floor()
         },
         massGain() {
             let x = player.bh.mass.add(1).pow(0.33).mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
-            return x
+            return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
+        },
+        massSoftGain() {
+            let s = E(1.5e156)
+            return s
+        },
+        massSoftPower() {
+            let p = E(1)
+            return E(1).div(p.add(1))
         },
         reset() {
             if (tmp.bh.dm_can) if (player.confirms.bh?confirm("Are you sure to reset?"):true) {
@@ -118,6 +134,8 @@ const FORMS = {
             return x
         },
         condenser: {
+            autoSwitch() { player.bh.autoCondenser = !player.bh.autoCondenser },
+            autoUnl() { return player.mainUpg.atom.includes(2) },
             can() { return player.bh.dm.gte(tmp.bh.condenser_cost) },
             buy() {
                 if (this.can()) {
@@ -134,6 +152,7 @@ const FORMS = {
             effect() {
                 let pow = E(2)
                 if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
+                pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
                 let eff = pow.pow(player.bh.condenser)
                 return {pow: pow, eff: eff}
             },
@@ -143,6 +162,7 @@ const FORMS = {
         msgs: {
             rp: "Require over 1e9 tonne of mass to reset previous features for gain Rage Powers",
             dm: "Require over 1e20 Rage Power to reset all previous features for gain Dark Matters",
+            atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
         },
         set(id) { player.reset_msg = this.msgs[id] },
         reset() { player.reset_msg = "" },
@@ -240,7 +260,7 @@ const UPGS = {
             return {cost: cost, bulk: bulk}
         },
         1: {
-            unl() { return player.ranks.rank.gte(1) },
+            unl() { return player.ranks.rank.gte(1) || player.mainUpg.atom.includes(1) },
             title: "Muscler",
             start: E(10),
             inc: E(1.5),
@@ -265,7 +285,7 @@ const UPGS = {
             },
         },
         2: {
-            unl() { return player.ranks.rank.gte(2) },
+            unl() { return player.ranks.rank.gte(2) || player.mainUpg.atom.includes(1) },
             title: "Booster",
             start: E(100),
             inc: E(4),
@@ -290,7 +310,7 @@ const UPGS = {
             },
         },
         3: {
-            unl() { return player.ranks.rank.gte(3) },
+            unl() { return player.ranks.rank.gte(3) || player.mainUpg.atom.includes(1) },
             title: "Stronger",
             start: E(1000),
             inc: E(9),
@@ -298,7 +318,7 @@ const UPGS = {
                 let ss = E(10)
                 if (player.ranks.rank.gte(34)) ss = ss.add(2)
                 if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
-                let step = E(1)
+                let step = E(1).add(RANKS.effect.tetr[2]())
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
                 let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,0.5,0)
@@ -312,7 +332,7 @@ const UPGS = {
             },
             bouns() {
                 let x = E(0)
-                if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:E(0))
+                if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:0)
                 return x
             },
         },
@@ -325,8 +345,8 @@ const UPGS = {
                 for (let y = 1; y <= UPGS.main[x].lens; y++) if (UPGS.main[x][y].effDesc) tmp.upgs.main[x][y] = { effect: UPGS.main[x][y].effect(), effDesc: UPGS.main[x][y].effDesc() }
             }
         },
-        ids: [null, 'rp', 'bh'],
-        cols: 2,
+        ids: [null, 'rp', 'bh', 'atom'],
+        cols: 3,
         over(x,y) { player.main_upg_msg = [x,y] },
         reset() { player.main_upg_msg = [0,0] },
         1: {
@@ -341,7 +361,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) },
-            lens: 13,
+            lens: 14,
             1: {
                 desc: "Booster adds Musclar.",
                 cost: E(1),
@@ -448,11 +468,17 @@ const UPGS = {
                     return "x"+format(x)
                 },
             },
+            14: {
+                unl() { return player.atom.unl },
+                desc: "Hyper Tickspeed starts 50 later.",
+                cost: E('e320'),
+            },
         },
         2: {
             title: "Black Hole Upgrades",
             res: "Dark Matters",
             unl() { return player.bh.unl },
+            auto_unl() { return player.mainUpg.atom.includes(2) },
             can(x) { return player.bh.dm.gte(this[x].cost) && !player.mainUpg.bh.includes(x) },
             buy(x) {
                 if (this.can(x)) {
@@ -460,7 +486,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 10,
+            lens: 11,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -546,6 +572,36 @@ const UPGS = {
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
                 },
+            },
+            11: {
+                unl() { return player.atom.unl },
+                desc: "Mass gain softcap is 5% weaker.",
+                cost: E(1e80),
+            },
+        },
+        3: {
+            title: "Atom Upgrades",
+            res: "Atoms",
+            unl() { return player.atom.unl },
+            can(x) { return player.atom.points.gte(this[x].cost) && !player.mainUpg.atom.includes(x) },
+            buy(x) {
+                if (this.can(x)) {
+                    player.atom.points = player.atom.points.sub(this[x].cost)
+                    player.mainUpg.atom.push(x)
+                }
+            },
+            lens: 3,
+            1: {
+                desc: "Start with Mass upgardes unlocked.",
+                cost: E(1),
+            },
+            2: {
+                desc: "You can automatically buy BH Condenser and upgrades. Tickspeed no longer spent Rage Powers.",
+                cost: E(100),
+            },
+            3: {
+                desc: "[Tetr Era] Unlock Tetr.",
+                cost: E(25000),
             },
         },
     },

@@ -7,14 +7,22 @@ const TABS = {
         { id: "Main" },
         { id: "Stats" },
         { id: "Upgrades", unl() { return player.rp.unl } },
-        { id: "Black Hole", unl() { return player.bh.unl } },
         { id: "Challenges", unl() { return player.chal.unl } },
+        { id: "Atom", unl() { return player.atom.unl } },
         { id: "Options" },
     ],
     2: {
+        0: [
+            { id: "Mass" },
+            { id: "Black Hole", unl() { return player.bh.unl } },
+            { id: "Atomic Generator", unl() { return player.atom.unl } },
+        ],
         1: [
             { id: "Ranks Rewards" },
             { id: "Scaling", unl() { return tmp.scaling ? tmp.scaling.super.length>0 : false } },
+        ],
+        4: [
+            { id: "Particles" },
         ],
     },
 }
