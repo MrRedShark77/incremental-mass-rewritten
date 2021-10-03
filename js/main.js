@@ -19,6 +19,7 @@ const FORMS = {
         x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
+        if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
     },
@@ -361,7 +362,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) },
-            lens: 14,
+            lens: 15,
             1: {
                 desc: "Booster adds Musclar.",
                 cost: E(1),
@@ -473,6 +474,18 @@ const UPGS = {
                 desc: "Hyper Tickspeed starts 50 later.",
                 cost: E('e320'),
             },
+            15: {
+                unl() { return player.atom.unl },
+                desc: "Mass boost Atoms gain.",
+                cost: E('e480'),
+                effect() {
+                    let ret = player.mass.max(1).log10().pow(1.25)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return "x"+format(x)
+                },
+            },
         },
         2: {
             title: "Black Hole Upgrades",
@@ -486,7 +499,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 11,
+            lens: 12,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -507,7 +520,7 @@ const UPGS = {
                 cost: E(100),
                 effect() {
                     let ret = player.bh.mass.max(1).log10().pow(1.5).softcap(100,1/3,0).floor()
-                    return ret.min(300)
+                    return ret.min(400)
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" later"+(x.gte(100)?" <span class='soft'>(softcapped)</span>":"")
@@ -578,6 +591,11 @@ const UPGS = {
                 desc: "Mass gain softcap is 5% weaker.",
                 cost: E(1e80),
             },
+            12: {
+                unl() { return player.atom.unl },
+                desc: "Hyper Mass Upgrades & Tickspeed scales 15% weaker.",
+                cost: E(1e120),
+            },
         },
         3: {
             title: "Atom Upgrades",
@@ -590,9 +608,9 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            lens: 3,
+            lens: 5,
             1: {
-                desc: "Start with Mass upgardes unlocked.",
+                desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
             },
             2: {
@@ -602,6 +620,21 @@ const UPGS = {
             3: {
                 desc: "[Tetr Era] Unlock Tetr.",
                 cost: E(25000),
+            },
+            4: {
+                desc: "Keep 1-4 Challenge on reset. BH Condensers adds Gamma Rays Power at a reduced rate.",
+                cost: E(1e10),
+                effect() {
+                    let ret = player.bh.condenser.pow(0.8).mul(0.01)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return "+"+format(x)+"x"
+                },
+            },
+            5: {
+                desc: "You can automatically Tetr up. Super Tier starts 10 later.",
+                cost: E(1e16),
             },
         },
     },

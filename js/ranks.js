@@ -43,7 +43,7 @@ const RANKS = {
     autoUnl: {
         rank() { return player.mainUpg.rp.includes(5) },
         tier() { return player.mainUpg.rp.includes(6) },
-        tetr() { return false },
+        tetr() { return player.mainUpg.atom.includes(5) },
     },
     desc: {
         rank: {
@@ -60,6 +60,7 @@ const RANKS = {
             40: "adds tickspeed power based on ranks.",
             45: "ranks boosts Rage Powers gain.",
             90: "rank 40 reward are stronger.",
+            180: "mass gain is raised by 1.025.",
         },
         tier: {
             1: "reduce rank reqirements by 20%.",

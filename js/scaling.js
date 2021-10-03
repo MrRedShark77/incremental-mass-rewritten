@@ -92,6 +92,9 @@ function getScalingStart(type, name) {
 			if (CHALS.inChal(1)) return E(25)
 			start = start.add(tmp.chal?tmp.chal.eff[1].rank:0)
 		}
+		if (name=="tier") {
+			if (player.mainUpg.atom.includes(5)) start = start.add(10)
+		}
 		if (name=="massUpg") {
 			if (CHALS.inChal(1)) return E(25)
 			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:0:0)
@@ -124,6 +127,12 @@ function getScalingPower(type, name) {
 	if (type=="hyper") {
 		if (name=="rank") {
 			if (player.ranks.tetr.gte(1)) power = power.mul(0.85)
+		}
+		if (name=="massUpg") {
+			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
+		}
+		if (name=='tickspeed') {
+			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 		}
 	}
 	return power

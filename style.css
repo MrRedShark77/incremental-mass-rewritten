@@ -147,6 +147,10 @@ button {
 	cursor: default;
 }
 
+.chal_comp {
+	background-color: #00520b;
+}
+
 .img_btn {
 	cursor: pointer;
 	background-color: #444;

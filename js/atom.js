@@ -3,6 +3,7 @@ const ATOM = {
         let x = player.bh.mass.div(1.5e156)
         if (x.lt(1)) return E(0)
         x = x.root(5)
+        if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))
         return x.floor()
     },
     quarkGain() {
@@ -27,7 +28,7 @@ const ATOM = {
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
-        if (chal_reset) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
+        if (chal_reset && !player.mainUpg.atom.includes(4)) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
         FORMS.bh.doReset()
     },
     atomic: {
@@ -55,6 +56,7 @@ const ATOM = {
         },
         effect() {
             let pow = E(2)
+            if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
             let eff = pow.pow(player.atom.gamma_ray).sub(1)
             return {pow: pow, eff: eff}
         },
