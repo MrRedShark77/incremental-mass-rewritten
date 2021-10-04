@@ -151,6 +151,12 @@ button {
 	background-color: #00520b;
 }
 
+.input_ratio {
+	width: 100px;
+	border: solid 2px white;
+	background-color: #171717;
+}
+
 .img_btn {
 	cursor: pointer;
 	background-color: #444;

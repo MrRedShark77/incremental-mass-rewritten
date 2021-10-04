@@ -143,7 +143,13 @@
         </div><div id="tab_frame4">
             <div id="stab_frame4_0">
                 You have <span id="unassignQuarkAmt">X</span> unassigned Quarks<br><br>
-                <button class="btn" onclick="ATOM.particles.assignAll()">Distribute</button><br><br>
+                <div>
+                    <button class="btn" onclick="ATOM.particles.assignAll()">Distribute</button><br><br>
+                    <input class="input_ratio" style="color: #0f0;" type="number" min="1" id="ratio_d0">
+                    <input class="input_ratio" style="color: #ff0;" type="number" min="1" id="ratio_d1">
+                    <input class="input_ratio" style="color: #f00;" type="number" min="1" id="ratio_d2">
+                </div>
+                <br><br>
                 Ratio Mode: <span id="atom_ratio">X</span><br>
                 <button class="btn" onclick="player.atom.ratio = 0">+1</button><button class="btn"onclick="player.atom.ratio = 1">25%</button><button class="btn"onclick="player.atom.ratio = 2">100%</button><br><br>
                 <div id="particles_table" class="table_center" style="justify-content: space-evenly;"></div>
@@ -166,7 +172,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.3 Atom - Test Server 4 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.3 Atom - Test Server 5 - made by MrRedShark77<br>
             The game inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...
         </div>

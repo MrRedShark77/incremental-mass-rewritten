@@ -72,11 +72,13 @@ const ATOM = {
             player.atom.particles[x] = player.atom.particles[x].add(spent)
         },
         assignAll() {
-            if (player.atom.quarks.lt(3)) return
-            let spent = player.atom.quarks.div(3).floor()
-            player.atom.quarks = player.atom.quarks.sub(spent.mul(3))
+            let sum = player.atom.dRatio[0]+player.atom.dRatio[1]+player.atom.dRatio[2]
+            if (player.atom.quarks.lt(sum)) return
+            let spent = player.atom.quarks.div(sum).floor()
             for (let x = 0; x < 3; x++) {
-                player.atom.particles[x] = player.atom.particles[x].add(spent)
+                let add = spent.mul(player.atom.dRatio[x])
+                player.atom.quarks = player.atom.quarks.sub(add)
+                player.atom.particles[x] = player.atom.particles[x].add(add)
             }
         },
         effect(x) { return player.atom.particles[x].pow(2) },

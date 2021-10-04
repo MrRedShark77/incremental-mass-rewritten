@@ -83,6 +83,7 @@ function getPlayerData() {
             particles: [E(0), E(0), E(0)],
             powers: [E(0), E(0), E(0)],
             ratio: 0,
+            dRatio: [1,1,1],
         },
         reset_msg: "",
         main_upg_msg: [0,0],
@@ -181,6 +182,20 @@ function loadGame() {
     setInterval(save,1000)
     updateTemp()
     updateHTML()
+    for (let x = 0; x < 3; x++) {
+        let r = document.getElementById('ratio_d'+x)
+        r.value = player.atom.dRatio[x]
+        r.addEventListener('input', e=>{
+            let n = Number(e.target.value)
+            if (n < 1) {
+                player.atom.dRatio[x] = 1
+                r.value = 1
+            } else {
+                if (Math.floor(n) != n) r.value = Math.floor(n)
+                player.atom.dRatio[x] = Math.floor(n)
+            }
+        })
+    }
     tmp.el.loading.setDisplay(false)
     tmp.el.app.setDisplay(true)
 }
