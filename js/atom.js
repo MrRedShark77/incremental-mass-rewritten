@@ -10,6 +10,7 @@ const ATOM = {
         let x = tmp.atom.gain
         if (x.lt(1)) return E(0)
         x = x.max(1).log10().pow(1.1).add(1)
+        if (player.mainUpg.bh.includes(13)) x = x.mul(10)
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },
@@ -79,6 +80,11 @@ const ATOM = {
             }
         },
         effect(x) { return player.atom.particles[x].pow(2) },
+        gain(i) {
+            let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)
+            if (player.mainUpg.atom.includes(7)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][7].effect:E(1))
+            return x
+        },
         powerEffect: [
             x=>{
                 let a = x.add(1).pow(3)
@@ -139,7 +145,7 @@ function updateAtomTemp() {
                 .pow(exp)
 			    .div(start.pow(exp.sub(1)))
             ).floor()
-        tmp.atom.gamma_ray_bulk = player.atom.dm
+        tmp.atom.gamma_ray_bulk = player.atom.points
             .max(1)
             .log(1.75)
 			.mul(start.pow(exp.sub(1)))
@@ -152,7 +158,8 @@ function updateAtomTemp() {
 
     for (let x = 0; x < ATOM.particles.names.length; x++) {
         tmp.atom.particles[x] = {
-            powerGain: ATOM.particles.effect(x),
+            effect: ATOM.particles.effect(x),
+            powerGain: ATOM.particles.gain(x),
             powerEffect: ATOM.particles.powerEffect[x](player.atom.powers[x]),
         }
     }

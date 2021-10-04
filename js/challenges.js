@@ -183,10 +183,10 @@ const CHALS = {
         pow: E(1.25),
         start: E(1.5e136),
         effect(x) {
-            let ret = E(0.97).pow(x.root(2))
+            let ret = E(0.97).pow(x.root(2).softcap(5,0.5,0))
             return ret
         },
-        effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+        effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     6: {
         unl() { return player.chal.comps[5].gte(1) },

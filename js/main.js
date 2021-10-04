@@ -502,7 +502,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 12,
+            lens: 13,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -591,13 +591,18 @@ const UPGS = {
             },
             11: {
                 unl() { return player.atom.unl },
-                desc: "Mass gain softcap is 5% weaker.",
+                desc: "Mass gain softcap is 10% weaker.",
                 cost: E(1e80),
             },
             12: {
                 unl() { return player.atom.unl },
                 desc: "Hyper Mass Upgrades & Tickspeed scales 15% weaker.",
                 cost: E(1e120),
+            },
+            13: {
+                unl() { return player.chal.unl },
+                desc: "Quark gain is multiplied by 10.",
+                cost: E(1e180),
             },
         },
         3: {
@@ -611,7 +616,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            lens: 6,
+            lens: 7,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -648,6 +653,17 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x later"
+                },
+            },
+            7: {
+                desc: "Tickspeed boost each particle powers gain.",
+                cost: E(1e25),
+                effect() {
+                    let ret = E(1.025).pow(player.tickspeed)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
                 },
             },
         },
