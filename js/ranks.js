@@ -61,6 +61,7 @@ const RANKS = {
             45: "ranks boosts Rage Powers gain.",
             90: "rank 40 reward are stronger.",
             180: "mass gain is raised by 1.025.",
+            220: "rank 40 reward are overpowered."
         },
         tier: {
             1: "reduce rank reqirements by 20%.",
@@ -93,6 +94,7 @@ const RANKS = {
             40() {
                 let ret = player.ranks.rank.root(2).div(100)
                 if (player.ranks.rank.gte(90)) ret = player.ranks.rank.root(1.6).div(100)
+                if (player.ranks.rank.gte(220)) ret = player.ranks.rank.div(100)
                 return ret
             },
             45() {
