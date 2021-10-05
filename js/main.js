@@ -108,6 +108,7 @@ const FORMS = {
         massGain() {
             let x = player.bh.mass.add(1).pow(0.33).mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
+            if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
             return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
         },
         massSoftGain() {
@@ -505,7 +506,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 13,
+            lens: 14,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -603,9 +604,21 @@ const UPGS = {
                 cost: E(1e120),
             },
             13: {
-                unl() { return player.chal.unl },
+                unl() { return player.atom.unl },
                 desc: "Quark gain is multiplied by 10.",
                 cost: E(1e180),
+            },
+            14: {
+                unl() { return player.atom.unl },
+                desc: "Neturon Powers boosts mass of Black Hole gain.",
+                cost: E(1e210),
+                effect() {
+                    let ret = player.atom.powers[1].add(1).pow(2)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
+                },
             },
         },
         3: {
