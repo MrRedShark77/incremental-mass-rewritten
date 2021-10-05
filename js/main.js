@@ -34,6 +34,7 @@ const FORMS = {
     massSoftPower() {
         let p = E(1/3)
         if (CHALS.inChal(3)) p = p.mul(4)
+        if (CHALS.inChal(7)) p = p.mul(6)
         if (player.mainUpg.bh.includes(11)) p = p.mul(0.9)
         return E(1).div(p.add(1))
     },
@@ -69,7 +70,7 @@ const FORMS = {
     },
     rp: {
         gain() {
-            if (player.mass.lt(1e15)) return E(0)
+            if (player.mass.lt(1e15) || CHALS.inChal(7)) return E(0)
             let gain = player.mass.div(1e15).root(3)
             if (player.ranks.rank.gte(14)) gain = gain.mul(2)
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
@@ -97,8 +98,10 @@ const FORMS = {
         see() { return player.rp.unl },
         DM_gain() {
             let gain = player.rp.points.div(1e20)
+            if (CHALS.inChal(7)) gain = player.mass.div(1e180)
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
+            if (CHALS.inChal(7)) gain = gain.root(6)
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             return gain.floor()
         },
@@ -616,7 +619,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            lens: 7,
+            lens: 8,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -660,6 +663,17 @@ const UPGS = {
                 cost: E(1e25),
                 effect() {
                     let ret = E(1.025).pow(player.tickspeed)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
+                },
+            },
+            8: {
+                desc: "Atomic Powers boosts Quark gain.",
+                cost: E(1e35),
+                effect() {
+                    let ret = player.atom.atomic.max(1).log10().add(1)
                     return ret
                 },
                 effDesc(x=this.effect()) {

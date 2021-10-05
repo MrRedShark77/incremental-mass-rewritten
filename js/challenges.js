@@ -12,9 +12,9 @@ function updateChalHTML() {
         let chal = CHALS[x]
         let unl = chal.unl ? chal.unl() : true
         tmp.el["chal_div_"+x].setDisplay(unl)
-        tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(chal.max)})
+        tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
         if (unl) {
-            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+"/"+chal.max)
+            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+"/"+tmp.chal.max[x])
         }
     }
     tmp.el.chal_enter.setVisible(player.chal.active == 0)
@@ -24,7 +24,7 @@ function updateChalHTML() {
     if (player.chal.choosed != 0) {
         let chal = CHALS[player.chal.choosed]
         tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${player.chal.comps[player.chal.choosed].gte(75)?" Hardened":""} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+chal.max} Completions]`)
-        tmp.el.chal_ch_desc.setTxt(chal.desc)
+        tmp.el.chal_ch_desc.setHTML(chal.desc)
         tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
         tmp.el.chal_ch_reward.setTxt("Reward: "+chal.reward)
@@ -35,6 +35,7 @@ function updateChalHTML() {
 function updateChalTemp() {
     if (!tmp.chal) tmp.chal = {
         goal: {},
+        max: {},
         eff: {},
         bulk: {},
         canFinish: false,
@@ -42,12 +43,13 @@ function updateChalTemp() {
     }
     for (let x = 1; x <= CHALS.cols; x++) {
         let data = CHALS.getChalData(x)
+        tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
         tmp.chal.eff[x] = CHALS[x].effect(player.chal.comps[x])
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
-    tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(CHALS[player.chal.active].max).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
+    tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
     tmp.chal.canFinish = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].gt(player.chal.comps[player.chal.active]) : false
 }
 
@@ -87,6 +89,11 @@ const CHALS = {
         if (x < 5) return "Entering challenge will reset with Dark Matters!"
         return "Entering challenge will reset with Atoms except previous challenges!"
     },
+    getMax(i) {
+        let x = this[i].max
+        if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
+        return x.floor()
+    },
     getChalData(x, r=E(-1)) {
         let res = !CHALS.inChal(0)?this.getResource(x):E(0)
         let lvl = r.lt(0)?player.chal.comps[x]:r
@@ -117,7 +124,7 @@ const CHALS = {
         title: "Instant Scale",
         desc: "Super Ranks, Mass Upgrades starts at 25. In addtional, Super Tickspeed start at 50.",
         reward: `Super Ranks starts later, Super Tickspeed scaling weaker by completions.`,
-        max: 100,
+        max: E(100),
         inc: E(5),
         pow: E(1.3),
         start: E(1.5e58),
@@ -133,7 +140,7 @@ const CHALS = {
         title: "Anti-Tickspeed",
         desc: "You cannot buy Tickspeed.",
         reward: `For every completions adds +7.5% to Tickspeed Power.`,
-        max: 100,
+        max: E(100),
         inc: E(10),
         pow: E(1.3),
         start: E(1.989e40),
@@ -148,7 +155,7 @@ const CHALS = {
         title: "Melted Mass",
         desc: "Mass gain softcap is divided by 1e150, and is stronger.",
         reward: `Mass gain are raised by completions, but cannot append while in this challenge!`,
-        max: 100,
+        max: E(100),
         inc: E(25),
         pow: E(1.25),
         start: E(2.9835e49),
@@ -163,7 +170,7 @@ const CHALS = {
         title: "Weakened Rage",
         desc: "Rage Points gain is rooted by 10. In addtional, mass gain softcap is divided by 1e100.",
         reward: `Rage Powers gain are raised by completions.`,
-        max: 100,
+        max: E(100),
         inc: E(30),
         pow: E(1.25),
         start: E(1.736881338559743e133),
@@ -178,7 +185,7 @@ const CHALS = {
         title: "No Rank",
         desc: "You cannot rank up.",
         reward: `Rank requirement are weaker by completions.`,
-        max: 50,
+        max: E(50),
         inc: E(50),
         pow: E(1.25),
         start: E(1.5e136),
@@ -193,7 +200,7 @@ const CHALS = {
         title: "No Tickspeed & Condenser",
         desc: "You cannot buy Tickspeed & BH Condenser.",
         reward: `For every completions adds +10% to Tickspeed & BH Condenser Power.`,
-        max: 50,
+        max: E(50),
         inc: E(64),
         pow: E(1.25),
         start: E(1.989e38),
@@ -203,7 +210,22 @@ const CHALS = {
         },
         effDesc(x) { return "+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
     },
-    cols: 6,
+    7: {
+        unl() { return player.chal.comps[6].gte(1) },
+        title: "No Rage Powers",
+        desc: "You cannot gain Rage Powers, but Dark Matters are gained by mass instead of Rage Powers at a reduced rate.<br>In addtional, mass gain softcap is stronger.",
+        reward: `Completions adds 2 maximum completions of 1-4 Challenge. On first completion, unlock Elements (Coming Soon)`,
+        max: E(50),
+        inc: E(64),
+        pow: E(1.25),
+        start: E(1.5e76),
+        effect(x) {
+            let ret = x.mul(2)
+            return ret
+        },
+        effDesc(x) { return "+"+format(x,0) },
+    },
+    cols: 7,
 }
 
 /*
@@ -212,11 +234,10 @@ const CHALS = {
     title: "Placeholder",
     desc: "Placeholder.",
     reward: `Placeholder.`,
-    max: 100,
-    goal(x) { return E(1/0) },
-    bulk(x) {
-        return E(0)
-    },
+    max: E(50),
+    inc: E(10),
+    pow: E(1.25),
+    start: E(1/0),
     effect(x) {
         let ret = E(1)
         return ret

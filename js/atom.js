@@ -11,6 +11,7 @@ const ATOM = {
         if (x.lt(1)) return E(0)
         x = x.max(1).log10().pow(1.1).add(1)
         if (player.mainUpg.bh.includes(13)) x = x.mul(10)
+        if (player.mainUpg.atom.includes(8)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][8].effect:E(1))
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },
