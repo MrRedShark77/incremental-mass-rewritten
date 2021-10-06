@@ -61,7 +61,8 @@ const RANKS = {
             45: "ranks boosts Rage Powers gain.",
             90: "rank 40 reward are stronger.",
             180: "mass gain is raised by 1.025.",
-            220: "rank 40 reward are overpowered."
+            220: "rank 40 reward are overpowered.",
+            300: "rank multiplies quark gain.",
         },
         tier: {
             1: "reduce rank reqirements by 20%.",
@@ -75,6 +76,7 @@ const RANKS = {
         tetr: {
             1: "reduce tier reqirements by 25%, make Hyper Rank scaling is 15% weaker.",
             2: "mass upgrade 3 boosts itself.",
+            3: "raise tickspeed effect by 1.05.",
         },
     },
     effect: {
@@ -99,6 +101,10 @@ const RANKS = {
             },
             45() {
                 let ret = player.ranks.rank.add(1).pow(1.5)
+                return ret
+            },
+            300() {
+                let ret = player.ranks.rank.add(1)
                 return ret
             },
         },
@@ -133,6 +139,7 @@ const RANKS = {
             6(x) { return format(x)+"x" },
             40(x) {  return "+"+format(x.mul(100))+"%" },
             45(x) { return format(x)+"x" },
+            300(x) { return format(x)+"x" },
         },
         tier: {
             4(x) { return "+"+format(x.mul(100))+"%" },
@@ -153,6 +160,7 @@ const RANKS = {
         tier() {
             let f = E(1)
             if (player.ranks.tetr.gte(1)) f = f.mul(1/0.75)
+            if (player.mainUpg.atom.includes(10)) f = f.mul(2)
             return f
         },
     },

@@ -108,6 +108,9 @@ function getScalingStart(type, name) {
 		if (name=="tickspeed") {
 			if (player.mainUpg.rp.includes(14)) start = start.add(50)
 		}
+		if (name=="rank") {
+			if (player.mainUpg.atom.includes(10)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[3][10].effect:0:0)
+		}
 	}
 	return start.floor()
 }

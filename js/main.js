@@ -63,6 +63,7 @@ const FORMS = {
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
             if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
             let eff = step.pow(player.tickspeed.add(bouns))
+            if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
             return {step: step, eff: eff, bouns: bouns}
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
@@ -329,7 +330,7 @@ const UPGS = {
                 let step = E(1).add(RANKS.effect.tetr[2]())
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
-                let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,0.5,0)
+                let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,player.mainUpg.atom.includes(9)?0.575:0.5,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
@@ -620,6 +621,7 @@ const UPGS = {
                     return format(x)+"x"
                 },
             },
+
         },
         3: {
             title: "Atom Upgrades",
@@ -632,7 +634,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            lens: 8,
+            lens: 10,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -691,6 +693,21 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
+                },
+            },
+            9: {
+                desc: "Stronger effect softcap is 15% weaker.",
+                cost: E(2e44),
+            },
+            10: {
+                desc: "Tier requirement is halved. Hyper Rank starts later based on Tiers you have.",
+                cost: E(5e47),
+                effect() {
+                    let ret = player.ranks.tier.mul(2).floor()
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return "+"+format(x,0)+" later"
                 },
             },
         },
