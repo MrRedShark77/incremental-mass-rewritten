@@ -242,7 +242,7 @@ const CHALS = {
         unl() { return player.chal.comps[7].gte(1) },
         title: "White Hole",
         desc: "Dark Matter & Mass from Black Hole gains are rooted by 8.",
-        reward: `Dark Matter & Mass from Black Hole gains are raised by completions.`,
+        reward: `Dark Matter & Mass from Black Hole gains are raised by completions. On first completion, unlock 6 more Elements`,
         max: E(50),
         inc: E(80),
         pow: E(1.3),
