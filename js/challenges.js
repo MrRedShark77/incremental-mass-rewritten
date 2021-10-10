@@ -92,7 +92,6 @@ const CHALS = {
     getMax(i) {
         let x = this[i].max
         if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
-        if (i == 1 && player.atom.elements.includes(5)) x = x.add(50)
         return x.floor()
     },
     getPower() {
@@ -105,7 +104,6 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
         let pow = chal.pow
-        if (player.atom.elements.includes(5) && x==1) pow = pow.mul(1.015)
         if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
         let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
@@ -233,7 +231,7 @@ const CHALS = {
         start: E(1.5e76),
         effect(x) {
             let ret = x.mul(2)
-            if (player.atom.elements.includes(10)) ret = ret.mul(1.5)
+            if (player.atom.elements.includes(5)) ret = ret.mul(1.5)
             return ret.floor()
         },
         effDesc(x) { return "+"+format(x,0) },

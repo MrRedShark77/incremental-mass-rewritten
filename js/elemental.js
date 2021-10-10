@@ -78,7 +78,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x stronger" },
         },
         {
-            desc: `You can get 50 more c1 completions, but the scaling is increased.`,
+            desc: `The 7th challenge’s effect is 50% more effective.`,
             cost: E(1e18),
         },
         {
@@ -110,7 +110,7 @@ const ELEMENTS = {
             cost: E(6.5e21),
         },
         {
-            desc: `3rd & 4th challenges’ scaling is weakened. The 7th challenge’s effect is 50% more effective.`,
+            desc: `3rd & 4th challenges’ scaling is weakened.`,
             cost: E(1e24),
         },
     ],
