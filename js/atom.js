@@ -7,9 +7,9 @@ const ATOM = {
         return x.floor()
     },
     quarkGain() {
-        let x = tmp.atom.gain
-        if (x.lt(1)) return E(0)
-        x = x.max(1).log10().pow(1.1).add(1)
+        if (tmp.atom.gain.lt(1)) return E(0)
+        x = tmp.atom.gain.max(1).log10().pow(1.1).add(1)
+        if (player.atom.elements.includes(1)) x = E(1.25).pow(tmp.atom.gain.max(1).log10())
         if (player.mainUpg.bh.includes(13)) x = x.mul(10)
         if (player.mainUpg.atom.includes(8)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
@@ -37,6 +37,7 @@ const ATOM = {
     atomic: {
         gain() {
             let x = tmp.atom.gamma_ray_eff?tmp.atom.gamma_ray_eff.eff:E(0)
+            if (player.atom.elements.includes(3)) x = x.mul(tmp.elements.effect[3])
             return x
         },
         effect() {
@@ -47,14 +48,14 @@ const ATOM = {
     gamma_ray: {
         buy() {
             if (tmp.atom.gamma_ray_can) {
-                player.atom.points = player.atom.points.sub(tmp.atom.gamma_ray_cost)
+                player.atom.points = player.atom.points.sub(tmp.atom.gamma_ray_cost).max(0)
                 player.atom.gamma_ray = player.atom.gamma_ray.add(1)
             }
         },
         buyMax() {
             if (tmp.atom.gamma_ray_can) {
                 player.atom.gamma_ray = tmp.atom.gamma_ray_bulk
-                player.atom.points = player.atom.points.sub(tmp.atom.gamma_ray_cost)
+                player.atom.points = player.atom.points.sub(tmp.atom.gamma_ray_cost).max(0)
             }
         },
         effect() {
@@ -108,15 +109,15 @@ const ATOM = {
         ],
         desc: [
             x=>{ return `
-                Multiples Mass gain by ${format(x.eff1)}<br><br>
+                Multiplies Mass gain by ${format(x.eff1)}<br><br>
                 Adds Tickspeed Power by ${format(x.eff2.mul(100))}%
             ` },
             x=>{ return `
-                Multiples Rage Power gain by ${format(x.eff1)}<br><br>
+                Multiplies Rage Power gain by ${format(x.eff1)}<br><br>
                 Makes Mass gain boosted by Rage Powers - ${format(x.eff2)}x<br><br>
             ` },
             x=>{ return `
-                Multiples Dark Matter gain by ${format(x.eff1)}<br><br>
+                Multiplies Dark Matter gain by ${format(x.eff1)}<br><br>
                 Adds BH Condenser Power by ${format(x.eff2)}
             ` },
         ],

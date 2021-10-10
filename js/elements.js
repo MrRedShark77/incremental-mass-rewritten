@@ -97,6 +97,7 @@ function setupHTML() {
 
 	setupChalHTML()
 	setupAtomHTML()
+	setupElementsHTML()
 
 	let confirm_table = new Element("confirm_table")
 	table = ""
@@ -254,7 +255,7 @@ function updateBlackHoleHTML() {
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 	tmp.el.bhEffect.setTxt(format(tmp.bh.effect))
 
-	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0))
+	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0)+(tmp.bh.condenser_bouns.gte(1)?" + "+format(tmp.bh.condenser_bouns,0):""))
 	tmp.el.bhCondenser_btn.setClasses({btn: true, locked: !FORMS.bh.condenser.can()})
 	tmp.el.bhCondenser_scale.setTxt(getScalingName('bh_condenser'))
 	tmp.el.bhCondenser_cost.setTxt(format(tmp.bh.condenser_cost,0))
@@ -302,7 +303,8 @@ function updateHTML() {
 		updateChalHTML()
 	}
 	if (player.tab[0] == 4) {
-		updateAtomHTML()
+		if (player.tab[1] == 0) updateAtomHTML()
+		if (player.tab[1] == 1) updateElementsHTML()
 	}
 	if (player.tab[0] == 5) {
 		updateOptionsHTML()

@@ -117,6 +117,7 @@ button {
 	background-color: #444
 }
 
+.elements:not(.locked):not(.bought):hover,
 .btn:not(.locked):hover,
 .img_btn:not(.locked):not(.bought):hover {
 	background-color: #555
@@ -125,6 +126,18 @@ button {
 .btn_tab.normal.choosed {
 	background-color: white;
 	color: black;
+}
+
+.elements {
+	font-size: 18px;
+	width: 50px;
+	height: 50px;
+	background-color: #444;
+}
+
+.elements.locked {
+	background-color: #171717;
+	cursor: default;
 }
 
 .btn {
@@ -142,6 +155,7 @@ button {
 	cursor: default;
 }
 
+.elements.bought,
 .img_btn.bought {
 	background-color: #00520b;
 	cursor: default;

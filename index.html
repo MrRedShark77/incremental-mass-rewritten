@@ -11,6 +11,7 @@
     <script src="js/elements.js"></script>
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
+    <script src="js/elemental.js"></script>
     <script src="js/atom.js"></script>
     <script src="js/tabs.js"></script>
     <script src="js/scaling.js"></script>
@@ -69,7 +70,7 @@
                     <div style="width: 400px">
                         <div class="resources">
                             <img src="images/tickspeed.png">
-                            <span style="margin-left: 5px; text-align: left;"><span id="tickspeed_scale"></span>Tickspeed [<span id="tickspeed_lvl">X</span>]</span>
+                            <span style="margin-left: 5px; text-align: left;"><span id="tickspeed_scale"></span>Tickspeeds [<span id="tickspeed_lvl">X</span>]</span>
                         </div>
                     </div><button id="tickspeed_btn" class="btn" style="width: 200px;" onclick="FORMS.tickspeed.buy()">Cost: <span id="tickspeed_cost">X</span> Rage Points</button>
                     <button class="btn" style="width: 120px;" onclick="FORMS.tickspeed.buyMax()">Buy Max</button>
@@ -83,13 +84,13 @@
                 </div>
             </div><div id="stab_frame0_1">
                 You have <span id="bhMass2">X</span> of Black Hole<br>
-                <span class="green">Which multiples mass gain by <span id="bhEffect">X</span></span><br><br>
-                Mass of Black Hole gain formula - (x + 1)<sup>0.33</sup> * <span id="bhCondenserEffect">X</span><br><br>
+                <span class="green">Which multiplies mass gain by <span id="bhEffect">X</span></span><br><br>
+                Black Hole mass's gain formula - (x + 1)<sup>0.33</sup> * <span id="bhCondenserEffect">X</span><br><br>
                 <div style="width: 100%; margin-bottom: 5px;" class="table_center">
                     <div style="width: 400px">
                         <div class="resources">
                             <img src="images/bhCondenser.png">
-                            <span style="margin-left: 5px; text-align: left;"><span id="bhCondenser_scale"></span>Black Hole Condenser [<span id="bhCondenser_lvl">X</span>]</span>
+                            <span style="margin-left: 5px; text-align: left;"><span id="bhCondenser_scale"></span>Black Hole Condensers [<span id="bhCondenser_lvl">X</span>]</span>
                         </div>
                     </div><button id="bhCondenser_btn" class="btn" style="width: 200px;" onclick="FORMS.bh.condenser.buy()">Cost: <span id="bhCondenser_cost">X</span> Dark Matters</button>
                     <button class="btn" style="width: 120px;" onclick="FORMS.bh.condenser.buyMax()">Buy Max</button>
@@ -98,16 +99,16 @@
                         BH Condenser Power: <span id="bhCondenser_pow">X</span>x<br>
                     </div>
                 </div><br><div>
-                    <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> of mass gain from Black Hole will softcap mass gain!</span>
+                    <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> uni worth of mass gain from Black Hole, mass gain will be softcapped!</span>
                 </div>
             </div><div id="stab_frame0_2">
-                You have <span id="atomicAmt">X</span> Atomic Powers<br>
+                You have <span id="atomicAmt">X</span> Atomic Power<br>
                 <span class="green">Which provides <span id="atomicEff">X</span> free Tickspeeds</span><br><br>
                 <div style="width: 100%; margin-bottom: 5px;" class="table_center">
                     <div style="width: 400px">
                         <div class="resources">
                             <img src="images/gamma_ray.png">
-                            <span style="margin-left: 5px; text-align: left;"><span id="gamma_ray_scale"></span>Gamma Ray [<span id="gamma_ray_lvl">X</span>]</span>
+                            <span style="margin-left: 5px; text-align: left;"><span id="gamma_ray_scale"></span>Gamma Rays [<span id="gamma_ray_lvl">X</span>]</span>
                         </div>
                     </div><button id="gamma_ray_btn" class="btn" style="width: 200px;" onclick="ATOM.gamma_ray.buy()">Cost: <span id="gamma_ray_cost">X</span> Atoms</button>
                     <button class="btn" style="width: 120px;" onclick="ATOM.gamma_ray.buyMax()">Buy Max</button>
@@ -154,10 +155,16 @@
                 Ratio Mode: <span id="atom_ratio">X</span><br>
                 <button class="btn" onclick="player.atom.ratio = 0">+1</button><button class="btn"onclick="player.atom.ratio = 1">25%</button><button class="btn"onclick="player.atom.ratio = 2">100%</button><br><br>
                 <div id="particles_table" class="table_center" style="justify-content: space-evenly;"></div>
+            </div><div id="stab_frame4_1">
+                <div id="elem_ch_div" style="min-height: 70px;">
+                    <span id="elem_desc" class='sky'>X</span><br>
+                    Cost: <span id="elem_cost">X</span> Quark<br>
+                    <span id="elem_eff" class='green'>X</span>
+                </div><br><div id="elements_table"></div>
             </div>
         </div><div id="tab_frame5">
             <button class="btn" onclick="save()">Save</button>
-            <button class="btn" onclick="if (confirm('You wanted to RESET your progress to new game?')) {wipe(); save(); location.reload()}">Hard Reset</button>
+            <button class="btn" onclick="if (confirm('Are you sure you want to RESET your progress to new game?')) {wipe(); save(); location.reload()}">Hard Reset</button>
             <button class="btn" onclick="exporty()">Export</button>
             <button class="btn" onclick="importy()">Import</button>
             <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button>
@@ -173,8 +180,8 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.3 Atom - Test Server 11 - made by MrRedShark77<br>
-            The game inspired by Distance Incremental & Synergism<br><br><br>
+            Incremental Mass Rewritten v0.3.1 - made by MrRedShark77<br>
+            The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...
         </div>
     </div>

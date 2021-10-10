@@ -23,6 +23,7 @@ const TABS = {
         ],
         4: [
             { id: "Particles" },
+            { id: "Elements", unl() { return player.chal.comps[7].gte(16) } },
         ],
     },
 }

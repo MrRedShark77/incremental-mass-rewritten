@@ -43,13 +43,13 @@ const FORMS = {
         can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) },
         buy() {
             if (this.can()) {
-                if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
+                if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost).max(0)
                 player.tickspeed = player.tickspeed.add(1)
             }
         },
         buyMax() { 
             if (this.can()) {
-                if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost)
+                if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost).max(0)
                 player.tickspeed = tmp.tickspeedBulk
             }
         },
@@ -104,12 +104,16 @@ const FORMS = {
             gain = gain.root(4)
             if (CHALS.inChal(7)) gain = gain.root(6)
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
+            if (CHALS.inChal(8)) gain = gain.root(8)
+            gain = gain.pow(tmp.chal.eff[8])
             return gain.floor()
         },
         massGain() {
             let x = player.bh.mass.add(1).pow(0.33).mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
+            if (CHALS.inChal(8)) x = x.root(8)
+            x = x.pow(tmp.chal.eff[8])
             return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
         },
         massSoftGain() {
@@ -147,14 +151,14 @@ const FORMS = {
             can() { return player.bh.dm.gte(tmp.bh.condenser_cost) && !CHALS.inChal(6) },
             buy() {
                 if (this.can()) {
-                    player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost)
+                    player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost).max(0)
                     player.bh.condenser = player.bh.condenser.add(1)
                 }
             },
             buyMax() {
                 if (this.can()) {
                     player.bh.condenser = tmp.bh.condenser_bulk
-                    player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost)
+                    player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost).max(0)
                 }
             },
             effect() {
@@ -162,8 +166,13 @@ const FORMS = {
                 pow = pow.add(tmp.chal.eff[6])
                 if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                 pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
-                let eff = pow.pow(player.bh.condenser)
+                let eff = pow.pow(player.bh.condenser.add(tmp.bh.condenser_bouns))
                 return {pow: pow, eff: eff}
+            },
+            bouns() {
+                let x = E(0)
+                if (player.mainUpg.bh.includes(15)) x = x.add(tmp.upgs.main?tmp.upgs.main[2][15].effect:E(0))
+                return x
             },
         },
     },
@@ -330,7 +339,11 @@ const UPGS = {
                 let step = E(1).add(RANKS.effect.tetr[2]())
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
-                let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,player.mainUpg.atom.includes(9)?0.575:0.5,0)
+                if (player.atom.elements.includes(4)) step = step.mul(tmp.elements.effect[4])
+                let sp = 0.5
+                if (player.mainUpg.atom.includes(9)) sp *= 1.15
+                if (player.ranks.tier.gte(30)) sp *= 1.1
+                let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,sp,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
@@ -360,7 +373,7 @@ const UPGS = {
         reset() { player.main_upg_msg = [0,0] },
         1: {
             title: "Rage Upgrades",
-            res: "Rage Powers",
+            res: "Rage Power",
             unl() { return player.rp.unl },
             can(x) { return player.rp.points.gte(this[x].cost) && !player.mainUpg.rp.includes(x) },
             buy(x) {
@@ -372,25 +385,25 @@ const UPGS = {
             auto_unl() { return player.mainUpg.bh.includes(5) },
             lens: 15,
             1: {
-                desc: "Booster adds Musclar.",
+                desc: "Boosters adds Musclers.",
                 cost: E(1),
                 effect() {
                     let ret = E(player.massUpg[2]||0)
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return "+"+format(x,0)+" Musclar"
+                    return "+"+format(x,0)+" Musclers"
                 },
             },
             2: {
-                desc: "Stronger adds Booster.",
+                desc: "Strongers adds Boosters.",
                 cost: E(10),
                 effect() {
                     let ret = E(player.massUpg[3]||0)
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return "+"+format(x,0)+" Booster"
+                    return "+"+format(x,0)+" Boosters"
                 },
             },
             3: {
@@ -443,7 +456,7 @@ const UPGS = {
             },
             11: {
                 unl() { return player.chal.unl },
-                desc: "Mass gain of Black Hole is boosted by Rage Points.",
+                desc: "Black Hole mass's gain is boosted by Rage Points.",
                 cost: E(1e72),
                 effect() {
                     let ret = player.rp.points.add(1).root(10)
@@ -455,7 +468,7 @@ const UPGS = {
             },
             12: {
                 unl() { return player.chal.unl },
-                desc: "For every OoMs of Rage Powers adds Stronger Power at a reduced rate.",
+                desc: "For every OoM of Rage Powers adds Stronger Power at a reduced rate.",
                 cost: E(1e120),
                 effect() {
                     let ret = player.rp.points.max(1).log10().softcap(200,0.75,0).div(1000)
@@ -467,7 +480,7 @@ const UPGS = {
             },
             13: {
                 unl() { return player.chal.unl },
-                desc: "Mass gain softcap starts 3x later for every Ranks you have.",
+                desc: "Mass gain softcap starts 3x later for every Rank you have.",
                 cost: E(1e180),
                 effect() {
                     let ret = E(3).pow(player.ranks.rank)
@@ -484,7 +497,7 @@ const UPGS = {
             },
             15: {
                 unl() { return player.atom.unl },
-                desc: "Mass boost Atoms gain.",
+                desc: "Mass boost Atom gain.",
                 cost: E('e480'),
                 effect() {
                     let ret = player.mass.max(1).log10().pow(1.25)
@@ -497,7 +510,7 @@ const UPGS = {
         },
         2: {
             title: "Black Hole Upgrades",
-            res: "Dark Matters",
+            res: "Dark Matter",
             unl() { return player.bh.unl },
             auto_unl() { return player.mainUpg.atom.includes(2) },
             can(x) { return player.bh.dm.gte(this[x].cost) && !player.mainUpg.bh.includes(x) },
@@ -507,13 +520,13 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 14,
+            lens: 15,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
             },
             2: {
-                desc: "Tickspeed boost BH Condenser Power.",
+                desc: "Tickspeeds boosts BH Condenser Power.",
                 cost: E(10),
                 effect() {
                     let ret = player.tickspeed.add(1).root(8)
@@ -524,7 +537,7 @@ const UPGS = {
                 },
             },
             3: {
-                desc: "Super Mass Upgrades scaling starts later based on mass of Black Hole.",
+                desc: "Super Mass Upgrade scales later based on mass of Black Hole.",
                 cost: E(100),
                 effect() {
                     let ret = player.bh.mass.max(1).log10().pow(1.5).softcap(100,1/3,0).floor()
@@ -543,7 +556,7 @@ const UPGS = {
                 cost: E(5e5),
             },
             6: {
-                desc: "Gain 100% of Rage Powers gained from reset per second. Rage Powers are boosted by mass of Black Hole.",
+                desc: "Gain 100% of Rage Power gained from reset per second. Rage Powers are boosted by mass of Black Hole.",
                 cost: E(2e6),
                 effect() {
                     let ret = player.bh.mass.max(1).log10().add(1).pow(2)
@@ -555,7 +568,7 @@ const UPGS = {
             },
             7: {
                 unl() { return player.chal.unl },
-                desc: "Mass gain softcap starts later based on mass of Black Hole.",
+                desc: "Mass gain softcap start later based on mass of Black Hole.",
                 cost: E(1e13),
                 effect() {
                     let ret = player.bh.mass.add(1).root(3)
@@ -567,12 +580,12 @@ const UPGS = {
             },
             8: {
                 unl() { return player.chal.unl },
-                desc: "Raise Rage Powers gain by 1.15.",
+                desc: "Raise Rage Power gain by 1.15.",
                 cost: E(1e17),
             },
             9: {
                 unl() { return player.chal.unl },
-                desc: "Stronger Effect softcap starts later based on unspent Dark Matters.",
+                desc: "Stronger Effect's softcap start later based on unspent Dark Matters.",
                 cost: E(1e27),
                 effect() {
                     let ret = player.bh.dm.max(1).log10().pow(0.5)
@@ -584,7 +597,7 @@ const UPGS = {
             },
             10: {
                 unl() { return player.chal.unl },
-                desc: "Mass gain is boosted by OoMs of Dark Matters.",
+                desc: "Mass gain is boosted by OoM of Dark Matters.",
                 cost: E(1e33),
                 effect() {
                     let ret = E(2).pow(player.bh.dm.add(1).log10())
@@ -601,7 +614,7 @@ const UPGS = {
             },
             12: {
                 unl() { return player.atom.unl },
-                desc: "Hyper Mass Upgrades & Tickspeed scales 15% weaker.",
+                desc: "Hyper Mass Upgrade & Tickspeed scales 15% weaker.",
                 cost: E(1e120),
             },
             13: {
@@ -621,11 +634,22 @@ const UPGS = {
                     return format(x)+"x"
                 },
             },
-
+            15: {
+                unl() { return player.atom.unl },
+                desc: "Atomic Powers adds Black Hole Condensers at a reduced rate.",
+                cost: E('e420'),
+                effect() {
+                    let ret = player.atom.atomic.add(1).log(5)
+                    return ret.floor()
+                },
+                effDesc(x=this.effect()) {
+                    return "+"+format(x,0)
+                },
+            },
         },
         3: {
             title: "Atom Upgrades",
-            res: "Atoms",
+            res: "Atom",
             unl() { return player.atom.unl },
             can(x) { return player.atom.points.gte(this[x].cost) && !player.mainUpg.atom.includes(x) },
             buy(x) {

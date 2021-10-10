@@ -75,6 +75,7 @@ function updateBlackHoleTemp() {
     tmp.bh.dm_can = tmp.bh.dm_gain.gte(1)
     tmp.bh.effect = FORMS.bh.effect()
 
+    tmp.bh.condenser_bouns = FORMS.bh.condenser.bouns()
     tmp.bh.condenser_cost = E(1.75).pow(player.bh.condenser).floor()
     tmp.bh.condenser_bulk = player.bh.dm.max(1).log(1.75).add(1).floor()
     if (player.bh.dm.lt(1)) tmp.bh.condenser_bulk = E(0)
@@ -125,6 +126,7 @@ function updateBlackHoleTemp() {
 }
 
 function updateTemp() {
+    updateElementsTemp()
     updateUpgradesTemp()
     updateScalingTemp()
     updateChalTemp()
