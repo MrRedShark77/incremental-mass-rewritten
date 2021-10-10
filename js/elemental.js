@@ -102,7 +102,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `C2’s reward’s softcap is 66% weaker.`,
+            desc: `C2’s reward’s softcap is 75% weaker.`,
             cost: E(1e21),
         },
         {
