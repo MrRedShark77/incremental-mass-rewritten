@@ -78,7 +78,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x stronger" },
         },
         {
-            desc: `The 7th challenge’s effect is 50% more effective.`,
+            desc: `The 7th challenge’s effect is twice as effective.`,
             cost: E(1e18),
         },
         {

@@ -231,7 +231,7 @@ const CHALS = {
         start: E(1.5e76),
         effect(x) {
             let ret = x.mul(2)
-            if (player.atom.elements.includes(5)) ret = ret.mul(1.5)
+            if (player.atom.elements.includes(5)) ret = ret.mul(2)
             return ret.floor()
         },
         effDesc(x) { return "+"+format(x,0) },
