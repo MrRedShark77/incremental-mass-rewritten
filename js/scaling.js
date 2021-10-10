@@ -120,6 +120,10 @@ function getScalingPower(type, name) {
 	if (type=="super") {
 		if (name=="rank") {
 			if (player.mainUpg.rp.includes(10)) power = power.mul(0.8)
+			if (player.ranks.tetr.gte(4)) power = power.mul(RANKS.effect.tetr[4]())
+		}
+		if (name=="tier") {
+			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)

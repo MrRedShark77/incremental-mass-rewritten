@@ -77,9 +77,47 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x stronger" },
         },
+        {
+            desc: `You can get 50 more c1 completions, but the scaling is increased.`,
+            cost: E(1e18),
+        },
+        {
+            desc: `Gain 1% more quarks for each challenge completion.`,
+            cost: E(5e18),
+            effect() {
+                let x = E(1)
+                for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].div(100))
+                if (player.atom.elements.includes(7)) x = x.mul(tmp.elements.effect[7])
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Carbon’s effect is now multiplied by the number of elements bought.`,
+            cost: E(1e20),
+            effect() {
+                let x = E(player.atom.elements.length+1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `C2’s reward’s softcap is 66% weaker.`,
+            cost: E(1e21),
+        },
+        {
+            desc: `The Tetr requirement is 15% weaker.`,
+            cost: E(6.5e21),
+        },
+        {
+            desc: `3rd & 4th challenges’ scaling is weakened. The 7th challenge’s effect is 50% more effective.`,
+            cost: E(1e24),
+        },
     ],
     getUnlLength() {
-        return 4
+        let u = 4
+        if (player.chal.comps[8].gte(1)) u += 6
+        return u
     },
 }
 

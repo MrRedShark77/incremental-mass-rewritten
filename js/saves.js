@@ -115,8 +115,6 @@ function loadPlayer(load) {
     }
     convertStringToDecimal()
     player.tab = [0,0]
-    player.ranks_reward = 0
-    player.scaling_ch = 0
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0

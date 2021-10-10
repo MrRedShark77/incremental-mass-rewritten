@@ -13,6 +13,7 @@ const ATOM = {
         if (player.mainUpg.bh.includes(13)) x = x.mul(10)
         if (player.mainUpg.atom.includes(8)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
+        if (player.atom.elements.includes(6)) x = x.mul(tmp.elements.effect[6])
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },

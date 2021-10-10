@@ -63,6 +63,7 @@ const RANKS = {
             180: "mass gain is raised by 1.025.",
             220: "rank 40 reward is overpowered.",
             300: "rank multiplie quark gain.",
+            380: "rank multiplie mass gain.",
         },
         tier: {
             1: "reduce rank reqirements by 20%.",
@@ -78,6 +79,7 @@ const RANKS = {
             1: "reduce tier reqirements by 25%, make Hyper Rank scaling is 15% weaker.",
             2: "mass upgrade 3 boosts itself.",
             3: "raise tickspeed effect by 1.05.",
+            4: "Super Rank scale weaker based on Tier, Super Tier scale 20% weaker.",
         },
     },
     effect: {
@@ -108,6 +110,10 @@ const RANKS = {
                 let ret = player.ranks.rank.add(1)
                 return ret
             },
+            380() {
+                let ret = E(10).pow(player.ranks.rank.sub(379).pow(1.5).softcap(1000,0.5,0))
+                return ret
+            },
         },
         tier: {
             4() {
@@ -131,6 +137,10 @@ const RANKS = {
                 let ret = E(player.massUpg[3]||0).div(400)
                 return ret
             },
+            4() {
+                let ret = E(0.96).pow(player.ranks.tier.pow(1/3))
+                return ret
+            },
         },
     },
     effDesc: {
@@ -141,6 +151,7 @@ const RANKS = {
             40(x) {  return "+"+format(x.mul(100))+"%" },
             45(x) { return format(x)+"x" },
             300(x) { return format(x)+"x" },
+            380(x) { return format(x)+"x" },
         },
         tier: {
             4(x) { return "+"+format(x.mul(100))+"%" },
@@ -149,6 +160,7 @@ const RANKS = {
         },
         tetr: {
             2(x) { return "+"+format(x) },
+            4(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
         },
     },
     fp: {
@@ -255,6 +267,7 @@ function updateRanksTemp() {
 	}
 
     fp = E(1)
+    if (player.atom.elements.includes(9)) fp = fp.mul(1/0.85)
     tmp.ranks.tetr.req = player.ranks.tetr.div(fp).pow(2).mul(3).add(10).floor()
     tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(2).mul(fp).add(1).floor();
     if (scalingActive("tetr", player.ranks.tetr.max(tmp.ranks.tetr.bulk), "super")) {

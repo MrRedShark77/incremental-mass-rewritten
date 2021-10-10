@@ -18,6 +18,7 @@ const FORMS = {
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
         x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
+        if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
