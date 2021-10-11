@@ -38,6 +38,7 @@ const SCALING_RES = {
 const NAME_FROM_RES = {
 	rank: "Rank",
 	tier: "Tier",
+	tetr: "Tetr",
 	massUpg: "Mass Upgrades",
 	tickspeed: "Tickspeed",
 	bh_condenser: "Black Hole Condenser",
