@@ -15,10 +15,15 @@ const SCALE_START = {
 		bh_condenser: E(300),
 		gamma_ray: E(300),
 	},
+	ultra: {
+		rank: E(600),
+		tickspeed: E(700),
+		bh_condenser: E(750),
+	},
 }
 
-const SCALE_TYPE = ['super', 'hyper'] // super, hyper, ultra, meta
-const FULL_SCALE_NAME = ['Super', 'Hyper']
+const SCALE_TYPE = ['super', 'hyper', 'ultra'] // super, hyper, ultra, meta
+const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra']
 
 const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },

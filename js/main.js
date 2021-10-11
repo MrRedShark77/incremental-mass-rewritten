@@ -757,8 +757,8 @@ const UPGS = {
 function loop() {
     diff = Date.now()-date;
     updateTemp()
-    calc(diff/1000);
     updateHTML()
+    calc(diff/1000);
     date = Date.now();
 }
 

@@ -241,6 +241,44 @@ function updateRanksTemp() {
 			.add(1)
 			.floor();
 	}
+    if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "ultra")) {
+		let start = getScalingStart("super", "rank");
+		let power = getScalingPower("super", "rank");
+		let exp = E(1.5).pow(power);
+        let start2 = getScalingStart("hyper", "rank");
+		let power2 = getScalingPower("hyper", "rank");
+		let exp2 = E(2.5).pow(power2);
+        let start3 = getScalingStart("ultra", "rank");
+		let power3 = getScalingPower("ultra", "rank");
+		let exp3 = E(4).pow(power3);
+		tmp.ranks.rank.req =
+			E(10).pow(
+				player.ranks.rank
+                    .pow(exp3)
+                    .div(start3.pow(exp3.sub(1)))
+                    .pow(exp2)
+                    .div(start2.pow(exp2.sub(1)))
+					.pow(exp)
+					.div(start.pow(exp.sub(1)))
+                    .div(fp)
+					.pow(1.15)
+			).mul(10)
+		tmp.ranks.rank.bulk = player.mass
+            .div(10)
+			.max(1)
+			.log10()
+            
+			.root(1.15)
+            .mul(fp)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
+            .mul(start3.pow(exp3.sub(1)))
+			.root(exp3)
+			.add(1)
+			.floor();
+	}
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5)
 
     fp = RANKS.fp.tier()
