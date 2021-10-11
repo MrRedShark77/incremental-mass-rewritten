@@ -13,6 +13,7 @@ const SCALE_START = {
 		massUpg: E(500),
 		tickspeed: E(250),
 		bh_condenser: E(300),
+		gamma_ray: E(300),
 	},
 }
 
@@ -130,6 +131,12 @@ function getScalingPower(type, name) {
 		}
 		if (name=='tickspeed') {
 			power = power.mul(tmp.chal?tmp.chal.eff[1].tick:1)
+		}
+		if (name=='bh_condenser') {
+			if (player.atom.elements.includes(15)) power = power.mul(0.8)
+		}
+		if (name=='gamma_ray') {
+			if (player.atom.elements.includes(15)) power = power.mul(0.8)
 		}
 	}
 	if (type=="hyper") {

@@ -4,6 +4,7 @@ const ATOM = {
         if (x.lt(1)) return E(0)
         x = x.root(5)
         if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))
+        if (player.atom.elements.includes(17)) x = x.pow(1.1)
         return x.floor()
     },
     quarkGain() {
@@ -85,7 +86,12 @@ const ATOM = {
                 player.atom.particles[x] = player.atom.particles[x].add(add)
             }
         },
-        effect(x) { return player.atom.particles[x].pow(2) },
+        effect(i) {
+            let p = player.atom.particles[i]
+            let x = p.pow(2)
+            if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4))
+            return x
+        },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)
             if (player.mainUpg.atom.includes(7)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][7].effect:E(1))
@@ -134,6 +140,8 @@ function updateAtomTemp() {
     if (!tmp.atom.particles) tmp.atom.particles = {}
     tmp.atom.gain = ATOM.gain()
     tmp.atom.quarkGain = ATOM.quarkGain()
+    tmp.atom.quarkGainSec = 0.05
+    if (player.atom.elements.includes(16)) tmp.atom.quarkGainSec += tmp.elements.effect[16]
     tmp.atom.canReset = ATOM.canReset()
     tmp.atom.atomicGain = ATOM.atomic.gain()
     tmp.atom.atomicEff = ATOM.atomic.effect()
@@ -156,6 +164,31 @@ function updateAtomTemp() {
             .log(1.75)
 			.mul(start.pow(exp.sub(1)))
 			.root(exp)
+			.add(1)
+			.floor();
+	}
+    if (scalingActive("gamma_ray", player.atom.gamma_ray.max(tmp.atom.gamma_ray_bulk), "hyper")) {
+		let start = getScalingStart("super", "gamma_ray");
+		let power = getScalingPower("super", "gamma_ray");
+        let start2 = getScalingStart("hyper", "gamma_ray");
+		let power2 = getScalingPower("hyper", "gamma_ray");
+		let exp = E(2).pow(power);
+        let exp2 = E(4).pow(power2);
+		tmp.atom.gamma_ray_cost =
+			E(1.75).pow(
+                player.atom.gamma_ray
+                .pow(exp2)
+			    .div(start2.pow(exp2.sub(1)))
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+            ).floor()
+        tmp.atom.gamma_ray_bulk = player.atom.points
+            .max(1)
+            .log(1.75)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
 			.add(1)
 			.floor();
 	}
@@ -198,6 +231,8 @@ function updateAtomicHTML() {
 	tmp.el.gamma_ray_cost.setTxt(format(tmp.atom.gamma_ray_cost,0))
 	tmp.el.gamma_ray_pow.setTxt(format(tmp.atom.gamma_ray_eff.pow))
 	tmp.el.gamma_ray_eff.setHTML(format(tmp.atom.gamma_ray_eff.eff))
+    tmp.el.gamma_ray_auto.setDisplay(player.atom.elements.includes(18))
+	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
 }
 
 function updateAtomHTML() {

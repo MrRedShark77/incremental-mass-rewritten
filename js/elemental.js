@@ -72,7 +72,7 @@ const ELEMENTS = {
             desc: `Stronger’s power is stronger based on Proton Powers.`,
             cost: E(2.5e16),
             effect() {
-                let x = player.atom.powers[0].max(0).log10().pow(0.8).div(50).add(1)
+                let x = player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1)
                 return x
             },
             effDesc(x) { return format(x)+"x stronger" },
@@ -86,9 +86,9 @@ const ELEMENTS = {
             cost: E(5e18),
             effect() {
                 let x = E(1)
-                for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].div(100))
+                for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
                 if (player.atom.elements.includes(7)) x = x.mul(tmp.elements.effect[7])
-                return x
+                return x.div(100)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -97,6 +97,7 @@ const ELEMENTS = {
             cost: E(1e20),
             effect() {
                 let x = E(player.atom.elements.length+1)
+                if (player.atom.elements.includes(11)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -113,10 +114,57 @@ const ELEMENTS = {
             desc: `3rd & 4th challenges’ scaling is weakened.`,
             cost: E(1e24),
         },
+        {
+            desc: `Nitrogen’s multiplier is squared.`,
+            cost: E(1e27),
+        },
+        {
+            desc: `Power’s gain from each particle formula is better.`,
+            cost: E(1e29),
+        },
+        {
+            desc: `For every c7 completion, add 1 c5 & 6 completion.`,
+            cost: E(2.5e30),
+            effect() {
+                let x = player.chal.comps[7].mul(2)
+                return x
+            },
+            effDesc(x) { return "+"+format(x) },
+        },
+        {
+            desc: `Passively gain 5% of the quarks you would get from resetting each second.`,
+            cost: E(1e33),
+        },
+        {
+            desc: `Super BH Condenser & Gamma Ray scales 20% weaker.`,
+            cost: E(1e34),
+        },
+        {
+            desc: `E14 now gets +2% for each element bought.`,
+            cost: E(5e39),
+            effect() {
+                let x = player.atom.elements.length*0.02
+                return x
+            },
+            effDesc(x) { return "+"+format(x*100)+"%" },
+        },
+        {
+            desc: `Raise Atom’s gain by 1.1.`,
+            cost: E(1e40),
+        },
+        {
+            desc: `You can now automatically buy gamma rays. Gamma ray raise tickspeed effect at an extremely reduced rate.`,
+            cost: E(1e44),
+            effect() {
+                let x = player.atom.gamma_ray.pow(0.35).mul(0.01).add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
+        },
     ],
     getUnlLength() {
         let u = 4
-        if (player.chal.comps[8].gte(1)) u += 6
+        if (player.chal.comps[8].gte(1)) u += 14
         return u
     },
 }

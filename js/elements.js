@@ -156,7 +156,7 @@ function updateUpperHTML() {
 	}
 	unl = player.atom.unl
 	tmp.el.quark_div.setVisible(unl)
-	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>(+"+format(tmp.atom.quarkGain,0)+")")
+	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(player.atom.elements.includes(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
 }
 
 function updateRanksHTML() {

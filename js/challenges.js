@@ -92,6 +92,7 @@ const CHALS = {
     getMax(i) {
         let x = this[i].max
         if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
+        if (player.atom.elements.includes(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
         return x.floor()
     },
     getPower() {
@@ -240,7 +241,7 @@ const CHALS = {
         unl() { return player.chal.comps[7].gte(1) },
         title: "White Hole",
         desc: "Dark Matter & Mass from Black Hole gains are rooted by 8.",
-        reward: `Dark Matter & Mass from Black Hole gains are raised by completions. On first completion, unlock 6 more Elements`,
+        reward: `Dark Matter & Mass from Black Hole gains are raised by completions. On first completion, unlock 2 rows of Elements`,
         max: E(50),
         inc: E(80),
         pow: E(1.3),
