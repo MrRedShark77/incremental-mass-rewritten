@@ -140,7 +140,7 @@ const ELEMENTS = {
             cost: E(1e34),
         },
         {
-            desc: `E14 now gets +2% for each element bought.`,
+            desc: `Silicon now gets +2% for each element bought.`,
             cost: E(5e39),
             effect() {
                 let x = player.atom.elements.length*0.02
