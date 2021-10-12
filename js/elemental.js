@@ -123,7 +123,7 @@ const ELEMENTS = {
             cost: E(1e29),
         },
         {
-            desc: `For every c7 completion, add 1 c5 & 6 completion.`,
+            desc: `For every c7 completion, add 2 c5 & 6 completion.`,
             cost: E(2.5e30),
             effect() {
                 let x = player.chal.comps[7].mul(2)
@@ -141,7 +141,7 @@ const ELEMENTS = {
         },
         {
             desc: `Silicon now gets +2% for each element bought.`,
-            cost: E(5e39),
+            cost: E(5e38),
             effect() {
                 let x = player.atom.elements.length*0.02
                 return x
@@ -161,10 +161,23 @@ const ELEMENTS = {
             },
             effDesc(x) { return "^"+format(x) },
         },
+        {
+            desc: `2nd Neutron’s effect is better.`,
+            cost: E(1e50),
+        },
+        {
+            desc: `Adds 50 more C7 maximum completions.`,
+            cost: E(1e53),
+        },
+        {
+            desc: `Unlock ???.`,
+            cost: E(1e56),
+        },
     ],
     getUnlLength() {
         let u = 4
         if (player.chal.comps[8].gte(1)) u += 14
+        if (player.atom.elements.includes(18)) u += 3
         return u
     },
 }

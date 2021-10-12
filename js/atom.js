@@ -105,7 +105,9 @@ const ATOM = {
             },
             x=>{
                 let a = x.add(1).pow(2)
-                let b = player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
+                let b = player.atom.elements.includes(19)
+                ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
+                :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
                 return {eff1: a, eff2: b}
             },
             x=>{
@@ -141,7 +143,7 @@ function updateAtomTemp() {
     tmp.atom.gain = ATOM.gain()
     tmp.atom.quarkGain = ATOM.quarkGain()
     tmp.atom.quarkGainSec = 0.05
-    if (player.atom.elements.includes(16)) tmp.atom.quarkGainSec += tmp.elements.effect[16]
+    if (player.atom.elements.includes(16)) tmp.atom.quarkGainSec += tmp.elements.effect[16]||0
     tmp.atom.canReset = ATOM.canReset()
     tmp.atom.atomicGain = ATOM.atomic.gain()
     tmp.atom.atomicEff = ATOM.atomic.effect()
