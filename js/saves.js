@@ -14,6 +14,7 @@ function calc(dt) {
     if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
     if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
     if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
+    if (player.atom.elements.includes(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
         if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
@@ -25,6 +26,7 @@ function calc(dt) {
     }
     if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
     if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
+    if (player.atom.elements.includes(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
     if (player.atom.unl) {
         player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
@@ -78,6 +80,7 @@ function getPlayerData() {
             unl: false,
             points: E(0),
             atomic: E(0),
+            auto_gr: false,
             gamma_ray: E(0),
             quarks: E(0),
             particles: [E(0), E(0), E(0)],
@@ -115,8 +118,6 @@ function loadPlayer(load) {
     }
     convertStringToDecimal()
     player.tab = [0,0]
-    player.ranks_reward = 0
-    player.scaling_ch = 0
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0

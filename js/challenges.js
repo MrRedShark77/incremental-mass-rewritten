@@ -23,7 +23,7 @@ function updateChalHTML() {
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
     if (player.chal.choosed != 0) {
         let chal = CHALS[player.chal.choosed]
-        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${player.chal.comps[player.chal.choosed].gte(75)?" Hardened":""} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
+        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${player.chal.comps[player.chal.choosed].gte(75)?player.chal.comps[player.chal.choosed].gte(300)?" Insane":" Hardened":""} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
         tmp.el.chal_ch_desc.setHTML(chal.desc)
         tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
@@ -92,6 +92,8 @@ const CHALS = {
     getMax(i) {
         let x = this[i].max
         if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
+        if (player.atom.elements.includes(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
+        if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
         return x.floor()
     },
     getPower() {
@@ -103,23 +105,47 @@ const CHALS = {
         let res = !CHALS.inChal(0)?this.getResource(x):E(0)
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
-        let goal = chal.inc.pow(lvl.pow(chal.pow)).mul(chal.start)
-        let bulk = res.div(chal.start).max(1).log(chal.inc).root(chal.pow).add(1).floor()
+        let pow = chal.pow
+        if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
+        chal.pow = chal.pow.max(1)
+        let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
+        let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
         if (res.lt(chal.start)) bulk = E(0)
         if (lvl.max(bulk).gte(75)) {
             let start = E(75);
             let exp = E(3).pow(this.getPower());
             goal =
             chal.inc.pow(
-                    lvl.pow(exp).div(start.pow(exp.sub(1))).pow(chal.pow)
+                    lvl.pow(exp).div(start.pow(exp.sub(1))).pow(pow)
                 ).mul(chal.start)
             bulk = res
                 .div(chal.start)
                 .max(1)
                 .log(chal.inc)
-                .root(chal.pow)
+                .root(pow)
                 .times(start.pow(exp.sub(1)))
                 .root(exp)
+                .add(1)
+                .floor();
+        }
+        if (lvl.max(bulk).gte(300)) {
+            let start = E(75);
+            let exp = E(3).pow(this.getPower());
+            let start2 = E(300);
+            let exp2 = E(4.5)
+            goal =
+            chal.inc.pow(
+                    lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
+                ).mul(chal.start)
+            bulk = res
+                .div(chal.start)
+                .max(1)
+                .log(chal.inc)
+                .root(pow)
+                .times(start.pow(exp.sub(1)))
+                .root(exp)
+                .times(start2.pow(exp2.sub(1)))
+                .root(exp2)
                 .add(1)
                 .floor();
         }
@@ -150,7 +176,9 @@ const CHALS = {
         pow: E(1.3),
         start: E(1.989e40),
         effect(x) {
-            let ret = x.mul(0.075).add(1).softcap(1.3,0.5,0).sub(1)
+            let sp = E(0.5)
+            if (player.atom.elements.includes(8)) sp = sp.pow(0.25)
+            let ret = x.mul(0.075).add(1).softcap(1.3,sp,0).sub(1)
             return ret
         },
         effDesc(x) { return "+"+format(x.mul(100))+"%"+(x.gte(0.3)?" <span class='soft'>(softcapped)</span>":"") },
@@ -226,7 +254,8 @@ const CHALS = {
         start: E(1.5e76),
         effect(x) {
             let ret = x.mul(2)
-            return ret
+            if (player.atom.elements.includes(5)) ret = ret.mul(2)
+            return ret.floor()
         },
         effDesc(x) { return "+"+format(x,0) },
     },
@@ -234,7 +263,7 @@ const CHALS = {
         unl() { return player.chal.comps[7].gte(1) },
         title: "White Hole",
         desc: "Dark Matter & Mass from Black Hole gains are rooted by 8.",
-        reward: `Dark Matter & Mass from Black Hole gains are raised by completions.`,
+        reward: `Dark Matter & Mass from Black Hole gains are raised by completions. On first completion, unlock 3 rows of Elements`,
         max: E(50),
         inc: E(80),
         pow: E(1.3),
