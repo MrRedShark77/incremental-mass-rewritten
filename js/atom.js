@@ -40,10 +40,11 @@ const ATOM = {
         gain() {
             let x = tmp.atom.gamma_ray_eff?tmp.atom.gamma_ray_eff.eff:E(0)
             if (player.atom.elements.includes(3)) x = x.mul(tmp.elements.effect[3])
+            if (player.md.active) x = expMult(x,0.8)
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(1.75)
+            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75)
             return x.floor()
         },
     },
@@ -143,7 +144,7 @@ function updateAtomTemp() {
     tmp.atom.gain = ATOM.gain()
     tmp.atom.quarkGain = ATOM.quarkGain()
     tmp.atom.quarkGainSec = 0.05
-    if (player.atom.elements.includes(16)) tmp.atom.quarkGainSec += tmp.elements.effect[16]||0
+    if (player.atom.elements.includes(16)) tmp.atom.quarkGainSec += tmp.elements.effect[16]
     tmp.atom.canReset = ATOM.canReset()
     tmp.atom.atomicGain = ATOM.atomic.gain()
     tmp.atom.atomicEff = ATOM.atomic.effect()
@@ -238,14 +239,12 @@ function updateAtomicHTML() {
 }
 
 function updateAtomHTML() {
-    if (player.tab[1] == 0) {
-        tmp.el.atom_ratio.setTxt(RATIO_ID[player.atom.ratio])
-        tmp.el.unassignQuarkAmt.setTxt(format(player.atom.quarks,0))
-        for (let x = 0; x < ATOM.particles.names.length; x++) {
-            tmp.el["particle_"+x+"_amt"].setTxt(format(player.atom.particles[x],0))
-            tmp.el["particle_"+x+"_amtEff"].setTxt(format(tmp.atom.particles[x].powerGain))
-            tmp.el["particle_"+x+"_power"].setTxt(format(player.atom.powers[x])+" "+formatGain(player.atom.powers[x],tmp.atom.particles[x].powerGain))
-            tmp.el["particle_"+x+"_powerEff"].setHTML(ATOM.particles.desc[x](tmp.atom.particles[x].powerEffect))
-        }
+    tmp.el.atom_ratio.setTxt(RATIO_ID[player.atom.ratio])
+    tmp.el.unassignQuarkAmt.setTxt(format(player.atom.quarks,0))
+    for (let x = 0; x < ATOM.particles.names.length; x++) {
+        tmp.el["particle_"+x+"_amt"].setTxt(format(player.atom.particles[x],0))
+        tmp.el["particle_"+x+"_amtEff"].setTxt(format(tmp.atom.particles[x].powerGain))
+        tmp.el["particle_"+x+"_power"].setTxt(format(player.atom.powers[x])+" "+formatGain(player.atom.powers[x],tmp.atom.particles[x].powerGain))
+        tmp.el["particle_"+x+"_powerEff"].setHTML(ATOM.particles.desc[x](tmp.atom.particles[x].powerEffect))
     }
 }

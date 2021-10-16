@@ -27,7 +27,7 @@ function updateChalHTML() {
         tmp.el.chal_ch_desc.setHTML(chal.desc)
         tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
-        tmp.el.chal_ch_reward.setTxt("Reward: "+chal.reward)
+        tmp.el.chal_ch_reward.setHTML("Reward: "+chal.reward)
         tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
     }
 }
@@ -247,7 +247,7 @@ const CHALS = {
         unl() { return player.chal.comps[6].gte(1) },
         title: "No Rage Powers",
         desc: "You cannot gain Rage Powers, but Dark Matters are gained by mass instead of Rage Powers at a reduced rate.<br>In addtional, mass gain softcap is stronger.",
-        reward: `Completions adds 2 maximum completions of 1-4 Challenge. On 16th completion, unlock Elements`,
+        reward: `Completions adds 2 maximum completions of 1-4 Challenge.<br><span class="yellow">On 16th completion, unlock Elements</span>`,
         max: E(50),
         inc: E(64),
         pow: E(1.25),
@@ -263,7 +263,7 @@ const CHALS = {
         unl() { return player.chal.comps[7].gte(1) },
         title: "White Hole",
         desc: "Dark Matter & Mass from Black Hole gains are rooted by 8.",
-        reward: `Dark Matter & Mass from Black Hole gains are raised by completions. On first completion, unlock 3 rows of Elements`,
+        reward: `Dark Matter & Mass from Black Hole gains are raised by completions.<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,
         max: E(50),
         inc: E(80),
         pow: E(1.3),

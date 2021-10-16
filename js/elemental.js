@@ -31,17 +31,6 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    /*
-    {
-        desc: `Placeholder.`,
-        cost: E(1/0),
-        effect() {
-            let x = E(1)
-            return x
-        },
-        effDesc(x) { return format(x)+"x" },
-    },
-    */
     canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !player.atom.elements.includes(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
@@ -85,10 +74,10 @@ const ELEMENTS = {
             desc: `Gain 1% more quarks for each challenge completion.`,
             cost: E(5e18),
             effect() {
-                let x = E(1)
+                let x = E(0)
                 for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
                 if (player.atom.elements.includes(7)) x = x.mul(tmp.elements.effect[7])
-                return x.div(100)
+                return x.div(100).add(1).max(1)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -144,7 +133,7 @@ const ELEMENTS = {
             cost: E(5e38),
             effect() {
                 let x = player.atom.elements.length*0.02
-                return x
+                return Number(x)
             },
             effDesc(x) { return "+"+format(x*100)+"%" },
         },
@@ -170,14 +159,48 @@ const ELEMENTS = {
             cost: E(1e53),
         },
         {
-            desc: `Unlock ???.`,
+            desc: `Unlock Mass Dilation.`,
             cost: E(1e56),
         },
+        {
+            desc: `Dilated mass gain is affected by tickspeed at a reduced rate.`,
+            cost: E(1e61),
+            effect() {
+                let x = E(1.25).pow(player.tickspeed.pow(0.55))
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `The Atomic Power effect is better.`,
+            cost: E(1e65),
+        },
+        {
+            desc: `Passively gain 100% of the atoms you would get from resetting each second. Atomic Power boost Relativistic particles gain at a reduced rate.`,
+            cost: E(1e75),
+            effect() {
+                let x = player.atom.atomic.max(1).log10().add(1).pow(0.4)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        }
     ],
+    /*
+    {
+        desc: `Placeholder.`,
+        cost: E(1/0),
+        effect() {
+            let x = E(1)
+            return x
+        },
+        effDesc(x) { return format(x)+"x" },
+    },
+    */
     getUnlLength() {
         let u = 4
         if (player.chal.comps[8].gte(1)) u += 14
         if (player.atom.elements.includes(18)) u += 3
+        if (player.atom.elements.includes(21)) u += 15
         return u
     },
 }
@@ -229,8 +252,7 @@ function updateElementsTemp() {
     }
     if (!tmp.elements.effect) tmp.elements.effect = [null]
     for (let x = 1; x <= tmp.elements.upg_length; x++) if (ELEMENTS.upgs[x].effect) {
-        if (!tmp.elements.effect[x]) tmp.elements.effect.push(ELEMENTS.upgs[x].effect())
-        else tmp.elements.effect[x] = ELEMENTS.upgs[x].effect()
+        tmp.elements.effect[x] = ELEMENTS.upgs[x].effect()
     }
     tmp.elements.unl_length = ELEMENTS.getUnlLength()
 }

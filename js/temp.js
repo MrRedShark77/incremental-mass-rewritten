@@ -191,6 +191,7 @@ function updateBlackHoleTemp() {
 
 function updateTemp() {
     updateElementsTemp()
+    updateMDTemp()
     updateUpgradesTemp()
     updateScalingTemp()
     updateChalTemp()

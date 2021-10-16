@@ -1,21 +1,21 @@
 const TABS = {
     choose(x, stab=false) {
-        if (!stab && player.tab[0] != x) player.tab[1] = 0
-        player.tab[stab?1:0] = x
+        if (!stab) tmp.tab = x
+        else tmp.stab[tmp.tab] = x
     },
     1: [
         { id: "Main" },
         { id: "Stats" },
         { id: "Upgrades", unl() { return player.rp.unl } },
         { id: "Challenges", unl() { return player.chal.unl } },
-        { id: "Atom", unl() { return player.atom.unl } },
+        { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
         { id: "Options" },
     ],
     2: {
         0: [
             { id: "Mass" },
-            { id: "Black Hole", unl() { return player.bh.unl } },
-            { id: "Atomic Generator", unl() { return player.atom.unl } },
+            { id: "Black Hole", unl() { return player.bh.unl }, style: "bh" },
+            { id: "Atomic Generator", unl() { return player.atom.unl }, style: "atom" },
         ],
         1: [
             { id: "Ranks Rewards" },
@@ -24,6 +24,7 @@ const TABS = {
         4: [
             { id: "Particles" },
             { id: "Elements", unl() { return player.chal.comps[7].gte(16) } },
+            { id: "Mass Dilation", unl() { return player.atom.elements.includes(21) }, style: "dilation" },
         ],
     },
 }

@@ -27,12 +27,14 @@ function calc(dt) {
     if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
     if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
     if (player.atom.elements.includes(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
+    if (player.atom.elements.includes(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
     if (player.atom.unl) {
         player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
         for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(dt))
     }
     if (player.mass.gte(1.5e136)) player.chal.unl = true
+    player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
 }
 
 function getPlayerData() {
@@ -56,7 +58,6 @@ function getPlayerData() {
         mainUpg: {
             
         },
-        tab: [0,0],
         ranks_reward: 0,
         scaling_ch: 0,
         rp: {
@@ -89,6 +90,12 @@ function getPlayerData() {
             dRatio: [1,1,1],
             elements: [],
         },
+        md: {
+            active: false,
+            particles: E(0),
+            mass: E(0),
+            upgs: [],
+        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
@@ -103,6 +110,7 @@ function getPlayerData() {
     }
     for (let x = 1; x <= CHALS.cols; x++) s.chal.comps[x] = E(0)
     for (let x = 0; x < CONFIRMS.length; x++) s.confirms[CONFIRMS[x]] = true
+    for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) s.md.upgs[x] = E(0)
     return s
 }
 
@@ -117,7 +125,6 @@ function loadPlayer(load) {
         if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
     }
     convertStringToDecimal()
-    player.tab = [0,0]
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
@@ -141,9 +148,13 @@ function convertStringToDecimal() {
         player.atom.powers[x] = E(player.atom.powers[x])
     }
 
+    player.md.particles = E(player.md.particles)
+    player.md.mass = E(player.md.mass)
+
     for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
+    for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
 }
 
 function save(){
@@ -167,6 +178,15 @@ function exporty() {
     a.href = window.URL.createObjectURL(file)
     a.download = "Incremental Mass Rewritten Save - "+new Date().toGMTString()+".txt"
     a.click()
+}
+
+function export_copy() {
+    let copyText = document.getElementById('copy')
+    copyText.value = btoa(JSON.stringify(player))
+    copyText.style.visibility = "visible"
+    copyText.select();
+    document.execCommand("copy");
+    copyText.style.visibility = "hidden"
 }
 
 function importy() {

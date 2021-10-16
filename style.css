@@ -3,6 +3,11 @@
 }
 
 @font-face {
+	font-family: 'Roboto Mono';
+	src: url('fonts/RobotoMono-VariableFont_wght.ttf');
+}
+
+@font-face {
 	font-family: 'Monospace-Typewritter';
 	src: url('fonts/MonospaceTypewriter.ttf');
 }
@@ -72,7 +77,7 @@ button {
 }
 
 .green {
-	color: green;
+	color: #00bb00;
 }
 
 .sky {
@@ -113,12 +118,54 @@ button {
 	width: 120px;
 }
 
+.btn_tab.bh {
+	color: gold;
+	border-color: gold;
+}
+
+.btn_tab.bh:not(.choosed):hover {
+	background-color: #493e00;
+}
+
+.btn_tab.bh.choosed {
+	color: black;
+	background-color: gold;
+}
+
+.btn_tab.atom {
+	color: #3157be;
+	border-color: #3157be;
+}
+
+.btn_tab.atom:not(.choosed):hover {
+	background-color: #172857;
+}
+
+.btn_tab.atom.choosed {
+	color: black;
+	background-color: #3157be;
+}
+
+.btn_tab.dilation {
+	color: #25ff30;
+	border-color: #25ff30;
+}
+
+.btn_tab.dilation:not(.choosed):hover {
+	background-color: #0a470d;
+}
+
+.btn_tab.dilation.choosed {
+	color: black;
+	background-color: #25ff30;
+}
+
 .btn_tab:not(.choosed):hover {
 	background-color: #444
 }
 
 .elements:not(.locked):not(.bought):hover,
-.btn:not(.locked):hover,
+.btn:not(.locked):not(.md):hover,
 .img_btn:not(.locked):not(.bought):hover {
 	background-color: #555
 }
@@ -147,6 +194,11 @@ button {
 	max-width: 250px;
 	padding: 7px 25px;
 	text-decoration: none;
+}
+
+.btn.full {
+	width: 250px;
+	height: 120px;
 }
 
 .btn.locked,
@@ -192,6 +244,22 @@ h2 {
     display: flex;
     justify-content: center;
     flex-flow: row wrap;
+}
+
+.md {
+	border-color: darkgreen;
+	background-color: #171717;
+}
+
+.md.locked {
+	border-color: #303030;
+	cursor: default;
+}
+
+.md:not(.locked):hover {
+	border-color: #00ce00;
+	background-color: #003a00;
+	box-shadow: 0 0 10px #00ce00;
 }
 
 [tooltip] {

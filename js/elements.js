@@ -98,6 +98,7 @@ function setupHTML() {
 	setupChalHTML()
 	setupAtomHTML()
 	setupElementsHTML()
+	setupMDHTML()
 
 	let confirm_table = new Element("confirm_table")
 	table = ""
@@ -118,16 +119,16 @@ function updateTabsHTML() {
 	for (let x = 0; x < TABS[1].length; x++) {
 		let tab = TABS[1][x]
 		tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
-		tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == player.tab[0]})
+		tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.tab})
 
-		if (tmp.el["tab_frame"+x]) tmp.el["tab_frame"+x].setDisplay(x == player.tab[0])
+		if (tmp.el["tab_frame"+x]) tmp.el["tab_frame"+x].setDisplay(x == tmp.tab)
 		if (TABS[2][x]) {
-			tmp.el["stabs"+x].setDisplay(x == player.tab[0])
-			if (x == player.tab[0]) for (let y = 0; y < TABS[2][x].length; y++)  {
+			tmp.el["stabs"+x].setDisplay(x == tmp.tab)
+			if (x == tmp.tab) for (let y = 0; y < TABS[2][x].length; y++)  {
 				let stab = TABS[2][x][y]
 				tmp.el["stab"+x+"_"+y].setDisplay(stab.unl ? stab.unl() : true)
-				tmp.el["stab"+x+"_"+y].setClasses({btn_tab: true, [stab.style ? stab.style : "normal"]: true, choosed: y == player.tab[1]})
-				if (tmp.el["stab_frame"+x+"_"+y]) tmp.el["stab_frame"+x+"_"+y].setDisplay(y == player.tab[1])
+				tmp.el["stab"+x+"_"+y].setClasses({btn_tab: true, [stab.style ? stab.style : "normal"]: true, choosed: y == tmp.stab[x]})
+				if (tmp.el["stab_frame"+x+"_"+y]) tmp.el["stab_frame"+x+"_"+y].setDisplay(y == tmp.stab[x])
 			}
 		}
 	}
@@ -145,7 +146,7 @@ function updateUpperHTML() {
 	tmp.el.atom_div.setVisible(unl)
 	if (unl) {
 		tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
-		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>(+"+format(tmp.atom.gain,0)+")")
+		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+(player.atom.elements.includes(24)?formatGain(player.atom.points,tmp.atom.gain):"(+"+format(tmp.atom.gain,0)+")"))
 	}
 	unl = !CHALS.inChal(0)
 	tmp.el.chal_upper.setVisible(unl)
@@ -157,6 +158,9 @@ function updateUpperHTML() {
 	unl = player.atom.unl
 	tmp.el.quark_div.setVisible(unl)
 	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(player.atom.elements.includes(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
+	unl = player.atom.elements.includes(21)
+	tmp.el.md_div.setVisible(unl)
+	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>("+(player.md.active?"+"+format(tmp.md.rp_gain,0):"inactive")+")")
 }
 
 function updateRanksHTML() {
@@ -276,8 +280,8 @@ function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
 	updateUpperHTML()
     updateTabsHTML()
-	if (player.tab[0] == 0) {
-		if (player.tab[1] == 0) {
+	if (tmp.tab == 0) {
+		if (tmp.stab[0] == 0) {
 			updateRanksHTML()
 			updateMassUpgradesHTML()
 			updateTickspeedHTML()
@@ -285,28 +289,29 @@ function updateHTML() {
 			tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
 			tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
 		}
-		if (player.tab[1] == 1) {
+		if (tmp.stab[0] == 1) {
 			updateBlackHoleHTML()
 		}
-		if (player.tab[1] == 2) {
+		if (tmp.stab[0] == 2) {
 			updateAtomicHTML()
 		}
 	}
-	if (player.tab[0] == 1) {
-		if (player.tab[1] == 0) updateRanksRewardHTML()
-		if (player.tab[1] == 1) updateScalingHTML()
+	if (tmp.tab == 1) {
+		if (tmp.stab[1] == 0) updateRanksRewardHTML()
+		if (tmp.stab[1] == 1) updateScalingHTML()
 	}
-	if (player.tab[0] == 2) {
+	if (tmp.tab == 2) {
 		updateMainUpgradesHTML()
 	}
-	if (player.tab[0] == 3) {
+	if (tmp.tab == 3) {
 		updateChalHTML()
 	}
-	if (player.tab[0] == 4) {
-		if (player.tab[1] == 0) updateAtomHTML()
-		if (player.tab[1] == 1) updateElementsHTML()
+	if (tmp.tab == 4) {
+		if (tmp.stab[4] == 0) updateAtomHTML()
+		if (tmp.stab[4] == 1) updateElementsHTML()
+		if (tmp.stab[4] == 2) updateMDHTML()
 	}
-	if (player.tab[0] == 5) {
+	if (tmp.tab == 5) {
 		updateOptionsHTML()
 	}
 }
