@@ -156,5 +156,7 @@ function getScalingPower(type, name) {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 		}
 	}
+	if (type=="ultra") {
+	}
 	return power
 }

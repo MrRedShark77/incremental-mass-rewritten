@@ -101,6 +101,7 @@ function getPlayerData() {
         tickspeed: E(0),
         options: {
             font: 'Verdana',
+            notation: 'sc'
         },
         confirms: {},
     }

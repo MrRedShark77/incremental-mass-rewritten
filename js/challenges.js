@@ -99,6 +99,11 @@ const CHALS = {
     getPower() {
         let x = E(1)
         if (player.atom.elements.includes(2)) x = x.mul(0.75)
+        if (player.atom.elements.includes(26)) x = x.mul(tmp.elements.effect[26])
+        return x
+    },
+    getPower2() {
+        let x = E(1)
         return x
     },
     getChalData(x, r=E(-1)) {
@@ -132,7 +137,7 @@ const CHALS = {
             let start = E(75);
             let exp = E(3).pow(this.getPower());
             let start2 = E(300);
-            let exp2 = E(4.5)
+            let exp2 = E(4.5).pow(this.getPower2())
             goal =
             chal.inc.pow(
                     lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)

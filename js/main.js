@@ -7,6 +7,12 @@ var tmp = {
 }
 for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 
+const ST_NAMES = [
+    ["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
+    ["","Dc","Vg","Tg","Qag","Qtg","Sxg","Spg","Ocg","Nog"],
+    ["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
+    ["","Mi","Mc","Na","Pc"],
+]
 const CONFIRMS = ['rp', 'bh', 'atom']
 
 const FORMS = {
@@ -771,7 +777,7 @@ function loop() {
     date = Date.now();
 }
 
-function format(ex, acc=4) {
+function format(ex, acc=4, type=player.options.notation) {
     ex = E(ex)
     neg = ex.lt(0)?"-":""
     if (ex.mag == Infinity) return neg + 'Infinity'
@@ -779,11 +785,34 @@ function format(ex, acc=4) {
     if (ex.lt(0)) ex = ex.mul(-1)
     if (ex.eq(0)) return ex.toFixed(acc)
     let e = ex.log10().floor()
-    if (e.lt(4)) {
-        return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
-    } else {
-        let m = ex.div(E(10).pow(e))
-        return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
+    switch (type) {
+        case "sc":
+            if (e.lt(4)) {
+                return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+            } else {
+                let m = ex.div(E(10).pow(e))
+                return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
+            }
+        case "st":
+            if (e.lt(3)) {
+                return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+            } else {
+                if (e.gte(3e15+3)) return "e"+format(e, acc, "st")
+                let str = e.div(3).floor().sub(1).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ').split(" ")
+                let final = ""
+                let m = ex.div(E(10).pow(e.div(3).floor().mul(3)))
+                str.forEach((arr, i) => {
+                    let ret = ""
+                    arr.split('').forEach((v, j) => {
+                        if (i == str.length - 1) ret = (Number(arr) < 3 ? ["K", "M", "B"][v] : ST_NAMES[arr.length-j-1][v]) + ret 
+                        else if (Number(arr) > 1) ret = ST_NAMES[arr.length-j-1][v] + ret
+                    })
+                    final += (i > 0 && Number(arr) > 0 ? "-" : "") + ret + (i < str.length - 1 && Number(arr) > 0 ? ST_NAMES[3][str.length-i-1] : "")
+                });
+                return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(1).toNumber())+" "))+final
+            }
+        default:
+            return neg+FORMATS[type].format(ex)
     }
 }
 

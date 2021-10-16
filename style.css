@@ -3,6 +3,11 @@
 }
 
 @font-face {
+	font-family: 'Nova Mono';
+	src: url('fonts/NovaMono-Regular.ttf');
+}
+
+@font-face {
 	font-family: 'Roboto Mono';
 	src: url('fonts/RobotoMono-VariableFont_wght.ttf');
 }

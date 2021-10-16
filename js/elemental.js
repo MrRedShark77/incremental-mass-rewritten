@@ -183,7 +183,20 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
-        }
+        },
+        {
+            desc: `Adds 1 base of Mass Dilation upgrade 1 effect.`,
+            cost: E(1e80),
+        },
+        {
+            desc: `Hardened Challenge scaling weaker for each element bought.`,
+            cost: E(1e85),
+            effect() {
+                let x = E(0.99).pow(player.atom.elements.length)
+                return x
+            },
+            effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+        },
     ],
     /*
     {

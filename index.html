@@ -18,6 +18,9 @@
     <script src="js/scaling.js"></script>
     <script src="js/temp.js"></script>
     <script src="js/ranks.js"></script>
+
+    <script src="js/formats.js"></script>
+
     <script src="js/main.js"></script>
 
     <title>Incremental Mass Rewritten</title>
@@ -106,7 +109,7 @@
                         BH Condenser Power: <span id="bhCondenser_pow">X</span>x<br>
                     </div>
                 </div><br><div>
-                    <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> uni worth of mass gain from Black Hole, mass gain will be softcapped!</span>
+                    <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> worth of mass gain from Black Hole, mass gain will be softcapped!</span>
                 </div>
             </div><div id="stab_frame0_2">
                 You have <span id="atomicAmt">X</span> Atomic Power<br>
@@ -191,11 +194,19 @@
             <button class="btn" style="font-family: Comic Sans MS;" onclick="player.options.font = 'Comic Sans MS'">Comic Sans MS</button>
             <button class="btn" style="font-family: Courier;" onclick="player.options.font = 'Courier'">Courier</button>
             <button class="btn" style="font-family: Monospace-Typewritter;" onclick="player.options.font = 'Monospace-Typewritter'">Monospace Typewritter</button>
+            <button class="btn" style="font-family: 'Nova Mono';" onclick="player.options.font = 'Nova Mono'">Nova Mono</button>
             <button class="btn" style="font-family: 'Roboto Mono';" onclick="player.options.font = 'Roboto Mono'">Roboto Mono</button>
             <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="player.options.font = 'Verdana, Geneva, Tahoma, sans-serif'">Verdana</button>
             <br><br>
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
+            <br><br>
+            <h2>Notation Settings</h2><br>
+            <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
+            <button class="btn" onclick="player.options.notation = 'sc'">Scientific</button>
+            <button class="btn" onclick="player.options.notation = 'st'">Standard</button>
+            <button class="btn" onclick="player.options.notation = 'omega'">Omega</button>
+            <button class="btn" onclick="player.options.notation = 'omega_short'">Omega Short</button>
             <br><br>
             Incremental Mass Rewritten v0.3.2 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>

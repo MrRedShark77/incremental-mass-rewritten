@@ -39,7 +39,11 @@ const MASS_DILATION = {
                 desc: `Double dilated mass gain.`,
                 cost(x) { return E(10).pow(x).mul(10) },
                 bulk() { return player.md.mass.gte(10)?player.md.mass.div(10).max(1).log10().add(1).floor():E(0) },
-                effect(x) { return E(2).pow(x) },
+                effect(x) {
+                    let b = 2
+                    if (player.atom.elements.includes(25)) b++
+                    return E(b).pow(x)
+                },
                 effDesc(x) { return format(x,0)+"x" },
             },{
                 desc: `Make dilated mass effect stronger.`,
@@ -49,8 +53,8 @@ const MASS_DILATION = {
                 effDesc(x) { return format(x.sub(1).mul(100))+"% stronger" },
             },{
                 desc: `Double relativistic particles gain.`,
-                cost(x) { return E(10).pow(x.pow(1.25)).mul(1000) },
-                bulk() { return player.md.mass.gte(1000)?player.md.mass.div(1000).max(1).log10().root(1.25).add(1).floor():E(0) },
+                cost(x) { return E(10).pow(x.pow(E(1.25).pow(tmp.md.upgs[4].eff||1))).mul(1000) },
+                bulk() { return player.md.mass.gte(1000)?player.md.mass.div(1000).max(1).log10().root(E(1.25).pow(tmp.md.upgs[4].eff||1)).add(1).floor():E(0) },
                 effect(x) { return E(2).pow(x) },
                 effDesc(x) { return format(x,0)+"x" },
             },{
@@ -60,6 +64,13 @@ const MASS_DILATION = {
                 bulk() { return player.md.mass.gte(E(1.619e20).mul(25))?E(1):E(0) },
                 effect(x) { return player.md.mass.max(1).log(100).root(3).div(8).add(1) },
                 effDesc(x) { return format(x)+"x" },
+            },{
+                desc: `Mass Dilation upgrade 3 scales 10% weaker.`,
+                maxLvl: 5,
+                cost(x) { return E(1e5).pow(x).mul(E(1.619e20).mul(1e4)) },
+                bulk() { return player.md.mass.gte(E(1.619e20).mul(1e4))?player.md.mass.div(E(1.619e20).mul(1e4)).max(1).log(1e5).add(1).floor():E(0) },
+                effect(x) { return E(1).sub(x.mul(0.1)) },
+                effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             },
         ],
     },
@@ -86,7 +97,7 @@ function setupMDHTML() {
 
 function updateMDTemp() {
     if (!tmp.md) tmp.md = {}
-    if (!tmp.md.upg) {
+    if (!tmp.md.upgs) {
         tmp.md.upgs = []
         for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) tmp.md.upgs[x] = {}
     }
