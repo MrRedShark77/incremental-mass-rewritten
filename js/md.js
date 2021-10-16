@@ -30,7 +30,7 @@ const MASS_DILATION = {
     upgs: {
         buy(x) {
             if (tmp.md.upgs[x].can) {
-                player.md.mass = player.md.mass.sub(this.ids[x].cost(tmp.md.upgs[x].bulk.sub(1)))
+                player.md.mass = player.md.mass.sub(this.ids[x].cost(tmp.md.upgs[x].bulk.sub(1))).max(0)
                 player.md.upgs[x] = player.md.upgs[x].max(tmp.md.upgs[x].bulk)
             }
         },
