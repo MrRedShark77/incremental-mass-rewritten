@@ -4,13 +4,17 @@ const MASS_DILATION = {
         player.md.active = !player.md.active
         ATOM.doReset()
     },
+    RPexpgain() {
+        let x = E(2).add(tmp.md.upgs[5].eff)
+        return x
+    },
     RPmultgain() {
         let x = E(1).mul(tmp.md.upgs[2].eff)
         if (player.atom.elements.includes(24)) x = x.mul(tmp.elements.effect[24])
         return x
     },
     RPgain() {
-        let x = player.mass.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(1.5).mul(tmp.md.rp_mult_gain)
+        let x = player.mass.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
         return x.sub(player.md.particles).max(0).floor()
     },
     massGain() {
@@ -20,7 +24,7 @@ const MASS_DILATION = {
         return x
     },
     mass_req() {
-        let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(1.5).add(14).mul(40)).mul(1.50005e56)
+        let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e56)
         return x
     },
     effect() {
@@ -71,6 +75,13 @@ const MASS_DILATION = {
                 bulk() { return player.md.mass.gte(E(1.619e20).mul(1e4))?player.md.mass.div(E(1.619e20).mul(1e4)).max(1).log(1e5).add(1).floor():E(0) },
                 effect(x) { return E(1).sub(x.mul(0.1)) },
                 effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+            },{
+                desc: `Increase the exponent of the RP formula.`,
+                maxLvl: 14,
+                cost(x) { return E(1e3).pow(x.pow(1.5)).mul(1.5e73) },
+                bulk() { return player.md.mass.gte(1.5e73)?player.md.mass.div(1.5e73).max(1).log(1e3).max(0).root(1.5).add(1).floor():E(0) },
+                effect(x) { return x.mul(0.25) },
+                effDesc(x) { return "+^"+format(x) },
             },
         ],
     },
@@ -108,6 +119,7 @@ function updateMDTemp() {
         tmp.md.upgs[x].can = player.md.mass.gte(tmp.md.upgs[x].cost) && player.md.upgs[x].lt(upg.maxLvl||1/0)
         tmp.md.upgs[x].eff = upg.effect(player.md.upgs[x])
     }
+    tmp.md.rp_exp_gain = MASS_DILATION.RPexpgain()
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()
     tmp.md.rp_gain = MASS_DILATION.RPgain()
     tmp.md.mass_gain = MASS_DILATION.massGain()
@@ -117,7 +129,7 @@ function updateMDTemp() {
 
 function updateMDHTML() {
     tmp.el.md_particles.setTxt(format(player.md.particles,0))
-    tmp.el.md_eff.setTxt(format(tmp.md.mass_eff.sub(1).mul(100)))
+    tmp.el.md_eff.setTxt(tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
     tmp.el.md_mass.setTxt(formatMass(player.md.mass)+" "+formatGain(player.md.mass,tmp.md.mass_gain,true))
     tmp.el.md_btn.setTxt(player.md.active
         ?(tmp.md.rp_gain.gte(1)?`Cancel for ${format(tmp.md.rp_gain,0)} Relativistic particles`:`Reach ${formatMass(tmp.md.mass_req)} to gain Relativistic particles, or cancel dilation`)

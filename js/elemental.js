@@ -192,10 +192,22 @@ const ELEMENTS = {
             desc: `Hardened Challenge scaling weaker for each element bought.`,
             cost: E(1e85),
             effect() {
-                let x = E(0.99).pow(player.atom.elements.length)
+                let x = E(0.99).pow(E(player.atom.elements.length).softcap(30,2/3,0)).max(0.5)
                 return x
             },
             effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+        },
+        {
+            desc: `Hyper/Ultra Rank & Tickspeed scales 25% weaker.`,
+            cost: E(1e90),
+        },
+        {
+            desc: `Mass gain is raised to the power of 1.5th if you dilated mass.`,
+            cost: E(1e97),
+        },
+        {
+            desc: `Proton powers effect is better.`,
+            cost: E(1e100),
         },
     ],
     /*

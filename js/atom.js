@@ -101,7 +101,7 @@ const ATOM = {
         powerEffect: [
             x=>{
                 let a = x.add(1).pow(3)
-                let b = x.add(1).pow(2.5).log2().mul(0.01)
+                let b = player.atom.elements.includes(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
             x=>{

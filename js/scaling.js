@@ -148,15 +148,23 @@ function getScalingPower(type, name) {
 	if (type=="hyper") {
 		if (name=="rank") {
 			if (player.ranks.tetr.gte(1)) power = power.mul(0.85)
+			if (player.atom.elements.includes(27)) power = power.mul(0.75)
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 		}
 		if (name=='tickspeed') {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
+			if (player.atom.elements.includes(27)) power = power.mul(0.75)
 		}
 	}
 	if (type=="ultra") {
+		if (name=="rank") {
+			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+		}
+		if (name=='tickspeed') {
+			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+		}
 	}
 	return power
 }

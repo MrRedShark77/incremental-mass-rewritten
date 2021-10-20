@@ -30,7 +30,10 @@ const FORMS = {
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
-        if (player.md.active) x = expMult(x,0.8)
+        if (player.md.active) {
+            x = expMult(x,0.8)
+            if (player.atom.elements.includes(28)) x = x.pow(1.5)
+        }
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
     },
     massSoftGain() {
