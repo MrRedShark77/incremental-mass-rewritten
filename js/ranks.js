@@ -64,6 +64,7 @@ const RANKS = {
             220: "rank 40 reward is overpowered.",
             300: "rank multiplie quark gain.",
             380: "rank multiplie mass gain.",
+            800: "make mass gain softcap 0.25% weaker based on rank.",
         },
         tier: {
             1: "reduce rank reqirements by 20%.",
@@ -114,6 +115,10 @@ const RANKS = {
                 let ret = E(10).pow(player.ranks.rank.sub(379).pow(1.5).softcap(1000,0.5,0))
                 return ret
             },
+            800() {
+                let ret = E(1).sub(player.ranks.rank.sub(799).mul(0.0025).add(1).softcap(1.25,0.5,0).sub(1)).max(0.75)
+                return ret
+            },
         },
         tier: {
             4() {
@@ -152,6 +157,7 @@ const RANKS = {
             45(x) { return format(x)+"x" },
             300(x) { return format(x)+"x" },
             380(x) { return format(x)+"x" },
+            800(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
         },
         tier: {
             4(x) { return "+"+format(x.mul(100))+"%" },

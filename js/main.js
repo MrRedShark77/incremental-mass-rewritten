@@ -49,6 +49,7 @@ const FORMS = {
         if (CHALS.inChal(3)) p = p.mul(4)
         if (CHALS.inChal(7)) p = p.mul(6)
         if (player.mainUpg.bh.includes(11)) p = p.mul(0.9)
+        if (player.ranks.rank.gte(800)) p = p.mul(RANKS.effect.rank[800]())
         return E(1).div(p.add(1))
     },
     tickspeed: {

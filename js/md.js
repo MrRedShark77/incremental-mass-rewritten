@@ -11,6 +11,7 @@ const MASS_DILATION = {
     RPmultgain() {
         let x = E(1).mul(tmp.md.upgs[2].eff)
         if (player.atom.elements.includes(24)) x = x.mul(tmp.elements.effect[24])
+        if (player.atom.elements.includes(31)) x = x.mul(tmp.elements.effect[31])
         return x
     },
     RPgain() {

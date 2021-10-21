@@ -113,7 +113,7 @@ const ATOM = {
             },
             x=>{
                 let a = x.add(1)
-                let b = x.add(1).pow(2).log2().mul(0.01)
+                let b = player.atom.elements.includes(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
         ],

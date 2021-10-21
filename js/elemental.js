@@ -209,6 +209,19 @@ const ELEMENTS = {
             desc: `Proton powers effect is better.`,
             cost: E(1e100),
         },
+        {
+            desc: `Electron powers effect is better. Passively gain 10% of each particle you would assign quarks.`,
+            cost: E(1e107),
+        },
+        {
+            desc: `Dilated mass boost Relativistic particles gain.`,
+            cost: E(1e130),
+            effect() {
+                let x = player.md.mass.add(1).pow(0.0125)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
     ],
     /*
     {

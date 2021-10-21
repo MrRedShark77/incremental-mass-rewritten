@@ -28,6 +28,7 @@ function calc(dt) {
     if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
     if (player.atom.elements.includes(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
     if (player.atom.elements.includes(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
+    if (player.atom.elements.includes(30)) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(dt/10))
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
     if (player.atom.unl) {
         player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
