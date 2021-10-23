@@ -59,7 +59,7 @@ const MASS_DILATION = {
                 cost(x) { return E(10).pow(x).mul(100) },
                 bulk() { return player.md.mass.gte(100)?player.md.mass.div(100).max(1).log10().add(1).floor():E(0) },
                 effect(x) {
-                    return player.md.upgs[3]?x.root(1.5).mul(0.25).add(1):x.root(2).mul(0.15).add(1)
+                    return player.md.upgs[7].gte(1)?x.root(1.5).mul(0.25).add(1):x.root(2).mul(0.15).add(1)
                 },
                 effDesc(x) { return (x.gte(10)?format(x)+"x":format(x.sub(1).mul(100))+"%")+" stronger" },
             },{
