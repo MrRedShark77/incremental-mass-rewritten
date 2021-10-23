@@ -1,4 +1,5 @@
 const MASS_DILATION = {
+    unlocked() { return player.atom.elements.includes(21) },
     onactive() {
         if (player.md.active) player.md.particles = player.md.particles.add(tmp.md.rp_gain)
         player.md.active = !player.md.active
@@ -12,6 +13,7 @@ const MASS_DILATION = {
         let x = E(1).mul(tmp.md.upgs[2].eff)
         if (player.atom.elements.includes(24)) x = x.mul(tmp.elements.effect[24])
         if (player.atom.elements.includes(31)) x = x.mul(tmp.elements.effect[31])
+        if (player.atom.elements.includes(34)) x = x.mul(tmp.elements.effect[34])
         return x
     },
     RPgain() {
@@ -22,6 +24,8 @@ const MASS_DILATION = {
         let x = player.md.particles.pow(2)
         x = x.mul(tmp.md.upgs[0].eff)
         if (player.atom.elements.includes(22)) x = x.mul(tmp.elements.effect[22])
+        if (player.atom.elements.includes(35)) x = x.mul(tmp.elements.effect[35])
+        if (player.atom.elements.includes(32)) x = x.pow(1.05)
         return x
     },
     mass_req() {
@@ -54,8 +58,10 @@ const MASS_DILATION = {
                 desc: `Make dilated mass effect stronger.`,
                 cost(x) { return E(10).pow(x).mul(100) },
                 bulk() { return player.md.mass.gte(100)?player.md.mass.div(100).max(1).log10().add(1).floor():E(0) },
-                effect(x) { return x.root(2).mul(0.15).add(1) },
-                effDesc(x) { return format(x.sub(1).mul(100))+"% stronger" },
+                effect(x) {
+                    return player.md.upgs[3]?x.root(1.5).mul(0.25).add(1):x.root(2).mul(0.15).add(1)
+                },
+                effDesc(x) { return (x.gte(10)?format(x)+"x":format(x.sub(1).mul(100))+"%")+" stronger" },
             },{
                 desc: `Double relativistic particles gain.`,
                 cost(x) { return E(10).pow(x.pow(E(1.25).pow(tmp.md.upgs[4].eff||1))).mul(1000) },
@@ -78,11 +84,23 @@ const MASS_DILATION = {
                 effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             },{
                 desc: `Increase the exponent of the RP formula.`,
-                maxLvl: 14,
+                maxLvl: 30,
                 cost(x) { return E(1e3).pow(x.pow(1.5)).mul(1.5e73) },
                 bulk() { return player.md.mass.gte(1.5e73)?player.md.mass.div(1.5e73).max(1).log(1e3).max(0).root(1.5).add(1).floor():E(0) },
                 effect(x) { return x.mul(0.25) },
                 effDesc(x) { return "+^"+format(x) },
+            },{
+                desc: `Dilated mass boost quarks gain.`,
+                maxLvl: 1,
+                cost(x) { return E(1.5e191) },
+                bulk() { return player.md.mass.gte(1.5e191)?E(1):E(0) },
+                effect(x) { return E(5).pow(player.md.mass.max(1).log10().root(2)) },
+                effDesc(x) { return format(x)+"x" },
+            },{
+                desc: `Mass Dilation upgrade 2 effect’s formula is better.`,
+                maxLvl: 1,
+                cost(x) { return E(1.5e246) },
+                bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
             },
         ],
     },
@@ -118,7 +136,7 @@ function updateMDTemp() {
         tmp.md.upgs[x].cost = upg.cost(player.md.upgs[x])
         tmp.md.upgs[x].bulk = upg.bulk().min(upg.maxLvl||1/0)
         tmp.md.upgs[x].can = player.md.mass.gte(tmp.md.upgs[x].cost) && player.md.upgs[x].lt(upg.maxLvl||1/0)
-        tmp.md.upgs[x].eff = upg.effect(player.md.upgs[x])
+        if (upg.effect) tmp.md.upgs[x].eff = upg.effect(player.md.upgs[x])
     }
     tmp.md.rp_exp_gain = MASS_DILATION.RPexpgain()
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()

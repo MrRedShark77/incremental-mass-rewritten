@@ -161,7 +161,9 @@ const FORMS = {
             FORMS.rp.doReset()
         },
         effect() {
-            let x = player.bh.mass.add(1).root(4)
+            let x = player.mainUpg.atom.includes(12)
+            ?player.bh.mass.add(1).pow(1.25)
+            :player.bh.mass.add(1).root(4)
             return x
         },
         condenser: {
@@ -185,6 +187,7 @@ const FORMS = {
                     pow = pow.add(tmp.chal.eff[6])
                     if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                     pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
+                    if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
                 let eff = pow.pow(player.bh.condenser.add(tmp.bh.condenser_bouns))
                 return {pow: pow, eff: eff}
             },
@@ -679,7 +682,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            lens: 10,
+            lens: 12,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -753,6 +756,27 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" later"
+                },
+            },
+            11: {
+                unl() { return MASS_DILATION.unlocked() },
+                desc: "Dilated mass also boost BH Condenser & Gamma Ray powers at a reduced rate.",
+                cost: E('e1640'),
+                effect() {
+                    let ret = player.md.mass.max(1).log10().add(1).pow(0.1)
+                    return ret
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
+                },
+            },
+            12: {
+                unl() { return MASS_DILATION.unlocked() },
+                desc: "Mass from Black Hole effect is better.",
+                cost: E('e2015'),
+                effect() {
+                    let ret = E(1)
+                    return ret
                 },
             },
         },

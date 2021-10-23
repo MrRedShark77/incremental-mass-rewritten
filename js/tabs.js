@@ -24,7 +24,7 @@ const TABS = {
         4: [
             { id: "Particles" },
             { id: "Elements", unl() { return player.chal.comps[7].gte(16) } },
-            { id: "Mass Dilation", unl() { return player.atom.elements.includes(21) }, style: "dilation" },
+            { id: "Mass Dilation", unl() { return MASS_DILATION.unlocked() }, style: "dilation" },
         ],
     },
 }

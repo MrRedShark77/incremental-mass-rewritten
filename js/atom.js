@@ -15,6 +15,7 @@ const ATOM = {
         if (player.mainUpg.atom.includes(8)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
         if (player.atom.elements.includes(6)) x = x.mul(tmp.elements.effect[6])
+        if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },
@@ -64,6 +65,7 @@ const ATOM = {
         effect() {
             let pow = E(2)
             if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
+            if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
             let eff = pow.pow(player.atom.gamma_ray).sub(1)
             return {pow: pow, eff: eff}
         },

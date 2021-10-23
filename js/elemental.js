@@ -222,6 +222,36 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        {
+            desc: `Increase dilated mass gain exponent by 5%.`,
+            cost: E(1e140),
+        },
+        {
+            desc: `Add 50 more C8 maximum completions.`,
+            cost: E(1e155),
+        },
+        {
+            desc: `Rage power boost Relativistic particles gain.`,
+            cost: E(1e175),
+            effect() {
+                let x = player.rp.points.max(1).log10().add(1).pow(0.75)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Mass from Black Hole boost dilated mass gain.`,
+            cost: E(1e210),
+            effect() {
+                let x = player.bh.mass.max(1).log10().add(1).pow(0.8)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Unlock ??? (coming soon).`,
+            cost: E(1/0),
+        },
     ],
     /*
     {
@@ -238,7 +268,7 @@ const ELEMENTS = {
         let u = 4
         if (player.chal.comps[8].gte(1)) u += 14
         if (player.atom.elements.includes(18)) u += 3
-        if (player.atom.elements.includes(21)) u += 15
+        if (MASS_DILATION.unlocked()) u += 15
         return u
     },
 }
