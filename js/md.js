@@ -60,8 +60,8 @@ const MASS_DILATION = {
                 desc: `Double relativistic particles gain.`,
                 cost(x) { return E(10).pow(x.pow(E(1.25).pow(tmp.md.upgs[4].eff||1))).mul(1000) },
                 bulk() { return player.md.mass.gte(1000)?player.md.mass.div(1000).max(1).log10().root(E(1.25).pow(tmp.md.upgs[4].eff||1)).add(1).floor():E(0) },
-                effect(x) { return E(2).pow(x) },
-                effDesc(x) { return format(x,0)+"x" },
+                effect(x) { return E(2).pow(x).softcap(1e25,0.75,0) },
+                effDesc(x) { return format(x,0)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: `Dilated mass also boost Stronger’s power.`,
                 maxLvl: 1,

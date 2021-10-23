@@ -480,7 +480,7 @@ const UPGS = {
                 desc: "Black Hole mass's gain is boosted by Rage Points.",
                 cost: E(1e72),
                 effect() {
-                    let ret = player.rp.points.add(1).root(10)
+                    let ret = player.rp.points.add(1).root(10).softcap('e4000',0.1,0)
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -621,11 +621,11 @@ const UPGS = {
                 desc: "Mass gain is boosted by OoM of Dark Matters.",
                 cost: E(1e33),
                 effect() {
-                    let ret = E(2).pow(player.bh.dm.add(1).log10())
+                    let ret = E(2).pow(player.bh.dm.add(1).log10().softcap(11600,0.5,0))
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return format(x)+"x"
+                    return format(x)+"x"+(x.max(1).log2().gte(11600)?" <span class='soft'>(softcapped)</span>":"")
                 },
             },
             11: {
