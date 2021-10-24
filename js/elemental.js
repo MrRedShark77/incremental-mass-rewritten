@@ -52,7 +52,7 @@ const ELEMENTS = {
             desc: `Electron Power boost Atomic Powers gain.`,
             cost: E(1e15),
             effect() {
-                let x = player.atom.powers[2].add(1).root(2)
+                let x = player.atom?player.atom.powers[2].add(1).root(2):E(1)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -61,7 +61,7 @@ const ELEMENTS = {
             desc: `Stronger’s power is stronger based on Proton Powers.`,
             cost: E(2.5e16),
             effect() {
-                let x = player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1)
+                let x = player.atom?player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1):E(1)
                 return x
             },
             effDesc(x) { return format(x)+"x stronger" },

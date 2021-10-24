@@ -36,6 +36,8 @@ function calc(dt) {
     }
     if (player.mass.gte(1.5e136)) player.chal.unl = true
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
+
+    player.offline.time = Math.max(player.offline.time-tmp.offlineMult,0)
 }
 
 function getPlayerData() {
@@ -105,6 +107,10 @@ function getPlayerData() {
             notation: 'sc'
         },
         confirms: {},
+        offline: {
+            current: Date.now(),
+            time: 0,
+        },
     }
     for (let x = 1; x <= UPGS.main.cols; x++) {
         s.auto_mainUpg[UPGS.main.ids[x]] = false
@@ -130,6 +136,8 @@ function loadPlayer(load) {
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
+    let off_time = (Date.now() - player.offline.current)/1000
+    if (off_time >= 10) player.offline.time += off_time
 }
 
 function convertStringToDecimal() {
@@ -220,6 +228,4 @@ function loadGame() {
             }
         })
     }
-    tmp.el.loading.setDisplay(false)
-    tmp.el.app.setDisplay(true)
 }

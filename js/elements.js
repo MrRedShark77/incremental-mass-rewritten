@@ -278,6 +278,9 @@ function updateOptionsHTML() {
 
 function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
+	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
+	tmp.el.loading.setDisplay(tmp.offlineActive)
+    tmp.el.app.setDisplay(!tmp.offlineActive)
 	updateUpperHTML()
     updateTabsHTML()
 	if (tmp.tab == 0) {

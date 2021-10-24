@@ -801,8 +801,9 @@ function loop() {
     diff = Date.now()-date;
     updateTemp()
     updateHTML()
-    calc(diff/1000);
+    calc(diff/1000*tmp.offlineMult);
     date = Date.now();
+    player.offline.current = date
 }
 
 function format(ex, acc=4, type=player.options.notation) {
