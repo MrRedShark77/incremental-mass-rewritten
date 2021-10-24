@@ -9,7 +9,7 @@ Decimal.prototype.softcap = function (start, power, mode) {
     return x
 }
 
-function calc(dt) {
+function calc(dt, dt_offline) {
     player.mass = player.mass.add(tmp.massGain.mul(dt))
     if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
     if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
@@ -37,7 +37,7 @@ function calc(dt) {
     if (player.mass.gte(1.5e136)) player.chal.unl = true
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
 
-    player.offline.time = Math.max(player.offline.time-tmp.offlineMult,0)
+    player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
 }
 
 function getPlayerData() {
