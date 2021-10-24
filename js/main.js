@@ -873,5 +873,3 @@ function capitalFirst(str) {
 		.map(x => x[0].toUpperCase() + x.slice(1))
 		.join(" ");
 }
-
-setInterval(loop, 50)

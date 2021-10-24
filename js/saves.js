@@ -228,4 +228,5 @@ function loadGame() {
             }
         })
     }
+    setInterval(loop, 50)
 }
