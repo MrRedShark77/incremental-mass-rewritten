@@ -204,7 +204,7 @@ function updateMassUpgradesHTML() {
 			tmp.el["massUpg_btn_"+x].setClasses({btn: true, locked: player.mass.lt(tmp.upgs.mass[x].cost)})
 			tmp.el["massUpg_cost_"+x].setTxt(formatMass(tmp.upgs.mass[x].cost))
 			tmp.el["massUpg_step_"+x].setTxt(tmp.upgs.mass[x].effDesc.step)
-			tmp.el["massUpg_eff_"+x].setHTML(tmp.upgs.mass[x].effDesc.eff+(tmp.upgs.mass[x].eff.ss ? (tmp.upgs.mass[x].eff.eff.gte(tmp.upgs.mass[x].eff.ss)?" <span class='soft'>(softcapped)</span>":"") : ""))
+			tmp.el["massUpg_eff_"+x].setHTML(tmp.upgs.mass[x].effDesc.eff)
 			tmp.el["massUpg_auto_"+x].setDisplay(player.mainUpg.rp.includes(3))
 			tmp.el["massUpg_auto_"+x].setTxt(player.autoMassUpg[x]?"ON":"OFF")
 		}
@@ -307,6 +307,8 @@ function updateHTML() {
 			
 			tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
 			tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
+			tmp.el.massSoft3.setDisplay(tmp.massGain.gte(tmp.massSoftGain2))
+			tmp.el.massSoftStart3.setTxt(formatMass(tmp.massSoftGain2))
 		}
 		if (tmp.stab[0] == 1) {
 			updateBlackHoleHTML()

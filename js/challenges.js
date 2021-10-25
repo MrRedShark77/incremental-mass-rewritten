@@ -94,6 +94,7 @@ const CHALS = {
         if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
         if (player.atom.elements.includes(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
         if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
+        if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
         return x.floor()
     },

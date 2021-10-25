@@ -37,6 +37,7 @@ function calc(dt, dt_offline) {
     if (player.atom.elements.includes(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
     if (player.atom.elements.includes(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
     if (player.atom.elements.includes(30)) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(dt/10))
+    if (player.atom.elements.includes(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if (player.md.upgs[x].gte(1) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
     if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
     if (player.atom.unl) {
         player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
@@ -45,7 +46,7 @@ function calc(dt, dt_offline) {
     if (player.mass.gte(1.5e136)) player.chal.unl = true
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
     calcStars(dt)
-    
+
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
     player.time += dt
 }
@@ -221,7 +222,10 @@ function export_copy() {
 function importy() {
     let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
     if (loadgame != null) {
+        wipe()
         load(loadgame)
+        save()
+        save()
         location.reload()
     }
 }

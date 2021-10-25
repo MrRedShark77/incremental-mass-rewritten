@@ -7,13 +7,13 @@ const STARS = {
         return x
     },
     effect() {
-        let [s,r,t1,t2] = [player.stars.points,player.ranks.rank,player.ranks.tier,player.ranks.tetr]
+        let [s,r,t1,t2] = [player.stars.points,player.ranks.rank,player.ranks.tier,player.ranks.tetr.softcap(5,5,1)]
         let x =
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25)))
         return x
     },
     generators: {
-        req: [E(1e225),E(1e280),E(1/0),E(1/0),E(1/0)],
+        req: [E(1e225),E(1e280),E('e320'),E('e430'),E(1/0)],
         unl() {
             if (player.atom.quarks.gte(tmp.stars.generator_req)) {
                 player.stars.unls++
@@ -73,7 +73,7 @@ function updateStarsScreenHTML() {
 }
 
 function updateStarsHTML() {
-    tmp.el.stars_Amt.setTxt(format(player.stars.points,0)+" "+formatGain(player.stars.points,tmp.stars.gain))
+    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
     tmp.el.stars_Eff.setTxt(format(tmp.stars.effect))
     tmp.el.star_btn.setTxt(`Unlock new type of Stars, require ${format(tmp.stars.generator_req)} Quark`)
     tmp.el.star_btn.setClasses({btn: true, locked: !player.atom.quarks.gte(tmp.stars.generator_req)})
@@ -81,6 +81,6 @@ function updateStarsHTML() {
         let unl = player.stars.unls > x
         tmp.el["star_gen_div_"+x].setDisplay(unl)
         if (tmp.el["star_gen_arrow_"+x]) tmp.el["star_gen_arrow_"+x].setDisplay(unl)
-        if (unl) tmp.el["star_gen_"+x].setHTML(format(player.stars.generators[x],0)+"<br>"+formatGain(player.stars.generators[x],tmp.stars.generators_gain[x]))
+        if (unl) tmp.el["star_gen_"+x].setHTML(format(player.stars.generators[x],2)+"<br>"+formatGain(player.stars.generators[x],tmp.stars.generators_gain[x]))
     }
 }

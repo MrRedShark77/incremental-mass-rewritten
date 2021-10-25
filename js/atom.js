@@ -15,7 +15,9 @@ const ATOM = {
         if (player.mainUpg.atom.includes(8)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
         if (player.atom.elements.includes(6)) x = x.mul(tmp.elements.effect[6])
+        if (player.atom.elements.includes(42)) x = x.mul(tmp.elements.effect[42])
         if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
+        x = x.mul(tmp.md.upgs[9].eff)
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },
@@ -228,7 +230,7 @@ function setupAtomHTML() {
 
 function updateAtomicHTML() {
     tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain))
-	tmp.el.atomicEff.setTxt(format(tmp.atom.atomicEff,0))
+	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0))
 
 	tmp.el.gamma_ray_lvl.setTxt(format(player.atom.gamma_ray,0))
 	tmp.el.gamma_ray_btn.setClasses({btn: true, locked: !tmp.atom.gamma_ray_can})

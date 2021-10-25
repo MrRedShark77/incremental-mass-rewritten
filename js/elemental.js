@@ -283,6 +283,36 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        {
+            desc: `Add 50 more C7 maximum completions.`,
+            cost: E('e315'),
+        },
+        {
+            desc: `Collapsed star boost quark gain.`,
+            cost: E('e325'),
+            effect() {
+                let x = player.stars.points.add(1).pow(1/3)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `You can now automatically buy mass dilation upgrades if you purchased any first. They no longer spent dilated mass.`,
+            cost: E('e360'),
+        },
+        {
+            desc: `The Tetr requirement is broken.`,
+            cost: E('e380'),
+        },
+        {
+            desc: `Collapsed star boost relativistic particles gain.`,
+            cost: E('e420'),
+            effect() {
+                let x = player.stars.points.add(1).pow(0.15).min(1e20)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
     ],
     /*
     {

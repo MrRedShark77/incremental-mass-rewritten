@@ -4,6 +4,7 @@ const MASS_DILATION = {
         if (player.md.active) player.md.particles = player.md.particles.add(tmp.md.rp_gain)
         player.md.active = !player.md.active
         ATOM.doReset()
+        updateMDTemp()
     },
     RPexpgain() {
         let x = E(2).add(tmp.md.upgs[5].eff)
@@ -14,6 +15,7 @@ const MASS_DILATION = {
         if (player.atom.elements.includes(24)) x = x.mul(tmp.elements.effect[24])
         if (player.atom.elements.includes(31)) x = x.mul(tmp.elements.effect[31])
         if (player.atom.elements.includes(34)) x = x.mul(tmp.elements.effect[34])
+        if (player.atom.elements.includes(45)) x = x.mul(tmp.elements.effect[45])
         return x
     },
     RPgain() {
@@ -40,7 +42,7 @@ const MASS_DILATION = {
     upgs: {
         buy(x) {
             if (tmp.md.upgs[x].can) {
-                player.md.mass = player.md.mass.sub(this.ids[x].cost(tmp.md.upgs[x].bulk.sub(1))).max(0)
+                if (!player.atom.elements.includes(43)) player.md.mass = player.md.mass.sub(this.ids[x].cost(tmp.md.upgs[x].bulk.sub(1))).max(0)
                 player.md.upgs[x] = player.md.upgs[x].max(tmp.md.upgs[x].bulk)
             }
         },
@@ -85,7 +87,7 @@ const MASS_DILATION = {
                 effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             },{
                 desc: `Increase the exponent of the RP formula.`,
-                maxLvl: 30,
+                maxLvl: 50,
                 cost(x) { return E(1e3).pow(x.pow(1.5)).mul(1.5e73) },
                 bulk() { return player.md.mass.gte(1.5e73)?player.md.mass.div(1.5e73).max(1).log(1e3).max(0).root(1.5).add(1).floor():E(0) },
                 effect(x) { return x.mul(0.25) },
@@ -110,6 +112,15 @@ const MASS_DILATION = {
                 bulk() { return player.md.mass.gte(1.5e296)?E(1):E(0) },
                 effect(x) { return player.tickspeed.add(1).pow(2/3) },
                 effDesc(x) { return format(x)+"x" },
+            },{
+                unl() { return STARS.unlocked() },
+                desc: `Double quarks gain.`,
+                cost(x) { return E(5).pow(x).mul('1.50001e536') },
+                bulk() { return player.md.mass.gte('1.50001e536')?player.md.mass.div('1.50001e536').max(1).log(5).add(1).floor():E(0) },
+                effect(x) {
+                    return E(2).pow(x).softcap(1e25,2/3,0)
+                },
+                effDesc(x) { return format(x)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
             },
         ],
     },

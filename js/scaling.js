@@ -2,7 +2,7 @@ const SCALE_START = {
     super: {
         rank: E(50),
 		tier: E(10),
-		tetr: E(6),
+		tetr: E(7),
         massUpg: E(100),
 		tickspeed: E(100),
 		bh_condenser: E(100),
@@ -20,10 +20,14 @@ const SCALE_START = {
 		tickspeed: E(700),
 		bh_condenser: E(750),
 	},
+	meta: {/*
+		rank: E(1200),
+		tickspeed: E(3000),*/
+	},
 }
 
-const SCALE_TYPE = ['super', 'hyper', 'ultra'] // super, hyper, ultra, meta
-const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra']
+const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta'] // super, hyper, ultra, meta
+const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta']
 
 const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },
@@ -88,7 +92,7 @@ function getScalingName(name, x=0) {
 	let amt = SCALING_RES[name](x);
 	for (let n = cap - 1; n >= 0; n--) {
 		if (scalingActive(name, amt, Object.keys(SCALE_START)[n]))
-			return capitalFirst(Object.keys(SCALE_START)[n]) + " ";
+			return capitalFirst(Object.keys(SCALE_START)[n]) + (Object.keys(SCALE_START)[n]=="meta"?"-":" ");
 	}
 	return current;
 }

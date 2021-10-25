@@ -35,7 +35,7 @@ const FORMS = {
             x = expMult(x,0.8)
             if (player.atom.elements.includes(28)) x = x.pow(1.5)
         }
-        return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
+        return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0).softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
     },
     massSoftGain() {
         let s = E(1.5e156)
@@ -52,6 +52,14 @@ const FORMS = {
         if (player.mainUpg.bh.includes(11)) p = p.mul(0.9)
         if (player.ranks.rank.gte(800)) p = p.mul(RANKS.effect.rank[800]())
         return E(1).div(p.add(1))
+    },
+    massSoftGain2() {
+        let s = E('1.5e1000056')
+        return s
+    },
+    massSoftPower2() {
+        let p = E(0.25)
+        return p
     },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
@@ -368,13 +376,13 @@ const UPGS = {
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
-                let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,sp,0)
+                let ret = step.mul(x.add(tmp.upgs.mass[3].bouns)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
                 return {
                     step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Booster Power"
+                    eff: "^"+format(eff.eff)+" to Booster Power"+(eff.eff.gte(eff.ss)?` <span class='soft'>(softcapped${eff.eff.gte(1.8e5)?"^2":""})</span>`:"")
                 }
             },
             bouns() {
