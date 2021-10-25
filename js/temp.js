@@ -194,6 +194,7 @@ function updateTemp() {
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
     updateElementsTemp()
     updateMDTemp()
+    updateStarsTemp()
     updateUpgradesTemp()
     updateScalingTemp()
     updateChalTemp()

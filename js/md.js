@@ -25,6 +25,7 @@ const MASS_DILATION = {
         x = x.mul(tmp.md.upgs[0].eff)
         if (player.atom.elements.includes(22)) x = x.mul(tmp.elements.effect[22])
         if (player.atom.elements.includes(35)) x = x.mul(tmp.elements.effect[35])
+        if (player.atom.elements.includes(40)) x = x.mul(tmp.elements.effect[40])
         if (player.atom.elements.includes(32)) x = x.pow(1.05)
         return x
     },
@@ -101,6 +102,14 @@ const MASS_DILATION = {
                 maxLvl: 1,
                 cost(x) { return E(1.5e246) },
                 bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
+            },{
+                unl() { return STARS.unlocked() },
+                desc: `Tickspeed affect all-star resources at a reduced rate.`,
+                maxLvl: 1,
+                cost(x) { return E(1.5e296) },
+                bulk() { return player.md.mass.gte(1.5e296)?E(1):E(0) },
+                effect(x) { return player.tickspeed.add(1).pow(2/3) },
+                effDesc(x) { return format(x)+"x" },
             },
         ],
     },

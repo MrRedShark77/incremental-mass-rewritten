@@ -11,6 +11,7 @@
     <script src="js/elements.js"></script>
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
+    <script src="js/stars.js"></script>
     <script src="js/md.js"></script>
     <script src="js/elemental.js"></script>
     <script src="js/atom.js"></script>
@@ -27,6 +28,7 @@
 </head>
 <body onload="loadGame()">
     <input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
+    <div id="star"></div>
     <div id="loading" class='table_center' style="align-items: center; height: 100%;">
         <div>
             <h1>Loading game...</h1><br>
@@ -129,6 +131,11 @@
                         Gamma Ray Effect: <span id="gamma_ray_eff">X</span>
                     </div>
                 </div>
+            </div><div id="stab_frame0_3">
+                You collapsed <span id="stars_Amt">X</span> stars, which makes mass gain is multiplied based on every type of Ranks<br>
+                <span class="green">Currently: <span id="stars_Eff">X</span>x</span><br><br>
+                <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
+                <div id="stars_table" class="table_center"></div>
             </div>
         </div><div id="tab_frame1">
             <div id="stab_frame1_0">
@@ -211,7 +218,8 @@
             <br><br>
             Incremental Mass Rewritten v0.3.2.5 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
-            Hint 1: Hover top image above tabs to show description...
+            Hint 1: Hover top image above tabs to show description...<br><br>
+            Total time played: <span id="total_time">X</span>
         </div>
     </div>
 </body>

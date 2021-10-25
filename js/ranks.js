@@ -75,12 +75,14 @@ const RANKS = {
             8: "make tier 6's reward effect stronger by dark matters.",
             12: "make tier 4's reward effect twice effective and remove softcap.",
             30: "stronger effect's softcap is 10% weaker.",
+            55: "make rank 380's effect stronger based on tier.",
         },
         tetr: {
             1: "reduce tier reqirements by 25%, make Hyper Rank scaling is 15% weaker.",
             2: "mass upgrade 3 boosts itself.",
             3: "raise tickspeed effect by 1.05.",
             4: "Super Rank scale weaker based on Tier, Super Tier scale 20% weaker.",
+            5: "Hyper/Ultra Tickspeed starts later based on tetr.",
         },
     },
     effect: {
@@ -112,7 +114,7 @@ const RANKS = {
                 return ret
             },
             380() {
-                let ret = E(10).pow(player.ranks.rank.sub(379).pow(1.5).softcap(1000,0.5,0))
+                let ret = E(10).pow(player.ranks.rank.sub(379).pow(1.5).pow(player.ranks.tier.gte(55)?RANKS.effect.tier[55]():1).softcap(1000,0.5,0))
                 return ret
             },
             800() {
@@ -136,6 +138,10 @@ const RANKS = {
                 let ret = player.bh.dm.max(1).log10().add(1).root(2)
                 return ret
             },
+            55() {
+                let ret = player.ranks.tier.max(1).log10().add(1).root(4)
+                return ret
+            },
         },
         tetr: {
             2() {
@@ -144,6 +150,10 @@ const RANKS = {
             },
             4() {
                 let ret = E(0.96).pow(player.ranks.tier.pow(1/3))
+                return ret
+            },
+            5() {
+                let ret = player.ranks.tetr.pow(4)
                 return ret
             },
         },
@@ -163,10 +173,12 @@ const RANKS = {
             4(x) { return "+"+format(x.mul(100))+"%" },
             6(x) { return format(x)+"x" },
             8(x) { return "^"+format(x) },
+            55(x) { return "^"+format(x) },
         },
         tetr: {
             2(x) { return "+"+format(x) },
             4(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+            5(x) { return "+"+format(x,0)+" later" },
         },
     },
     fp: {

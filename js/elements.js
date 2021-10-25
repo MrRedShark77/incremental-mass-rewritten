@@ -99,6 +99,20 @@ function setupHTML() {
 	setupAtomHTML()
 	setupElementsHTML()
 	setupMDHTML()
+	setupStarsHTML()
+
+	/*
+	function setupTestHTML() {
+		let test_table = new Element("test_table")
+		let table = ""
+		for (let i = 0; i < 5; i++) {
+			table += `
+				
+			`
+		}
+		test_table.setHTML(table)
+	}
+	*/
 
 	let confirm_table = new Element("confirm_table")
 	table = ""
@@ -274,6 +288,7 @@ function updateOptionsHTML() {
 		tmp.el["confirm_div_"+x].setDisplay(player[CONFIRMS[x]].unl)
 		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 	}
+	tmp.el.total_time.setTxt(formatTime(player.time))
 }
 
 function updateHTML() {
@@ -281,6 +296,7 @@ function updateHTML() {
 	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(!tmp.offlineActive)
+	updateStarsScreenHTML()
 	updateUpperHTML()
     updateTabsHTML()
 	if (tmp.tab == 0) {
@@ -297,6 +313,9 @@ function updateHTML() {
 		}
 		if (tmp.stab[0] == 2) {
 			updateAtomicHTML()
+		}
+		if (tmp.stab[0] == 3) {
+			updateStarsHTML()
 		}
 	}
 	if (tmp.tab == 1) {

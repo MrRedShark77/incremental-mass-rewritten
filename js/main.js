@@ -27,6 +27,7 @@ const FORMS = {
         x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
+        x = x.mul(tmp.stars.effect)
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
@@ -450,7 +451,7 @@ const UPGS = {
                 desc: "For every 3 tickspeeds adds Stronger.",
                 cost: E(1e7),
                 effect() {
-                    let ret = player.tickspeed.div(3).floor()
+                    let ret = player.tickspeed.div(3).add(player.atom.elements.includes(38)?tmp.elements.effect[38]:0).floor()
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -862,6 +863,13 @@ function formatGain(amt, gain, isMass=false) {
     let f = isMass?formatMass:format
 	if (gain.gte(1e100) && gain.gt(amt)) return "(+"+format(gain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50))+" OoMs/sec)"
 	else return "(+"+f(gain)+"/sec)"
+}
+
+function formatTime(ex,type="s") {
+    ex = E(ex)
+    if (ex.gte(3600)) return format(ex.div(3600).floor(),0)+":"+formatTime(ex.mod(3600),'h')
+    if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0)+":"+formatTime(ex.mod(60),'m')
+    return (ex.gte(10)||type!="m" ?"":"0")+format(ex)
 }
 
 function expMult(a,b) { return E(a).gte(1) ? E(10).pow(E(a).log10().pow(b)) : E(0) }

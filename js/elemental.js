@@ -249,8 +249,39 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `Unlock ??? (coming soon).`,
-            cost: E(1/0),
+            desc: `Unlock Stars.`,
+            cost: E(1e225),
+        },
+        {
+            desc: `Super Tier scale weaker based on Tetr.`,
+            cost: E(1e245),
+            effect() {
+                let x = E(0.9).pow(player.ranks.tetr.softcap(6,0.5,0))
+                return x
+            },
+            effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+        },
+        {
+            desc: `Gamma ray's free tickspeeds now adds to RU7.`,
+            cost: E(1e260),
+            effect() {
+                let x = tmp.atom?tmp.atom.atomicEff:E(0)
+                return x.div(6).floor()
+            },
+            effDesc(x) { return "+"+format(x,0)+" to Rage Power Upgrade 7" },
+        },
+        {
+            desc: `Remove softcap from C2 & C6 effects.`,
+            cost: E(1e285),
+        },
+        {
+            desc: `Collapsed star boost dilated mass gain.`,
+            cost: E(1e303),
+            effect() {
+                let x = player.stars.points.add(1).pow(0.5)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
     ],
     /*
@@ -269,6 +300,7 @@ const ELEMENTS = {
         if (player.chal.comps[8].gte(1)) u += 14
         if (player.atom.elements.includes(18)) u += 3
         if (MASS_DILATION.unlocked()) u += 15
+        if (STARS.unlocked()) u += 18
         return u
     },
 }

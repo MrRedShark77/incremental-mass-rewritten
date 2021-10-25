@@ -1,5 +1,13 @@
 function E(x){return new Decimal(x)};
 
+Decimal.prototype.modular=Decimal.prototype.mod=function (other){
+    other=E(other);
+    if (other.eq(0)) return E(0);
+    if (this.sign*other.sign==-1) return this.abs().mod(other.abs()).neg();
+    if (this.sign==-1) return this.abs().mod(other.abs());
+    return this.sub(this.div(other).floor().mul(other));
+};
+
 Decimal.prototype.softcap = function (start, power, mode) {
     var x = this.clone()
     if (x.gte(start)) {
@@ -36,8 +44,10 @@ function calc(dt, dt_offline) {
     }
     if (player.mass.gte(1.5e136)) player.chal.unl = true
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
-
+    calcStars(dt)
+    
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
+    player.time += dt
 }
 
 function getPlayerData() {
@@ -99,6 +109,11 @@ function getPlayerData() {
             mass: E(0),
             upgs: [],
         },
+        stars: {
+            unls: 0,
+            points: E(0),
+            generators: [E(0),E(0),E(0),E(0),E(0)],
+        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
@@ -111,6 +126,7 @@ function getPlayerData() {
             current: Date.now(),
             time: 0,
         },
+        time: 0,
     }
     for (let x = 1; x <= UPGS.main.cols; x++) {
         s.auto_mainUpg[UPGS.main.ids[x]] = false
@@ -160,6 +176,9 @@ function convertStringToDecimal() {
 
     player.md.particles = E(player.md.particles)
     player.md.mass = E(player.md.mass)
+
+    player.stars.points = E(player.stars.points)
+    for (let x = 0; x < 5; x++) if (player.stars.generators[x] !== undefined) player.stars.generators[x] = E(player.stars.generators[x])
 
     for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
