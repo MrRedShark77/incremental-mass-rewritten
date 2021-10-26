@@ -139,6 +139,7 @@ const FORMS = {
             let x = player.bh.mass.add(1).pow(0.33).mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
+            if (player.atom.elements.includes(46)) x = x.mul(tmp.elements.effect[46])
             if (CHALS.inChal(8)) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
             if (player.md.active) x = expMult(x,0.8)

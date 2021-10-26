@@ -18,6 +18,7 @@ const ATOM = {
         if (player.atom.elements.includes(42)) x = x.mul(tmp.elements.effect[42])
         if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
         x = x.mul(tmp.md.upgs[9].eff)
+        if (player.atom.elements.includes(47)) x = x.pow(1.1)
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },

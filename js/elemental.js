@@ -313,6 +313,32 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        {
+            desc: `Collapsed star’s effect boost mass gain from the black hole at a reduced rate.`,
+            cost: E('e510'),
+            effect() {
+                let x = tmp.stars?tmp.stars.effect.add(1).pow(0.02):E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Quarks gain is raised to the 1.05th power.`,
+            cost: E('e610'),
+        },
+        {
+            desc: `Collapsed stars effect is 10% stronger.`,
+            cost: E('e800'),
+        },
+        {
+            desc: `Collapsed star boost last type of stars.`,
+            cost: E('e1000'),
+            effect() {
+                let x = player.stars.points.add(1).log10().add(1).pow(1.1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
     ],
     /*
     {

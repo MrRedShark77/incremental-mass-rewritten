@@ -1,19 +1,21 @@
 const STARS = {
     unlocked() { return player.atom.elements.includes(36) },
-    maxLimit() { return E(2).pow(256) },
+    maxLimit() { return E(1E100) },
     gain() {
         let x = player.stars.generators[0]
         if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
         return x
     },
     effect() {
-        let [s,r,t1,t2] = [player.stars.points,player.ranks.rank,player.ranks.tier,player.ranks.tetr.softcap(5,5,1)]
+        let p = E(1)
+        if (player.atom.elements.includes(48)) p = p.mul(1.1)
+        let [s,r,t1,t2] = [player.stars.points.mul(p),player.ranks.rank.mul(p),player.ranks.tier.mul(p),player.ranks.tetr.mul(p).softcap(5,5,1)]
         let x =
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25)))
         return x
     },
     generators: {
-        req: [E(1e225),E(1e280),E('e320'),E('e430'),E(1/0)],
+        req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],
         unl() {
             if (player.atom.quarks.gte(tmp.stars.generator_req)) {
                 player.stars.unls++
@@ -21,6 +23,7 @@ const STARS = {
         },
         gain(i) {
             let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(1.5)
+            if (player.atom.elements.includes(49) && i==4) x = x.mul(tmp.elements.effect[49])
             if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
             return x
         },
