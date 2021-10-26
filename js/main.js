@@ -829,6 +829,10 @@ function format(ex, acc=4, type=player.options.notation) {
             if (e.lt(4)) {
                 return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
             } else {
+                if (ex.gte("eeee10")) {
+                    let slog = ex.slog()
+                    return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
+                }
                 let m = ex.div(E(10).pow(e))
                 return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
             }
@@ -851,9 +855,11 @@ function format(ex, acc=4, type=player.options.notation) {
                 return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(1).toNumber())+" "))+final
             }
         default:
-            return neg+FORMATS[type].format(ex)
+            return neg+FORMATS[type].format(ex, acc)
     }
 }
+
+function turnOffline() { player.offline.active = !player.offline.active }
 
 function formatMass(ex) {
     ex = E(ex)

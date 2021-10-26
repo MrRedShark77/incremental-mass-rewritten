@@ -132,6 +132,25 @@ const FORMATS = {
             return `${formattedMantissa} × (${parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ")})`;
         },
     },
+    old_sc: {
+      format(ex, acc=3) {
+        ex = E(ex)
+        let e = ex.log10().floor()
+        if (e.lt(9)) {
+            if (e.lt(3)) {
+                return ex.toFixed(acc)
+            }
+            return ex.floor().toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        } else {
+            if (ex.gte("eeee10")) {
+                let slog = ex.slog()
+                return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + this.format(slog.floor(), 0)
+            }
+            let m = ex.div(E(10).pow(e))
+            return (e.log10().gte(9)?'':m.toFixed(3))+'e'+this.format(e,0)
+        }
+      }
+    },
 }
 
 const SUBSCRIPT_NUMBERS = ["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"];

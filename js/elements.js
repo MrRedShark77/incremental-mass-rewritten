@@ -289,6 +289,7 @@ function updateOptionsHTML() {
 		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 	}
 	tmp.el.total_time.setTxt(formatTime(player.time))
+	tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
 }
 
 function updateHTML() {

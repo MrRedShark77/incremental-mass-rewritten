@@ -3,6 +3,16 @@
 }
 
 @font-face {
+	font-family: 'Cousine';
+	src: url('fonts/Cousine-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src: url('fonts/Inconsolata-VariableFont_wdth\,wght.ttf');
+}
+
+@font-face {
 	font-family: 'Nova Mono';
 	src: url('fonts/NovaMono-Regular.ttf');
 }

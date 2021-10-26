@@ -124,6 +124,7 @@ function getPlayerData() {
         },
         confirms: {},
         offline: {
+            active: true,
             current: Date.now(),
             time: 0,
         },
@@ -154,7 +155,7 @@ function loadPlayer(load) {
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
     let off_time = (Date.now() - player.offline.current)/1000
-    if (off_time >= 10) player.offline.time += off_time
+    if (off_time >= 10 && player.offline.active) player.offline.time += off_time
 }
 
 function convertStringToDecimal() {
