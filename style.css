@@ -3,6 +3,11 @@
 }
 
 @font-face {
+	font-family: 'Andy Bold';
+	src: url('fonts/design.graffiti.ANDYB.ttf');
+}
+
+@font-face {
 	font-family: 'Cousine';
 	src: url('fonts/Cousine-Regular.ttf');
 }
@@ -13,6 +18,16 @@
 }
 
 @font-face {
+	font-family: 'Lucida Handwriting';
+	src: url('fonts/qkmarisa.ttf');
+}
+
+@font-face {
+	font-family: 'Monospace-Typewritter';
+	src: url('fonts/MonospaceTypewriter.ttf');
+}
+
+@font-face {
 	font-family: 'Nova Mono';
 	src: url('fonts/NovaMono-Regular.ttf');
 }
@@ -20,11 +35,6 @@
 @font-face {
 	font-family: 'Roboto Mono';
 	src: url('fonts/RobotoMono-VariableFont_wght.ttf');
-}
-
-@font-face {
-	font-family: 'Monospace-Typewritter';
-	src: url('fonts/MonospaceTypewriter.ttf');
 }
 
 * {
