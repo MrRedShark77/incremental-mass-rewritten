@@ -13,6 +13,11 @@
 }
 
 @font-face {
+	font-family: 'Flexi IBM VGA False';
+	src: url('fonts/Flexi_IBM_VGA_False.ttf');
+}
+
+@font-face {
 	font-family: 'Inconsolata';
 	src: url('fonts/Inconsolata-VariableFont_wdth\,wght.ttf');
 }
@@ -30,6 +35,11 @@
 @font-face {
 	font-family: 'Nova Mono';
 	src: url('fonts/NovaMono-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Retron2000';
+	src: url('fonts/Retron2000.ttf');
 }
 
 @font-face {
