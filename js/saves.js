@@ -162,7 +162,6 @@ function loadPlayer(load) {
 function deepNaN(obj, data) {
     for (let x = 0; x < Object.keys(obj).length; x++) {
         let k = Object.keys(obj)[x]
-        console.log(k,isNaN(obj[k]))
         if (typeof obj[k] != 'object' && typeof obj[k] != 'string' && isNaN(obj[k])) obj[k] = data[k]
         if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])
     }
