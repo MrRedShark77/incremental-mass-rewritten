@@ -150,7 +150,7 @@ function loadPlayer(load) {
         let k = Object.keys(player)[x]
         if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
     }
-    player = deepNaN(player, getPlayerData())
+    //player = deepNaN(player, getPlayerData())
     convertStringToDecimal()
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
