@@ -110,7 +110,7 @@ const FORMATS = {
             }
             return `${n} ${abbreviation}`;
         },
-        format(value) {
+        format(value,acc) {
             let log = value.log(118);
             const parts = [];
             while (log >= 1 && parts.length < 4) {
@@ -122,7 +122,7 @@ const FORMATS = {
             if (parts.length >= 4) {
               return parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ");
             }
-            const formattedMantissa = Decimal.pow(118, log).toFixed(4);
+            const formattedMantissa = Decimal.pow(118, log).toFixed(acc);
             if (parts.length === 0) {
               return formattedMantissa;
             }

@@ -150,12 +150,22 @@ function loadPlayer(load) {
         let k = Object.keys(player)[x]
         if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
     }
+    player = deepNaN(player, getPlayerData())
     convertStringToDecimal()
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
     let off_time = (Date.now() - player.offline.current)/1000
     if (off_time >= 10 && player.offline.active) player.offline.time += off_time
+}
+
+function deepNaN(obj, data) {
+    for (let x = 0; x < Object.keys(obj).length; x++) {
+        let k = Object.keys(obj)[x]
+        if (isNaN(obj[k])) obj[k] = data[k]
+        else if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])
+    }
+    return obj
 }
 
 function convertStringToDecimal() {
