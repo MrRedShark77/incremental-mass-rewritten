@@ -15,13 +15,15 @@ const SUPERNOVA = {
         player.atom.powers = [E(0),E(0),E(0)]
         player.atom.atomic = E(0)
         player.atom.gamma_ray = E(0)
-
+        
         let keep = []
         for (let x = 0; x < player.mainUpg.atom.length; x++) if ([2,5].includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
         player.mainUpg.atom = keep
 
+        let list_keep = [21,36]
+        if (player.supernova.tree.includes("qol1")) list_keep.push(14)
         keep = []
-        for (let x = 0; x < player.atom.elements.length; x++) if ([21,36].includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
+        for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
         player.atom.elements = keep
 
         player.md.active = false
@@ -41,6 +43,7 @@ const SUPERNOVA = {
     starGain() {
         let x = E(player.supernova.tree.includes("c")?0.1:0)
         if (player.supernova.tree.includes("sn1")) x = x.mul(tmp.supernova.tree_eff.sn1)
+        if (player.supernova.tree.includes("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
         return x
     },
 }

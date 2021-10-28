@@ -1,7 +1,7 @@
 const TREE_IDS = [
-    ["","","","","","","","","","c","sn1","","","","","","","",""],
-    ["","","","","","","","","","m1","","","","","","","","",""],
-    ["","","","","","","","","","m2","","","","","","","","",""],
+    ["","","","","qol1","","","","s1","c","sn1","sn2","","","","","","",""],
+    ["","","","","","","","","m1","rp1","bh1","","","","","","","",""],
+    ["","","","","","","","","m2","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -44,6 +44,16 @@ const TREE_UPGS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        sn2: {
+            branch: ["sn1"],
+            desc: `Supernova boost Neutron stars gain.`,
+            cost: E(400),
+            effect() {
+                let x = E(2).pow(player.supernova.times)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
         m1: {
             branch: ["c"],
             desc: `Neutron star multiple mass gains.`,
@@ -57,6 +67,40 @@ const TREE_UPGS = {
         m2: {
             branch: ["m1"],
             desc: `Raise mass gain softcap^2 to 1.5th power.`,
+            cost: E(1000),
+        },
+        rp1: {
+            branch: ["c"],
+            desc: `Neutron star multiple rage powers gain.`,
+            cost: E(200),
+            effect() {
+                let x = E(1e50).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
+                return x
+            },
+            effDesc(x) { return format(x)+"x"+(x.max(1).log(1e50).gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
+        },
+        bh1: {
+            branch: ["c"],
+            desc: `Neutron star multiple dark matters gain.`,
+            cost: E(400),
+            effect() {
+                let x = E(1e35).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
+                return x
+            },
+            effDesc(x) { return format(x)+"x"+(x.max(1).log(1e35).gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
+        },
+        s1: {
+            branch: ["c"],
+            desc: `Neutron star boost last stars gain.`,
+            cost: E(400),
+            effect() {
+                let x = player.supernova.stars.add(1).pow(1.25)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qol1: {
+            desc: `Start with Silicon-14 unlocked. You can now automatically buy Elements & Atom upgrades.`,
             cost: E(1000),
         },
         /*

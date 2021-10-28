@@ -43,7 +43,7 @@ function calc(dt, dt_offline) {
         player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
         for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(dt))
     }
-    if (player.mass.gte(1.5e136)) player.chal.unl = true
+    if (player.supernova.tree.includes("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
     calcStars(dt)
     calcSupernova(dt, dt_offline)
@@ -261,7 +261,7 @@ function importy() {
             save()
             location.reload()
         } catch (error) {
-            
+            addNotify("Error Importing")
         }
         player = keep
     }

@@ -53,9 +53,10 @@ const ELEMENTS = {
             cost: E(1e15),
             effect() {
                 let x = player.atom?player.atom.powers[2].add(1).root(2):E(1)
+                if (x.gte('e1e4')) x = expMult(x.div('e1e4'),0.9).mul('e1e4')
                 return x
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return format(x)+"x"+(x.gte('e1e4')?" <span class='soft'>(softcapped)</span>":"") },
         },
         {
             desc: `Stronger’s power is stronger based on Proton Powers.`,
@@ -339,6 +340,23 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        {
+            desc: `Star generator is now ^1.05 stronger.`,
+            cost: E('e1750'),
+        },
+        {
+            desc: `Mass gain softcap^2 is 10% weaker.`,
+            cost: E('e2400'),
+        },
+        {
+            desc: `Mass of black hole boost atomic powers gain at a reduced rate.`,
+            cost: E('e2800'),
+            effect() {
+                let x = expMult(player.bh.mass.add(1),0.6)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
     ],
     /*
     {
@@ -357,7 +375,7 @@ const ELEMENTS = {
         if (player.atom.elements.includes(18)) u += 3
         if (MASS_DILATION.unlocked()) u += 15
         if (STARS.unlocked()) u += 18
-        if (player.supernova.times.gte(1)) u = 49
+        if (player.supernova.times.gte(1)) u = 49+5
         return u
     },
 }
@@ -389,7 +407,7 @@ function updateElementsHTML() {
     if (ch) {
         tmp.el.elem_desc.setTxt("["+ELEMENTS.fullNames[ch]+"] "+ELEMENTS.upgs[ch].desc)
         tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0))
-        tmp.el.elem_eff.setTxt(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tmp.elements.effect[ch]):"")
+        tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tmp.elements.effect[ch]):"")
     }
     for (let x = 1; x <= tmp.elements.upg_length; x++) {
         let upg = tmp.el['elementID_'+x]

@@ -1,6 +1,6 @@
 const STARS = {
     unlocked() { return player.atom.elements.includes(36) },
-    maxLimit() { return E(1e20).pow(player.supernova.times.pow(1.5)).mul(1e90) },
+    maxLimit() { return E(1e20).pow(player.supernova.times.pow(1.25)).mul(1e90) },
     gain() {
         let x = player.stars.generators[0]
         if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
@@ -23,7 +23,10 @@ const STARS = {
         },
         gain(i) {
             let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(1.5)
+            if (player.atom.elements.includes(50)) x = x.pow(1.05)
+
             if (player.atom.elements.includes(49) && i==4) x = x.mul(tmp.elements.effect[49])
+            if (player.supernova.tree.includes("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)
             if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
             return x
         },

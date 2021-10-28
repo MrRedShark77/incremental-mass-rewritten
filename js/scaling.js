@@ -19,6 +19,7 @@ const SCALE_START = {
 		rank: E(600),
 		tickspeed: E(700),
 		bh_condenser: E(750),
+		gamma_ray: E(800),
 	},
 	meta: {/*
 		rank: E(1200),

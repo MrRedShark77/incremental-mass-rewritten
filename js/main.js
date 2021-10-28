@@ -64,6 +64,7 @@ const FORMS = {
     },
     massSoftPower2() {
         let p = E(0.25)
+        if (player.atom.elements.includes(51)) p = p.pow(0.9)
         return p
     },
     tickspeed: {
@@ -108,6 +109,7 @@ const FORMS = {
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
             gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
+            if (player.supernova.tree.includes("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4)) gain = gain.root(10)
@@ -133,6 +135,7 @@ const FORMS = {
             if (CHALS.inChal(7)) gain = player.mass.div(1e180)
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
+            if (player.supernova.tree.includes("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
             if (CHALS.inChal(7)) gain = gain.root(6)
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             if (CHALS.inChal(8)) gain = gain.root(8)
@@ -697,6 +700,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
+            auto_unl() { return player.supernova.tree.includes("qol1") },
             lens: 12,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
