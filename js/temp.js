@@ -233,6 +233,7 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+    updateSupernovaTemp()
     updateElementsTemp()
     updateMDTemp()
     updateStarsTemp()

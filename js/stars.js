@@ -1,6 +1,6 @@
 const STARS = {
     unlocked() { return player.atom.elements.includes(36) },
-    maxLimit() { return E(1E100) },
+    maxLimit() { return E(1e20).pow(player.supernova.times.pow(1.5)).mul(1e90) },
     gain() {
         let x = player.stars.generators[0]
         if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
@@ -32,7 +32,7 @@ const STARS = {
 }
 
 function calcStars(dt) {
-    player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt))
+    player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt)).min(tmp.stars.maxlimit)
     for (let x = 0; x < 5; x++) player.stars.generators[x] = player.stars.generators[x].add(tmp.stars.generators_gain[x].mul(dt))
 }
 
@@ -76,7 +76,7 @@ function updateStarsScreenHTML() {
 }
 
 function updateStarsHTML() {
-    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
+    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.stars.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
     tmp.el.stars_Eff.setTxt(format(tmp.stars.effect))
     tmp.el.star_btn.setTxt(`Unlock new type of Stars, require ${format(tmp.stars.generator_req)} Quark`)
     tmp.el.star_btn.setClasses({btn: true, locked: !player.atom.quarks.gte(tmp.stars.generator_req)})

@@ -4,6 +4,8 @@ var player
 var tmp = {
     tab: 0,
     stab: [],
+    pass: true,
+    notify: [],
 }
 for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 
@@ -28,6 +30,8 @@ const FORMS = {
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         x = x.mul(tmp.stars.effect)
+        if (player.supernova.tree.includes("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
+
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
@@ -55,6 +59,7 @@ const FORMS = {
     },
     massSoftGain2() {
         let s = E('1.5e1000056')
+        if (player.supernova.tree.includes("m2")) s = s.pow(1.5)
         return s
     },
     massSoftPower2() {

@@ -357,6 +357,7 @@ const ELEMENTS = {
         if (player.atom.elements.includes(18)) u += 3
         if (MASS_DILATION.unlocked()) u += 15
         if (STARS.unlocked()) u += 18
+        if (player.supernova.times.gte(1)) u = 49
         return u
     },
 }

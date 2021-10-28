@@ -73,6 +73,13 @@ class Element {
 		new Element(id).setVisible(bool);
 	}
 
+	setOpacity(value) {
+		this.el.style.opacity = value;
+	}
+	static setOpacity(id, value) {
+		new Element(id).setOpacity(value);
+	}
+
 	changeStyle(type, input) {
 		this.el.style[type] = input;
 	}

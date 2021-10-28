@@ -237,7 +237,7 @@ const CHALS = {
         effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     6: {
-        unl() { return player.chal.comps[5].gte(1) },
+        unl() { return player.chal.comps[5].gte(1) || player.supernova.times.gte(1) },
         title: "No Tickspeed & Condenser",
         desc: "You cannot buy Tickspeed & BH Condenser.",
         reward: `For every completions adds +10% to Tickspeed & BH Condenser Power.`,
@@ -252,7 +252,7 @@ const CHALS = {
         effDesc(x) { return "+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     7: {
-        unl() { return player.chal.comps[6].gte(1) },
+        unl() { return player.chal.comps[6].gte(1) || player.supernova.times.gte(1) },
         title: "No Rage Powers",
         desc: "You cannot gain Rage Powers, but Dark Matters are gained by mass instead of Rage Powers at a reduced rate.<br>In addtional, mass gain softcap is stronger.",
         reward: `Completions adds 2 maximum completions of 1-4 Challenge.<br><span class="yellow">On 16th completion, unlock Elements</span>`,
@@ -268,7 +268,7 @@ const CHALS = {
         effDesc(x) { return "+"+format(x,0) },
     },
     8: {
-        unl() { return player.chal.comps[7].gte(1) },
+        unl() { return player.chal.comps[7].gte(1) || player.supernova.times.gte(1) },
         title: "White Hole",
         desc: "Dark Matter & Mass from Black Hole gains are rooted by 8.",
         reward: `Dark Matter & Mass from Black Hole gains are raised by completions.<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,

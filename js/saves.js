@@ -38,14 +38,17 @@ function calc(dt, dt_offline) {
     if (player.atom.elements.includes(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
     if (player.atom.elements.includes(30)) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(dt/10))
     if (player.atom.elements.includes(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if (player.md.upgs[x].gte(1) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
-    if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
-    if (player.atom.unl) {
+    if (player.bh.unl && tmp.pass) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
+    if (player.atom.unl && tmp.pass) {
         player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
         for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(dt))
     }
     if (player.mass.gte(1.5e136)) player.chal.unl = true
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
     calcStars(dt)
+    calcSupernova(dt, dt_offline)
+
+    tmp.pass = true
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
     player.time += dt
@@ -115,6 +118,11 @@ function getPlayerData() {
             points: E(0),
             generators: [E(0),E(0),E(0),E(0),E(0)],
         },
+        supernova: {
+            times: E(0),
+            stars: E(0),
+            tree: [],
+        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
@@ -156,7 +164,7 @@ function loadPlayer(load) {
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
     let off_time = (Date.now() - player.offline.current)/1000
-    if (off_time >= 10 && player.offline.active) player.offline.time += off_time
+    if (off_time >= 60 && player.offline.active) player.offline.time += off_time
 }
 
 function deepNaN(obj, data) {
@@ -192,15 +200,22 @@ function convertStringToDecimal() {
     player.stars.points = E(player.stars.points)
     for (let x = 0; x < 5; x++) if (player.stars.generators[x] !== undefined) player.stars.generators[x] = E(player.stars.generators[x])
 
+    player.supernova.times = E(player.supernova.times)
+    player.supernova.stars = E(player.supernova.stars)
+
     for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
 }
 
+function cannotSave() { return tmp.supernova.reached }
+
 function save(){
+    if (cannotSave()) return
     if (localStorage.getItem("testSave") == '') wipe()
     localStorage.setItem("testSave",btoa(JSON.stringify(player)))
+    addNotify("Game Saved")
 }
 
 function load(x){
@@ -232,12 +247,23 @@ function export_copy() {
 
 function importy() {
     let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
+    if (loadgame == 'monke') {
+        addNotify('monke<br><img src="https://pbs.twimg.com/profile_images/1359293274754744331/xfImzn4c.jpg">')
+        return
+    }
     if (loadgame != null) {
-        wipe()
-        load(loadgame)
-        save()
-        save()
-        location.reload()
+        let keep = player
+        try {
+            wipe()
+            JSON.parse(atob(loadgame))
+            load(loadgame)
+            save()
+            save()
+            location.reload()
+        } catch (error) {
+            
+        }
+        player = keep
     }
 }
 
@@ -245,7 +271,7 @@ function loadGame() {
     wipe()
     load(localStorage.getItem("testSave"))
     setupHTML()
-    setInterval(save,1000)
+    setInterval(save,60000)
     updateTemp()
     updateHTML()
     for (let x = 0; x < 3; x++) {
@@ -263,4 +289,6 @@ function loadGame() {
         })
     }
     setInterval(loop, 50)
+    treeCanvas()
+    setInterval(drawTreeHTML, 50)
 }
