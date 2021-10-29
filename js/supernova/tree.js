@@ -31,12 +31,12 @@ const TREE_UPGS = {
     },
     ids: {
         c: {
-            desc: `Start generating 0.1 neutron star (not affected by offline production).`,
+            desc: `Start generating 0.1 Neutron Star per second (not affected by offline production).`,
             cost: E(0),
         },
         sn1: {
             branch: ["c"],
-            desc: `Tickspeed affect Neutron stars gain at a reduced rate.`,
+            desc: `Tickspeed affects Neutron Star gain at a reduced rate.`,
             cost: E(10),
             effect() {
                 let x = player.tickspeed.add(1).pow(0.25)
@@ -46,8 +46,8 @@ const TREE_UPGS = {
         },
         sn2: {
             branch: ["sn1"],
-            desc: `Supernova boost Neutron stars gain.`,
-            cost: E(400),
+            desc: `Supernova boosts Neutron Star gain.`,
+            cost: E(350),
             effect() {
                 let x = E(2).pow(player.supernova.times)
                 return x
@@ -56,7 +56,7 @@ const TREE_UPGS = {
         },
         m1: {
             branch: ["c"],
-            desc: `Neutron star multiple mass gains.`,
+            desc: `Neutron star multiplies Mass gain.`,
             cost: E(100),
             effect() {
                 let x = E(1e100).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
@@ -66,19 +66,19 @@ const TREE_UPGS = {
         },
         m2: {
             branch: ["m1"],
-            desc: `Raise mass gain softcap^2 to 1.5th power.`,
-            cost: E(1000),
+            desc: `Multiplies the Mass requirement for softcap^2 by 1.5`,
+            cost: E(800),
         },
         t1: {
             branch: ["m1", 'rp1'],
             req() { return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1)) },
-            reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run.`},
-            desc: `Tickspeed power is now ^1.15 stronger.`,
+            reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run. You can still obtain Tickspeed from Gamma Rays.`},
+            desc: `Tickspeed Power is raised to the 1.15th.`,
             cost: E(1500),
         },
         rp1: {
             branch: ["c"],
-            desc: `Neutron star multiple rage powers gain.`,
+            desc: `Neutron Stars multiplies Rage Powers gain`,
             cost: E(200),
             effect() {
                 let x = E(1e50).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
@@ -88,7 +88,7 @@ const TREE_UPGS = {
         },
         bh1: {
             branch: ["c"],
-            desc: `Neutron star multiple dark matters gain.`,
+            desc: `Neutron Star multiplies Dark Matters gain.`,
             cost: E(400),
             effect() {
                 let x = E(1e35).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
@@ -99,13 +99,13 @@ const TREE_UPGS = {
         bh2: {
             branch: ['bh1'],
             req() { return player.supernova.chal.noBHC && player.bh.mass.gte("1.5e1.7556e4") },
-            reqDesc() {return `Reach ${format("e1.75e4")} uni of black hole without buying BH Condenser in Supernova run.`},
-            desc: `BH Condenser power is now ^1.15 stronger.`,
+            reqDesc() {return `Reach ${format("e1.75e4")} uni of black hole without buying any BH Condenser in Supernova run.`},
+            desc: `BH Condenser power is raised to the 1.15th.`,
             cost: E(1500),
         },
         s1: {
             branch: ["c"],
-            desc: `Neutron star boost last stars gain.`,
+            desc: `Neutron Star boosts last star gain.`,
             cost: E(400),
             effect() {
                 let x = player.supernova.stars.add(1).pow(1.25)
@@ -117,27 +117,27 @@ const TREE_UPGS = {
             branch: ["s1"],
             req() { return player.supernova.times.gte(3) },
             reqDesc: `3 Supernovas.`,
-            desc: `Tetr which boosts star effect, softcap is 50% weaker.`,
+            desc: `Star boost's Tetr's softcap is 50% weaker.`,
             cost: E(2500),
         },
         qol1: {
             req() { return player.supernova.times.gte(2) },
             reqDesc: `2 Supernovas.`,
             desc: `Start with Silicon-14 unlocked. You can now automatically buy Elements & Atom upgrades.`,
-            cost: E(1000),
+            cost: E(1500),
         },
         qol2: {
             branch: ["qol1"],
             req() { return player.supernova.times.gte(3) },
             reqDesc: `3 Supernovas.`,
-            desc: `Start with Chromium-24 & Atom upgrade 6 unlocked.`,
+            desc: `Start with Chromium-24 and Atom upgrade 6 unlocked.`,
             cost: E(2000),
         },
         chal1: {
             req() { return player.supernova.times.gte(4) },
             reqDesc: `4 Supernovas.`,
             desc: `Add 100 more C7-8 maximum completions.`,
-            cost: E(5000),
+            cost: E(6000),
         },
         /*
         x: {
