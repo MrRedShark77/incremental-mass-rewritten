@@ -1,8 +1,10 @@
 const SUPERNOVA = {
-    reset() {
-        if (tmp.supernova.reached) {
+    reset(force=false) {
+        if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
+        if (tmp.supernova.reached || force) {
             tmp.el.supernova_scene.setDisplay(false)
-            player.supernova.times = player.supernova.times.add(1)
+            if (!force) player.supernova.times = player.supernova.times.add(1)
+            tmp.pass = true
             this.doReset()
         }
     },
@@ -16,12 +18,15 @@ const SUPERNOVA = {
         player.atom.atomic = E(0)
         player.atom.gamma_ray = E(0)
         
+        let list_keep = [2,5]
+        if (player.supernova.tree.includes("qol2")) list_keep.push(6)
         let keep = []
-        for (let x = 0; x < player.mainUpg.atom.length; x++) if ([2,5].includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
+        for (let x = 0; x < player.mainUpg.atom.length; x++) if (list_keep.includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
         player.mainUpg.atom = keep
 
-        let list_keep = [21,36]
+        list_keep = [21,36]
         if (player.supernova.tree.includes("qol1")) list_keep.push(14)
+        if (player.supernova.tree.includes("qol2")) list_keep.push(24)
         keep = []
         for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
         player.atom.elements = keep
@@ -38,6 +43,10 @@ const SUPERNOVA = {
         for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
 
         ATOM.doReset()
+
+        player.supernova.chal.noTick = true
+        player.supernova.chal.noBHC = true
+
         tmp.pass = false
     },
     starGain() {
@@ -49,6 +58,9 @@ const SUPERNOVA = {
 }
 
 function calcSupernova(dt, dt_offline) {
+    if (player.tickspeed.gte(1)) player.supernova.chal.noTick = false
+    if (player.bh.condenser.gte(1)) player.supernova.chal.noBHC = false
+
     if (tmp.supernova.reached && !tmp.offlineActive) {
         if (player.supernova.times.lte(0)) tmp.supernova.time += dt
         else {
@@ -79,7 +91,7 @@ function updateSupernovaTemp() {
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||""
-        let can = player.supernova.stars.gte(TREE_UPGS.ids[id].cost) && !player.supernova.tree.includes(id)
+        let can = player.supernova.stars.gte(TREE_UPGS.ids[id].cost) && !player.supernova.tree.includes(id) && (TREE_UPGS.ids[id].req?TREE_UPGS.ids[id].req():true)
         if (branch != "") for (let x = 0; x < branch.length; x++) if (!player.supernova.tree.includes(branch[x])) {
             can = false
             break

@@ -263,7 +263,7 @@ button {
 }
 
 .btn_tree {
-	background-color: #444;
+	background-color: black;
 	border: solid 2px white;
 	margin: 10px;
 	width: 54px;
@@ -272,11 +272,11 @@ button {
 }
 
 .btn_tree:not(.bought).locked {
-	background-color: #171717 !important;
+	border-color: #171717;
 }
 
 .btn_tree.bought {
-	background-color: #00520b;
+	border-color: #00520b;
 }
 
 .btn_tree.choosed {

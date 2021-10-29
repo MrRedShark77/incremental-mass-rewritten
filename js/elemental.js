@@ -357,6 +357,19 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        {
+            desc: `Mass Dilation upgrade 6 is 75% stronger.`,
+            cost: E('e4600'),
+        },
+        {
+            desc: `Collapsed stars boost all-star resources at a reduced rate.`,
+            cost: E('e5200'),
+            effect() {
+                let x = player.mass.max(1).log10().root(2)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
     ],
     /*
     {

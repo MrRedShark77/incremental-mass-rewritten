@@ -1,7 +1,7 @@
 const TREE_IDS = [
-    ["","","","","qol1","","","","s1","c","sn1","sn2","","","","","","",""],
-    ["","","","","","","","","m1","rp1","bh1","","","","","","","",""],
-    ["","","","","","","","","m2","","","","","","","","","",""],
+    ["","","","","qol1","","","s2","s1","c","sn1","sn2","","","chal1","","","",""],
+    ["","","","qol2","","","","","m1","rp1","bh1","","","","","","","",""],
+    ["","","","","","","","m2","t1","","bh2","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -69,6 +69,13 @@ const TREE_UPGS = {
             desc: `Raise mass gain softcap^2 to 1.5th power.`,
             cost: E(1000),
         },
+        t1: {
+            branch: ["m1", 'rp1'],
+            req() { return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1)) },
+            reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run.`},
+            desc: `Tickspeed power is now ^1.15 stronger.`,
+            cost: E(1500),
+        },
         rp1: {
             branch: ["c"],
             desc: `Neutron star multiple rage powers gain.`,
@@ -89,6 +96,13 @@ const TREE_UPGS = {
             },
             effDesc(x) { return format(x)+"x"+(x.max(1).log(1e35).gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
         },
+        bh2: {
+            branch: ['bh1'],
+            req() { return player.supernova.chal.noBHC && player.bh.mass.gte("1.5e1.7556e4") },
+            reqDesc() {return `Reach ${format("e1.75e4")} uni of balck hole without buying BH Condenser in Supernova run.`},
+            desc: `BH Condenser power is now ^1.15 stronger.`,
+            cost: E(1500),
+        },
         s1: {
             branch: ["c"],
             desc: `Neutron star boost last stars gain.`,
@@ -99,12 +113,37 @@ const TREE_UPGS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        s2: {
+            branch: ["s1"],
+            req() { return player.supernova.times.gte(3) },
+            reqDesc: `3 Supernovas.`,
+            desc: `Tetr which boosts star effect, softcap is 50% weaker.`,
+            cost: E(2500),
+        },
         qol1: {
+            req() { return player.supernova.times.gte(2) },
+            reqDesc: `2 Supernovas.`,
             desc: `Start with Silicon-14 unlocked. You can now automatically buy Elements & Atom upgrades.`,
             cost: E(1000),
         },
+        qol2: {
+            branch: ["qol1"],
+            req() { return player.supernova.times.gte(3) },
+            reqDesc: `3 Supernovas.`,
+            desc: `Start with Chromium-24 & Atom upgrade 6 unlocked.`,
+            cost: E(2000),
+        },
+        chal1: {
+            req() { return player.supernova.times.gte(4) },
+            reqDesc: `4 Supernovas.`,
+            desc: `Add 100 more C7-8 maximum completions.`,
+            cost: E(5000),
+        },
         /*
         x: {
+            unl() { return true },
+            req() { return true },
+            reqDesc: ``,
             desc: `Placeholder.`,
             cost: E(1/0),
             effect() {
@@ -112,7 +151,7 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
-        }
+        },
         */
     },
 }
@@ -194,9 +233,11 @@ function drawTreeBranch(num1, num2) {
 }
 
 function updateTreeHTML() {
+    let req = ""
+    if (tmp.supernova.tree_choosed != "") req = TREE_UPGS.ids[tmp.supernova.tree_choosed].req?`<span class="${TREE_UPGS.ids[tmp.supernova.tree_choosed].req()?"green":"red"}">${TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc?" Require: "+(typeof TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc == "function"?TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc():TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc):""}</span>`:""
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? ""
-        : `<span class="gray" style="font-size: 12px">(click again to buy if affordable)</span><br>
+        : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
         <span class="sky">${TREE_UPGS.ids[tmp.supernova.tree_choosed].desc}</span><br>
         <span>Cost: ${format(TREE_UPGS.ids[tmp.supernova.tree_choosed].cost,2)} Neutron star</span><br>
         <span class="green">${TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc?"Currently: "+TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>

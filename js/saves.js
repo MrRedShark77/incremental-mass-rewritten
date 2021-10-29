@@ -13,6 +13,7 @@ Decimal.prototype.softcap = function (start, power, mode) {
     if (x.gte(start)) {
         if ([0, "pow"].includes(mode)) x = x.div(start).pow(power).mul(start)
         if ([1, "mul"].includes(mode)) x = x.sub(start).div(power).add(start)
+        if ([2, "exp"].includes(mode)) x = expMult(x.div(start), power).mul(start)
     }
     return x
 }
@@ -122,6 +123,10 @@ function getPlayerData() {
             times: E(0),
             stars: E(0),
             tree: [],
+            chal: {
+                noTick: true,
+                noBHC: true,
+            },
         },
         reset_msg: "",
         main_upg_msg: [0,0],

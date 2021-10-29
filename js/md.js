@@ -87,10 +87,14 @@ const MASS_DILATION = {
                 effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             },{
                 desc: `Increase the exponent of the RP formula.`,
-                maxLvl: 50,
+                maxLvl: 100,
                 cost(x) { return E(1e3).pow(x.pow(1.5)).mul(1.5e73) },
                 bulk() { return player.md.mass.gte(1.5e73)?player.md.mass.div(1.5e73).max(1).log(1e3).max(0).root(1.5).add(1).floor():E(0) },
-                effect(x) { return x.mul(0.25) },
+                effect(i) {
+                    let x = i.mul(0.25)
+                    if (player.atom.elements.includes(53)) x = x.mul(1.75)
+                    return x
+                },
                 effDesc(x) { return "+^"+format(x) },
             },{
                 desc: `Dilated mass boost quarks gain.`,

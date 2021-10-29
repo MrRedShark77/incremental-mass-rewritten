@@ -92,6 +92,7 @@ const FORMS = {
                 if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
                 step = step.mul(tmp.md.mass_eff)
+            if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
             let eff = step.pow(player.tickspeed.add(bouns))
             if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
@@ -206,6 +207,7 @@ const FORMS = {
                     if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                     pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
                     if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
+                    if (player.supernova.tree.includes("bh2")) pow = pow.pow(1.15)
                 let eff = pow.pow(player.bh.condenser.add(tmp.bh.condenser_bouns))
                 return {pow: pow, eff: eff}
             },
