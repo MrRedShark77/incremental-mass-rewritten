@@ -99,7 +99,7 @@ const TREE_UPGS = {
         bh2: {
             branch: ['bh1'],
             req() { return player.supernova.chal.noBHC && player.bh.mass.gte("1.5e1.7556e4") },
-            reqDesc() {return `Reach ${format("e1.75e4")} uni of balck hole without buying BH Condenser in Supernova run.`},
+            reqDesc() {return `Reach ${format("e1.75e4")} uni of black hole without buying BH Condenser in Supernova run.`},
             desc: `BH Condenser power is now ^1.15 stronger.`,
             cost: E(1500),
         },
