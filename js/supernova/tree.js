@@ -1,6 +1,6 @@
 const TREE_IDS = [
     ["","","","","qol1","","","s2","s1","c","sn1","sn2","","","chal1","","","",""],
-    ["","","","qol2","","","","","m1","rp1","bh1","","","","","","","",""],
+    ["","","","qol2","","","","","m1","rp1","bh1","","","chal2","","chal3","","",""],
     ["","","","","","","","m2","t1","","bh2","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -136,8 +136,28 @@ const TREE_UPGS = {
         chal1: {
             req() { return player.supernova.times.gte(4) },
             reqDesc: `4 Supernovas.`,
-            desc: `Add 100 more C7-8 maximum completions.`,
+            desc: `Add 100 more C7 & C8 maximum completions.`,
             cost: E(6000),
+        },
+        chal2: {
+            branch: ["chal1"],
+            req() {
+                for (let x = 1; x <= 4; x++) if (player.chal.comps[x].gte(1)) return false
+                return player.mass.gte(E('e2.05e6').mul(1.5e56))
+            },
+            reqDesc() { return `Reach ${format('e2.05e6')} uni without challenge 1-4 completions in Supernova run.` },
+            desc: `Keep challenge 1-4 completions on reset.`,
+            cost: E(1e4),
+        },
+        chal3: {
+            branch: ["chal1"],
+            req() {
+                for (let x = 5; x <= 8; x++) if (player.chal.comps[x].gte(1)) return false
+                return player.bh.mass.gte(E('e1.75e4').mul(1.5e56))
+            },
+            reqDesc() { return `Reach ${format('e1.75e4')} uni of black hole without challenge 5-8 completions in Supernova run.` },
+            desc: `Keep challenge 5-8 completions on reset.`,
+            cost: E(1e4),
         },
         /*
         x: {

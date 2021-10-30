@@ -37,7 +37,7 @@ const ATOM = {
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
-        if (chal_reset && !player.mainUpg.atom.includes(4)) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
+        if (chal_reset && !player.mainUpg.atom.includes(4) && !player.supernova.tree.includes("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
         FORMS.bh.doReset()
     },
     atomic: {

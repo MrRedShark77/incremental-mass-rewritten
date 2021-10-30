@@ -256,6 +256,10 @@ function importy() {
         addNotify('monke<br><img src="https://pbs.twimg.com/profile_images/1359293274754744331/xfImzn4c.jpg">')
         return
     }
+    if (loadgame == 'matt parker') {
+        addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
+        return
+    }
     if (loadgame != null) {
         let keep = player
         try {

@@ -40,7 +40,7 @@ const SUPERNOVA = {
         player.stars.generators = [E(0),E(0),E(0),E(0),E(0)]
         player.stars.points = E(0)
 
-        for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
+        if (!player.supernova.tree.includes("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
 
         ATOM.doReset()
 
