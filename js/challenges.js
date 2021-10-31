@@ -57,7 +57,8 @@ const CHALS = {
     inChal(x) { return player.chal.active == x },
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
-        else ATOM.doReset(chal_reset)
+        else if (x < 9) ATOM.doReset(chal_reset)
+        else SUPERNOVA.reset(true, true)
     },
     exit() {
         if (!player.chal.active == 0) {
@@ -75,11 +76,11 @@ const CHALS = {
         }
     },
     getResource(x) {
-        if (x < 5) return player.mass
+        if (x < 5 || x > 8) return player.mass
         return player.bh.mass
     },
     getResName(x) {
-        if (x < 5) return ''
+        if (x < 5 || x > 8) return ''
         return ' of Black Hole'
     },
     getFormat(x) {
@@ -87,7 +88,8 @@ const CHALS = {
     },
     getReset(x) {
         if (x < 5) return "Entering challenge will reset with Dark Matters!"
-        return "Entering challenge will reset with Atoms except previous challenges!"
+        if (x < 9) return "Entering challenge will reset with Atoms except previous challenges!"
+        return "Entering challenge will reset without being Supernova!"
     },
     getMax(i) {
         let x = this[i].max
@@ -283,7 +285,22 @@ const CHALS = {
         },
         effDesc(x) { return "^"+format(x) },
     },
-    cols: 8,
+    9: {
+        unl() { return player.supernova.tree.includes("chal4") },
+        title: "No Particles",
+        desc: "You cannot assign quarks. In addtional, mass gains exponent is raised to 0.9th power.",
+        reward: `Improve Magnesium-12 better.`,
+        max: E(50),
+        inc: E('e500'),
+        pow: E(1.5),
+        start: E('e9.9e4').mul(1.5e56),
+        effect(x) {
+            let ret = x.root(4).mul(0.1).add(1)
+            return ret
+        },
+        effDesc(x) { return "^"+format(x) },
+    },
+    cols: 9,
 }
 
 /*

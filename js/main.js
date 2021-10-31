@@ -39,6 +39,7 @@ const FORMS = {
             x = expMult(x,0.8)
             if (player.atom.elements.includes(28)) x = x.pow(1.5)
         }
+        if (CHALS.inChal(9)) x = expMult(x,0.9)
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0).softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
     },
     massSoftGain() {
@@ -60,6 +61,7 @@ const FORMS = {
     massSoftGain2() {
         let s = E('1.5e1000056')
         if (player.supernova.tree.includes("m2")) s = s.pow(1.5)
+        if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
         return s
     },
     massSoftPower2() {

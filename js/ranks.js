@@ -83,6 +83,7 @@ const RANKS = {
             3: "raise tickspeed effect by 1.05.",
             4: "Super Rank scale weaker based on Tier, Super Tier scale 20% weaker.",
             5: "Hyper/Ultra Tickspeed starts later based on tetr.",
+            8: "Mass gain softcap^2 starts ^1.5 later.",
         },
     },
     effect: {

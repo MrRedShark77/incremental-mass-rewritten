@@ -1,6 +1,6 @@
 const SUPERNOVA = {
-    reset(force=false) {
-        if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
+    reset(force=false, chal=false) {
+        if (!chal) if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
         if (tmp.supernova.reached || force) {
             tmp.el.supernova_scene.setDisplay(false)
             if (!force) player.supernova.times = player.supernova.times.add(1)
@@ -27,6 +27,7 @@ const SUPERNOVA = {
         list_keep = [21,36]
         if (player.supernova.tree.includes("qol1")) list_keep.push(14)
         if (player.supernova.tree.includes("qol2")) list_keep.push(24)
+        if (player.supernova.tree.includes("qol3")) list_keep.push(43)
         keep = []
         for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
         player.atom.elements = keep

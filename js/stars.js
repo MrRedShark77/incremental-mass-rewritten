@@ -24,6 +24,7 @@ const STARS = {
         gain(i) {
             let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(1.5)
             if (player.atom.elements.includes(50)) x = x.pow(1.05)
+            if (player.supernova.tree.includes("s3")) x = x.pow(tmp.supernova.tree_eff.s3)
 
             if (player.atom.elements.includes(49) && i==4) x = x.mul(tmp.elements.effect[49])
             if (player.supernova.tree.includes("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)
@@ -82,6 +83,7 @@ function updateStarsScreenHTML() {
 function updateStarsHTML() {
     tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.stars.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
     tmp.el.stars_Eff.setTxt(format(tmp.stars.effect))
+    tmp.el.star_btn.setVisible(player.stars.unls < 5)
     tmp.el.star_btn.setTxt(`Unlock new type of Stars, require ${format(tmp.stars.generator_req)} Quark`)
     tmp.el.star_btn.setClasses({btn: true, locked: !player.atom.quarks.gte(tmp.stars.generator_req)})
     for (let x = 0; x < 5; x++) {

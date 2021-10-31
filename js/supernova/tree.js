@@ -1,7 +1,7 @@
 const TREE_IDS = [
-    ["","","","","qol1","","","s2","s1","c","sn1","sn2","","","chal1","","","",""],
-    ["","","","qol2","","","","","m1","rp1","bh1","","","chal2","","chal3","","",""],
-    ["","","","","","","","m2","t1","","bh2","","","","","","","",""],
+    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","","","chal1","","","",""],
+    ["","","","qol2","qol3","","","","m1","rp1","bh1","","","chal2","","chal3","","",""],
+    ["","","","","","","","m2","t1","","bh2","","","","chal4","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -120,6 +120,18 @@ const TREE_UPGS = {
             desc: `Star boost's Tetr's softcap is 50% weaker.`,
             cost: E(2500),
         },
+        s3: {
+            branch: ["s2"],
+            req() { return player.supernova.times.gte(4) },
+            reqDesc: `4 Supernovas.`,
+            desc: `Star generators are stronger based on Supernova.`,
+            cost: E(10000),
+            effect() {
+                let x = player.supernova.times.max(0).root(10).mul(0.1).add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
+        },
         qol1: {
             req() { return player.supernova.times.gte(2) },
             reqDesc: `2 Supernovas.`,
@@ -132,6 +144,13 @@ const TREE_UPGS = {
             reqDesc: `3 Supernovas.`,
             desc: `Start with Chromium-24 and Atom upgrade 6 unlocked.`,
             cost: E(2000),
+        },
+        qol3: {
+            branch: ["qol2"],
+            req() { return player.supernova.times.gte(4) },
+            reqDesc: `4 Supernovas.`,
+            desc: `Start with Techntium-43 unlocked, improve their element better. You can automatically gain Relativistic particles from mass.`,
+            cost: E(10000),
         },
         chal1: {
             req() { return player.supernova.times.gte(4) },
@@ -158,6 +177,11 @@ const TREE_UPGS = {
             reqDesc() { return `Reach ${format('e1.75e4')} uni of black hole without challenge 5-8 completions in Supernova run.` },
             desc: `Keep challenge 5-8 completions on reset.`,
             cost: E(1e4),
+        },
+        chal4: {
+            branch: ["chal2","chal3"],
+            desc: `Unlock new challenge.`,
+            cost: E(1.5e4),
         },
         /*
         x: {
