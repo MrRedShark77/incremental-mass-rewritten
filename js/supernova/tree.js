@@ -135,7 +135,7 @@ const TREE_UPGS = {
         qol1: {
             req() { return player.supernova.times.gte(2) },
             reqDesc: `2 Supernovas.`,
-            desc: `Start with Silicon-14 unlocked. You can now automatically buy Elements & Atom upgrades.`,
+            desc: `Start with Silicon-14 & Argon-18 unlocked. You can now automatically buy Elements & Atom upgrades.`,
             cost: E(1500),
         },
         qol2: {

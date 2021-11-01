@@ -25,7 +25,7 @@ const SUPERNOVA = {
         player.mainUpg.atom = keep
 
         list_keep = [21,36]
-        if (player.supernova.tree.includes("qol1")) list_keep.push(14)
+        if (player.supernova.tree.includes("qol1")) list_keep.push(14,18)
         if (player.supernova.tree.includes("qol2")) list_keep.push(24)
         if (player.supernova.tree.includes("qol3")) list_keep.push(43)
         keep = []
