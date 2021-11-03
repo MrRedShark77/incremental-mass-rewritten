@@ -159,12 +159,12 @@ function wipe() {
 }
 
 function loadPlayer(load) {
-    player = Object.assign(getPlayerData(), load)
+    player = deepNaN(load, getPlayerData())
+    player = Object.assign(getPlayerData(), player)
     for (let x = 0; x < Object.keys(player).length; x++) {
         let k = Object.keys(player)[x]
         if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
     }
-    player = deepNaN(player, getPlayerData())
     convertStringToDecimal()
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
@@ -176,8 +176,15 @@ function loadPlayer(load) {
 function deepNaN(obj, data) {
     for (let x = 0; x < Object.keys(obj).length; x++) {
         let k = Object.keys(obj)[x]
+        if (typeof obj[k] == 'string') {
+            if (isNaN(E(obj[k]))) obj[k] = data[k]
+        } else {
+            if (typeof obj[k] != 'object' && isNaN(obj[k])) obj[k] = data[k]
+            if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])
+        }
+        /*
         if (typeof obj[k] != 'object' && typeof obj[k] != 'string' && isNaN(obj[k])) obj[k] = data[k]
-        if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])
+        if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])*/
     }
     return obj
 }
