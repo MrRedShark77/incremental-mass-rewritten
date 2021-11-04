@@ -59,7 +59,7 @@ p {
 
 body {
     color: white;
-    background-color: #111;
+    background-color: hsl(0, 0%, 7%);
 	overflow-x: hidden;
 	font-size: 16px;
 	margin: 0px;
@@ -89,6 +89,42 @@ button {
 	z-index: -1;
 	opacity: 0.25;
 	transition-duration: 0.15s;
+}
+
+#notify {
+	position: absolute;
+    left: 50%;
+    top: 20px;
+	transform: translate(-50%, 0);
+	width: 400px;
+	min-height: 10px;
+	border: solid 2px white;
+	background-color: #171717;
+	padding: 7px 25px;
+	transition-duration: 0.75s;
+}
+
+#notify.hide {
+	opacity: 0;
+	top: -130px;
+}
+
+#tree {
+	height: calc(100% - 300px);
+}
+
+#tree_table {
+	width: 95%;
+	height: 100%;
+	border: solid 2px white;
+	overflow: auto;
+}
+
+#tree_canvas {
+	z-index: -1;
+	position: absolute;
+	width: 95%;
+	height: calc(100% - 300px);
 }
 
 .soft {
@@ -128,6 +164,10 @@ button {
 
 .sky {
 	color: skyblue;
+}
+
+.gray {
+	color: gray
 }
 
 .quark_color {
@@ -210,6 +250,7 @@ button {
 	background-color: #444
 }
 
+.btn_tree:not(.locked):not(.bought):hover,
 .elements:not(.locked):not(.bought):hover,
 .btn:not(.locked):not(.md):hover,
 .img_btn:not(.locked):not(.bought):hover {
@@ -221,16 +262,32 @@ button {
 	color: black;
 }
 
+.btn_tree {
+	background-color: black;
+	border: solid 2px white;
+	margin: 10px;
+	width: 54px;
+	height: 54px;
+	padding: 0;
+}
+
+.btn_tree:not(.bought).locked {
+	border-color: #171717;
+}
+
+.btn_tree.bought {
+	border-color: #00520b;
+}
+
+.btn_tree.choosed {
+	transform: scale(1.25);
+}
+
 .elements {
 	font-size: 18px;
 	width: 50px;
 	height: 50px;
 	background-color: #444;
-}
-
-.elements.locked {
-	background-color: #171717;
-	cursor: default;
 }
 
 .btn {
@@ -248,7 +305,8 @@ button {
 }
 
 .btn.locked,
-.img_btn.locked {
+.img_btn.locked,
+.elements.locked {
 	background-color: #171717;
 	cursor: default;
 }

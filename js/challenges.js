@@ -57,7 +57,8 @@ const CHALS = {
     inChal(x) { return player.chal.active == x },
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
-        else ATOM.doReset(chal_reset)
+        else if (x < 9) ATOM.doReset(chal_reset)
+        else SUPERNOVA.reset(true, true)
     },
     exit() {
         if (!player.chal.active == 0) {
@@ -75,11 +76,11 @@ const CHALS = {
         }
     },
     getResource(x) {
-        if (x < 5) return player.mass
+        if (x < 5 || x > 8) return player.mass
         return player.bh.mass
     },
     getResName(x) {
-        if (x < 5) return ''
+        if (x < 5 || x > 8) return ''
         return ' of Black Hole'
     },
     getFormat(x) {
@@ -87,7 +88,8 @@ const CHALS = {
     },
     getReset(x) {
         if (x < 5) return "Entering challenge will reset with Dark Matters!"
-        return "Entering challenge will reset with Atoms except previous challenges!"
+        if (x < 9) return "Entering challenge will reset with Atoms except previous challenges!"
+        return "Entering challenge will reset without being Supernova!"
     },
     getMax(i) {
         let x = this[i].max
@@ -96,15 +98,16 @@ const CHALS = {
         if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
+        if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },
-    getPower() {
+    getPower(i) {
         let x = E(1)
         if (player.atom.elements.includes(2)) x = x.mul(0.75)
         if (player.atom.elements.includes(26)) x = x.mul(tmp.elements.effect[26])
         return x
     },
-    getPower2() {
+    getPower2(i) {
         let x = E(1)
         return x
     },
@@ -112,14 +115,16 @@ const CHALS = {
         let res = !CHALS.inChal(0)?this.getResource(x):E(0)
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
+        let s1 = x > 8 ? 10 : 75
+        let s2 = 300
         let pow = chal.pow
         if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
         let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
         let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
         if (res.lt(chal.start)) bulk = E(0)
-        if (lvl.max(bulk).gte(75)) {
-            let start = E(75);
+        if (lvl.max(bulk).gte(s1)) {
+            let start = E(s1);
             let exp = E(3).pow(this.getPower());
             goal =
             chal.inc.pow(
@@ -135,10 +140,10 @@ const CHALS = {
                 .add(1)
                 .floor();
         }
-        if (lvl.max(bulk).gte(300)) {
-            let start = E(75);
+        if (lvl.max(bulk).gte(s2)) {
+            let start = E(s1);
             let exp = E(3).pow(this.getPower());
-            let start2 = E(300);
+            let start2 = E(s2);
             let exp2 = E(4.5).pow(this.getPower2())
             goal =
             chal.inc.pow(
@@ -237,7 +242,7 @@ const CHALS = {
         effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     6: {
-        unl() { return player.chal.comps[5].gte(1) },
+        unl() { return player.chal.comps[5].gte(1) || player.supernova.times.gte(1) },
         title: "No Tickspeed & Condenser",
         desc: "You cannot buy Tickspeed & BH Condenser.",
         reward: `For every completions adds +10% to Tickspeed & BH Condenser Power.`,
@@ -252,7 +257,7 @@ const CHALS = {
         effDesc(x) { return "+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     7: {
-        unl() { return player.chal.comps[6].gte(1) },
+        unl() { return player.chal.comps[6].gte(1) || player.supernova.times.gte(1) },
         title: "No Rage Powers",
         desc: "You cannot gain Rage Powers, but Dark Matters are gained by mass instead of Rage Powers at a reduced rate.<br>In addtional, mass gain softcap is stronger.",
         reward: `Completions adds 2 maximum completions of 1-4 Challenge.<br><span class="yellow">On 16th completion, unlock Elements</span>`,
@@ -268,7 +273,7 @@ const CHALS = {
         effDesc(x) { return "+"+format(x,0) },
     },
     8: {
-        unl() { return player.chal.comps[7].gte(1) },
+        unl() { return player.chal.comps[7].gte(1) || player.supernova.times.gte(1) },
         title: "White Hole",
         desc: "Dark Matter & Mass from Black Hole gains are rooted by 8.",
         reward: `Dark Matter & Mass from Black Hole gains are raised by completions.<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,
@@ -282,7 +287,22 @@ const CHALS = {
         },
         effDesc(x) { return "^"+format(x) },
     },
-    cols: 8,
+    9: {
+        unl() { return player.supernova.tree.includes("chal4") },
+        title: "No Particles",
+        desc: "You cannot assign quarks. In addtional, mass gains exponent is raised to 0.9th power.",
+        reward: `Improve Magnesium-12 better.`,
+        max: E(50),
+        inc: E('e500'),
+        pow: E(2),
+        start: E('e9.9e4').mul(1.5e56),
+        effect(x) {
+            let ret = x.root(4).mul(0.1).add(1)
+            return ret
+        },
+        effDesc(x) { return "^"+format(x) },
+    },
+    cols: 9,
 }
 
 /*

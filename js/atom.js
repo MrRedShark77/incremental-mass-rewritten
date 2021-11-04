@@ -37,18 +37,19 @@ const ATOM = {
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
-        if (chal_reset && !player.mainUpg.atom.includes(4)) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
+        if (chal_reset && !player.mainUpg.atom.includes(4) && !player.supernova.tree.includes("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
         FORMS.bh.doReset()
     },
     atomic: {
         gain() {
             let x = tmp.atom.gamma_ray_eff?tmp.atom.gamma_ray_eff.eff:E(0)
             if (player.atom.elements.includes(3)) x = x.mul(tmp.elements.effect[3])
+            if (player.atom.elements.includes(52)) x = x.mul(tmp.elements.effect[52])
             if (player.md.active) x = expMult(x,0.8)
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75)
+            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(5e4,0.75,0)
             return x.floor()
         },
     },
@@ -76,7 +77,7 @@ const ATOM = {
     particles: {
         names: ['Protons', 'Neutrons', 'Electrons'],
         assign(x) {
-            if (player.atom.quarks.lt(1)) return
+            if (player.atom.quarks.lt(1) || CHALS.inChal(9)) return
             let m = player.atom.ratio
             let spent = m > 0 ? player.atom.quarks.mul(RATIO_MODE[m]).ceil() : E(1)
             player.atom.quarks = player.atom.quarks.sub(spent)
@@ -84,7 +85,7 @@ const ATOM = {
         },
         assignAll() {
             let sum = player.atom.dRatio[0]+player.atom.dRatio[1]+player.atom.dRatio[2]
-            if (player.atom.quarks.lt(sum)) return
+            if (player.atom.quarks.lt(sum) || CHALS.inChal(9)) return
             let spent = player.atom.quarks.div(sum).floor()
             for (let x = 0; x < 3; x++) {
                 let add = spent.mul(player.atom.dRatio[x])
@@ -95,8 +96,8 @@ const ATOM = {
         effect(i) {
             let p = player.atom.particles[i]
             let x = p.pow(2)
-            if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4))
-            return x
+            if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]))
+            return x.softcap('e3.8e4',0.9,2)
         },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)
@@ -200,6 +201,38 @@ function updateAtomTemp() {
 			.add(1)
 			.floor();
 	}
+    if (scalingActive("gamma_ray", player.atom.gamma_ray.max(tmp.atom.gamma_ray_bulk), "ultra")) {
+		let start = getScalingStart("super", "gamma_ray");
+		let power = getScalingPower("super", "gamma_ray");
+        let start2 = getScalingStart("hyper", "gamma_ray");
+		let power2 = getScalingPower("hyper", "gamma_ray");
+        let start3 = getScalingStart("ultra", "gamma_ray");
+		let power3 = getScalingPower("ultra", "gamma_ray");
+		let exp = E(2).pow(power);
+        let exp2 = E(4).pow(power2);
+        let exp3 = E(6).pow(power3);
+		tmp.atom.gamma_ray_cost =
+			E(1.75).pow(
+                player.atom.gamma_ray
+                .pow(exp3)
+			    .div(start3.pow(exp3.sub(1)))
+                .pow(exp2)
+			    .div(start2.pow(exp2.sub(1)))
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+            ).floor()
+        tmp.atom.gamma_ray_bulk = player.atom.points
+            .max(1)
+            .log(1.75)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
+            .mul(start3.pow(exp3.sub(1)))
+			.root(exp3)
+			.add(1)
+			.floor();
+	}
     tmp.atom.gamma_ray_can = player.atom.points.gte(tmp.atom.gamma_ray_cost)
     tmp.atom.gamma_ray_eff = ATOM.gamma_ray.effect()
 
@@ -231,7 +264,7 @@ function setupAtomHTML() {
 
 function updateAtomicHTML() {
     tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain))
-	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0))
+	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(5e4)?" <span class='soft'>(softcapped)</span>":""))
 
 	tmp.el.gamma_ray_lvl.setTxt(format(player.atom.gamma_ray,0))
 	tmp.el.gamma_ray_btn.setClasses({btn: true, locked: !tmp.atom.gamma_ray_can})

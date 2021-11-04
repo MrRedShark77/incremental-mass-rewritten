@@ -2,8 +2,11 @@ var diff = 0;
 var date = Date.now();
 var player
 var tmp = {
+    sn_tab: 0,
     tab: 0,
     stab: [],
+    pass: true,
+    notify: [],
 }
 for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 
@@ -28,6 +31,8 @@ const FORMS = {
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         x = x.mul(tmp.stars.effect)
+        if (player.supernova.tree.includes("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
+
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
@@ -35,6 +40,7 @@ const FORMS = {
             x = expMult(x,0.8)
             if (player.atom.elements.includes(28)) x = x.pow(1.5)
         }
+        if (CHALS.inChal(9)) x = expMult(x,0.9)
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0).softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
     },
     massSoftGain() {
@@ -55,10 +61,13 @@ const FORMS = {
     },
     massSoftGain2() {
         let s = E('1.5e1000056')
+        if (player.supernova.tree.includes("m2")) s = s.pow(1.5)
+        if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
         return s
     },
     massSoftPower2() {
         let p = E(0.25)
+        if (player.atom.elements.includes(51)) p = p.pow(0.9)
         return p
     },
     tickspeed: {
@@ -86,6 +95,7 @@ const FORMS = {
                 if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
                 step = step.mul(tmp.md.mass_eff)
+            if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
             let eff = step.pow(player.tickspeed.add(bouns))
             if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
@@ -103,6 +113,7 @@ const FORMS = {
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
             gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
+            if (player.supernova.tree.includes("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4)) gain = gain.root(10)
@@ -128,6 +139,7 @@ const FORMS = {
             if (CHALS.inChal(7)) gain = player.mass.div(1e180)
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
+            if (player.supernova.tree.includes("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
             if (CHALS.inChal(7)) gain = gain.root(6)
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             if (CHALS.inChal(8)) gain = gain.root(8)
@@ -198,6 +210,7 @@ const FORMS = {
                     if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                     pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
                     if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
+                    if (player.supernova.tree.includes("bh2")) pow = pow.pow(1.15)
                 let eff = pow.pow(player.bh.condenser.add(tmp.bh.condenser_bouns))
                 return {pow: pow, eff: eff}
             },
@@ -692,6 +705,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
+            auto_unl() { return player.supernova.tree.includes("qol1") },
             lens: 12,
             1: {
                 desc: "Start with Mass upgrades unlocked.",

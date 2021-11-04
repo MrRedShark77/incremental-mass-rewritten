@@ -100,6 +100,7 @@ function setupHTML() {
 	setupElementsHTML()
 	setupMDHTML()
 	setupStarsHTML()
+	setupTreeHTML()
 
 	/*
 	function setupTestHTML() {
@@ -174,7 +175,7 @@ function updateUpperHTML() {
 	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(player.atom.elements.includes(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
 	unl = MASS_DILATION.unlocked()
 	tmp.el.md_div.setVisible(unl)
-	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>("+(player.md.active?"+"+format(tmp.md.rp_gain,0):"inactive")+")")
+	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(player.supernova.tree.includes("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
 }
 
 function updateRanksHTML() {
@@ -296,47 +297,50 @@ function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
 	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
 	tmp.el.loading.setDisplay(tmp.offlineActive)
-    tmp.el.app.setDisplay(!tmp.offlineActive)
-	updateStarsScreenHTML()
-	updateUpperHTML()
-    updateTabsHTML()
-	if (tmp.tab == 0) {
-		if (tmp.stab[0] == 0) {
-			updateRanksHTML()
-			updateMassUpgradesHTML()
-			updateTickspeedHTML()
-			
-			tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
-			tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
-			tmp.el.massSoft3.setDisplay(tmp.massGain.gte(tmp.massSoftGain2))
-			tmp.el.massSoftStart3.setTxt(formatMass(tmp.massSoftGain2))
+    tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab != 5))
+	updateSupernovaEndingHTML()
+	if (!tmp.supernova.reached && tmp.tab != 5) {
+		updateStarsScreenHTML()
+		updateUpperHTML()
+		updateTabsHTML()
+		if (tmp.tab == 0) {
+			if (tmp.stab[0] == 0) {
+				updateRanksHTML()
+				updateMassUpgradesHTML()
+				updateTickspeedHTML()
+				
+				tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
+				tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
+				tmp.el.massSoft3.setDisplay(tmp.massGain.gte(tmp.massSoftGain2))
+				tmp.el.massSoftStart3.setTxt(formatMass(tmp.massSoftGain2))
+			}
+			if (tmp.stab[0] == 1) {
+				updateBlackHoleHTML()
+			}
+			if (tmp.stab[0] == 2) {
+				updateAtomicHTML()
+			}
+			if (tmp.stab[0] == 3) {
+				updateStarsHTML()
+			}
 		}
-		if (tmp.stab[0] == 1) {
-			updateBlackHoleHTML()
+		if (tmp.tab == 1) {
+			if (tmp.stab[1] == 0) updateRanksRewardHTML()
+			if (tmp.stab[1] == 1) updateScalingHTML()
 		}
-		if (tmp.stab[0] == 2) {
-			updateAtomicHTML()
+		if (tmp.tab == 2) {
+			updateMainUpgradesHTML()
 		}
-		if (tmp.stab[0] == 3) {
-			updateStarsHTML()
+		if (tmp.tab == 3) {
+			updateChalHTML()
 		}
-	}
-	if (tmp.tab == 1) {
-		if (tmp.stab[1] == 0) updateRanksRewardHTML()
-		if (tmp.stab[1] == 1) updateScalingHTML()
-	}
-	if (tmp.tab == 2) {
-		updateMainUpgradesHTML()
-	}
-	if (tmp.tab == 3) {
-		updateChalHTML()
-	}
-	if (tmp.tab == 4) {
-		if (tmp.stab[4] == 0) updateAtomHTML()
-		if (tmp.stab[4] == 1) updateElementsHTML()
-		if (tmp.stab[4] == 2) updateMDHTML()
-	}
-	if (tmp.tab == 5) {
-		updateOptionsHTML()
+		if (tmp.tab == 4) {
+			if (tmp.stab[4] == 0) updateAtomHTML()
+			if (tmp.stab[4] == 1) updateElementsHTML()
+			if (tmp.stab[4] == 2) updateMDHTML()
+		}
+		if (tmp.tab == 6) {
+			updateOptionsHTML()
+		}
 	}
 }

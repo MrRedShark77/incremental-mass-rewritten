@@ -18,8 +18,8 @@ const MASS_DILATION = {
         if (player.atom.elements.includes(45)) x = x.mul(tmp.elements.effect[45])
         return x
     },
-    RPgain() {
-        let x = player.mass.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
+    RPgain(m=player.mass) {
+        let x = m.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
         return x.sub(player.md.particles).max(0).floor()
     },
     massGain() {
@@ -87,10 +87,15 @@ const MASS_DILATION = {
                 effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             },{
                 desc: `Increase the exponent of the RP formula.`,
-                maxLvl: 50,
+                maxLvl: 100,
                 cost(x) { return E(1e3).pow(x.pow(1.5)).mul(1.5e73) },
                 bulk() { return player.md.mass.gte(1.5e73)?player.md.mass.div(1.5e73).max(1).log(1e3).max(0).root(1.5).add(1).floor():E(0) },
-                effect(x) { return x.mul(0.25) },
+                effect(i) {
+                    let s = E(0.25).add(tmp.md.upgs[10].eff||1)
+                    let x = i.mul(s)
+                    if (player.atom.elements.includes(53)) x = x.mul(1.75)
+                    return x
+                },
                 effDesc(x) { return "+^"+format(x) },
             },{
                 desc: `Dilated mass boost quarks gain.`,
@@ -121,6 +126,15 @@ const MASS_DILATION = {
                     return E(2).pow(x).softcap(1e25,2/3,0)
                 },
                 effDesc(x) { return format(x)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
+            },{
+                unl() { return player.supernova.times.gte(1) },
+                desc: `Add 0.015 Mass Dilation upgrade 6’s base.`,
+                cost(x) { return E(1e50).pow(x.pow(1.5)).mul('1.50001e1556') },
+                bulk() { return player.md.mass.gte('1.50001e1556')?player.md.mass.div('1.50001e1556').max(1).log(1e50).max(0).root(1.5).add(1).floor():E(0) },
+                effect(x) {
+                    return x.mul(0.015).add(1).softcap(1.15,0.75,0).sub(1)
+                },
+                effDesc(x) { return "+"+format(x)+(x.gte(0.15)?" <span class='soft'>(softcapped)</span>":"") },
             },
         ],
     },
@@ -161,13 +175,14 @@ function updateMDTemp() {
     tmp.md.rp_exp_gain = MASS_DILATION.RPexpgain()
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()
     tmp.md.rp_gain = MASS_DILATION.RPgain()
+    tmp.md.passive_rp_gain = player.supernova.tree.includes("qol3")?MASS_DILATION.RPgain(expMult(player.mass,0.8)):E(0)
     tmp.md.mass_gain = MASS_DILATION.massGain()
     tmp.md.mass_req = MASS_DILATION.mass_req()
     tmp.md.mass_eff = MASS_DILATION.effect()
 }
 
 function updateMDHTML() {
-    tmp.el.md_particles.setTxt(format(player.md.particles,0))
+    tmp.el.md_particles.setTxt(format(player.md.particles,0)+(player.supernova.tree.includes("qol3")?" "+formatGain(player.md.particles,tmp.md.passive_rp_gain):""))
     tmp.el.md_eff.setTxt(tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
     tmp.el.md_mass.setTxt(formatMass(player.md.mass)+" "+formatGain(player.md.mass,tmp.md.mass_gain,true))
     tmp.el.md_btn.setTxt(player.md.active

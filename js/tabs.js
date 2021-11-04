@@ -1,6 +1,13 @@
 const TABS = {
     choose(x, stab=false) {
-        if (!stab) tmp.tab = x
+        if (!stab) {
+            if (x==5) tmp.sn_tab = tmp.tab
+            tmp.tab = x
+            if (x!=5) {
+                tmp.sn_tab = tmp.tab
+                tree_update = true
+            }
+        }
         else tmp.stab[tmp.tab] = x
     },
     1: [
@@ -9,6 +16,7 @@ const TABS = {
         { id: "Upgrades", unl() { return player.rp.unl } },
         { id: "Challenges", unl() { return player.chal.unl } },
         { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
+        { id: "Supernova", unl() { return player.supernova.times.gte(1) } },
         { id: "Options" },
     ],
     2: {
@@ -24,7 +32,7 @@ const TABS = {
         ],
         4: [
             { id: "Particles" },
-            { id: "Elements", unl() { return player.chal.comps[7].gte(16) } },
+            { id: "Elements", unl() { return player.chal.comps[7].gte(16) || player.supernova.times.gte(1) } },
             { id: "Mass Dilation", unl() { return MASS_DILATION.unlocked() }, style: "dilation" },
         ],
     },
