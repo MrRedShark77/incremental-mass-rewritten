@@ -2,6 +2,7 @@ var diff = 0;
 var date = Date.now();
 var player
 var tmp = {
+    sn_tab: 0,
     tab: 0,
     stab: [],
     pass: true,

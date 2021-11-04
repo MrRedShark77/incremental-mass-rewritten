@@ -1,8 +1,12 @@
 const TABS = {
     choose(x, stab=false) {
         if (!stab) {
+            if (x==5) tmp.sn_tab = tmp.tab
             tmp.tab = x
-            if (x!=5) tree_update = true
+            if (x!=5) {
+                tmp.sn_tab = tmp.tab
+                tree_update = true
+            }
         }
         else tmp.stab[tmp.tab] = x
     },
