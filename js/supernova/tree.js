@@ -245,7 +245,7 @@ function drawTree() {
 	for (let x in tmp.supernova.tree_had) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||[]
-        if (branch.length > 0 && TREE_UPGS.ids[id].nul?TREE_UPGS.ids[id].nul():true) for (let y in branch) {
+        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) {
 			drawTreeBranch(branch[y], id)
 		}
 	}
@@ -289,7 +289,7 @@ function updateTreeHTML() {
     )
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
-        let unl = TREE_UPGS.ids[id].unl?TREE_UPGS.ids[id].unl():true
+        let unl = tmp.supernova.tree_unlocked[id]
         tmp.el["treeUpg_"+id].setVisible(unl)
         if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, locked: !tmp.supernova.tree_afford[id], bought: player.supernova.tree.includes(id), choosed: id == tmp.supernova.tree_choosed})
     }

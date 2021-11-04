@@ -101,13 +101,13 @@ const CHALS = {
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },
-    getPower() {
+    getPower(i) {
         let x = E(1)
         if (player.atom.elements.includes(2)) x = x.mul(0.75)
         if (player.atom.elements.includes(26)) x = x.mul(tmp.elements.effect[26])
         return x
     },
-    getPower2() {
+    getPower2(i) {
         let x = E(1)
         return x
     },
@@ -115,14 +115,16 @@ const CHALS = {
         let res = !CHALS.inChal(0)?this.getResource(x):E(0)
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
+        let s1 = x > 8 ? 10 : 75
+        let s2 = 300
         let pow = chal.pow
         if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
         let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
         let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
         if (res.lt(chal.start)) bulk = E(0)
-        if (lvl.max(bulk).gte(75)) {
-            let start = E(75);
+        if (lvl.max(bulk).gte(s1)) {
+            let start = E(s1);
             let exp = E(3).pow(this.getPower());
             goal =
             chal.inc.pow(
@@ -138,10 +140,10 @@ const CHALS = {
                 .add(1)
                 .floor();
         }
-        if (lvl.max(bulk).gte(300)) {
-            let start = E(75);
+        if (lvl.max(bulk).gte(s2)) {
+            let start = E(s1);
             let exp = E(3).pow(this.getPower());
-            let start2 = E(300);
+            let start2 = E(s2);
             let exp2 = E(4.5).pow(this.getPower2())
             goal =
             chal.inc.pow(
@@ -292,7 +294,7 @@ const CHALS = {
         reward: `Improve Magnesium-12 better.`,
         max: E(50),
         inc: E('e500'),
-        pow: E(1.5),
+        pow: E(2),
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
             let ret = x.root(4).mul(0.1).add(1)

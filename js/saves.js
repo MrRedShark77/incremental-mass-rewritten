@@ -177,7 +177,7 @@ function deepNaN(obj, data) {
     for (let x = 0; x < Object.keys(obj).length; x++) {
         let k = Object.keys(obj)[x]
         if (typeof obj[k] == 'string') {
-            if (isNaN(E(obj[k]))) obj[k] = data[k]
+            if (obj[k] == "NaNeNaN") obj[k] = data[k]
         } else {
             if (typeof obj[k] != 'object' && isNaN(obj[k])) obj[k] = data[k]
             if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])

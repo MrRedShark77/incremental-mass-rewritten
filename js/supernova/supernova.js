@@ -79,6 +79,7 @@ function updateSupernovaTemp() {
             tree_choosed: "",
             tree_had: [],
             tree_eff: {},
+            tree_unlocked: {},
             tree_afford: {},
         }
         for (let i = 0; i < 19; i++) {
@@ -92,11 +93,14 @@ function updateSupernovaTemp() {
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||""
+        let unl = TREE_UPGS.ids[id].unl?TREE_UPGS.ids[id].unl():true
         let can = player.supernova.stars.gte(TREE_UPGS.ids[id].cost) && !player.supernova.tree.includes(id) && (TREE_UPGS.ids[id].req?TREE_UPGS.ids[id].req():true)
         if (branch != "") for (let x = 0; x < branch.length; x++) if (!player.supernova.tree.includes(branch[x])) {
+            unl = false
             can = false
             break
         }
+        tmp.supernova.tree_unlocked[id] = unl
         tmp.supernova.tree_afford[id] = can
         if (TREE_UPGS.ids[id].effect) tmp.supernova.tree_eff[id] = TREE_UPGS.ids[id].effect()
     }
