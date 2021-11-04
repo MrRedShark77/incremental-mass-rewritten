@@ -256,6 +256,7 @@ function export_copy() {
     copyText.select();
     document.execCommand("copy");
     copyText.style.visibility = "hidden"
+    addNotify("Copied to Clipboard")
 }
 
 function importy() {
