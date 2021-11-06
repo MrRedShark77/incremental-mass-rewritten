@@ -24,6 +24,7 @@ function calc(dt, dt_offline) {
     if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
     if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
     if (player.atom.elements.includes(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
+    if (player.mass.gte(1.5e136)) player.chal.unl = true
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
         if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
