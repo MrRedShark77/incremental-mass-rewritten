@@ -294,7 +294,7 @@ const CHALS = {
         reward: `Improve Magnesium-12 better.`,
         max: E(50),
         inc: E('e500'),
-        pow: E(2),
+        pow: E(1.5),
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
             let ret = x.root(4).mul(0.1).add(1)
