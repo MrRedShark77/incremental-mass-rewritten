@@ -1,7 +1,7 @@
 const TREE_IDS = [
-    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","","","chal1","","","",""],
-    ["","","","qol2","qol3","","","","m1","rp1","bh1","","","chal2","","chal3","","",""],
-    ["","","","","","","","m2","t1","","bh2","","","","chal4","","","",""],
+    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
+    ["","","","qol2","qol3","","s4","","m1","rp1","bh1","","","chal2","","chal3","","",""],
+    ["","","","","","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -50,6 +50,18 @@ const TREE_UPGS = {
             cost: E(350),
             effect() {
                 let x = E(2).pow(player.supernova.times)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        sn3: {
+            branch: ["sn2"],
+            desc: `Blue star boost Neutron star gain at a reduced rate.`,
+            req() { return player.supernova.times.gte(6) },
+            reqDesc: `6 Supernovas.`,
+            cost: E(50000),
+            effect() {
+                let x = player.stars.generators[4].max(1).log10().add(1)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -132,6 +144,13 @@ const TREE_UPGS = {
             },
             effDesc(x) { return "^"+format(x) },
         },
+        s4: {
+            branch: ["s3"],
+            req() { return player.supernova.times.gte(6) },
+            reqDesc: `6 Supernovas.`,
+            desc: `Beyond unlocking stars, Star Unlocker will transform into Booster.`,
+            cost: E(1e5),
+        },
         qol1: {
             req() { return player.supernova.times.gte(2) },
             reqDesc: `2 Supernovas.`,
@@ -182,6 +201,18 @@ const TREE_UPGS = {
             branch: ["chal2","chal3"],
             desc: `Unlock new challenge.`,
             cost: E(1.5e4),
+        },
+        gr1: {
+            branch: ["bh1"],
+            desc: `BH Condensers power boost Gamma Rays power.`,
+            req() { return player.supernova.times.gte(7) },
+            reqDesc: `7 Supernovas.`,
+            cost: E(1e6),
+            effect() {
+                let x = tmp.bh?tmp.bh.condenser_eff.pow.max(1).root(3):E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         /*
         x: {

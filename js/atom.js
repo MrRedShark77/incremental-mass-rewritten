@@ -70,6 +70,7 @@ const ATOM = {
             let pow = E(2)
             if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
             if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
+            if (player.supernova.tree.includes("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
             let eff = pow.pow(player.atom.gamma_ray).sub(1)
             return {pow: pow, eff: eff}
         },

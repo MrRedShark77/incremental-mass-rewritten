@@ -40,6 +40,7 @@ const SUPERNOVA = {
         player.stars.unls = 0
         player.stars.generators = [E(0),E(0),E(0),E(0),E(0)]
         player.stars.points = E(0)
+        player.stars.boost = E(0)
 
         if (!player.supernova.tree.includes("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
 
@@ -54,6 +55,7 @@ const SUPERNOVA = {
         let x = E(player.supernova.tree.includes("c")?0.1:0)
         if (player.supernova.tree.includes("sn1")) x = x.mul(tmp.supernova.tree_eff.sn1)
         if (player.supernova.tree.includes("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
+        if (player.supernova.tree.includes("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
         return x
     },
 }

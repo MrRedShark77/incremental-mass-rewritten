@@ -7,6 +7,7 @@ var tmp = {
     stab: [],
     pass: true,
     notify: [],
+    popup: [],
 }
 for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 

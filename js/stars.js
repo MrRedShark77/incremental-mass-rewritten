@@ -17,8 +17,9 @@ const STARS = {
     generators: {
         req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],
         unl() {
-            if (player.atom.quarks.gte(tmp.stars.generator_req)) {
-                player.stars.unls++
+            if (player.atom.quarks.gte(!player.supernova.tree.includes("s4")||player.stars.unls < 5?tmp.stars.generator_req:tmp.stars.generator_boost_req)) {
+                if(player.supernova.tree.includes("s4")&&player.stars.unls > 4) player.stars.boost = player.stars.boost.add(1)
+                else player.stars.unls++
             }
         },
         gain(i) {
@@ -30,7 +31,7 @@ const STARS = {
             if (player.supernova.tree.includes("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)
             if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
             if (player.atom.elements.includes(54)) x = x.mul(tmp.elements.effect[54])
-            return x
+            return x.mul(tmp.stars.generator_boost_eff)
         },
     },
     colors: ["#0085FF","#BFE0FF","#FFD500","#FF5200","#990000"],
@@ -46,6 +47,8 @@ function updateStarsTemp() {
         generators_gain: [],
     }
     tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:E(1/0)
+    tmp.stars.generator_boost_req = E("e100").pow(player.stars.boost.pow(1.25)).mul('e8000')
+    tmp.stars.generator_boost_eff = E(2).pow(player.stars.boost)
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.maxlimit = STARS.maxLimit()
     tmp.stars.gain = STARS.gain()
@@ -83,9 +86,14 @@ function updateStarsScreenHTML() {
 function updateStarsHTML() {
     tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.stars.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
     tmp.el.stars_Eff.setTxt(format(tmp.stars.effect))
-    tmp.el.star_btn.setVisible(player.stars.unls < 5)
-    tmp.el.star_btn.setTxt(`Unlock new type of Stars, require ${format(tmp.stars.generator_req)} Quark`)
-    tmp.el.star_btn.setClasses({btn: true, locked: !player.atom.quarks.gte(tmp.stars.generator_req)})
+
+    tmp.el.star_btn.setDisplay(player.supernova.tree.includes("s4") || player.stars.unls < 5)
+    tmp.el.star_btn.setHTML((player.stars.unls < 5 || !player.supernova.tree.includes("s4"))
+    ? `Unlock new type of Stars, require ${format(tmp.stars.generator_req)} Quark`
+    : `Boost all-Star resources gain, require ${format(tmp.stars.generator_boost_req)} Quark<br>Currently: ${format(tmp.stars.generator_boost_eff)}x`)
+
+    tmp.el.star_btn.setClasses({btn: true, locked: !player.atom.quarks.gte(!player.supernova.tree.includes("s4")||player.stars.unls < 5?tmp.stars.generator_req:tmp.stars.generator_boost_req)})
+
     for (let x = 0; x < 5; x++) {
         let unl = player.stars.unls > x
         tmp.el["star_gen_div_"+x].setDisplay(unl)

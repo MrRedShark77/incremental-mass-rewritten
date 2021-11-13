@@ -9,7 +9,7 @@
     <script src="js/break_eternity.js"></script>
     <script src="js/Element.js"></script>
     <script src="js/elements.js"></script>
-    <script src="js/notify.js"></script>
+    <script src="js/other.js"></script>
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
 
@@ -41,6 +41,12 @@
     </div>
     <div id="notify" class="hide">
         Hello, world!
+    </div>
+    <div id="popup" style="display: none">
+        <div style="height: 365px; overflow-y: auto; margin-bottom: 5px;" id="popup_html">
+            Hello, world!
+        </div>
+        <button class="btn" id="popup_button" onclick="tmp.popup[0].callFunctions()">Okay</button>
     </div>
     <div id="supernova_scene" style='display: none'>
         <br>
@@ -233,36 +239,12 @@
             <button class="btn" onclick="export_copy()">Export to clipboard</button>
             <button class="btn" onclick="importy()">Import</button>
             <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button>
-            <button class="btn" onclick="window.open('https://mrredshark77.github.io/incremental-mass-rewritten/help.html')">Help</button><br>
-            <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button><br><br>
-            <h2>Font Settings</h2><br>
-            <button class="btn" style="font-family: 'Andy Bold';" onclick="player.options.font = 'Andy Bold'">Andy Bold</button>
-            <button class="btn" style="font-family: Arial, Helvetica, sans-ser;" onclick="player.options.font = 'Arial, Helvetica, sans-ser'">Arial</button>
-            <button class="btn" style="font-family: Bahnschrift;" onclick="player.options.font = 'Bahnschrift'">Bahnschrift</button>
-            <button class="btn" style="font-family: Comic Sans MS;" onclick="player.options.font = 'Comic Sans MS'">Comic Sans MS</button>
-            <button class="btn" style="font-family: Courier;" onclick="player.options.font = 'Courier'">Courier</button>
-            <button class="btn" style="font-family: Cousine;" onclick="player.options.font = 'Cousine'">Cousine</button>
-            <button class="btn" style="font-family: 'Flexi IBM VGA False';" onclick="player.options.font = 'Flexi IBM VGA False'">Flexi IBM VGA False</button>
-            <button class="btn" style="font-family: Inconsolata;" onclick="player.options.font = 'Inconsolata'">Inconsolata</button><br>
-            <button class="btn" style="font-family: 'Lucida Handwriting';" onclick="player.options.font = 'Lucida Handwriting'">Lucida Handwriting</button>
-            <button class="btn" style="font-family: Monospace-Typewritter;" onclick="player.options.font = 'Monospace-Typewritter'">Monospace Typewritter</button>
-            <button class="btn" style="font-family: 'Nova Mono';" onclick="player.options.font = 'Nova Mono'">Nova Mono</button>
-            <button class="btn" style="font-family: 'Retron2000';" onclick="player.options.font = 'Retron2000'">Retron 2000</button>
-            <button class="btn" style="font-family: 'Roboto Mono';" onclick="player.options.font = 'Roboto Mono'">Roboto Mono</button>
-            <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="player.options.font = 'Verdana, Geneva, Tahoma, sans-serif'">Verdana</button>
-            <br><br>
+            <button class="btn" onclick="addPopup(POPUP_GROUPS.help)">Help</button><br>
+            <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button>
+            <button class="btn" onclick="addPopup(POPUP_GROUPS.fonts)">Fonts</button>
+            <button class="btn" onclick="addPopup(POPUP_GROUPS.notations)">Notations</button><br><br>
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
-            <br><br>
-            <h2>Notation Settings</h2><br>
-            <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
-            <button class="btn" onclick="player.options.notation = 'eng'">Engineering</button>
-            <button class="btn" onclick="player.options.notation = 'mixed_sc'">Mixed Scientific</button>
-            <button class="btn" onclick="player.options.notation = 'sc'">Scientific</button>
-            <button class="btn" onclick="player.options.notation = 'st'">Standard</button>
-            <button class="btn" onclick="player.options.notation = 'old_sc'">Old Scientific</button>
-            <button class="btn" onclick="player.options.notation = 'omega'">Omega</button>
-            <button class="btn" onclick="player.options.notation = 'omega_short'">Omega Short</button>
             <br><br>
             Incremental Mass Rewritten v0.4 Supernova - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>

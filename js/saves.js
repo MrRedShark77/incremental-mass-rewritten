@@ -118,6 +118,7 @@ function getPlayerData() {
         },
         stars: {
             unls: 0,
+            boost: E(0),
             points: E(0),
             generators: [E(0),E(0),E(0),E(0),E(0)],
         },
@@ -212,6 +213,7 @@ function convertStringToDecimal() {
     player.md.mass = E(player.md.mass)
 
     player.stars.points = E(player.stars.points)
+    player.stars.boost = E(player.stars.boost)
     for (let x = 0; x < 5; x++) if (player.stars.generators[x] !== undefined) player.stars.generators[x] = E(player.stars.generators[x])
 
     player.supernova.times = E(player.supernova.times)

@@ -109,6 +109,21 @@ button {
 	top: -130px;
 }
 
+#popup {
+	position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+	width: 600px; height: 400px;
+	border: solid 2px white;
+	background-color: #171717;
+	padding: 7px 25px;
+}
+
+#popup > .btn {
+	max-width: 90%;
+}
+
 #tree {
 	height: calc(100% - 300px);
 }
