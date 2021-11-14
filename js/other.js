@@ -1,9 +1,10 @@
-function addNotify(text, duration=4) {
+function addNotify(text, duration=3) {
     tmp.notify.push({text: text, duration: duration});
     if (tmp.notify.length == 1) updateNotify()
 }
 
 function removeNotify() {
+    if (tmp.saving > 0 && tmp.notify[0]?tmp.notify[0].text="Game Saving":false) tmp.saving--
     if (tmp.notify.length <= 1) tmp.notify = []
     let x = []
     for (let i = 1; i < tmp.notify.length; i++) x.push(tmp.notify[i])
@@ -69,6 +70,17 @@ const POPUP_GROUPS = {
             <button class="btn" onclick="player.options.notation = 'omega_short'">Omega Short</button>
         `,
     },
+    supernova10: {
+        html: `
+            Congratulations!<br><br>You have becomed 10 Supernovas!<br>
+            And you can become Supernova <b>yourself</b>!
+        `,
+        width: 400,
+        height: 150,
+        otherStyle: {
+            'font-size': "14px",
+        },
+    },
 }
 
 function addPopup(data) {
@@ -76,6 +88,10 @@ function addPopup(data) {
         html: data.html||"",
         button: data.button||"Okay",
         callFunctions: data.callFunction?function() {removePopup();data.callFunctions()}:removePopup,
+
+        width: data.width||600,
+        height: data.height||400,
+        otherStyle: data.otherStyle||{},
     })
     updatePopup()
 }
@@ -84,7 +100,11 @@ function updatePopup() {
     tmp.el.popup.setDisplay(tmp.popup.length > 0)
     if (tmp.popup.length > 0) {
         tmp.el.popup_html.setHTML(tmp.popup[0].html)
+        tmp.el.popup_html.changeStyle("height", tmp.popup[0].height-35)
         tmp.el.popup_button.setHTML(tmp.popup[0].button)
+        tmp.el.popup.changeStyle("width", tmp.popup[0].width)
+        tmp.el.popup.changeStyle("height", tmp.popup[0].height)
+        for (let x in tmp.popup[0].otherStyle) tmp.el.popup_html.changeStyle(x, tmp.popup[0].otherStyle[x])
     }
 }
 

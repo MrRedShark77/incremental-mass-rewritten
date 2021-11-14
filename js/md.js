@@ -132,9 +132,9 @@ const MASS_DILATION = {
                 cost(x) { return E(1e50).pow(x.pow(1.5)).mul('1.50001e1556') },
                 bulk() { return player.md.mass.gte('1.50001e1556')?player.md.mass.div('1.50001e1556').max(1).log(1e50).max(0).root(1.5).add(1).floor():E(0) },
                 effect(x) {
-                    return x.mul(0.015).add(1).softcap(1.15,0.75,0).sub(1)
+                    return x.mul(0.015).add(1).softcap(1.2,0.75,0).sub(1)
                 },
-                effDesc(x) { return "+"+format(x)+(x.gte(0.15)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return "+"+format(x)+(x.gte(0.2)?" <span class='soft'>(softcapped)</span>":"") },
             },
         ],
     },

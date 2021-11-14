@@ -64,7 +64,7 @@ function calcSupernova(dt, dt_offline) {
     if (player.tickspeed.gte(1)) player.supernova.chal.noTick = false
     if (player.bh.condenser.gte(1)) player.supernova.chal.noBHC = false
 
-    if (tmp.supernova.reached && !tmp.offlineActive) {
+    if (tmp.supernova.reached && (!tmp.offlineActive || player.supernova.times.gte(1))) {
         if (player.supernova.times.lte(0)) tmp.supernova.time += dt
         else {
             addNotify("You become Supernova!")

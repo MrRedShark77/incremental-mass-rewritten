@@ -1,6 +1,6 @@
 const ELEMENTS = {
-    map: `x_________________xvxx___________xxxxxxvxx___________xxxxxxvxxx_xxxxxxxxxxxxxxxvxxx_xxxxxxxxxxxxxxxvxxx1xxxxxxxxxxxxxxxvxxx2xxxxxxxxxxxxxxxv_v___1xxxxxxxxxxxxxx_v___2xxxxxxxxxxxxxx_`,
-    la: [null,'*','**'],
+    map: `x_________________xvxx___________xxxxxxvxx___________xxxxxxvxxx_xxxxxxxxxxxxxxxvxxx_xxxxxxxxxxxxxxxvxxx1xxxxxxxxxxxxxxxvxxx2xxxxxxxxxxxxxxxv_v___3xxxxxxxxxxxxxx_v___4xxxxxxxxxxxxxx_`,
+    la: [null,'*','**','*','**'],
     names: [
         null,
         'H','He','Li','Be','B','C','N','O','F','Ne',
@@ -400,7 +400,7 @@ function setupElementsHTML() {
 	for (let i = 0; i < ELEMENTS.map.length; i++) {
 		let m = ELEMENTS.map[i]
         if (m=='v') table += '</div><div class="table_center">'
-        else if (m=='_') table += `<div style="width: 50px; height: 50px">${ELEMENTS.la[m]!==undefined?"<br>"+ELEMENTS.la[m]:""}</div>`
+        else if (m=='_' || !isNaN(Number(m))) table += `<div ${ELEMENTS.la[m]!==undefined?`id='element_la_${m}'`:""} style="width: 50px; height: 50px">${ELEMENTS.la[m]!==undefined?"<br>"+ELEMENTS.la[m]:""}</div>`
         else if (m=='x') {
             num++
             table += ELEMENTS.upgs[num]===undefined?`<div style="width: 50px; height: 50px"></div>`
@@ -422,6 +422,10 @@ function updateElementsHTML() {
         tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0))
         tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tmp.elements.effect[ch]):"")
     }
+    tmp.el.element_la_1.setVisible(tmp.elements.unl_length>57)
+    tmp.el.element_la_3.setVisible(tmp.elements.unl_length>57)
+    tmp.el.element_la_2.setVisible(tmp.elements.unl_length>88)
+    tmp.el.element_la_4.setVisible(tmp.elements.unl_length>88)
     for (let x = 1; x <= tmp.elements.upg_length; x++) {
         let upg = tmp.el['elementID_'+x]
         if (upg) {

@@ -8,6 +8,7 @@ var tmp = {
     pass: true,
     notify: [],
     popup: [],
+    saving: 0,
 }
 for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 

@@ -231,7 +231,7 @@ function save(){
     if (cannotSave()) return
     if (localStorage.getItem("testSave") == '') wipe()
     localStorage.setItem("testSave",btoa(JSON.stringify(player)))
-    addNotify("Game Saved")
+    if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 
 function load(x){
