@@ -332,7 +332,7 @@ const ELEMENTS = {
             cost: E('e800'),
         },
         {
-            desc: `Collapsed star boost last type of stars.`,
+            desc: `Collapsed star boost fifth type of stars.`,
             cost: E('e1000'),
             effect() {
                 let x = player.stars.points.add(1).log10().add(1).pow(1.1)
