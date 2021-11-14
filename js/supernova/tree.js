@@ -1,6 +1,6 @@
 const TREE_IDS = [
-    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","","","chal1","","","",""],
-    ["","","","qol2","qol3","","","","m1","rp1","bh1","","","chal2","","chal3","","",""],
+    ["","","","","qol1","s4","s3","s2","s1","c","sn1","sn2","sn3","sn4","chal1","","","",""],
+    ["","","","qol2","qol3","","","","m1","rp1","bh1","","","chal2","chal5","chal3","","",""],
     ["","","","","","","","m2","t1","","bh2","","","","chal4","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -50,6 +50,26 @@ const TREE_UPGS = {
             cost: E(350),
             effect() {
                 let x = E(2).pow(player.supernova.times)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        sn3: {
+            branch: ["sn2"],
+            desc: `Neutron Star boosts its gain itself at a VERY reduced rate.`,
+            cost: E("1e5"),
+            effect() {
+                let x = player.supernova.stars.add(1).log10().root(2)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        sn4: {
+            branch: ["sn3"],
+            desc: `Dilated mass boosts Neutron star gain at a VERY reduced rate.`,
+            cost: E("3e6"),
+            effect() {
+                let x = player.md.particles.add(1).log10().log10()
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -105,7 +125,7 @@ const TREE_UPGS = {
         },
         s1: {
             branch: ["c"],
-            desc: `Neutron Star boosts last star gain.`,
+            desc: `Neutron Star boosts fifth star gain.`,
             cost: E(400),
             effect() {
                 let x = player.supernova.stars.add(1).pow(1.25)
@@ -131,6 +151,13 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return "^"+format(x) },
+        },
+        s4: {
+            branch: ["s3"],
+            req() { return player.supernova.times.gte(8) },
+            reqDesc: `8 Supernovas.`,
+            desc: `Unlock a new star: Omega star. Omega star gain is cube rooted.`,
+            cost: E(1e7),
         },
         qol1: {
             req() { return player.supernova.times.gte(2) },
@@ -182,6 +209,11 @@ const TREE_UPGS = {
             branch: ["chal2","chal3"],
             desc: `Unlock new challenge.`,
             cost: E(1.5e4),
+        },
+        chal5: {
+            branch: ["chal1"],
+            desc: `You can complete C8 50 more times.`,
+            cost: E("1e4"),
         },
         /*
         x: {
