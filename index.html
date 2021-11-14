@@ -29,7 +29,7 @@
 
     <script src="js/main.js"></script>
 
-    <title>Incremental Mass Rewritten</title>
+    <title>IMR V0.4 NG+</title>
 </head>
 <body onload="loadGame()">
     <input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
@@ -37,6 +37,8 @@
         <div>
             <h1>Loading game...</h1><br>
             <h2>Loading Offline Progress... (<span id='offlineSpeed'>1</span>x speed)</h2>
+            <h3>If nothing is happening, something is wrong. you should hard reset.</h3>
+            <button class="btn" onclick="if (confirm('Are you sure you want to RESET your progress to new game?')) {wipe(); save(); location.reload()}">Hard Reset</button>
         </div>
     </div>
     <div id="notify" class="hide">
