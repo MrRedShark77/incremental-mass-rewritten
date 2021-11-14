@@ -9,13 +9,13 @@ const STARS = {
     effect() {
         let p = E(1)
         if (player.atom.elements.includes(48)) p = p.mul(1.1)
-        let [s,r,t1,t2] = [player.stars.points.mul(p),player.ranks.rank.mul(p),player.ranks.tier.mul(p),player.ranks.tetr.mul(p).softcap(5,player.supernova.tree.includes("s2")?1.5:5,1)]
+        let [s,r,t1,t2] = [player.stars.points.mul(p),player.ranks.rank.mul(p),player.ranks.tier.mul(p),player.ranks.tetr.mul(p).softcap(6,player.supernova.tree.includes("s2")?1.5:5,1)]
         let x =
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25)))
         return x
     },
     generators: {
-        req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],
+        req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870'),E('e9600')],
         unl() {
             if (player.atom.quarks.gte(tmp.stars.generator_req)) {
                 player.stars.unls++
@@ -30,23 +30,24 @@ const STARS = {
             if (player.supernova.tree.includes("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)
             if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
             if (player.atom.elements.includes(54)) x = x.mul(tmp.elements.effect[54])
+            if (i==5) x.root(3)
             return x
         },
     },
-    colors: ["#0085FF","#BFE0FF","#FFD500","#FF5200","#990000"],
+    colors: ["#0085FF","#BFE0FF","#FFD500","#FF5200","#990000","#7FFF7F"],
 }
 
 function calcStars(dt) {
     player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt)).min(tmp.stars.maxlimit)
-    for (let x = 0; x < 5; x++) player.stars.generators[x] = player.stars.generators[x].add(tmp.stars.generators_gain[x].mul(dt))
+    for (let x = 0; x < 6; x++) player.stars.generators[x] = player.stars.generators[x].add(tmp.stars.generators_gain[x].mul(dt))
 }
 
 function updateStarsTemp() {
     if (!tmp.stars) tmp.stars = {
         generators_gain: [],
     }
-    tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:E(1/0)
-    for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
+    tmp.stars.generator_req = player.stars.unls<6?STARS.generators.req[player.stars.unls]:E(1/0)
+    for (let x = 0; x < 6; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.maxlimit = STARS.maxLimit()
     tmp.stars.gain = STARS.gain()
     tmp.stars.effect = STARS.effect()
@@ -55,11 +56,11 @@ function updateStarsTemp() {
 function setupStarsHTML() {
     let stars_table = new Element("stars_table")
 	let table = ""
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < 6; i++) {
         if (i > 0) table += `<div id="star_gen_arrow_${i}" style="width: 30px; font-size: 30px"><br>←</div>`
         table += `
             <div id="star_gen_div_${i}" style="width: 250px;">
-                <img src="images/star_${5-i}.png"><br><br>
+                <img src="images/star_${i<5?5-i:i+1}.png"><br><br>
                 <div id="star_gen_${i}">X</div>
             </div>
         `
@@ -83,13 +84,15 @@ function updateStarsScreenHTML() {
 function updateStarsHTML() {
     tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.stars.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
     tmp.el.stars_Eff.setTxt(format(tmp.stars.effect))
-    tmp.el.star_btn.setVisible(player.stars.unls < 5)
+    if(player.supernova.tree.includes("s4")) tmp.el.star_btn.setVisible(player.stars.unls < 6)
+    else tmp.el.star_btn.setVisible(player.stars.unls < 5)
     tmp.el.star_btn.setTxt(`Unlock new type of Stars, require ${format(tmp.stars.generator_req)} Quark`)
     tmp.el.star_btn.setClasses({btn: true, locked: !player.atom.quarks.gte(tmp.stars.generator_req)})
-    for (let x = 0; x < 5; x++) {
+    for (let x = 0; x < 6; x++) {
         let unl = player.stars.unls > x
         tmp.el["star_gen_div_"+x].setDisplay(unl)
         if (tmp.el["star_gen_arrow_"+x]) tmp.el["star_gen_arrow_"+x].setDisplay(unl)
         if (unl) tmp.el["star_gen_"+x].setHTML(format(player.stars.generators[x],2)+"<br>"+formatGain(player.stars.generators[x],tmp.stars.generators_gain[x]))
     }
+
 }
