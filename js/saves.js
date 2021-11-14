@@ -119,7 +119,7 @@ function getPlayerData() {
         stars: {
             unls: 0,
             points: E(0),
-            generators: [E(0),E(0),E(0),E(0),E(0)],
+            generators: [E(0),E(0),E(0),E(0),E(0),E(0)],
         },
         supernova: {
             times: E(0),
@@ -212,7 +212,7 @@ function convertStringToDecimal() {
     player.md.mass = E(player.md.mass)
 
     player.stars.points = E(player.stars.points)
-    for (let x = 0; x < 5; x++) if (player.stars.generators[x] !== undefined) player.stars.generators[x] = E(player.stars.generators[x])
+    for (let x = 0; x < 6; x++) if (player.stars.generators[x] !== undefined) player.stars.generators[x] = E(player.stars.generators[x])
 
     player.supernova.times = E(player.supernova.times)
     player.supernova.stars = E(player.supernova.stars)
@@ -261,7 +261,7 @@ function export_copy() {
 }
 
 function importy() {
-    let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
+    let loadgame = prompt("Paste in your save WARNING: YOU CANNOT IMPORT IMR SAVE")
     if (loadgame == 'monke') {
         addNotify('monke<br><img src="https://pbs.twimg.com/profile_images/1359293274754744331/xfImzn4c.jpg">')
         return
