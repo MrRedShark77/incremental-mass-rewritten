@@ -326,3 +326,4 @@ function updateTreeHTML() {
         if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, locked: !tmp.supernova.tree_afford[id], bought: player.supernova.tree.includes(id), choosed: id == tmp.supernova.tree_choosed})
     }
 }
+ 
