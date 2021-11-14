@@ -99,6 +99,7 @@ const CHALS = {
         if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
+        if (player.supernova.tree.includes("chal5") && (i==8))  x = x.add(50)
         return x.floor()
     },
     getPower(i) {
