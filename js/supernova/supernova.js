@@ -1,9 +1,11 @@
 const SUPERNOVA = {
-    reset(force=false, chal=false) {
-        if (!chal) if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
+    reset(force=false, chal=false, post=false) {
+        if (!chal && !post) if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
         if (tmp.supernova.reached || force) {
             tmp.el.supernova_scene.setDisplay(false)
-            if (!force) player.supernova.times = player.supernova.times.add(1)
+            if (!force) {
+                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
+            }
             tmp.pass = true
             this.doReset()
         }
@@ -58,13 +60,18 @@ const SUPERNOVA = {
         if (player.supernova.tree.includes("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
         return x
     },
+    bulkSN() {
+        let x = player.stars.points.div(1e90)
+        if (x.lt(1)) return E(0)
+        return x.max(1).log(1e20).max(0).root(1.25).add(1).floor()
+    },
 }
 
 function calcSupernova(dt, dt_offline) {
     if (player.tickspeed.gte(1)) player.supernova.chal.noTick = false
     if (player.bh.condenser.gte(1)) player.supernova.chal.noBHC = false
 
-    if (tmp.supernova.reached && (!tmp.offlineActive || player.supernova.times.gte(1))) {
+    if (tmp.supernova.reached && (!tmp.offlineActive || player.supernova.times.gte(1)) && !player.supernova.post_10) {
         if (player.supernova.times.lte(0)) tmp.supernova.time += dt
         else {
             addNotify("You become Supernova!")
@@ -72,6 +79,11 @@ function calcSupernova(dt, dt_offline) {
         }
     }
     if (player.supernova.times.gte(1)) player.supernova.stars = player.supernova.stars.add(tmp.supernova.star_gain.mul(dt_offline))
+
+    if (!player.supernova.post_10 && player.supernova.times.gte(10)) {
+        player.supernova.post_10 = true
+        addPopup(POPUP_GROUPS.supernova10)
+    }
 }
 
 function updateSupernovaTemp() {
@@ -91,7 +103,8 @@ function updateSupernovaTemp() {
             }
         }
     }
-    tmp.supernova.reached = player.stars.points.gte(tmp.stars?tmp.stars.maxlimit:Infinity);
+    tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.stars.maxlimit):false;
+    tmp.supernova.bulk = SUPERNOVA.bulkSN()
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||""

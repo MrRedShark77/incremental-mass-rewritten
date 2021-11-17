@@ -181,12 +181,32 @@ const FORMATS = {
         }
       }
     },
+    layer: {
+      layers: ["infinity","eternity","reality","equality","affinity","celerity","identity","vitality","immunity","atrocity"],
+      format(ex, acc) {
+        ex = E(ex)
+        let layer = ex.max(1).log10().max(1).log(INFINITY_NUM.log10()).floor()
+        ex = E(10).pow(ex.max(1).log10().div(INFINITY_NUM.log10().pow(layer)).sub(layer.gte(1)?1:0))
+        let meta = layer.div(10).floor()
+        let layer_id = layer.toNumber()%10
+        return format(ex,acc,"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?"^"+format(meta,0,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
+      },
+    },
 }
 
-const SUBSCRIPT_NUMBERS = ["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"];
+
+const INFINITY_NUM = E(2).pow(1024);
+const SUBSCRIPT_NUMBERS = "₀₁₂₃₄₅₆₇₈₉";
+const SUPERSCRIPT_NUMBERS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 
 function toSubscript(value) {
     return value.toFixed(0).split("")
       .map((x) => x === "-" ? "₋" : SUBSCRIPT_NUMBERS[parseInt(x, 10)])
+      .join("");
+}
+
+function toSuperscript(value) {
+    return value.toFixed(0).split("")
+      .map((x) => x === "-" ? "₋" : SUPERSCRIPT_NUMBERS[parseInt(x, 10)])
       .join("");
 }

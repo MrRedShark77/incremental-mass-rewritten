@@ -176,6 +176,9 @@ function updateUpperHTML() {
 	unl = MASS_DILATION.unlocked()
 	tmp.el.md_div.setVisible(unl)
 	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(player.supernova.tree.includes("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
+	unl = player.supernova.post_10
+	tmp.el.sn_div.setVisible(unl)
+	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")")
 }
 
 function updateRanksHTML() {
@@ -185,10 +188,10 @@ function updateRanksHTML() {
 		tmp.el["ranks_div_"+x].setDisplay(unl)
 		if (unl) {
 			tmp.el["ranks_scale_"+x].setTxt(getScalingName(rn))
-			tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0))
+			tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0,"sc"))
 			tmp.el["ranks_"+x].setClasses({btn: true, reset: true, locked: !tmp.ranks[rn].can})
 			tmp.el["ranks_desc_"+x].setTxt(tmp.ranks[rn].desc,0)
-			tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0))
+			tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0,"sc"))
 			tmp.el["ranks_auto_"+x].setDisplay(RANKS.autoUnl[rn]())
 			tmp.el["ranks_auto_"+x].setTxt(player.auto_ranks[rn]?"ON":"OFF")
 		}
@@ -299,7 +302,7 @@ function updateHTML() {
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab != 5))
 	updateSupernovaEndingHTML()
-	if (!tmp.supernova.reached && tmp.tab != 5) {
+	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
 		updateStarsScreenHTML()
 		updateUpperHTML()
 		updateTabsHTML()

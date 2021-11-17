@@ -124,6 +124,7 @@ function getPlayerData() {
         },
         supernova: {
             times: E(0),
+            post_10: false,
             stars: E(0),
             tree: [],
             chal: {

@@ -195,7 +195,7 @@ function updateMDHTML() {
         tmp.el["md_upg"+x+"_div"].setVisible(unl)
         if (unl) {
             tmp.el["md_upg"+x+"_div"].setClasses({btn: true, full: true, md: true, locked: !tmp.md.upgs[x].can})
-            tmp.el["md_upg"+x+"_lvl"].setTxt(format(player.md.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
+            tmp.el["md_upg"+x+"_lvl"].setTxt(format(player.md.upgs[x],0,"sc")+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0,"sc"):""))
             if (upg.effDesc) tmp.el["md_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.md.upgs[x].eff))
             tmp.el["md_upg"+x+"_cost"].setTxt(player.md.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.md.upgs[x].cost):"")
         }

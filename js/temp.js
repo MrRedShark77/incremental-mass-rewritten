@@ -1,3 +1,14 @@
+var tmp = {
+    sn_tab: 0,
+    tab: 0,
+    stab: [],
+    pass: true,
+    notify: [],
+    popup: [],
+    saving: 0,
+}
+for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
+
 function updateMassTemp() {
     tmp.massSoftPower = FORMS.massSoftPower()
     tmp.massSoftGain = FORMS.massSoftGain()

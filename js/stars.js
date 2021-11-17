@@ -38,7 +38,8 @@ const STARS = {
 }
 
 function calcStars(dt) {
-    player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt)).min(tmp.stars.maxlimit)
+    player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt))
+    if (!player.supernova.post_10) player.stars.points = player.stars.points.min(tmp.stars.maxlimit)
     for (let x = 0; x < 5; x++) player.stars.generators[x] = player.stars.generators[x].add(tmp.stars.generators_gain[x].mul(dt))
 }
 

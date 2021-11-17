@@ -1,16 +1,6 @@
 var diff = 0;
 var date = Date.now();
 var player
-var tmp = {
-    sn_tab: 0,
-    tab: 0,
-    stab: [],
-    pass: true,
-    notify: [],
-    popup: [],
-    saving: 0,
-}
-for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 
 const ST_NAMES = [
     ["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
@@ -230,7 +220,13 @@ const FORMS = {
             atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
         },
-        set(id) { player.reset_msg = this.msgs[id] },
+        set(id) {
+            if (id=="sn") {
+                player.reset_msg = "Reach over "+format(tmp.stars.maxlimit)+" collapsed stars to be Supernova"
+                return
+            }
+            player.reset_msg = this.msgs[id]
+        },
         reset() { player.reset_msg = "" },
     },
 }

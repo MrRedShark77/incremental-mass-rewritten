@@ -120,7 +120,7 @@ const TREE_UPGS = {
             desc: `Neutron Star boosts last star gain.`,
             cost: E(400),
             effect() {
-                let x = player.supernova.stars.add(1).pow(1.25)
+                let x = player.supernova.stars.add(1).pow(1.4)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
