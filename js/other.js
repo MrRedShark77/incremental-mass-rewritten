@@ -74,7 +74,7 @@ const POPUP_GROUPS = {
     supernova10: {
         html: `
             Congratulations!<br><br>You have becomed 10 Supernovas!<br>
-            And you can become Supernova <b>yourself</b>!
+            And you can manualy supernova!
         `,
         width: 400,
         height: 150,
