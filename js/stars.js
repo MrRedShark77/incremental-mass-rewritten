@@ -4,7 +4,15 @@ const STARS = {
     gain() {
         let x = player.stars.generators[0]
         if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
-        return x
+        return x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
+    },
+    softGain() {
+        let s = E("e1000")
+        return s
+    },
+    softPower() {
+        let p = E(0.75)
+        return p
     },
     effect() {
         let p = E(1)
@@ -53,6 +61,8 @@ function updateStarsTemp() {
     tmp.stars.generator_boost_eff = E(2).pow(player.stars.boost)
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.maxlimit = STARS.maxLimit()
+    tmp.stars.softPower = STARS.softPower()
+    tmp.stars.softGain = STARS.softGain()
     tmp.stars.gain = STARS.gain()
     tmp.stars.effect = STARS.effect()
 }
@@ -86,6 +96,8 @@ function updateStarsScreenHTML() {
 }
 
 function updateStarsHTML() {
+    tmp.el.starSoft1.setDisplay(tmp.stars.gain.gte(tmp.stars.softGain))
+	tmp.el.starSoftStart1.setTxt(format(tmp.stars.softGain))
     tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.stars.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
     tmp.el.stars_Eff.setTxt(format(tmp.stars.effect))
 
