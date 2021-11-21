@@ -125,7 +125,7 @@ button {
 }
 
 #tree {
-	height: calc(100% - 300px);
+	height: calc(100% - 320px);
 }
 
 #tree_table {
@@ -383,6 +383,49 @@ h2 {
 	border-color: #00ce00;
 	background-color: #003a00;
 	box-shadow: 0 0 10px #00ce00;
+}
+
+.btn.b_btn {
+	font-size: 11px;
+}
+
+.bosons {
+	font-size: 18px;
+}
+
+.sub_b {
+	padding: 15px;
+	width: calc(50% - 30px);
+}
+
+.higgs_boson {
+	min-height: 100px;
+	background-color: rgb(255, 255, 0, 0.25);
+}
+
+.graviton {
+	min-height: 100px;
+	background-color: rgba(0, 102, 255, 0.25);
+}
+
+.photon {
+	min-height: 300px;
+	background-color: rgba(255, 255, 149, 0.25);
+}
+
+.gluon {
+	min-height: 300px;
+	background-color: rgba(212, 0, 255, 0.25);
+}
+
+.w_boson {
+	min-height: 200px;
+	background-color: rgba(189, 189, 189, 0.25);
+}
+
+.z_boson {
+	min-height: 200px;
+	background-color: rgba(189, 189, 189, 0.25);
 }
 
 [tooltip] {

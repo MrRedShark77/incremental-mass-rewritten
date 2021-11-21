@@ -370,6 +370,14 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        {
+            desc: `Hyper/Ultra BH Condenser & Gamma Ray scale 25% weaker.`,
+            cost: E('e1.6e4'),
+        },
+        {
+            desc: `Add 200 more C8 maximum completions.`,
+            cost: E('e2.2e4'),
+        },
     ],
     /*
     {
@@ -389,6 +397,7 @@ const ELEMENTS = {
         if (MASS_DILATION.unlocked()) u += 15
         if (STARS.unlocked()) u += 18
         if (player.supernova.times.gte(1)) u = 49+5
+        if (player.supernova.post_10) u += 2
         return u
     },
 }

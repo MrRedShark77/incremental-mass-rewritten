@@ -244,6 +244,7 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+    updateBosonsTemp()
     updateSupernovaTemp()
     updateElementsTemp()
     updateMDTemp()

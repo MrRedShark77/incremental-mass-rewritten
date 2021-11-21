@@ -16,9 +16,9 @@ const STARS = {
     },
     generators: {
         req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],
-        unl() {
+        unl(auto=false) {
             if (player.atom.quarks.gte(!player.supernova.tree.includes("s4")||player.stars.unls < 5?tmp.stars.generator_req:tmp.stars.generator_boost_req)) {
-                if(player.supernova.tree.includes("s4")&&player.stars.unls > 4) player.stars.boost = player.stars.boost.add(1)
+                if(player.supernova.tree.includes("s4")&&player.stars.unls > 4) player.stars.boost = auto?player.stars.boost.max(tmp.stars.generator_boost_bulk):player.stars.boost.add(1)
                 else player.stars.unls++
             }
         },
@@ -49,6 +49,7 @@ function updateStarsTemp() {
     }
     tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:E(1/0)
     tmp.stars.generator_boost_req = E("e100").pow(player.stars.boost.pow(1.25)).mul('e8000')
+    tmp.stars.generator_boost_bulk = player.atom.quarks.gte("e8000")?player.atom.quarks.div("e8000").max(1).log("e100").root(1.25).add(1).floor():E(0)
     tmp.stars.generator_boost_eff = E(2).pow(player.stars.boost)
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.maxlimit = STARS.maxLimit()

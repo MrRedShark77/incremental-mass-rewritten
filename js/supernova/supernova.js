@@ -84,6 +84,11 @@ function calcSupernova(dt, dt_offline) {
         player.supernova.post_10 = true
         addPopup(POPUP_GROUPS.supernova10)
     }
+
+    if (player.supernova.post_10) for (let x in BOSONS.names) {
+        let id = BOSONS.names[x]
+        player.supernova.bosons[id] = player.supernova.bosons[id].add(tmp.bosons.gain[id].mul(dt))
+    }
 }
 
 function updateSupernovaTemp() {
@@ -141,7 +146,10 @@ function updateSupernovaEndingHTML() {
     if (tmp.tab == 5) {
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
         tmp.el.supernova_next.setTxt(format(tmp.stars.maxlimit,2))
-        tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain))
-        updateTreeHTML()
+        if (tmp.stab[5] == 0) {
+            tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain))
+            updateTreeHTML()
+        }
+        if (tmp.stab[5] == 1) updateBosonsHTML()
     }
 }

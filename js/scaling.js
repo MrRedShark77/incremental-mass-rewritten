@@ -169,6 +169,12 @@ function getScalingPower(type, name) {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
 		}
+		if (name=='bh_condenser') {
+			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+		}
+		if (name=='gamma_ray') {
+			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+		}
 	}
 	if (type=="ultra") {
 		if (name=="rank") {
@@ -176,6 +182,12 @@ function getScalingPower(type, name) {
 		}
 		if (name=='tickspeed') {
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+		}
+		if (name=='bh_condenser') {
+			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+		}
+		if (name=='gamma_ray') {
+			if (player.atom.elements.includes(55)) power = power.mul(0.75)
 		}
 	}
 	return power

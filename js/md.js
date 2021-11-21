@@ -87,7 +87,6 @@ const MASS_DILATION = {
                 effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             },{
                 desc: `Increase the exponent of the RP formula.`,
-                maxLvl: 100,
                 cost(x) { return E(1e3).pow(x.pow(1.5)).mul(1.5e73) },
                 bulk() { return player.md.mass.gte(1.5e73)?player.md.mass.div(1.5e73).max(1).log(1e3).max(0).root(1.5).add(1).floor():E(0) },
                 effect(i) {
@@ -195,7 +194,7 @@ function updateMDHTML() {
         tmp.el["md_upg"+x+"_div"].setVisible(unl)
         if (unl) {
             tmp.el["md_upg"+x+"_div"].setClasses({btn: true, full: true, md: true, locked: !tmp.md.upgs[x].can})
-            tmp.el["md_upg"+x+"_lvl"].setTxt(format(player.md.upgs[x],0,"sc")+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0,"sc"):""))
+            tmp.el["md_upg"+x+"_lvl"].setTxt(format(player.md.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
             if (upg.effDesc) tmp.el["md_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.md.upgs[x].eff))
             tmp.el["md_upg"+x+"_cost"].setTxt(player.md.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.md.upgs[x].cost):"")
         }

@@ -74,7 +74,8 @@ const POPUP_GROUPS = {
     supernova10: {
         html: `
             Congratulations!<br><br>You have becomed 10 Supernovas!<br>
-            And you can manualy supernova!
+            And you can manualy supernova!<br><br>
+            <b>Bosons are unlocked in Supernova tab!</b>
         `,
         width: 400,
         height: 150,

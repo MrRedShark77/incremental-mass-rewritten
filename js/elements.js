@@ -1,24 +1,29 @@
 function setupHTML() {
+	let sn_stabs = new Element("sn_stabs")
 	let tabs = new Element("tabs")
 	let stabs = new Element("stabs")
 	let table = ""
 	let table2 = ""
+	let table3 = ""
 	for (let x = 0; x < TABS[1].length; x++) {
 		table += `<div style="width: 130px">
 			<button onclick="TABS.choose(${x})" class="btn_tab" id="tab${x}">${TABS[1][x].id}</button>
 		</div>`
 		if (TABS[2][x]) {
-			table2 += `<div id="stabs${x}" class="table_center">`
+			let a = `<div id="stabs${x}" class="table_center">`
 			for (let y = 0; y < TABS[2][x].length; y++) {
-				table2 += `<div style="width: 130px">
+				a += `<div style="width: 130px">
 					<button onclick="TABS.choose(${y}, true)" class="btn_tab" id="stab${x}_${y}">${TABS[2][x][y].id}</button>
 				</div>`
 			}
-			table2 += `</div>`
+			a += `</div>`
+			if (x == 5) table3 += a
+			else table2 += a
 		}
 	}
 	tabs.setHTML(table)
 	stabs.setHTML(table2)
+	sn_stabs.setHTML(table3)
 
 	let ranks_table = new Element("ranks_table")
 	table = ""
@@ -101,6 +106,7 @@ function setupHTML() {
 	setupMDHTML()
 	setupStarsHTML()
 	setupTreeHTML()
+	setupBosonsHTML()
 
 	/*
 	function setupTestHTML() {
@@ -132,6 +138,7 @@ function setupHTML() {
 
 function updateTabsHTML() {
 	for (let x = 0; x < TABS[1].length; x++) {
+		if (x != 5 && tmp.tab == 5) continue
 		let tab = TABS[1][x]
 		tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
 		tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.tab})
@@ -188,10 +195,10 @@ function updateRanksHTML() {
 		tmp.el["ranks_div_"+x].setDisplay(unl)
 		if (unl) {
 			tmp.el["ranks_scale_"+x].setTxt(getScalingName(rn))
-			tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0,"sc"))
+			tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0))
 			tmp.el["ranks_"+x].setClasses({btn: true, reset: true, locked: !tmp.ranks[rn].can})
 			tmp.el["ranks_desc_"+x].setTxt(tmp.ranks[rn].desc,0)
-			tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0,"sc"))
+			tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0))
 			tmp.el["ranks_auto_"+x].setDisplay(RANKS.autoUnl[rn]())
 			tmp.el["ranks_auto_"+x].setTxt(player.auto_ranks[rn]?"ON":"OFF")
 		}
@@ -302,10 +309,10 @@ function updateHTML() {
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab != 5))
 	updateSupernovaEndingHTML()
+	updateTabsHTML()
 	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
 		updateStarsScreenHTML()
 		updateUpperHTML()
-		updateTabsHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
 				updateRanksHTML()
