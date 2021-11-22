@@ -35,5 +35,9 @@ const TABS = {
             { id: "Elements", unl() { return player.chal.comps[7].gte(16) || player.supernova.times.gte(1) } },
             { id: "Mass Dilation", unl() { return MASS_DILATION.unlocked() }, style: "dilation" },
         ],
+        5: [
+            { id: "Neutron Tree" },
+            { id: "Bosons", unl() { return player.supernova.post_10 } },
+        ],
     },
 }

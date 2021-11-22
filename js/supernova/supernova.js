@@ -1,9 +1,11 @@
 const SUPERNOVA = {
-    reset(force=false, chal=false) {
-        if (!chal) if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
+    reset(force=false, chal=false, post=false) {
+        if (!chal && !post) if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
         if (tmp.supernova.reached || force) {
             tmp.el.supernova_scene.setDisplay(false)
-            if (!force) player.supernova.times = player.supernova.times.add(1)
+            if (!force) {
+                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
+            }
             tmp.pass = true
             this.doReset()
         }
@@ -64,7 +66,7 @@ function calcSupernova(dt, dt_offline) {
     if (player.tickspeed.gte(1)) player.supernova.chal.noTick = false
     if (player.bh.condenser.gte(1)) player.supernova.chal.noBHC = false
 
-    if (tmp.supernova.reached && !tmp.offlineActive) {
+    if (tmp.supernova.reached && (!tmp.offlineActive || player.supernova.times.gte(1)) && !player.supernova.post_10) {
         if (player.supernova.times.lte(0)) tmp.supernova.time += dt
         else {
             addNotify("You become Supernova!")
@@ -72,6 +74,16 @@ function calcSupernova(dt, dt_offline) {
         }
     }
     if (player.supernova.times.gte(1)) player.supernova.stars = player.supernova.stars.add(tmp.supernova.star_gain.mul(dt_offline))
+
+    if (!player.supernova.post_10 && player.supernova.times.gte(10)) {
+        player.supernova.post_10 = true
+        addPopup(POPUP_GROUPS.supernova10)
+    }
+
+    if (player.supernova.post_10) for (let x in BOSONS.names) {
+        let id = BOSONS.names[x]
+        player.supernova.bosons[id] = player.supernova.bosons[id].add(tmp.bosons.gain[id].mul(dt))
+    }
 }
 
 function updateSupernovaTemp() {
@@ -91,7 +103,33 @@ function updateSupernovaTemp() {
             }
         }
     }
-    tmp.supernova.reached = player.stars.points.gte(tmp.stars?tmp.stars.maxlimit:Infinity);
+    tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
+
+    tmp.supernova.maxlimit = E(1e20).pow(player.supernova.times.pow(1.25)).mul(1e90)
+    tmp.supernova.bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).add(1).floor()
+    if (player.stars.points.div(1e90).lt(1)) tmp.supernova.bulk = E(0)
+    if (scalingActive("supernova", player.supernova.times.max(tmp.supernova.bulk), "super")) {
+		let start = getScalingStart("super", "supernova");
+		let power = getScalingPower("super", "supernova");
+		let exp = E(3).pow(power);
+		tmp.supernova.maxlimit =
+			E(1e20).pow(
+                player.supernova.times
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+                .pow(1.25)
+            ).mul(1e90).floor()
+        tmp.supernova.bulk = player.stars.points
+            .div(1e90)
+            .max(1)
+            .log(1e20)
+            .root(1.25)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+			.add(1)
+			.floor();
+	}
+
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||""
@@ -126,9 +164,13 @@ function updateSupernovaEndingHTML() {
     tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab == 5)
 
     if (tmp.tab == 5) {
+        tmp.el.supernova_scale.setTxt(getScalingName('supernova'))
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
-        tmp.el.supernova_next.setTxt(format(tmp.stars.maxlimit,2))
-        tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain))
-        updateTreeHTML()
+        tmp.el.supernova_next.setTxt(format(tmp.supernova.maxlimit,2))
+        if (tmp.stab[5] == 0) {
+            tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain))
+            updateTreeHTML()
+        }
+        if (tmp.stab[5] == 1) updateBosonsHTML()
     }
 }

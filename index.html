@@ -13,6 +13,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
 
+    <script src="js/supernova/bosons.js"></script>
     <script src="js/supernova/tree.js"></script>
     <script src="js/supernova/supernova.js"></script>
 
@@ -62,19 +63,51 @@
             <button class="btn" onclick="SUPERNOVA.reset(true)">Reset without being Supernova</button>
         </div>
         <div style="min-height: 70px; margin-top: 15px;">
-            <h2>You become <span id="supernova_rank"></span> Supernova</h2><br>
+            <h2>You become <span id="supernova_rank"></span> <span id="supernova_scale"></span> Supernova</h2><br>
             Next Supernova at <span id="supernova_next">X</span> stars
         </div>
         <div style="width: 100%; border-bottom: solid 2px white; height: 5px; margin-bottom: 13px;"></div>
-        <div style="height: 150px;">
-            You have <span id="neutronStar">X</span> Neutron star.<br>
-            <div id="tree_desc" style="margin-top: 3px;">
-
+        <div id="sn_stabs" style="min-height: 40px;"></div><br>
+        <div id="stab_frame5_0">
+            <div style="height: 130px;">
+                You have <span id="neutronStar">X</span> Neutron star.<br>
+                <div id="tree_desc" style="margin-top: 3px;">
+    
+                </div>
             </div>
-        </div>
-        <div id="tree" class="table_center">
-            <canvas id="tree_canvas"></canvas>
-            <div id="tree_table"></div>
+            <div id="tree" class="table_center">
+                <canvas id="tree_canvas"></canvas>
+                <div id="tree_table"></div>
+            </div>
+        </div><div id="stab_frame5_1">
+            <div class="bosons">
+                <div class="table_center">
+                    <div class="graviton sub_b">
+                        You have <span id="graviton_amt">X</span> Graviton, which speeds Bosons production by <span id="graviton_eff0">Y</span>
+                    </div>
+                    <div class="higgs_boson sub_b">
+                        You have <span id="hb_amt">X</span> Higgs Boson, which raises Gravitons effect by <span id="hb_eff0">Y</span>
+                    </div>
+                </div><div class="table_center">
+                    <div class="photon sub_b">
+                        You have <span id="photon_amt">X</span> Photon<br><br>
+                        <div id="photon_upgs_table" class="table_center"></div>
+                    </div>
+                    <div class="gluon sub_b">
+                        You have <span id="gluon_amt">X</span> Gluon<br><br>
+                        <div id="gluon_upgs_table" class="table_center"></div>
+                    </div>
+                </div><div class="table_center">
+                    <div class="w_boson sub_b">
+                        You have <span id="pos_w_amt">X</span> W<sup>+</sup> Boson, which multiplies Mass gain by <span id="pos_w_eff0">Y</span>,<br> multiplies W<sup>-</sup> Bosons gain by <span id="pos_w_eff1">Y</span>
+                        <br><br>
+                        You have <span id="neg_w_amt">X</span> W<sup>-</sup> Boson, which makes Mass gains softcap^2 starts ^<span id="neg_w_eff0">Y</span> later,<br> multiplies W<sup>+</sup> Bosons gain by <span id="neg_w_eff1">Y</span>
+                    </div>
+                    <div class="z_boson sub_b">
+                        You have <span id="z_boson_amt">X</span> Z<sup>0</sup> Boson, which multiplies Tickspeed Power by <span id="z_boson_eff0">Y</span>,<br> multiplies W Bosons gain by <span id="z_boson_eff1">Y</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div id='app' style='display: none'>
@@ -111,6 +144,10 @@
                     <div class="resources sml green" id="md_div">
                         <img src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="md_massAmt">X</span>
+                    </div>
+                    <div class="resources sml magenta" id="sn_div">
+                        <img src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                        <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
                     </div>
                 </div>
             </div><span id="reset_desc"></span>
@@ -179,7 +216,8 @@
                 You collapsed <span id="stars_Amt">X</span> stars, which makes mass gain is multiplied based on every type of Ranks<br>
                 <span class="green">Currently: <span id="stars_Eff">X</span>x</span><br><br>
                 <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
-                <div id="stars_table" class="table_center"></div>
+                <div id="stars_table" class="table_center"></div><br><br>
+                <span id="starSoft1" class="red">After <b id="starSoftStart1">X</b> of collapsed stars gain will softcap collapsed stars gain!</span><br>
             </div>
         </div><div id="tab_frame1">
             <div id="stab_frame1_0">
@@ -246,7 +284,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.4 Supernova - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.4.1.2 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

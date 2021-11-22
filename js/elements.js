@@ -1,24 +1,29 @@
 function setupHTML() {
+	let sn_stabs = new Element("sn_stabs")
 	let tabs = new Element("tabs")
 	let stabs = new Element("stabs")
 	let table = ""
 	let table2 = ""
+	let table3 = ""
 	for (let x = 0; x < TABS[1].length; x++) {
 		table += `<div style="width: 130px">
 			<button onclick="TABS.choose(${x})" class="btn_tab" id="tab${x}">${TABS[1][x].id}</button>
 		</div>`
 		if (TABS[2][x]) {
-			table2 += `<div id="stabs${x}" class="table_center">`
+			let a = `<div id="stabs${x}" class="table_center">`
 			for (let y = 0; y < TABS[2][x].length; y++) {
-				table2 += `<div style="width: 130px">
+				a += `<div style="width: 130px">
 					<button onclick="TABS.choose(${y}, true)" class="btn_tab" id="stab${x}_${y}">${TABS[2][x][y].id}</button>
 				</div>`
 			}
-			table2 += `</div>`
+			a += `</div>`
+			if (x == 5) table3 += a
+			else table2 += a
 		}
 	}
 	tabs.setHTML(table)
 	stabs.setHTML(table2)
+	sn_stabs.setHTML(table3)
 
 	let ranks_table = new Element("ranks_table")
 	table = ""
@@ -101,6 +106,7 @@ function setupHTML() {
 	setupMDHTML()
 	setupStarsHTML()
 	setupTreeHTML()
+	setupBosonsHTML()
 
 	/*
 	function setupTestHTML() {
@@ -132,6 +138,7 @@ function setupHTML() {
 
 function updateTabsHTML() {
 	for (let x = 0; x < TABS[1].length; x++) {
+		if (x != 5 && tmp.tab == 5) continue
 		let tab = TABS[1][x]
 		tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
 		tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.tab})
@@ -176,6 +183,9 @@ function updateUpperHTML() {
 	unl = MASS_DILATION.unlocked()
 	tmp.el.md_div.setVisible(unl)
 	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(player.supernova.tree.includes("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
+	unl = player.supernova.post_10
+	tmp.el.sn_div.setVisible(unl)
+	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")")
 }
 
 function updateRanksHTML() {
@@ -299,10 +309,10 @@ function updateHTML() {
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab != 5))
 	updateSupernovaEndingHTML()
-	if (!tmp.supernova.reached && tmp.tab != 5) {
+	updateTabsHTML()
+	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
 		updateStarsScreenHTML()
 		updateUpperHTML()
-		updateTabsHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
 				updateRanksHTML()

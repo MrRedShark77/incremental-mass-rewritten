@@ -4,6 +4,7 @@ const ATOM = {
         if (x.lt(1)) return E(0)
         x = x.root(5)
         if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))
+        x = x.mul(tmp.bosons.upgs.gluon[0].effect)
         if (player.atom.elements.includes(17)) x = x.pow(1.1)
         return x.floor()
     },
@@ -45,6 +46,7 @@ const ATOM = {
             let x = tmp.atom.gamma_ray_eff?tmp.atom.gamma_ray_eff.eff:E(0)
             if (player.atom.elements.includes(3)) x = x.mul(tmp.elements.effect[3])
             if (player.atom.elements.includes(52)) x = x.mul(tmp.elements.effect[52])
+            x = x.mul(tmp.bosons.upgs.gluon[0].effect)
             if (player.md.active) x = expMult(x,0.8)
             return x
         },
@@ -71,6 +73,7 @@ const ATOM = {
             if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
             if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
             if (player.supernova.tree.includes("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
+            pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
             let eff = pow.pow(player.atom.gamma_ray).sub(1)
             return {pow: pow, eff: eff}
         },
@@ -98,7 +101,7 @@ const ATOM = {
             let p = player.atom.particles[i]
             let x = p.pow(2)
             if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]))
-            return x.softcap('e3.8e4',0.9,2)
+            return x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
         },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)

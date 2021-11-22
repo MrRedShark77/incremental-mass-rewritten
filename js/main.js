@@ -1,15 +1,6 @@
 var diff = 0;
 var date = Date.now();
 var player
-var tmp = {
-    sn_tab: 0,
-    tab: 0,
-    stab: [],
-    pass: true,
-    notify: [],
-    popup: [],
-}
-for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 
 const ST_NAMES = [
     ["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
@@ -34,6 +25,8 @@ const FORMS = {
         x = x.mul(tmp.stars.effect)
         if (player.supernova.tree.includes("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
 
+        x = x.mul(tmp.bosons.effect.pos_w[0])
+
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3)) x = x.pow(tmp.chal.eff[3])
@@ -42,6 +35,7 @@ const FORMS = {
             if (player.atom.elements.includes(28)) x = x.pow(1.5)
         }
         if (CHALS.inChal(9)) x = expMult(x,0.9)
+
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0).softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
     },
     massSoftGain() {
@@ -64,6 +58,9 @@ const FORMS = {
         let s = E('1.5e1000056')
         if (player.supernova.tree.includes("m2")) s = s.pow(1.5)
         if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
+
+        s = s.pow(tmp.bosons.effect.neg_w[0])
+
         return s
     },
     massSoftPower2() {
@@ -96,6 +93,7 @@ const FORMS = {
                 if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
                 step = step.mul(tmp.md.mass_eff)
+            step = step.mul(tmp.bosons.effect.z_boson[0])
             if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
             let eff = step.pow(player.tickspeed.add(bouns))
             if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
@@ -140,7 +138,10 @@ const FORMS = {
             if (CHALS.inChal(7)) gain = player.mass.div(1e180)
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
+
             if (player.supernova.tree.includes("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
+            gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
+
             if (CHALS.inChal(7)) gain = gain.root(6)
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             if (CHALS.inChal(8)) gain = gain.root(8)
@@ -153,6 +154,7 @@ const FORMS = {
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
             if (player.atom.elements.includes(46)) x = x.mul(tmp.elements.effect[46])
+            x = x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8)) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
             if (player.md.active) x = expMult(x,0.8)
@@ -211,6 +213,7 @@ const FORMS = {
                     if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                     pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
                     if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
+                    pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                     if (player.supernova.tree.includes("bh2")) pow = pow.pow(1.15)
                 let eff = pow.pow(player.bh.condenser.add(tmp.bh.condenser_bouns))
                 return {pow: pow, eff: eff}
@@ -229,7 +232,13 @@ const FORMS = {
             atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
         },
-        set(id) { player.reset_msg = this.msgs[id] },
+        set(id) {
+            if (id=="sn") {
+                player.reset_msg = "Reach over "+format(tmp.supernova.maxlimit)+" collapsed stars to be Supernova"
+                return
+            }
+            player.reset_msg = this.msgs[id]
+        },
         reset() { player.reset_msg = "" },
     },
 }
@@ -672,7 +681,7 @@ const UPGS = {
             },
             14: {
                 unl() { return player.atom.unl },
-                desc: "Neturon Powers boosts mass of Black Hole gain.",
+                desc: "Neutron Powers boosts mass of Black Hole gain.",
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
@@ -867,7 +876,7 @@ function format(ex, acc=4, type=player.options.notation) {
                     })
                     final += (i > 0 && Number(arr) > 0 ? "-" : "") + ret + (i < str.length - 1 && Number(arr) > 0 ? ST_NAMES[3][str.length-i-1] : "")
                 });
-                return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(1).toNumber())+" "))+final
+                return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(acc==0?0:1).toNumber())+" "))+final
             }
         default:
             return neg+FORMATS[type].format(ex, acc)
@@ -903,7 +912,7 @@ function formatTime(ex,type="s") {
     return (ex.gte(10)||type!="m" ?"":"0")+format(ex)
 }
 
-function expMult(a,b) { return E(a).gte(1) ? E(10).pow(E(a).log10().pow(b)) : E(0) }
+function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
 
 function capitalFirst(str) {
 	if (str=="" || str==" ") return str

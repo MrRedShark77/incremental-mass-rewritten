@@ -48,6 +48,7 @@ function calc(dt, dt_offline) {
     if (player.supernova.tree.includes("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
     if (player.supernova.tree.includes("qol3")) player.md.particles = player.md.particles.add(tmp.md.passive_rp_gain.mul(dt))
+    if (player.supernova.tree.includes("qol4")) STARS.generators.unl(true)
     calcStars(dt)
     calcSupernova(dt, dt_offline)
 
@@ -124,12 +125,26 @@ function getPlayerData() {
         },
         supernova: {
             times: E(0),
+            post_10: false,
             stars: E(0),
             tree: [],
             chal: {
                 noTick: true,
                 noBHC: true,
             },
+            bosons: {
+                pos_w: E(0),
+                neg_w: E(0),
+                z_boson: E(0),
+                photon: E(0),
+                gluon: E(0),
+                graviton: E(0),
+                hb: E(0),
+            },
+            b_upgs: {
+                photon: [],
+                gluon: [],
+            }
         },
         reset_msg: "",
         main_upg_msg: [0,0],
@@ -153,6 +168,7 @@ function getPlayerData() {
     for (let x = 1; x <= CHALS.cols; x++) s.chal.comps[x] = E(0)
     for (let x = 0; x < CONFIRMS.length; x++) s.confirms[CONFIRMS[x]] = true
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) s.md.upgs[x] = E(0)
+    for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) s.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
     return s
 }
 
@@ -219,10 +235,19 @@ function convertStringToDecimal() {
     player.supernova.times = E(player.supernova.times)
     player.supernova.stars = E(player.supernova.stars)
 
+    player.supernova.bosons.pos_w = E(player.supernova.bosons.pos_w)
+    player.supernova.bosons.neg_w = E(player.supernova.bosons.neg_w)
+    player.supernova.bosons.z_boson = E(player.supernova.bosons.z_boson)
+    player.supernova.bosons.photon = E(player.supernova.bosons.photon)
+    player.supernova.bosons.gluon = E(player.supernova.bosons.gluon)
+    player.supernova.bosons.graviton = E(player.supernova.bosons.graviton)
+    player.supernova.bosons.hb = E(player.supernova.bosons.hb)
+
     for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
+    for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
 }
 
 function cannotSave() { return tmp.supernova.reached }
@@ -231,7 +256,7 @@ function save(){
     if (cannotSave()) return
     if (localStorage.getItem("testSave") == '') wipe()
     localStorage.setItem("testSave",btoa(JSON.stringify(player)))
-    addNotify("Game Saved")
+    if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 
 function load(x){
@@ -297,7 +322,7 @@ function loadGame() {
     load(localStorage.getItem("testSave"))
     setupHTML()
     setInterval(save,60000)
-    updateTemp()
+    for (let x = 0; x < 50; x++) updateTemp()
     updateHTML()
     for (let x = 0; x < 3; x++) {
         let r = document.getElementById('ratio_d'+x)

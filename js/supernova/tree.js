@@ -1,9 +1,9 @@
 const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
-    ["","","","qol2","qol3","","s4","","m1","rp1","bh1","","","chal2","","chal3","","",""],
+    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","","","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    ["","","","","","","","","","bs1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -49,7 +49,7 @@ const TREE_UPGS = {
             desc: `Supernova boosts Neutron Star gain.`,
             cost: E(350),
             effect() {
-                let x = E(2).pow(player.supernova.times)
+                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.8,0))
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -65,6 +65,19 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
+        },
+        sn4: {
+            branch: ["sn3"],
+            desc: `Tree “sn2”’s effect base is increased by Supernova.`,
+            unl() { return player.supernova.post_10 },
+            req() { return player.supernova.times.gte(13) },
+            reqDesc: `13 Supernovas.`,
+            cost: E(1e8),
+            effect() {
+                let x = player.supernova.times.mul(0.1).softcap(1.5,2/3,0)
+                return x
+            },
+            effDesc(x) { return "+"+format(x)+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"") },
         },
         m1: {
             branch: ["c"],
@@ -120,7 +133,7 @@ const TREE_UPGS = {
             desc: `Neutron Star boosts last star gain.`,
             cost: E(400),
             effect() {
-                let x = player.supernova.stars.add(1).pow(1.25)
+                let x = player.supernova.stars.add(1).pow(1.4)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -171,6 +184,14 @@ const TREE_UPGS = {
             desc: `Start with Techntium-43 unlocked, improve their element better. You can automatically gain Relativistic particles from mass.`,
             cost: E(10000),
         },
+        qol4: {
+            branch: ["qol3"],
+            unl() { return player.supernova.post_10 },
+            req() { return player.supernova.times.gte(12) },
+            reqDesc: `12 Supernovas.`,
+            desc: `You can now automatically buy Star unlockers & boosters.`,
+            cost: E(1e8),
+        },
         chal1: {
             req() { return player.supernova.times.gte(4) },
             reqDesc: `4 Supernovas.`,
@@ -202,6 +223,12 @@ const TREE_UPGS = {
             desc: `Unlock new challenge.`,
             cost: E(1.5e4),
         },
+        chal4a: {
+            unl() { return player.supernova.post_10 },
+            branch: ["chal4"],
+            desc: `Make 9th Challenges effect better.`,
+            cost: E(1e8),
+        },
         gr1: {
             branch: ["bh1"],
             desc: `BH Condensers power boost Gamma Rays power.`,
@@ -210,6 +237,18 @@ const TREE_UPGS = {
             cost: E(1e6),
             effect() {
                 let x = tmp.bh?tmp.bh.condenser_eff.pow.max(1).root(3):E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        bs1: {
+            unl() { return player.supernova.post_10 },
+            req() { return player.supernova.times.gte(15) },
+            reqDesc: `15 supernovas`,
+            desc: `Tickspeed affect Higgs Bosons gain at a reduced rate.`,
+            cost: E(1e13),
+            effect() {
+                let x = player.tickspeed.add(1).pow(0.6)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -296,9 +335,9 @@ function drawTreeBranch(num1, num2) {
     var start = document.getElementById("treeUpg_"+num1).getBoundingClientRect();
     var end = document.getElementById("treeUpg_"+num2).getBoundingClientRect();
     var x1 = start.left + (start.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y1 = start.top + (start.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-45);
+    var y1 = start.top + (start.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-7);
     var x2 = end.left + (end.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-45);
+    var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-7);
     tree_ctx.lineWidth=10;
     tree_ctx.beginPath();
     tree_ctx.strokeStyle = player.supernova.tree.includes(num2)?"#00520b":tmp.supernova.tree_afford[num2]?"#fff":"#333";
@@ -311,9 +350,9 @@ function updateTreeHTML() {
     let req = ""
     if (tmp.supernova.tree_choosed != "") req = TREE_UPGS.ids[tmp.supernova.tree_choosed].req?`<span class="${TREE_UPGS.ids[tmp.supernova.tree_choosed].req()?"green":"red"}">${TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc?" Require: "+(typeof TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc == "function"?TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc():TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc):""}</span>`:""
     tmp.el.tree_desc.setHTML(
-        tmp.supernova.tree_choosed == "" ? ""
+        tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
-        <span class="sky">${TREE_UPGS.ids[tmp.supernova.tree_choosed].desc}</span><br>
+        <span class="sky">[${tmp.supernova.tree_choosed}] ${TREE_UPGS.ids[tmp.supernova.tree_choosed].desc}</span><br>
         <span>Cost: ${format(TREE_UPGS.ids[tmp.supernova.tree_choosed].cost,2)} Neutron star</span><br>
         <span class="green">${TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc?"Currently: "+TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `

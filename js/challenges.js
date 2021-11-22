@@ -2,7 +2,7 @@ function setupChalHTML() {
     let chals_table = new Element("chals_table")
 	let table = ""
 	for (let x = 1; x <= CHALS.cols; x++) {
-        table += `<div id="chal_div_${x}"><img id="chal_btn_${x}" onclick="player.chal.choosed = ${x}" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
+        table += `<div id="chal_div_${x}" style="margin: 5px;"><img id="chal_btn_${x}" onclick="player.chal.choosed = ${x}" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
 	}
 	chals_table.setHTML(table)
 }
@@ -14,7 +14,7 @@ function updateChalHTML() {
         tmp.el["chal_div_"+x].setDisplay(unl)
         tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
         if (unl) {
-            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+"/"+tmp.chal.max[x])
+            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+"/"+format(tmp.chal.max[x],0))
         }
     }
     tmp.el.chal_enter.setVisible(player.chal.active == 0)
@@ -23,7 +23,7 @@ function updateChalHTML() {
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
     if (player.chal.choosed != 0) {
         let chal = CHALS[player.chal.choosed]
-        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${player.chal.comps[player.chal.choosed].gte(75)?player.chal.comps[player.chal.choosed].gte(300)?" Insane":" Hardened":""} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
+        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${player.chal.comps[player.chal.choosed].gte(player.chal.choosed>8?10:75)?player.chal.comps[player.chal.choosed].gte(player.chal.choosed==8?200:300)?" Insane":" Hardened":""} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
         tmp.el.chal_ch_desc.setHTML(chal.desc)
         tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
@@ -98,6 +98,7 @@ const CHALS = {
         if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
+        if (player.atom.elements.includes(56) && (i==8)) x = x.add(200)
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },
@@ -116,7 +117,7 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
         let s1 = x > 8 ? 10 : 75
-        let s2 = 300
+        let s2 = x == 8 ? 200 : 300
         let pow = chal.pow
         if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
@@ -297,7 +298,7 @@ const CHALS = {
         pow: E(1.5),
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
-            let ret = x.root(4).mul(0.1).add(1)
+            let ret = x.root(player.supernova.tree.includes("chal4a")?3.5:4).mul(0.1).add(1)
             return ret
         },
         effDesc(x) { return "^"+format(x) },
