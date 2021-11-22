@@ -195,7 +195,7 @@ function getScalingPower(type, name) {
 	}
 	if (type=="meta") {
 		if (name=='rank') {
-			if (player.atom.elements.includes(27)) power = power.mul(0.6)
+			if (player.atom.elements.includes(27)) power = power.mul(0.65)
 		}
 		if (name=='gamma_ray') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.6)
