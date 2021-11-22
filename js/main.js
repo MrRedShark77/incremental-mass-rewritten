@@ -69,7 +69,7 @@ const FORMS = {
         return p
     },
     massSoftGain3() {
-        let s = E('1.5e20000000')
+        let s = E('1.5e15000000')
 
         return s
     },
