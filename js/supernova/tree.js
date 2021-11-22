@@ -49,7 +49,7 @@ const TREE_UPGS = {
             desc: `Supernova boosts Neutron Star gain.`,
             cost: E(350),
             effect() {
-                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.75,0))
+                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.8,0))
                 return x
             },
             effDesc(x) { return format(x)+"x" },

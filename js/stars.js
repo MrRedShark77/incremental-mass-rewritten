@@ -38,6 +38,7 @@ const STARS = {
             if (player.supernova.tree.includes("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)
             if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
             if (player.atom.elements.includes(54)) x = x.mul(tmp.elements.effect[54])
+            x = x.mul(tmp.bosons.upgs.photon[3].effect)
             return x.mul(tmp.stars.generator_boost_eff)
         },
     },
