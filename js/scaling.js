@@ -22,6 +22,10 @@ const SCALE_START = {
 		bh_condenser: E(750),
 		gamma_ray: E(800),
 	},
+	meta: {
+		rank: E(1900),
+		gamma_ray: E(950)
+	},
 }
 
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta'] // super, hyper, ultra, meta
@@ -187,6 +191,14 @@ function getScalingPower(type, name) {
 		}
 		if (name=='gamma_ray') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+		}
+	}
+	if (type=="meta") {
+		if (name=='rank') {
+			if (player.atom.elements.includes(27)) power = power.mul(0.65)
+		}
+		if (name=='gamma_ray') {
+			if (player.atom.elements.includes(55)) power = power.mul(0.6)
 		}
 	}
 	return power
