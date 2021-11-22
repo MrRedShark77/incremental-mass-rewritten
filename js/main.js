@@ -68,6 +68,15 @@ const FORMS = {
         if (player.atom.elements.includes(51)) p = p.pow(0.9)
         return p
     },
+    massSoftGain3() {
+        let s = E('1.5e20000000')
+
+        return s
+    },
+    massSoftPower3() {
+        let p = E(0.1)
+        return p
+    },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
         can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) },
