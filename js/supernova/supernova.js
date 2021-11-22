@@ -60,11 +60,6 @@ const SUPERNOVA = {
         if (player.supernova.tree.includes("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
         return x
     },
-    bulkSN() {
-        let x = player.stars.points.div(1e90)
-        if (x.lt(1)) return E(0)
-        return x.max(1).log(1e20).max(0).root(1.25).add(1).floor()
-    },
 }
 
 function calcSupernova(dt, dt_offline) {
@@ -108,8 +103,33 @@ function updateSupernovaTemp() {
             }
         }
     }
-    tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.stars.maxlimit):false;
-    tmp.supernova.bulk = SUPERNOVA.bulkSN()
+    tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
+
+    tmp.supernova.maxlimit = E(1e20).pow(player.supernova.times.pow(1.25)).mul(1e90)
+    tmp.supernova.bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).add(1).floor()
+    if (player.stars.points.div(1e90).lt(1)) tmp.supernova.bulk = E(0)
+    if (scalingActive("supernova", player.supernova.times.max(tmp.supernova.bulk), "super")) {
+		let start = getScalingStart("super", "supernova");
+		let power = getScalingPower("super", "supernova");
+		let exp = E(3).pow(power);
+		tmp.supernova.maxlimit =
+			E(1e20).pow(
+                player.supernova.times
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+                .pow(1.25)
+            ).mul(1e90).floor()
+        tmp.supernova.bulk = player.stars.points
+            .div(1e90)
+            .max(1)
+            .log(1e20)
+            .root(1.25)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+			.add(1)
+			.floor();
+	}
+
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||""
@@ -144,8 +164,9 @@ function updateSupernovaEndingHTML() {
     tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab == 5)
 
     if (tmp.tab == 5) {
+        tmp.el.supernova_scale.setTxt(getScalingName('supernova'))
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
-        tmp.el.supernova_next.setTxt(format(tmp.stars.maxlimit,2))
+        tmp.el.supernova_next.setTxt(format(tmp.supernova.maxlimit,2))
         if (tmp.stab[5] == 0) {
             tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain))
             updateTreeHTML()

@@ -234,7 +234,7 @@ const FORMS = {
         },
         set(id) {
             if (id=="sn") {
-                player.reset_msg = "Reach over "+format(tmp.stars.maxlimit)+" collapsed stars to be Supernova"
+                player.reset_msg = "Reach over "+format(tmp.supernova.maxlimit)+" collapsed stars to be Supernova"
                 return
             }
             player.reset_msg = this.msgs[id]

@@ -1,6 +1,5 @@
 const STARS = {
     unlocked() { return player.atom.elements.includes(36) },
-    maxLimit() { return E(1e20).pow(player.supernova.times.pow(1.25)).mul(1e90) },
     gain() {
         let x = player.stars.generators[0]
         if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
@@ -47,7 +46,7 @@ const STARS = {
 
 function calcStars(dt) {
     player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt))
-    if (!player.supernova.post_10) player.stars.points = player.stars.points.min(tmp.stars.maxlimit)
+    if (!player.supernova.post_10) player.stars.points = player.stars.points.min(tmp.supernova.maxlimit)
     for (let x = 0; x < 5; x++) player.stars.generators[x] = player.stars.generators[x].add(tmp.stars.generators_gain[x].mul(dt))
 }
 
@@ -60,7 +59,6 @@ function updateStarsTemp() {
     tmp.stars.generator_boost_bulk = player.atom.quarks.gte("e8000")?player.atom.quarks.div("e8000").max(1).log("e100").root(1.25).add(1).floor():E(0)
     tmp.stars.generator_boost_eff = E(2).pow(player.stars.boost)
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
-    tmp.stars.maxlimit = STARS.maxLimit()
     tmp.stars.softPower = STARS.softPower()
     tmp.stars.softGain = STARS.softGain()
     tmp.stars.gain = STARS.gain()
@@ -83,7 +81,7 @@ function setupStarsHTML() {
 }
 
 function updateStarsScreenHTML() {
-    let percent = player.stars.points.max(1).log10().div(tmp.stars.maxlimit.max(1).log10()).max(0).min(1).toNumber()
+    let percent = player.stars.points.max(1).log10().div(tmp.supernova.maxlimit.max(1).log10()).max(0).min(1).toNumber()
     let size = Math.min(window.innerWidth, window.innerHeight)*percent*0.9
     let color = `rgb(${percent/0.4*191}, ${percent/0.4*91+133}, 255)`
     if (percent>0.4) color = `rgb(${(percent-0.4)/0.2*64+191}, ${224-(percent-0.4)/0.2*11}, ${255-(percent-0.4)/0.2*255})`
@@ -98,7 +96,7 @@ function updateStarsScreenHTML() {
 function updateStarsHTML() {
     tmp.el.starSoft1.setDisplay(tmp.stars.gain.gte(tmp.stars.softGain))
 	tmp.el.starSoftStart1.setTxt(format(tmp.stars.softGain))
-    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.stars.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
+    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.supernova.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain))
     tmp.el.stars_Eff.setTxt(format(tmp.stars.effect))
 
     tmp.el.star_btn.setDisplay(player.supernova.tree.includes("s4") || player.stars.unls < 5)

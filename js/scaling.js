@@ -7,6 +7,7 @@ const SCALE_START = {
 		tickspeed: E(100),
 		bh_condenser: E(100),
 		gamma_ray: E(100),
+		supernova: E(15),
     },
 	hyper: {
 		rank: E(120),
@@ -38,6 +39,7 @@ const SCALING_RES = {
     massUpg(x=1) { return E(player.massUpg[x]||0) },
 	bh_condenser(x=0) { return player.bh.condenser },
 	gamma_ray(x=0) { return player.atom.gamma_ray },
+	supernova(x=0) { return player.supernova.times },
 }
 
 const NAME_FROM_RES = {
@@ -48,6 +50,7 @@ const NAME_FROM_RES = {
 	tickspeed: "Tickspeed",
 	bh_condenser: "Black Hole Condenser",
 	gamma_ray: "Gamma Ray",
+	supernova: "Supernova",
 }
 
 function updateScalingHTML() {

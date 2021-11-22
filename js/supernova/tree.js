@@ -49,7 +49,7 @@ const TREE_UPGS = {
             desc: `Supernova boosts Neutron Star gain.`,
             cost: E(350),
             effect() {
-                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times)
+                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.75,0))
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -227,7 +227,7 @@ const TREE_UPGS = {
             unl() { return player.supernova.post_10 },
             branch: ["chal4"],
             desc: `Make 9th Challenges effect better.`,
-            cost: E(1e9),
+            cost: E(1e8),
         },
         gr1: {
             branch: ["bh1"],
