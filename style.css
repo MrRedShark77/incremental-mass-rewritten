@@ -58,7 +58,7 @@ p {
 }
 
 body {
-    color: white;
+    color: gray;
     background-color: hsl(0, 0%, 7%);
 	overflow-x: hidden;
 	font-size: 16px;
