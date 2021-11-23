@@ -105,8 +105,9 @@ function updateSupernovaTemp() {
     }
     tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
 
-    tmp.supernova.maxlimit = E(1e20).pow(player.supernova.times.pow(1.25)).mul(1e90)
-    tmp.supernova.bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).add(1).floor()
+    tmp.supernova.ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
+    tmp.supernova.maxlimit = E(1e20).pow(player.supernova.times.div(tmp.supernova.ml_fp).pow(1.25)).mul(1e90)
+    tmp.supernova.bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).mul(tmp.supernova.ml_fp).add(1).floor()
     if (player.stars.points.div(1e90).lt(1)) tmp.supernova.bulk = E(0)
     if (scalingActive("supernova", player.supernova.times.max(tmp.supernova.bulk), "super")) {
 		let start = getScalingStart("super", "supernova");
@@ -116,14 +117,14 @@ function updateSupernovaTemp() {
 			E(1e20).pow(
                 player.supernova.times
                 .pow(exp)
-			    .div(start.pow(exp.sub(1)))
+			    .div(start.pow(exp.sub(1))).div(tmp.supernova.ml_fp)
                 .pow(1.25)
             ).mul(1e90).floor()
         tmp.supernova.bulk = player.stars.points
             .div(1e90)
             .max(1)
             .log(1e20)
-            .root(1.25)
+            .root(1.25).mul(tmp.supernova.ml_fp)
 			.mul(start.pow(exp.sub(1)))
 			.root(exp)
 			.add(1)

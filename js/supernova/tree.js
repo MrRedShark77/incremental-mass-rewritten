@@ -3,7 +3,7 @@ const TREE_IDS = [
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","","","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","bs1","","","","","","","","",""],
+    ["","","","","","","","","bs2","bs1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -252,6 +252,17 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
+        },
+        bs2: {
+            branch: ["bs1"],
+            desc: `Photon, Gluon powers up each other.`,
+            cost: E(1e14),
+            effect() {
+                let x = expMult(player.supernova.bosons.photon,1/2,2)
+                let y = expMult(player.supernova.bosons.gluon,1/2,2)
+                return [x,y]
+            },
+            effDesc(x) { return format(x[1])+"x to Photon, "+format(x[0])+"x to Gluon" },
         },
         /*
         x: {

@@ -16,11 +16,13 @@ const BOSONS = {
         photon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1)
+            if (player.supernova.tree.includes("bs2") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.bs2[1])
             return x
         },
         gluon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1)
+            if (player.supernova.tree.includes("bs2") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.bs2[0])
             return x
         },
         graviton() {
@@ -87,8 +89,8 @@ const BOSONS = {
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "All-Star resources gain is boosted by Photon.",
-                cost(x) { return E(5).pow(x.pow(1.25)).mul(1e6) },
-                bulk(x=player.supernova.bosons.photon) { return x.gte(1e6) ? x.div(1e6).max(1).log(5).root(1.25).add(1).floor() : E(0) },
+                cost(x) { return E(5).pow(x.pow(1.25)).mul(1e5) },
+                bulk(x=player.supernova.bosons.photon) { return x.gte(1e5) ? x.div(1e5).max(1).log(5).root(1.25).add(1).floor() : E(0) },
                 effect(x) { return player.supernova.bosons.photon.add(1).log10().add(1).pow(x.mul(0.5)) },
                 effDesc(x) { return format(x)+"x" },
             },
@@ -112,13 +114,13 @@ const BOSONS = {
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(500) ? x.div(500).max(1).log(5).root(1.25).add(1).floor() : E(0) },
                 effect(x) { return player.atom.quarks.add(1).log10().add(1).pow(x.mul(0.125)) },
                 effDesc(x) { return format(x)+"x" },
-            },/*{
-                desc: "Quarks gain is boosted by Gluon.",
-                cost(x) { return E(5).pow(x.pow(1.25)).mul(1e6) },
-                bulk(x=player.supernova.bosons.gluon) { return x.gte(1e6) ? x.div(1e6).max(1).log(5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.gluon.add(1).log10().add(1).pow(x.mul(0.5)) },
-                effDesc(x) { return format(x)+"x" },
-            },*/
+            },{
+                desc: "Supernova requirement is decreased based on Gluon.",
+                cost(x) { return E(10).pow(x.pow(1.25)).mul(1e5) },
+                bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.div(1e5).max(1).log(10).root(1.25).add(1).floor() : E(0) },
+                effect(x) { return player.supernova.bosons.gluon.add(1).log10().add(1).log10().mul(x.root(3)).div(10).add(1) },
+                effDesc(x) { return "/"+format(x) },
+            },
         ],
     },
 }
