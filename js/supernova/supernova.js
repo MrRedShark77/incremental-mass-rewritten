@@ -20,7 +20,7 @@ const SUPERNOVA = {
         player.atom.atomic = E(0)
         player.atom.gamma_ray = E(0)
         
-        let list_keep = [2,5]
+        let list_keep = [2,4,5]
         if (player.supernova.tree.includes("qol2")) list_keep.push(6)
         let keep = []
         for (let x = 0; x < player.mainUpg.atom.length; x++) if (list_keep.includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
@@ -58,6 +58,7 @@ const SUPERNOVA = {
         if (player.supernova.tree.includes("sn1")) x = x.mul(tmp.supernova.tree_eff.sn1)
         if (player.supernova.tree.includes("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
         if (player.supernova.tree.includes("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
+        if (player.supernova.tree.includes("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
         return x
     },
 }

@@ -3,7 +3,7 @@ const TREE_IDS = [
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","","","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","bs2","bs1","","","","","","","","",""],
+    ["","","","","","","","","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -74,7 +74,7 @@ const TREE_UPGS = {
             reqDesc: `13 Supernovas.`,
             cost: E(1e8),
             effect() {
-                let x = player.supernova.times.mul(0.1).softcap(1.5,2/3,0)
+                let x = player.supernova.times.mul(0.1).softcap(1.5,0.75,0)
                 return x
             },
             effDesc(x) { return "+"+format(x)+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"") },
@@ -263,6 +263,16 @@ const TREE_UPGS = {
                 return [x,y]
             },
             effDesc(x) { return format(x[1])+"x to Photon, "+format(x[0])+"x to Gluon" },
+        },
+        bs3: {
+            branch: ["bs1"],
+            desc: `Neutrons gain is affected by Graviton's effect at a reduced rate.`,
+            cost: E(1e14),
+            effect() {
+                let x = tmp.bosons.effect.graviton[0].add(1).root(2)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         /*
         x: {
