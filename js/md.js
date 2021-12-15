@@ -7,7 +7,7 @@ const MASS_DILATION = {
         updateMDTemp()
     },
     RPexpgain() {
-        let x = E(2).add(tmp.md.upgs[5].eff)
+        let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
         return x
     },
     RPmultgain() {

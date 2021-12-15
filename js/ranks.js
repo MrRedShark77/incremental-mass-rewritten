@@ -343,7 +343,7 @@ function updateRanksTemp() {
 			.add(1)
 			.floor();
 	}*/
-    tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5)
+    tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10)
 
     fp = RANKS.fp.tier()
     tmp.ranks.tier.req = player.ranks.tier.div(fp).add(2).pow(2).floor()

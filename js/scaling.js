@@ -105,18 +105,18 @@ function getScalingStart(type, name) {
 	let start = E(SCALE_START[type][name])
 	if (type=="super") {
 		if (name=="rank") {
-			if (CHALS.inChal(1)) return E(25)
+			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
 			start = start.add(tmp.chal?tmp.chal.eff[1].rank:0)
 		}
 		if (name=="tier") {
 			if (player.mainUpg.atom.includes(5)) start = start.add(10)
 		}
 		if (name=="massUpg") {
-			if (CHALS.inChal(1)) return E(25)
+			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
 			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:0:0)
 		}
 		if (name=='tickspeed') {
-			if (CHALS.inChal(1)) return E(50)
+			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
 		}
 	}
 	if (type=="hyper") {

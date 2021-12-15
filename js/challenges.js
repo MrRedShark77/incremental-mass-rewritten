@@ -293,7 +293,7 @@ const CHALS = {
         title: "No Particles",
         desc: "You cannot assign quarks. In addtional, mass gains exponent is raised to 0.9th power.",
         reward: `Improve Magnesium-12 better.`,
-        max: E(50),
+        max: E(100),
         inc: E('e500'),
         pow: E(2),
         start: E('e9.9e4').mul(1.5e56),
@@ -303,7 +303,22 @@ const CHALS = {
         },
         effDesc(x) { return "^"+format(x) },
     },
-    cols: 9,
+    10: {
+        unl() { return player.supernova.tree.includes("chal5") },
+        title: "The Reality I",
+        desc: "All challenges 1-8 are applied at once. In addtional, you are trapped in Mass Dilation!",
+        reward: `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions (coming soon)</span>`,
+        max: E(100),
+        inc: E('e2000'),
+        pow: E(2),
+        start: E('e3e4').mul(1.5e56),
+        effect(x) {
+            let ret = x.root(1.75).mul(0.01).add(1)
+            return ret
+        },
+        effDesc(x) { return format(x)+"x" },
+    },
+    cols: 10,
 }
 
 /*
