@@ -7,7 +7,7 @@ const MASS_DILATION = {
         updateMDTemp()
     },
     RPexpgain() {
-        let x = E(2).add(tmp.md.upgs[5].eff)
+        let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
         return x
     },
     RPmultgain() {
@@ -54,7 +54,7 @@ const MASS_DILATION = {
                 effect(x) {
                     let b = 2
                     if (player.atom.elements.includes(25)) b++
-                    return E(b).pow(x)
+                    return E(b).pow(x.mul(tmp.md.upgs[11].eff||1))
                 },
                 effDesc(x) { return format(x,0)+"x" },
             },{
@@ -62,14 +62,14 @@ const MASS_DILATION = {
                 cost(x) { return E(10).pow(x).mul(100) },
                 bulk() { return player.md.mass.gte(100)?player.md.mass.div(100).max(1).log10().add(1).floor():E(0) },
                 effect(x) {
-                    return player.md.upgs[7].gte(1)?x.root(1.5).mul(0.25).add(1):x.root(2).mul(0.15).add(1)
+                    return player.md.upgs[7].gte(1)?x.mul(tmp.md.upgs[11].eff||1).root(1.5).mul(0.25).add(1):x.mul(tmp.md.upgs[11].eff||1).root(2).mul(0.15).add(1)
                 },
                 effDesc(x) { return (x.gte(10)?format(x)+"x":format(x.sub(1).mul(100))+"%")+" stronger" },
             },{
                 desc: `Double relativistic particles gain.`,
                 cost(x) { return E(10).pow(x.pow(E(1.25).pow(tmp.md.upgs[4].eff||1))).mul(1000) },
                 bulk() { return player.md.mass.gte(1000)?player.md.mass.div(1000).max(1).log10().root(E(1.25).pow(tmp.md.upgs[4].eff||1)).add(1).floor():E(0) },
-                effect(x) { return E(2).pow(x).softcap(1e25,0.75,0) },
+                effect(x) { return E(2).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap(1e25,0.75,0) },
                 effDesc(x) { return format(x,0)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: `Dilated mass also boost Stronger’s power.`,
@@ -109,7 +109,7 @@ const MASS_DILATION = {
                 cost(x) { return E(1.5e246) },
                 bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
             },{
-                unl() { return STARS.unlocked() },
+                unl() { return STARS.unlocked() || player.supernova.times.gte(1) },
                 desc: `Tickspeed affect all-star resources at a reduced rate.`,
                 maxLvl: 1,
                 cost(x) { return E(1.5e296) },
@@ -117,7 +117,7 @@ const MASS_DILATION = {
                 effect(x) { return player.tickspeed.add(1).pow(2/3) },
                 effDesc(x) { return format(x)+"x" },
             },{
-                unl() { return STARS.unlocked() },
+                unl() { return STARS.unlocked() || player.supernova.times.gte(1) },
                 desc: `Double quarks gain.`,
                 cost(x) { return E(5).pow(x).mul('1.50001e536') },
                 bulk() { return player.md.mass.gte('1.50001e536')?player.md.mass.div('1.50001e536').max(1).log(5).add(1).floor():E(0) },
@@ -134,6 +134,15 @@ const MASS_DILATION = {
                     return x.mul(0.015).add(1).softcap(1.2,0.75,0).sub(1)
                 },
                 effDesc(x) { return "+"+format(x)+(x.gte(0.2)?" <span class='soft'>(softcapped)</span>":"") },
+            },{
+                unl() { return player.supernova.post_10 },
+                desc: `Mass Dilation upgrades in the first row are stronger.`,
+                cost(x) { return E(1e100).pow(x.pow(2)).mul('1.5e8056') },
+                bulk() { return player.md.mass.gte('1.5e8056')?player.md.mass.div('1.5e8056').max(1).log(1e100).max(0).root(2).add(1).floor():E(0) },
+                effect(x) {
+                    return x.pow(0.5).div(100).add(1)
+                },
+                effDesc(x) { return "+"+format(x.sub(1).mul(100))+"% stronger" },
             },
         ],
     },

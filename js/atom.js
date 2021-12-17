@@ -47,7 +47,7 @@ const ATOM = {
             if (player.atom.elements.includes(3)) x = x.mul(tmp.elements.effect[3])
             if (player.atom.elements.includes(52)) x = x.mul(tmp.elements.effect[52])
             x = x.mul(tmp.bosons.upgs.gluon[0].effect)
-            if (player.md.active) x = expMult(x,0.8)
+            if (player.md.active || CHALS.inChal(10)) x = expMult(x,0.8)
             return x
         },
         effect() {

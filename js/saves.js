@@ -177,12 +177,9 @@ function wipe() {
 }
 
 function loadPlayer(load) {
-    player = deepNaN(load, getPlayerData())
-    player = Object.assign(getPlayerData(), player)
-    for (let x = 0; x < Object.keys(player).length; x++) {
-        let k = Object.keys(player)[x]
-        if (typeof player[k] == 'object' && getPlayerData()[k]) player[k] = Object.assign(getPlayerData()[k], load[k])
-    }
+    const DATA = getPlayerData()
+    player = deepNaN(load, DATA)
+    player = deepUndefinedAndDecimal(player, DATA)
     convertStringToDecimal()
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
@@ -195,62 +192,37 @@ function deepNaN(obj, data) {
     for (let x = 0; x < Object.keys(obj).length; x++) {
         let k = Object.keys(obj)[x]
         if (typeof obj[k] == 'string') {
-            if (obj[k] == "NaNeNaN") obj[k] = data[k]
+            if ((obj[k] == "NaNeNaN" || obj[k] == null) && Object.getPrototypeOf(data[k]).constructor.name == "Decimal") obj[k] = data[k]
         } else {
             if (typeof obj[k] != 'object' && isNaN(obj[k])) obj[k] = data[k]
-            if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])
+            if (typeof obj[k] == 'object' && data[k] && obj[k] != null) obj[k] = deepNaN(obj[k], data[k])
         }
-        /*
-        if (typeof obj[k] != 'object' && typeof obj[k] != 'string' && isNaN(obj[k])) obj[k] = data[k]
-        if (typeof obj[k] == 'object' && data[k]) obj[k] = deepNaN(obj[k], data[k])*/
+    }
+    return obj
+}
+
+function deepUndefinedAndDecimal(obj, data) {
+    if (obj == null) return data
+    for (let x = 0; x < Object.keys(data).length; x++) {
+        let k = Object.keys(data)[x]
+        if (obj[k] == null) continue
+        if (obj[k] === undefined) obj[k] = data[k]
+        else {
+            if (Object.getPrototypeOf(data[k]).constructor.name == "Decimal") obj[k] = E(obj[k])
+            else if (typeof obj[k] == 'object') deepUndefinedAndDecimal(obj[k], data[k])
+        }
     }
     return obj
 }
 
 function convertStringToDecimal() {
-    player.mass = E(player.mass)
-    player.tickspeed = E(player.tickspeed)
-    player.rp.points = E(player.rp.points)
-
-    player.bh.dm = E(player.bh.dm)
-    player.bh.mass = E(player.bh.mass)
-    player.bh.condenser = E(player.bh.condenser)
-
-    player.atom.points = E(player.atom.points)
-    player.atom.atomic = E(player.atom.atomic)
-    player.atom.gamma_ray = E(player.atom.gamma_ray)
-    player.atom.quarks = E(player.atom.quarks)
-    for (let x = 0; x < ATOM.particles.names.length; x++) {
-        player.atom.particles[x] = E(player.atom.particles[x])
-        player.atom.powers[x] = E(player.atom.powers[x])
-    }
-
-    player.md.particles = E(player.md.particles)
-    player.md.mass = E(player.md.mass)
-
-    player.stars.points = E(player.stars.points)
-    player.stars.boost = E(player.stars.boost)
-    for (let x = 0; x < 5; x++) if (player.stars.generators[x] !== undefined) player.stars.generators[x] = E(player.stars.generators[x])
-
-    player.supernova.times = E(player.supernova.times)
-    player.supernova.stars = E(player.supernova.stars)
-
-    player.supernova.bosons.pos_w = E(player.supernova.bosons.pos_w)
-    player.supernova.bosons.neg_w = E(player.supernova.bosons.neg_w)
-    player.supernova.bosons.z_boson = E(player.supernova.bosons.z_boson)
-    player.supernova.bosons.photon = E(player.supernova.bosons.photon)
-    player.supernova.bosons.gluon = E(player.supernova.bosons.gluon)
-    player.supernova.bosons.graviton = E(player.supernova.bosons.graviton)
-    player.supernova.bosons.hb = E(player.supernova.bosons.hb)
-
-    for (let x = 0; x < RANKS.names.length; x++) player.ranks[RANKS.names[x]] = E(player.ranks[RANKS.names[x]])
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
 }
 
-function cannotSave() { return tmp.supernova.reached }
+function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) }
 
 function save(){
     if (cannotSave()) return

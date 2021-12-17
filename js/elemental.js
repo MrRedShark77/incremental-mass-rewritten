@@ -378,6 +378,15 @@ const ELEMENTS = {
             desc: `Add 200 more C8 maximum completions.`,
             cost: E('e2.2e4'),
         },
+        {
+            desc: `Tickspeed power boost base from Star Booster at a reduced rate.`,
+            cost: E('e3.6e4'),
+            effect() {
+                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10):E(0)
+                return x
+            },
+            effDesc(x) { return "+"+format(x)+"x" },
+        },
     ],
     /*
     {
@@ -397,7 +406,7 @@ const ELEMENTS = {
         if (MASS_DILATION.unlocked()) u += 15
         if (STARS.unlocked()) u += 18
         if (player.supernova.times.gte(1)) u = 49+5
-        if (player.supernova.post_10) u += 2
+        if (player.supernova.post_10) u += 3
         return u
     },
 }

@@ -58,7 +58,10 @@ function updateStarsTemp() {
     tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:E(1/0)
     tmp.stars.generator_boost_req = E("e100").pow(player.stars.boost.pow(1.25)).mul('e8000')
     tmp.stars.generator_boost_bulk = player.atom.quarks.gte("e8000")?player.atom.quarks.div("e8000").max(1).log("e100").root(1.25).add(1).floor():E(0)
-    tmp.stars.generator_boost_eff = E(2).pow(player.stars.boost)
+
+    tmp.stars.generator_boost_base = E(2)
+    if (player.atom.elements.includes(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])
+    tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost)
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.softPower = STARS.softPower()
     tmp.stars.softGain = STARS.softGain()
