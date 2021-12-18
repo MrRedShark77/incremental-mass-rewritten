@@ -8,6 +8,7 @@ const SCALE_START = {
 		bh_condenser: E(100),
 		gamma_ray: E(100),
 		supernova: E(15),
+		fTier: E(10),
     },
 	hyper: {
 		rank: E(120),
@@ -40,6 +41,7 @@ const SCALING_RES = {
 	bh_condenser(x=0) { return player.bh.condenser },
 	gamma_ray(x=0) { return player.atom.gamma_ray },
 	supernova(x=0) { return player.supernova.times },
+	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
 }
 
 const NAME_FROM_RES = {
@@ -90,10 +92,10 @@ function scalingActive(name, amt, type) {
 	return amt.gte(getScalingStart(type, name));
 }
 
-function getScalingName(name, x=0) {
+function getScalingName(name, x=0, y=0) {
 	let cap = Object.keys(SCALE_START).length;
 	let current = "";
-	let amt = SCALING_RES[name](x);
+	let amt = SCALING_RES[name](x,y);
 	for (let n = cap - 1; n >= 0; n--) {
 		if (scalingActive(name, amt, Object.keys(SCALE_START)[n]))
 			return capitalFirst(Object.keys(SCALE_START)[n]) + (Object.keys(SCALE_START)[n]=="meta"?"-":" ");
@@ -110,6 +112,9 @@ function getScalingStart(type, name) {
 		}
 		if (name=="tier") {
 			if (player.mainUpg.atom.includes(5)) start = start.add(10)
+		}
+		if (name=="tetr") {
+			if (player.ranks.tier.gte(100)) start = start.add(5)
 		}
 		if (name=="massUpg") {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
@@ -182,9 +187,11 @@ function getScalingPower(type, name) {
 	if (type=="ultra") {
 		if (name=="rank") {
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
 		}
 		if (name=='tickspeed') {
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
 		}
 		if (name=='bh_condenser') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)

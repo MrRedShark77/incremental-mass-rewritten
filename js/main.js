@@ -8,7 +8,7 @@ const ST_NAMES = [
     ["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
     ["","Mi","Mc","Na","Pc"],
 ]
-const CONFIRMS = ['rp', 'bh', 'atom']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn']
 
 const FORMS = {
     massGain() {
@@ -149,8 +149,14 @@ const FORMS = {
             if (player.md.active || CHALS.inChal(10)) gain = expMult(gain,0.8)
             return gain.floor()
         },
+        massPowerGain() {
+            let x = E(0.33)
+            if (FERMIONS.onActive("11")) return E(-1)
+            if (player.atom.elements.includes(59)) x = E(0.45)
+            return x
+        },
         massGain() {
-            let x = player.bh.mass.add(1).pow(0.33).mul(this.condenser.effect().eff)
+            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
             if (player.atom.elements.includes(46)) x = x.mul(tmp.elements.effect[46])

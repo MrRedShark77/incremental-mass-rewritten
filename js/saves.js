@@ -56,6 +56,11 @@ function calc(dt, dt_offline) {
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
     player.time += dt
+
+    if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
+        player.supernova.fermions.unl = true
+        addPopup(POPUP_GROUPS.fermions)
+    }
 }
 
 function getPlayerData() {
@@ -144,7 +149,13 @@ function getPlayerData() {
             b_upgs: {
                 photon: [],
                 gluon: [],
-            }
+            },
+            fermions: {
+                unl: false,
+                points: [E(0),E(0)],
+                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
+                choosed: "",
+            },
         },
         reset_msg: "",
         main_upg_msg: [0,0],
@@ -184,6 +195,10 @@ function loadPlayer(load) {
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
+    for (i = 0; i < 2; i++) for (let x = 0; x < FERMIONS.types[i].length; x++) {
+        let f = FERMIONS.types[i][x]
+        if (f.maxTier) player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(f.maxTier)
+    }
     let off_time = (Date.now() - player.offline.current)/1000
     if (off_time >= 60 && player.offline.active) player.offline.time += off_time
 }
@@ -205,7 +220,7 @@ function deepUndefinedAndDecimal(obj, data) {
     if (obj == null) return data
     for (let x = 0; x < Object.keys(data).length; x++) {
         let k = Object.keys(data)[x]
-        if (obj[k] == null) continue
+        if (obj[k] === null) continue
         if (obj[k] === undefined) obj[k] = data[k]
         else {
             if (Object.getPrototypeOf(data[k]).constructor.name == "Decimal") obj[k] = E(obj[k])

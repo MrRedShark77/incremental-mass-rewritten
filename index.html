@@ -13,6 +13,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
 
+    <script src="js/supernova/fermions.js"></script>
     <script src="js/supernova/bosons.js"></script>
     <script src="js/supernova/tree.js"></script>
     <script src="js/supernova/supernova.js"></script>
@@ -108,6 +109,19 @@
                     </div>
                 </div>
             </div>
+        </div><div id="stab_frame5_2">
+            Note: Choosing any fermion will reset without being Supernova!<br><br>
+            <button class="btn" onclick="FERMIONS.backNormal()">Back to Normal</button><br><br>
+            <div class="fermions">
+                <div class="f_quark sub_f">
+                    You have <span id="fquarkAmt">X</span> U-Quark<br><br>
+                    <div id="fermions_quark_table" class="table_center"></div>
+                </div>
+                <div class="f_lepton sub_f">
+                    You have <span id="fleptonAmt">X</span> U-Lepton<br><br>
+                    <div id="fermions_lepton_table" class="table_center"></div>
+                </div>
+            </div>
         </div>
     </div>
     <div id='app' style='display: none'>
@@ -179,7 +193,7 @@
             </div><div id="stab_frame0_1">
                 You have <span id="bhMass2">X</span> of Black Hole<br>
                 <span class="green">Which multiplies mass gain by <span id="bhEffect">X</span></span><br><br>
-                Black Hole mass's gain formula - (x + 1)<sup>0.33</sup> * <span id="bhCondenserEffect">X</span><br><br>
+                Black Hole mass's gain formula - (x + 1)<sup id="bhMassPower">0.33</sup> * <span id="bhCondenserEffect">X</span><br><br>
                 <div style="width: 100%; margin-bottom: 5px;" class="table_center">
                     <div style="width: 400px">
                         <div class="resources">
@@ -284,7 +298,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.4.1.5 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.4.2.1 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

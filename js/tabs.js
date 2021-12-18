@@ -38,6 +38,7 @@ const TABS = {
         5: [
             { id: "Neutron Tree" },
             { id: "Bosons", unl() { return player.supernova.post_10 } },
+            { id: "Fermions", unl() { return player.supernova.fermions.unl } },
         ],
     },
 }
