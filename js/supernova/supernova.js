@@ -87,8 +87,11 @@ function calcSupernova(dt, dt_offline) {
     }
 
     if (player.supernova.fermions.unl) {
-        if (tmp.fermions.ch[0] >= 0) player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
-        .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]])
+        if (tmp.fermions.ch[0] >= 0) {
+            let maxTier = FERMIONS.types[tmp.fermions.ch[0]][tmp.fermions.ch[1]].maxTier
+            player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
+            .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]).min(maxTier?maxTier:Infinity)
+        }
         for (let x = 0; x < 2; x++) player.supernova.fermions.points[x] = player.supernova.fermions.points[x].add(tmp.fermions.gains[x].mul(dt))
     }
 }

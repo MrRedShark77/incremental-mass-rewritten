@@ -195,6 +195,10 @@ function loadPlayer(load) {
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
+    for (i = 0; i < 2; i++) for (let x = 0; x < FERMIONS.types[i].length; x++) {
+        let f = FERMIONS.types[i][x]
+        if (f.maxTier) player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(f.maxTier)
+    }
     let off_time = (Date.now() - player.offline.current)/1000
     if (off_time >= 60 && player.offline.active) player.offline.time += off_time
 }
