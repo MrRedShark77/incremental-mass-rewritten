@@ -35,7 +35,7 @@ const FERMIONS = {
                     return x
                 },
                 eff(i, t) {
-                    let x = i.max(1).log(1.1).mul(t.pow(0.9))
+                    let x = i.max(1).log(1.1).mul(t.pow(0.75))
                     return x
                 },
                 desc(x) {
