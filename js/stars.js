@@ -6,7 +6,7 @@ const STARS = {
         return x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
     },
     softGain() {
-        let s = E("e1000")
+        let s = E("e1000").pow(tmp.fermions.effs[1][0]||1)
         return s
     },
     softPower() {

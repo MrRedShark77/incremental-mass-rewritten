@@ -83,6 +83,17 @@ const POPUP_GROUPS = {
             'font-size': "14px",
         },
     },
+    fermions: {
+        html: `
+            Congratulations!<br><br>You have beated Challenge 10!<br><br>
+            <b>Fermions are unlocked in Supernova tab!</b>
+        `,
+        width: 400,
+        height: 150,
+        otherStyle: {
+            'font-size': "14px",
+        },
+    },
 }
 
 function addPopup(data) {

@@ -111,6 +111,9 @@ function getScalingStart(type, name) {
 		if (name=="tier") {
 			if (player.mainUpg.atom.includes(5)) start = start.add(10)
 		}
+		if (name=="tetr") {
+			if (player.ranks.tier.gte(100)) start = start.add(5)
+		}
 		if (name=="massUpg") {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
 			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:0:0)
@@ -182,9 +185,11 @@ function getScalingPower(type, name) {
 	if (type=="ultra") {
 		if (name=="rank") {
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
 		}
 		if (name=='tickspeed') {
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
 		}
 		if (name=='bh_condenser') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)

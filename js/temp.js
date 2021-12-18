@@ -6,6 +6,13 @@ var tmp = {
     notify: [],
     popup: [],
     saving: 0,
+
+    fermions: {
+        ch: [0,0],
+        gains: [E(0),E(0)],
+        tiers: [[],[]],
+        effs:  [[],[]],
+    },
 }
 for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
 
@@ -155,6 +162,7 @@ function updateBlackHoleTemp() {
     tmp.bh.dm_gain = FORMS.bh.DM_gain()
     tmp.bh.massSoftPower = FORMS.bh.massSoftPower()
     tmp.bh.massSoftGain = FORMS.bh.massSoftGain()
+    tmp.bh.massPowerGain = FORMS.bh.massPowerGain()
     tmp.bh.mass_gain = FORMS.bh.massGain()
     tmp.bh.dm_can = tmp.bh.dm_gain.gte(1)
     tmp.bh.effect = FORMS.bh.effect()
@@ -244,6 +252,7 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+    updateFermionsTemp()
     updateBosonsTemp()
     updateSupernovaTemp()
     updateElementsTemp()

@@ -76,6 +76,7 @@ const RANKS = {
             12: "make tier 4's reward effect twice effective and remove softcap.",
             30: "stronger effect's softcap is 10% weaker.",
             55: "make rank 380's effect stronger based on tier.",
+            100: "Super Tetr scale 5 later.",
         },
         tetr: {
             1: "reduce tier reqirements by 25%, make Hyper Rank scaling is 15% weaker.",

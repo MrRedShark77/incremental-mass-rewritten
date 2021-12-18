@@ -428,6 +428,74 @@ h2 {
 	background-color: rgba(189, 189, 189, 0.25);
 }
 
+.fermions {
+	font-size: 18px;
+}
+
+.sub_f {
+	padding: 15px;
+	width: calc(100% - 30px);
+}
+
+.f_quark {
+	min-height: 290px;
+	background-color: rgba(255, 145, 0, 0.25);
+}
+
+.f_lepton {
+	min-height: 290px;
+	background-color: rgba(0, 255, 34, 0.25);
+}
+
+.fermion_btn {
+	padding: 3px;
+	width: 240px;
+	height: 240px;
+	font-size: 11px;
+	margin: 0px 5px;
+}
+
+.fermion_btn > b {
+	font-size: 15px;
+}
+
+.fermion_btn.quark {
+	border-color: orange;
+}
+
+.fermion_btn.quark:hover {
+	background-color: hsl(39, 100%, 6%);
+}
+
+.fermion_btn.quark.choosed {
+	background: repeating-linear-gradient(45deg, #0005 0%, #0005 1%, hsl(39, 100%, 21%) 5%, #0005 9%, #0005 10%);
+	animation: f_spin 2s linear infinite;
+	cursor: default;
+}
+
+.fermion_btn.lepton {
+	border-color: lime;
+}
+
+.fermion_btn.lepton:hover {
+	background-color: hsl(120, 100%, 6%);
+}
+
+.fermion_btn.lepton.choosed {
+	background: repeating-linear-gradient(45deg, #0005 0%, #0005 1%, hsl(120, 100%, 21%) 5%, #0005 9%, #0005 10%);
+	animation: f_spin 2s linear infinite;
+	cursor: default;
+}
+
+@keyframes f_spin {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -48px;
+	}
+}
+
 [tooltip] {
 	position: relative;
 	z-index: 2;

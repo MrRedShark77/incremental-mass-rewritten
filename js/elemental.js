@@ -387,6 +387,23 @@ const ELEMENTS = {
             },
             effDesc(x) { return "+"+format(x)+"x" },
         },
+        {
+            desc: `Ultra Rank & Tickspeed scales weaker based on Tier.`,
+            cost: E('e5.7e4'),
+            effect() {
+                let x = E(0.975).pow(player.ranks.tier.pow(0.5))
+                return x
+            },
+            effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+        },
+        {
+            desc: `The power from the mass of the BH formula is increased to 0.5.`,
+            cost: E('e6.6e4'),
+        },
+        {
+            desc: `Add 100 more C7 maximum completions.`,
+            cost: E('e7.7e4'),
+        },
     ],
     /*
     {
@@ -407,6 +424,7 @@ const ELEMENTS = {
         if (STARS.unlocked()) u += 18
         if (player.supernova.times.gte(1)) u = 49+5
         if (player.supernova.post_10) u += 3
+        if (player.supernova.fermions.unl) u += 3
         return u
     },
 }

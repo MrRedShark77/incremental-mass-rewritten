@@ -1,9 +1,9 @@
 const SUPERNOVA = {
-    reset(force=false, chal=false, post=false) {
-        if (!chal && !post) if (force?!confirm("Are you sure to reset without being Supernova?"):false) return
-        if (tmp.supernova.reached || force) {
+    reset(force=false, chal=false, post=false, fermion=false) {
+        if (!chal && !post && !fermion) if ((force && player.confirms.sn)?!confirm("Are you sure to reset without being Supernova?"):false) return
+        if (tmp.supernova.reached || force || fermion) {
             tmp.el.supernova_scene.setDisplay(false)
-            if (!force) {
+            if (!force && !fermion) {
                 player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
             }
             tmp.pass = true
@@ -84,6 +84,12 @@ function calcSupernova(dt, dt_offline) {
     if (player.supernova.post_10) for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
         player.supernova.bosons[id] = player.supernova.bosons[id].add(tmp.bosons.gain[id].mul(dt))
+    }
+
+    if (player.supernova.fermions.unl) {
+        if (tmp.fermions.ch[0] >= 0) player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
+        .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]])
+        for (let x = 0; x < 2; x++) player.supernova.fermions.points[x] = player.supernova.fermions.points[x].add(tmp.fermions.gains[x].mul(dt))
     }
 }
 
@@ -174,5 +180,6 @@ function updateSupernovaEndingHTML() {
             updateTreeHTML()
         }
         if (tmp.stab[5] == 1) updateBosonsHTML()
+        if (tmp.stab[5] == 2) updateFermionsHTML()
     }
 }

@@ -26,11 +26,11 @@ const BOSONS = {
             return x
         },
         graviton() {
-            let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1).mul(tmp.fermions.effs[1][1])
             return x
         },
         hb() {
-            let x = E(0.01)
+            let x = E(0.01).mul(tmp.fermions.effs[1][1])
             if (player.supernova.tree.includes("bs1")) x = x.mul(tmp.supernova?tmp.supernova.tree_eff.bs1:1)
             return x
         },

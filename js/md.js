@@ -8,6 +8,7 @@ const MASS_DILATION = {
     },
     RPexpgain() {
         let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
+        if (FERMIONS.onActive("01")) x = x.div(10)
         return x
     },
     RPmultgain() {
@@ -16,6 +17,7 @@ const MASS_DILATION = {
         if (player.atom.elements.includes(31)) x = x.mul(tmp.elements.effect[31])
         if (player.atom.elements.includes(34)) x = x.mul(tmp.elements.effect[34])
         if (player.atom.elements.includes(45)) x = x.mul(tmp.elements.effect[45])
+        x = x.mul(tmp.fermions.effs[0][1]||1)
         return x
     },
     RPgain(m=player.mass) {
@@ -23,7 +25,8 @@ const MASS_DILATION = {
         return x.sub(player.md.particles).max(0).floor()
     },
     massGain() {
-        let x = player.md.particles.pow(2)
+        let pow = E(2)
+        let x = player.md.particles.pow(pow)
         x = x.mul(tmp.md.upgs[0].eff)
         if (player.atom.elements.includes(22)) x = x.mul(tmp.elements.effect[22])
         if (player.atom.elements.includes(35)) x = x.mul(tmp.elements.effect[35])
@@ -54,9 +57,9 @@ const MASS_DILATION = {
                 effect(x) {
                     let b = 2
                     if (player.atom.elements.includes(25)) b++
-                    return E(b).pow(x.mul(tmp.md.upgs[11].eff||1))
+                    return E(b).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap('e1.2e4',0.96,2)
                 },
-                effDesc(x) { return format(x,0)+"x" },
+                effDesc(x) { return format(x,0)+"x"+(x.gte('e1.2e4')?" <span class='soft'>(softcapped)</span>":"")},
             },{
                 desc: `Make dilated mass effect stronger.`,
                 cost(x) { return E(10).pow(x).mul(100) },
@@ -140,7 +143,7 @@ const MASS_DILATION = {
                 cost(x) { return E(1e100).pow(x.pow(2)).mul('1.5e8056') },
                 bulk() { return player.md.mass.gte('1.5e8056')?player.md.mass.div('1.5e8056').max(1).log(1e100).max(0).root(2).add(1).floor():E(0) },
                 effect(x) {
-                    return x.pow(0.5).div(100).add(1)
+                    return x.pow(0.5).softcap(3.5,0.5,0).div(100).add(1)
                 },
                 effDesc(x) { return "+"+format(x.sub(1).mul(100))+"% stronger" },
             },

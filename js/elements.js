@@ -107,6 +107,7 @@ function setupHTML() {
 	setupStarsHTML()
 	setupTreeHTML()
 	setupBosonsHTML()
+	setupFermionsHTML()
 
 	/*
 	function setupTestHTML() {
@@ -280,6 +281,7 @@ function updateMainUpgradesHTML() {
 
 function updateBlackHoleHTML() {
 	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
+	tmp.el.bhMassPower.setTxt(format(tmp.bh.massPowerGain,2))
 	tmp.el.massSoft2.setDisplay(tmp.bh.mass_gain.gte(tmp.bh.massSoftGain))
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 	tmp.el.bhEffect.setTxt(format(tmp.bh.effect))
@@ -296,7 +298,7 @@ function updateBlackHoleHTML() {
 
 function updateOptionsHTML() {
 	for (let x = 0; x < CONFIRMS.length; x++) {
-		tmp.el["confirm_div_"+x].setDisplay(player[CONFIRMS[x]].unl)
+		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x] == "sn"?player.supernova.times.gte(1):player[CONFIRMS[x]].unl)
 		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 	}
 	tmp.el.total_time.setTxt(formatTime(player.time))

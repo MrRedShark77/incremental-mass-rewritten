@@ -97,6 +97,7 @@ const CHALS = {
         if (player.atom.elements.includes(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
         if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
+        if (player.atom.elements.includes(60) && (i==7)) x = x.add(100)
         if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
         if (player.atom.elements.includes(56) && (i==8)) x = x.add(200)
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
@@ -307,7 +308,7 @@ const CHALS = {
         unl() { return player.supernova.tree.includes("chal5") },
         title: "The Reality I",
         desc: "All challenges 1-8 are applied at once. In addtional, you are trapped in Mass Dilation!",
-        reward: `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions (coming soon)</span>`,
+        reward: `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions!</span>`,
         max: E(100),
         inc: E('e2000'),
         pow: E(2),

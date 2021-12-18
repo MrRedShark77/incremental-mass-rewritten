@@ -56,6 +56,11 @@ function calc(dt, dt_offline) {
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
     player.time += dt
+
+    if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
+        player.supernova.fermions.unl = true
+        addPopup(POPUP_GROUPS.fermions)
+    }
 }
 
 function getPlayerData() {
@@ -144,7 +149,13 @@ function getPlayerData() {
             b_upgs: {
                 photon: [],
                 gluon: [],
-            }
+            },
+            fermions: {
+                unl: false,
+                points: [E(0),E(0)],
+                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
+                choosed: "",
+            },
         },
         reset_msg: "",
         main_upg_msg: [0,0],
@@ -205,7 +216,7 @@ function deepUndefinedAndDecimal(obj, data) {
     if (obj == null) return data
     for (let x = 0; x < Object.keys(data).length; x++) {
         let k = Object.keys(data)[x]
-        if (obj[k] == null) continue
+        if (obj[k] === null) continue
         if (obj[k] === undefined) obj[k] = data[k]
         else {
             if (Object.getPrototypeOf(data[k]).constructor.name == "Decimal") obj[k] = E(obj[k])

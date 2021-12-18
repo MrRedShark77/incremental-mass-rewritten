@@ -166,7 +166,7 @@ const FORMATS = {
             return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
           }
           let m = ex.div(E(1000).pow(e.div(3).floor()))
-          return (e.log10().gte(9)?'':m.toFixed(4))+'e'+this.format(e.div(3).floor().mul(3),0)
+          return (e.log10().gte(9)?'':m.toFixed(E(4).sub(e.sub(e.div(3).floor().mul(3)))))+'e'+this.format(e.div(3).floor().mul(3),0)
         }
       },
     },
