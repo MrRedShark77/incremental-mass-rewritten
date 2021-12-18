@@ -86,7 +86,7 @@ const BOSONS = {
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(500) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(500) ? x.div(500).max(1).log(5).root(1.25).add(1).floor() : E(0) },
                 effect(x) { return player.stars.points.add(1).log10().add(1).pow(x.mul(0.2)).softcap(1e15,0.6,0) },
-                effDesc(x) { return format(x)+"x"+(x.gte(1e12)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return format(x)+"x" },
             },{
                 desc: "All-Star resources gain is boosted by Photon.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(1e5) },
@@ -113,7 +113,7 @@ const BOSONS = {
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(500) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(500) ? x.div(500).max(1).log(5).root(1.25).add(1).floor() : E(0) },
                 effect(x) { return player.atom.quarks.add(1).log10().add(1).pow(x.mul(0.125)).softcap(1e15,0.6,0) },
-                effDesc(x) { return format(x)+"x"+(x.gte(1e12)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Supernova requirement is decreased based on Gluon.",
                 cost(x) { return E(10).pow(x.pow(1.25)).mul(1e5) },
