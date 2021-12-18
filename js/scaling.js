@@ -8,6 +8,7 @@ const SCALE_START = {
 		bh_condenser: E(100),
 		gamma_ray: E(100),
 		supernova: E(15),
+		fTier: E(10),
     },
 	hyper: {
 		rank: E(120),
@@ -40,6 +41,7 @@ const SCALING_RES = {
 	bh_condenser(x=0) { return player.bh.condenser },
 	gamma_ray(x=0) { return player.atom.gamma_ray },
 	supernova(x=0) { return player.supernova.times },
+	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
 }
 
 const NAME_FROM_RES = {
@@ -90,10 +92,10 @@ function scalingActive(name, amt, type) {
 	return amt.gte(getScalingStart(type, name));
 }
 
-function getScalingName(name, x=0) {
+function getScalingName(name, x=0, y=0) {
 	let cap = Object.keys(SCALE_START).length;
 	let current = "";
-	let amt = SCALING_RES[name](x);
+	let amt = SCALING_RES[name](x,y);
 	for (let n = cap - 1; n >= 0; n--) {
 		if (scalingActive(name, amt, Object.keys(SCALE_START)[n]))
 			return capitalFirst(Object.keys(SCALE_START)[n]) + (Object.keys(SCALE_START)[n]=="meta"?"-":" ");
