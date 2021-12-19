@@ -3,8 +3,8 @@ const TREE_IDS = [
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","","","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","","","","","","","","","gr2","","chal5","","","",""],
-    ["","","","","","","","","bs2","bs1","bs3","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
+    ["","","","","","","","","","fn1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -281,6 +281,23 @@ const TREE_UPGS = {
             cost: E(1e14),
             effect() {
                 let x = tmp.bosons.effect.graviton[0].add(1).root(2)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        bs4: {
+            unl() { return player.supernova.fermions.unl },
+            branch: ["bs2"],
+            desc: `Raise Z Bosons gain to the 1.5th power.`,
+            cost: E(1e24),
+        },
+        fn1: {
+            unl() { return player.supernova.fermions.unl },
+            branch: ["bs1"],
+            desc: `Tickspeed affect each Fermions gain at a reduced rate.`,
+            cost: E(1e27),
+            effect() {
+                let x = E(1.25).pow(player.tickspeed.pow(0.4))
                 return x
             },
             effDesc(x) { return format(x)+"x" },

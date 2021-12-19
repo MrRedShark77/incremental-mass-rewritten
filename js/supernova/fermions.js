@@ -4,6 +4,7 @@ const FERMIONS = {
         if (!player.supernova.fermions.unl) return E(0)
         let x = E(1)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(E(1.25).pow(player.supernova.fermions.tiers[i][j]))
+        if (player.supernova.tree.includes("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
         return x
     },
     backNormal() {
@@ -26,15 +27,15 @@ const FERMIONS = {
             if (x.gte(getScalingStart('super',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
-                let exp = E(3).pow(power)
-                x = t.mul(start.pow(exp.sub(1))).root(exp).add(1).floor()
+                let exp = E(2.5).pow(power)
+                x = t.mul(start.pow(exp.sub(1))).root(exp).floor()
             }
         } else {
             if (x.gte(getScalingStart('super',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
-                let exp = E(3).pow(power)
-                x = t.pow(exp).div(start.pow(exp.sub(1))).floor()
+                let exp = E(2.5).pow(power)
+                x = t.pow(exp).div(start.pow(exp.sub(1))).add(1).floor()
             }
         }
         return x
@@ -118,7 +119,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = t.pow(1.5).add(1).pow(i.add(1).log10()).softcap(1e6,0.8,0)
+                    let x = t.pow(1.5).add(1).pow(i.add(1).log10()).softcap(1e6,0.75,0)
                     return x
                 },
                 desc(x) {

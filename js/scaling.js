@@ -53,6 +53,7 @@ const NAME_FROM_RES = {
 	bh_condenser: "Black Hole Condenser",
 	gamma_ray: "Gamma Ray",
 	supernova: "Supernova",
+	fTier: "Fermion Tier",
 }
 
 function updateScalingHTML() {
