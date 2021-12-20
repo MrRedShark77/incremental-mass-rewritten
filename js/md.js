@@ -57,9 +57,9 @@ const MASS_DILATION = {
                 effect(x) {
                     let b = 2
                     if (player.atom.elements.includes(25)) b++
-                    return E(b).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap('e1.2e4',0.96,2)
+                    return E(b).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap('e1.2e4',0.96,2).softcap('e2e4',0.92,2)
                 },
-                effDesc(x) { return format(x,0)+"x"+(x.gte('e1.2e4')?" <span class='soft'>(softcapped)</span>":"")},
+                effDesc(x) { return format(x,0)+"x"+(x.gte('e1.2e4')?` <span class='soft'>(softcapped${x.gte('e2e4')?"^2":""})</span>`:"")},
             },{
                 desc: `Make dilated mass effect stronger.`,
                 cost(x) { return E(10).pow(x).mul(100) },
@@ -96,9 +96,9 @@ const MASS_DILATION = {
                     let s = E(0.25).add(tmp.md.upgs[10].eff||1)
                     let x = i.mul(s)
                     if (player.atom.elements.includes(53)) x = x.mul(1.75)
-                    return x
+                    return x.softcap(1e3,0.6,0)
                 },
-                effDesc(x) { return "+^"+format(x) },
+                effDesc(x) { return "+^"+format(x)+(x.gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: `Dilated mass boost quarks gain.`,
                 maxLvl: 1,
@@ -139,7 +139,7 @@ const MASS_DILATION = {
                 effDesc(x) { return "+"+format(x)+(x.gte(0.2)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 unl() { return player.supernova.post_10 },
-                desc: `Mass Dilation upgrades in the first row are stronger.`,
+                desc: `First 3 Mass Dilation upgrades are stronger.`,
                 cost(x) { return E(1e100).pow(x.pow(2)).mul('1.5e8056') },
                 bulk() { return player.md.mass.gte('1.5e8056')?player.md.mass.div('1.5e8056').max(1).log(1e100).max(0).root(2).add(1).floor():E(0) },
                 effect(x) {
