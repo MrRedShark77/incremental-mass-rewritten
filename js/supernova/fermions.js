@@ -25,17 +25,18 @@ const FERMIONS = {
         let x = t
         if (bulk) {
             if (x.gte(getScalingStart('super',"fTier"))) {
+                x = x.sub(1)
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
                 let exp = E(2.5).pow(power)
-                x = t.mul(start.pow(exp.sub(1))).root(exp).floor()
+                x = t.mul(start.pow(exp.sub(1))).root(exp).add(1).floor()
             }
         } else {
             if (x.gte(getScalingStart('super',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
                 let exp = E(2.5).pow(power)
-                x = t.pow(exp).div(start.pow(exp.sub(1))).add(1).floor()
+                x = t.pow(exp).div(start.pow(exp.sub(1))).floor()
             }
         }
         return x
