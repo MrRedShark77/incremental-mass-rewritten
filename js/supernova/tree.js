@@ -313,7 +313,7 @@ const TREE_UPGS = {
         fn2: {
             branch: ["fn1"],
             req() { return player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01") },
-            reqDesc() { return `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilates mass in [Down]` },
+            reqDesc() { return `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilating mass in [Down]` },
             desc: `Unlock 2 new types of U-Quark & U-Fermion.`,
             cost: E(1e33),
         },
@@ -321,7 +321,7 @@ const TREE_UPGS = {
             branch: ["fn1"],
             req() { return player.supernova.fermions.points[0].gte(1e7) || player.supernova.fermions.points[1].gte(1e7) },
             reqDesc() { return `Reach ${format(1e7)} of any Fermions` },
-            desc: `Super Fermion’s Tier scaling is 7.5% weaker.`,
+            desc: `Super Fermion's Tier scaling is 7.5% weaker.`,
             cost: E(1e30),
         },
         /*
