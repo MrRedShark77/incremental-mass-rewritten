@@ -82,11 +82,11 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = E(1e5).pow(i.add(1).log10().mul(t))
+                    let x = E(1e5).pow(i.add(1).log10().mul(t)).softcap("ee3",0.9,2)
                     return x
                 },
                 desc(x) {
-                    return `x${format(x)} to Relativistic Particles gain`
+                    return `x${format(x)} to Relativistic Particles gain`+(x.gte('ee3')?" <span class='soft'>(softcapped)</span>":"")
                 },
                 inc: "Relativistic Particle",
                 cons: "The exponent of the RP formula is divided by 10",
@@ -167,11 +167,11 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10())
+                    let x = t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10()).softcap(3,0.75,0)
                     return x
                 },
                 desc(x) {
-                    return `Tickspeed is ${format(x)}x cheaper`
+                    return `Tickspeed is ${format(x)}x cheaper`+(x.gte('3')?" <span class='soft'>(softcapped)</span>":"")
                 },
                 inc: "Dark Matter",
                 cons: "You are trapped in Challenges 8-9",
