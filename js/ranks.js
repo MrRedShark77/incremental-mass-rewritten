@@ -7,6 +7,7 @@ const RANKS = {
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
+            if (type == "tetr" && player.supernova.tree.includes("qol5")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -17,6 +18,7 @@ const RANKS = {
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
+            if (type == "tetr" && player.supernova.tree.includes("qol5")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }

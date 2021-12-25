@@ -41,6 +41,11 @@ const FERMIONS = {
         }
         return x
     },
+    getUnlLength(x) {
+        let u = 2
+        if (player.supernova.tree.includes("fn2")) u++
+        return u
+    },
     names: ['quark', 'lepton'],
     sub_names: [["Up","Down","Charm","Strange","Top","Bottom"],["Electron","Muon","Tau","Neutrion","Neut-Muon","Neut-Tau"]],
     types: [
@@ -85,6 +90,27 @@ const FERMIONS = {
                 },
                 inc: "Relativistic Particle",
                 cons: "The exponent of the RP formula is divided by 10",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('ee3').pow(t.pow(1.5)).mul(uni("e36000"))
+                },
+                calcTier() {
+                    let res = player.mass
+                    if (res.lt(uni("e36000"))) return E(0)
+                    let x = res.div(uni("e36000")).max(1).log('ee3').max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1)
+                    return x
+                },
+                desc(x) {
+                    return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`
+                },
+                inc: "Mass",
+                cons: "You are trapped in Mass Dilation, but they are twice effective",
+                isMass: true,
             },
         ],[
             {
@@ -129,6 +155,26 @@ const FERMIONS = {
                 isMass: true,
                 inc: "Mass of Black Hole",
                 cons: "The power from the mass of the BH formula is always -1",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('e5e3').pow(t.pow(1.5)).mul("e4.5e5")
+                },
+                calcTier() {
+                    let res = player.bh.dm
+                    if (res.lt('e4.5e5')) return E(0)
+                    let x = res.div('e4.5e5').max(1).log('e5e3').max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10())
+                    return x
+                },
+                desc(x) {
+                    return `Tickspeed is ${format(x)}x cheaper`
+                },
+                inc: "Dark Matter",
+                cons: "You are trapped in Challenges 8-9",
             },
 
             /*
@@ -194,12 +240,16 @@ function updateFermionsTemp() {
 function updateFermionsHTML() {
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i]))
-
+        let unls = FERMIONS.getUnlLength(i)
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
+            let unl = x < unls
             let f = FERMIONS.types[i][x]
             let id = `f${FERMIONS.names[i]}${x}`
-
             let fm = f.isMass?formatMass:format
+
+            tmp.el[id+"_div"].setDisplay(unl)
+
+            if (!unl) break
 
             tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: tmp.fermions.ch[0] == i && tmp.fermions.ch[1] == x})
             tmp.el[id+"_nextTier"].setTxt(fm(f.nextTierAt(player.supernova.fermions.tiers[i][x])))

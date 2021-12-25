@@ -49,7 +49,7 @@ const ATOM = {
             if (player.atom.elements.includes(52)) x = x.mul(tmp.elements.effect[52])
             x = x.mul(tmp.bosons.upgs.gluon[0].effect)
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
-            if (player.md.active || CHALS.inChal(10)) x = expMult(x,0.8)
+            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02")) x = expMult(x,FERMIONS.onActive("02")?0.64:0.8)
             return x
         },
         effect() {
@@ -88,7 +88,7 @@ const ATOM = {
     particles: {
         names: ['Protons', 'Neutrons', 'Electrons'],
         assign(x) {
-            if (player.atom.quarks.lt(1) || CHALS.inChal(9)) return
+            if (player.atom.quarks.lt(1) || CHALS.inChal(9) || FERMIONS.onActive("12")) return
             let m = player.atom.ratio
             let spent = m > 0 ? player.atom.quarks.mul(RATIO_MODE[m]).ceil() : E(1)
             player.atom.quarks = player.atom.quarks.sub(spent)
@@ -96,7 +96,7 @@ const ATOM = {
         },
         assignAll() {
             let sum = player.atom.dRatio[0]+player.atom.dRatio[1]+player.atom.dRatio[2]
-            if (player.atom.quarks.lt(sum) || CHALS.inChal(9)) return
+            if (player.atom.quarks.lt(sum) || CHALS.inChal(9) || FERMIONS.onActive("12")) return
             let spent = player.atom.quarks.div(sum).floor()
             for (let x = 0; x < 3; x++) {
                 let add = spent.mul(player.atom.dRatio[x])
@@ -108,7 +108,9 @@ const ATOM = {
             let p = player.atom.particles[i]
             let x = p.pow(2)
             if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]))
-            return x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
+            x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
+            if (player.atom.elements.includes(61)) x = x.mul(p.add(1).root(2))
+            return x
         },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)

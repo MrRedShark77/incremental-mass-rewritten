@@ -21,12 +21,15 @@ function updateMassTemp() {
     tmp.massSoftGain = FORMS.massSoftGain()
     tmp.massSoftPower2 = FORMS.massSoftPower2()
     tmp.massSoftGain2 = FORMS.massSoftGain2()
+    tmp.massSoftPower3 = FORMS.massSoftPower3()
+    tmp.massSoftGain3 = FORMS.massSoftGain3()
     tmp.massGain = FORMS.massGain()
 }
 
 function updateTickspeedTemp() {
-    tmp.tickspeedCost = E(2).pow(player.tickspeed).floor()
-    tmp.tickspeedBulk = player.rp.points.max(1).log(2).add(1).floor()
+    tmp.tickspeedFP = tmp.fermions.effs[1][2]
+    tmp.tickspeedCost = E(2).pow(player.tickspeed.div(tmp.tickspeedFP)).floor()
+    tmp.tickspeedBulk = player.rp.points.max(1).log(2).mul(tmp.tickspeedFP).add(1).floor()
     if (player.rp.points.lt(1)) tmp.tickspeedBulk = E(0)
     if (scalingActive("tickspeed", player.tickspeed.max(tmp.tickspeedBulk), "super")) {
 		let start = getScalingStart("super", "tickspeed");
@@ -34,7 +37,7 @@ function updateTickspeedTemp() {
 		let exp = E(2).pow(power);
 		tmp.tickspeedCost =
 			E(2).pow(
-                player.tickspeed
+                player.tickspeed.div(tmp.tickspeedFP)
                 .pow(exp)
 			    .div(start.pow(exp.sub(1)))
             ).floor()
@@ -42,7 +45,7 @@ function updateTickspeedTemp() {
             .max(1)
             .log(2)
 			.mul(start.pow(exp.sub(1)))
-			.root(exp)
+			.root(exp).mul(tmp.tickspeedFP)
 			.add(1)
 			.floor();
 	}
@@ -55,7 +58,7 @@ function updateTickspeedTemp() {
 		let exp2 = E(4).pow(power2);
 		tmp.tickspeedCost =
 			E(2).pow(
-                player.tickspeed
+                player.tickspeed.div(tmp.tickspeedFP)
                 .pow(exp2)
 			    .div(start2.pow(exp2.sub(1)))
                 .pow(exp)
@@ -67,7 +70,7 @@ function updateTickspeedTemp() {
 			.mul(start.pow(exp.sub(1)))
 			.root(exp)
             .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
+			.root(exp2).mul(tmp.tickspeedFP)
 			.add(1)
 			.floor();
 	}
@@ -83,7 +86,7 @@ function updateTickspeedTemp() {
 		let exp3 = E(7).pow(power3);
 		tmp.tickspeedCost =
 			E(2).pow(
-                player.tickspeed
+                player.tickspeed.div(tmp.tickspeedFP)
                 .pow(exp3)
 			    .div(start3.pow(exp3.sub(1)))
                 .pow(exp2)
@@ -99,7 +102,7 @@ function updateTickspeedTemp() {
             .mul(start2.pow(exp2.sub(1)))
 			.root(exp2)
             .mul(start3.pow(exp3.sub(1)))
-			.root(exp3)
+			.root(exp3).mul(tmp.tickspeedFP)
 			.add(1)
 			.floor();
 	}

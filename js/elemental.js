@@ -59,7 +59,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x"+(x.gte('e1e4')?" <span class='soft'>(softcapped)</span>":"") },
         },
         {
-            desc: `Stronger’s power is stronger based on Proton Powers.`,
+            desc: `Stronger's power is stronger based on Proton Powers.`,
             cost: E(2.5e16),
             effect() {
                 let x = player.atom?player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1):E(1)
@@ -68,7 +68,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x stronger" },
         },
         {
-            desc: `The 7th challenge’s effect is twice as effective.`,
+            desc: `The 7th challenge's effect is twice as effective.`,
             cost: E(1e18),
         },
         {
@@ -83,7 +83,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `Carbon’s effect is now multiplied by the number of elements bought.`,
+            desc: `Carbon's effect is now multiplied by the number of elements bought.`,
             cost: E(1e20),
             effect() {
                 let x = E(player.atom.elements.length+1)
@@ -93,7 +93,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `C2’s reward’s softcap is 75% weaker.`,
+            desc: `C2's reward's softcap is 75% weaker.`,
             cost: E(1e21),
         },
         {
@@ -101,15 +101,15 @@ const ELEMENTS = {
             cost: E(6.5e21),
         },
         {
-            desc: `3rd & 4th challenges’ scaling is weakened.`,
+            desc: `3rd & 4th challenges' scaling is weakened.`,
             cost: E(1e24),
         },
         {
-            desc: `Nitrogen’s multiplier is squared.`,
+            desc: `Nitrogen's multiplier is squared.`,
             cost: E(1e27),
         },
         {
-            desc: `Power’s gain from each particle formula is better.`,
+            desc: `Power's gain from each particle formula is better.`,
             cost: E(1e29),
         },
         {
@@ -139,7 +139,7 @@ const ELEMENTS = {
             effDesc(x) { return "+"+format(x*100)+"%" },
         },
         {
-            desc: `Raise Atom’s gain by 1.1.`,
+            desc: `Raise Atom's gain by 1.1.`,
             cost: E(1e40),
         },
         {
@@ -152,7 +152,7 @@ const ELEMENTS = {
             effDesc(x) { return "^"+format(x) },
         },
         {
-            desc: `2nd Neutron’s effect is better.`,
+            desc: `2nd Neutron's effect is better.`,
             cost: E(1e50),
         },
         {
@@ -315,7 +315,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `Collapsed star’s effect boost mass gain from the black hole at a reduced rate.`,
+            desc: `Collapsed star's effect boost mass gain from the black hole at a reduced rate.`,
             cost: E('e510'),
             effect() {
                 let x = tmp.stars?tmp.stars.effect.add(1).pow(0.02):E(1)
@@ -383,9 +383,9 @@ const ELEMENTS = {
             cost: E('e3.6e4'),
             effect() {
                 let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10):E(0)
-                return x
+                return x.max(1)
             },
-            effDesc(x) { return "+"+format(x)+"x" },
+            effDesc(x) { return format(x)+"x" },
         },
         {
             desc: `Ultra Rank & Tickspeed scales weaker based on Tier.`,
@@ -403,6 +403,23 @@ const ELEMENTS = {
         {
             desc: `Add 100 more C7 maximum completions.`,
             cost: E('e7.7e4'),
+        },
+        {
+            desc: `Multiply Particle Powers gain by ^0.5 of its Particle's amount after softcap.`,
+            cost: E('e1.5e5'),
+        },
+        {
+            desc: `Ultra Rank scale 3 later for every Supernova.`,
+            cost: E('e2.5e5'),
+            effect() {
+                let x = player.supernova.times.mul(3)
+                return x
+            },
+            effDesc(x) { return format(x,0)+" later" },
+        },
+        {
+            desc: `Non-bouns Tickspeed is 25x effective.`,
+            cost: E('e3e5'),
         },
     ],
     /*
@@ -424,7 +441,7 @@ const ELEMENTS = {
         if (STARS.unlocked()) u += 18
         if (player.supernova.times.gte(1)) u = 49+5
         if (player.supernova.post_10) u += 3
-        if (player.supernova.fermions.unl) u += 3
+        if (player.supernova.fermions.unl) u += 10
         return u
     },
 }

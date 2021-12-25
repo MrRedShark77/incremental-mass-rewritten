@@ -48,7 +48,7 @@ const BOSONS = {
             return [a,b]
         },
         z_boson(x) {
-            let a = x.add(1).log10().add(1)
+            let a = x.add(1).log10().add(1).pow(tmp.fermions.effs[0][2])
             let b = x.add(1).pow(2/3)
             return [a,b]
         },

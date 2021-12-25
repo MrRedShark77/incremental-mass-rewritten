@@ -1,11 +1,11 @@
 const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
-    ["","","","","","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
+    ["","","","","qol5","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","","","","","","","","","gr2","","chal5","","","",""],
     ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","fn1","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    ["","","","","","","","","fn2","fn3","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -68,7 +68,7 @@ const TREE_UPGS = {
         },
         sn4: {
             branch: ["sn3"],
-            desc: `Tree “sn2”’s effect base is increased by Supernova.`,
+            desc: `Tree “sn2”'s effect base is increased by Supernova.`,
             unl() { return player.supernova.post_10 },
             req() { return player.supernova.times.gte(13) },
             reqDesc: `13 Supernovas.`,
@@ -192,6 +192,14 @@ const TREE_UPGS = {
             desc: `You can now automatically buy Star unlockers & boosters.`,
             cost: E(1e8),
         },
+        qol5: {
+            branch: ["qol4"],
+            unl() { return player.supernova.post_10 },
+            req() { return player.supernova.times.gte(16) },
+            reqDesc: `16 Supernovas.`,
+            desc: `Tetrs no longer resets anything.`,
+            cost: E(1e13),
+        },
         chal1: {
             req() { return player.supernova.times.gte(4) },
             reqDesc: `4 Supernovas.`,
@@ -301,6 +309,20 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
+        },
+        fn2: {
+            branch: ["fn1"],
+            req() { return player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01") },
+            reqDesc() { return `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilates mass in [Down]` },
+            desc: `Unlock 2 new types of U-Quark & U-Fermion.`,
+            cost: E(1e33),
+        },
+        fn3: {
+            branch: ["fn1"],
+            req() { return player.supernova.fermions.points[0].gte(1e7) || player.supernova.fermions.points[1].gte(1e7) },
+            reqDesc() { return `Reach ${format(1e7)} of any Fermions` },
+            desc: `Super Fermion’s Tier scaling is 7.5% weaker.`,
+            cost: E(1e30),
         },
         /*
         x: {

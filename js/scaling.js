@@ -135,6 +135,9 @@ function getScalingStart(type, name) {
 		}
 	}
 	if (type=="ultra") {
+		if (name=="rank") {
+			if (player.atom.elements.includes(62)) start = start.add(tmp.elements.effect[62])
+		}
 		if (name=="tickspeed") {
 			if (player.ranks.tetr.gte(5)) start = start.add(RANKS.effect.tetr[5]())
 		}
@@ -164,6 +167,9 @@ function getScalingPower(type, name) {
 		}
 		if (name=='gamma_ray') {
 			if (player.atom.elements.includes(15)) power = power.mul(0.8)
+		}
+		if (name=="fTier") {
+			if (player.supernova.tree.includes("fn3")) power = power.mul(0.925)
 		}
 	}
 	if (type=="hyper") {
