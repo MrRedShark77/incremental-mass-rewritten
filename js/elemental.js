@@ -418,7 +418,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x,0)+" later" },
         },
         {
-            desc: `Non-bouns Tickspeed is 25x effective.`,
+            desc: `Non-bonus Tickspeed is 25x effective.`,
             cost: E('e3e5'),
         },
     ],
