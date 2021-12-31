@@ -192,7 +192,7 @@ function getScalingPower(type, name) {
 		if (name=='gamma_ray') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)
 		if (name=="fTier") {
-			if (player.supernova.tree.includes("fn3")) power = power.mul(0.725
+			if (player.supernova.tree.includes("fn3")) power = power.mul(0.725)
 		}
 	}
 	
@@ -213,8 +213,12 @@ function getScalingPower(type, name) {
 		}
 	}
 	if (type=="meta") {
-	 f (name=='tickspeed') {
+	       if (name=='tickspeed') {
 			if (player.atom.elements.includes(27)) power = power.mul(0.5)
-
+	       }
+	       if (name=="rank") {
+			power = power.mul(0.35)
+	       }
+	}
 	return power
 }
