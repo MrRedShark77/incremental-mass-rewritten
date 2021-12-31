@@ -17,6 +17,7 @@ const SCALE_START = {
 		bh_condenser: E(300),
 		gamma_ray: E(300),
 		supernova: E(35),
+		fTier: E(20)
 	},
 	ultra: {
 		rank: E(600),
@@ -24,9 +25,9 @@ const SCALE_START = {
 		bh_condenser: E(750),
 		gamma_ray: E(800),
 	},
-	meta: {/*
-		rank: E(1200),
-		tickspeed: E(3000),*/
+	meta: {
+		rank: E(4250),
+		tickspeed: E(80000),
 	},
 }
 
@@ -190,8 +191,11 @@ function getScalingPower(type, name) {
 		}
 		if (name=='gamma_ray') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+		if (name=="fTier") {
+			if (player.supernova.tree.includes("fn3")) power = power.mul(0.725
 		}
 	}
+	
 	if (type=="ultra") {
 		if (name=="rank") {
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
@@ -208,5 +212,9 @@ function getScalingPower(type, name) {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)
 		}
 	}
+	if (type=="meta") {
+	 f (name=='tickspeed') {
+			if (player.atom.elements.includes(27)) power = power.mul(0.5)
+
 	return power
 }
