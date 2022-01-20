@@ -222,3 +222,4 @@ function getScalingPower(type, name) {
 	}
 	return power
 }
+
