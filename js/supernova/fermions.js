@@ -167,7 +167,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10()).softcap(3,0.75,0)
+                    let x = t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10()).softcap(3,0.5,0)
                     return x
                 },
                 desc(x) {

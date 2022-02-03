@@ -146,7 +146,7 @@ function updateSupernovaTemp() {
 		let exp = E(3).pow(power);
         let start2 = getScalingStart("hyper", "supernova");
 		let power2 = getScalingPower("hyper", "supernova");
-		let exp2 = E(4).pow(power2);
+		let exp2 = E(3).pow(power2);
 		tmp.supernova.maxlimit =
 			E(1e20).pow(
                 player.supernova.times

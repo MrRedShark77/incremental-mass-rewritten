@@ -47,7 +47,7 @@ function calc(dt, dt_offline) {
     }
     if (player.supernova.tree.includes("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
-    if (player.supernova.tree.includes("qol3")) player.md.particles = player.md.particles.add(tmp.md.passive_rp_gain.mul(dt))
+    if (player.supernova.tree.includes("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(dt) : tmp.md.passive_rp_gain.mul(dt))
     if (player.supernova.tree.includes("qol4")) STARS.generators.unl(true)
     calcStars(dt)
     calcSupernova(dt, dt_offline)
@@ -184,7 +184,11 @@ function getPlayerData() {
 }
 
 function wipe(reload=false) {
-    if (reload) {localStorage.setItem("testSave",""); location.reload()}
+    if (reload) {
+        wipe()
+        save()
+        loadGame(false)
+    }
     else player = getPlayerData()
 }
 
@@ -278,7 +282,7 @@ function export_copy() {
 function importy() {
     let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
     if (loadgame == 'monke') {
-        addNotify('monke<br><img src="https://pbs.twimg.com/profile_images/1359293274754744331/xfImzn4c.jpg">')
+        addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
         return
     }
     if (loadgame == 'matt parker') {
@@ -303,28 +307,31 @@ function importy() {
     }
 }
 
-function loadGame() {
+function loadGame(start=true) {
     wipe()
     load(localStorage.getItem("testSave"))
     setupHTML()
-    setInterval(save,60000)
-    for (let x = 0; x < 50; x++) updateTemp()
-    updateHTML()
-    for (let x = 0; x < 3; x++) {
-        let r = document.getElementById('ratio_d'+x)
-        r.value = player.atom.dRatio[x]
-        r.addEventListener('input', e=>{
-            let n = Number(e.target.value)
-            if (n < 1) {
-                player.atom.dRatio[x] = 1
-                r.value = 1
-            } else {
-                if (Math.floor(n) != n) r.value = Math.floor(n)
-                player.atom.dRatio[x] = Math.floor(n)
-            }
-        })
+    
+    if (start) {
+        setInterval(save,60000)
+        for (let x = 0; x < 50; x++) updateTemp()
+        updateHTML()
+        for (let x = 0; x < 3; x++) {
+            let r = document.getElementById('ratio_d'+x)
+            r.value = player.atom.dRatio[x]
+            r.addEventListener('input', e=>{
+                let n = Number(e.target.value)
+                if (n < 1) {
+                    player.atom.dRatio[x] = 1
+                    r.value = 1
+                } else {
+                    if (Math.floor(n) != n) r.value = Math.floor(n)
+                    player.atom.dRatio[x] = Math.floor(n)
+                }
+            })
+        }
+        setInterval(loop, 50)
+        treeCanvas()
+        setInterval(drawTreeHTML, 50)
     }
-    setInterval(loop, 50)
-    treeCanvas()
-    setInterval(drawTreeHTML, 50)
 }

@@ -73,7 +73,7 @@ const FORMS = {
         return s
     },
     massSoftPower3() {
-        let p = E(0.1)
+        let p = E(0.2)
         return p
     },
     tickspeed: {
