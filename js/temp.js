@@ -10,6 +10,7 @@ var tmp = {
     fermions: {
         ch: [0,0],
         gains: [E(0),E(0)],
+        maxTier: [[],[]],
         tiers: [[],[]],
         effs:  [[],[]],
     },
@@ -106,7 +107,7 @@ function updateTickspeedTemp() {
 			.add(1)
 			.floor();
 	}
-    /*if (scalingActive("tickspeed", player.tickspeed.max(tmp.tickspeedBulk), "meta")) {
+    if (scalingActive("tickspeed", player.tickspeed.max(tmp.tickspeedBulk), "meta")) {
 		let start = getScalingStart("super", "tickspeed");
 		let power = getScalingPower("super", "tickspeed");
 		let exp = E(2).pow(power);
@@ -118,10 +119,10 @@ function updateTickspeedTemp() {
 		let exp3 = E(7).pow(power3);
         let start4 = getScalingStart("meta", "tickspeed");
 		let power4 = getScalingPower("meta", "tickspeed");
-		let exp4 = E(1.01).pow(power4);
+		let exp4 = E(1.001).pow(power4);
 		tmp.tickspeedCost =
 			E(2).pow(
-                exp4.pow(player.tickspeed.sub(start4)).mul(start4)
+                exp4.pow(player.tickspeed.sub(start4)).mul(start4).div(tmp.tickspeedFP)
                 .pow(exp3)
 			    .div(start3.pow(exp3.sub(1)))
                 .pow(exp2)
@@ -137,14 +138,14 @@ function updateTickspeedTemp() {
             .mul(start2.pow(exp2.sub(1)))
 			.root(exp2)
             .mul(start3.pow(exp3.sub(1)))
-			.root(exp3)
+			.root(exp3).mul(tmp.tickspeedFP)
             .div(start4)
 			.max(1)
 			.log(exp4)
 			.add(start4)
 			.add(1)
 			.floor();
-	}*/
+	}
     tmp.tickspeedEffect = FORMS.tickspeed.effect()
 }
 

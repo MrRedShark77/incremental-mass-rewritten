@@ -397,7 +397,7 @@ const ELEMENTS = {
             effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
         },
         {
-            desc: `The power from the mass of the BH formula is increased to 0.5.`,
+            desc: `The power from the mass of the BH formula is increased to 0.45.`,
             cost: E('e6.6e4'),
         },
         {

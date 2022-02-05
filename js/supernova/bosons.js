@@ -80,7 +80,11 @@ const BOSONS = {
                 desc: "Boost BH Condenser Power.",
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return x.add(1).pow(0.75) },
+                effect(x) {
+                    let a = x.add(1).pow(0.75)
+                    if (player.supernova.tree.includes("fn4")) a = a.pow(2)
+                    return a
+                },
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Photons gain is boosted by Collapsed Star.",
@@ -107,7 +111,11 @@ const BOSONS = {
                 desc: "Boost Gamma Ray Power.",
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return x.add(1).pow(0.75) },
+                effect(x) {
+                    let a = x.add(1).pow(0.75)
+                    if (player.supernova.tree.includes("fn4")) a = a.pow(2)
+                    return a
+                },
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Gluons gain is boosted by Quark.",

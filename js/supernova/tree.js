@@ -1,11 +1,11 @@
 const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
-    ["","","","","qol5","","","m2","t1","","bh2","gr1","","","chal4","","","",""],
+    ["","","","","qol6","qol5","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","","","","","","","","","gr2","","chal5","","","",""],
     ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
-    ["","","","","","","","","","fn1","","","","","","","","",""],
-    ["","","","","","","","","fn2","fn3","","","","","","","","",""],
+    ["","","","","","","","","","fn1","fn5","","","","","","","",""],
+    ["","","","","","","","","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -49,7 +49,7 @@ const TREE_UPGS = {
             desc: `Supernova boosts Neutron Star gain.`,
             cost: E(350),
             effect() {
-                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.8,0))
+                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.8,0).softcap(25,0.5,0))
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -194,11 +194,17 @@ const TREE_UPGS = {
         },
         qol5: {
             branch: ["qol4"],
-            unl() { return player.supernova.post_10 },
             req() { return player.supernova.times.gte(16) },
             reqDesc: `16 Supernovas.`,
             desc: `Tetrs no longer resets anything.`,
             cost: E(1e13),
+        },
+        qol6: {
+            branch: ["qol5"],
+            req() { return player.supernova.times.gte(17) },
+            reqDesc: `17 Supernovas.`,
+            desc: `While in any challenge, you can now automatically complete it before exiting.`,
+            cost: E(1e15),
         },
         chal1: {
             req() { return player.supernova.times.gte(4) },
@@ -323,6 +329,18 @@ const TREE_UPGS = {
             reqDesc() { return `Reach ${format(1e7)} of any Fermions` },
             desc: `Super Fermion's Tier scaling is 7.5% weaker.`,
             cost: E(1e30),
+        },
+        fn4: {
+            branch: ["fn1"],
+            desc: `2nd Photon & Gluon upgrades are slightly stronger.`,
+            cost: E(1e39),
+        },
+        fn5: {
+            branch: ["fn1"],
+            req() { return player.atom.quarks.gte("e12500") && FERMIONS.onActive("10") },
+            reqDesc() { return `Reach ${format("e12500")} quarks while in [Electron]` },
+            desc: `[Electron] max tier is increased by 35. Its effect softcap is weaker.`,
+            cost: E(1e42),
         },
         /*
         x: {

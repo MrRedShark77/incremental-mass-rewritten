@@ -52,6 +52,8 @@ function calc(dt, dt_offline) {
     calcStars(dt)
     calcSupernova(dt, dt_offline)
 
+    if (player.supernova.tree.includes("qol6")) CHALS.exit(true)
+
     tmp.pass = true
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
@@ -202,7 +204,7 @@ function loadPlayer(load) {
     player.chal.choosed = 0
     for (i = 0; i < 2; i++) for (let x = 0; x < FERMIONS.types[i].length; x++) {
         let f = FERMIONS.types[i][x]
-        if (f.maxTier) player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(f.maxTier)
+        player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0)
     }
     let off_time = (Date.now() - player.offline.current)/1000
     if (off_time >= 60 && player.offline.active) player.offline.time += off_time
@@ -331,6 +333,7 @@ function loadGame(start=true) {
             })
         }
         setInterval(loop, 50)
+        setInterval(updateStarsScreenHTML, 50)
         treeCanvas()
         setInterval(drawTreeHTML, 50)
     }

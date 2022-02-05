@@ -61,6 +61,62 @@ const SUPERNOVA = {
         if (player.supernova.tree.includes("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
         return x
     },
+    req(x=player.supernova.times) {
+        ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
+        maxlimit = E(1e20).pow(x.div(ml_fp).pow(1.25)).mul(1e90)
+        bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).mul(ml_fp).add(1).floor()
+        if (player.stars.points.div(1e90).lt(1)) bulk = E(0)
+        if (scalingActive("supernova", x.max(bulk), "super")) {
+            let start = getScalingStart("super", "supernova");
+            let power = getScalingPower("super", "supernova");
+            let exp = E(3).pow(power);
+            maxlimit =
+                E(1e20).pow(
+                    x
+                    .pow(exp)
+                    .div(start.pow(exp.sub(1))).div(ml_fp)
+                    .pow(1.25)
+                ).mul(1e90).floor()
+            bulk = player.stars.points
+                .div(1e90)
+                .max(1)
+                .log(1e20)
+                .root(1.25).mul(ml_fp)
+                .mul(start.pow(exp.sub(1)))
+                .root(exp)
+                .add(1)
+                .floor();
+        }
+        if (scalingActive("supernova", x.max(bulk), "hyper")) {
+            let start = getScalingStart("super", "supernova");
+            let power = getScalingPower("super", "supernova");
+            let exp = E(3).pow(power);
+            let start2 = getScalingStart("hyper", "supernova");
+            let power2 = getScalingPower("hyper", "supernova");
+            let exp2 = E(3).pow(power2);
+            maxlimit =
+                E(1e20).pow(
+                    x
+                    .pow(exp2)
+                    .div(start2.pow(exp2.sub(1)))
+                    .pow(exp)
+                    .div(start.pow(exp.sub(1))).div(ml_fp)
+                    .pow(1.25)
+                ).mul(1e90).floor()
+            bulk = player.stars.points
+                .div(1e90)
+                .max(1)
+                .log(1e20)
+                .root(1.25).mul(ml_fp)
+                .mul(start.pow(exp.sub(1)))
+                .root(exp)
+                .mul(start2.pow(exp2.sub(1)))
+                .root(exp2)
+                .add(1)
+                .floor();
+        }
+        return {maxlimit: maxlimit, bulk: bulk}
+    },
 }
 
 function calcSupernova(dt, dt_offline) {
@@ -88,9 +144,9 @@ function calcSupernova(dt, dt_offline) {
 
     if (player.supernova.fermions.unl) {
         if (tmp.fermions.ch[0] >= 0) {
-            let maxTier = FERMIONS.types[tmp.fermions.ch[0]][tmp.fermions.ch[1]].maxTier
+            let maxTier = tmp.fermions.maxTier[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
             player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
-            .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]).min(maxTier?maxTier:Infinity)
+            .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]).min(maxTier)
         }
         for (let x = 0; x < 2; x++) player.supernova.fermions.points[x] = player.supernova.fermions.points[x].add(tmp.fermions.gains[x].mul(dt))
     }
@@ -113,61 +169,11 @@ function updateSupernovaTemp() {
             }
         }
     }
-    tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
+    let req_data = SUPERNOVA.req()
+    tmp.supernova.maxlimit = req_data.maxlimit
+    tmp.supernova.bulk = req_data.bulk
 
-    tmp.supernova.ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
-    tmp.supernova.maxlimit = E(1e20).pow(player.supernova.times.div(tmp.supernova.ml_fp).pow(1.25)).mul(1e90)
-    tmp.supernova.bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).mul(tmp.supernova.ml_fp).add(1).floor()
-    if (player.stars.points.div(1e90).lt(1)) tmp.supernova.bulk = E(0)
-    if (scalingActive("supernova", player.supernova.times.max(tmp.supernova.bulk), "super")) {
-		let start = getScalingStart("super", "supernova");
-		let power = getScalingPower("super", "supernova");
-		let exp = E(3).pow(power);
-		tmp.supernova.maxlimit =
-			E(1e20).pow(
-                player.supernova.times
-                .pow(exp)
-			    .div(start.pow(exp.sub(1))).div(tmp.supernova.ml_fp)
-                .pow(1.25)
-            ).mul(1e90).floor()
-        tmp.supernova.bulk = player.stars.points
-            .div(1e90)
-            .max(1)
-            .log(1e20)
-            .root(1.25).mul(tmp.supernova.ml_fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-			.add(1)
-			.floor();
-	}
-    if (scalingActive("supernova", player.supernova.times.max(tmp.supernova.bulk), "hyper")) {
-		let start = getScalingStart("super", "supernova");
-		let power = getScalingPower("super", "supernova");
-		let exp = E(3).pow(power);
-        let start2 = getScalingStart("hyper", "supernova");
-		let power2 = getScalingPower("hyper", "supernova");
-		let exp2 = E(3).pow(power2);
-		tmp.supernova.maxlimit =
-			E(1e20).pow(
-                player.supernova.times
-                .pow(exp2)
-			    .div(start2.pow(exp2.sub(1)))
-                .pow(exp)
-			    .div(start.pow(exp.sub(1))).div(tmp.supernova.ml_fp)
-                .pow(1.25)
-            ).mul(1e90).floor()
-        tmp.supernova.bulk = player.stars.points
-            .div(1e90)
-            .max(1)
-            .log(1e20)
-            .root(1.25).mul(tmp.supernova.ml_fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
-			.add(1)
-			.floor();
-	}
+    tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
 
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]

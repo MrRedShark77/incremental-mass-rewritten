@@ -19,11 +19,11 @@ function updateChalHTML() {
     }
     tmp.el.chal_enter.setVisible(player.chal.active == 0)
     tmp.el.chal_exit.setVisible(player.chal.active != 0)
-    tmp.el.chal_exit.setTxt(tmp.chal.canFinish ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
+    tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !player.supernova.tree.includes("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
     if (player.chal.choosed != 0) {
         let chal = CHALS[player.chal.choosed]
-        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${player.chal.comps[player.chal.choosed].gte(player.chal.choosed>8?10:75)?player.chal.comps[player.chal.choosed].gte(player.chal.choosed==8?200:300)?" Insane":" Hardened":""} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
+        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
         tmp.el.chal_ch_desc.setHTML(chal.desc)
         tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
@@ -60,13 +60,15 @@ const CHALS = {
         else if (x < 9) ATOM.doReset(chal_reset)
         else SUPERNOVA.reset(true, true)
     },
-    exit() {
+    exit(auto=false) {
         if (!player.chal.active == 0) {
             if (tmp.chal.canFinish) {
                 player.chal.comps[player.chal.active] = player.chal.comps[player.chal.active].add(tmp.chal.gain)
             }
-            this.reset(player.chal.active)
-            player.chal.active = 0
+            if (!auto) {
+                this.reset(player.chal.active)
+                player.chal.active = 0
+            }
         }
     },
     enter() {
@@ -103,6 +105,9 @@ const CHALS = {
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },
+    getScaleName(i) {
+        return player.chal.comps[i].gte(i>8?10:75)?player.chal.comps[i].gte(i==8?200:300)?player.chal.comps[i].gte(1000)?" Impossible":" Insane":" Hardened":""
+    },
     getPower(i) {
         let x = E(1)
         if (player.atom.elements.includes(2)) x = x.mul(0.75)
@@ -113,12 +118,19 @@ const CHALS = {
         let x = E(1)
         return x
     },
+    getPower3(i) {
+        let x = E(1)
+        return x
+    },
     getChalData(x, r=E(-1)) {
         let res = !CHALS.inChal(0)?this.getResource(x):E(0)
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
         let s1 = x > 8 ? 10 : 75
-        let s2 = x == 8 ? 200 : 300
+        let s2 = 300
+        if (x == 8) s2 = 200
+        if (x > 8) s2 = 50
+        let s3 = 1000
         let pow = chal.pow
         if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
@@ -160,6 +172,34 @@ const CHALS = {
                 .root(exp)
                 .times(start2.pow(exp2.sub(1)))
                 .root(exp2)
+                .add(1)
+                .floor();
+        }
+        if (lvl.max(bulk).gte(s3)) {
+            let start = E(s1);
+            let exp = E(3).pow(this.getPower());
+            let start2 = E(s2);
+            let exp2 = E(4.5).pow(this.getPower2())
+            let start3 = E(s3);
+            let exp3 = E(1.1).pow(this.getPower3())
+            goal =
+            chal.inc.pow(
+                    exp3.pow(lvl.sub(start3)).mul(start3)
+                    .pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
+                ).mul(chal.start)
+            bulk = res
+                .div(chal.start)
+                .max(1)
+                .log(chal.inc)
+                .root(pow)
+                .times(start.pow(exp.sub(1)))
+                .root(exp)
+                .times(start2.pow(exp2.sub(1)))
+                .root(exp2)
+                .div(start3)
+			    .max(1)
+			    .log(exp3)
+			    .add(start3)
                 .add(1)
                 .floor();
         }

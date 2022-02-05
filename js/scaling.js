@@ -24,9 +24,8 @@ const SCALE_START = {
 		bh_condenser: E(750),
 		gamma_ray: E(800),
 	},
-	meta: {/*
-		rank: E(1200),
-		tickspeed: E(3000),*/
+	meta: {
+		tickspeed: E(5e4),
 	},
 }
 

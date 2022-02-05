@@ -313,7 +313,6 @@ function updateHTML() {
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
 	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
-		updateStarsScreenHTML()
 		updateUpperHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
