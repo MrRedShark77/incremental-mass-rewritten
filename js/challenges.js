@@ -117,10 +117,10 @@ const CHALS = {
         return x.floor()
     },
     getScaleName(i) {
-        let x = ""
         if (player.chal.comps[i].gte(1000)) return " Impossible"
         if (player.chal.comps[i].gte(i==8?200:i>8?50:300)) return " Insane"
         if (player.chal.comps[i].gte(i>8?10:75)) return " Hardened"
+        return ""
     },
     getPower(i) {
         let x = E(1)
