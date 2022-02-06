@@ -2,7 +2,7 @@ function setupChalHTML() {
     let chals_table = new Element("chals_table")
 	let table = ""
 	for (let x = 1; x <= CHALS.cols; x++) {
-        table += `<div id="chal_div_${x}" style="width: 120px; margin: 5px;"><img id="chal_btn_${x}" onclick="player.chal.choosed = ${x}" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
+        table += `<div id="chal_div_${x}" style="width: 120px; margin: 5px;"><img id="chal_btn_${x}" onclick="CHALS.choose(${x})" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
 	}
 	chals_table.setHTML(table)
 }
@@ -17,7 +17,7 @@ function updateChalHTML() {
             tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
         }
     }
-    tmp.el.chal_enter.setVisible(player.chal.active == 0)
+    tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
     tmp.el.chal_exit.setVisible(player.chal.active != 0)
     tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !player.supernova.tree.includes("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
@@ -54,6 +54,12 @@ function updateChalTemp() {
 }
 
 const CHALS = {
+    choose(x) {
+        if (player.chal.choosed == x) {
+            this.enter()
+        }
+        player.chal.choosed = x
+    },
     inChal(x) { return player.chal.active == x },
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
@@ -73,6 +79,10 @@ const CHALS = {
     },
     enter() {
         if (player.chal.active == 0) {
+            player.chal.active = player.chal.choosed
+            this.reset(player.chal.choosed, false)
+        } else if (player.chal.choosed != player.chal.active) {
+            this.exit(true)
             player.chal.active = player.chal.choosed
             this.reset(player.chal.choosed, false)
         }
