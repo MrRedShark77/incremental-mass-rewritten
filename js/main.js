@@ -44,7 +44,7 @@ const FORMS = {
         if (CHALS.inChal(4) || CHALS.inChal(10)) s = s.div(1e100)
         if (player.mainUpg.bh.includes(7)) s = s.mul(tmp.upgs.main?tmp.upgs.main[2][7].effect:E(1))
         if (player.mainUpg.rp.includes(13)) s = s.mul(tmp.upgs.main?tmp.upgs.main[1][13].effect:E(1))
-        return s
+        return s.min(tmp.massSoftGain2||1/0)
     },
     massSoftPower() {
         let p = E(1/3)
@@ -57,11 +57,12 @@ const FORMS = {
     massSoftGain2() {
         let s = E('1.5e1000056')
         if (player.supernova.tree.includes("m2")) s = s.pow(1.5)
+        if (player.supernova.tree.includes("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
         if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
 
         s = s.pow(tmp.bosons.effect.neg_w[0])
 
-        return s
+        return s.min(tmp.massSoftGain3||1/0)
     },
     massSoftPower2() {
         let p = E(0.25)
@@ -70,6 +71,7 @@ const FORMS = {
     },
     massSoftGain3() {
         let s = uni("ee8")
+        if (player.supernova.tree.includes("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         return s
     },
     massSoftPower3() {
@@ -892,7 +894,7 @@ function format(ex, acc=4, type=player.options.notation) {
                     })
                     final += (i > 0 && Number(arr) > 0 ? "-" : "") + ret + (i < str.length - 1 && Number(arr) > 0 ? ST_NAMES[3][str.length-i-1] : "")
                 });
-                return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(acc==0?0:1).toNumber())+" "))+final
+                return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(acc==0?0:1).toNumber())))+final
             }
         default:
             return neg+FORMATS[type].format(ex, acc)

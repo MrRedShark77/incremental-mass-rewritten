@@ -2,7 +2,7 @@ const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","","qol6","qol5","","m2","t1","","bh2","gr1","","","chal4","","","",""],
-    ["","","","","","","","","","","","","gr2","","chal5","","","",""],
+    ["","","","","","","m3","","","","","","gr2","","chal5","","","",""],
     ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","fn1","fn5","","","","","","","",""],
     ["","","","","","","","","fn2","fn3","fn4","","","","","","","",""],
@@ -93,6 +93,17 @@ const TREE_UPGS = {
             branch: ["m1"],
             desc: `Multiplies the Mass requirement for softcap^2 by 1.5`,
             cost: E(800),
+        },
+        m3: {
+            branch: ["m2"],
+            unl() { return player.supernova.fermions.unl },
+            desc: `Mass gain softcap^2-3 starts later based on Supernovas.`,
+            cost: E(1e46),
+            effect() {
+                let x = player.supernova.times.mul(0.0125).add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x)+" later" },
         },
         t1: {
             branch: ["m1", 'rp1'],

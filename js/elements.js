@@ -33,7 +33,7 @@ function setupHTML() {
 			<button id="ranks_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('${rn}')">OFF</button>
 			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <span id="ranks_amt_${x}">X</span><br><br>
 			<button onclick="RANKS.reset('${rn}')" class="btn reset" id="ranks_${x}">
-				Reset your ${x>0?RANKS.fullNames[x-1]:'mass and upgrades'}, but <span id="ranks_desc_${x}">X</span><br>
+				Reset your ${x>0?RANKS.fullNames[x-1]:'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
 				Req: <span id="ranks_req_${x}">X</span>
 			</button>
 		</div>`
@@ -195,10 +195,19 @@ function updateRanksHTML() {
 		let unl = RANKS.unl[rn]?RANKS.unl[rn]():true
 		tmp.el["ranks_div_"+x].setDisplay(unl)
 		if (unl) {
+			let keys = Object.keys(RANKS.desc[rn])
+			let desc = ""
+			for (let i = 0; i < keys.length; i++) {
+				if (player.ranks[rn].lt(keys[i])) {
+					desc = ` At ${RANKS.fullNames[x]} ${format(keys[i],0)}, ${RANKS.desc[rn][keys[i]]}`
+					break
+				}
+			}
+
 			tmp.el["ranks_scale_"+x].setTxt(getScalingName(rn))
 			tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0))
 			tmp.el["ranks_"+x].setClasses({btn: true, reset: true, locked: !tmp.ranks[rn].can})
-			tmp.el["ranks_desc_"+x].setTxt(tmp.ranks[rn].desc,0)
+			tmp.el["ranks_desc_"+x].setTxt(desc)
 			tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0))
 			tmp.el["ranks_auto_"+x].setDisplay(RANKS.autoUnl[rn]())
 			tmp.el["ranks_auto_"+x].setTxt(player.auto_ranks[rn]?"ON":"OFF")

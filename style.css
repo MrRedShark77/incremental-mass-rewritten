@@ -146,6 +146,7 @@ button {
 	color: hsl(237, 15%, 47%);
 	font-weight: bold;
 	text-shadow: 0px 1px 0px hsl(252, 19%, 57%);
+	pointer-events: none;
 }
 
 .img_btn {

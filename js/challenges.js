@@ -2,7 +2,7 @@ function setupChalHTML() {
     let chals_table = new Element("chals_table")
 	let table = ""
 	for (let x = 1; x <= CHALS.cols; x++) {
-        table += `<div id="chal_div_${x}" style="margin: 5px;"><img id="chal_btn_${x}" onclick="player.chal.choosed = ${x}" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
+        table += `<div id="chal_div_${x}" style="width: 120px; margin: 5px;"><img id="chal_btn_${x}" onclick="player.chal.choosed = ${x}" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
 	}
 	chals_table.setHTML(table)
 }
@@ -14,7 +14,7 @@ function updateChalHTML() {
         tmp.el["chal_div_"+x].setDisplay(unl)
         tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
         if (unl) {
-            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+"/"+format(tmp.chal.max[x],0))
+            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
         }
     }
     tmp.el.chal_enter.setVisible(player.chal.active == 0)
@@ -102,11 +102,15 @@ const CHALS = {
         if (player.atom.elements.includes(60) && (i==7)) x = x.add(100)
         if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
         if (player.atom.elements.includes(56) && (i==8)) x = x.add(200)
+        if (player.atom.elements.includes(65) && (i==7||i==8)) x = x.add(200)
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },
     getScaleName(i) {
-        return player.chal.comps[i].gte(i>8?10:75)?player.chal.comps[i].gte(i==8?200:300)?player.chal.comps[i].gte(1000)?" Impossible":" Insane":" Hardened":""
+        let x = ""
+        if (player.chal.comps[i].gte(1000)) return " Impossible"
+        if (player.chal.comps[i].gte(i==8?200:i>8?50:300)) return " Insane"
+        if (player.chal.comps[i].gte(i>8?10:75)) return " Hardened"
     },
     getPower(i) {
         let x = E(1)
@@ -181,7 +185,7 @@ const CHALS = {
             let start2 = E(s2);
             let exp2 = E(4.5).pow(this.getPower2())
             let start3 = E(s3);
-            let exp3 = E(1.1).pow(this.getPower3())
+            let exp3 = E(1.001).pow(this.getPower3())
             goal =
             chal.inc.pow(
                     exp3.pow(lvl.sub(start3)).mul(start3)
@@ -248,6 +252,7 @@ const CHALS = {
         pow: E(1.25),
         start: E(2.9835e49),
         effect(x) {
+            if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
             return ret
         },
@@ -263,6 +268,7 @@ const CHALS = {
         pow: E(1.25),
         start: E(1.736881338559743e133),
         effect(x) {
+            if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
             return ret
         },
@@ -324,6 +330,7 @@ const CHALS = {
         pow: E(1.3),
         start: E(1.989e38),
         effect(x) {
+            if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
             return ret
         },

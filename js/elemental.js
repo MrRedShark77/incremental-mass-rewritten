@@ -421,6 +421,14 @@ const ELEMENTS = {
             desc: `Non-bonus Tickspeed is 25x effective.`,
             cost: E('e3e5'),
         },
+        {
+            desc: `Rewards from Challenges 3-4 & 8 are 50% effective.`,
+            cost: E('e5e5'),
+        },
+        {
+            desc: `Add 200 more C7 & c8 maximum completions.`,
+            cost: E('e8e5'),
+        },
     ],
     /*
     {
@@ -435,11 +443,13 @@ const ELEMENTS = {
     */
     getUnlLength() {
         let u = 4
-        if (player.chal.comps[8].gte(1)) u += 14
-        if (player.atom.elements.includes(18)) u += 3
-        if (MASS_DILATION.unlocked()) u += 15
-        if (STARS.unlocked()) u += 18
         if (player.supernova.times.gte(1)) u = 49+5
+        else {
+            if (player.chal.comps[8].gte(1)) u += 14
+            if (player.atom.elements.includes(18)) u += 3
+            if (MASS_DILATION.unlocked()) u += 15
+            if (STARS.unlocked()) u += 18
+        }
         if (player.supernova.post_10) u += 3
         if (player.supernova.fermions.unl) u += 10
         return u
