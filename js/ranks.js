@@ -194,6 +194,7 @@ const RANKS = {
         },
         tier() {
             let f = E(1)
+            f = f.mul(tmp.fermions.effs[1][3])
             if (player.ranks.tetr.gte(1)) f = f.mul(1/0.75)
             if (player.mainUpg.atom.includes(10)) f = f.mul(2)
             return f
@@ -346,7 +347,7 @@ function updateRanksTemp() {
 			.add(1)
 			.floor();
 	}*/
-    tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10)
+    tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier()
     tmp.ranks.tier.req = player.ranks.tier.div(fp).add(2).pow(2).floor()
@@ -367,6 +368,32 @@ function updateRanksTemp() {
             .mul(fp)
 			.mul(start.pow(exp.sub(1)))
 			.root(exp)
+			.add(1)
+			.floor();
+	}
+    if (scalingActive("tier", player.ranks.tier.max(tmp.ranks.tier.bulk), "hyper")) {
+		let start = getScalingStart("super", "tier");
+		let power = getScalingPower("super", "tier");
+		let exp = E(1.5).pow(power);
+        let start2 = getScalingStart("hyper", "tier");
+		let power2 = getScalingPower("hyper", "tier");
+		let exp2 = E(2.5).pow(power);
+		tmp.ranks.tier.req =
+			player.ranks.tier
+            .pow(exp2)
+			.div(start2.pow(exp2.sub(1)))
+			.pow(exp)
+			.div(start.pow(exp.sub(1))).div(fp)
+			.add(2).pow(2).floor()
+		tmp.ranks.tier.bulk = player.ranks.rank
+            .max(0)
+            .root(2)
+            .sub(2)
+            .mul(fp)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
 			.add(1)
 			.floor();
 	}

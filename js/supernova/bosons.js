@@ -66,7 +66,7 @@ const BOSONS = {
         buy(id,x) {
             if (tmp.bosons.upgs[id][x].can) {
                 player.supernova.b_upgs[id][x] = player.supernova.b_upgs[id][x].max(tmp.bosons.upgs[id][x].bulk)
-                player.supernova.bosons[id] = player.supernova.bosons[id].sub(BOSONS.upgs[id][x].cost(tmp.bosons.upgs[id][x].bulk.sub(1))).max(0)
+                if (!player.supernova.tree.includes("qol7")) player.supernova.bosons[id] = player.supernova.bosons[id].sub(BOSONS.upgs[id][x].cost(tmp.bosons.upgs[id][x].bulk.sub(1))).max(0)
             }
         },
         photon: [
@@ -96,7 +96,7 @@ const BOSONS = {
                 desc: "All-Star resources gain is boosted by Photon.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(1e5) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1e5) ? x.div(1e5).max(1).log(5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.photon.add(1).log10().add(1).pow(x.mul(0.5)) },
+                effect(x) { return player.supernova.bosons.photon.add(1).log10().add(1).pow(x.pow(tmp.fermions.effs[0][3]).mul(0.5)) },
                 effDesc(x) { return format(x)+"x" },
             },
         ],
@@ -127,7 +127,7 @@ const BOSONS = {
                 desc: "Supernova requirement is decreased based on Gluon.",
                 cost(x) { return E(10).pow(x.pow(1.25)).mul(1e5) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.div(1e5).max(1).log(10).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.gluon.add(1).log10().add(1).log10().mul(x.root(3)).div(10).add(1) },
+                effect(x) { return player.supernova.bosons.gluon.add(1).log10().add(1).log10().mul(x.pow(tmp.fermions.effs[0][3]).root(3)).div(10).add(1) },
                 effDesc(x) { return "/"+format(x) },
             },
         ],

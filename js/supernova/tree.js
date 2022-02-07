@@ -1,11 +1,11 @@
 const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
-    ["","","","","qol6","qol5","","m2","t1","","bh2","gr1","","","chal4","","","",""],
-    ["","","","","","","m3","","","","","","gr2","","chal5","","","",""],
+    ["","","","qol7","qol6","qol5","","m2","t1","","bh2","gr1","","","chal4","","","",""],
+    ["","","","","","","m3","","","d1","","","gr2","","chal5","","","",""],
     ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","fn1","fn5","","","","","","","",""],
-    ["","","","","","","","","fn2","fn3","fn4","","","","","","","",""],
+    ["","","","","","","","fn6","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -96,7 +96,7 @@ const TREE_UPGS = {
         },
         m3: {
             branch: ["m2"],
-            unl() { return player.supernova.fermions.unl },
+            unl() { return player.supernova.fermions.unl && player.supernova.tree.includes("fn1") },
             desc: `Mass gain softcap^2-3 starts later based on Supernovas.`,
             cost: E(1e46),
             effect() {
@@ -216,6 +216,14 @@ const TREE_UPGS = {
             reqDesc: `17 Supernovas.`,
             desc: `While in any challenge, you can now automatically complete it before exiting.`,
             cost: E(1e15),
+        },
+        qol7: {
+            branch: ["qol6"],
+            unl() { return player.supernova.fermions.unl && player.supernova.tree.includes("fn2") },
+            req() { return player.supernova.times.gte(40) },
+            reqDesc: `40 Supernovas.`,
+            desc: `You can now automatically buy Photon & Gluon upgrades, they no longer spent their amount.`,
+            cost: E(1e48),
         },
         chal1: {
             req() { return player.supernova.times.gte(4) },
@@ -342,16 +350,31 @@ const TREE_UPGS = {
             cost: E(1e30),
         },
         fn4: {
+            unl() { return player.supernova.tree.includes("fn2") },
             branch: ["fn1"],
             desc: `2nd Photon & Gluon upgrades are slightly stronger.`,
             cost: E(1e39),
         },
         fn5: {
+            unl() { return player.supernova.tree.includes("fn2") },
             branch: ["fn1"],
             req() { return player.atom.quarks.gte("e12500") && FERMIONS.onActive("10") },
             reqDesc() { return `Reach ${format("e12500")} quarks while in [Electron]` },
             desc: `[Electron] max tier is increased by 35. Its effect softcap is weaker.`,
             cost: E(1e42),
+        },
+        fn6: {
+            branch: ["fn2"],
+            req() { return player.mass.gte(uni('e4e4')) && FERMIONS.onActive("02") && CHALS.inChal(5) },
+            reqDesc() { return `Reach ${formatMass(uni("e4e4"))} while in [Charm] & Challenge 5.` },
+            desc: `Unlock 2 new more types of U-Quark & U-Fermion.`,
+            cost: E(1e48),
+        },
+        d1: {
+            unl() { return player.supernova.tree.includes("fn6") },
+            branch: ["rp1"],
+            desc: `Generating Relativistic particles outside Mass dilation is 25% stronger.`,
+            cost: E(1e51),
         },
         /*
         x: {

@@ -49,6 +49,12 @@ function calc(dt, dt_offline) {
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
     if (player.supernova.tree.includes("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(dt) : tmp.md.passive_rp_gain.mul(dt))
     if (player.supernova.tree.includes("qol4")) STARS.generators.unl(true)
+    if (player.supernova.tree.includes("qol7")) {
+        for (let x = 0; x < BOSONS.upgs.ids.length; x++) {
+            let id = BOSONS.upgs.ids[x]
+            for (let y = 0; y < BOSONS.upgs[id].length; y++) BOSONS.upgs.buy(id,y)
+        }
+    }
     calcStars(dt)
     calcSupernova(dt, dt_offline)
 

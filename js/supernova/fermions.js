@@ -44,6 +44,7 @@ const FERMIONS = {
     getUnlLength(x) {
         let u = 2
         if (player.supernova.tree.includes("fn2")) u++
+        if (player.supernova.tree.includes("fn6")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -111,7 +112,28 @@ const FERMIONS = {
                 inc: "Mass",
                 cons: "You are trapped in Mass Dilation, but they are twice effective",
                 isMass: true,
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('e1000').pow(t.pow(1.5)).mul("e3e4")
+                },
+                calcTier() {
+                    let res = player.rp.points
+                    if (res.lt('e3e4')) return E(0)
+                    let x = res.div('e3e4').max(1).log('e1000').max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1)
+                    return x
+                },
+                desc(x) {
+                    return `4th Photon & Gluon upgrades are ${format(x)}x stronger`
+                },
+                inc: "Rage Power",
+                cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },
+
         ],[
             {
                 maxTier() {
@@ -179,6 +201,26 @@ const FERMIONS = {
                 },
                 inc: "Dark Matter",
                 cons: "You are trapped in Challenges 8-9",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('e400').pow(t.pow(1.5)).mul("e1600")
+                },
+                calcTier() {
+                    let res = player.stars.points
+                    if (res.lt('e1600')) return E(0)
+                    let x = res.div('e1600').max(1).log('e400').max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = i.max(1).log10().add(1).mul(t).div(200).add(1)
+                    return x
+                },
+                desc(x) {
+                    return `Tier requirement is ${format(x)}x cheaper`
+                },
+                inc: "Collapsed Star",
+                cons: "Star generators are decreased to ^0.5",
             },
 
             /*

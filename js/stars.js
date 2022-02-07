@@ -16,7 +16,7 @@ const STARS = {
     effect() {
         let p = E(1)
         if (player.atom.elements.includes(48)) p = p.mul(1.1)
-        let [s,r,t1,t2] = [player.stars.points.mul(p),player.ranks.rank.mul(p),player.ranks.tier.mul(p),player.ranks.tetr.mul(p).softcap(5,player.supernova.tree.includes("s2")?1.5:5,1).softcap(9,0.5,0)]
+        let [s,r,t1,t2] = [player.stars.points.mul(p),player.ranks.rank.mul(p),player.ranks.tier.mul(p),player.ranks.tetr.mul(p).softcap(5,player.supernova.tree.includes("s2")?1.5:5,1).softcap(9,0.3,0)]
         let x =
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25)))
         return x
@@ -30,9 +30,15 @@ const STARS = {
             }
         },
         gain(i) {
-            let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(1.5)
-            if (player.atom.elements.includes(50)) x = x.pow(1.05)
-            if (player.supernova.tree.includes("s3")) x = x.pow(tmp.supernova.tree_eff.s3)
+            let pow = E(1.5)
+            if (FERMIONS.onActive("13")) pow = E(0.5)
+            else {
+                if (player.atom.elements.includes(50)) pow = pow.mul(1.05)
+                if (player.supernova.tree.includes("s3")) pow = pow.mul(tmp.supernova.tree_eff.s3)
+            }
+
+            let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(pow)
+        
 
             if (player.atom.elements.includes(49) && i==4) x = x.mul(tmp.elements.effect[49])
             if (player.supernova.tree.includes("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)

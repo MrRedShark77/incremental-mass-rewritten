@@ -382,8 +382,9 @@ const ELEMENTS = {
             desc: `Tickspeed power boost base from Star Booster at a reduced rate.`,
             cost: E('e3.6e4'),
             effect() {
-                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10):E(0)
-                return x.max(1)
+                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10).max(1):E(1)
+                if (player.atom.elements.includes(66)) x = x.pow(2)
+                return x
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -428,6 +429,19 @@ const ELEMENTS = {
         {
             desc: `Add 200 more C7 & c8 maximum completions.`,
             cost: E('e8e5'),
+        },
+        {
+            desc: `Lanthanum's effect is twice stronger.`,
+            cost: E('e1.1e6'),
+        },
+        {
+            desc: `Collapsed star boost quarks gain.`,
+            cost: E('e1.7e6'),
+            effect() {
+                let x = player.stars.points.add(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
     ],
     /*

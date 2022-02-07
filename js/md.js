@@ -8,6 +8,7 @@ const MASS_DILATION = {
     },
     RPexpgain() {
         let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
+        if (!player.md.active && player.supernova.tree.includes("d1")) x = x.mul(1.25)
         if (FERMIONS.onActive("01")) x = x.div(10)
         return x
     },

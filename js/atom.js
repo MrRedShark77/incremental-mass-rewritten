@@ -18,6 +18,7 @@ const ATOM = {
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
         if (player.atom.elements.includes(6)) x = x.mul(tmp.elements.effect[6])
         if (player.atom.elements.includes(42)) x = x.mul(tmp.elements.effect[42])
+        if (player.atom.elements.includes(67)) x = x.mul(tmp.elements.effect[67])
         if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
         x = x.mul(tmp.md.upgs[9].eff)
         if (player.atom.elements.includes(47)) x = x.pow(1.1)
@@ -49,7 +50,7 @@ const ATOM = {
             if (player.atom.elements.includes(52)) x = x.mul(tmp.elements.effect[52])
             x = x.mul(tmp.bosons.upgs.gluon[0].effect)
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
-            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02")) x = expMult(x,FERMIONS.onActive("02")?0.64:0.8)
+            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")) x = expMult(x,FERMIONS.onActive("02")?0.64:0.8)
             return x
         },
         effect() {
