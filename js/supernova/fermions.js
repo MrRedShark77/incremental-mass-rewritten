@@ -202,6 +202,7 @@ const FERMIONS = {
                 inc: "Dark Matter",
                 cons: "You are trapped in Challenges 8-9",
             },{
+                maxTier: 15,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e400').pow(t.pow(1.5)).mul("e1600")
