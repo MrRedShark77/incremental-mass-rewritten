@@ -29,7 +29,7 @@ const FERMIONS = {
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
                 let exp = E(2.5).pow(power)
-                x = x.mul(start.pow(exp.sub(1))).root(exp).add(1).floor()
+                x = t.mul(start.pow(exp.sub(1))).root(exp).add(1).floor()
             }
             if (x.sub(1).gte(getScalingStart('hyper',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
@@ -38,7 +38,7 @@ const FERMIONS = {
                 let start2 = getScalingStart('hyper',"fTier")
                 let power2 = getScalingPower('hyper',"fTier")
                 let exp2 = E(4).pow(power2)
-                x = x.mul(start.pow(exp.sub(1))).root(exp)
+                x = t.mul(start.pow(exp.sub(1))).root(exp)
                 .mul(start2.pow(exp2.sub(1))).root(exp2).add(1).floor()
             }
         } else {

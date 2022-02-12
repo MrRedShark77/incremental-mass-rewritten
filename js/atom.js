@@ -72,13 +72,15 @@ const ATOM = {
             }
         },
         effect() {
+            let t = player.atom.gamma_ray
+            t = t.mul(tmp.radiation.bs.eff[10])
             let pow = E(2)
             if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
             if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
             if (player.supernova.tree.includes("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
             pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
             if (player.supernova.tree.includes("gr2")) pow = pow.pow(1.25)
-            let eff = pow.pow(player.atom.gamma_ray.add(tmp.atom.gamma_ray_bonus)).sub(1)
+            let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
             return {pow: pow, eff: eff}
         },
         bonus() {

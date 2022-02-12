@@ -1,6 +1,6 @@
 const RADIATION = {
     names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","γ-ray"],
-    unls: ["0","1e6","1e13"],
+    unls: ["0","1e6","1e13","1e20"],
     hz_gain() {
         let x = E(1)
         x = x.mul(tmp.radiation.ds_eff[0])
@@ -14,6 +14,7 @@ const RADIATION = {
     ds_gain(i) {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
         let x = E(1)
+        if (player.supernova.tree.includes('rad2')) x = x.mul(10)
         if (i<RAD_LEN-1) {
             if (player.supernova.tree.includes('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
             x = x.mul(tmp.radiation.ds_eff[i+1])
@@ -118,6 +119,27 @@ const RADIATION = {
                 return x
             },
             desc(x) { return `Add ${format(x)} levels to all above boosts` },
+        },{
+            title: `Visible Boost`,
+            eff(b) {
+                let x = player.supernova.radiation.ds[2].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
+                return x
+            },
+            desc(x) { return `Visible is boosted by ${format(x)}x (based on Infrared)` },
+        },{
+            title: `Cosmic-Ray Boost`,
+            eff(b) {
+                let x = b.add(1).root(3)
+                return x
+            },
+            desc(x) { return `Cosmic Ray power is boosted by ${format(x)}x` },
+        },{
+            title: `Neturon-Star Boost`,
+            eff(b) {
+                let x = player.supernova.radiation.hz.add(1).log10().add(1).pow(b)
+                return x
+            },
+            desc(x) { return `Neutron Star is boosted by ${format(x)}x (based on Frequency)` },
         },
 
         /*
@@ -133,7 +155,7 @@ const RADIATION = {
     ],
 }
 
-const RAD_LEN = 3
+const RAD_LEN = 4
 
 function updateRadiationTemp() {
     tmp.radiation.unl = player.supernova.tree.includes("unl1")

@@ -59,6 +59,7 @@ const SUPERNOVA = {
         if (player.supernova.tree.includes("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
         if (player.supernova.tree.includes("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
         if (player.supernova.tree.includes("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
+        x = x.mul(tmp.radiation.bs.eff[11])
         return x
     },
     req(x=player.supernova.times) {
