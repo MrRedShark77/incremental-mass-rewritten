@@ -3,6 +3,7 @@ const FERMIONS = {
     gain(i) {
         if (!player.supernova.fermions.unl) return E(0)
         let x = E(1)
+        if (tmp.radiation.unl) x = x.mul(tmp.radiation.hz_effect)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(E(1.25).pow(player.supernova.fermions.tiers[i][j]))
         if (player.supernova.tree.includes("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
         return x
@@ -25,18 +26,37 @@ const FERMIONS = {
         let x = t
         if (bulk) {
             if (x.sub(1).gte(getScalingStart('super',"fTier"))) {
-                x = x.sub(1)
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
                 let exp = E(2.5).pow(power)
-                x = t.mul(start.pow(exp.sub(1))).root(exp).add(1).floor()
+                x = x.mul(start.pow(exp.sub(1))).root(exp).add(1).floor()
+            }
+            if (x.sub(1).gte(getScalingStart('hyper',"fTier"))) {
+                let start = getScalingStart('super',"fTier")
+                let power = getScalingPower('super',"fTier")
+                let exp = E(2.5).pow(power)
+                let start2 = getScalingStart('hyper',"fTier")
+                let power2 = getScalingPower('hyper',"fTier")
+                let exp2 = E(4).pow(power2)
+                x = x.mul(start.pow(exp.sub(1))).root(exp)
+                .mul(start2.pow(exp2.sub(1))).root(exp2).add(1).floor()
             }
         } else {
-            if (x.sub(1).gte(getScalingStart('super',"fTier"))) {
+            if (t.sub(1).gte(getScalingStart('super',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
                 let exp = E(2.5).pow(power)
                 x = t.pow(exp).div(start.pow(exp.sub(1))).floor()
+            }
+            if (t.sub(1).gte(getScalingStart('hyper',"fTier"))) {
+                let start = getScalingStart('super',"fTier")
+                let power = getScalingPower('super',"fTier")
+                let exp = E(2.5).pow(power)
+                let start2 = getScalingStart('hyper',"fTier")
+                let power2 = getScalingPower('hyper',"fTier")
+                let exp2 = E(4).pow(power2)
+                x = t.pow(exp2).div(start2.pow(exp2.sub(1)))
+                .pow(exp).div(start.pow(exp.sub(1))).floor()
             }
         }
         return x

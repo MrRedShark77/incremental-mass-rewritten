@@ -115,6 +115,41 @@ const SUPERNOVA = {
                 .add(1)
                 .floor();
         }
+        if (scalingActive("supernova", x.max(bulk), "ultra")) {
+            let start = getScalingStart("super", "supernova");
+            let power = getScalingPower("super", "supernova");
+            let exp = E(3).pow(power);
+            let start2 = getScalingStart("hyper", "supernova");
+            let power2 = getScalingPower("hyper", "supernova");
+            let exp2 = E(3).pow(power2);
+            let start3 = getScalingStart("ultra", "supernova");
+            let power3 = getScalingPower("ultra", "supernova");
+            let exp3 = E(5).pow(power3);
+            maxlimit =
+                E(1e20).pow(
+                    x
+                    .pow(exp3)
+                    .div(start3.pow(exp3.sub(1)))
+                    .pow(exp2)
+                    .div(start2.pow(exp2.sub(1)))
+                    .pow(exp)
+                    .div(start.pow(exp.sub(1))).div(ml_fp)
+                    .pow(1.25)
+                ).mul(1e90).floor()
+            bulk = player.stars.points
+                .div(1e90)
+                .max(1)
+                .log(1e20)
+                .root(1.25).mul(ml_fp)
+                .mul(start.pow(exp.sub(1)))
+                .root(exp)
+                .mul(start2.pow(exp2.sub(1)))
+                .root(exp2)
+                .mul(start3.pow(exp3.sub(1)))
+                .root(exp3)
+                .add(1)
+                .floor();
+        }
         return {maxlimit: maxlimit, bulk: bulk}
     },
 }
@@ -150,25 +185,14 @@ function calcSupernova(dt, dt_offline) {
         }
         for (let x = 0; x < 2; x++) player.supernova.fermions.points[x] = player.supernova.fermions.points[x].add(tmp.fermions.gains[x].mul(dt))
     }
+
+    if (tmp.radiation.unl) {
+        player.supernova.radiation.hz = player.supernova.radiation.hz.add(tmp.radiation.hz_gain.mul(dt))
+        for (let x = 0; x < RAD_LEN; x++) player.supernova.radiation.ds[x] = player.supernova.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(dt))
+    }
 }
 
 function updateSupernovaTemp() {
-    if (!tmp.supernova) {
-        tmp.supernova = {
-            time: 0,
-            tree_choosed: "",
-            tree_had: [],
-            tree_eff: {},
-            tree_unlocked: {},
-            tree_afford: {},
-        }
-        for (let i = 0; i < 19; i++) {
-            for (let j = 0; j < 19; j++) {
-                let id = TREE_IDS[i][j]
-                if (TREE_UPGS.ids[id]) tmp.supernova.tree_had.push(id)
-            }
-        }
-    }
     let req_data = SUPERNOVA.req()
     tmp.supernova.maxlimit = req_data.maxlimit
     tmp.supernova.bulk = req_data.bulk
@@ -218,5 +242,6 @@ function updateSupernovaEndingHTML() {
         }
         if (tmp.stab[5] == 1) updateBosonsHTML()
         if (tmp.stab[5] == 2) updateFermionsHTML()
+        if (tmp.stab[5] == 3) updateRadiationHTML()
     }
 }

@@ -72,6 +72,7 @@ const FORMS = {
     massSoftGain3() {
         let s = uni("ee8")
         if (player.supernova.tree.includes("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
+        s = s.pow(tmp.radiation.bs.eff[2])
         return s
     },
     massSoftPower3() {
@@ -96,6 +97,7 @@ const FORMS = {
         effect() {
             let t = player.tickspeed
             if (player.atom.elements.includes(63)) t = t.mul(25)
+            t = t.mul(tmp.radiation.bs.eff[1])
             let bouns = E(0)
             if (player.atom.unl) bouns = bouns.add(tmp.atom.atomicEff)
             let step = E(1.5)
@@ -107,6 +109,7 @@ const FORMS = {
                 step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
             if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
+            step = step.softcap(1e50,0.1,0)
             let eff = step.pow(t.add(bouns))
             if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
@@ -165,6 +168,7 @@ const FORMS = {
             let x = E(0.33)
             if (FERMIONS.onActive("11")) return E(-1)
             if (player.atom.elements.includes(59)) x = E(0.45)
+            x = x.add(tmp.radiation.bs.eff[4])
             return x
         },
         massGain() {
@@ -226,6 +230,8 @@ const FORMS = {
                 }
             },
             effect() {
+                let t = player.bh.condenser
+                t = t.mul(tmp.radiation.bs.eff[5])
                 let pow = E(2)
                     pow = pow.add(tmp.chal.eff[6])
                     if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
@@ -233,7 +239,8 @@ const FORMS = {
                     if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
                     pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                     if (player.supernova.tree.includes("bh2")) pow = pow.pow(1.15)
-                let eff = pow.pow(player.bh.condenser.add(tmp.bh.condenser_bouns))
+                pow = pow
+                let eff = pow.pow(t.add(tmp.bh.condenser_bouns))
                 return {pow: pow, eff: eff}
             },
             bouns() {

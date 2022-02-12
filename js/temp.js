@@ -14,8 +14,37 @@ var tmp = {
         tiers: [[],[]],
         effs:  [[],[]],
     },
+
+    supernova: {
+        time: 0,
+        tree_choosed: "",
+        tree_had: [],
+        tree_eff: {},
+        tree_unlocked: {},
+        tree_afford: {},
+    },
+
+    radiation: {
+        unl: false,
+        ds_gain: [],
+        ds_eff: [],
+        bs: {
+            sum: [],
+            lvl: [],
+            bouns_lvl: [],
+            cost: [],
+            bulk: [],
+            eff: [],
+        },
+    },
 }
 for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
+for (let i = 0; i < 19; i++) {
+    for (let j = 0; j < 19; j++) {
+        let id = TREE_IDS[i][j]
+        if (TREE_UPGS.ids[id]) tmp.supernova.tree_had.push(id)
+    }
+}
 
 function updateMassTemp() {
     tmp.massSoftPower = FORMS.massSoftPower()
@@ -256,6 +285,7 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+    updateRadiationTemp()
     updateFermionsTemp()
     updateBosonsTemp()
     updateSupernovaTemp()

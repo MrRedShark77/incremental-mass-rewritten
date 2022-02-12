@@ -164,6 +164,11 @@ function getPlayerData() {
                 tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
                 choosed: "",
             },
+            radiation: {
+                hz: E(0),
+                ds: [],
+                bs: [],
+            },
         },
         reset_msg: "",
         main_upg_msg: [0,0],
@@ -188,6 +193,10 @@ function getPlayerData() {
     for (let x = 0; x < CONFIRMS.length; x++) s.confirms[CONFIRMS[x]] = true
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) s.md.upgs[x] = E(0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) s.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
+    for (let x = 0; x < 7; x++) {
+        s.supernova.radiation.ds.push(E(0))
+        s.supernova.radiation.bs.push(E(0),E(0))
+    }
     return s
 }
 

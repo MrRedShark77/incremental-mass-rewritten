@@ -302,7 +302,7 @@ function updateRanksTemp() {
 			.add(1)
 			.floor();
 	}
-    /*if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "meta")) {
+    if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "meta")) {
 		let start = getScalingStart("super", "rank");
 		let power = getScalingPower("super", "rank");
 		let exp = E(1.5).pow(power);
@@ -346,7 +346,7 @@ function updateRanksTemp() {
 			.add(start4)
 			.add(1)
 			.floor();
-	}*/
+	}
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier()

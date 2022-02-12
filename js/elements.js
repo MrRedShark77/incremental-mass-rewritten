@@ -108,6 +108,7 @@ function setupHTML() {
 	setupTreeHTML()
 	setupBosonsHTML()
 	setupFermionsHTML()
+	setupRadiationHTML()
 
 	/*
 	function setupTestHTML() {
@@ -240,7 +241,8 @@ function updateTickspeedHTML() {
 		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(tmp.atom.atomicEff.gte(1)?" + "+format(tmp.atom.atomicEff,0):""))
 		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
 		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
-		tmp.el.tickspeed_step.setTxt(tmp.tickspeedEffect.step.gte(10)?format(tmp.tickspeedEffect.step)+"x":format(tmp.tickspeedEffect.step.sub(1).mul(100))+"%")
+		tmp.el.tickspeed_step.setHTML((tmp.tickspeedEffect.step.gte(10)?format(tmp.tickspeedEffect.step)+"x":format(tmp.tickspeedEffect.step.sub(1).mul(100))+"%")
+		+(tmp.tickspeedEffect.step.gte(1e50)?" <span class='soft'>(softcapped)</span>":""))
 		tmp.el.tickspeed_eff.setTxt(format(tmp.tickspeedEffect.eff))
 
 		tmp.el.tickspeed_auto.setDisplay(FORMS.tickspeed.autoUnl())
@@ -290,7 +292,7 @@ function updateMainUpgradesHTML() {
 
 function updateBlackHoleHTML() {
 	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
-	tmp.el.bhMassPower.setTxt(format(tmp.bh.massPowerGain,2))
+	tmp.el.bhMassPower.setTxt(format(tmp.bh.massPowerGain))
 	tmp.el.massSoft2.setDisplay(tmp.bh.mass_gain.gte(tmp.bh.massSoftGain))
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 	tmp.el.bhEffect.setTxt(format(tmp.bh.effect))

@@ -54,7 +54,7 @@ const ATOM = {
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(5e4,0.75,0)
+            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(5e4,0.75,0).softcap(4e6,0.25,0)
             return x.floor()
         },
     },

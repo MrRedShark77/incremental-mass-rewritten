@@ -488,6 +488,25 @@ h2 {
 	cursor: default;
 }
 
+.radiation {
+	background-color: hsl(0, 0%, 6%);
+	font-size: 14px;
+	width: 100%;
+	min-height: 150px;
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.btn.rad {
+	width: 200px;
+	height: 60px;
+	margin: 0px 3px;
+}
+
+.sub_rad {
+	margin: 0px 15px
+}
+
 @keyframes f_spin {
 	0% {
 		background-position-x: 0px;

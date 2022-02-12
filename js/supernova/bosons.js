@@ -17,13 +17,13 @@ const BOSONS = {
         photon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1)
-            if (player.supernova.tree.includes("bs2") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.bs2[1])
+            if (player.supernova.tree.includes("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[1])
             return x
         },
         gluon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1)
-            if (player.supernova.tree.includes("bs2") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.bs2[0])
+            if (player.supernova.tree.includes("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[0])
             return x
         },
         graviton() {
@@ -74,7 +74,7 @@ const BOSONS = {
                 desc: "Gain more Dark Matters & Mass from Black Hole based on Photon.",
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.photon.add(1).pow(x.pow(0.8).mul(100)) },
+                effect(x) { return player.supernova.bosons.photon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100)) },
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Boost BH Condenser Power.",
@@ -105,7 +105,7 @@ const BOSONS = {
                 desc: "Gain more Atoms & Atomic Powers based on Gluon.",
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.gluon.add(1).pow(x.pow(0.8).mul(100)) },
+                effect(x) { return player.supernova.bosons.gluon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100)) },
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Boost Gamma Ray Power.",

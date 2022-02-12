@@ -13,6 +13,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
 
+    <script src="js/supernova/radiation.js"></script>
     <script src="js/supernova/fermions.js"></script>
     <script src="js/supernova/bosons.js"></script>
     <script src="js/supernova/tree.js"></script>
@@ -122,6 +123,10 @@
                     <div id="fermions_lepton_table" class="table_center"></div>
                 </div>
             </div>
+        </div><div id="stab_frame5_3">
+            Your frequency is <span id="frequency">0</span> Hz, which multiples any Fermions gain by <span id="frequency_eff">1</span>x<br>
+            At <span id="next_radiation">0</span> of frequency, unlock <span id="unl_radiation">X</span><br><br>
+            <div id="radiation_table"></div>
         </div>
     </div>
     <div id='app' style='display: none'>
@@ -299,7 +304,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.4.2.5 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.4.3 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

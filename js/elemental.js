@@ -443,6 +443,10 @@ const ELEMENTS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        {
+            desc: `Meta-Tickspeed start 2x later.`,
+            cost: E('e4.8e6'),
+        },
     ],
     /*
     {
@@ -466,6 +470,7 @@ const ELEMENTS = {
         }
         if (player.supernova.post_10) u += 3
         if (player.supernova.fermions.unl) u += 10
+        if (tmp.radiation.unl) u += 16
         return u
     },
 }
