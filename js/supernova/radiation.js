@@ -38,10 +38,10 @@ const RADIATION = {
         return [cost,bulk]
     },
     getLevelEffect(i) {
-        let x = this.boosts[i].eff(tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bouns_lvl[i]))
+        let x = this.boosts[i].eff(tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i]))
         return x
     },
-    getBounsLevel(i) {
+    getbonusLevel(i) {
         let x = E(0)
         if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
         return x
@@ -68,7 +68,7 @@ const RADIATION = {
                 let x = b.add(1).root(2)
                 return x
             },
-            desc(x) { return `Non-bouns tickspeed is ${format(x)}x stronger` },
+            desc(x) { return `Non-bonus tickspeed is ${format(x)}x stronger` },
         },{
             title: `Mass-Softcap Boost`,
             eff(b) {
@@ -96,7 +96,7 @@ const RADIATION = {
                 let x = b.add(1).pow(2)
                 return x.softcap(100,0.5,0)
             },
-            desc(x) { return `Non-bouns BH condenser is ${format(x)}x stronger` },
+            desc(x) { return `Non-bonus BH condenser is ${format(x)}x stronger` },
         },{
             title: `Infrared Boost`,
             eff(b) {
@@ -147,7 +147,7 @@ function updateRadiationTemp() {
 
         for (let y = 0; y < 3; y++) {
             tmp.radiation.bs.lvl[3*x+y] = tmp.radiation.bs.sum[x].add(2-y).div(3).floor()//.softcap(10,0.75,0)
-            tmp.radiation.bs.bouns_lvl[3*x+y] = RADIATION.getBounsLevel(3*x+y)
+            tmp.radiation.bs.bonus_lvl[3*x+y] = RADIATION.getbonusLevel(3*x+y)
         }
         for (let y = 0; y < 2; y++) [tmp.radiation.bs.cost[2*x+y],tmp.radiation.bs.bulk[2*x+y]] = RADIATION.getBoostData(2*x+y)
     }
@@ -218,7 +218,7 @@ function updateRadiationHTML() {
             for (let y = 0; y < 3; y++) {
                 let lvl = 3*x+y
                 let id2 = `rad_level_${lvl}`
-                tmp.el[id2].setTxt(format(tmp.radiation.bs.lvl[lvl],0)+(tmp.radiation.bs.bouns_lvl[lvl].gt(0)?" + "+format(tmp.radiation.bs.bouns_lvl[lvl]):""))
+                tmp.el[id2].setTxt(format(tmp.radiation.bs.lvl[lvl],0)+(tmp.radiation.bs.bonus_lvl[lvl].gt(0)?" + "+format(tmp.radiation.bs.bonus_lvl[lvl]):""))
                 tmp.el[id2+"_desc"].setTxt(RADIATION.boosts[lvl].desc(tmp.radiation.bs.eff[lvl]))
             }
         }
