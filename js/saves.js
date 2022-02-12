@@ -204,6 +204,7 @@ function wipe(reload=false) {
     if (reload) {
         wipe()
         save()
+        resetTemp()
         loadGame(false)
     }
     else player = getPlayerData()
@@ -316,11 +317,13 @@ function importy() {
             setTimeout(_=>{
                 load(loadgame)
                 save()
+                resetTemp()
+                loadGame(false)
             }, 200)
         } catch (error) {
             addNotify("Error Importing")
+            player = keep
         }
-        player = keep
     }
 }
 
