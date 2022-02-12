@@ -87,7 +87,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `Adds ${format(x,0)} free Gamma Rays`
+                    return `Adds ${format(x,0)} free Cosmic Rays`
                 },
                 inc: "Atomic Powers",
                 cons: "^0.6 to the exponent of Atomic Powers gain",

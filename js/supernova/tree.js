@@ -108,7 +108,7 @@ const TREE_UPGS = {
         t1: {
             branch: ["m1", 'rp1'],
             req() { return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1)) },
-            reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run. You can still obtain Tickspeed from Gamma Rays.`},
+            reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run. You can still obtain Tickspeed from Cosmic Rays.`},
             desc: `Tickspeed Power is raised to the 1.15th.`,
             cost: E(1500),
         },
@@ -269,7 +269,7 @@ const TREE_UPGS = {
         },
         gr1: {
             branch: ["bh1"],
-            desc: `BH Condensers power boost Gamma Rays power.`,
+            desc: `BH Condensers power boost Cosmic Rays power.`,
             req() { return player.supernova.times.gte(7) },
             reqDesc: `7 Supernovas.`,
             cost: E(1e6),
@@ -282,7 +282,7 @@ const TREE_UPGS = {
         gr2: {
             unl() { return player.supernova.fermions.unl },
             branch: ["gr1"],
-            desc: `Gamma Rays Power is raised to 1.25th power.`,
+            desc: `Cosmic Rays Power is raised to 1.25th power.`,
             cost: E(1e20),
         },
         bs1: {

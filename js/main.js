@@ -755,7 +755,7 @@ const UPGS = {
                 cost: E(25000),
             },
             4: {
-                desc: "Keep 1-4 Challenge on reset. BH Condensers adds Gamma Rays Power at a reduced rate.",
+                desc: "Keep 1-4 Challenge on reset. BH Condensers adds Cosmic Rays Power at a reduced rate.",
                 cost: E(1e10),
                 effect() {
                     let ret = player.bh.condenser.pow(0.8).mul(0.01)
@@ -819,7 +819,7 @@ const UPGS = {
             },
             11: {
                 unl() { return MASS_DILATION.unlocked() },
-                desc: "Dilated mass also boost BH Condenser & Gamma Ray powers at a reduced rate.",
+                desc: "Dilated mass also boost BH Condenser & Cosmic Ray powers at a reduced rate.",
                 cost: E('e1640'),
                 effect() {
                     let ret = player.md.mass.max(1).log10().add(1).pow(0.1)

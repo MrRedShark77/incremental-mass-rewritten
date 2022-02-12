@@ -108,7 +108,7 @@ const BOSONS = {
                 effect(x) { return player.supernova.bosons.gluon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100)) },
                 effDesc(x) { return format(x)+"x" },
             },{
-                desc: "Boost Gamma Ray Power.",
+                desc: "Boost Cosmic Ray Power.",
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
                 effect(x) {

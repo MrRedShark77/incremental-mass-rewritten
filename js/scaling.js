@@ -55,7 +55,7 @@ const NAME_FROM_RES = {
 	massUpg: "Mass Upgrades",
 	tickspeed: "Tickspeed",
 	bh_condenser: "Black Hole Condenser",
-	gamma_ray: "Gamma Ray",
+	gamma_ray: "Cosmic Ray",
 	supernova: "Supernova",
 	fTier: "Fermion Tier",
 }
