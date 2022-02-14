@@ -128,6 +128,9 @@ function getScalingStart(type, name) {
 		if (name=='tickspeed') {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
 		}
+		if (name=='supernova') {
+			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
+		}
 	}
 	if (type=="hyper") {
 		if (name=="tickspeed") {
@@ -137,6 +140,9 @@ function getScalingStart(type, name) {
 		if (name=="rank") {
 			if (player.mainUpg.atom.includes(10)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[3][10].effect:0:0)
 		}
+		if (name=='supernova') {
+			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
+		}
 	}
 	if (type=="ultra") {
 		if (name=="rank") {
@@ -145,10 +151,18 @@ function getScalingStart(type, name) {
 		if (name=="tickspeed") {
 			if (player.ranks.tetr.gte(5)) start = start.add(RANKS.effect.tetr[5]())
 		}
+		if (name=='supernova') {
+			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
+		}
 	}
 	if (type=="meta") {
+		if (FERMIONS.onActive(14)) return E(1/0)
+		if (name=="rank") {
+			if (tmp.fermions) start = start.mul(tmp.fermions.effs[1][4])
+		}
 		if (name=="tickspeed") {
 			if (player.atom.elements.includes(68)) start = start.mul(2)
+			if (player.atom.elements.includes(72)) start = start.mul(tmp.elements.effect[72])
 		}
 	}
 	return start.floor()

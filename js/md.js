@@ -6,6 +6,17 @@ const MASS_DILATION = {
         ATOM.doReset()
         updateMDTemp()
     },
+	isActive() {
+		return player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")
+	},
+	getPenalty() {
+		var x = FERMIONS.onActive("02") ? 0.64 : 0.8
+		if (tmp.fermions) x = Math.pow(x, 1 / tmp.fermions.effs[0][4])
+		return x
+	},
+	applyDil(x) {
+		return expMult(x, tmp.md.penalty)
+	},
     RPexpgain() {
         let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
         if (!player.md.active && player.supernova.tree.includes("d1")) x = x.mul(1.25)
@@ -173,6 +184,8 @@ function setupMDHTML() {
 
 function updateMDTemp() {
     if (!tmp.md) tmp.md = {}
+	tmp.md.active = MASS_DILATION.isActive()
+	tmp.md.penalty = MASS_DILATION.getPenalty()
     if (!tmp.md.upgs) {
         tmp.md.upgs = []
         for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) tmp.md.upgs[x] = {}

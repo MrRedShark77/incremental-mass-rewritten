@@ -447,6 +447,33 @@ const ELEMENTS = {
             desc: `Meta-Tickspeed start 2x later.`,
             cost: E('e4.8e6'),
         },
+        {
+            desc: `Gain 1 level to all Radiation boosts up to Visible.`,
+            cost: E('e1.6e7'),
+        },
+        {
+            desc: `Gain 10x more Visible.`,
+            cost: E('e2e7'),
+        },
+        {
+            desc: `Mass makes all Supernova scalings start later.`,
+            cost: E('e3e7'),
+            effect() {
+                let x = E("e3e9").add(1).log10().sub(1e9).max(1).div(5e7).sqrt()
+                return x
+            },
+            effDesc(x) { return "+"+format(x) },
+        },
+        {
+            desc: `Ranks makes Meta Tickspeed starts later.`,
+            cost: E('e4e7'),
+            effect() {
+                let x = player.ranks.rank
+                x = x.div(2e4).add(1)
+				return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
     ],
     /*
     {

@@ -14,7 +14,8 @@ const RADIATION = {
     ds_gain(i) {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
         let x = E(1)
-        if (player.supernova.tree.includes('rad2')) x = x.mul(10)
+        if (player.supernova.tree.includes('rad2')) x = x.mul(tmp.supernova.tree_eff.rad2||1)
+        if (i == 3 && player.atom.elements.includes(70)) x = x.mul(10)
         if (i<RAD_LEN-1) {
             if (player.supernova.tree.includes('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
             x = x.mul(tmp.radiation.ds_eff[i+1])
@@ -34,8 +35,6 @@ const RADIATION = {
         let d = player.supernova.radiation.ds[Math.floor(i/2)]
         let bulk = d.lt(f3) ? E(0) : d.div(f3).max(1).log(f1).max(0).root(f2).add(1).floor()
 
-        
-
         return [cost,bulk]
     },
     getLevelEffect(i) {
@@ -45,6 +44,7 @@ const RADIATION = {
     getbonusLevel(i) {
         let x = E(0)
         if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
+        if (i < 12 && player.atom.elements.includes(69)) x = x.add(1)
         return x
     },
     buyBoost(i) {
@@ -97,7 +97,7 @@ const RADIATION = {
                 let x = b.add(1).pow(2)
                 return x.softcap(100,0.5,0)
             },
-            desc(x) { return `Non-bonus BH condenser is ${format(x)}x stronger` },
+            desc(x) { return `Non-bonus BH condenser is ${format(x)}x stronger`+(x.gte(100)?" <span class='soft'>(softcapped)</span>":"") },
         },{
             title: `Infrared Boost`,
             eff(b) {
@@ -241,7 +241,7 @@ function updateRadiationHTML() {
                 let lvl = 3*x+y
                 let id2 = `rad_level_${lvl}`
                 tmp.el[id2].setTxt(format(tmp.radiation.bs.lvl[lvl],0)+(tmp.radiation.bs.bonus_lvl[lvl].gt(0)?" + "+format(tmp.radiation.bs.bonus_lvl[lvl]):""))
-                tmp.el[id2+"_desc"].setTxt(RADIATION.boosts[lvl].desc(tmp.radiation.bs.eff[lvl]))
+                tmp.el[id2+"_desc"].setHTML(RADIATION.boosts[lvl].desc(tmp.radiation.bs.eff[lvl]))
             }
         }
     }

@@ -46,7 +46,7 @@ function updateChalTemp() {
         tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
-        tmp.chal.eff[x] = CHALS[x].effect(player.chal.comps[x])
+        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive(04) ? E(0) : player.chal.comps[x])
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)

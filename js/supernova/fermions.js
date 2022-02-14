@@ -14,8 +14,8 @@ const FERMIONS = {
             SUPERNOVA.reset(false,false,false,true)
         }
     },
-    choose(i,x) {
-        if (player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
+    choose(i,x,a) {
+        if (!a && player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
         let id = i+""+x
         if (player.supernova.fermions.choosed != id) {
             player.supernova.fermions.choosed = id
@@ -65,6 +65,7 @@ const FERMIONS = {
         let u = 2
         if (player.supernova.tree.includes("fn2")) u++
         if (player.supernova.tree.includes("fn6")) u++
+        if (player.supernova.tree.includes("fn7")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -133,6 +134,7 @@ const FERMIONS = {
                 cons: "You are trapped in Mass Dilation, but they are twice effective",
                 isMass: true,
             },{
+                maxTier: 18,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e1000').pow(t.pow(1.5)).mul("e3e4")
@@ -144,7 +146,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0)
+                    let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0).min(3)
                     return x
                 },
                 desc(x) {
@@ -152,6 +154,25 @@ const FERMIONS = {
                 },
                 inc: "Rage Power",
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return Decimal.pow("e1.75e7", Decimal.pow(1.05, t))
+                },
+                calcTier() {
+                    let res = player.atom.points
+                    if (res.lt('e1.75e7')) return E(0)
+                    let x = res.log("e1.75e7").log(1.05).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    return t.div(100).times(i.log(1e20)).add(1)
+                },
+                desc(x) {
+                    return `Weaken the penalty exponent for Mass Dilation by ${format(Decimal.sub(100, Decimal.div(100, x)))}%.`
+                },
+                inc: "Atoms",
+                cons: "All challenges are disabled.",
             },
 
         ],[
@@ -172,6 +193,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(14)) return E(1)
                     let x = i.add(1).log10().mul(t).div(100).add(1).softcap(1.5,player.supernova.tree.includes("fn5")?0.75:0.25,0)
                     return x
                 },
@@ -192,6 +214,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(14)) return E(1)
                     let x = t.pow(1.5).add(1).pow(i.add(1).log10().softcap(10,0.75,0)).softcap(1e6,0.75,0)
                     return x
                 },
@@ -202,6 +225,7 @@ const FERMIONS = {
                 inc: "Mass of Black Hole",
                 cons: "The power from the mass of the BH formula is always -1",
             },{
+                maxTier: 40,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e5e3').pow(t.pow(1.5)).mul("e4.5e5")
@@ -213,8 +237,9 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(14)) return E(1)
                     let x = t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10())
-                    return x
+                    return x.min(1e6)
                 },
                 desc(x) {
                     return `Tickspeed is ${format(x)}x cheaper (before Meta scaling)`
@@ -234,6 +259,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(14)) return E(1)
                     let x = i.max(1).log10().add(1).mul(t).div(200).add(1).softcap(1.5,0.5,0)
                     return x
                 },
@@ -242,6 +268,28 @@ const FERMIONS = {
                 },
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('e2e5').pow(t.pow(1.5)).mul("e1.5e6")
+                },
+                calcTier() {
+                    let res = player.md.mass
+                    if (res.lt('e1.5e6')) return E(0)
+                    let x = res.div('e1.5e6').max(1).log('e2e5').max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+					if (FERMIONS.onActive(14)) return E(1)
+					if (t.eq(0)) return E(1)
+                    return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1)
+                },
+                desc(x) {
+                    return `Meta Rank scaling starts ${format(x)}x later.`
+                },
+				isMass: true,
+                inc: "Dilated mass",
+                cons: "There's no Meta Scalings, but U-Leptons do nothing.",
             },
 
             /*

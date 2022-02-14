@@ -30,8 +30,8 @@ const FORMS = {
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) x = x.pow(tmp.chal.eff[3])
-        if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")) {
-            x = expMult(x,FERMIONS.onActive("02")?0.64:0.8)
+        if (tmp.md.active) {
+            x = MASS_DILATION.applyDil(x)
             if (player.atom.elements.includes(28)) x = x.pow(1.5)
         }
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
@@ -131,7 +131,7 @@ const FORMS = {
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) gain = gain.root(10)
-            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")) gain = expMult(gain,FERMIONS.onActive("02")?0.64:0.8)
+            if (tmp.md.active) gain = MASS_DILATION.applyDil(gain)
             return gain.floor()
         },
         reset() {
@@ -161,7 +161,7 @@ const FORMS = {
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) gain = gain.root(8)
             gain = gain.pow(tmp.chal.eff[8])
-            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")) gain = expMult(gain,FERMIONS.onActive("02")?0.64:0.8)
+            if (tmp.md.active) gain = MASS_DILATION.applyDil(gain)
             return gain.floor()
         },
         massPowerGain() {
@@ -179,7 +179,7 @@ const FORMS = {
             x = x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
-            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")) x = expMult(x,FERMIONS.onActive("02")?0.64:0.8)
+            if (tmp.md.active) x = MASS_DILATION.applyDil(x)
             return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
         },
         massSoftGain() {

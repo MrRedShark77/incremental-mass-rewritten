@@ -2,10 +2,10 @@ const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
-    ["","","","","unl1","","m3","","","d1","","","gr2","","chal5","","","",""],
+    ["","","","","unl1","qol8","m3","","","d1","","","gr2","","chal5","","","",""],
     ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","fn1","fn5","","","","","","","",""],
-    ["","","","","","","","fn6","fn2","fn3","fn4","","","","","","","",""],
+    ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","","","rad2","rad1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -396,8 +396,26 @@ const TREE_UPGS = {
         },
         rad2: {
             branch: ["rad1"],
-            desc: `Gain x10 any more Radiation.`,
+            desc: `Gain more Radiation based on Supernovas.`,
             cost: E(1e72),
+            effect() {
+                let x = Decimal.pow(1.15, player.supernova.times.sub(30)).max(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qol8: {
+            branch: ["qol7"],
+            unl() { return player.supernova.tree.includes("qol7") },
+            req() { return player.supernova.times.gte(50) },
+            reqDesc: `50 Supernovas.`,
+            desc: `You can automatically sweep challenges and fermions with at least 15 completions / tiers, after 3 seconds of Supernova.`,
+            cost: E(1e65),
+        },
+        fn7: {
+            branch: ["fn6"],
+            desc: `Unlock 2 even more types of U-Quark & U-Fermion.`,
+            cost: E(1e80),
         },
         /*
         x: {

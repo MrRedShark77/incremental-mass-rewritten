@@ -14,6 +14,7 @@ Decimal.prototype.softcap = function (start, power, mode) {
         if ([0, "pow"].includes(mode)) x = x.div(start).pow(power).mul(start)
         if ([1, "mul"].includes(mode)) x = x.sub(start).div(power).add(start)
         if ([2, "exp"].includes(mode)) x = expMult(x.div(start), power).mul(start)
+        if ([3, "log"].includes(mode)) x = x.div(start).log(power).add(1).times(start)
     }
     return x
 }
@@ -69,6 +70,25 @@ function calc(dt, dt_offline) {
         player.supernova.fermions.unl = true
         addPopup(POPUP_GROUPS.fermions)
     }
+
+	if (player.supernova.auto.on > -2) {
+		player.supernova.auto.t += dt
+		if (player.supernova.auto.t >= 1.5) {
+			updateSupernovaAutoTemp()
+			player.supernova.auto.on++
+			CHALS.exit()
+			FERMIONS.backNormal()
+			if (player.supernova.auto.on == tmp.supernova.auto.length) player.supernova.auto.on = -2
+			else {
+				var id = tmp.supernova.auto[player.supernova.auto.on]
+				if (id > 0) {
+					CHALS.reset(id, true)
+					player.chal.active = id
+				} else FERMIONS.choose(Math.floor(-id/10), (-id-1)%10, true)
+			}
+			player.supernova.auto.t = 0
+		}
+	}
 }
 
 function getPlayerData() {
@@ -169,6 +189,10 @@ function getPlayerData() {
                 ds: [],
                 bs: [],
             },
+			auto: {
+				on: -2,
+				t: 0
+			}
         },
         reset_msg: "",
         main_upg_msg: [0,0],
