@@ -50,7 +50,7 @@ const ATOM = {
             if (player.atom.elements.includes(52)) x = x.mul(tmp.elements.effect[52])
             x = x.mul(tmp.bosons.upgs.gluon[0].effect)
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
-            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")) x = expMult(x,FERMIONS.onActive("02")?0.64:0.8)
+            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
             return x
         },
         effect() {

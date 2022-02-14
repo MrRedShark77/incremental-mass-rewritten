@@ -113,6 +113,7 @@ const CHALS = {
         if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
         if (player.atom.elements.includes(56) && (i==8)) x = x.add(200)
         if (player.atom.elements.includes(65) && (i==7||i==8)) x = x.add(200)
+        if (player.atom.elements.includes(70) && (i==7||i==8)) x = x.add(200)
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },
@@ -264,7 +265,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret
+            return ret.softcap(2.5,0.25,0)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -280,7 +281,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret
+            return ret.softcap(2.5,0.25,0)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -342,7 +343,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
-            return ret
+            return ret.softcap(2,0.25,0)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -376,7 +377,22 @@ const CHALS = {
         },
         effDesc(x) { return format(x)+"x" },
     },
-    cols: 10,
+    11: {
+        unl() { return player.supernova.tree.includes("chal6") },
+        title: "Absolutism",
+        desc: "You cannot gain relativistic particles or dilated mass. However, you are stuck in Mass Dilation.",
+        reward: `Star Booster is stonger by completions.`,
+        max: E(100),
+        inc: E("ee6"),
+        pow: E(2),
+        start: uni("e3.8e7"),
+        effect(x) {
+            let ret = x.root(2).div(10).add(1)
+            return ret
+        },
+        effDesc(x) { return format(x)+"x stronger" },
+    },
+    cols: 11,
 }
 
 /*

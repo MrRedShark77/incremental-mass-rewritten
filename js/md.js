@@ -1,5 +1,10 @@
 const MASS_DILATION = {
     unlocked() { return player.atom.elements.includes(21) },
+    penalty() {
+        let x = 0.8
+        if (FERMIONS.onActive("02")) x **= 2
+        return x
+    },
     onactive() {
         if (player.md.active) player.md.particles = player.md.particles.add(tmp.md.rp_gain)
         player.md.active = !player.md.active
@@ -22,10 +27,12 @@ const MASS_DILATION = {
         return x
     },
     RPgain(m=player.mass) {
+        if (CHALS.inChal(11)) return E(0)
         let x = m.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
         return x.sub(player.md.particles).max(0).floor()
     },
     massGain() {
+        if (CHALS.inChal(11)) return E(0)
         let pow = E(2)
         let x = player.md.particles.pow(pow)
         x = x.mul(tmp.md.upgs[0].eff)
@@ -184,10 +191,11 @@ function updateMDTemp() {
         tmp.md.upgs[x].can = player.md.mass.gte(tmp.md.upgs[x].cost) && player.md.upgs[x].lt(upg.maxLvl||1/0)
         if (upg.effect) tmp.md.upgs[x].eff = upg.effect(player.md.upgs[x])
     }
+    tmp.md.pen = MASS_DILATION.penalty()
     tmp.md.rp_exp_gain = MASS_DILATION.RPexpgain()
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()
     tmp.md.rp_gain = MASS_DILATION.RPgain()
-    tmp.md.passive_rp_gain = player.supernova.tree.includes("qol3")?MASS_DILATION.RPgain(expMult(player.mass,FERMIONS.onActive("02")?0.64:0.8)):E(0)
+    tmp.md.passive_rp_gain = player.supernova.tree.includes("qol3")?MASS_DILATION.RPgain(expMult(player.mass,tmp.md.pen)):E(0)
     tmp.md.mass_gain = MASS_DILATION.massGain()
     tmp.md.mass_req = MASS_DILATION.mass_req()
     tmp.md.mass_eff = MASS_DILATION.effect()

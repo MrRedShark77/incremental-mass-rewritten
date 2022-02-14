@@ -40,6 +40,7 @@ const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },
 	tier(x=0) { return player.ranks.tier },
 	tetr(x=0) { return player.ranks.tetr },
+	pent(x=0) { return player.ranks.pent },
 	tickspeed(x=0) { return player.tickspeed },
     massUpg(x=1) { return E(player.massUpg[x]||0) },
 	bh_condenser(x=0) { return player.bh.condenser },
@@ -52,6 +53,7 @@ const NAME_FROM_RES = {
 	rank: "Rank",
 	tier: "Tier",
 	tetr: "Tetr",
+	pent: "Pent",
 	massUpg: "Mass Upgrades",
 	tickspeed: "Tickspeed",
 	bh_condenser: "Black Hole Condenser",
@@ -147,6 +149,10 @@ function getScalingStart(type, name) {
 		}
 	}
 	if (type=="meta") {
+		if (name=="rank") {
+			if (player.ranks.pent.gte(1)) start = start.mul(1.1)
+			start = start.mul(tmp.radiation.bs.eff[14])
+		}
 		if (name=="tickspeed") {
 			if (player.atom.elements.includes(68)) start = start.mul(2)
 		}

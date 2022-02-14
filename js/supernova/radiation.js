@@ -1,10 +1,11 @@
 const RADIATION = {
     names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","γ-ray"],
-    unls: ["0","1e6","1e13","1e20"],
+    unls: ["0","1e6","1e13","1e20","1e26"],
     hz_gain() {
         let x = E(1)
         x = x.mul(tmp.radiation.ds_eff[0])
         if (player.supernova.tree.includes('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
+        if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         return x
     },
     hz_effect() {
@@ -15,6 +16,7 @@ const RADIATION = {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
         let x = E(1)
         if (player.supernova.tree.includes('rad2')) x = x.mul(10)
+        if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         if (i<RAD_LEN-1) {
             if (player.supernova.tree.includes('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
             x = x.mul(tmp.radiation.ds_eff[i+1])
@@ -28,11 +30,11 @@ const RADIATION = {
     },
     getBoostData(i) {
         let b = player.supernova.radiation.bs[i]
-        let [f1,f2,f3] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10]
-        let cost = E(f1).pow(b.pow(f2)).mul(f3)
+        let [f1,f2,f3,fp] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10,tmp.radiation.bs.fp]
+        let cost = E(f1).pow(b.div(fp).pow(f2)).mul(f3)
 
         let d = player.supernova.radiation.ds[Math.floor(i/2)]
-        let bulk = d.lt(f3) ? E(0) : d.div(f3).max(1).log(f1).max(0).root(f2).add(1).floor()
+        let bulk = d.lt(f3) ? E(0) : d.div(f3).max(1).log(f1).max(0).root(f2).mul(fp).add(1).floor()
 
         
 
@@ -51,9 +53,14 @@ const RADIATION = {
         let [cost, bulk, j] = [tmp.radiation.bs.cost[i], tmp.radiation.bs.bulk[i], Math.floor(i/2)]
         if (player.supernova.radiation.ds[j].gte(cost) && bulk.gt(player.supernova.radiation.bs[i])) {
             player.supernova.radiation.bs[i] = player.supernova.radiation.bs[i].max(bulk)
-            let [f1,f2,f3] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10]
-            player.supernova.radiation.ds[j] = player.supernova.radiation.ds[j].sub(E(f1).pow(bulk.sub(1).pow(f2)).mul(f3)).max(0)
+            let [f1,f2,f3,fp] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10,tmp.radiation.bs.fp]
+            player.supernova.radiation.ds[j] = player.supernova.radiation.ds[j].sub(E(f1).pow(bulk.sub(1).div(fp).pow(f2)).mul(f3)).max(0)
         }
+    },
+    getBoostsFP() {
+        let x = E(1)
+        if (player.supernova.tree.includes('rad3')) x = x.mul(1.1)
+        return x
     },
     boosts: [
         {
@@ -140,6 +147,27 @@ const RADIATION = {
                 return x
             },
             desc(x) { return `Neutron Star is boosted by ${format(x)}x (based on Frequency)` },
+        },{
+            title: `Ultraviolet Boost`,
+            eff(b) {
+                let x = player.supernova.radiation.ds[3].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
+                return x
+            },
+            desc(x) { return `Visible is boosted by ${format(x)}x (based on Visible)` },
+        },{
+            title: `Tickspeed-Softcap Boost`,
+            eff(b) {
+                let x = E(1e3).pow(b.pow(0.9))
+                return x
+            },
+            desc(x) { return `Tickspeed power's softcap starts ${format(x)}x later` },
+        },{
+            title: `Meta-Rank Boost`,
+            eff(b) {
+                let x = E(1.015).pow(b)
+                return x
+            },
+            desc(x) { return `Meta-Rank starts ${format(x)}x later` },
         },
 
         /*
@@ -155,12 +183,13 @@ const RADIATION = {
     ],
 }
 
-const RAD_LEN = 4
+const RAD_LEN = 5
 
 function updateRadiationTemp() {
     tmp.radiation.unl = player.supernova.tree.includes("unl1")
     tmp.radiation.hz_gain = RADIATION.hz_gain()
     tmp.radiation.hz_effect = RADIATION.hz_effect()
+    tmp.radiation.bs.fp = RADIATION.getBoostsFP()
     for (let x = 0; x < RAD_LEN; x++) {
         tmp.radiation.ds_gain[x] = RADIATION.ds_gain(x)
         tmp.radiation.ds_eff[x] = RADIATION.ds_eff(x)

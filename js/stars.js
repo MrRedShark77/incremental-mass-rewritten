@@ -16,9 +16,13 @@ const STARS = {
     effect() {
         let p = E(1)
         if (player.atom.elements.includes(48)) p = p.mul(1.1)
-        let [s,r,t1,t2] = [player.stars.points.mul(p),player.ranks.rank.mul(p),player.ranks.tier.mul(p),player.ranks.tetr.mul(p).softcap(5,player.supernova.tree.includes("s2")?1.5:5,1).softcap(9,0.3,0)]
+        let [s,r,t1,t2,t3] = [player.stars.points.mul(p)
+            ,player.ranks.rank.mul(p)
+            ,player.ranks.tier.mul(p)
+            ,player.ranks.tetr.mul(p).softcap(5,player.supernova.tree.includes("s2")?1.5:5,1).softcap(9,0.3,0)
+            ,player.atom.elements.includes(69)?player.ranks.pent:E(0)]
         let x =
-        s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25)))
+        s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1))))
         return x
     },
     generators: {
@@ -67,7 +71,7 @@ function updateStarsTemp() {
 
     tmp.stars.generator_boost_base = E(2)
     if (player.atom.elements.includes(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])
-    tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost)
+    tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost.mul(tmp.chal?tmp.chal.eff[11]:1))
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.softPower = STARS.softPower()
     tmp.stars.softGain = STARS.softGain()

@@ -2,11 +2,11 @@ const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
-    ["","","","","unl1","","m3","","","d1","","","gr2","","chal5","","","",""],
-    ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
+    ["","","","","unl1","","m3","","","d1","","","gr2","chal5","","chal6","","",""],
+    ["","","","","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","fn1","fn5","","","","","","","",""],
     ["","","","","","","","fn6","fn2","fn3","fn4","","","","","","","",""],
-    ["","","","","","","","","rad2","rad1","","","","","","","","",""],
+    ["","","","","","","","","rad2","rad1","rad3","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -225,6 +225,13 @@ const TREE_UPGS = {
             desc: `You can now automatically buy Photon & Gluon upgrades, they no longer spent their amount.`,
             cost: E(1e48),
         },
+        qol8: {
+            branch: ["unl1"],
+            req() { return player.supernova.times.gte(60) },
+            reqDesc: `60 Supernovas.`,
+            desc: `You can now automatically Pent up, Pent no longer resets anything.`,
+            cost: E(1e78),
+        },
         chal1: {
             req() { return player.supernova.times.gte(4) },
             reqDesc: `4 Supernovas.`,
@@ -266,6 +273,12 @@ const TREE_UPGS = {
             branch: ["chal4"],
             desc: `Unlock new challenge.`,
             cost: E(1e17),
+        },
+        chal6: {
+            unl() { return tmp.radiation.unl },
+            branch: ["chal5"],
+            desc: `Unlock new challenges.`,
+            cost: E(1e88),
         },
         gr1: {
             branch: ["bh1"],
@@ -398,6 +411,11 @@ const TREE_UPGS = {
             branch: ["rad1"],
             desc: `Gain x10 any more Radiation.`,
             cost: E(1e72),
+        },
+        rad3: {
+            branch: ["rad1"],
+            desc: `Radiation Boosts are 1.1x cheaper.`,
+            cost: E(1e86),
         },
         /*
         x: {

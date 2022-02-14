@@ -1,5 +1,7 @@
 function E(x){return new Decimal(x)};
 
+function uni(x) { return E(1.5e56).mul(x) }
+
 Decimal.prototype.modular=Decimal.prototype.mod=function (other){
     other=E(other);
     if (other.eq(0)) return E(0);
@@ -78,6 +80,7 @@ function getPlayerData() {
             rank: E(0),
             tier: E(0),
             tetr: E(0),
+            pent: E(0),
         },
         auto_ranks: {
             rank: false,

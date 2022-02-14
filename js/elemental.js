@@ -447,6 +447,14 @@ const ELEMENTS = {
             desc: `Meta-Tickspeed start 2x later.`,
             cost: E('e4.8e6'),
         },
+        {
+            desc: `Pent is now added in mass gain formula from collapsed stars.`,
+            cost: E('e3.6e7'),
+        },
+        {
+            desc: `Add 200 more C7 & c8 maximum completions.`,
+            cost: E('e6.9e7'),
+        },
     ],
     /*
     {

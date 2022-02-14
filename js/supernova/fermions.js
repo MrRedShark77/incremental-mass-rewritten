@@ -133,6 +133,7 @@ const FERMIONS = {
                 cons: "You are trapped in Mass Dilation, but they are twice effective",
                 isMass: true,
             },{
+                maxTier: 15,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e1000').pow(t.pow(1.5)).mul("e3e4")
