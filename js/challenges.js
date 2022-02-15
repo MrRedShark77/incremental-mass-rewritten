@@ -265,7 +265,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret.softcap(2.5,0.25,0)
+            return ret//.softcap(2.5,0.25,0)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -281,7 +281,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret.softcap(2.5,0.25,0)
+            return ret//.softcap(2.5,0.25,0)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -343,7 +343,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
-            return ret.softcap(2,0.25,0)
+            return ret//.softcap(2,0.25,0)
         },
         effDesc(x) { return "^"+format(x) },
     },

@@ -175,7 +175,8 @@ const FORMS = {
             return x
         },
         massGain() {
-            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).mul(this.condenser.effect().eff)
+            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).softcap(uni("e3e9"),0.95,2)
+            .mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
             if (player.atom.elements.includes(46)) x = x.mul(tmp.elements.effect[46])
@@ -915,7 +916,7 @@ function turnOffline() { player.offline.active = !player.offline.active }
 
 function formatMass(ex) {
     ex = E(ex)
-    //if (ex.gte(E(1.5e56).mul('ee9'))) return format(ex.div(1.5e56).log10().div(1e9)) + ' mlt'
+    if (ex.gte(E(1.5e56).mul('ee9'))) return format(ex.div(1.5e56).log10().div(1e9)) + ' mlt'
     if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' uni'
     if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' MMWG'
     if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' M☉'
