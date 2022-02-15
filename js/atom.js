@@ -94,7 +94,7 @@ const ATOM = {
             if (player.atom.quarks.lt(1) || CHALS.inChal(9) || FERMIONS.onActive("12")) return
             let m = player.atom.ratio
             let spent = m > 0 ? player.atom.quarks.mul(RATIO_MODE[m]).ceil() : E(1)
-            player.atom.quarks = player.atom.quarks.sub(spent)
+            player.atom.quarks = player.atom.quarks.sub(spent).max(0)
             player.atom.particles[x] = player.atom.particles[x].add(spent)
         },
         assignAll() {
@@ -103,7 +103,7 @@ const ATOM = {
             let spent = player.atom.quarks.div(sum).floor()
             for (let x = 0; x < 3; x++) {
                 let add = spent.mul(player.atom.dRatio[x])
-                player.atom.quarks = player.atom.quarks.sub(add)
+                player.atom.quarks = player.atom.quarks.sub(add).max(0)
                 player.atom.particles[x] = player.atom.particles[x].add(add)
             }
         },
