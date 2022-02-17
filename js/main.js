@@ -109,7 +109,9 @@ const FORMS = {
                 step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
             if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
-            step = step.softcap(1e50,0.1,0)
+			var sc = E(1e50)
+			if (tmp.radiation) sc = sc.mul(tmp.radiation.bs.eff[13])
+            step = step.softcap(sc,0.1,0)
             let eff = step.pow(t.add(bonus))
             if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
@@ -169,7 +171,7 @@ const FORMS = {
             if (FERMIONS.onActive("11")) return E(-1)
             if (player.atom.elements.includes(59)) x = E(0.45)
             x = x.add(tmp.radiation.bs.eff[4])
-            return x
+            return x.min(0.5)
         },
         massGain() {
             let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).mul(this.condenser.effect().eff)
@@ -912,7 +914,7 @@ function turnOffline() { player.offline.active = !player.offline.active }
 
 function formatMass(ex) {
     ex = E(ex)
-    if (ex.gte(E(1.5e56).mul('ee9'))) return format(ex.div(1.5e56).log10().div(1e9)) + ' mlt'
+    if (ex.gte(uni('ee9'))) return format(ex.div(1.5e56).log10().div(1e9)) + ' mlt'
     if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' uni'
     if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' MMWG'
     if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' M☉'
@@ -936,8 +938,6 @@ function formatTime(ex,type="s") {
     if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0)+":"+formatTime(ex.mod(60),'m')
     return (ex.gte(10)||type!="m" ?"":"0")+format(ex)
 }
-
-function uni(x) { return E(1.5e56).mul(x) }
 
 function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
 

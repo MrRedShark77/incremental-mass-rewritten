@@ -7,7 +7,7 @@ const MASS_DILATION = {
         updateMDTemp()
     },
 	isActive() {
-		return player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03")
+		return player.md.active || CHALS.inChal(10) || CHALS.inChal(11) || FERMIONS.onActive("02") || FERMIONS.onActive("03")
 	},
 	getPenalty() {
 		var x = FERMIONS.onActive("02") ? 0.64 : 0.8
@@ -33,6 +33,7 @@ const MASS_DILATION = {
         return x
     },
     RPgain(m=player.mass) {
+		if (CHALS.inChal(11)) return E(0)
         let x = m.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
         return x.sub(player.md.particles).max(0).floor()
     },

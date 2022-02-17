@@ -66,6 +66,7 @@ const FERMIONS = {
         if (player.supernova.tree.includes("fn2")) u++
         if (player.supernova.tree.includes("fn6")) u++
         if (player.supernova.tree.includes("fn7")) u++
+        if (player.supernova.tree.includes("fn9")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -174,7 +175,25 @@ const FERMIONS = {
                 inc: "Atoms",
                 cons: "All challenges are disabled.",
             },
-
+            {
+                nextTierAt(x) {
+                    return E(1/0)
+                },
+                calcTier() {
+                    let res = E(0)
+                    let x = E(0)
+                    return x
+                },
+                eff(i, t) {
+                    let x = E(1)
+                    return x
+                },
+                desc(x) {
+                    return `Placeholder`
+                },
+                inc: "Placeholder",
+                cons: "Placeholder",
+            },
         ],[
             {
                 maxTier() {
@@ -291,6 +310,25 @@ const FERMIONS = {
                 inc: "Dilated mass",
                 cons: "There's no Meta Scalings, but U-Leptons do nothing.",
             },
+            {
+                nextTierAt(x) {
+                    return E(1/0)
+                },
+                calcTier() {
+                    let res = E(0)
+                    let x = E(0)
+                    return x
+                },
+                eff(i, t) {
+                    let x = E(1)
+                    return x
+                },
+                desc(x) {
+                    return `Placeholder`
+                },
+                inc: "Placeholder",
+                cons: "Placeholder",
+            },
 
             /*
             {
@@ -345,10 +383,12 @@ function updateFermionsTemp() {
 
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]
-
             tmp.fermions.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0
             tmp.fermions.tiers[i][x] = f.calcTier()
-            tmp.fermions.effs[i][x] = f.eff(player.supernova.fermions.points[i], player.supernova.fermions.tiers[i][x])
+
+			let t = player.supernova.fermions.tiers[i][x]
+			if (tmp.radiation && i == 1) t = t.mul(tmp.radiation.bs.eff[16])
+            tmp.fermions.effs[i][x] = f.eff(player.supernova.fermions.points[i], t)
         }
     }
 }

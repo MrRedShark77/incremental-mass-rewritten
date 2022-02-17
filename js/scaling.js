@@ -40,12 +40,17 @@ const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },
 	tier(x=0) { return player.ranks.tier },
 	tetr(x=0) { return player.ranks.tetr },
+	pent(x=0) { return player.ranks.pent },
 	tickspeed(x=0) { return player.tickspeed },
     massUpg(x=1) { return E(player.massUpg[x]||0) },
 	bh_condenser(x=0) { return player.bh.condenser },
 	gamma_ray(x=0) { return player.atom.gamma_ray },
 	supernova(x=0) { return player.supernova.times },
 	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
+}
+
+const SCALING_FLOORS = {
+	supernova() { return !player.supernova.tree.includes("sn5") },
 }
 
 const NAME_FROM_RES = {
@@ -120,6 +125,7 @@ function getScalingStart(type, name) {
 		}
 		if (name=="tetr") {
 			if (player.ranks.tier.gte(100)) start = start.add(5)
+			if (player.ranks.pent.gte(2)) start = start.add(player.supernova.times.pow(1.5).div(200))
 		}
 		if (name=="massUpg") {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
@@ -163,8 +169,11 @@ function getScalingStart(type, name) {
 		if (name=="tickspeed") {
 			if (player.atom.elements.includes(68)) start = start.mul(2)
 			if (player.atom.elements.includes(72)) start = start.mul(tmp.elements.effect[72])
+			if (player.ranks.tetr.gte(18)) start = start.mul(RANKS.effect.tetr[18]())
+			if (tmp.radiation) start = start.mul(tmp.radiation.bs.eff[14])
 		}
 	}
+	if (SCALING_FLOORS[name] && !SCALING_FLOORS[name]()) return start
 	return start.floor()
 }
 
@@ -178,6 +187,9 @@ function getScalingPower(type, name) {
 		if (name=="tier") {
 			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
 			if (player.atom.elements.includes(37)) power = power.mul(tmp.elements.effect[37])
+		}
+		if (name=="tetr") {
+			if (player.ranks.pent.gte(4)) power = power.mul(RANKS.effect.pent[4]())
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)
@@ -231,6 +243,9 @@ function getScalingPower(type, name) {
 		}
 	}
 	if (type=="meta") {
+		if (name=="rank") {
+			if (player.ranks.pent.gte(4)) power = power.mul(RANKS.effect.pent[4]())
+		}
 		if (name=='tickspeed') {
 			
 		}

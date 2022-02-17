@@ -1,6 +1,6 @@
 const RANKS = {
-    names: ['rank', 'tier', 'tetr'],
-    fullNames: ['Rank', 'Tier', 'Tetr'],
+    names: ['rank', 'tier', 'tetr', 'pent'],
+    fullNames: ['Rank', 'Tier', 'Tetr', 'Pent'],
     reset(type) {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
@@ -8,6 +8,7 @@ const RANKS = {
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             if (type == "tetr" && player.supernova.tree.includes("qol5")) reset = false
+            if (type == "pent") reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -19,6 +20,7 @@ const RANKS = {
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             if (type == "tetr" && player.supernova.tree.includes("qol5")) reset = false
+            if (type == "pent") reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -26,6 +28,7 @@ const RANKS = {
     unl: {
         tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) },
         tetr() { return player.mainUpg.atom.includes(3) },
+        pent() { return player.supernova.tree.includes("sn5") },
     },
     doReset: {
         rank() {
@@ -40,12 +43,17 @@ const RANKS = {
             player.ranks.tier = E(0)
             this.tier()
         },
+        pent() {
+            player.ranks.tetr = E(0)
+            this.tetr()
+        },
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
         rank() { return player.mainUpg.rp.includes(5) },
         tier() { return player.mainUpg.rp.includes(6) },
         tetr() { return player.mainUpg.atom.includes(5) },
+        pent() { return true },
     },
     desc: {
         rank: {
@@ -87,6 +95,12 @@ const RANKS = {
             '4': "Super Rank scale weaker based on Tier, Super Tier scale 20% weaker.",
             '5': "Hyper/Ultra Tickspeed starts later based on tetr.",
             '8': "Mass gain softcap^2 starts ^1.5 later.",
+            '18': "Meta-Tickspeed starts later based on Tiers.",
+        },
+        pent: {
+            '1': "raise collapsed star effect by Pents.",
+            '2': "Super Tetr scaling starts later based on Supernovas.",
+            '4': "Meta Rank and Super Tier scales weaker based on Pents.",
         },
     },
     effect: {
@@ -160,6 +174,24 @@ const RANKS = {
                 let ret = player.ranks.tetr.pow(4).softcap(1000,0.25,0)
                 return ret
             },
+            '18'() {
+                let ret = player.ranks.tier.min(1e3).div(20000).add(1).pow(player.ranks.tier.sqrt())
+                return ret
+            },
+        },
+        pent: {
+            '1'() {
+                let ret = STARS.rankStr().times(player.ranks.pent.sqrt()).div(30).add(1)
+                return ret
+            },
+            '2'() {
+                let ret = player.supernova.times.pow(1.5).div(200)
+                return ret
+            },
+            '4'() {
+                let ret = E(2).div(player.ranks.pent)
+                return ret
+            },
         },
     },
     effDesc: {
@@ -183,6 +215,12 @@ const RANKS = {
             2(x) { return "+"+format(x) },
             4(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             5(x) { return "+"+format(x,0)+" later" },
+            18(x) { return format(x)+"x" },
+        },
+        pent: {
+            1(x) { return "^"+format(x) },
+            2(x) { return "+"+format(x,0)+" later" },
+            4(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
         },
     },
     fp: {
@@ -197,6 +235,15 @@ const RANKS = {
             f = f.mul(tmp.fermions.effs[1][3])
             if (player.ranks.tetr.gte(1)) f = f.mul(1/0.75)
             if (player.mainUpg.atom.includes(10)) f = f.mul(2)
+            return f
+        },
+        tetr() {
+            let f = E(1)
+			if (player.atom.elements.includes(9)) f = f.mul(1/0.85)
+            return f
+        },
+        pent() {
+            let f = E(1)
             return f
         },
     },
@@ -398,10 +445,9 @@ function updateRanksTemp() {
 			.floor();
 	}
 
-    fp = E(1)
+    fp = RANKS.fp.tetr()
     let pow = 2
     if (player.atom.elements.includes(44)) pow = 1.75
-    if (player.atom.elements.includes(9)) fp = fp.mul(1/0.85)
     tmp.ranks.tetr.req = player.ranks.tetr.div(fp).pow(pow).mul(3).add(10).floor()
     tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(pow).mul(fp).add(1).floor();
     if (scalingActive("tetr", player.ranks.tetr.max(tmp.ranks.tetr.bulk), "super")) {
@@ -421,6 +467,11 @@ function updateRanksTemp() {
 			.add(1)
 			.floor();
 	}
+
+    fp = E(1/1.2)
+    let pow2 = 1.25
+    tmp.ranks.pent.req = player.ranks.pent.div(fp).pow(pow2).add(15).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).max(0).root(pow2).mul(fp).add(1).floor();
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

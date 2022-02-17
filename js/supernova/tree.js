@@ -1,12 +1,12 @@
 const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
-    ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
-    ["","","","","unl1","qol8","m3","","","d1","","","gr2","","chal5","","","",""],
-    ["","","","","","","","bs4","bs2","bs1","bs3","","","","","","","",""],
+    ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","","chal4","chal7","","",""],
+    ["","","","","unl1","qol8","m3","","","d1","","","gr2","","chal5","chal6","","",""],
+    ["","","","","","qol9","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","fn1","fn5","","","","","","","",""],
-    ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
-    ["","","","","","","","","rad2","rad1","","","","","","","","",""],
+    ["","","","","","fn8","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
+    ["","","","","","","","","rad2","rad1","rad3","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -393,16 +393,19 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
+			noIcon: true,
         },
         rad2: {
             branch: ["rad1"],
             desc: `Gain more Radiation based on Supernovas.`,
             cost: E(1e72),
             effect() {
-                let x = Decimal.pow(1.15, player.supernova.times.sub(30)).max(1)
+				let sn = player.supernova.times
+                let x = sn.div(300).add(1).pow(sn.sub(30)).max(1)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
+			noIcon: true,
         },
         qol8: {
             branch: ["qol7"],
@@ -411,11 +414,48 @@ const TREE_UPGS = {
             reqDesc: `50 Supernovas.`,
             desc: `You can automatically sweep challenges and fermions with at least 15 completions / tiers, after 3 seconds of Supernova.`,
             cost: E(1e65),
+			noIcon: true,
         },
         fn7: {
             branch: ["fn6"],
+            unl() { return player.supernova.tree.includes("rad1") },
             desc: `Unlock 2 even more types of U-Quark & U-Fermion.`,
             cost: E(1e80),
+			noIcon: true,
+        },
+        chal6: {
+            branch: ["chal5"],
+            desc: `Unlock new challenge.`,
+            cost: E(1e94),
+        },
+        sn5: {
+            branch: ["sn4"],
+            unl() { return player.supernova.tree.includes("rad1") },
+            desc: `Supernova scalings are no longer rounded down to a integer, and unlock Pent.`,
+            cost: E(3e99),
+        },
+        fn8: {
+            branch: ["fn7"],
+            desc: `Unlock 2 final types of U-Quark & U-Fermion. [Coming soon!]`,
+            cost: E(1/0),
+			noIcon: true,
+        },
+        rad3: {
+            branch: ["rad1"],
+            desc: `Extra levels from radiation levels are raised based on radiation indexes.`,
+            cost: E(1e120),
+			noIcon: true,
+        },
+        qol9: {
+            branch: ["qol8"],
+            desc: `You can do 2 challenges at once from sweeping. [Coming soon!]`,
+            cost: E(1/0),
+			noIcon: true,
+        },
+        chal7: {
+            branch: ["chal6"],
+            desc: `Unlock the finale of Supernova Challenges, Challenge 12. [Coming soon!]`,
+            cost: E(1/0),
         },
         /*
         x: {
@@ -442,7 +482,7 @@ function setupTreeHTML() {
         for (let j = 0; j < 19; j++) {
             let id = TREE_IDS[i][j]
             let option = id == "" ? `style="visibility: hidden"` : ``
-            let img = TREE_UPGS.ids[id]?`<img src="images/tree/${id}.png">`:""
+            let img = !TREE_UPGS.ids[id] ? `` : TREE_UPGS.ids[id].noIcon ? ` <img src="images/tree/placeholder.png">` : `<img src="images/tree/${id}.png">`
             table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.supernova.tree_choosed = '${id}'" ${option}>${img}</button>`
         }
         table += `</div></div>`

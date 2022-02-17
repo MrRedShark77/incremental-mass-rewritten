@@ -107,6 +107,7 @@ const CHALS = {
         let x = this[i].max
         if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
         if (player.atom.elements.includes(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
+        if (player.atom.elements.includes(75) && (i==5||i==6)) x = x.add(tmp.elements.effect[75])
         if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
         if (player.atom.elements.includes(60) && (i==7)) x = x.add(100)
@@ -264,7 +265,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret
+            return ret.min(2.4)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -280,7 +281,7 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret
+            return ret.min(2.4)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -342,9 +343,13 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
+			if (ret.gte(39/20)) {
+				let frac = ret.sub(39/20).times(10).add(40)
+				ret = E(2).sub(E(2).div(frac))
+			}
             return ret
         },
-        effDesc(x) { return "^"+format(x) },
+        effDesc(x) { return "^"+format(x)+(x.gte(39/20)?" <span class='soft'>(softcapped)</span>":"") },
     },
     9: {
         unl() { return player.supernova.tree.includes("chal4") },
@@ -376,7 +381,37 @@ const CHALS = {
         },
         effDesc(x) { return format(x)+"x" },
     },
-    cols: 10,
+    11: {
+        unl() { return player.supernova.tree.includes("chal6") },
+        title: "Absolutism",
+        desc: "You cannot gain relativistic particles or dilated mass. However, you are stuck in Mass Dilation.",
+        reward: `Star Booster is stonger by completions.`,
+        max: E(100),
+        inc: E("e1e6"),
+        pow: E(1.45),
+        start: uni("e8.5e7"),
+        effect(x) {
+            let ret = x.div(100).sqrt().add(1)
+            return ret
+        },
+        effDesc(x) { return format(x)+"x stronger" },
+    },
+	12: {
+		unl() { return player.supernova.tree.includes("chal7") },
+		title: "Placeholder",
+		desc: "Placeholder.",
+		reward: `Placeholder.`,
+		max: E(50),
+		inc: E(10),
+		pow: E(1.25),
+		start: E(1/0),
+		effect(x) {
+			let ret = E(1)
+			return ret
+		},
+		effDesc(x) { return format(x)+"x" },
+	},
+    cols: 12,
 }
 
 /*

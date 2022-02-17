@@ -54,7 +54,7 @@ const ELEMENTS = {
             effect() {
                 let x = player.atom?player.atom.powers[2].add(1).root(2):E(1)
                 if (x.gte('e1e4')) x = expMult(x.div('e1e4'),0.9).mul('e1e4')
-                return x
+                return x.softcap('e1e8',0.9,2)
             },
             effDesc(x) { return format(x)+"x"+(x.gte('e1e4')?" <span class='soft'>(softcapped)</span>":"") },
         },
@@ -352,10 +352,10 @@ const ELEMENTS = {
             desc: `Mass of black hole boost atomic powers gain at a reduced rate.`,
             cost: E('e2800'),
             effect() {
-                let x = expMult(player.bh.mass.add(1),0.6)
+                let x = expMult(player.bh.mass.add(1),0.6).softcap("ee9",5/6,2)
                 return x
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return format(x)+"x"+(x.gte("ee9")?" <span class='soft'>(softcapped)</span>":"") },
         },
         {
             desc: `Mass Dilation upgrade 6 is 75% stronger.`,
@@ -459,20 +459,47 @@ const ELEMENTS = {
             desc: `Mass makes all Supernova scalings start later.`,
             cost: E('e3e7'),
             effect() {
-                let x = E("e3e9").add(1).log10().sub(1e9).max(1).div(5e7).sqrt()
+				let exp = E(0.5)
+				if (player.atom.elements.includes(73)) exp = tmp.elements.effect[73]||E(0.5)
+                let x = E("e3e9").add(1).log10().sub(1e9).max(1).div(5e7).pow(exp)
                 return x
             },
             effDesc(x) { return "+"+format(x) },
         },
         {
-            desc: `Ranks makes Meta Tickspeed starts later.`,
+            desc: `Ranks make Meta Tickspeed starts later.`,
             cost: E('e4e7'),
             effect() {
                 let x = player.ranks.rank
                 x = x.div(2e4).add(1)
-				return x
+				return x.pow(x.div(1.5).max(1))
             },
             effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Raise Lutetium-71 effect based on Neutron Stars.`,
+            cost: E('e4e7'),
+            effect() {
+				return player.supernova.stars.add(1).log10().div(150).min(1)
+            },
+            effDesc(x) { return "^"+format(x) },
+        },
+        {
+            desc: `Collapsed stars generate Neutron Stars faster.`,
+            cost: E('e1e8'),
+            effect() {
+				let log = player.stars.points.add(1).log10()
+				return log.div(5e6).add(1).log(2).min(5).div(1e5).add(1).pow(log.pow(0.8))
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Increase the maximum completions of C5-6 by Supernovas.`,
+            cost: E('e1.6e8'),
+            effect() {
+				return player.supernova.times.times(3)
+            },
+            effDesc(x) { return "+"+format(x) },
         },
     ],
     /*
