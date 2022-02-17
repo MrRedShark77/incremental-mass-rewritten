@@ -167,7 +167,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    return t.div(100).times(i.log(1e20)).add(1)
+                    return t.div(100).times(i.max(1).log(1e20)).add(1)
                 },
                 desc(x) {
                     return `Weaken the penalty exponent for Mass Dilation by ${format(Decimal.sub(100, Decimal.div(100, x)))}%.`
