@@ -38,12 +38,12 @@ const BOSONS = {
     },
     effect: {
         pos_w(x) {
-            let a = x.add(1).pow(2e4)
+            let a = FERMIONS.onActive(15) ? E(1) : x.add(1).pow(2e4)
             let b = expMult(x.add(1),2/3,2)
             return [a,b]
         },
         neg_w(x) {
-            let a = x.add(1).log10().add(1).root(3)
+            let a = FERMIONS.onActive(15) ? E(1) : x.add(1).log10().add(1).root(3)
             let b = expMult(x.add(1),0.75,2)
             return [a,b]
         },
@@ -74,29 +74,39 @@ const BOSONS = {
                 desc: "Gain more Dark Matters & Mass from Black Hole based on Photon.",
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.photon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100)) },
+				effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
+					return player.supernova.bosons.photon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100))
+				},
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Boost BH Condenser Power.",
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
-                effect(x) {
-                    let a = x.add(1).pow(0.75)
-                    if (player.supernova.tree.includes("fn4")) a = a.pow(2)
-                    return a
-                },
+				effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
+					let a = x.add(1).pow(0.75)
+					if (player.supernova.tree.includes("fn4")) a = a.pow(2)
+					return a
+				},
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Photons gain is boosted by Collapsed Star.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(500) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(500) ? x.div(500).max(1).log(5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.stars.points.add(1).log10().add(1).pow(x.mul(0.2)).softcap(1e15,0.6,0) },
+				effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
+					return player.stars.points.add(1).log10().add(1).pow(x.mul(0.2)).softcap(1e15,0.6,0)
+				},
                 effDesc(x) { return format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: "All-Star resources gain is boosted by Photon.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(1e5) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1e5) ? x.div(1e5).max(1).log(5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.photon.add(1).log10().add(1).pow(x.pow(tmp.fermions.effs[0][3]).mul(0.5)) },
+				effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
+					return player.supernova.bosons.photon.add(1).log10().add(1).pow(x.pow(tmp.fermions.effs[0][3]).mul(0.5))
+				},
                 effDesc(x) { return format(x)+"x" },
             },
         ],
@@ -105,13 +115,17 @@ const BOSONS = {
                 desc: "Gain more Atoms & Atomic Powers based on Gluon.",
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.gluon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100)) },
+				effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
+					return player.supernova.bosons.gluon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100))
+				},
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: "Boost Cosmic Ray Power.",
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
                     let a = x.add(1).pow(0.75)
                     if (player.supernova.tree.includes("fn4")) a = a.pow(2)
                     return a
@@ -121,13 +135,19 @@ const BOSONS = {
                 desc: "Gluons gain is boosted by Quark.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(500) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(500) ? x.div(500).max(1).log(5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.atom.quarks.add(1).log10().add(1).pow(x.mul(0.125)).softcap(1e15,0.6,0) },
+				effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
+					return player.atom.quarks.add(1).log10().add(1).pow(x.mul(0.125)).softcap(1e15,0.6,0)
+				},
                 effDesc(x) { return format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: "Supernova requirement is decreased based on Gluon.",
                 cost(x) { return E(10).pow(x.pow(1.25)).mul(1e5) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.div(1e5).max(1).log(10).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.gluon.add(1).log10().add(1).log10().mul(x.pow(tmp.fermions.effs[0][3]).root(3)).div(10).add(1) },
+                effect(x) {
+					if (FERMIONS.onActive(15)) return E(1)
+					return player.supernova.bosons.gluon.add(1).log10().add(1).log10().mul(x.pow(tmp.fermions.effs[0][3]).root(3)).div(10).add(1)
+				},
                 effDesc(x) { return "/"+format(x) },
             },
         ],

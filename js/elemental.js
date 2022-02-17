@@ -480,7 +480,9 @@ const ELEMENTS = {
             desc: `Raise Lutetium-71 effect based on Neutron Stars.`,
             cost: E('e4e7'),
             effect() {
-				return player.supernova.stars.add(1).log10().div(150).min(1)
+				let r = player.supernova.stars.add(1).log10().div(150).softcap(0.8,0.5,0)
+				if (player.supernova.tree.includes("feat2")) r = r.add(0.015)
+				return r.min(1)
             },
             effDesc(x) { return "^"+format(x) },
         },

@@ -265,7 +265,8 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret.min(2.4)
+			let cap = E(2.4).add(tmp.radiation && tmp.radiation.bs.eff[19])
+            return ret.min(cap)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -281,7 +282,8 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret.min(2.4)
+			let cap = E(2.4).add(tmp.fermions && tmp.fermions.effs[1][5])
+            return ret.min(cap)
         },
         effDesc(x) { return "^"+format(x) },
     },
@@ -343,13 +345,9 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
-			if (ret.gte(39/20)) {
-				let frac = ret.sub(39/20).times(10).add(40)
-				ret = E(2).sub(E(2).div(frac))
-			}
             return ret
         },
-        effDesc(x) { return "^"+format(x)+(x.gte(39/20)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return "^"+format(x) },
     },
     9: {
         unl() { return player.supernova.tree.includes("chal4") },
@@ -398,18 +396,18 @@ const CHALS = {
     },
 	12: {
 		unl() { return player.supernova.tree.includes("chal7") },
-		title: "Placeholder",
-		desc: "Placeholder.",
-		reward: `Placeholder.`,
+		title: "Wormhole Devourer",
+		desc: "You are stuck in Mass Dilation, but has a static ^0.4 penalty and doesn't affect Dark Matter and Black Hole.",
+		reward: `Ultra Supernova scales slower.<br><span class="yellow">On first completion, unlock a new prestige layer! [Coming soon!]</span>`,
 		max: E(50),
-		inc: E(10),
+		inc: E("e1e4"),
 		pow: E(1.25),
-		start: E(1/0),
+		start: E("e5e4"),
 		effect(x) {
-			let ret = E(1)
-			return ret
+            let ret = x.div(100).add(1)
+            return ret
 		},
-		effDesc(x) { return format(x)+"x" },
+		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
 	},
     cols: 12,
 }

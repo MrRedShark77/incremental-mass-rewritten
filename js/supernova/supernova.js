@@ -13,6 +13,7 @@ const SUPERNOVA = {
     },
     doReset() {
         tmp.supernova.time = 0
+        player.supernova.maxMass = E(0)
         player.supernova.auto.t = 0
 
         player.atom.points = E(0)
@@ -186,6 +187,11 @@ function calcSupernova(dt, dt_offline) {
             let maxTier = tmp.fermions.maxTier[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
             player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
             .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]).min(maxTier)
+        }
+        if (tmp.fermions.ch2[0] >= 0) {
+            let maxTier = tmp.fermions.maxTier[tmp.fermions.ch2[0]][tmp.fermions.ch2[1]]
+            player.supernova.fermions.tiers[tmp.fermions.ch2[0]][tmp.fermions.ch2[1]] = player.supernova.fermions.tiers[tmp.fermions.ch2[0]][tmp.fermions.ch2[1]]
+            .max(tmp.fermions.tiers[tmp.fermions.ch2[0]][tmp.fermions.ch2[1]]).min(maxTier)
         }
         for (let x = 0; x < 2; x++) player.supernova.fermions.points[x] = player.supernova.fermions.points[x].add(tmp.fermions.gains[x].mul(dt))
     }

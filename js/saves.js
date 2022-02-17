@@ -23,6 +23,8 @@ Decimal.prototype.softcap = function (start, power, mode) {
 
 function calc(dt, dt_offline) {
     player.mass = player.mass.add(tmp.massGain.mul(dt))
+	player.supernova.maxMass = player.supernova.maxMass.max(player.mass)
+	player.stats.maxMass = player.stats.maxMass.max(player.mass)
     if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
     if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
     if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
@@ -66,6 +68,7 @@ function calc(dt, dt_offline) {
     tmp.pass = true
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
+    player.supernova.time += dt
     player.time += dt
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
@@ -160,6 +163,8 @@ function getPlayerData() {
             generators: [E(0),E(0),E(0),E(0),E(0)],
         },
         supernova: {
+			maxMass: E(0),
+			time: 0,
             times: E(0),
             post_10: false,
             stars: E(0),
@@ -186,6 +191,7 @@ function getPlayerData() {
                 points: [E(0),E(0)],
                 tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
                 choosed: "",
+                choosed2: "",
             },
             radiation: {
                 hz: E(0),
@@ -205,6 +211,9 @@ function getPlayerData() {
             notation: 'sc'
         },
         confirms: {},
+		stats: {
+			maxMass: E(0),
+		},
         offline: {
             active: true,
             current: Date.now(),

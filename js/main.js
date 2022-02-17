@@ -163,7 +163,7 @@ const FORMS = {
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) gain = gain.root(8)
             gain = gain.pow(tmp.chal.eff[8])
-            if (tmp.md.active) gain = MASS_DILATION.applyDil(gain)
+            if (tmp.md.active && !CHALS.inChal(12)) gain = MASS_DILATION.applyDil(gain)
             return gain.floor()
         },
         massPowerGain() {
@@ -171,7 +171,7 @@ const FORMS = {
             if (FERMIONS.onActive("11")) return E(-1)
             if (player.atom.elements.includes(59)) x = E(0.45)
             x = x.add(tmp.radiation.bs.eff[4])
-            return x.min(0.5)
+            return x
         },
         massGain() {
             let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).mul(this.condenser.effect().eff)
@@ -181,7 +181,7 @@ const FORMS = {
             x = x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
-            if (tmp.md.active) x = MASS_DILATION.applyDil(x)
+            if (tmp.md.active && !CHALS.inChal(12)) x = MASS_DILATION.applyDil(x)
             return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
         },
         massSoftGain() {

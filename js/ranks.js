@@ -101,6 +101,8 @@ const RANKS = {
             '1': "raise collapsed star effect by Pents.",
             '2': "Super Tetr scaling starts later based on Supernovas.",
             '4': "Meta Rank and Super Tier scales weaker based on Pents.",
+            '5': "Meta Tickspeed scales weaker based on their starting point.",
+            '6': "Pent 5 effect is 2.5x stronger.",
         },
     },
     effect: {
@@ -175,7 +177,7 @@ const RANKS = {
                 return ret
             },
             '18'() {
-                let ret = player.ranks.tier.min(1e3).div(20000).add(1).pow(player.ranks.tier.sqrt())
+                let ret = player.ranks.tier.div(20000).add(1).pow(player.ranks.tier.sqrt())
                 return ret
             },
         },
@@ -192,6 +194,11 @@ const RANKS = {
                 let ret = E(2).div(player.ranks.pent)
                 return ret
             },
+            '5'() {
+                let ret = E(3e5).div(getScalingStart("meta", "tickspeed"))
+				if (player.ranks.pent.gte(6)) ret = ret.div(2.5)
+                return ret.min(1)
+            }
         },
     },
     effDesc: {
@@ -221,6 +228,7 @@ const RANKS = {
             1(x) { return "^"+format(x) },
             2(x) { return "+"+format(x,0)+" later" },
             4(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+            5(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
         },
     },
     fp: {

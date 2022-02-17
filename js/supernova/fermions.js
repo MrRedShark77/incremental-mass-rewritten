@@ -1,5 +1,5 @@
 const FERMIONS = {
-    onActive(id) { return player.supernova.fermions.choosed == id },
+    onActive(id) { return player.supernova.fermions.choosed == id || player.supernova.fermions.choosed2 == id },
     gain(i) {
         if (!player.supernova.fermions.unl) return E(0)
         let x = E(1)
@@ -11,16 +11,24 @@ const FERMIONS = {
     backNormal() {
         if (player.supernova.fermions.choosed != "") {
             player.supernova.fermions.choosed = ""
+            player.supernova.fermions.choosed2 = ""
             SUPERNOVA.reset(false,false,false,true)
         }
     },
     choose(i,x,a) {
-        if (!a && player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
-        let id = i+""+x
-        if (player.supernova.fermions.choosed != id) {
-            player.supernova.fermions.choosed = id
-            SUPERNOVA.reset(false,false,false,true)
-        }
+		if (!a && player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
+		let id = i+""+x
+		tmp.tickspeedEffect.eff = E(1)
+		tmp.tickspeedEffect.step = E(1)
+		if (player.supernova.tree.includes("qol9") && player.supernova.fermions.choosed && player.supernova.fermions.choosed[0] != i) {
+			if (player.supernova.fermions.choosed2 != id) {
+				player.supernova.fermions.choosed2 = id
+				SUPERNOVA.reset(false,false,false,true)
+			}
+		} else if (player.supernova.fermions.choosed != id) {
+			player.supernova.fermions.choosed = id
+			SUPERNOVA.reset(false,false,false,true)
+		}
     },
     getTierScaling(t, bulk=false) {
         let x = t
@@ -66,7 +74,7 @@ const FERMIONS = {
         if (player.supernova.tree.includes("fn2")) u++
         if (player.supernova.tree.includes("fn6")) u++
         if (player.supernova.tree.includes("fn7")) u++
-        if (player.supernova.tree.includes("fn9")) u++
+        if (player.supernova.tree.includes("fn8")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -85,6 +93,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(05)) return E(0)
                     let x = i.max(1).log(1.1).mul(t.pow(0.75))
                     return x
                 },
@@ -105,6 +114,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(05)) return E(1)
                     let x = E(1e5).pow(i.add(1).log10().mul(t)).softcap("ee3",0.9,2)
                     return x
                 },
@@ -125,7 +135,9 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(05)) return E(1)
                     let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1).softcap(5,0.75,0)
+					if (x.gte(100)) x = x.div(x.log10()).add(50)
                     return x
                 },
                 desc(x) {
@@ -147,6 +159,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(05)) return E(1)
                     let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0).min(3)
                     return x
                 },
@@ -158,7 +171,7 @@ const FERMIONS = {
             },{
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return Decimal.pow("e1.75e7", Decimal.pow(1.05, t))
+                    return E("e1.75e7").pow(E(1.05).pow(t))
                 },
                 calcTier() {
                     let res = player.atom.points
@@ -167,6 +180,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
+					if (FERMIONS.onActive(05)) return E(1)
                     return t.div(100).times(i.max(1).log(1e20)).add(1)
                 },
                 desc(x) {
@@ -177,22 +191,24 @@ const FERMIONS = {
             },
             {
                 nextTierAt(x) {
-                    return E(1/0)
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('e4.5e8').pow(t.div(10).pow(1.5).add(1))
                 },
                 calcTier() {
-                    let res = E(0)
-                    let x = E(0)
-                    return x
+                    let res = tmp.tickspeedEffect ? tmp.tickspeedEffect.eff : E(1)
+                    if (res.lt('e4.5e8')) return E(0)
+                    let x = res.log('e4.5e8').sub(1).root(1.5).times(10).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = E(1)
-                    return x
+					if (FERMIONS.onActive(05)) return E(1)
+                    return E(1).div(i.add(1).log10().times(t.pow(2)).add(1).log10().div(30).add(1))
                 },
                 desc(x) {
-                    return `Placeholder`
+                    return `Radiation boosts scale ${format(E(1).sub(x).mul(100))}% slower.`
                 },
-                inc: "Placeholder",
-                cons: "Placeholder",
+                inc: "Tickspeed Effect",
+                cons: "U-Quarks and Radiation Boosts do nothing.",
             },
         ],[
             {
@@ -312,22 +328,25 @@ const FERMIONS = {
             },
             {
                 nextTierAt(x) {
-                    return E(1/0)
+                    let t = FERMIONS.getTierScaling(x)
+                    return E(10).pow(t.pow(1.5)).mul(1e20)
                 },
                 calcTier() {
-                    let res = E(0)
-                    let x = E(0)
-                    return x
+                    let res = tmp.tickspeedEffect ? tmp.tickspeedEffect.step : E(1)
+                    if (res.lt(1e19)) return E(0)
+                    let x = res.div(1e20).max(1).log(10).max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = E(1)
+					if (FERMIONS.onActive(14)) return E(0)
+                    let x = i.add(1).log10().times(t.add(1).log10()).add(1).log10().div(20)
                     return x
                 },
                 desc(x) {
-                    return `Placeholder`
+                    return `Increase Rage Power exponent cap by ^${format(x)}.`
                 },
-                inc: "Placeholder",
-                cons: "Placeholder",
+                inc: "Tickspeed power",
+                cons: "Boson Upgrades and W Bosons are disabled.",
             },
 
             /*
@@ -378,9 +397,9 @@ function setupFermionsHTML() {
 
 function updateFermionsTemp() {
     tmp.fermions.ch = player.supernova.fermions.choosed == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed[0]),Number(player.supernova.fermions.choosed[1])]
+    tmp.fermions.ch2 = player.supernova.fermions.choosed2 == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed2[0]),Number(player.supernova.fermions.choosed2[1])]
     for (i = 0; i < 2; i++) {
         tmp.fermions.gains[i] = FERMIONS.gain(i)
-
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]
             tmp.fermions.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0
@@ -406,7 +425,7 @@ function updateFermionsHTML() {
             tmp.el[id+"_div"].setDisplay(unl)
 
             if (unl) {
-                tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: tmp.fermions.ch[0] == i && tmp.fermions.ch[1] == x})
+                tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: (tmp.fermions.ch[0] == i && tmp.fermions.ch[1] == x) || (tmp.fermions.ch2[0] == i && tmp.fermions.ch2[1] == x)})
                 tmp.el[id+"_nextTier"].setTxt(fm(f.nextTierAt(player.supernova.fermions.tiers[i][x])))
                 tmp.el[id+"_tier_scale"].setTxt(getScalingName('fTier', i, x))
                 tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(tmp.fermions.maxTier[i][x] < Infinity?" / "+format(tmp.fermions.maxTier[i][x],0):""))

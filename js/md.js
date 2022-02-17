@@ -7,9 +7,10 @@ const MASS_DILATION = {
         updateMDTemp()
     },
 	isActive() {
-		return player.md.active || CHALS.inChal(10) || CHALS.inChal(11) || FERMIONS.onActive("02") || FERMIONS.onActive("03")
+		return player.md.active || CHALS.inChal(10) || CHALS.inChal(11) || CHALS.inChal(12) || FERMIONS.onActive("02") || FERMIONS.onActive("03")
 	},
 	getPenalty() {
+		if (CHALS.inChal(12)) return 3/7
 		var x = FERMIONS.onActive("02") ? 0.64 : 0.8
 		if (tmp.fermions) x = Math.pow(x, 1 / tmp.fermions.effs[0][4])
 		return x

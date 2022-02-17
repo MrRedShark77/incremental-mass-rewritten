@@ -1,6 +1,6 @@
 const RADIATION = {
-    names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","γ-ray"],
-    unls: ["0","1e6","1e13","1e20","5e26","5e29"],
+    names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","Gamma"],
+    unls: ["0","1e6","1e13","1e20","5e26","5e29","1e35"],
     hz_gain() {
         let x = E(1)
         x = x.mul(tmp.radiation.ds_eff[0])
@@ -11,11 +11,12 @@ const RADIATION = {
         let x = player.supernova.radiation.hz.add(1).root(3)
         return x
     },
-	ds_gains: ["1", "1", "1", "1", "0.005", "0.00002"],
+	ds_gains: ["1", "1", "1", "1", "0.005", "0.00002", "1e-7"],
     ds_gain(i) {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
         let x = E(RADIATION.ds_gains[i])
         if (player.supernova.tree.includes('rad2')) x = x.mul(tmp.supernova.tree_eff.rad2||1)
+        if (player.supernova.tree.includes('feat1')) x = x.mul(3)
         if (i == 3 && player.atom.elements.includes(70)) x = x.mul(10)
         if (i<RAD_LEN-1) {
             if (player.supernova.tree.includes('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
@@ -30,21 +31,26 @@ const RADIATION = {
     },
     getBoostData(i) {
         let b = player.supernova.radiation.bs[i]
-        let [f1,f2,f3] = [2+i/2,RADIATION.getBoostScaling(i),(i*0.5+1)**2*10]
-        let cost = E(f1).pow(b.pow(f2)).mul(f3)
+        let [f1,f2,f3,f4] = [2+i/2,RADIATION.getBoostScalingExp(i),(i*0.5+1)**2*10,RADIATION.getBoostScalingMul(i)]
+        let cost = E(f1).pow(b.pow(f2).mul(f4)).mul(f3)
 
         let d = player.supernova.radiation.ds[Math.floor(i/2)]
-        let bulk = d.lt(f3) ? E(0) : d.div(f3).max(1).log(f1).max(0).root(f2).add(1).floor()
+        let bulk = d.lt(f3) ? E(0) : d.div(f3).max(1).log(f1).max(0).div(f4).root(f2).add(1).floor()
 
         return [cost,bulk]
     },
-    getBoostScaling(i) {
+    getBoostScalingMul(i) {
+		let f4 = E(1)
+		if (tmp.fermions) f4 = f4.mul(tmp.fermions.effs[0][5])
+		return f4
+    },
+    getBoostScalingExp(i) {
 		let f2 = 1.3+i*0.05
 		if (tmp.radiation.bs.eff[17] && i % 2 == 1) f2 -= tmp.radiation.bs.eff[17][1]
 		return f2
     },
     getLevelEffect(i) {
-        let x = this.boosts[i].eff(tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i]))
+        let x = this.boosts[i].eff(FERMIONS.onActive(05)?E(0):tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i]))
         return x
     },
     getbonusLevel(i) {
@@ -64,14 +70,14 @@ const RADIATION = {
 		if (!player.supernova.tree.includes("rad3")) return 1
 		a = Math.floor(a / 3) * 2
 		b = Math.floor(b / 3) * 2
-        return RADIATION.getBoostScaling(a) / RADIATION.getBoostScaling(b)
+        return RADIATION.getBoostScalingExp(a) / RADIATION.getBoostScalingExp(b)
     },
     buyBoost(i) {
         let [cost, bulk, j] = [tmp.radiation.bs.cost[i], tmp.radiation.bs.bulk[i], Math.floor(i/2)]
         if (player.supernova.radiation.ds[j].gte(cost) && bulk.gt(player.supernova.radiation.bs[i])) {
             player.supernova.radiation.bs[i] = player.supernova.radiation.bs[i].max(bulk)
-            let [f1,f2,f3] = [2+i/2,RADIATION.getBoostScaling(i),(i*0.5+1)**2*10]
-            player.supernova.radiation.ds[j] = player.supernova.radiation.ds[j].sub(E(f1).pow(bulk.sub(1).pow(f2)).mul(f3)).max(0)
+            let [f1,f2,f3,f4] = [2+i/2,RADIATION.getBoostScalingExp(i),(i*0.5+1)**2*10,RADIATION.getBoostScalingMul(i)]
+            player.supernova.radiation.ds[j] = player.supernova.radiation.ds[j].sub(E(f1).pow(bulk.sub(1).pow(f2).mul(f4)).mul(f3)).max(0)
         }
     },
     boosts: [
@@ -202,6 +208,29 @@ const RADIATION = {
             },
             desc(x) { return `Add ${format(x[0])} levels to all above boosts, reduce Velocity cost scalings by ^${format(x[1])}` },
         },
+        {
+            title: `Gamma Boost`,
+            eff(b) {
+                let x = player.supernova.radiation.ds[5].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
+                return x
+            },
+            desc(x) { return `Gamma is boosted by ${format(x)}x (based on X-Ray)` },
+        },
+        {
+            title: `Mass Exponent Boost`,
+            eff(b) {
+                let x = b.add(1).pow(1.15).sub(1).div(10)
+                return x
+            },
+            desc(x) { return `Increase Mass exponent cap by ^${format(x)}.` },
+        },
+        {
+            title: `Supernova Boost`,
+            eff(b) {
+                return E(1).div(b.div(10).add(1).sqrt())
+            },
+            desc(x) { return `Ultra Supernova scales ${format(E(1).sub(x).times(100))}% slower.` },
+        },
 
         /*
         {
@@ -216,7 +245,7 @@ const RADIATION = {
     ],
 }
 
-const RAD_LEN = 6
+const RAD_LEN = 7
 
 function updateRadiationTemp() {
     tmp.radiation.unl = player.supernova.tree.includes("unl1")
@@ -278,6 +307,7 @@ function updateRadiationHTML() {
     }
     tmp.el.next_radiation.setTxt()
 
+    tmp.el.radiation_unl.setDisplay(rad_id < RAD_LEN)
     tmp.el.next_radiation.setTxt(format(RADIATION.unls[rad_id]||1/0))
     tmp.el.unl_radiation.setTxt(RADIATION.names[rad_id])
 

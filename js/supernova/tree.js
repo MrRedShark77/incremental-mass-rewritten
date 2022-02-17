@@ -1,9 +1,9 @@
 const TREE_IDS = [
-    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
-    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
-    ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","","chal4","chal7","","",""],
-    ["","","","","unl1","qol8","m3","","","d1","","","gr2","","chal5","chal6","","",""],
-    ["","","","","","qol9","","bs4","bs2","bs1","bs3","","","","","","","",""],
+    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","","feat1"],
+    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","","feat2"],
+    ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","","chal4","","","","feat3"],
+    ["","","","","unl1","qol8","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
+    ["","","","","qol10","qol9","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","","","","fn1","fn5","","","","","","","",""],
     ["","","","","","fn8","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","","","rad2","rad1","rad3","","","","","","","",""],
@@ -436,26 +436,70 @@ const TREE_UPGS = {
         },
         fn8: {
             branch: ["fn7"],
-            desc: `Unlock 2 final types of U-Quark & U-Fermion. [Coming soon!]`,
-            cost: E(1/0),
+            desc: `Unlock 2 final types of U-Quark & U-Fermion.`,
+            cost: E(1e128),
 			noIcon: true,
         },
         rad3: {
             branch: ["rad1"],
             desc: `Extra levels from radiation levels are raised based on radiation indexes.`,
-            cost: E(1e120),
+            cost: E(4.56789e123),
 			noIcon: true,
         },
         qol9: {
             branch: ["qol8"],
-            desc: `You can do 2 challenges at once from sweeping. [Coming soon!]`,
-            cost: E(1/0),
+            desc: `You can enter both U-Quarks and U-Leptons.`,
+            cost: E(1e120),
 			noIcon: true,
         },
         chal7: {
             branch: ["chal6"],
-            desc: `Unlock the finale of Supernova Challenges, Challenge 12. [Coming soon!]`,
+            desc: `Unlock the finale of Supernova Challenges, Challenge 12.`,
+            cost: E(1e170),
+        },
+        qol10: {
+            branch: ["qol9"],
+            desc: `You can do 2 challenges at once from sweeping. [Coming really soon!]`,
             cost: E(1/0),
+			noIcon: true,
+        },
+        feat1: {
+            unl() { return player.supernova.tree.includes("rad1") },
+            req() {
+				if (!player.supernova.fermions.choosed) return
+				if (!player.supernova.fermions.choosed2) return
+
+				if (!featCheck()) return
+
+				return player.mass.lt(player.stats.maxMass.pow(1e-3))
+			},
+            reqDesc: `Get at most ^0.001 of best mass within a U-Quark and a U-Lepton. [Automation must be on for all feats!]`,
+            desc: `Gain 3x more Radiation. [Permanent]`,
+            cost: E(1e130),
+			noIcon: true,
+        },
+        feat2: {
+            unl() { return player.supernova.tree.includes("rad1") },
+            req() {
+				if (player.chal.active) return
+				if (!player.md.active) return
+
+				if (!featCheck()) return
+
+				return player.mass.gte(player.supernova.maxMass.pow(0.1))
+			},
+            reqDesc: `Get ^0.1 of best mass for this Supernova within Mass Dilation.`,
+            desc: `Add ^0.015 to Titanium-73 effect. [Permanent]`,
+            cost: E(1e140),
+			noIcon: true,
+        },
+        feat3: {
+            unl() { return player.supernova.tree.includes("rad1") },
+            req() { return player.mass.gte(uni("e2.5e10")) && player.mainUpg.rp.length + player.mainUpg.bh.length + player.mainUpg.atom.length < 30 },
+            reqDesc: `Get 25 mlt with at most 30 Main Upgrades.`,
+            desc: `All Tickspeed scalings scale 35% weaker. [Permanent]`,
+            cost: E(1e155),
+			noIcon: true,
         },
         /*
         x: {
@@ -472,6 +516,16 @@ const TREE_UPGS = {
         },
         */
     },
+}
+
+function featCheck() {
+	if (!(player.auto_ranks.rank && player.auto_ranks.tier && player.auto_ranks.tetr && player.auto_ranks.pent)) return
+	if (!(player.autoMassUpg[1] && player.autoMassUpg[2] && player.autoMassUpg[3] && player.autoTickspeed)) return
+	if (!(player.auto_mainUpg.rp && player.auto_mainUpg.bh && player.auto_mainUpg.atom)) return
+	if (!(player.bh.autoCondenser && player.atom.auto_gr)) return
+	if (player.chal.active) return
+	if (player.supernova.time < 5) return
+	return true
 }
 
 function setupTreeHTML() {
