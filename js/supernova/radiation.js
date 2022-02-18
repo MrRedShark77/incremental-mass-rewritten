@@ -293,11 +293,14 @@ function updateRadiationHTML() {
     tmp.el.frequency_eff.setTxt(format(tmp.radiation.hz_effect))
 
     let rad_id = 1
+    let comp = false
     for (let x = 1; x < RAD_LEN; x++) {
+        if (x == RAD_LEN-1) comp = true;
         if (player.supernova.radiation.hz.lt(RADIATION.unls[x]||1/0)) break
         rad_id++
     }
     tmp.el.next_radiation.setTxt()
+    tmp.el.nr_div.setDisplay(!comp)
 
     tmp.el.next_radiation.setTxt(format(RADIATION.unls[rad_id]||1/0))
     tmp.el.unl_radiation.setTxt(RADIATION.names[rad_id])
