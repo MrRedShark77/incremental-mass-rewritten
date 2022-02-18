@@ -241,7 +241,7 @@ function wipe(reload=false) {
         wipe()
         save()
         resetTemp()
-        loadGame(false)
+        loadGame(false, btoa(JSON.stringify(player)))
     }
     else player = getPlayerData()
 }
@@ -354,7 +354,7 @@ function importy() {
                 load(loadgame)
                 save()
                 resetTemp()
-                loadGame(false)
+                loadGame(false, loadgame)
             }, 200)
         } catch (error) {
             addNotify("Error Importing")
@@ -363,14 +363,14 @@ function importy() {
     }
 }
 
-function loadGame(start=true) {
+function loadGame(start=true, save) {
     wipe()
-    load(localStorage.getItem("testSave"))
+    load(save || localStorage.getItem("testSave"))
     setupHTML()
-    
+
     if (start) {
         setInterval(save,60000)
-        for (let x = 0; x < 50; x++) updateTemp()
+        for (let x = 0; x < 3; x++) updateTemp()
         updateHTML()
         for (let x = 0; x < 3; x++) {
             let r = document.getElementById('ratio_d'+x)

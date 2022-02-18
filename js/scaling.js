@@ -246,7 +246,7 @@ function getScalingPower(type, name) {
 		}
 		if (name=='supernova') {
 			if (tmp.radiation) power = power.mul(tmp.radiation.bs.eff[20])
-			power = power.mul(tmp.chal?tmp.chal.eff[12]:0)
+			power = power.mul(tmp.chal?tmp.chal.eff[12]:1)
 		}
 	}
 	if (type=="meta") {

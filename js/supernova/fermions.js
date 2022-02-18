@@ -317,10 +317,10 @@ const FERMIONS = {
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
 					if (t.eq(0)) return E(1)
-                    return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1)
+                    return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, 0.5, 0)
                 },
                 desc(x) {
-                    return `Meta Rank scaling starts ${format(x)}x later.`
+                    return `Meta Rank scaling starts ${format(x)}x later.`+(x.gte(2.5)?" <span class='soft'>(softcapped)</span>":"")
                 },
 				isMass: true,
                 inc: "Dilated mass",
