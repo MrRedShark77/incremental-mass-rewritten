@@ -175,7 +175,7 @@ const FORMS = {
             return x
         },
         massGain() {
-            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).softcap(uni("e3e9"),0.95,2)
+            let x = tmp.bh.f
             .mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
@@ -185,6 +185,20 @@ const FORMS = {
             x = x.pow(tmp.chal.eff[8])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
             return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
+        },
+        f() {
+            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).softcap(tmp.bh.fSoftStart,tmp.bh.fSoftPower,2)
+            return x
+        },
+        fSoftStart() {
+            let x = uni("e3e9")
+            if (player.atom.elements.includes(71)) x = x.pow(tmp.elements.effect[71])
+            x = x.pow(tmp.radiation.bs.eff[20])
+            return x
+        },
+        fSoftPower() {
+            let x = 0.95
+            return x
         },
         massSoftGain() {
             let s = E(1.5e156)

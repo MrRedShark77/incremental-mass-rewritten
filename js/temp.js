@@ -199,6 +199,9 @@ function updateRagePowerTemp() {
 function updateBlackHoleTemp() {
     if (!tmp.bh) tmp.bh = {}
     tmp.bh.dm_gain = FORMS.bh.DM_gain()
+    tmp.bh.fSoftStart = FORMS.bh.fSoftStart()
+    tmp.bh.fSoftPower = FORMS.bh.fSoftPower()
+    tmp.bh.f = FORMS.bh.f()
     tmp.bh.massSoftPower = FORMS.bh.massSoftPower()
     tmp.bh.massSoftGain = FORMS.bh.massSoftGain()
     tmp.bh.massPowerGain = FORMS.bh.massPowerGain()

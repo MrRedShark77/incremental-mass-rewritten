@@ -99,6 +99,7 @@ const RANKS = {
         pent: {
             '1': "reduce tetr reqirements by 15%, make Meta-Rank starts 1.1x later.",
             '2': "tetr boost all radiations gain.",
+            '4': "Meta-Tickspeeds start later based on Supernovas.",
         },
     },
     effect: {
@@ -178,6 +179,10 @@ const RANKS = {
                 let ret = E(1.3).pow(player.ranks.tetr)
                 return ret
             },
+            '4'() {
+                let ret = player.supernova.times.add(1).root(5)
+                return ret
+            },
         },
     },
     effDesc: {
@@ -204,6 +209,7 @@ const RANKS = {
         },
         pent: {
             2(x) { return format(x)+"x" },
+            4(x) { return format(x)+"x later" },
         },
     },
     fp: {
@@ -424,6 +430,7 @@ function updateRanksTemp() {
     if (player.atom.elements.includes(44)) pow = 1.75
     if (player.atom.elements.includes(9)) fp = fp.mul(1/0.85)
     if (player.ranks.pent.gte(1)) fp = fp.mul(1/0.85)
+    if (player.atom.elements.includes(72)) fp = fp.mul(1/0.85)
     tmp.ranks.tetr.req = player.ranks.tetr.div(fp).pow(pow).mul(3).add(10).floor()
     tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(pow).mul(fp).add(1).floor();
     if (scalingActive("tetr", player.ranks.tetr.max(tmp.ranks.tetr.bulk), "super")) {
@@ -446,8 +453,8 @@ function updateRanksTemp() {
 
     fp = E(1)
     pow = 1.5
-    tmp.ranks.pent.req = player.ranks.pent.div(fp).pow(pow).mul(2).add(15).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).gte(0)?player.ranks.tetr.sub(15).div(2).max(0).root(pow).mul(fp).add(1).floor():E(0);
+    tmp.ranks.pent.req = player.ranks.pent.div(fp).pow(pow).add(15).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).gte(0)?player.ranks.tetr.sub(15).max(0).root(pow).mul(fp).add(1).floor():E(0);
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

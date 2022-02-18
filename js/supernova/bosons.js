@@ -48,7 +48,7 @@ const BOSONS = {
             return [a,b]
         },
         z_boson(x) {
-            let a = x.add(1).log10().add(1).pow(tmp.fermions.effs[0][2])
+            let a = FERMIONS.onActive("14") ? E(1) : x.add(1).log10().add(1).pow(tmp.fermions.effs[0][2])
             let b = x.add(1).pow(2/3)
             return [a,b]
         },
@@ -175,7 +175,7 @@ function updateBosonsTemp() {
             tmp.bosons.upgs[id][y] = {
                 cost: upg.cost(player.supernova.b_upgs[id][y]),
                 bulk: upg.bulk(),
-                effect: upg.effect(player.supernova.b_upgs[id][y]),
+                effect: upg.effect(FERMIONS.onActive("04") ? E(0) : player.supernova.b_upgs[id][y]),
             }
             tmp.bosons.upgs[id][y].can = player.supernova.bosons[id].gte(tmp.bosons.upgs[id][y].cost)
         }

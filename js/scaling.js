@@ -30,6 +30,7 @@ const SCALE_START = {
 	meta: {
 		rank: E(1e4),
 		tickspeed: E(5e4),
+		supernova: E(100),
 	},
 }
 
@@ -155,6 +156,7 @@ function getScalingStart(type, name) {
 		}
 		if (name=="tickspeed") {
 			if (player.atom.elements.includes(68)) start = start.mul(2)
+			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
 		}
 	}
 	return start.floor()
@@ -162,6 +164,9 @@ function getScalingStart(type, name) {
 
 function getScalingPower(type, name) {
 	let power = E(1)
+	if (name == "supernova" && type != "meta") {
+		power = power.mul(tmp.fermions.effs[1][4])
+	}
 	if (type=="super") {
 		if (name=="rank") {
 			if (player.mainUpg.rp.includes(10)) power = power.mul(0.8)

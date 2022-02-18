@@ -293,8 +293,12 @@ function updateMainUpgradesHTML() {
 function updateBlackHoleHTML() {
 	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
 	tmp.el.bhMassPower.setTxt(format(tmp.bh.massPowerGain))
+	tmp.el.bhFSoft1.setDisplay(tmp.bh.f.gte(tmp.bh.fSoftStart))
+	tmp.el.bhFSoftStart1.setTxt(format(tmp.bh.fSoftStart))
+	tmp.el.bhMassPower2.setTxt(format(tmp.bh.massPowerGain))
 	tmp.el.massSoft2.setDisplay(tmp.bh.mass_gain.gte(tmp.bh.massSoftGain))
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
+
 	tmp.el.bhEffect.setTxt(format(tmp.bh.effect))
 
 	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0)+(tmp.bh.condenser_bonus.gte(1)?" + "+format(tmp.bh.condenser_bonus,0):""))

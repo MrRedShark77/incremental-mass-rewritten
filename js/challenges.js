@@ -114,6 +114,7 @@ const CHALS = {
         if (player.atom.elements.includes(56) && (i==8)) x = x.add(200)
         if (player.atom.elements.includes(65) && (i==7||i==8)) x = x.add(200)
         if (player.atom.elements.includes(70) && (i==7||i==8)) x = x.add(200)
+        if (player.atom.elements.includes(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
         if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },

@@ -57,6 +57,7 @@ function calc(dt, dt_offline) {
             for (let y = 0; y < BOSONS.upgs[id].length; y++) BOSONS.upgs.buy(id,y)
         }
     }
+    RADIATION.autoBuyBoosts()
     calcStars(dt)
     calcSupernova(dt, dt_offline)
 

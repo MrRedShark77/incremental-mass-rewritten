@@ -65,6 +65,7 @@ const FERMIONS = {
         let u = 2
         if (player.supernova.tree.includes("fn2")) u++
         if (player.supernova.tree.includes("fn6")) u++
+        if (player.supernova.tree.includes("fn7")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -153,6 +154,27 @@ const FERMIONS = {
                 },
                 inc: "Rage Power",
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('ee4').pow(t.pow(1.5)).mul(uni('e5.75e5'))
+                },
+                calcTier() {
+                    let res = player.md.mass
+                    if (res.lt(uni('e5.75e5'))) return E(0)
+                    let x = res.div(uni('e5.75e5')).max(1).log('ee4').max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().div(500).mul(t.root(2)).add(1)
+                    return x.softcap(1.15,0.5,0)
+                },
+                desc(x) {
+                    return `Radiation Boosters are ${format(x)}x cheaper`+(x.gte(1.15)?" <span class='soft'>(softcapped)</span>":"")
+                },
+                inc: "Dilated Mass",
+                cons: "U-Quarks, Photons & Gluons do nothing",
+                isMass: true,
             },
 
         ],[
@@ -243,6 +265,26 @@ const FERMIONS = {
                 },
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('e1.5e7').pow(t.pow(2)).mul("e3.5e8")
+                },
+                calcTier() {
+                    let res = player.atom.points
+                    if (res.lt('e3.5e8')) return E(0)
+                    let x = res.div('e3.5e8').max(1).log('e1.5e7').max(0).root(2).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = E(0.95).pow(i.add(1).log10().mul(t).root(4).softcap(27,0.5,0)).toNumber()
+                    return x
+                },
+                desc(x) {
+                    return `Pre-Meta-Supernova Scalings are ${format(100-x*100)}% weaker`
+                },
+                inc: "Atom",
+                cons: "U-Leptons, Z<sup>0</sup> bosons do nothing",
             },
 
             /*
@@ -301,7 +343,7 @@ function updateFermionsTemp() {
 
             tmp.fermions.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0
             tmp.fermions.tiers[i][x] = f.calcTier()
-            tmp.fermions.effs[i][x] = f.eff(player.supernova.fermions.points[i], player.supernova.fermions.tiers[i][x])
+            tmp.fermions.effs[i][x] = f.eff(player.supernova.fermions.points[i], (FERMIONS.onActive("04") && i == 0) || (FERMIONS.onActive("14") && i == 1) ? E(0) : player.supernova.fermions.tiers[i][x].mul(i==1?tmp.radiation.bs.eff[16]:1).mul(i==0?tmp.radiation.bs.eff[19]:1))
         }
     }
 }
