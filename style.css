@@ -5,6 +5,7 @@
 @font-face {
 	font-family: 'Andy Bold';
 	src: url('fonts/design.graffiti.ANDYB.ttf');
+	size-adjust: 120%;
 }
 
 @font-face {
@@ -30,6 +31,12 @@
 @font-face {
 	font-family: 'Monospace-Typewritter';
 	src: url('fonts/MonospaceTypewriter.ttf');
+}
+
+@font-face {
+	font-family: 'MS Sans Serif';
+	src: url('fonts/ms_sans_serif.woff');
+	size-adjust: 110%;
 }
 
 @font-face {
