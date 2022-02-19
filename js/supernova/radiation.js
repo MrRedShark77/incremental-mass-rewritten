@@ -1,5 +1,5 @@
 const RADIATION = {
-    names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","γ-ray"],
+    names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","Gamma-ray"],
     unls: ["0","1e6","1e13","1e20","1e26","1e33","1e49"],
     hz_gain() {
         let x = E(1)
