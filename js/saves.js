@@ -45,11 +45,24 @@ function calc(dt, dt_offline) {
     if (player.atom.elements.includes(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
     if (player.atom.elements.includes(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(dt/10))
     if (player.atom.elements.includes(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if ((player.supernova.tree.includes("qol3") || player.md.upgs[x].gte(1)) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
-    if (player.bh.unl && tmp.pass) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
-    if (player.atom.unl && tmp.pass) {
-        player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
-        for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(dt))
-    }
+	if (player.bh.unl && tmp.pass) {
+		player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
+		if (player.bh.eb2 && player.bh.eb2.gt(0)) {
+			var pow = tmp.eb.bh2 ? tmp.eb.bh2.eff : E(0.001)
+			var log = tmp.eb.bh3 ? tmp.eb.bh3.eff : E(.1)
+			player.bh.mass = E(10).pow(
+				E(	
+					tmp.bh.mass_gain.max(10).log10().root(log).mul(pow).mul(dt)
+				).add(
+					player.bh.mass.max(10).log10().root(log)
+				).pow(log)
+			).softcap(tmp.bh.mass_gain.pow(1.5),0.75,2)
+		}
+	}
+	if (player.atom.unl && tmp.pass) {
+		player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
+		for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(dt))
+	}
     if (player.supernova.tree.includes("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
     player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
     if (player.supernova.tree.includes("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(dt) : tmp.md.passive_rp_gain.mul(dt))
@@ -62,6 +75,7 @@ function calc(dt, dt_offline) {
     }
     calcStars(dt)
     calcSupernova(dt, dt_offline)
+    EXOTIC.calc(dt)
 
     if (player.supernova.tree.includes("qol6")) CHALS.exit(true)
 
@@ -69,6 +83,7 @@ function calc(dt, dt_offline) {
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
     player.supernova.time += dt
+    player.ext.time += dt
     player.time += dt
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
@@ -203,6 +218,7 @@ function getPlayerData() {
 				t: 0
 			}
         },
+        ext: EXOTIC.setup(),
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
@@ -254,6 +270,11 @@ function loadPlayer(load) {
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
+	if (player.bh.eb2) player.bh.eb2 = E(player.bh.eb2)
+	if (player.bh.eb3) player.bh.eb3 = E(player.bh.eb3)
+	if (player.atom.eb2) player.atom.eb2 = E(player.atom.eb2)
+	if (player.atom.eb3) player.atom.eb3 = E(player.atom.eb3)
+	if (player.supernova.times.gte(1)) player.supernova.unl = true
     for (i = 0; i < 2; i++) for (let x = 0; x < FERMIONS.types[i].length; x++) {
         let f = FERMIONS.types[i][x]
         player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0)

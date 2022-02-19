@@ -16,7 +16,8 @@ const TABS = {
         { id: "Upgrades", unl() { return player.rp.unl } },
         { id: "Challenges", unl() { return player.chal.unl } },
         { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
-        { id: "Supernova", unl() { return player.supernova.times.gte(1) } },
+        { id: "Supernova", unl() { return player.supernova.unl } },
+        { id: "Exotic", unl() { return player.ext.amt.gte(1) } },
         { id: "Options" },
     ],
     2: {
@@ -32,7 +33,7 @@ const TABS = {
         ],
         4: [
             { id: "Particles" },
-            { id: "Elements", unl() { return player.chal.comps[7].gte(16) || player.supernova.times.gte(1) } },
+            { id: "Elements", unl() { return player.chal.comps[7].gte(16) || player.supernova.unl } },
             { id: "Mass Dilation", unl() { return MASS_DILATION.unlocked() }, style: "dilation" },
         ],
         5: [
@@ -40,6 +41,9 @@ const TABS = {
             { id: "Bosons", unl() { return player.supernova.post_10 } },
             { id: "Fermions", unl() { return player.supernova.fermions.unl } },
             { id: "Radiation", unl() { return tmp.radiation.unl } },
+        ],
+        6: [
+            { id: "Axions" }
         ],
     },
 }

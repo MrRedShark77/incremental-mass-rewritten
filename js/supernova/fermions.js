@@ -6,6 +6,7 @@ const FERMIONS = {
         if (tmp.radiation.unl) x = x.mul(tmp.radiation.hz_effect)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(E(1.25).pow(player.supernova.fermions.tiers[i][j]))
         if (player.supernova.tree.includes("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
+        x = x.mul(tmp.supernova.timeMult)
         return x
     },
     backNormal() {
@@ -317,7 +318,7 @@ const FERMIONS = {
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
 					if (t.eq(0)) return E(1)
-                    return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, 0.5, 0)
+                    return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, 0.25, 0)
                 },
                 desc(x) {
                     return `Meta Rank scaling starts ${format(x)}x later.`+(x.gte(2.5)?" <span class='soft'>(softcapped)</span>":"")

@@ -1,10 +1,12 @@
 function setupHTML() {
 	let sn_stabs = new Element("sn_stabs")
+	let ext_stabs = new Element("ext_stabs")
 	let tabs = new Element("tabs")
 	let stabs = new Element("stabs")
 	let table = ""
 	let table2 = ""
 	let table3 = ""
+	let table4 = ""
 	for (let x = 0; x < TABS[1].length; x++) {
 		table += `<div style="width: 130px">
 			<button onclick="TABS.choose(${x})" class="btn_tab" id="tab${x}">${TABS[1][x].id}</button>
@@ -17,13 +19,15 @@ function setupHTML() {
 				</div>`
 			}
 			a += `</div>`
-			if (x == 5) table3 += a
+			if (x == 6) table4 += a
+			else if (x == 5) table3 += a
 			else table2 += a
 		}
 	}
 	tabs.setHTML(table)
 	stabs.setHTML(table2)
 	sn_stabs.setHTML(table3)
+	ext_stabs.setHTML(table4)
 
 	let ranks_table = new Element("ranks_table")
 	table = ""
@@ -182,12 +186,18 @@ function updateUpperHTML() {
 	unl = player.atom.unl
 	tmp.el.quark_div.setVisible(unl)
 	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(player.atom.elements.includes(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
+
 	unl = MASS_DILATION.unlocked()
 	tmp.el.md_div.setVisible(unl)
 	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(player.supernova.tree.includes("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
+
 	unl = player.supernova.post_10
 	tmp.el.sn_div.setVisible(unl)
 	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")")
+
+	unl = EXOTIC.unlocked()
+	tmp.el.ext_div.setVisible(unl)
+	if (unl) tmp.el.extAmt.setHTML(format(player.ext.amt,2) + " (+" + format(EXOTIC.gain(),2) + ")")
 }
 
 function updateRanksHTML() {
@@ -305,11 +315,14 @@ function updateBlackHoleHTML() {
 	tmp.el.bhCondenserEffect.setHTML(format(tmp.bh.condenser_eff.eff))
 	tmp.el.bhCondenser_auto.setDisplay(FORMS.bh.condenser.autoUnl())
 	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
+
+	updateExtraBuildingHTML("bh", 2)
+	updateExtraBuildingHTML("bh", 3)
 }
 
 function updateOptionsHTML() {
 	for (let x = 0; x < CONFIRMS.length; x++) {
-		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x] == "sn"?player.supernova.times.gte(1):player[CONFIRMS[x]].unl)
+		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x] == "sn"?player.supernova.unl:player[CONFIRMS[x]].unl)
 		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 	}
 	tmp.el.total_time.setTxt(formatTime(player.time))
@@ -320,10 +333,11 @@ function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
 	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
 	tmp.el.loading.setDisplay(tmp.offlineActive)
-    tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab != 5))
+    tmp.el.app.setDisplay(!tmp.offlineActive && tmp.tab != 5 && (!tmp.supernova.reached || player.supernova.unl))
 	updateSupernovaEndingHTML()
+	updateExoticHTML()
 	updateTabsHTML()
-	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
+	if ((!tmp.supernova.reached || player.supernova.post_10 || EXOTIC.unlocked()) && tmp.tab != 5) {
 		updateUpperHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
@@ -363,7 +377,7 @@ function updateHTML() {
 			if (tmp.stab[4] == 1) updateElementsHTML()
 			if (tmp.stab[4] == 2) updateMDHTML()
 		}
-		if (tmp.tab == 6) {
+		if (tmp.tab == 7) {
 			updateOptionsHTML()
 		}
 	}

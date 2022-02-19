@@ -1,14 +1,14 @@
 const TREE_IDS = [
-    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","","feat1"],
-    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","","feat2"],
-    ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","","chal4","","","","feat3"],
-    ["","","","","unl1","qol8","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
-    ["","","","","qol10","qol9","","bs4","bs2","bs1","bs3","","","","","","","",""],
-    ["","","","","","","","","","fn1","fn5","","","","","","","",""],
-    ["","","","","","fn8","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
-    ["","","","","","","","","rad2","rad1","rad3","","","","","","","",""],
+    ["qol_ext2","qol_ext1","","qol1","","","s3","s2","s1","c","sn1","sn2","sn3","","","chal1","","","feat1"],
+    ["qol_ext4","qol_ext3","qol2","qol3","qol4","","s4","","m1","rp1","bh1","","sn4","","chal2","chal4a","chal3","","feat2"],
+    ["qol_ext6","qol_ext5","qol5","qol6","qol7","","","m2","t1","","bh2","gr1","sn5","","","chal4","","","feat3"],
+    ["","","","unl1","qol8","","m3","","","d1","","","gr2","","chal5","chal6","chal7","","feat4"],
+    ["","","","qol10","qol9","","","bs4","bs2","bs1","bs3","","","","","","","","feat5"],
+    ["","","","","","","fn8","","","fn1","fn5","","","","","","","","feat6"],
+    ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
+    ["","","","","","","","rad4","rad2","rad1","rad3","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    ["","","","","","","","","","eb1","eb2","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -32,6 +32,7 @@ const TREE_UPGS = {
     ids: {
         c: {
             desc: `Start generating 0.1 Neutron Star per second (not affected by offline production).`,
+			perm: true,
             cost: E(0),
         },
         sn1: {
@@ -107,7 +108,7 @@ const TREE_UPGS = {
         },
         t1: {
             branch: ["m1", 'rp1'],
-            req() { return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1)) },
+            req() { return player.supernova.tree.includes("qol_ext1") || (player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))) },
             reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run. You can still obtain Tickspeed from Cosmic Rays.`},
             desc: `Tickspeed Power is raised to the 1.15th.`,
             cost: E(1500),
@@ -179,6 +180,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(2) },
             reqDesc: `2 Supernovas.`,
             desc: `Start with Silicon-14 & Argon-18 unlocked. You can now automatically buy Elements & Atom upgrades.`,
+			perm: true,
             cost: E(1500),
         },
         qol2: {
@@ -186,6 +188,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(3) },
             reqDesc: `3 Supernovas.`,
             desc: `Start with Chromium-24 and Atom upgrade 6 unlocked.`,
+			perm: true,
             cost: E(2000),
         },
         qol3: {
@@ -193,6 +196,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(4) },
             reqDesc: `4 Supernovas.`,
             desc: `Start with Techntium-43 unlocked, improve their element better. You can automatically gain Relativistic particles from mass.`,
+			perm: true,
             cost: E(10000),
         },
         qol4: {
@@ -201,6 +205,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(12) },
             reqDesc: `12 Supernovas.`,
             desc: `You can now automatically buy Star unlockers & boosters.`,
+			perm: true,
             cost: E(1e8),
         },
         qol5: {
@@ -208,6 +213,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(16) },
             reqDesc: `16 Supernovas.`,
             desc: `Tetrs no longer resets anything.`,
+			perm: true,
             cost: E(1e13),
         },
         qol6: {
@@ -215,6 +221,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(17) },
             reqDesc: `17 Supernovas.`,
             desc: `While in any challenge, you can now automatically complete it before exiting.`,
+			perm: true,
             cost: E(1e15),
         },
         qol7: {
@@ -223,6 +230,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(40) },
             reqDesc: `40 Supernovas.`,
             desc: `You can now automatically buy Photon & Gluon upgrades, they no longer spent their amount.`,
+			perm: true,
             cost: E(1e48),
         },
         chal1: {
@@ -234,6 +242,7 @@ const TREE_UPGS = {
         chal2: {
             branch: ["chal1"],
             req() {
+				if (player.supernova.tree.includes("qol_ext1")) return true
                 for (let x = 1; x <= 4; x++) if (player.chal.comps[x].gte(1)) return false
                 return player.mass.gte(E('e2.05e6').mul(1.5e56))
             },
@@ -244,6 +253,7 @@ const TREE_UPGS = {
         chal3: {
             branch: ["chal1"],
             req() {
+				if (player.supernova.tree.includes("qol_ext1")) return true
                 for (let x = 5; x <= 8; x++) if (player.chal.comps[x].gte(1)) return false
                 return player.bh.mass.gte(E('e1.75e4').mul(1.5e56))
             },
@@ -337,7 +347,7 @@ const TREE_UPGS = {
         },
         fn2: {
             branch: ["fn1"],
-            req() { return player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01") },
+            req() { return player.supernova.tree.includes("qol_ext1") || (player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01")) },
             reqDesc() { return `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilating mass in [Down]` },
             desc: `Unlock 2 new types of U-Quark & U-Fermion.`,
             cost: E(1e33),
@@ -358,14 +368,14 @@ const TREE_UPGS = {
         fn5: {
             unl() { return player.supernova.tree.includes("fn2") },
             branch: ["fn1"],
-            req() { return player.atom.quarks.gte("e12500") && FERMIONS.onActive("10") },
+            req() { return player.supernova.tree.includes("qol_ext1") || (player.atom.quarks.gte("e12500") && FERMIONS.onActive("10")) },
             reqDesc() { return `Reach ${format("e12500")} quarks while in [Electron]` },
             desc: `[Electron] max tier is increased by 35. Its effect softcap is weaker.`,
             cost: E(1e42),
         },
         fn6: {
             branch: ["fn2"],
-            req() { return player.mass.gte(uni('e4e4')) && FERMIONS.onActive("02") && CHALS.inChal(5) },
+            req() { return player.supernova.tree.includes("qol_ext1") || (player.mass.gte(uni('e4e4')) && FERMIONS.onActive("02") && CHALS.inChal(5)) },
             reqDesc() { return `Reach ${formatMass(uni("e4e4"))} while in [Charm] & Challenge 5.` },
             desc: `Unlock 2 new more types of U-Quark & U-Fermion.`,
             cost: E(1e48),
@@ -393,7 +403,6 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
-			noIcon: true,
         },
         rad2: {
             branch: ["rad1"],
@@ -405,15 +414,15 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
-			noIcon: true,
         },
         qol8: {
             branch: ["qol7"],
             unl() { return player.supernova.tree.includes("qol7") },
             req() { return player.supernova.times.gte(50) },
             reqDesc: `50 Supernovas.`,
-            desc: `You can automatically sweep challenges and fermions with at least 15 completions / tiers, after 3 seconds of Supernova.`,
+            desc: `You can automatically sweep challenges and fermions with at least 15 completions / tiers, after 1.5 seconds of Supernova.`,
             cost: E(1e65),
+			perm: true,
 			noIcon: true,
         },
         fn7: {
@@ -421,7 +430,6 @@ const TREE_UPGS = {
             unl() { return player.supernova.tree.includes("rad1") },
             desc: `Unlock 2 even more types of U-Quark & U-Fermion.`,
             cost: E(1e80),
-			noIcon: true,
         },
         chal6: {
             branch: ["chal5"],
@@ -438,18 +446,17 @@ const TREE_UPGS = {
             branch: ["fn7"],
             desc: `Unlock 2 final types of U-Quark & U-Fermion.`,
             cost: E(1e128),
-			noIcon: true,
         },
         rad3: {
             branch: ["rad1"],
-            desc: `Extra levels from radiation levels are raised based on radiation indexes.`,
+            desc: `Extra levels are raised based on radiation types.`,
             cost: E(4.56789e123),
-			noIcon: true,
         },
         qol9: {
             branch: ["qol8"],
             desc: `You can enter both U-Quarks and U-Leptons.`,
             cost: E(1e120),
+			perm: true,
 			noIcon: true,
         },
         chal7: {
@@ -461,6 +468,7 @@ const TREE_UPGS = {
             branch: ["qol9"],
             desc: `You can do 2 challenges at once from sweeping. [Coming really soon!]`,
             cost: E(1/0),
+			perm: true,
 			noIcon: true,
         },
         feat1: {
@@ -474,8 +482,9 @@ const TREE_UPGS = {
 				return player.mass.lt(player.stats.maxMass.pow(1e-3))
 			},
             reqDesc: `Get at most ^0.001 of best mass within a U-Quark and a U-Lepton. [Automation must be on for all feats!]`,
-            desc: `Gain 3x more Radiation. [Permanent]`,
+            desc: `Gain 3x more Radiation.`,
             cost: E(1e130),
+			perm: true,
 			noIcon: true,
         },
         feat2: {
@@ -489,17 +498,157 @@ const TREE_UPGS = {
 				return player.mass.gte(player.supernova.maxMass.pow(0.1))
 			},
             reqDesc: `Get ^0.1 of best mass for this Supernova within Mass Dilation.`,
-            desc: `Add ^0.015 to Titanium-73 effect. [Permanent]`,
+            desc: `Add ^0.015 to Titanium-73 effect.`,
             cost: E(1e140),
+			perm: true,
 			noIcon: true,
         },
         feat3: {
             unl() { return player.supernova.tree.includes("rad1") },
             req() { return player.mass.gte(uni("e2.5e10")) && player.mainUpg.rp.length + player.mainUpg.bh.length + player.mainUpg.atom.length < 30 },
-            reqDesc: `Get 25 mlt with at most 30 Main Upgrades.`,
-            desc: `All Tickspeed scalings scale 35% weaker. [Permanent]`,
+            reqDesc() { return "Get " + formatMass(uni("ee25")) + " with at most 30 Main Upgrades." },
+            desc: `All Tickspeed scalings scale 35% weaker.`,
             cost: E(1e155),
+			perm: true,
 			noIcon: true,
+        },
+        eb1: {
+            unl() { return player.ext.amt.gte(1) },
+            desc: `Unlock Black Hole and Atomic Buildings #2.`,
+            cost: E(1e10),
+			perm: true,
+			noIcon: true,
+        },
+        eb2: {
+			branch: ["eb1"],
+            desc: `Unlock Black Hole and Atomic Buildings #3.`,
+            cost: E(1e50),
+			perm: true,
+			noIcon: true,
+        },
+        rad4: {
+            unl() { return player.ext.amt.gte(1) },
+            branch: ["rad2"],
+            desc: `All Radiation Meta-Boosts are 50% stronger.`,
+            cost: E(1e190),
+        },
+        feat4: {
+            unl() { return player.ext.amt.gte(1) },
+			req() {
+				if (player.mass.lt(uni("ee9"))) return false
+				let sum = E(0)
+				for (var i = 1; i <= CHALS.cols; i++) sum = sum.add(player.chal.comps[i])
+				for (var i = 1; i <= CHALS.cols; i++) if (player.chal.comps[i].lte(sum.mul(.05))) return true
+				return false
+			},
+            reqDesc() { return "Get " + formatMass(uni("ee9")) + " mass with one challenge have at most 5% of total completions." },
+            desc: `Reduce the auto-sweeper threshold by 2 completions / tiers.`,
+			perm: true,
+            cost: E(1e100),
+			noIcon: true,
+        },
+        feat5: {
+            unl() { return player.ext.amt.gte(1) },
+            req() { return player.mass.gte(uni("ee9")) && player.ext.time <= 10800 },
+            reqDesc: `Reach 1 mlt mass in 3 hours of Exotic Run.`,
+            desc: `+^0.05 to Mass and Rage gain exponents and their caps.`,
+			perm: true,
+            cost: E(1e40),
+			noIcon: true,
+        },
+        feat6: {
+            unl() { return player.ext.amt.gte(1) },
+            req() { return player.mass.lt(uni("ee10")) && tmp.supernova.bulk.sub(player.supernova.times).round().gte(10) },
+            reqDesc() { "Get +10 Supernova gains in under " + formatMass(uni("ee10")) + " mass" },
+            desc: `Pre-Ultra Supernova scalings start 1 later.`,
+			perm: true,
+            cost: E(0),
+			noIcon: true,
+        },
+
+		//EXOTIC
+        qol_ext1: {
+            branch: ["qol1"],
+            unl() { return player.ext.amt.gte(1) },
+            req() { return player.supernova.times.gte(4) },
+            reqDesc() { format(4,0) + " Supernovas" },
+            desc: `You don't need to do requirements before buying several Supernova upgrades.`,
+			perm: true,
+            cost: E(2000),
+			noIcon: true,
+            effect() {
+                let x = E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qol_ext2: {
+            branch: ["qol_ext1"],
+            desc: `Reduce the auto-sweeper threshold to 10.`,
+			perm: true,
+            cost: E(1e225),
+			noIcon: true,
+            effect() {
+                let x = E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qol_ext3: {
+            branch: ["qol_ext1"],
+			req() { return player.supernova.radiation.hz.gte(1e50) },
+            reqDesc() { return "Get " + format(1e50) + " frequency of radiation." },
+            desc: `Radiation Boosters are fully automated for at least 1,000,000 radiation.`,
+			perm: true,
+            cost: E(1e200),
+			noIcon: true,
+            effect() {
+                let x = E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qol_ext4: {
+            branch: ["qol_ext1"],
+			req() {
+				let sum = E(0)
+				for (var i = 1; i <= CHALS.cols; i++) sum = sum.add(player.chal.comps[i])
+				return sum.round().gte(7e3)
+			},
+            reqDesc: `Get 7,000 challenge completions.`,
+            desc: `Keep the 'chal' upgrades except you start with 50 completions.`,
+			perm: true,
+            cost: E(1e250),
+			noIcon: true,
+            effect() {
+                let x = E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qol_ext5: {
+            branch: ["qol_ext1"],
+            desc: `Keep the core Supernova upgrades.`,
+			perm: true,
+            cost: E(1e50),
+			noIcon: true,
+            effect() {
+                let x = E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qol_ext6: {
+            branch: ["qol_ext1"],
+            desc: `[Coming soon!]`,
+			perm: true,
+            cost: E(1/0),
+			noIcon: true,
+            effect() {
+                let x = E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         /*
         x: {
@@ -606,11 +755,15 @@ function drawTreeBranch(num1, num2) {
 
 function updateTreeHTML() {
     let req = ""
-    if (tmp.supernova.tree_choosed != "") req = TREE_UPGS.ids[tmp.supernova.tree_choosed].req?`<span class="${TREE_UPGS.ids[tmp.supernova.tree_choosed].req()?"green":"red"}">${TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc?" Require: "+(typeof TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc == "function"?TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc():TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc):""}</span>`:""
+	let perm = ""
+    if (tmp.supernova.tree_choosed != "") {
+		req = TREE_UPGS.ids[tmp.supernova.tree_choosed].req?`<span class="${TREE_UPGS.ids[tmp.supernova.tree_choosed].req()?"green":"red"}">${TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc?" Require: "+(typeof TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc == "function"?TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc():TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc):""}</span>`:""
+		perm = TREE_UPGS.ids[tmp.supernova.tree_choosed].perm ? `<span class='yellow'> [Permanent]</span>` : ``
+	}
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
-        <span class="sky">[${tmp.supernova.tree_choosed}] ${TREE_UPGS.ids[tmp.supernova.tree_choosed].desc}</span><br>
+        <span class="sky">[${tmp.supernova.tree_choosed}] ${TREE_UPGS.ids[tmp.supernova.tree_choosed].desc}</span>${perm}<br>
         <span>Cost: ${format(TREE_UPGS.ids[tmp.supernova.tree_choosed].cost,2)} Neutron star</span><br>
         <span class="green">${TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc?"Currently: "+TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `
@@ -619,6 +772,6 @@ function updateTreeHTML() {
         let id = tmp.supernova.tree_had[x]
         let unl = tmp.supernova.tree_unlocked[id]
         tmp.el["treeUpg_"+id].setVisible(unl)
-        if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, locked: !tmp.supernova.tree_afford[id], bought: player.supernova.tree.includes(id), choosed: id == tmp.supernova.tree_choosed})
+        if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, locked: !tmp.supernova.tree_afford[id], bought: player.supernova.tree.includes(id), perm: player.supernova.tree.includes(id) && TREE_UPGS.ids[id].perm, choosed: id == tmp.supernova.tree_choosed})
     }
 }

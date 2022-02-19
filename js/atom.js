@@ -37,6 +37,7 @@ const ATOM = {
         player.atom.atomic = E(0)
         player.bh.dm = E(0)
         player.bh.condenser = E(0)
+		resetExtraBuildings("bh")
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
@@ -54,7 +55,8 @@ const ATOM = {
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(5e4,0.75,0).softcap(4e6,0.25,0)
+            let sc = E(5e4).mul(AXIONS.getEff(1))
+            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(sc,0.75,0).softcap(sc.mul(800),0.25,0)
             return x.floor()
         },
     },
@@ -70,6 +72,8 @@ const ATOM = {
                 player.atom.gamma_ray = tmp.atom.gamma_ray_bulk
                 player.atom.points = player.atom.points.sub(tmp.atom.gamma_ray_cost).max(0)
             }
+			buyExtraBuildings("ag",2)
+			buyExtraBuildings("ag",3)
         },
         effect() {
             let t = player.atom.gamma_ray
@@ -94,7 +98,7 @@ const ATOM = {
             if (player.atom.quarks.lt(1) || CHALS.inChal(9) || FERMIONS.onActive("12")) return
             let m = player.atom.ratio
             let spent = m > 0 ? player.atom.quarks.mul(RATIO_MODE[m]).ceil() : E(1)
-            player.atom.quarks = player.atom.quarks.sub(spent)
+            player.atom.quarks = player.atom.quarks.sub(spent).max(0)
             player.atom.particles[x] = player.atom.particles[x].add(spent)
         },
         assignAll() {
@@ -103,7 +107,7 @@ const ATOM = {
             let spent = player.atom.quarks.div(sum).floor()
             for (let x = 0; x < 3; x++) {
                 let add = spent.mul(player.atom.dRatio[x])
-                player.atom.quarks = player.atom.quarks.sub(add)
+                player.atom.quarks = player.atom.quarks.sub(add).max(0)
                 player.atom.particles[x] = player.atom.particles[x].add(add)
             }
         },
@@ -281,7 +285,7 @@ function setupAtomHTML() {
 
 function updateAtomicHTML() {
     tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain))
-	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(5e4)?" <span class='soft'>(softcapped)</span>":""))
+	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(E(5e4).mul(AXIONS.getEff(1)))?" <span class='soft'>(softcapped)</span>":""))
 
 	tmp.el.gamma_ray_lvl.setTxt(format(player.atom.gamma_ray,0)+(tmp.atom.gamma_ray_bonus.gte(1)?" + "+format(tmp.atom.gamma_ray_bonus,0):""))
 	tmp.el.gamma_ray_btn.setClasses({btn: true, locked: !tmp.atom.gamma_ray_can})
@@ -291,6 +295,9 @@ function updateAtomicHTML() {
 	tmp.el.gamma_ray_eff.setHTML(format(tmp.atom.gamma_ray_eff.eff))
     tmp.el.gamma_ray_auto.setDisplay(player.atom.elements.includes(18))
 	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
+
+	updateExtraBuildingHTML("ag", 2)
+	updateExtraBuildingHTML("ag", 3)
 }
 
 function updateAtomHTML() {

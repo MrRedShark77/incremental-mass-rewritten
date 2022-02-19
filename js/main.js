@@ -109,9 +109,10 @@ const FORMS = {
                 step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
             if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
-			var sc = E(1e50)
-			if (tmp.radiation) sc = sc.mul(tmp.radiation.bs.eff[13])
-            step = step.softcap(sc,0.1,0)
+
+            let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
+            step = step.softcap(ss,0.1,0)
+            
             let eff = step.pow(t.add(bonus))
             if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
@@ -230,6 +231,8 @@ const FORMS = {
                     player.bh.condenser = tmp.bh.condenser_bulk
                     player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost).max(0)
                 }
+				buyExtraBuildings("bh",2)
+				buyExtraBuildings("bh",3)
             },
             effect() {
                 let t = player.bh.condenser
@@ -258,6 +261,7 @@ const FORMS = {
             dm: "Require over 1e20 Rage Power to reset all previous features for gain Dark Matters",
             atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
+			ext: "Require Challenge 12 to rise the exotic particles!",
         },
         set(id) {
             if (id=="sn") {

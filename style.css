@@ -5,6 +5,7 @@
 @font-face {
 	font-family: 'Andy Bold';
 	src: url('fonts/design.graffiti.ANDYB.ttf');
+	size-adjust: 120%;
 }
 
 @font-face {
@@ -30,6 +31,12 @@
 @font-face {
 	font-family: 'Monospace-Typewritter';
 	src: url('fonts/MonospaceTypewriter.ttf');
+}
+
+@font-face {
+	font-family: 'MS Sans Serif';
+	src: url('fonts/ms_sans_serif.woff');
+	size-adjust: 110%;
 }
 
 @font-face {
@@ -170,6 +177,10 @@ button {
 	color: red;
 }
 
+.scarlet {
+	color: #ff3f00;
+}
+
 .yellow {
 	color: yellow;
 }
@@ -199,7 +210,7 @@ button {
 		color: red;
 	}
 	33.3% {
-		color: blue;
+		color: #005fff;
 	}
 	66.7% {
 		color: limegreen;
@@ -295,8 +306,12 @@ button {
 	border-color: #171717;
 }
 
-.btn_tree.bought {
+.btn_tree:not(.perm).bought {
 	border-color: #00520b;
+}
+
+.btn_tree.perm {
+	border-color: #ffff00;
 }
 
 .btn_tree.choosed {
@@ -513,6 +528,23 @@ h2 {
 	}
 	100% {
 		background-position-x: -48px;
+	}
+}
+
+#app_ext {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: repeating-linear-gradient(45deg, transparent, #ff3f00, #7f0000, #ff7f00, transparent 25%);
+	animation: lg_spin 2s linear infinite;
+}
+
+@keyframes lg_spin {
+	0% {
+		background-position-x: 0;
+	}
+	100% {
+		background-position-x: 100%;
 	}
 }
 

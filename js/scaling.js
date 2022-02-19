@@ -136,6 +136,7 @@ function getScalingStart(type, name) {
 		}
 		if (name=='supernova') {
 			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
+			if (player.supernova.tree.includes("feat6")) start = start.add(1)
 		}
 	}
 	if (type=="hyper") {
@@ -148,6 +149,7 @@ function getScalingStart(type, name) {
 		}
 		if (name=='supernova') {
 			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
+			if (player.supernova.tree.includes("feat6")) start = start.add(1)
 		}
 	}
 	if (type=="ultra") {

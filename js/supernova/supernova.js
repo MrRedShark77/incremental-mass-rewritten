@@ -13,6 +13,7 @@ const SUPERNOVA = {
     },
     doReset() {
         tmp.supernova.time = 0
+        player.supernova.unl = true
         player.supernova.maxMass = E(0)
         player.supernova.auto.t = 0
 
@@ -22,6 +23,7 @@ const SUPERNOVA = {
         player.atom.powers = [E(0),E(0),E(0)]
         player.atom.atomic = E(0)
         player.atom.gamma_ray = E(0)
+		resetExtraBuildings("ag")
         
         let list_keep = [2,5]
         if (player.supernova.tree.includes("qol2")) list_keep.push(6)
@@ -64,6 +66,7 @@ const SUPERNOVA = {
         if (player.supernova.tree.includes("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
         if (player.atom.elements.includes(74)) x = x.mul(tmp.elements && tmp.elements.effect[74])
         x = x.mul(tmp.radiation.bs.eff[11])
+        x = x.mul(tmp.supernova.timeMult)
         return x
     },
     req(x=player.supernova.times) {
@@ -170,7 +173,7 @@ function calcSupernova(dt, dt_offline) {
             SUPERNOVA.reset()
         }
     }
-    if (player.supernova.times.gte(1)) player.supernova.stars = player.supernova.stars.add(tmp.supernova.star_gain.mul(dt_offline))
+    if (player.supernova.unl) player.supernova.stars = player.supernova.stars.add(tmp.supernova.star_gain.mul(dt_offline))
 
     if (!player.supernova.post_10 && player.supernova.times.gte(10)) {
         player.supernova.post_10 = true
@@ -198,7 +201,13 @@ function calcSupernova(dt, dt_offline) {
 
     if (tmp.radiation.unl) {
         player.supernova.radiation.hz = player.supernova.radiation.hz.add(tmp.radiation.hz_gain.mul(dt))
-        for (let x = 0; x < RAD_LEN; x++) player.supernova.radiation.ds[x] = player.supernova.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(dt))
+        for (let x = 0; x < RAD_LEN; x++) {
+            player.supernova.radiation.ds[x] = player.supernova.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(dt))
+	        if (player.supernova.radiation.ds[x].gte(1e6) && player.supernova.tree.includes("qol_ext3")) {
+                RADIATION.buyBoost(x*2,1)
+                RADIATION.buyBoost(x*2+1,1)
+            }
+        }
     }
 }
 
@@ -212,7 +221,7 @@ function updateSupernovaTemp() {
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||""
-        let unl = TREE_UPGS.ids[id].unl?TREE_UPGS.ids[id].unl():true
+        let unl = player.supernova.tree.includes(id)||(TREE_UPGS.ids[id].unl?TREE_UPGS.ids[id].unl():true)
         let can = player.supernova.stars.gte(TREE_UPGS.ids[id].cost) && !player.supernova.tree.includes(id) && (TREE_UPGS.ids[id].req?TREE_UPGS.ids[id].req():true)
         if (branch != "") for (let x = 0; x < branch.length; x++) if (!player.supernova.tree.includes(branch[x])) {
             unl = false
@@ -224,10 +233,13 @@ function updateSupernovaTemp() {
         if (TREE_UPGS.ids[id].effect) tmp.supernova.tree_eff[id] = TREE_UPGS.ids[id].effect()
     }
     tmp.supernova.star_gain = SUPERNOVA.starGain()
+    tmp.supernova.timeMult = AXIONS.getEff(0) || E(1)
 }
 
 function updateSupernovaEndingHTML() {
-    if (tmp.supernova.reached && !tmp.offlineActive && player.supernova.times.lte(0)) {
+	let scene = tmp.supernova.reached && !player.supernova.unl
+	let reached = player.supernova.unl || scene
+    if (scene && !tmp.offlineActive) {
         tmp.tab = 5
         document.body.style.backgroundColor = `hsl(0, 0%, ${7-Math.min(tmp.supernova.time/4,1)*7}%)`
         tmp.el.supernova_scene.setDisplay(tmp.supernova.time>4)
@@ -238,9 +250,9 @@ function updateSupernovaEndingHTML() {
         tmp.el.sns5.setVisible(tmp.supernova.time>17)
         tmp.el.sns5.setOpacity(Math.max(Math.min(tmp.supernova.time-17,1),0))
     }
-    if (player.supernova.times.lte(0)?!tmp.supernova.reached:true) document.body.style.backgroundColor = tmp.tab == 5 ? "#000" : "#111"
+    if (reached) document.body.style.backgroundColor = tmp.tab == 5 ? "#000" : "#111"
 
-    tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) ? !tmp.supernova.reached : true) && tmp.tab == 5)
+    tmp.el.app_supernova.setDisplay(reached && tmp.tab == 5)
 
     if (tmp.tab == 5) {
         tmp.el.supernova_scale.setTxt(getScalingName('supernova'))
@@ -264,6 +276,9 @@ function updateSupernovaAutoTemp() {
 	tmp.supernova.auto = []
 	if (!player.supernova.tree.includes("qol8")) return
 
+	let thres = 15
+	if (player.supernova.tree.includes("qol_ext2")) thres = 10
+	if (player.supernova.tree.includes("feat4")) thres -= 2
 	for (var x = 1; x <= CHALS.cols; x++) {
 		if (player.chal.comps[x].gte(15)) tmp.supernova.auto.push(x)
 	}

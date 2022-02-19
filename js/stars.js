@@ -42,7 +42,6 @@ const STARS = {
             }
 
             let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(pow)
-        
 
             if (player.atom.elements.includes(49) && i==4) x = x.mul(tmp.elements.effect[49])
             if (player.supernova.tree.includes("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)
@@ -71,7 +70,7 @@ function updateStarsTemp() {
 
     tmp.stars.generator_boost_base = E(2)
     if (player.atom.elements.includes(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])
-    tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost).pow(tmp.chal?tmp.chal.eff[11]:1)
+    tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost.add(tmp.eb.ag2?tmp.eb.ag2.eff:0).mul(tmp.chal?tmp.chal.eff[11]:1))
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.softPower = STARS.softPower()
     tmp.stars.softGain = STARS.softGain()

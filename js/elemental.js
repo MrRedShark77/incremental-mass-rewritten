@@ -352,10 +352,10 @@ const ELEMENTS = {
             desc: `Mass of black hole boost atomic powers gain at a reduced rate.`,
             cost: E('e2800'),
             effect() {
-                let x = expMult(player.bh.mass.add(1),0.6).softcap("ee9",5/6,2)
+                let x = expMult(player.bh.mass.add(1),0.6)
                 return x
             },
-            effDesc(x) { return format(x)+"x"+(x.gte("ee9")?" <span class='soft'>(softcapped)</span>":"") },
+            effDesc(x) { return format(x)+"x" },
         },
         {
             desc: `Mass Dilation upgrade 6 is 75% stronger.`,
@@ -456,13 +456,13 @@ const ELEMENTS = {
             cost: E('e2e7'),
         },
         {
-            desc: `Mass makes all Supernova scalings start later.`,
+            desc: `Mass makes Supernova scalings start later.`,
             cost: E('e3e7'),
             effect() {
+				let [m1, m2] = [player.mass.max(10).log10().log10().times(4), player.mass.max(1).log10().pow(1/5).div(3)]
 				let exp = E(0.5)
-				if (player.atom.elements.includes(73)) exp = tmp.elements.effect[73]||E(0.5)
-                let x = E("e3e9").add(1).log10().sub(1e9).max(1).div(5e7).pow(exp)
-                return x
+				if (player.atom.elements.includes(73)) exp = exp.mul(tmp.elements.effect[73]||1)
+                return m1.max(m2).pow(exp)
             },
             effDesc(x) { return "+"+format(x) },
         },
@@ -480,11 +480,11 @@ const ELEMENTS = {
             desc: `Raise Lutetium-71 effect based on Neutron Stars.`,
             cost: E('e4e7'),
             effect() {
-				let r = player.supernova.stars.add(1).log10().div(150).softcap(0.8,0.5,0)
+				let r = player.supernova.stars.max(1).log10().div(75).max(1)
 				if (player.supernova.tree.includes("feat2")) r = r.add(0.015)
-				return r.min(1)
+				return r.softcap(1.75,40,3).min(2.5)
             },
-            effDesc(x) { return "^"+format(x) },
+            effDesc(x) { return "^"+format(x)+(x.gte(1.75)?" <span class='soft'>(softcapped)</span>":"") },
         },
         {
             desc: `Collapsed stars generate Neutron Stars faster.`,
@@ -515,20 +515,23 @@ const ELEMENTS = {
         effDesc(x) { return format(x)+"x" },
     },
     */
-    getUnlLength() {
-        let u = 4
-        if (player.supernova.times.gte(1)) u = 49+5
-        else {
-            if (player.chal.comps[8].gte(1)) u += 14
-            if (player.atom.elements.includes(18)) u += 3
-            if (MASS_DILATION.unlocked()) u += 15
-            if (STARS.unlocked()) u += 18
-        }
-        if (player.supernova.post_10) u += 3
-        if (player.supernova.fermions.unl) u += 10
-        if (tmp.radiation.unl) u += 16
-        return u
-    },
+	getUnlLength() {
+		let u = 4
+		if (player.ext.amt.gte(1)) {
+			u = 75
+		} else if (player.supernova.unl) {
+			u = 49+5
+			if (player.supernova.post_10) u += 3
+			if (player.supernova.fermions.unl) u += 10
+			if (tmp.radiation.unl) u += 16
+		} else {
+			if (player.chal.comps[8].gte(1)) u += 14
+			if (player.atom.elements.includes(18)) u += 3
+			if (MASS_DILATION.unlocked()) u += 15
+			if (STARS.unlocked()) u += 18
+		}
+		return u
+	},
 }
 
 function setupElementsHTML() {

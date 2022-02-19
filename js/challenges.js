@@ -262,12 +262,16 @@ const CHALS = {
         inc: E(25),
         pow: E(1.25),
         start: E(2.9835e49),
-        effect(x) {
-            if (player.atom.elements.includes(64)) x = x.mul(1.5)
-            let ret = x.root(1.5).mul(0.01).add(1)
+		effect(x) {
+			if (player.atom.elements.includes(64)) x = x.mul(1.5)
+			let ret = x.root(1.5).mul(0.01).add(1)
 			let cap = E(2.4).add(tmp.radiation && tmp.radiation.bs.eff[19])
-            return ret.min(cap)
-        },
+			if (player.supernova.tree.includes("feat5")) {
+				ret = ret.add(0.05)
+				cap = cap.add(0.05)
+			}
+			return ret.min(cap)
+		},
         effDesc(x) { return "^"+format(x) },
     },
     4: {
@@ -279,12 +283,16 @@ const CHALS = {
         inc: E(30),
         pow: E(1.25),
         start: E(1.736881338559743e133),
-        effect(x) {
-            if (player.atom.elements.includes(64)) x = x.mul(1.5)
-            let ret = x.root(1.5).mul(0.01).add(1)
+		effect(x) {
+			if (player.atom.elements.includes(64)) x = x.mul(1.5)
+			let ret = x.root(1.5).mul(0.01).add(1)
 			let cap = E(2.4).add(tmp.fermions && tmp.fermions.effs[1][5])
-            return ret.min(cap)
-        },
+			if (player.supernova.tree.includes("feat5")) {
+				ret = ret.add(0.05)
+				cap = cap.add(0.05)
+			}
+			return ret.min(cap)
+		},
         effDesc(x) { return "^"+format(x) },
     },
     5: {
@@ -400,11 +408,11 @@ const CHALS = {
 		desc: "You are stuck in Mass Dilation, but has a static ^0.428 penalty and doesn't affect Dark Matter and Black Hole.",
 		reward: `Ultra Supernova scales slower.<br><span class="yellow">On first completion, unlock a new prestige layer! [Coming soon!]</span>`,
 		max: E(50),
-		inc: E("e1e4"),
-		pow: E(1.25),
+		inc: E("e5000"),
+		pow: E(0.75),
 		start: E("e5e4"),
 		effect(x) {
-            let ret = E(1).div(x.div(100).add(1))
+            let ret = E(1).div(x.div(20).add(1).sqrt())
             return ret
 		},
 		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
