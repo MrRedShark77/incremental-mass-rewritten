@@ -35,8 +35,10 @@ const FORMS = {
             if (player.atom.elements.includes(28)) x = x.pow(1.5)
         }
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
-
-        return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0).softcap(tmp.massSoftGain2,tmp.massSoftPower2,0).softcap(tmp.massSoftGain3,tmp.massSoftPower3,0)
+        return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
+        .softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
+        .softcap(tmp.massSoftGain3,tmp.massSoftPower3,0)
+        .softcap(tmp.massSoftGain4,tmp.massSoftPower4,0)
     },
     massSoftGain() {
         let s = E(1.5e156)
@@ -77,6 +79,14 @@ const FORMS = {
     },
     massSoftPower3() {
         let p = E(0.2)
+        return p
+    },
+    massSoftGain4() {
+        let s = uni("e1e13")
+        return s
+    },
+    massSoftPower4() {
+        let p = E(0.01)
         return p
     },
     tickspeed: {
@@ -728,7 +738,7 @@ const UPGS = {
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
-                    return ret
+                    return ret.softcap("ee12",0.75,2)
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
@@ -739,7 +749,7 @@ const UPGS = {
                 desc: "Atomic Powers adds Black Hole Condensers at a reduced rate.",
                 cost: E('e420'),
                 effect() {
-                    let ret = player.atom.atomic.add(1).log(5)
+                    let ret = player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0)
                     return ret.floor()
                 },
                 effDesc(x=this.effect()) {

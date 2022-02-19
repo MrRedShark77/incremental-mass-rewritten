@@ -26,6 +26,7 @@ const SCALE_START = {
 		bh_condenser: E(750),
 		gamma_ray: E(800),
 		supernova: E(60),
+		fTier: E(100),
 	},
 	meta: {
 		rank: E(1e4),
@@ -152,11 +153,13 @@ function getScalingStart(type, name) {
 	if (type=="meta") {
 		if (name=="rank") {
 			if (player.ranks.pent.gte(1)) start = start.mul(1.1)
+			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
 			start = start.mul(tmp.radiation.bs.eff[14])
 		}
 		if (name=="tickspeed") {
 			if (player.atom.elements.includes(68)) start = start.mul(2)
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
+			start = start.mul(tmp.fermions.effs[0][5])
 		}
 	}
 	return start.floor()
@@ -175,6 +178,9 @@ function getScalingPower(type, name) {
 		if (name=="tier") {
 			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
 			if (player.atom.elements.includes(37)) power = power.mul(tmp.elements.effect[37])
+		}
+		if (name=="tetr") {
+			if (player.atom.elements.includes(74)) power = power.mul(0.75)
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)

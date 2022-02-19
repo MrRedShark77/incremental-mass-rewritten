@@ -100,6 +100,7 @@ const RANKS = {
             '1': "reduce tetr reqirements by 15%, make Meta-Rank starts 1.1x later.",
             '2': "tetr boost all radiations gain.",
             '4': "Meta-Tickspeeds start later based on Supernovas.",
+            '5': "Meta-Ranks start later based on Pent.",
         },
     },
     effect: {
@@ -183,6 +184,10 @@ const RANKS = {
                 let ret = player.supernova.times.add(1).root(5)
                 return ret
             },
+            '5'() {
+                let ret = E(1.05).pow(player.ranks.pent)
+                return ret
+            },
         },
     },
     effDesc: {
@@ -210,6 +215,7 @@ const RANKS = {
         pent: {
             2(x) { return format(x)+"x" },
             4(x) { return format(x)+"x later" },
+            5(x) { return format(x)+"x later" },
         },
     },
     fp: {

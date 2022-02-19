@@ -1,5 +1,6 @@
 const ATOM = {
     gain() {
+        if (CHALS.inChal(12)) return E(0)
         let x = player.bh.mass.div(1.5e156)
         if (x.lt(1)) return E(0)
         x = x.root(5)
@@ -54,8 +55,9 @@ const ATOM = {
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(5e4,0.75,0).softcap(4e6,0.25,0)
-            return x.floor()
+            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75)
+            if (!player.atom.elements.includes(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
+            return x.softcap(1e10,0.25,0).floor()
         },
     },
     gamma_ray: {
@@ -171,24 +173,26 @@ function updateAtomTemp() {
     tmp.atom.atomicGain = ATOM.atomic.gain()
     tmp.atom.atomicEff = ATOM.atomic.effect()
 
-    tmp.atom.gamma_ray_cost = E(2).pow(player.atom.gamma_ray).floor()
-    tmp.atom.gamma_ray_bulk = player.atom.points.max(1).log(2).add(1).floor()
+    let fp = tmp.fermions.effs[1][5]
+
+    tmp.atom.gamma_ray_cost = E(2).pow(player.atom.gamma_ray.div(fp)).floor()
+    tmp.atom.gamma_ray_bulk = player.atom.points.max(1).log(2).mul(fp).add(1).floor()
     if (player.atom.points.lt(1)) tmp.atom.gamma_ray_bulk = E(0)
     if (scalingActive("gamma_ray", player.atom.gamma_ray.max(tmp.atom.gamma_ray_bulk), "super")) {
 		let start = getScalingStart("super", "gamma_ray");
 		let power = getScalingPower("super", "gamma_ray");
 		let exp = E(2).pow(power);
 		tmp.atom.gamma_ray_cost =
-			E(1.75).pow(
-                player.atom.gamma_ray
+			E(2).pow(
+                player.atom.gamma_ray.div(fp)
                 .pow(exp)
 			    .div(start.pow(exp.sub(1)))
             ).floor()
         tmp.atom.gamma_ray_bulk = player.atom.points
             .max(1)
-            .log(1.75)
+            .log(2)
 			.mul(start.pow(exp.sub(1)))
-			.root(exp)
+			.root(exp).mul(fp)
 			.add(1)
 			.floor();
 	}
@@ -200,8 +204,8 @@ function updateAtomTemp() {
 		let exp = E(2).pow(power);
         let exp2 = E(4).pow(power2);
 		tmp.atom.gamma_ray_cost =
-			E(1.75).pow(
-                player.atom.gamma_ray
+			E(2).pow(
+                player.atom.gamma_ray.div(fp)
                 .pow(exp2)
 			    .div(start2.pow(exp2.sub(1)))
                 .pow(exp)
@@ -209,11 +213,11 @@ function updateAtomTemp() {
             ).floor()
         tmp.atom.gamma_ray_bulk = player.atom.points
             .max(1)
-            .log(1.75)
+            .log(2)
 			.mul(start.pow(exp.sub(1)))
 			.root(exp)
             .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
+			.root(exp2).mul(fp)
 			.add(1)
 			.floor();
 	}
@@ -228,8 +232,8 @@ function updateAtomTemp() {
         let exp2 = E(4).pow(power2);
         let exp3 = E(6).pow(power3);
 		tmp.atom.gamma_ray_cost =
-			E(1.75).pow(
-                player.atom.gamma_ray
+			E(2).pow(
+                player.atom.gamma_ray.div(fp)
                 .pow(exp3)
 			    .div(start3.pow(exp3.sub(1)))
                 .pow(exp2)
@@ -239,13 +243,13 @@ function updateAtomTemp() {
             ).floor()
         tmp.atom.gamma_ray_bulk = player.atom.points
             .max(1)
-            .log(1.75)
+            .log(2)
 			.mul(start.pow(exp.sub(1)))
 			.root(exp)
             .mul(start2.pow(exp2.sub(1)))
 			.root(exp2)
             .mul(start3.pow(exp3.sub(1)))
-			.root(exp3)
+			.root(exp3).mul(fp)
 			.add(1)
 			.floor();
 	}

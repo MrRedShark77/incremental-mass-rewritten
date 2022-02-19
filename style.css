@@ -214,7 +214,7 @@ button {
 }
 
 .sml {
-	margin-bottom: 5px;
+	margin-bottom: 3px;
 }
 
 .txt_area {
@@ -225,6 +225,15 @@ button {
 	display: flex;
 	align-items: center;
 	min-width: 300px;
+}
+
+.top_text {
+	font-size: 14px;
+}
+
+.res_img {
+	width: 30px;
+	height: 30px;
 }
 
 .btn_tab {

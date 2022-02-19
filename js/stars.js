@@ -14,13 +14,14 @@ const STARS = {
         return p
     },
     effect() {
-        let p = E(1)
+        let [p, pp] = [E(1), E(1)]
         if (player.atom.elements.includes(48)) p = p.mul(1.1)
+        if (player.atom.elements.includes(76)) [p, pp] = [p.mul(1.25), pp.mul(1.25)]
         let [s,r,t1,t2,t3] = [player.stars.points.mul(p)
             ,player.ranks.rank.mul(p)
             ,player.ranks.tier.mul(p)
             ,player.ranks.tetr.mul(p).softcap(5,player.supernova.tree.includes("s2")?1.5:5,1).softcap(9,0.3,0)
-            ,player.atom.elements.includes(69)?player.ranks.pent:E(0)]
+            ,player.atom.elements.includes(69)?player.ranks.pent.mul(pp):E(0)]
         let x =
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1))))
         return x

@@ -41,6 +41,20 @@ const FERMIONS = {
                 x = t.mul(start.pow(exp.sub(1))).root(exp)
                 .mul(start2.pow(exp2.sub(1))).root(exp2).add(1).floor()
             }
+            if (x.sub(1).gte(getScalingStart('ultra',"fTier"))) {
+                let start = getScalingStart('super',"fTier")
+                let power = getScalingPower('super',"fTier")
+                let exp = E(2.5).pow(power)
+                let start2 = getScalingStart('hyper',"fTier")
+                let power2 = getScalingPower('hyper',"fTier")
+                let exp2 = E(4).pow(power2)
+                let start3 = getScalingStart('ultra',"fTier")
+                let power3 = getScalingPower('ultra',"fTier")
+                let exp3 = E(6).pow(power3)
+                x = t.mul(start.pow(exp.sub(1))).root(exp)
+                .mul(start2.pow(exp2.sub(1))).root(exp2)
+                .mul(start3.pow(exp3.sub(1))).root(exp3).add(1).floor()
+            }
         } else {
             if (t.sub(1).gte(getScalingStart('super',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
@@ -58,6 +72,21 @@ const FERMIONS = {
                 x = t.pow(exp2).div(start2.pow(exp2.sub(1)))
                 .pow(exp).div(start.pow(exp.sub(1))).floor()
             }
+            if (t.sub(1).gte(getScalingStart('ultra',"fTier"))) {
+                let start = getScalingStart('super',"fTier")
+                let power = getScalingPower('super',"fTier")
+                let exp = E(2.5).pow(power)
+                let start2 = getScalingStart('hyper',"fTier")
+                let power2 = getScalingPower('hyper',"fTier")
+                let exp2 = E(4).pow(power2)
+                let start3 = getScalingStart('ultra',"fTier")
+                let power3 = getScalingPower('ultra',"fTier")
+                let exp3 = E(6).pow(power3)
+                
+                x = t.pow(exp3).div(start3.pow(exp3.sub(1)))
+                .pow(exp2).div(start2.pow(exp2.sub(1)))
+                .pow(exp).div(start.pow(exp.sub(1))).floor()
+            }
         }
         return x
     },
@@ -66,6 +95,7 @@ const FERMIONS = {
         if (player.supernova.tree.includes("fn2")) u++
         if (player.supernova.tree.includes("fn6")) u++
         if (player.supernova.tree.includes("fn7")) u++
+        if (player.supernova.tree.includes("fn8")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -134,7 +164,11 @@ const FERMIONS = {
                 cons: "You are trapped in Mass Dilation, but they are twice effective",
                 isMass: true,
             },{
-                maxTier: 15,
+                maxTier() {
+                    let x = 15
+                    if (player.supernova.tree.includes("fn9")) x += 2
+                    return x
+                },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e1000').pow(t.pow(1.5)).mul("e3e4")
@@ -155,6 +189,7 @@ const FERMIONS = {
                 inc: "Rage Power",
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },{
+                maxTier: 30,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('ee4').pow(t.pow(1.5)).mul(uni('e5.75e5'))
@@ -175,6 +210,27 @@ const FERMIONS = {
                 inc: "Dilated Mass",
                 cons: "U-Quarks, Photons & Gluons do nothing",
                 isMass: true,
+            },{
+                maxTier: 10,
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('e5e8').pow(t.pow(2)).mul('e6e9')
+                },
+                calcTier() {
+                    let res = tmp.tickspeedEffect && tmp.pass?tmp.tickspeedEffect.eff:E(1)
+                    if (res.lt('e6e9')) return E(0)
+                    let x = res.div('e6e9').max(1).log('e5e8').max(0).root(2).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().pow(0.5).div(150).add(1).pow(t)
+                    return x
+                },
+                desc(x) {
+                    return `Meta-Tickspeed starts ${format(x)}x later`
+                },
+                inc: "Tickspeed Effect",
+                cons: "Challenges are disabled",
             },
 
         ],[
@@ -245,7 +301,11 @@ const FERMIONS = {
                 inc: "Dark Matter",
                 cons: "You are trapped in Challenges 8-9",
             },{
-                maxTier: 15,
+                maxTier() {
+                    let x = 15
+                    if (player.supernova.tree.includes("fn9")) x += 2
+                    return x
+                },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e400').pow(t.pow(1.5)).mul("e1600")
@@ -266,6 +326,7 @@ const FERMIONS = {
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
             },{
+                maxTier: 25,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e1.5e7').pow(t.pow(2)).mul("e3.5e8")
@@ -277,7 +338,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = E(0.95).pow(i.add(1).log10().mul(t).root(4).softcap(27,0.5,0)).toNumber()
+                    let x = E(0.95).pow(i.add(1).log10().mul(t).root(4).softcap(27,0.5,0)).max(2/3).toNumber()
                     return x
                 },
                 desc(x) {
@@ -285,6 +346,26 @@ const FERMIONS = {
                 },
                 inc: "Atom",
                 cons: "U-Leptons, Z<sup>0</sup> bosons do nothing",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x)
+                    return E('10').pow(t.pow(1.5)).mul('e80')
+                },
+                calcTier() {
+                    let res = tmp.tickspeedEffect && tmp.pass?tmp.tickspeedEffect.step:E(1)
+                    if (res.lt('e80')) return E(0)
+                    let x = res.div('e80').max(1).log('10').max(0).root(1.5).add(1).floor()
+                    return FERMIONS.getTierScaling(x, true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().pow(0.75).div(100).add(1).pow(t.pow(0.75))
+                    return x
+                },
+                desc(x) {
+                    return `BH Condensers & Cosmic Rays are ${format(x)}x cheaper`
+                },
+                inc: "Tickspeed Power",
+                cons: "Radiation Boosts are disabled",
             },
 
             /*

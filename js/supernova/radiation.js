@@ -21,6 +21,7 @@ const RADIATION = {
             if (player.supernova.tree.includes('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
             x = x.mul(tmp.radiation.ds_eff[i+1])
         }
+        if (player.supernova.tree.includes('rad5')) x = x.mul(tmp.supernova.tree_eff.rad5||1)
         x = x.mul(tmp.radiation.bs.eff[3*i])
         return x
     },
@@ -41,11 +42,15 @@ const RADIATION = {
         return [cost,bulk]
     },
     getLevelEffect(i) {
-        let x = this.boosts[i].eff(tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i]))
+        let b = tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i])
+        if (FERMIONS.onActive("15") || Math.floor(i/2)>0&&player.supernova.radiation.hz.lt(RADIATION.unls[Math.floor(i/2)])) b = E(0)
+        //b = b.mul(tmp.chal?tmp.chal.eff[12]:1)
+        let x = this.boosts[i].eff(b)
         return x
     },
     getbonusLevel(i) {
         let x = E(0)
+        x = x.add(tmp.chal?tmp.chal.eff[12]:1)
         if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
         if (i < 17) x = x.add(tmp.radiation.bs.eff[17])
         return x
@@ -102,9 +107,9 @@ const RADIATION = {
             title: `BH-Exponent Boost`,
             eff(b) {
                 let x = b.root(2).div(100)
-                return x.min(.3)
+                return x.min(.15)
             },
-            desc(x) { return `Exponent from the mass of BH formula is increased by ${format(x)} (hardcapped to 0.3)` },
+            desc(x) { return `Exponent from the mass of BH formula is increased by ${format(x)} (hardcapped to 0.15)` },
         },{
             title: `BH-Condenser Boost`,
             eff(b) {

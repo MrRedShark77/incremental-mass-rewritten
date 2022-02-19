@@ -59,6 +59,8 @@ function updateMassTemp() {
     tmp.massSoftGain2 = FORMS.massSoftGain2()
     tmp.massSoftPower3 = FORMS.massSoftPower3()
     tmp.massSoftGain3 = FORMS.massSoftGain3()
+    tmp.massSoftPower4 = FORMS.massSoftPower4()
+    tmp.massSoftGain4 = FORMS.massSoftGain4()
     tmp.massGain = FORMS.massGain()
 }
 
@@ -209,9 +211,11 @@ function updateBlackHoleTemp() {
     tmp.bh.dm_can = tmp.bh.dm_gain.gte(1)
     tmp.bh.effect = FORMS.bh.effect()
 
+    let fp = tmp.fermions.effs[1][5]
+
     tmp.bh.condenser_bonus = FORMS.bh.condenser.bonus()
-    tmp.bh.condenser_cost = E(1.75).pow(player.bh.condenser).floor()
-    tmp.bh.condenser_bulk = player.bh.dm.max(1).log(1.75).add(1).floor()
+    tmp.bh.condenser_cost = E(1.75).pow(player.bh.condenser.div(fp)).floor()
+    tmp.bh.condenser_bulk = player.bh.dm.max(1).log(1.75).mul(fp).add(1).floor()
     if (player.bh.dm.lt(1)) tmp.bh.condenser_bulk = E(0)
     if (scalingActive("bh_condenser", player.bh.condenser.max(tmp.bh.condenser_bulk), "super")) {
 		let start = getScalingStart("super", "bh_condenser");
@@ -219,7 +223,7 @@ function updateBlackHoleTemp() {
 		let exp = E(2).pow(power);
 		tmp.bh.condenser_cost =
 			E(1.75).pow(
-                player.bh.condenser
+                player.bh.condenser.div(fp)
                 .pow(exp)
 			    .div(start.pow(exp.sub(1)))
             ).floor()
@@ -227,7 +231,7 @@ function updateBlackHoleTemp() {
             .max(1)
             .log(1.75)
 			.mul(start.pow(exp.sub(1)))
-			.root(exp)
+			.root(exp).mul(fp)
 			.add(1)
 			.floor();
 	}
@@ -240,7 +244,7 @@ function updateBlackHoleTemp() {
         let exp2 = E(2).pow(power2);
 		tmp.bh.condenser_cost =
 			E(1.75).pow(
-                player.bh.condenser
+                player.bh.condenser.div(fp)
                 .pow(exp2)
 			    .div(start2.pow(exp2.sub(1)))
                 .pow(exp)
@@ -252,7 +256,7 @@ function updateBlackHoleTemp() {
 			.mul(start.pow(exp.sub(1)))
 			.root(exp)
             .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
+			.root(exp2).mul(fp)
 			.add(1)
 			.floor();
 	}
@@ -268,7 +272,7 @@ function updateBlackHoleTemp() {
         let exp3 = E(4).pow(power3);
 		tmp.bh.condenser_cost =
 			E(1.75).pow(
-                player.bh.condenser
+                player.bh.condenser.div(fp)
                 .pow(exp3)
 			    .div(start3.pow(exp3.sub(1)))
                 .pow(exp2)
@@ -284,7 +288,7 @@ function updateBlackHoleTemp() {
             .mul(start2.pow(exp2.sub(1)))
 			.root(exp2)
             .mul(start3.pow(exp3.sub(1)))
-			.root(exp3)
+			.root(exp3).mul(fp)
 			.add(1)
 			.floor();
 	}

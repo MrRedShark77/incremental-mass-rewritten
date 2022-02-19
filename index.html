@@ -132,40 +132,38 @@
     <div id='app' style='display: none'>
         <div id="star"></div>
         <div style='height: 5px'></div>
-        <div style="height: 180px">
-            <div id="chal_upper" style='height: 50px'></div>
-            <div class="table_center" style="margin: 5px 0px;">
+        <div style="height: 200px">
+            <div id="chal_upper" style='height: 40px'></div>
+            <div class="table_center top_text" style="margin: 5px 0px;">
                 <div>
                     <div class="resources sml">
-                        <img src="images/mass.png">
+                        <img class="res_img" src="images/mass.png">
                         <span style="margin-left: 5px; text-align: left;" id="mass">X</span>
-                    </div><div class="resources red">
-                        <img src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                    </div><div class="resources sml red">
+                        <img class="res_img" src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="rpAmt">X</span>
-                    </div>
-                </div><div>
-                    <div class="resources sml yellow" id="dm_div">
-                        <img src="images/dm.png" onclick="FORMS.bh.reset()" onmousemove="FORMS.reset_msg.set('dm')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                    </div><div class="resources yellow" id="dm_div">
+                        <img class="res_img" src="images/dm.png" onclick="FORMS.bh.reset()" onmousemove="FORMS.reset_msg.set('dm')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="dmAmt">X</span>
-                    </div><div class="resources yellow" id="bh_div">
-                        <img src="images/bh.png">
-                        <span style="margin-left: 5px; text-align: left;" id="bhMass">X</span>
                     </div>
                 </div><div>
-                    <div class="resources sml" id="atom_div">
-                        <img src="images/atom.png" onclick="ATOM.reset()" onmousemove="FORMS.reset_msg.set('atom')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                    <div class="resources sml yellow" id="bh_div">
+                        <img class="res_img" src="images/bh.png">
+                        <span style="margin-left: 5px; text-align: left;" id="bhMass">X</span>
+                    </div><div class="resources sml" id="atom_div">
+                        <img class="res_img" src="images/atom.png" onclick="ATOM.reset()" onmousemove="FORMS.reset_msg.set('atom')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="atomAmt">X</span>
                     </div><div class="resources quark_color" id="quark_div">
-                        <img src="images/quark.png">
+                        <img class="res_img" src="images/quark.png">
                         <span style="margin-left: 5px; text-align: left;" id="quarkAmt">X</span>
                     </div>
                 </div><div>
                     <div class="resources sml green" id="md_div">
-                        <img src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                        <img class="res_img" class="res_img" src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="md_massAmt">X</span>
                     </div>
-                    <div class="resources sml magenta" id="sn_div">
-                        <img src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                    <div class="resources magenta" id="sn_div">
+                        <img class="res_img" src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
                     </div>
                 </div>
@@ -194,7 +192,8 @@
                 </div><br><div>
                     <span id="massSoft1" class="red">After <b id="massSoftStart1">X</b> of mass gain will softcap mass gain!</span><br>
                     <span id="massSoft3" style="color: rgb(121, 0, 0)">After <b id="massSoftStart3">X</b> of mass gain will softcap^2 mass gain!</span><br>
-                    <span id="massSoft4" style="color: rgb(122, 0, 86)">After <b id="massSoftStart4">X</b> of mass gain will softcap^3 mass gain!</span>
+                    <span id="massSoft4" style="color: rgb(122, 0, 86)">After <b id="massSoftStart4">X</b> of mass gain will softcap^3 mass gain!</span><br>
+                    <span id="massSoft5" style="color: rgb(255, 94, 0)">After <b id="massSoftStart5">X</b> of mass gain will softcap^4 mass gain!</span>
                 </div>
             </div><div id="stab_frame0_1">
                 You have <span id="bhMass2">X</span> of Black Hole<br>
@@ -307,7 +306,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.4.3.3 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.4.3.4 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

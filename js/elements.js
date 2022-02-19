@@ -341,6 +341,8 @@ function updateHTML() {
 				tmp.el.massSoftStart3.setTxt(formatMass(tmp.massSoftGain2))
 				tmp.el.massSoft4.setDisplay(tmp.massGain.gte(tmp.massSoftGain3))
 				tmp.el.massSoftStart4.setTxt(formatMass(tmp.massSoftGain3))
+				tmp.el.massSoft5.setDisplay(tmp.massGain.gte(tmp.massSoftGain4))
+				tmp.el.massSoftStart5.setTxt(formatMass(tmp.massSoftGain4))
 			}
 			if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()

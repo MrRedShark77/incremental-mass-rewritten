@@ -46,7 +46,7 @@ function updateChalTemp() {
         tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
-        tmp.chal.eff[x] = CHALS[x].effect(player.chal.comps[x])
+        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x])
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
@@ -266,9 +266,9 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret//.softcap(2.5,0.25,0)
+            return ret.softcap(3,0.25,0)
         },
-        effDesc(x) { return "^"+format(x) },
+        effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     4: {
         unl() { return player.chal.comps[3].gte(1) || player.atom.unl },
@@ -282,9 +282,9 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
-            return ret//.softcap(2.5,0.25,0)
+            return ret.softcap(3,0.25,0)
         },
-        effDesc(x) { return "^"+format(x) },
+        effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     5: {
         unl() { return player.atom.unl },
@@ -344,9 +344,9 @@ const CHALS = {
         effect(x) {
             if (player.atom.elements.includes(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
-            return ret//.softcap(2,0.25,0)
+            return ret.softcap(2.3,0.25,0)
         },
-        effDesc(x) { return "^"+format(x) },
+        effDesc(x) { return "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     9: {
         unl() { return player.supernova.tree.includes("chal4") },
@@ -393,7 +393,22 @@ const CHALS = {
         },
         effDesc(x) { return format(x)+"x stronger" },
     },
-    cols: 11,
+    12: {
+        unl() { return player.supernova.tree.includes("chal7") },
+        title: "Decay of Atom",
+        desc: "You cannot gain Atoms & Quarks.",
+        reward: `Completions add free Radiation Boosters.<br><span class="yellow">On first completion, unlock new prestige layer! (coming soon in v0.5)</span>`,
+        max: E(100),
+        inc: E('e2e7'),
+        pow: E(2),
+        start: uni('e8.4e8'),
+        effect(x) {
+            let ret = x.root(2)
+            return ret
+        },
+        effDesc(x) { return "+"+format(x) },
+    },
+    cols: 12,
 }
 
 /*

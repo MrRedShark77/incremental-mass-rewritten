@@ -477,6 +477,18 @@ const ELEMENTS = {
             },
             effDesc(x) { return "+"+format(x,0) },
         },
+        {
+            desc: `Super Tetr scales 25% weaker.`,
+            cost: E('e2.6e9'),
+        },
+        {
+            desc: `Remove 2 softcaps from Atomic Power's effect.`,
+            cost: E('e3.9e9'),
+        },
+        {
+            desc: `Collapsed Star’s effect is 25% stronger.`,
+            cost: E('e8e10'),
+        },
     ],
     /*
     {

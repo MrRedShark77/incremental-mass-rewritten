@@ -2,11 +2,11 @@ const TREE_IDS = [
     ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
     ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
-    ["","","","","unl1","","m3","","","d1","","","gr2","chal5","","chal6","","",""],
+    ["","","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
-    ["","","","","","","","","","fn1","fn5","","","","","","","",""],
+    ["","","","","","","fn8","","fn9","fn1","fn5","","","","","","","",""],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
-    ["","","","","","","","rad4","rad2","rad1","rad3","","","","","","","",""],
+    ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -287,6 +287,11 @@ const TREE_UPGS = {
             desc: `Unlock new challenges.`,
             cost: E(1e88),
         },
+        chal7: {
+            branch: ["chal6"],
+            desc: `Unlock 12th Challenge.`,
+            cost: E(1e203),
+        },
         gr1: {
             branch: ["bh1"],
             desc: `BH Condensers power boost Cosmic Rays power.`,
@@ -395,6 +400,16 @@ const TREE_UPGS = {
             desc: `Unlock 2 new more types of U-Quark & U-Fermion.`,
             cost: E(1e90),
         },
+        fn8: {
+            branch: ["fn7"],
+            desc: `Unlock 2 new final types of U-Quark & U-Fermion.`,
+            cost: E(1e159),
+        },
+        fn9: {
+            branch: ["fn1"],
+            desc: `[Strange] & [Neutrion] max tier is increased by 2.`,
+            cost: E(1e166),
+        },
         d1: {
             unl() { return player.supernova.tree.includes("fn6") },
             branch: ["rp1"],
@@ -433,6 +448,16 @@ const TREE_UPGS = {
             branch: ["rad2"],
             desc: `All Meta-Boosts are twice effective.`,
             cost: E(1e118),
+        },
+        rad5: {
+            branch: ["rad3"],
+            desc: `All Radiation gains are increased by 10% for every Supernovas you have become.`,
+            cost: E(1e170),
+            effect() {
+                let x = E(1.1).pow(player.supernova.times)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         /*
         x: {
