@@ -64,7 +64,7 @@ function updateMassTemp() {
 }
 
 function updateTickspeedTemp() {
-    tmp.tickspeedFP = tmp.fermions.effs[1][2].mul(AXIONS.getEff(2))
+    tmp.tickspeedFP = tmp.fermions.effs[1][2]
     tmp.tickspeedCost = E(2).pow(player.tickspeed.div(tmp.tickspeedFP)).floor()
     tmp.tickspeedBulk = player.rp.points.max(1).log(2).mul(tmp.tickspeedFP).add(1).floor()
     if (player.rp.points.lt(1)) tmp.tickspeedBulk = E(0)

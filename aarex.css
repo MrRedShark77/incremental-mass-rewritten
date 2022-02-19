@@ -1,0 +1,165 @@
+body {
+	background: linear-gradient(#001f3f, #000f1f);
+	color: #bfdfff
+}
+
+.btn, .btn_tab {
+	border: 0px solid;
+	border-radius: 6px;
+	background: rgba(0, 191, 255, 0.75) !important;
+	box-shadow: 0 0 6px #00bfff;
+
+	color: #7fefff;
+	text-shadow: 0 2px 4px #7fefff
+}
+
+.btn:hover, .btn_tab:hover {
+	transform: scale(1.05)
+}
+
+.btn.choosed, .btn_tab.choosed {
+	background: linear-gradient(#007fff, #005fbf) !important;
+	box-shadow: 0 0 6px #007fff, 0 0 36px #007fff;
+
+	color: #002f3f !important;
+	font-weight: bold;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5)
+}
+
+.btn_tab.bh {
+	background: linear-gradient(#ff9f00, #ffbf00) !important;
+	box-shadow: 0 0 6px #ffbf00, 0 0 36px #ffbf00;
+
+	color: #ffdf7f;
+	text-shadow: 0 2px 4px #ffdf7f
+}
+
+.btn_tab.atom {
+	background: linear-gradient(#007fff, #00ff7f) !important;
+	box-shadow: 0 0 6px #00ffff, 0 0 36px #00ffff;
+
+	color: #7fffff;
+	text-shadow: 0 2px 4px #7fffff
+}
+
+#stab_frame0_1 .btn {
+	background: rgba(255, 191, 0, 0.75) !important;
+	box-shadow: 0 0 6px #ffff00;
+
+	color: #ffff7f;
+	text-shadow: 0 2px 4px #ffff7f
+}
+
+#stab_frame0_2 .btn {
+	background: rgba(0, 255, 255, 0.75) !important;
+	box-shadow: 0 0 6px #00ffbf;
+
+	color: #7fffff;
+	text-shadow: 0 2px 4px #7fffff
+}
+
+.elements {
+	border: 0px solid;
+	border-radius: 6px;
+	background: rgba(0, 191, 255, 0.75) !important;
+	box-shadow: 0 0 6px #00bfff;
+
+	color: #7fefff;
+	text-shadow: 0 2px 4px #7fefff
+}
+
+.elements.locked {
+	background: linear-gradient(#2f1f1f, #1f1f1f) !important;
+	box-shadow: 0 3px 6px #7f0000;
+
+	color: #5f2f2f !important;
+	text-shadow: 0 2px 4px #3f0000
+}
+
+.elements.locked.bought {
+	background: linear-gradient(#00ff00, #7fff00) !important;
+	box-shadow: 0 3px 6px #007f00;
+
+	color: #003f00 !important;
+	text-shadow: 0 2px 4px #001f00
+}
+
+.btn_tab.dilation {
+	background: linear-gradient(#00ff00, #7fff00) !important;
+	box-shadow: 0 0 6px #7fff00, 0 0 36px #7fff00;
+
+	color: #bfffbf;
+	text-shadow: 0 2px 4px #bfffbf
+}
+
+.btn.md {
+	background: rgba(0, 255, 0, 0.75) !important;
+	box-shadow: 0 0 6px #7fff00;
+
+	color: #7fff7f;
+	text-shadow: 0 2px 4px #7fff7f
+}
+
+#stab0_3 {
+	background: linear-gradient(#ff7f00, #ff3f00) !important;
+	box-shadow: 0 3px 6px #7f3f00;
+
+	color: #3f3f00 !important;
+	text-shadow: 0 2px 4px #1f1f00
+}
+
+#stab_frame0_3 .btn {
+	background: rgba(255, 63, 0, 0.75) !important;
+	box-shadow: 0 0 6px #ff3f00;
+
+	color: #ffff7f;
+	text-shadow: 0 2px 4px #ffff7f
+}
+
+.btn.locked, #stab_frame0_1 .btn.locked, #stab_frame0_2 .btn.locked, #stab_frame0_3 .btn.locked {
+	background: linear-gradient(#2f1f1f, #1f1f1f) !important;
+	box-shadow: 0 3px 6px #7f0000;
+
+	color: #5f2f2f !important;
+	text-shadow: 0 2px 4px #3f0000
+}
+
+#tab5 {
+	background: linear-gradient(#ff007f, #ff003f, #ff00ff) !important;
+	box-shadow: 0 0 3px #ff007f, 0 0 6px #ff007f, 0 0 24px #7f3f00;
+
+	color: #bf7fff !important;
+	text-shadow: 3px 3px 3px #bf7fff, -3px -3px 3px #bf7fff, 0 0 3px #bf7fff
+}
+
+#stab5_1 {
+	background: linear-gradient(#ffbf00, #bf00ff) !important;
+	box-shadow: 0 0 6px #ffbf00, 0 0 24px #bf00ff;
+
+	color: #ffffbf !important;
+	text-shadow: 0 0 3px #ffffbf, 0 0 3px #ffffbf, 0 0 3px #ffffbf
+}
+
+#stab5_2 {
+	background: linear-gradient(#ffbf00, #00ff00) !important;
+	box-shadow: 0 0 6px #00ff00, 0 0 24px #ffffff;
+
+	color: #7f7f00 !important;
+	text-shadow: 0 0 3px #ffff00, 0 0 3px #bfbf00, 0 0 3px #bfbf00
+}
+
+#stab5_3 {
+	background: linear-gradient(30deg, #ffff00, transparent, transparent, #00ffff), linear-gradient(90deg, #ff0000, #00ff00, #0000ff, #ff0000) !important;
+	box-shadow: 0 0 6px #00ff00, 0 0 24px #00ff7f;
+
+	color: #bfffbf !important;
+	text-shadow: 0 0 3px #00ff00, 0 0 3px #00bf00, 0 0 3px #00bf00
+}
+
+#tab6 {
+	background: linear-gradient(#ff3f00, #ffbf00, #ff7f00) !important;
+	box-shadow: 0 0 3px #ff3f00, 0 0 6px #ff3f00, 0 0 24px #ff3f00;
+
+	color: #ff3f00 !important;
+	text-shadow: 0 0 3px #ff3f00, 0 0 6px #ff3f00, 0 0 3px #ff3f00
+}

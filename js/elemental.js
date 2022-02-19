@@ -462,7 +462,7 @@ const ELEMENTS = {
 				let [m1, m2] = [player.mass.max(10).log10().log10().times(4), player.mass.max(1).log10().pow(1/5).div(3)]
 				let exp = E(0.5)
 				if (player.atom.elements.includes(73)) exp = exp.mul(tmp.elements.effect[73]||1)
-                return m1.max(m2).pow(exp)
+                return m1.max(m2).pow(exp).softcap(80, 0.5, 1)
             },
             effDesc(x) { return "+"+format(x) },
         },
@@ -482,7 +482,7 @@ const ELEMENTS = {
             effect() {
 				let r = player.supernova.stars.max(1).log10().div(75).max(1)
 				if (player.supernova.tree.includes("feat2")) r = r.add(0.015)
-				return r.softcap(1.75,40,3).min(2.5)
+				return r.softcap(1.75,40,3).min(2)
             },
             effDesc(x) { return "^"+format(x)+(x.gte(1.75)?" <span class='soft'>(softcapped)</span>":"") },
         },

@@ -187,10 +187,10 @@ const RADIATION = {
         },{
             title: `Meta-Tickspeed Boost`,
             eff(b) {
-                let x = E(1.1).pow(b).softcap(2,10,3)
+                let x = E(1.1).pow(b)
                 return x
             },
-            desc(x) { return `Meta-Tickspeed starts ${format(x)}x later`+(x.gte(2)?" <span class='soft'>(softcapped)</span>":"") },
+            desc(x) { return `Meta-Tickspeed starts ${format(x)}x later` },
         },{
             title: `X-Ray Boost`,
             eff(b) {

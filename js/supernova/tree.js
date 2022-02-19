@@ -7,9 +7,9 @@ const TREE_IDS = [
     ["","","","","","","fn8","","","fn1","fn5","","","","","","","","feat6"],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","","rad4","rad2","rad1","rad3","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","eb1","eb2","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    ["","","","","","","","","","","","","ext2","ext3","","","","",""],
+    ["","","","","","","","","","eb1","eb2","ext1","ext5","","","","","",""],
+    ["","","","","","","","","","","","","ext4","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -108,7 +108,10 @@ const TREE_UPGS = {
         },
         t1: {
             branch: ["m1", 'rp1'],
-            req() { return player.supernova.tree.includes("qol_ext1") || (player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))) },
+			req() {
+				if (player.supernova.tree.includes("qol_ext1")) return true
+				return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))
+			},
             reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run. You can still obtain Tickspeed from Cosmic Rays.`},
             desc: `Tickspeed Power is raised to the 1.15th.`,
             cost: E(1500),
@@ -135,7 +138,10 @@ const TREE_UPGS = {
         },
         bh2: {
             branch: ['bh1'],
-            req() { return player.supernova.chal.noBHC && player.bh.mass.gte("1.5e1.7556e4") },
+			req() {
+				if (player.supernova.tree.includes("qol_ext1")) return true
+				return player.supernova.chal.noBHC && player.bh.mass.gte("1.5e1.7556e4")
+			},
             reqDesc() {return `Reach ${format("e1.75e4")} uni of black hole without buying any BH Condenser in Supernova run.`},
             desc: `BH Condenser power is raised to the 1.15th.`,
             cost: E(1500),
@@ -541,7 +547,7 @@ const TREE_UPGS = {
 				for (var i = 1; i <= CHALS.cols; i++) if (player.chal.comps[i].lte(sum.mul(.05))) return true
 				return false
 			},
-            reqDesc() { return "Get " + formatMass(uni("ee9")) + " mass with one challenge have at most 5% of total completions." },
+            reqDesc() { return `Get ${formatMass(uni("ee9"))} mass with one challenge have at most 5% of total completions.` },
             desc: `Reduce the auto-sweeper threshold by 2 completions / tiers.`,
 			perm: true,
             cost: E(1e100),
@@ -550,7 +556,7 @@ const TREE_UPGS = {
         feat5: {
             unl() { return player.ext.amt.gte(1) },
             req() { return player.mass.gte(uni("ee9")) && player.ext.time <= 10800 },
-            reqDesc: `Reach 1 mlt mass in 3 hours of Exotic Run.`,
+            reqDesc() { return `Reach ${formatMass(uni("ee9"))} mass in 3 hours of Exotic Run.` },
             desc: `+^0.05 to Mass and Rage gain exponents and their caps.`,
 			perm: true,
             cost: E(1e40),
@@ -559,7 +565,7 @@ const TREE_UPGS = {
         feat6: {
             unl() { return player.ext.amt.gte(1) },
             req() { return player.mass.lt(uni("ee10")) && tmp.supernova.bulk.sub(player.supernova.times).round().gte(10) },
-            reqDesc() { "Get +10 Supernova gains in under " + formatMass(uni("ee10")) + " mass" },
+            reqDesc() { return `Get +10 Supernova gains in under ${formatMass(uni("ee10"))} mass` },
             desc: `Pre-Ultra Supernova scalings start 1 later.`,
 			perm: true,
             cost: E(0),
@@ -571,7 +577,7 @@ const TREE_UPGS = {
             branch: ["qol1"],
             unl() { return player.ext.amt.gte(1) },
             req() { return player.supernova.times.gte(4) },
-            reqDesc() { format(4,0) + " Supernovas" },
+            reqDesc() { return `${format(4,0)} Supernovas` },
             desc: `You don't need to do requirements before buying several Supernova upgrades.`,
 			perm: true,
             cost: E(2000),
@@ -649,6 +655,41 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
+        },
+        ext1: {
+			branch: ["eb2"],
+            desc: `Axion Upgrades cheapen one row above. [Coming soon!]`,
+            cost: E(1/0),
+			perm: true,
+			noIcon: true,
+        },
+        ext2: {
+			branch: ["ext1"],
+            desc: `Axion Upgrades cheapen one row below. [Coming soon!]`,
+            cost: E(1/0),
+			perm: true,
+			noIcon: true,
+        },
+        ext3: {
+			branch: ["ext2"],
+            desc: `Axion Upgrades cheapen two rows above. [Coming soon!]`,
+            cost: E(1/0),
+			perm: true,
+			noIcon: true,
+        },
+        ext4: {
+			branch: ["ext1"],
+            desc: `Axion Upgrades make two column right less expensive. [Coming soon!]`,
+            cost: E(1/0),
+			perm: true,
+			noIcon: true,
+        },
+        ext5: {
+			branch: ["ext3", "ext4"],
+            desc: `Boost 'ext1' - 'ext4' upgrades based on Exotic Matter. [Coming soon!]`,
+            cost: E(1/0),
+			perm: true,
+			noIcon: true,
         },
         /*
         x: {

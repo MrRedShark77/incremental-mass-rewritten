@@ -77,13 +77,7 @@ let EXOTIC = {
 	},
 
 	calc(dt) {
-		player.ext.ax.res[0] = player.ext.ax.res[0].add(
-			player.mass.max(1).log10()
-			.mul(player.supernova.times.add(1).pow(2))
-			.pow(0.1)
-			.mul(player.ext.amt)
-			.mul(dt)
-		)
+		player.ext.ax.res[0] = player.ext.ax.res[0].add(AXIONS.prod(0).mul(dt))
 	}
 }
 
@@ -93,6 +87,7 @@ function updateExoticHTML() {
 		tmp.el.extAmt2.setHTML(format(player.ext.amt,2) + " (+" + format(EXOTIC.gain(),2) + ")")
 
 		tmp.el.st_res0.setHTML(format(player.ext.ax.res[0]))
+		tmp.el.st_gain0.setHTML(formatGain(player.ext.ax.res[0], AXIONS.prod(0)))
 		for (var i = 0; i < 4; i++) {
 			tmp.el["st_upg"+i].setClasses({btn: true, full: true, locked: !AXIONS.canBuy(i)})
 			tmp.el["st_lvl"+i].setHTML(format(player.ext.ax.upgs[i], 0) + " / " + format(AXIONS.maxLvl(0), 0))
@@ -222,14 +217,14 @@ let AXIONS = {
 			sum = player.ext.ax.upgs[i].add(sum)
 			min = player.ext.ax.upgs[i].min(min)
 		}
-		return sum.add(1).div(15/4).min(min.mul(8/7)).floor().add(1)
+		return sum.add(1).div(15/4).min(min.mul(1.2).add(1)).floor().add(1)
 	},
 	cost(i) {
 		var sum = E(0)
 		var type = Math.floor(i / 4)
 		for (var x = 4 * type; x < 4 * type + 4; x++) sum = player.ext.ax.upgs[x].add(sum)
-		var r = E(1.4).pow(sum.add(i)).mul(E(1.3).pow(sum.add(i))).times(1e3)
-		if (i == 3) r = r.max(1e5)
+		var r = E(1.35).pow(sum.add(i)).mul(E(1.3).pow(sum.add(i))).times(1e3)
+		if (i == 3) r = r.mul(3)
 		return r
 	},
 	bulk(i) {
@@ -249,21 +244,28 @@ let AXIONS = {
 		player.ext.ax.res[Math.floor(i / 4)] = player.ext.ax.res[Math.floor(i / 4)].sub(E(2, bulk).sub(1).times(cost)).max(0)
 	},
 
+	prod(x) {
+		return player.mass.max(1).log10()
+			.mul(player.supernova.times.add(1).pow(2))
+			.mul(player.ext.amt.pow(5))
+			.pow(0.15)
+	},
+
 	getEff(x) {
 		return AXIONS.eff[x](player.ext.ax.upgs[x])
 	},
 	eff: {
 		0(x) {
-			return x.mul(1.5).add(1).pow(2)
-		},
-		3(x) {
-			return x.sqrt().div(2000/7)
+			return x.mul(2).add(1).pow(2)
 		},
 		1(x) {
 			return E(1.3).pow(x.times(x.add(1).log(2)))
 		},
 		2(x) {
 			return x.add(1).log10().add(1)
+		},
+		3(x) {
+			return x.add(1).log(2).div(300).min(.5)
 		}
 	}
 }

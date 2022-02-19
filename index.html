@@ -5,6 +5,7 @@
     <meta name="description" content="Incremental Mass REWRITTEN made by MrRedShark77">
     <link rel="icon" href="images/mass.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="aarex.css">
 
     <script src="js/break_eternity.js"></script>
     <script src="js/Element.js"></script>
@@ -143,11 +144,13 @@
 		</div>
 		<div style="position: absolute; height: 80%; width: 80%; top: 10%; left: 10%; border: 3px solid #ff3f00; background: rgba(0, 0, 0, 0.9)">
 			<div id="stab_frame6_0">
-				You have <span id="st_res0"></span> Dimensional-X Axions.<br>
-				<button class="btn full" id="st_upg0" onclick="AXIONS.buy(0)">Supernova Time Boost<br>Speed up all Supernova productions by <span id="st_eff0"></span>x.<br>Cost: <span id="st_cost0"></span><br>Level: <span id="st_lvl0"></span></button>
-				<button class="btn full" id="st_upg1" onclick="AXIONS.buy(1)">Cosmic Burst Boost<br>Cosmic Ray softcap starts <span id="st_eff1"></span>x later.<br>Cost: <span id="st_cost1"></span><br>Level: <span id="st_lvl1"></span></button>
-				<button class="btn full" id="st_upg2" onclick="AXIONS.buy(2)">Tickspeed Balance Boost<br>Tickspeed scales <span id="st_eff2"></span>x slower but also reduces non-bonus multipliers.<br>Cost: <span id="st_cost2"></span><br>Level: <span id="st_lvl2"></span></button>
-				<button class="btn full" id="st_upg3" onclick="AXIONS.buy(3)">Radiation Scaling Boost<br>Reduce the Radiation Booster scaling by ^<span id="st_eff3"></span>.<br>Cost: <span id="st_cost3"></span><br>Level: <span id="st_lvl3"></span></button>
+				You have <span id="st_res0"></span> Dimensional-X Axions. <span id="st_gain0"></span><br>
+				<table><tr>
+					<td><button class="btn full" id="st_upg0" onclick="AXIONS.buy(0)">Supernova Time Boost<br>Speed up all Supernova productions by <span id="st_eff0"></span>x.<br>Cost: <span id="st_cost0"></span><br>Level: <span id="st_lvl0"></span></button></td>
+					<td><button class="btn full" id="st_upg1" onclick="AXIONS.buy(1)">Cosmic Burst Boost<br>Cosmic Ray softcap starts <span id="st_eff1"></span>x later.<br>Cost: <span id="st_cost1"></span><br>Level: <span id="st_lvl1"></span></button></td>
+					<td><button class="btn full" id="st_upg2" onclick="AXIONS.buy(2)">Meta Tickspeed Boost<br>All Tickspeed scalings are <span id="st_eff2"></span>x slower but also reduces non-bonus multipliers.<br>Cost: <span id="st_cost2"></span><br>Level: <span id="st_lvl2"></span></button></td>
+					<td><button class="btn full" id="st_upg3" onclick="AXIONS.buy(3)">Radiation Scaling Boost<br>Reduce the Radiation Booster scaling by ^<span id="st_eff3"></span>.<br>Cost: <span id="st_cost3"></span><br>Level: <span id="st_lvl3"></span></button></td>
+				</tr></table>
 			</div>
 		</div>
 	</div>

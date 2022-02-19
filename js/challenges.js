@@ -406,10 +406,10 @@ const CHALS = {
 		unl() { return player.supernova.tree.includes("chal7") },
 		title: "Wormhole Devourer",
 		desc: "You are stuck in Mass Dilation, but has a static ^0.428 penalty and doesn't affect Dark Matter and Black Hole.",
-		reward: `Ultra Supernova scales slower.<br><span class="yellow">On first completion, unlock a new prestige layer! [Coming soon!]</span>`,
+		reward: `Ultra Supernova scales slower.<br><span class="yellow">On first completion, unlock a new prestige layer!</span>`,
 		max: E(50),
-		inc: E("e5000"),
-		pow: E(0.75),
+		inc: E("e3000"),
+		pow: E(1.5),
 		start: E("e5e4"),
 		effect(x) {
             let ret = E(1).div(x.div(20).add(1).sqrt())
