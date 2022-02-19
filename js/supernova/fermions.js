@@ -403,6 +403,7 @@ function setupFermionsHTML() {
             table += `
             <button id="${id}_div" class="fermion_btn ${FERMIONS.names[i]}" onclick="FERMIONS.choose(${i},${x})">
                 <b>[${FERMIONS.sub_names[i][x]}]</b><br>[<span id="${id}_tier_scale"></span>Tier <span id="${id}_tier">0</span>]<br>
+                <span id="${id}_cur">Currently: X</span><br>
                 Next Tier at: <span id="${id}_nextTier">X</span><br>
                 (Increased by ${f.inc})<br><br>
                 Effect: <span id="${id}_desc">X</span><br>
@@ -442,11 +443,22 @@ function updateFermionsHTML() {
             tmp.el[id+"_div"].setDisplay(unl)
 
             if (unl) {
-                tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: tmp.fermions.ch[0] == i && tmp.fermions.ch[1] == x})
+                let active = tmp.fermions.ch[0] == i && tmp.fermions.ch[1] == x
+                tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: active})
                 tmp.el[id+"_nextTier"].setTxt(fm(f.nextTierAt(player.supernova.fermions.tiers[i][x])))
                 tmp.el[id+"_tier_scale"].setTxt(getScalingName('fTier', i, x))
                 tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(tmp.fermions.maxTier[i][x] < Infinity?" / "+format(tmp.fermions.maxTier[i][x],0):""))
                 tmp.el[id+"_desc"].setHTML(f.desc(tmp.fermions.effs[i][x]))
+
+                tmp.el[id+"_cur"].setDisplay(active)
+                if (active) {
+                    tmp.el[id+"_cur"].setTxt(`Currently: ${fm(
+                        [
+                            [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff],
+                            [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, tmp.tickspeedEffect.step]
+                        ][i][x]
+                    )}`)
+                }
             }
         }
     }
