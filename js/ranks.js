@@ -191,7 +191,7 @@ const RANKS = {
                 return ret
             },
             '4'() {
-                let ret = E(2).div(player.ranks.pent)
+                let ret = E(2).div(player.ranks.pent.softcap(10,2,1))
                 return ret
             },
             '5'() {

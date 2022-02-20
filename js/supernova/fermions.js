@@ -137,8 +137,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
 					if (FERMIONS.onActive(05)) return E(1)
-                    let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1).softcap(5,0.75,0)
-					if (x.gte(100)) x = x.div(x.log10()).add(50)
+                    let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1).softcap(5,0.75,0).softcap(100,4,3)
                     return x
                 },
                 desc(x) {

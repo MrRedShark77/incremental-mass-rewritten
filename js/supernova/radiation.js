@@ -44,13 +44,14 @@ const RADIATION = {
     getBoostScalingMul(i) {
 		let f4 = E(1)
 		if (tmp.fermions) f4 = f4.mul(tmp.fermions.effs[0][5])
+		f4 = f4.mul(tmp.chal?tmp.chal.eff[12]:1)
 		return f4
     },
     getBoostScalingExp(i) {
 		let f2 = 1.3+i*0.05
 		if (tmp.radiation.bs.eff[17] && i % 2 == 1) f2 -= tmp.radiation.bs.eff[17][1]
-		f2 -= AXIONS.getEff(3)
-		return f2
+		if (tmp.ax && tmp.ax.eff) f2 -= tmp.ax.eff[3]
+		return Math.max(f2,1.25)
     },
     getLevelEffect(i) {
         let x = this.boosts[i].eff(FERMIONS.onActive(05)?E(0):tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i]))
@@ -95,10 +96,12 @@ const RADIATION = {
             desc(x) { return `Radiowave is boosted by ${format(x)}x (based on Frequency)` },
         },{
             title: `Tickspeed Boost`,
-            eff(b) {
-                let x = b.div(AXIONS.getEff(2)).add(1).root(2)
-                return x
-            },
+			eff(b) {
+				let x = b.add(1).root(2)
+				let d = chalOutside() && tmp.ax && tmp.ax.eff ? tmp.ax.eff[2] : E(1)
+				if (d.gt(1)) x = x.sub(1).div(d).add(1)
+				return x
+			},
             desc(x) { return `Non-bonus tickspeed is ${format(x)}x stronger` },
         },{
             title: `Mass-Softcap Boost`,

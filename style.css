@@ -536,16 +536,34 @@ h2 {
 	width: 100%;
 	height: 100%;
 	background: repeating-linear-gradient(45deg, transparent, #ff3f00, #7f0000, #ff7f00, transparent 25%);
-	animation: lg_spin 2s linear infinite;
 }
 
-@keyframes lg_spin {
-	0% {
-		background-position-x: 0;
-	}
-	100% {
-		background-position-x: 100%;
-	}
+td.ax {
+	min-width: 60px;
+	min-height: 60px;
+	max-width: 60px;
+	max-height: 60px;
+	padding: 6px
+}
+
+.btn_ax {
+	background-color: black;
+	border: solid 2px white;
+	width: 60px;
+	height: 60px;
+	padding: 0;
+}
+
+.btn_ax.normal {
+	background-color: #333
+}
+
+.btn_ax.normal:hover {
+	background-color: grey
+}
+
+.btn_ax.locked {
+	border-color: #333;
 }
 
 [tooltip] {

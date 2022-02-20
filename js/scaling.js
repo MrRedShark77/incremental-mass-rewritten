@@ -199,7 +199,7 @@ function getScalingPower(type, name) {
 		if (name=='tickspeed') {
 			power = power.mul(tmp.chal?tmp.chal.eff[1].tick:1)
 			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			power = power.div(AXIONS.getEff(2))
+			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
 		}
 		if (name=='bh_condenser') {
 			if (player.atom.elements.includes(15)) power = power.mul(0.8)
@@ -223,7 +223,7 @@ function getScalingPower(type, name) {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
 			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			power = power.div(AXIONS.getEff(2))
+			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
 		}
 		if (name=='bh_condenser') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)
@@ -241,7 +241,7 @@ function getScalingPower(type, name) {
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
 			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
 			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			power = power.div(AXIONS.getEff(2))
+			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
 		}
 		if (name=='bh_condenser') {
 			if (player.atom.elements.includes(55)) power = power.mul(0.75)
@@ -251,7 +251,6 @@ function getScalingPower(type, name) {
 		}
 		if (name=='supernova') {
 			if (tmp.radiation) power = power.mul(tmp.radiation.bs.eff[20])
-			power = power.mul(tmp.chal?tmp.chal.eff[12]:1)
 		}
 	}
 	if (type=="meta") {
@@ -261,7 +260,7 @@ function getScalingPower(type, name) {
 		if (name=='tickspeed') {
 			if (player.ranks.pent.gte(5)) power = power.mul(RANKS.effect.pent[5]())
 			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			power = power.div(AXIONS.getEff(2))
+			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
 		}
 	}
 	return power

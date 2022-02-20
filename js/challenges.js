@@ -51,6 +51,7 @@ function updateChalTemp() {
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
     tmp.chal.canFinish = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].gt(player.chal.comps[player.chal.active]) : false
+	tmp.chal.outside = player.chal.active == 0 && !player.md.active && player.supernova.fermions.choosed !== ""
 }
 
 const CHALS = {
@@ -406,13 +407,13 @@ const CHALS = {
 		unl() { return player.supernova.tree.includes("chal7") },
 		title: "Wormhole Devourer",
 		desc: "You are stuck in Mass Dilation, but has a static ^0.428 penalty and doesn't affect Dark Matter and Black Hole.",
-		reward: `Ultra Supernova scales slower.<br><span class="yellow">On first completion, unlock a new prestige layer!</span>`,
-		max: E(50),
+		reward: `Radiation Boosters scale slower.<br><span class="yellow">On first completion, unlock a new prestige layer!</span>`,
+		max: E(100),
 		inc: E("e3000"),
-		pow: E(1.5),
-		start: E("e5e4"),
+		pow: E(1.4),
+		start: uni("e47250"),
 		effect(x) {
-            let ret = E(1).div(x.div(20).add(1).sqrt())
+            let ret = E(1).div(x.div(25).add(1).sqrt())
             return ret
 		},
 		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
@@ -438,3 +439,6 @@ const CHALS = {
 },
 */
 
+function chalOutside() {
+	return tmp.chal ? tmp.chal.outside : player.chal.active == 0 && !player.md.active && player.supernova.fermions.choosed !== ""
+}

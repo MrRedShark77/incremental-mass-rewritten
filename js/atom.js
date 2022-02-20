@@ -54,11 +54,16 @@ const ATOM = {
             if (tmp.md.active) x = MASS_DILATION.applyDil(x)
             return x
         },
-        effect() {
-            let sc = E(5e4).mul(AXIONS.getEff(1))
-            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(sc,0.75,0).softcap(sc.mul(800),0.25,0)
-            return x.floor()
-        },
+		softcap() {
+			let r = E(5e4)
+			if (tmp.ax && tmp.ax.eff) r = r.mul(tmp.ax.eff[1])
+			return r
+		},
+		effect() {
+			let sc = ATOM.atomic.softcap()
+			let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75).softcap(sc,0.75,0).softcap(sc.mul(800),0.25,0)
+			return x.floor()
+		},
     },
     gamma_ray: {
         buy() {
@@ -115,7 +120,7 @@ const ATOM = {
             let p = player.atom.particles[i]
             let x = p.pow(2)
             if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]))
-            x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
+            x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2).softcap('e1e11',0.94,2).softcap('e1e13',0.94,2)
             if (player.atom.elements.includes(61)) x = x.mul(p.add(1).root(2))
             return x
         },
@@ -285,7 +290,7 @@ function setupAtomHTML() {
 
 function updateAtomicHTML() {
     tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain))
-	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(E(5e4).mul(AXIONS.getEff(1)))?" <span class='soft'>(softcapped)</span>":""))
+	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(ATOM.atomic.softcap())?" <span class='soft'>(softcapped)</span>":""))
 
 	tmp.el.gamma_ray_lvl.setTxt(format(player.atom.gamma_ray,0)+(tmp.atom.gamma_ray_bonus.gte(1)?" + "+format(tmp.atom.gamma_ray_bonus,0):""))
 	tmp.el.gamma_ray_btn.setClasses({btn: true, locked: !tmp.atom.gamma_ray_can})

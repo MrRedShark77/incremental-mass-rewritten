@@ -11,7 +11,8 @@ let EXOTIC = {
 	},
 	gain() {
 		if (player.chal.comps[12].eq(0)) return E(0)
-		return player.supernova.maxMass.max(1).log10().times(player.supernova.times).div(2e12).pow(player.chal.comps[12].sub(1).div(3)).max(1)
+		return player.mass.add(1).log10().div(1e9).add(1)
+			.pow(player.supernova.times.mul(player.chal.comps[12].add(1)).div(500))
 	},
 	reset(force) {
 		if (!force) {
@@ -85,15 +86,7 @@ function updateExoticHTML() {
 	tmp.el.app_ext.setDisplay(tmp.tab == 6)
 	if (tmp.tab == 6) {
 		tmp.el.extAmt2.setHTML(format(player.ext.amt,2) + " (+" + format(EXOTIC.gain(),2) + ")")
-
-		tmp.el.st_res0.setHTML(format(player.ext.ax.res[0]))
-		tmp.el.st_gain0.setHTML(formatGain(player.ext.ax.res[0], AXIONS.prod(0)))
-		for (var i = 0; i < 4; i++) {
-			tmp.el["st_upg"+i].setClasses({btn: true, full: true, locked: !AXIONS.canBuy(i)})
-			tmp.el["st_lvl"+i].setHTML(format(player.ext.ax.upgs[i], 0) + " / " + format(AXIONS.maxLvl(0), 0))
-			tmp.el["st_eff"+i].setHTML(format(AXIONS.getEff(i)))
-			tmp.el["st_cost"+i].setHTML(format(AXIONS.cost(i), 0))
-		}
+		updateAxionHTML()
 	}
 }
 
@@ -131,7 +124,7 @@ let EXTRA_BUILDINGS = {
 		mul: E("ee9"),
 		pow: E(3),
 		eff(x) {
-			return x.add(1).log10().add(1).div(7.5)
+			return x.add(1).log(100).add(1).div(10)
 		}
 	},
 	ag2: {
@@ -139,16 +132,16 @@ let EXTRA_BUILDINGS = {
 		mul: E("e5e5"),
 		pow: E(2.5),
 		eff(x) {
-			return x.times(tmp.atom ? tmp.atom.atomicEff : E(0)).pow(.75).div(2e3)
+			return x.times(tmp.atom ? tmp.atom.atomicEff : E(0)).pow(.75).div(3e3)
 		}
 	},
 	ag3: {
-		start: E("ee9"),
-		mul: E("e5e8"),
+		start: E("e7.5e9"),
+		mul: E("e2.5e9"),
 		pow: E(2),
 		eff(x) {
 			if (x.eq(0)) return E(0)
-			return E(tmp.atom ? tmp.atom.atomicEff : E(0)).add(1).pow(x.add(1).log(2).div(100)).mul(player.supernova.tree.includes("rad4")?1:2/3).sub(1)
+			return E(tmp.atom ? tmp.atom.atomicEff : E(0)).add(1).pow(x.add(1).log(3).div(100)).sub(1).mul(player.supernova.tree.includes("rad4")?1:2/3)
 		}
 	}
 }
@@ -202,12 +195,12 @@ function buyExtraBuildings(type, x) {
 	EXTRA_BUILDINGS.saves[type]()["eb"+x] = tmp.eb[type+x].gain
 }
 
-//Something
+//AXIONS
 let AXIONS = {
 	setup() {
 		return {
-			res: [ E(0), E(0), E(0), E(0) ],
-			upgs: [ E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0) ]
+			res: [ E(0), E(0) ],
+			upgs: [ E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0) ]
 		}
 	},
 	maxLvl(x) {
@@ -223,8 +216,7 @@ let AXIONS = {
 		var sum = E(0)
 		var type = Math.floor(i / 4)
 		for (var x = 4 * type; x < 4 * type + 4; x++) sum = player.ext.ax.upgs[x].add(sum)
-		var r = E(1.35).pow(sum.add(i)).mul(E(1.3).pow(sum.add(i))).times(1e3)
-		if (i == 3) r = r.mul(3)
+		var r = E(2).pow(sum).mul(50/(i+5)*Math.pow(2,i))
 		return r
 	},
 	bulk(i) {
@@ -242,30 +234,86 @@ let AXIONS = {
 		if (bulk.eq(0)) return
 		player.ext.ax.upgs[i] = player.ext.ax.upgs[i].add(bulk)
 		player.ext.ax.res[Math.floor(i / 4)] = player.ext.ax.res[Math.floor(i / 4)].sub(E(2, bulk).sub(1).times(cost)).max(0)
+		updateAxionLevelTemp()
 	},
 
 	prod(x) {
-		return player.mass.max(1).log10()
-			.mul(player.supernova.times.add(1).pow(2))
-			.mul(player.ext.amt.pow(5))
-			.pow(0.15)
+		return player.mass.max(1).log10().pow(0.4)
+			.mul(player.ext.amt.add(1).log10().pow(2))
 	},
 
-	getEff(x) {
-		return AXIONS.eff[x](player.ext.ax.upgs[x])
+	getUpgs(p) {
+		return [player.ext.ax.upgs[p % 4], player.ext.ax.upgs[Math.floor(p / 4) + 4]]
 	},
+	getLvl(p) {
+		return AXIONS.getBaseLvl(p).add(AXIONS.getBonusLvl(p))
+	},
+	getBaseLvl(p) {
+		var r = AXIONS.getUpgs(p)
+		return r[0].add(r[1])
+	},
+	getBonusLvl(p) {
+		return E(0)
+	},
+	getEff(p, l) {
+		return AXIONS.eff[p](l)
+	},
+
 	eff: {
 		0(x) {
 			return x.mul(2).add(1).pow(2)
 		},
 		1(x) {
-			return E(1.3).pow(x.times(x.add(1).log(2)))
+			return x.sqrt().div(10).add(1.2).min(1.6).pow(x)
 		},
 		2(x) {
-			return x.add(1).log10().add(1)
+			return x.add(1).log10().div(2).add(1)
 		},
 		3(x) {
-			return x.add(1).log(2).div(300).min(.5)
+			return x.pow(0.75).div(150).toNumber()
 		}
 	}
+}
+
+function setupAxionHTML() {
+	var html = ""
+	for (var y = 0; y <= 4; y++) {
+		html += "</tr><tr>"
+		for (var x = 0; x <= 4; x++) {
+			if (x == 0 && y == 0) html += "<td class='ax'></td>"
+			if (x > 0 && y == 0) html += "<td class='ax'><button class='btn_ax normal' id='ax_upg"+x+"'>X</button></td>"
+			if (x == 0 && y > 0) html += "<td class='ax'><button class='btn_ax normal' id='ax_upg"+(y+4)+"'>Y</button></td>"
+			if (x > 0 && y > 0) html += "<td class='ax'><button class='btn_ax' id='ax_boost"+(y*4+x)+"'><img src='images/tree/placeholder.png'></img></button></td>"
+		}
+	}
+	new Element("ax_table").setHTML(html)
+}
+
+function updateAxionHTML() {
+	tmp.el.st_res0.setHTML(format(player.ext.ax.res[0]))
+	tmp.el.st_gain0.setHTML(formatGain(player.ext.ax.res[0], AXIONS.prod(0)))
+	for (var i = 0; i < 4; i++) {
+		tmp.el["st_upg"+i].setClasses({btn: true, full: true, locked: !AXIONS.canBuy(i)})
+		tmp.el["st_lvl"+i].setHTML(format(player.ext.ax.upgs[i], 0) + " / " + format(AXIONS.maxLvl(0), 0))
+		tmp.el["st_eff"+i].setHTML(format(tmp.ax.eff[i]))
+		tmp.el["st_cost"+i].setHTML(format(AXIONS.cost(i), 0))
+	}
+}
+
+function updateAxionLevelTemp() {
+	tmp.ax.lvl = {}
+	for (var i = 0; i < 16; i++) tmp.ax.lvl[i] = AXIONS.getLvl(i)
+}
+
+function updateAxionTemp() {
+	if (!EXOTIC.unlocked()) {
+		tmp.ax = {}
+		return
+	}
+
+	tmp.ax = { lvl: tmp.ax && tmp.ax.lvl }
+	if (!tmp.ax.lvl) updateAxionLevelTemp()
+
+	tmp.ax.eff = {}
+	for (var i = 0; i < 16; i++) if (AXIONS.eff[i]) tmp.ax.eff[i] = AXIONS.getEff(i, tmp.ax.lvl[i])
 }

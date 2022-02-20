@@ -233,7 +233,7 @@ function updateSupernovaTemp() {
         if (TREE_UPGS.ids[id].effect) tmp.supernova.tree_eff[id] = TREE_UPGS.ids[id].effect()
     }
     tmp.supernova.star_gain = SUPERNOVA.starGain()
-    tmp.supernova.timeMult = AXIONS.getEff(0) || E(1)
+    tmp.supernova.timeMult = (tmp.ax && tmp.ax.eff && tmp.ax.eff[0]) || E(1)
 }
 
 function updateSupernovaEndingHTML() {
@@ -280,7 +280,7 @@ function updateSupernovaAutoTemp() {
 	if (player.supernova.tree.includes("qol_ext2")) thres = 10
 	if (player.supernova.tree.includes("feat4")) thres -= 2
 	for (var x = 1; x <= CHALS.cols; x++) {
-		if (player.chal.comps[x].gte(15)) tmp.supernova.auto.push(x)
+		if (player.chal.comps[x].gte(thres)) tmp.supernova.auto.push(x)
 	}
 	for (var y = 0; y < 2; y++) {
 		for (var x = 0; x < 6; x++) {

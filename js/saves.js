@@ -56,7 +56,7 @@ function calc(dt, dt_offline) {
 				).add(
 					player.bh.mass.max(10).log10().root(log)
 				).pow(log)
-			).softcap(tmp.bh.mass_gain.pow(1.5),0.75,2)
+			).softcap(tmp.bh.mass_gain.pow(1.05),0.5,2)
 		}
 	}
 	if (player.atom.unl && tmp.pass) {
@@ -327,11 +327,9 @@ function save(){
 }
 
 function load(x){
-    if(typeof x == "string" & x != ''){
-        loadPlayer(JSON.parse(atob(x)))
-    } else {
-        wipe()
-    }
+	if (typeof x == "string" & x != '') loadPlayer(JSON.parse(atob(x)))
+	else wipe()
+	updateAarex()
 }
 
 function exporty() {

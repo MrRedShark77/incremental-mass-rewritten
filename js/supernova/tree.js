@@ -170,7 +170,7 @@ const TREE_UPGS = {
             desc: `Star generators are stronger based on Supernova.`,
             cost: E(10000),
             effect() {
-                let x = player.supernova.times.max(0).root(10).mul(0.1).add(1)
+                let x = player.supernova.times.max(0).root(10).mul(0.1).add(1).min(1.15)
                 return x
             },
             effDesc(x) { return "^"+format(x) },
@@ -416,7 +416,7 @@ const TREE_UPGS = {
             cost: E(1e72),
             effect() {
 				let sn = player.supernova.times
-                let x = sn.div(300).add(1).pow(sn.sub(30)).max(1)
+                let x = sn.div(300).add(1).min(2).pow(sn.sub(40)).max(1)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -528,7 +528,7 @@ const TREE_UPGS = {
         eb2: {
 			branch: ["eb1"],
             desc: `Unlock Black Hole and Atomic Buildings #3.`,
-            cost: E(1e50),
+            cost: E(1e200),
 			perm: true,
 			noIcon: true,
         },
@@ -544,10 +544,10 @@ const TREE_UPGS = {
 				if (player.mass.lt(uni("ee9"))) return false
 				let sum = E(0)
 				for (var i = 1; i <= CHALS.cols; i++) sum = sum.add(player.chal.comps[i])
-				for (var i = 1; i <= CHALS.cols; i++) if (player.chal.comps[i].lte(sum.mul(.05))) return true
+				for (var i = 1; i <= 4; i++) if (player.chal.comps[i].lte(sum.mul(.05))) return true
 				return false
 			},
-            reqDesc() { return `Get ${formatMass(uni("ee9"))} mass with one challenge have at most 5% of total completions.` },
+            reqDesc() { return `Get ${formatMass(uni("ee9"))} mass with one black hole challenge have at most 5% of total completions.` },
             desc: `Reduce the auto-sweeper threshold by 2 completions / tiers.`,
 			perm: true,
             cost: E(1e100),
@@ -555,8 +555,8 @@ const TREE_UPGS = {
         },
         feat5: {
             unl() { return player.ext.amt.gte(1) },
-            req() { return player.mass.gte(uni("ee9")) && player.ext.time <= 10800 },
-            reqDesc() { return `Reach ${formatMass(uni("ee9"))} mass in 3 hours of Exotic Run.` },
+            req() { return player.mass.gte(uni("ee9")) && player.ext.time <= 3600 },
+            reqDesc() { return `Reach ${formatMass(uni("ee9"))} mass in 1 hour of Exotic Run.` },
             desc: `+^0.05 to Mass and Rage gain exponents and their caps.`,
 			perm: true,
             cost: E(1e40),
@@ -564,8 +564,8 @@ const TREE_UPGS = {
         },
         feat6: {
             unl() { return player.ext.amt.gte(1) },
-            req() { return player.mass.lt(uni("ee10")) && tmp.supernova.bulk.sub(player.supernova.times).round().gte(10) },
-            reqDesc() { return `Get +10 Supernova gains in under ${formatMass(uni("ee10"))} mass` },
+            req() { return player.mass.lt(uni("ee10")) && tmp.supernova.bulk.sub(player.supernova.times).round().gte(15) },
+            reqDesc() { return `Get +15 Supernova gains in under ${formatMass(uni("ee10"))} mass` },
             desc: `Pre-Ultra Supernova scalings start 1 later.`,
 			perm: true,
             cost: E(0),
@@ -590,9 +590,11 @@ const TREE_UPGS = {
         },
         qol_ext2: {
             branch: ["qol_ext1"],
+			req() { return player.ext.amt.gte(10) },
+            reqDesc() { return format(10) + " Exotic Matter" },
             desc: `Reduce the auto-sweeper threshold to 10.`,
 			perm: true,
-            cost: E(1e225),
+            cost: E(1e150),
 			noIcon: true,
             effect() {
                 let x = E(1)
@@ -606,7 +608,7 @@ const TREE_UPGS = {
             reqDesc() { return "Get " + format(1e50) + " frequency of radiation." },
             desc: `Radiation Boosters are fully automated for at least 1,000,000 radiation.`,
 			perm: true,
-            cost: E(1e200),
+            cost: E(1e275),
 			noIcon: true,
             effect() {
                 let x = E(1)
@@ -636,7 +638,7 @@ const TREE_UPGS = {
             branch: ["qol_ext1"],
             desc: `Keep the core Supernova upgrades.`,
 			perm: true,
-            cost: E(1e50),
+            cost: E(1e200),
 			noIcon: true,
             effect() {
                 let x = E(1)

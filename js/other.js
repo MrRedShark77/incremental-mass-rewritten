@@ -129,3 +129,24 @@ function removePopup() {
     tmp.popup = x
     updatePopup()
 }
+
+function updateAarex(toggle) {
+	document.querySelectorAll("link").forEach( function(e) {
+		if (e.href.includes("aarex.css")) e.remove();
+	});
+
+	if (toggle) player.aarex = !player.aarex
+
+	if (player.aarex) {
+		var head = document.head;
+		var link = document.createElement('link');
+		
+		link.type = 'text/css';
+		link.rel = 'stylesheet';
+		link.href = "aarex.css";
+
+		head.appendChild(link);
+	}
+
+	document.getElementById("aarex_active").textContent = player.aarex ? "ON" : "OFF"
+}
