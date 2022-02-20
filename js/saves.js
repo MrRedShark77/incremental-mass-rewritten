@@ -325,6 +325,7 @@ function save(){
     localStorage.setItem("testSave",btoa(JSON.stringify(player)))
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
+setInterval(save, 30000)
 
 function load(x){
 	if (typeof x == "string" & x != '') loadPlayer(JSON.parse(atob(x)))
