@@ -198,7 +198,7 @@ function updateUpperHTML() {
 
 	unl = EXOTIC.unlocked()
 	tmp.el.ext_div.setVisible(unl)
-	if (unl) tmp.el.extAmt.setHTML(format(player.ext.amt,2) + " (+" + format(EXOTIC.gain(),2) + ")")
+	if (unl) tmp.el.extAmt.setHTML(format(player.ext.amt,2) + "<br>(+" + format(EXOTIC.gain(),2) + ")")
 }
 
 function updateRanksHTML() {

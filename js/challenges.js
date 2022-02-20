@@ -51,7 +51,7 @@ function updateChalTemp() {
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
     tmp.chal.canFinish = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].gt(player.chal.comps[player.chal.active]) : false
-	tmp.chal.outside = player.chal.active == 0 && !player.md.active && player.supernova.fermions.choosed !== ""
+	tmp.chal.outside = player.chal.active == 0 && !player.md.active && player.supernova.fermions.choosed == ""
 }
 
 const CHALS = {
@@ -440,5 +440,5 @@ const CHALS = {
 */
 
 function chalOutside() {
-	return tmp.chal ? tmp.chal.outside : player.chal.active == 0 && !player.md.active && player.supernova.fermions.choosed !== ""
+	return tmp.chal ? tmp.chal.outside : player.chal.active == 0 && !player.md.active && player.supernova.fermions.choosed == ""
 }

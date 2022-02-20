@@ -270,7 +270,7 @@ let AXIONS = {
 			return x.add(1).log10().div(2).add(1)
 		},
 		3(x) {
-			return x.pow(0.75).div(150).toNumber()
+			return x.sqrt().div(150).toNumber()
 		}
 	}
 }
@@ -317,3 +317,22 @@ function updateAxionTemp() {
 	tmp.ax.eff = {}
 	for (var i = 0; i < 16; i++) if (AXIONS.eff[i]) tmp.ax.eff[i] = AXIONS.getEff(i, tmp.ax.lvl[i])
 }
+
+/*
+11.
+12.
+13.
+14.
+21. Excited Atomic Boost: Raise the Atomic Power gains.
+22. Outrageous Boost: Multiply the cap increases to RP exponents.
+23. Superranked Boost: Meta Rank scaling is weaker.
+24. Meta Zone Boost: Meta Boosts are multiplied based on radiation types.
+31. Supermassive Boost: Hawking Radiation softcap starts later.
+32. Dark Radiation Boost: Hawking Radiation is more powerful.
+33. Quark Condenser Boost: Neutron Condensers are more powerful.
+34. Lepton Anomaly Boost: Neut-Muon softcap is weaker.
+41. Supernova Boost: Raise the Titanium-73 effect more.
+42. Challenge Boost: Increase the completion cap of Challenge 7.
+43. Impossible Boost: Weaken the Impossible Challenge scalings.
+44. Pent Boost: Pent requirement increases slower.
+*/

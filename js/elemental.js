@@ -472,9 +472,9 @@ const ELEMENTS = {
             effect() {
                 let x = player.ranks.rank
                 x = x.div(2e4).add(1)
-				return x.pow(x.div(1.5).max(1))
+				return x.pow(x.div(1.5).max(1)).softcap(300,4,3)
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return format(x)+"x"+(x.gte(300)?" <span class='soft'>(softcapped)</span>":"") },
         },
         {
             desc: `Raise Lutetium-71 effect based on Neutron Stars.`,
@@ -482,7 +482,7 @@ const ELEMENTS = {
             effect() {
 				let r = player.supernova.stars.max(1).log10().div(75).max(1)
 				if (player.supernova.tree.includes("feat2")) r = r.add(0.015)
-				return r.softcap(1.75,40,3).min(2)
+				return r.softcap(1.75,40,3).min(2.1)
             },
             effDesc(x) { return "^"+format(x)+(x.gte(1.75)?" <span class='soft'>(softcapped)</span>":"") },
         },

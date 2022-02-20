@@ -170,7 +170,7 @@ const TREE_UPGS = {
             desc: `Star generators are stronger based on Supernova.`,
             cost: E(10000),
             effect() {
-                let x = player.supernova.times.max(0).root(10).mul(0.1).add(1).min(1.15)
+                let x = player.supernova.times.max(0).root(10).mul(0.1).add(1)
                 return x
             },
             effDesc(x) { return "^"+format(x) },

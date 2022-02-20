@@ -155,10 +155,10 @@ function updateTickspeedTemp() {
 		let exp3 = E(7).pow(power3);
         let start4 = getScalingStart("meta", "tickspeed");
 		let power4 = getScalingPower("meta", "tickspeed");
-		let exp4 = E(1.001).pow(power4);
+		let exp4_base = E(1.001); //powered by power4.
 		tmp.tickspeedCost =
 			E(2).pow(
-                exp4.pow(player.tickspeed.sub(start4)).mul(start4).div(tmp.tickspeedFP)
+                exp4_base.pow(player.tickspeed.sub(start4).mul(power4)).mul(start4).div(tmp.tickspeedFP)
                 .pow(exp3)
 			    .div(start3.pow(exp3.sub(1)))
                 .pow(exp2)
@@ -177,7 +177,8 @@ function updateTickspeedTemp() {
 			.root(exp3).mul(tmp.tickspeedFP)
             .div(start4)
 			.max(1)
-			.log(exp4)
+			.log(exp4_base)
+			.div(power4)
 			.add(start4)
 			.add(1)
 			.floor();

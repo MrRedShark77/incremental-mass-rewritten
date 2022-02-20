@@ -384,6 +384,7 @@ function setupFermionsHTML() {
             table += `
             <button id="${id}_div" class="fermion_btn ${FERMIONS.names[i]}" onclick="FERMIONS.choose(${i},${x})">
                 <b>[${FERMIONS.sub_names[i][x]}]</b><br>[<span id="${id}_tier_scale"></span>Tier <span id="${id}_tier">0</span>]<br>
+                <span id="${id}_cur">Currently: X</span><br>
                 Next Tier at: <span id="${id}_nextTier">X</span><br>
                 (Increased by ${f.inc})<br><br>
                 Effect: <span id="${id}_desc">X</span><br>
@@ -421,6 +422,7 @@ function updateFermionsHTML() {
             let f = FERMIONS.types[i][x]
             let id = `f${FERMIONS.names[i]}${x}`
             let fm = f.isMass?formatMass:format
+            let active = FERMIONS.onActive(i+""+x)
 
             tmp.el[id+"_div"].setDisplay(unl)
 
@@ -430,6 +432,16 @@ function updateFermionsHTML() {
                 tmp.el[id+"_tier_scale"].setTxt(getScalingName('fTier', i, x))
                 tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(tmp.fermions.maxTier[i][x] < Infinity?" / "+format(tmp.fermions.maxTier[i][x],0):""))
                 tmp.el[id+"_desc"].setHTML(f.desc(tmp.fermions.effs[i][x]))
+
+                tmp.el[id+"_cur"].setDisplay(active)
+                if (active) {
+                    tmp.el[id+"_cur"].setTxt(`Currently: ${fm(
+                        [
+                            [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.atom.points, tmp.tickspeedEffect.eff],
+                            [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.md.mass, tmp.tickspeedEffect.step]
+                        ][i][x]
+                    )}`)
+                }
             }
         }
     }

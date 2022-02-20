@@ -157,31 +157,29 @@
     <div id='app' style='display: none'>
         <div id="star"></div>
         <div style='height: 5px'></div>
-        <div style="height: 180px">
-            <div id="chal_upper" style='height: 50px'></div>
+        <div style="height: 190px">
+            <div id="chal_upper" style='height: 40px'></div>
             <div class="table_center" style="margin: 5px 0px;">
                 <div>
                     <div class="resources sml">
-                        <img src="images/mass.png">
+                        <img class="res_img" src="images/mass.png">
                         <span style="margin-left: 5px; text-align: left;" id="mass">X</span>
-                    </div><div class="resources red">
-                        <img src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                    </div><div class="resources sml red">
+                        <img class="res_img" src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="rpAmt">X</span>
-                    </div>
-                </div><div>
-                    <div class="resources sml yellow" id="dm_div">
-                        <img src="images/dm.png" onclick="FORMS.bh.reset()" onmousemove="FORMS.reset_msg.set('dm')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                    </div><div class="resources sml yellow" id="dm_div">
+                        <img class="res_img" src="images/dm.png" onclick="FORMS.bh.reset()" onmousemove="FORMS.reset_msg.set('dm')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="dmAmt">X</span>
-                    </div><div class="resources yellow" id="bh_div">
-                        <img src="images/bh.png">
-                        <span style="margin-left: 5px; text-align: left;" id="bhMass">X</span>
                     </div>
                 </div><div>
-                    <div class="resources sml" id="atom_div">
-                        <img src="images/atom.png" onclick="ATOM.reset()" onmousemove="FORMS.reset_msg.set('atom')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                    <div class="resources sml yellow" id="bh_div">
+                        <img class="res_img" src="images/bh.png">
+                        <span style="margin-left: 5px; text-align: left;" id="bhMass">X</span>
+                    </div><div class="resources sml" id="atom_div">
+                        <img class="res_img" src="images/atom.png" onclick="ATOM.reset()" onmousemove="FORMS.reset_msg.set('atom')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="atomAmt">X</span>
                     </div><div class="resources quark_color" id="quark_div">
-                        <img src="images/quark.png">
+                        <img class="res_img" src="images/quark.png">
                         <span style="margin-left: 5px; text-align: left;" id="quarkAmt">X</span>
                     </div>
                 </div><div>
@@ -193,7 +191,6 @@
                         <img src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
                     </div>
-                </div><div>
                     <div class="resources sml scarlet" id="ext_div">
                         <img src="images/exotic.png" onclick="EXOTIC.reset()" onmousemove="FORMS.reset_msg.set('ext')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="extAmt">X</span>
@@ -390,29 +387,21 @@
 	TO-DO LIST:
 	1: A new layer: Exotic or Lightning
 		1a. ??? Layer #1: (WIP)
-			Starting off with a generator which produces a currency at a threshold.
-			A currency can be purchased with a set of 4 buyables, but limited based on total levels and minimum levels.
-			First, you need to get 3 different buyables before unlocking Level 2. 4 more for Level 3. 4 more for Level 4. And so it repeats for every 3 levels.
-			This repeats up to 4 currencies.
+			Starting off with a grid of boosts, coming with upgrades on each side.
+			Each upgrade gives levels to boosts, but increase the costs and have level limits.
+			1a-i. Upgrades:
+				Row Buildup: One upgrade gives levels to more boosts in a row, and wrap to next row.
+				Link Upgrades: One gives levels to other Axion boosts.
+				Cheapen Upgrades: A upgrade in a row cheapens other upgrades in a row.
+				Turnback Upgrades: Levels cheapen upgrades.
 		1b. ??? Layer #2:
 			A grid system which lines grow for each iteration.
 			Lines to different stuff require specific currencies and iteratios.
-			When a line touches an upgrade, the upgrade activates.
-			Or iterators that do a iteration for you.
-			Iterations are gained in different ways.
-		1c. ??? Layer #3:
-			There are initally 3 things based on different currencies, each connected with linear set of boosts.
 			The set of boosts grow longer as you progress, and you can overlap leftmost ones.
 		1d. ??? Layer #4: Something about generators... or magnetic field.
 	2. Add a upgrade: No scalings to Tickspeed, except scales faster.
-	3. Add a upgrade: Weaken the cost scaling and strength of non-bonus ones. (DONE)
-	4. Add a upgrade: Cosmic Rays effect softcap starts later. (DONE)
-	5. Add buildings for Black Hole and Atomic Generators:
-		BH-2: Hawking Radiation - Exponentially generate black hole mass (1), ??? (> 1)
-		BH-3: Neutron Condensers - Reduce the exponent reduction of black hole mass.
-		AG-2: Stellar Bursts - Atomic Power generates free star boosts.
-		AG-3: Galactic X-Rays - Atomic Power generates free radiation boosts.
-	6: Another Post-Lightning layer or a new game? (Maybe called Hex, the High Ranked or Strange, the Strangely Matter?)
+	3. Fix the inflation issue for 1M mlt or add Meta Tier scaling.
+	4: Another Post-Lightning layer or a new game? (Maybe called Hex, the High Ranked or Strange, the Strangely Matter?)
 	-->
 </body>
 </html>

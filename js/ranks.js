@@ -369,10 +369,10 @@ function updateRanksTemp() {
 		let exp3 = E(4).pow(power3);
         let start4 = getScalingStart("meta", "rank");
 		let power4 = getScalingPower("meta", "rank");
-		let exp4 = E(1.0025).pow(power4);
+		let exp4_base = E(1.0025); //powered by power4.
 		tmp.ranks.rank.req =
 			E(10).pow(
-				exp4.pow(player.ranks.rank.sub(start4)).mul(start4)
+				exp4_base.pow(player.ranks.rank.sub(start4).mul(power4)).mul(start4)
                     .pow(exp3)
                     .div(start3.pow(exp3.sub(1)))
                     .pow(exp2)
@@ -397,7 +397,8 @@ function updateRanksTemp() {
 			.root(exp3)
             .div(start4)
 			.max(1)
-			.log(exp4)
+			.log(exp4_base)
+			.div(power4)
 			.add(start4)
 			.add(1)
 			.floor();
