@@ -486,8 +486,8 @@ const ELEMENTS = {
             cost: E('e3.9e9'),
         },
         {
-            desc: `Collapsed Star’s effect is 25% stronger.`,
-            cost: E('e8e10'),
+            desc: `Collapsed Star's effect is 25% stronger.`,
+            cost: E('e3.75e10'),
         },
     ],
     /*

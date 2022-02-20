@@ -290,7 +290,7 @@ const TREE_UPGS = {
         chal7: {
             branch: ["chal6"],
             desc: `Unlock 12th Challenge.`,
-            cost: E(1e203),
+            cost: E(1e200),
         },
         gr1: {
             branch: ["bh1"],

@@ -738,7 +738,7 @@ const UPGS = {
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
-                    return ret.softcap("ee12",0.75,2)
+                    return ret
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"

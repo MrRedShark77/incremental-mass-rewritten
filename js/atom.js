@@ -115,7 +115,7 @@ const ATOM = {
             if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]))
             x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
             if (player.atom.elements.includes(61)) x = x.mul(p.add(1).root(2))
-            return x
+            return x.softcap('ee11',0.9,2)
         },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)
