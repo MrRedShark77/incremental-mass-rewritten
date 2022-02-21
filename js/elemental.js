@@ -505,11 +505,27 @@ const ELEMENTS = {
         },
         {
             desc: `Pent multiplies the X-Axion production.`,
-            cost: E('e4e9'),
+            cost: E('e2e9'),
             effect() {
 				return player.ranks.pent.add(1)
             },
             effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Velocity Upgrades scale 15% slower.`,
+            cost: E('e4e9'),
+        },
+        {
+            desc: `U-Lepton Boost is better.`,
+            cost: E('e8e9'),
+        },
+        {
+            desc: `Hawking Radiation softcap starts at ^1.25.`,
+            cost: E('e1.6e10')
+        },
+        {
+            desc: `[Final Element] Pent requirement is reduced by 15%.`,
+            cost: E('e1e11'),
         },
     ],
     /*
@@ -526,7 +542,7 @@ const ELEMENTS = {
 	getUnlLength() {
 		let u = 4
 		if (player.ext.amt.gte(1)) {
-			u = 76
+			u = 80
 		} else if (player.supernova.unl) {
 			u = 49+5
 			if (player.supernova.post_10) u += 3

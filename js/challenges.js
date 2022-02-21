@@ -65,7 +65,8 @@ const CHALS = {
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
         else if (x < 9) ATOM.doReset(chal_reset)
-        else SUPERNOVA.reset(true, true)
+        else if (x < 13) SUPERNOVA.reset(true, true)
+        else EXOTIC.reset(true)
     },
     exit(auto=false) {
         if (!player.chal.active == 0) {
@@ -102,7 +103,8 @@ const CHALS = {
     getReset(x) {
         if (x < 5) return "Entering challenge will reset with Dark Matters!"
         if (x < 9) return "Entering challenge will reset with Atoms except previous challenges!"
-        return "Entering challenge will reset without being Supernova!"
+        if (x < 13) return "Entering challenge will reset without being Supernova!"
+        return "Entering challenge will rise the power of Exotic!"
     },
     getMax(i) {
         let x = this[i].max
@@ -129,7 +131,7 @@ const CHALS = {
         let x = E(1)
         if (hasElement(2)) x = x.mul(0.75)
         if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
-        if (hasTreeUpg("feat7")) x = x.mul(0.9)
+        if (hasTreeUpg("feat7")) x = x.mul(0.95)
         return x
     },
     getPower2(i) {
@@ -418,12 +420,70 @@ const CHALS = {
 		pow: E(1.4),
 		start: uni("e47250"),
 		effect(x) {
-            let ret = E(1).div(x.div(25).add(1).sqrt())
-            return ret
+            return E(1).div(x.div(25).add(1).sqrt())
 		},
 		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
 	},
-    cols: 12,
+	13: {
+		unl() { return hasTreeUpg("chal8") },
+		title: "Decay of Atom",
+		desc: "You can't gain atoms and quarks.",
+		reward: `Axion Upgrades scale slower.`,
+		max: E(50),
+		inc: E(10),
+		pow: E(5),
+		start: E(1/0),
+		effect(x) {
+            return E(1).div(x.div(100).add(1))
+		},
+		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
+	},
+	14: {
+		unl() { return hasTreeUpg("chal9") },
+		title: "Placeholder",
+		desc: "Placeholder.",
+		reward: `Placeholder.`,
+		max: E(50),
+		inc: E(10),
+		pow: E(1.25),
+		start: E(1/0),
+		effect(x) {
+			let ret = E(1)
+			return ret
+		},
+		effDesc(x) { return format(x)+"x" },
+	},
+	15: {
+		unl() { return hasTreeUpg("chal10") },
+		title: "Placeholder",
+		desc: "Placeholder.",
+		reward: `Placeholder.`,
+		max: E(50),
+		inc: E(10),
+		pow: E(1.25),
+		start: E(1/0),
+		effect(x) {
+			let ret = E(1)
+			return ret
+		},
+		effDesc(x) { return format(x)+"x" },
+	},
+	16: {
+		unl() { return hasTreeUpg("chal11") },
+		title: "Placeholder",
+		desc: "Placeholder.",
+		reward: `Placeholder.`,
+		max: E(50),
+		inc: E(10),
+		pow: E(1.25),
+		start: E(1/0),
+		effect(x) {
+			let ret = E(1)
+			return ret
+		},
+		effDesc(x) { return format(x)+"x" },
+	},
+    cols: 16,
 }
 
 /*

@@ -45,13 +45,14 @@ const RADIATION = {
 		let f4 = E(1)
 		if (tmp.fermions) f4 = f4.mul(tmp.fermions.effs[0][5])
 		f4 = f4.mul(tmp.chal?tmp.chal.eff[12]:1)
+		if (hasElement(77) && i % 2 == 1) f4 = f4.mul(0.85)
 		return f4
     },
     getBoostScalingExp(i) {
 		let f2 = 1.3+i*0.05
 		if (tmp.radiation.bs.eff[17] && i % 2 == 1) f2 -= tmp.radiation.bs.eff[17][1]
 		if (AXIONS.unl()) f2 -= tmp.ax.eff[3]
-		return Math.max(f2,1.25)
+		return Math.max(f2,1.2)
     },
     getLevelEffect(i) {
         let x = this.boosts[i].eff(FERMIONS.onActive(05)?E(0):tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i]))
@@ -212,8 +213,9 @@ const RADIATION = {
         },{
             title: `U-Lepton Boost`,
             eff(b) {
-                let x = b.add(1).log(2).div(50).add(1)
-                return x
+                let x = b.add(1).log(2)
+				if (hasElement(78)) x = b.pow(.75).mul(2)
+                return x.div(50).add(1)
             },
             desc(x) { return `U-Lepton boosts are ${format(x)}x stronger.` },
         },{

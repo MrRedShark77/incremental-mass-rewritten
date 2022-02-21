@@ -265,8 +265,9 @@ const RANKS = {
             return f
         },
         pent() {
-            let f = E(6/5)
+            let f = E(5/6)
             if (AXIONS.unl()) f = f.mul(tmp.ax.eff[15])
+            if (hasElement(80)) f = f.mul(0.85)
             return f
         },
     },
@@ -495,8 +496,8 @@ function updateRanksTemp() {
 
     fp = RANKS.fp.pent()
     let pow2 = 1.25
-    tmp.ranks.pent.req = player.ranks.pent.div(fp).pow(pow2).add(15).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).max(0).root(pow2).mul(fp).add(1).floor();
+    tmp.ranks.pent.req = player.ranks.pent.mul(fp).pow(pow2).add(15).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).max(0).root(pow2).div(fp).add(1).floor();
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

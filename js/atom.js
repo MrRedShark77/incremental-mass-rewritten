@@ -1,5 +1,6 @@
 const ATOM = {
     gain() {
+        if (player.chal.active == 13) return E(0)
         let x = player.bh.mass.div(1.5e156)
         if (x.lt(1)) return E(0)
         x = x.root(5)
@@ -10,6 +11,7 @@ const ATOM = {
         return x.floor()
     },
     quarkGain() {
+        if (player.chal.active == 13) return E(0)
         if (tmp.atom.gain.lt(1)) return E(0)
         x = tmp.atom.gain.max(1).log10().pow(1.1).add(1)
         if (hasElement(1)) x = E(1.25).pow(tmp.atom.gain.max(1).log10())
@@ -98,7 +100,7 @@ const ATOM = {
         },
     },
     particles: {
-        names: ['Protons', 'Neutrons', 'Electrons'],
+        names: ['Proton', 'Neutron', 'Electron'],
         assign(x) {
             if (player.atom.quarks.lt(1) || CHALS.inChal(9) || FERMIONS.onActive("12")) return
             let m = player.atom.ratio
@@ -278,7 +280,7 @@ function setupAtomHTML() {
         table += `
         <div style="width: 30%"><button class="btn" onclick="ATOM.particles.assign(${x})">Assign</button><br><br>
             <div style="color: ${ATOM.particles.colors[x]}; min-height: 120px">
-                <h2><span id="particle_${x}_amt">X</span> ${ATOM.particles.names[x]}</h2><br>
+                <h2><span id="particle_${x}_amt">X</span> ${ATOM.particles.names[x]}s</h2><br>
                 Which generates <span id="particle_${x}_amtEff">X</span> ${ATOM.particles.names[x]} Powers<span id="particle_${x}_sc">X</span> <br>
                 You have <span id="particle_${x}_power">X</span> ${ATOM.particles.names[x]} Powers, which:
             </div><br><div id="particle_${x}_powerEff"></div>

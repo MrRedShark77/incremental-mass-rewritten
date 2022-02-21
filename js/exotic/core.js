@@ -122,7 +122,7 @@ let EXTRA_BUILDINGS = {
 		eff(x) {
 			let r = x
 			if (AXIONS.unl()) r = r.mul(tmp.ax.eff[9])
-			return r.times(10).add(1).log(2).div(500)
+			return r.times(5).add(1).log(2).div(500)
 		}
 	},
 	bh3: {
@@ -132,7 +132,7 @@ let EXTRA_BUILDINGS = {
 		eff(x) {
 			let r = x
 			if (AXIONS.unl()) r = r.mul(tmp.ax.eff[10])
-			return r.add(1).log(100).add(1).div(10)
+			return r.add(1).log10().div(3).add(1).div(10)
 		}
 	},
 	ag2: {
@@ -234,16 +234,23 @@ let AXIONS = {
 			if (i == x) normal = lvl
 			else other = other.add(lvl)
 		}
-		if (hasTreeUpg("ext_l1")) other = other.mul(0.75)
+		if (hasTreeUpg("ext_l1")) other = other.mul(0.8)
 
-		var r = E(i >= 4 ? 2 : 1.75)
-			.pow(normal.add(other).add(i - 4))
-			.mul(i >= 4 ? (1e3 * Math.pow(5, i - 4)) : (50 / (i + 5) * Math.pow(2, i)))
+		var sum = normal.add(other).mul(AXIONS.costScale())
+
+		var r = E(i >= 4 ? 3 : 2)
+			.pow(sum.add(i - 4))
+			.mul(i >= 4 ? (1e3 * Math.pow(5, i - 4)) : (50 / (i + 5) * Math.pow(3, i)))
+		return r
+	},
+	costScale() {
+		var r = E(1)
+		if (tmp.chal) r = r.mul(tmp.chal.eff[13])
 		return r
 	},
 	bulk(p) {
 		var type = Math.floor(p / 4)
-		var bulk = player.ext.ax.res[type].max(1).div(tmp.ax.cost[p]).log(i >= 4 ? 5 : 1.75).add(1).floor()
+		var bulk = player.ext.ax.res[type].max(1).div(tmp.ax.cost[p]).log(i >= 4 ? 3 : 2).div(AXIONS.costScale()).add(1).floor()
 
 		var lvl = player.ext.ax.upgs[p]
 		var max = AXIONS.maxLvl(type)
@@ -263,14 +270,15 @@ let AXIONS = {
 	},
 
 	prod(x) {
-		if (x == 0) {
-			let r = player.mass.max(1).log10().pow(0.4)
-			r = r.mul(player.ext.amt.add(1).log10().pow(2))
-			if (hasElement(76)) r = r.mul(tmp.elements && tmp.elements.effect[76])
-			return r
-		}
-		if (x == 1 && hasTreeUpg("ext_c")) return player.supernova.times.div(20).max(1).pow(3)
-		return E(0)
+		if (!AXIONS.unl()) return E(0)
+
+		let r = E(0)
+		if (x == 0) r = player.mass.max(1).log10().pow(0.6)
+			.mul(player.ext.amt.add(1).log(100).add(1).pow(3))
+		if (x == 1 && hasTreeUpg("ext_c")) r = player.supernova.times.div(20).max(1).pow(3)
+
+		if (hasElement(76)) r = r.mul(tmp.elements && tmp.elements.effect[76])
+		return r
 	},
 
 	getLvl(p, base) {
@@ -284,6 +292,7 @@ let AXIONS = {
 		var y = Math.floor(p / 4)
 		return player.ext.ax.upgs[x].sub(y * 4).max(0)
 			.add(player.ext.ax.upgs[y + 4].sub(x * y).max(0))
+			.add(x > 0 ? player.ext.ax.upgs[x - 1].sub(y * 4 + 16).max(0) : 0)
 	},
 	getBonusLvl(p) {
 		return E(0)
@@ -354,7 +363,7 @@ let AXIONS = {
 			desc: "Multiply the cap increases to Rage Power.",
 			req: E(2),
 			eff(x) {
-				return x.add(1).div(x.add(1).log2())
+				return x.add(1).div(x.max(1).log(5).add(1))
 			},
 			effDesc(x) {
 				return format(x) + "x"
@@ -466,7 +475,7 @@ let AXIONS = {
 			desc: "Pent scales slower.",
 			req: E(1/0),
 			eff(x) {
-				return E(1)
+				return x.add(1).log2().div(20).add(1)
 			},
 			effDesc(x) {
 				return format(E(1).sub(x).mul(100)) + "%"

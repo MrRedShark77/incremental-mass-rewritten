@@ -50,14 +50,19 @@ function calc(dt, dt_offline) {
 		if (player.bh.eb2 && player.bh.eb2.gt(0)) {
 			var pow = tmp.eb.bh2 ? tmp.eb.bh2.eff : E(0.001)
 			var log = tmp.eb.bh3 ? tmp.eb.bh3.eff : E(.1)
-			var sc = AXIONS.unl() ? tmp.ax.eff[8].mul(1.05) : E(1.05)
-			player.bh.mass = E(10).pow(
-				E(	
-					tmp.bh.mass_gain.max(10).log10().root(log).mul(pow).mul(dt)
-				).add(
-					player.bh.mass.max(10).log10().root(log)
-				).pow(log)
-			).softcap(tmp.bh.mass_gain.pow(sc),0.5,2)
+			var logProd = tmp.bh.mass_gain.max(10).log10()
+
+			var sc = E(1.1)
+			if (hasElement(79)) sc = E(1.25)
+			if (AXIONS.unl()) sc = sc.mul(tmp.ax.eff[8])
+			sc = sc.root(log)
+
+			var newMass = player.bh.mass.log10().div(logProd).root(log)
+			if (newMass.gt(sc)) newMass = newMass.div(sc).pow(2).mul(sc)
+			newMass = newMass.add(pow.mul(dt))
+			if (newMass.gt(sc)) newMass = newMass.div(sc).root(2).mul(sc)
+			newMass = E(10).pow(newMass.pow(log).mul(logProd))
+			player.bh.mass = newMass
 		}
 	}
 	if (player.atom.unl && tmp.pass) {
