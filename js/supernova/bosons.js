@@ -13,21 +13,21 @@ const BOSONS = {
         },
         z_boson() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
-            if (player.supernova.tree.includes("sn4")) x = x.pow(1.5)
+            if (hasTreeUpg("sn4")) x = x.pow(1.5)
             x = x.mul(tmp.supernova.timeMult)
             return x
         },
         photon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1)
-            if (player.supernova.tree.includes("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[1])
+            if (hasTreeUpg("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[1])
             x = x.mul(tmp.supernova.timeMult)
             return x
         },
         gluon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1)
-            if (player.supernova.tree.includes("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[0])
+            if (hasTreeUpg("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[0])
             x = x.mul(tmp.supernova.timeMult)
             return x
         },
@@ -38,7 +38,7 @@ const BOSONS = {
         },
         hb() {
             let x = E(0.01).mul(tmp.fermions.effs[1][1])
-            if (player.supernova.tree.includes("bs1")) x = x.mul(tmp.supernova?tmp.supernova.tree_eff.bs1:1)
+            if (hasTreeUpg("bs1")) x = x.mul(tmp.supernova?tmp.supernova.tree_eff.bs1:1)
             x = x.mul(tmp.supernova.timeMult)
             return x
         },
@@ -73,7 +73,7 @@ const BOSONS = {
         buy(id,x) {
             if (tmp.bosons.upgs[id][x].can) {
                 player.supernova.b_upgs[id][x] = player.supernova.b_upgs[id][x].max(tmp.bosons.upgs[id][x].bulk)
-                if (!player.supernova.tree.includes("qol7")) player.supernova.bosons[id] = player.supernova.bosons[id].sub(BOSONS.upgs[id][x].cost(tmp.bosons.upgs[id][x].bulk.sub(1))).max(0)
+                if (!hasTreeUpg("qol7")) player.supernova.bosons[id] = player.supernova.bosons[id].sub(BOSONS.upgs[id][x].cost(tmp.bosons.upgs[id][x].bulk.sub(1))).max(0)
             }
         },
         photon: [
@@ -93,7 +93,7 @@ const BOSONS = {
 				effect(x) {
 					if (FERMIONS.onActive(15)) return E(1)
 					let a = x.add(1).pow(0.75)
-					if (player.supernova.tree.includes("fn4")) a = a.pow(2)
+					if (hasTreeUpg("fn4")) a = a.pow(2)
 					return a
 				},
                 effDesc(x) { return format(x)+"x" },
@@ -105,7 +105,7 @@ const BOSONS = {
 					if (FERMIONS.onActive(15)) return E(1)
 					return player.stars.points.add(1).log10().add(1).pow(x.mul(0.2)).softcap(1e15,0.6,0)
 				},
-                effDesc(x) { return format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return format(x)+"x"+getSoftcapHTML(x,1e15) },
             },{
                 desc: "All-Star resources gain is boosted by Photon.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(1e5) },
@@ -134,7 +134,7 @@ const BOSONS = {
                 effect(x) {
 					if (FERMIONS.onActive(15)) return E(1)
                     let a = x.add(1).pow(0.75)
-                    if (player.supernova.tree.includes("fn4")) a = a.pow(2)
+                    if (hasTreeUpg("fn4")) a = a.pow(2)
                     return a
                 },
                 effDesc(x) { return format(x)+"x" },
@@ -146,7 +146,7 @@ const BOSONS = {
 					if (FERMIONS.onActive(15)) return E(1)
 					return player.atom.quarks.add(1).log10().add(1).pow(x.mul(0.125)).softcap(1e15,0.6,0)
 				},
-                effDesc(x) { return format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return format(x)+"x"+getSoftcapHTML(x,1e15) },
             },{
                 desc: "Supernova requirement is decreased based on Gluon.",
                 cost(x) { return E(10).pow(x.pow(1.25)).mul(1e5) },

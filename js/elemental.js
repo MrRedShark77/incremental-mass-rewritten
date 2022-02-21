@@ -31,7 +31,7 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !player.atom.elements.includes(x) },
+    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
             player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
@@ -56,7 +56,7 @@ const ELEMENTS = {
                 if (x.gte('e1e4')) x = expMult(x.div('e1e4'),0.9).mul('e1e4')
                 return x.softcap('e1e8',0.9,2)
             },
-            effDesc(x) { return format(x)+"x"+(x.gte('e1e4')?" <span class='soft'>(softcapped)</span>":"") },
+            effDesc(x) { return format(x)+"x"+getSoftcapHTML(x,'e1e4','e1e8') },
         },
         {
             desc: `Stronger's power is stronger based on Proton Powers.`,
@@ -77,7 +77,7 @@ const ELEMENTS = {
             effect() {
                 let x = E(0)
                 for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
-                if (player.atom.elements.includes(7)) x = x.mul(tmp.elements.effect[7])
+                if (hasElement(7)) x = x.mul(tmp.elements.effect[7])
                 return x.div(100).add(1).max(1)
             },
             effDesc(x) { return format(x)+"x" },
@@ -87,7 +87,7 @@ const ELEMENTS = {
             cost: E(1e20),
             effect() {
                 let x = E(player.atom.elements.length+1)
-                if (player.atom.elements.includes(11)) x = x.pow(2)
+                if (hasElement(11)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -383,7 +383,7 @@ const ELEMENTS = {
             cost: E('e3.6e4'),
             effect() {
                 let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10).max(1):E(1)
-                if (player.atom.elements.includes(66)) x = x.pow(2)
+                if (hasElement(66)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -461,10 +461,10 @@ const ELEMENTS = {
             effect() {
 				let [m1, m2] = [player.mass.max(10).log10().log10().times(4), player.mass.max(1).log10().pow(1/5).div(3)]
 				let exp = E(0.5)
-				if (player.atom.elements.includes(73)) exp = exp.mul(tmp.elements.effect[73]||1)
-                return m1.max(m2).pow(exp).softcap(80, 0.5, 1)
+				if (hasElement(73)) exp = exp.mul(tmp.elements.effect[73]||1)
+                return m1.max(m2).pow(exp).softcap(50, 0.5, 0).softcap(80, 0.5, 0)
             },
-            effDesc(x) { return "+"+format(x) },
+            effDesc(x) { return "+"+format(x)+getSoftcapHTML(x,50,80) },
         },
         {
             desc: `Ranks make Meta Tickspeed starts later.`,
@@ -472,19 +472,19 @@ const ELEMENTS = {
             effect() {
                 let x = player.ranks.rank
                 x = x.div(2e4).add(1)
-				return x.pow(x.div(1.5).max(1)).softcap(300,4,3)
+				return x.min(2).pow(x.div(1.5).max(1)).softcap(300,4,3)
             },
-            effDesc(x) { return format(x)+"x"+(x.gte(300)?" <span class='soft'>(softcapped)</span>":"") },
+            effDesc(x) { return format(x)+"x"+getSoftcapHTML(x,300) },
         },
         {
             desc: `Raise Lutetium-71 effect based on Neutron Stars.`,
             cost: E('e4e7'),
             effect() {
 				let r = player.supernova.stars.max(1).log10().div(75).max(1)
-				if (player.supernova.tree.includes("feat2")) r = r.add(0.015)
-				return r.softcap(1.75,40,3).min(2.1)
+				if (hasTreeUpg("feat2")) r = r.add(0.015)
+				return r.softcap(1.75,40,3).min(2.25)
             },
-            effDesc(x) { return "^"+format(x)+(x.gte(1.75)?" <span class='soft'>(softcapped)</span>":"") },
+            effDesc(x) { return "^"+format(x)+getSoftcapHTML(x,175) },
         },
         {
             desc: `Collapsed stars generate Neutron Stars faster.`,
@@ -503,6 +503,14 @@ const ELEMENTS = {
             },
             effDesc(x) { return "+"+format(x) },
         },
+        {
+            desc: `Pent multiplies the X-Axion production.`,
+            cost: E('e4e9'),
+            effect() {
+				return player.ranks.pent.add(1)
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
     ],
     /*
     {
@@ -518,7 +526,7 @@ const ELEMENTS = {
 	getUnlLength() {
 		let u = 4
 		if (player.ext.amt.gte(1)) {
-			u = 75
+			u = 76
 		} else if (player.supernova.unl) {
 			u = 49+5
 			if (player.supernova.post_10) u += 3
@@ -526,12 +534,16 @@ const ELEMENTS = {
 			if (tmp.radiation.unl) u += 16
 		} else {
 			if (player.chal.comps[8].gte(1)) u += 14
-			if (player.atom.elements.includes(18)) u += 3
+			if (hasElement(18)) u += 3
 			if (MASS_DILATION.unlocked()) u += 15
 			if (STARS.unlocked()) u += 18
 		}
 		return u
 	},
+}
+
+function hasElement(x) {
+	return player.atom.elements.includes(x)
 }
 
 function setupElementsHTML() {
@@ -572,7 +584,7 @@ function updateElementsHTML() {
         if (upg) {
             upg.setVisible(x <= tmp.elements.unl_length)
             if (x <= tmp.elements.unl_length) {
-                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: player.atom.elements.includes(x)})
+                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x)})
             }
         }
     }

@@ -50,7 +50,7 @@ const SCALING_RES = {
 }
 
 const SCALING_FLOORS = {
-	supernova() { return !player.supernova.tree.includes("sn5") },
+	supernova() { return !hasTreeUpg("sn5") },
 }
 
 const NAME_FROM_RES = {
@@ -135,8 +135,8 @@ function getScalingStart(type, name) {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
 		}
 		if (name=='supernova') {
-			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
-			if (player.supernova.tree.includes("feat6")) start = start.add(1)
+			if (tmp.elements && hasElement(71)) start = start.add(tmp.elements.effect[71])
+			if (hasTreeUpg("feat6")) start = start.add(1)
 		}
 	}
 	if (type=="hyper") {
@@ -148,19 +148,19 @@ function getScalingStart(type, name) {
 			if (player.mainUpg.atom.includes(10)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[3][10].effect:0:0)
 		}
 		if (name=='supernova') {
-			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
-			if (player.supernova.tree.includes("feat6")) start = start.add(1)
+			if (tmp.elements && hasElement(71)) start = start.add(tmp.elements.effect[71])
+			if (hasTreeUpg("feat6")) start = start.add(1)
 		}
 	}
 	if (type=="ultra") {
 		if (name=="rank") {
-			if (player.atom.elements.includes(62)) start = start.add(tmp.elements.effect[62])
+			if (hasElement(62)) start = start.add(tmp.elements.effect[62])
 		}
 		if (name=="tickspeed") {
 			if (player.ranks.tetr.gte(5)) start = start.add(RANKS.effect.tetr[5]())
 		}
 		if (name=='supernova') {
-			if (tmp.elements && player.atom.elements.includes(71)) start = start.add(tmp.elements.effect[71])
+			if (tmp.elements && hasElement(71)) start = start.add(tmp.elements.effect[71])
 		}
 	}
 	if (type=="meta") {
@@ -169,8 +169,8 @@ function getScalingStart(type, name) {
 			if (tmp.fermions) start = start.mul(tmp.fermions.effs[1][4])
 		}
 		if (name=="tickspeed") {
-			if (player.atom.elements.includes(68)) start = start.mul(2)
-			if (player.atom.elements.includes(72)) start = start.mul(tmp.elements.effect[72])
+			if (hasElement(68)) start = start.mul(2)
+			if (hasElement(72)) start = start.mul(tmp.elements.effect[72])
 			if (player.ranks.tetr.gte(18)) start = start.mul(RANKS.effect.tetr[18]())
 			if (tmp.radiation) start = start.mul(tmp.radiation.bs.eff[14])
 		}
@@ -188,7 +188,7 @@ function getScalingPower(type, name) {
 		}
 		if (name=="tier") {
 			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
-			if (player.atom.elements.includes(37)) power = power.mul(tmp.elements.effect[37])
+			if (hasElement(37)) power = power.mul(tmp.elements.effect[37])
 		}
 		if (name=="tetr") {
 			if (player.ranks.pent.gte(4)) power = power.mul(RANKS.effect.pent[4]())
@@ -198,56 +198,56 @@ function getScalingPower(type, name) {
 		}
 		if (name=='tickspeed') {
 			power = power.mul(tmp.chal?tmp.chal.eff[1].tick:1)
-			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
+			if (hasTreeUpg("feat3")) power = power.mul(0.65)
+			if (chalOutside() && AXIONS.unl()) power = power.div(tmp.ax.eff[2])
 		}
 		if (name=='bh_condenser') {
-			if (player.atom.elements.includes(15)) power = power.mul(0.8)
+			if (hasElement(15)) power = power.mul(0.8)
 		}
 		if (name=='gamma_ray') {
-			if (player.atom.elements.includes(15)) power = power.mul(0.8)
+			if (hasElement(15)) power = power.mul(0.8)
 		}
 		if (name=="fTier") {
-			if (player.supernova.tree.includes("fn3")) power = power.mul(0.925)
+			if (hasTreeUpg("fn3")) power = power.mul(0.925)
 		}
 	}
 	if (type=="hyper") {
 		if (name=="rank") {
 			if (player.ranks.tetr.gte(1)) power = power.mul(0.85)
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+			if (hasElement(27)) power = power.mul(0.75)
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 		}
 		if (name=='tickspeed') {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
-			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
+			if (hasElement(27)) power = power.mul(0.75)
+			if (hasTreeUpg("feat3")) power = power.mul(0.65)
+			if (chalOutside() && AXIONS.unl()) power = power.div(tmp.ax.eff[2])
 		}
 		if (name=='bh_condenser') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 		if (name=='gamma_ray') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 	}
 	if (type=="ultra") {
 		if (name=="rank") {
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
-			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
+			if (hasElement(27)) power = power.mul(0.75)
+			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
 		}
 		if (name=='tickspeed') {
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
-			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
-			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
+			if (hasElement(27)) power = power.mul(0.75)
+			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
+			if (hasTreeUpg("feat3")) power = power.mul(0.65)
+			if (chalOutside() && AXIONS.unl()) power = power.div(tmp.ax.eff[2])
 		}
 		if (name=='bh_condenser') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 		if (name=='gamma_ray') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 		if (name=='supernova') {
 			if (tmp.radiation) power = power.mul(tmp.radiation.bs.eff[20])
@@ -256,12 +256,21 @@ function getScalingPower(type, name) {
 	if (type=="meta") {
 		if (name=="rank") {
 			if (player.ranks.pent.gte(4)) power = power.mul(RANKS.effect.pent[4]())
+			if (AXIONS.unl()) power = power.mul(tmp.ax.eff[6])
 		}
 		if (name=='tickspeed') {
 			if (player.ranks.pent.gte(5)) power = power.mul(RANKS.effect.pent[5]())
-			if (player.supernova.tree.includes("feat3")) power = power.mul(0.65)
-			if (chalOutside() && tmp.ax && tmp.ax.eff) power = power.div(tmp.ax.eff[2])
+			if (hasTreeUpg("feat3")) power = power.mul(0.65)
+			if (chalOutside() && AXIONS.unl()) power = power.div(tmp.ax.eff[2])
 		}
 	}
 	return power
+}
+
+function getSoftcapHTML(x, sc1, sc2, sc3) {
+	if (x.lte(sc1)) return ""
+	let lvl = 1
+	if (sc2 && x.gt(sc2)) lvl = 2
+	if (sc3 && x.gt(sc3)) lvl = 3
+	return " <span class='soft"+(lvl>1?lvl:"")+"'>(softcapped"+(lvl>1?"^"+lvl:"")+")</span>"
 }

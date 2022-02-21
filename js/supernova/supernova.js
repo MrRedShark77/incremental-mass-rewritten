@@ -1,7 +1,11 @@
 const SUPERNOVA = {
     reset(force=false, chal=false, post=false, fermion=false) {
         if (!chal && !post && !fermion) if ((force && player.confirms.sn)?!confirm("Are you sure to reset without being Supernova?"):false) return
-		if (tmp.supernova.reached && !force && !fermion && player.supernova.tree.includes("qol8")) player.supernova.auto.on = -1
+		if (tmp.supernova.reached && !force && !fermion && hasTreeUpg("qol8") && player.supernova.auto.toggle) {
+			updateSupernovaAutoTemp()
+			player.supernova.auto.on = -1
+			player.supernova.auto.list = tmp.supernova.auto
+		}
         if (tmp.supernova.reached || force || fermion) {
             tmp.el.supernova_scene.setDisplay(false)
             if (!force && !fermion) {
@@ -26,15 +30,15 @@ const SUPERNOVA = {
 		resetExtraBuildings("ag")
         
         let list_keep = [2,5]
-        if (player.supernova.tree.includes("qol2")) list_keep.push(6)
+        if (hasTreeUpg("qol2")) list_keep.push(6)
         let keep = []
         for (let x = 0; x < player.mainUpg.atom.length; x++) if (list_keep.includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
         player.mainUpg.atom = keep
 
         list_keep = [21,36]
-        if (player.supernova.tree.includes("qol1")) list_keep.push(14,18)
-        if (player.supernova.tree.includes("qol2")) list_keep.push(24)
-        if (player.supernova.tree.includes("qol3")) list_keep.push(43)
+        if (hasTreeUpg("qol1")) list_keep.push(14,18)
+        if (hasTreeUpg("qol2")) list_keep.push(24)
+        if (hasTreeUpg("qol3")) list_keep.push(43)
         keep = []
         for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
         player.atom.elements = keep
@@ -49,7 +53,7 @@ const SUPERNOVA = {
         player.stars.points = E(0)
         player.stars.boost = E(0)
 
-        if (!player.supernova.tree.includes("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
+        if (!hasTreeUpg("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
 
         ATOM.doReset()
 
@@ -59,12 +63,12 @@ const SUPERNOVA = {
         tmp.pass = false
     },
     starGain() {
-        let x = E(player.supernova.tree.includes("c")?0.1:0)
-        if (player.supernova.tree.includes("sn1")) x = x.mul(tmp.supernova.tree_eff.sn1)
-        if (player.supernova.tree.includes("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
-        if (player.supernova.tree.includes("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
-        if (player.supernova.tree.includes("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
-        if (player.atom.elements.includes(74)) x = x.mul(tmp.elements && tmp.elements.effect[74])
+        let x = E(hasTreeUpg("c")?0.1:0)
+        if (hasTreeUpg("sn1")) x = x.mul(tmp.supernova.tree_eff.sn1)
+        if (hasTreeUpg("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
+        if (hasTreeUpg("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
+        if (hasTreeUpg("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
+        if (hasElement(74)) x = x.mul(tmp.elements && tmp.elements.effect[74])
         x = x.mul(tmp.radiation.bs.eff[11])
         x = x.mul(tmp.supernova.timeMult)
         return x
@@ -203,7 +207,7 @@ function calcSupernova(dt, dt_offline) {
         player.supernova.radiation.hz = player.supernova.radiation.hz.add(tmp.radiation.hz_gain.mul(dt))
         for (let x = 0; x < RAD_LEN; x++) {
             player.supernova.radiation.ds[x] = player.supernova.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(dt))
-	        if (player.supernova.radiation.ds[x].gte(1e6) && player.supernova.tree.includes("qol_ext3")) {
+	        if (player.supernova.radiation.ds[x].gte(1e6) && hasTreeUpg("qol_ext3")) {
                 RADIATION.buyBoost(x*2,1)
                 RADIATION.buyBoost(x*2+1,1)
             }
@@ -221,9 +225,9 @@ function updateSupernovaTemp() {
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||""
-        let unl = player.supernova.tree.includes(id)||(TREE_UPGS.ids[id].unl?TREE_UPGS.ids[id].unl():true)
-        let can = player.supernova.stars.gte(TREE_UPGS.ids[id].cost) && !player.supernova.tree.includes(id) && (TREE_UPGS.ids[id].req?TREE_UPGS.ids[id].req():true)
-        if (branch != "") for (let x = 0; x < branch.length; x++) if (!player.supernova.tree.includes(branch[x])) {
+        let unl = hasTreeUpg(id)||(TREE_UPGS.ids[id].unl?TREE_UPGS.ids[id].unl():true)
+        let can = player.supernova.stars.gte(TREE_UPGS.ids[id].cost) && !hasTreeUpg(id) && (TREE_UPGS.ids[id].req?TREE_UPGS.ids[id].req():true)
+        if (branch != "") for (let x = 0; x < branch.length; x++) if (!hasTreeUpg(branch[x])) {
             unl = false
             can = false
             break
@@ -233,7 +237,7 @@ function updateSupernovaTemp() {
         if (TREE_UPGS.ids[id].effect) tmp.supernova.tree_eff[id] = TREE_UPGS.ids[id].effect()
     }
     tmp.supernova.star_gain = SUPERNOVA.starGain()
-    tmp.supernova.timeMult = (tmp.ax && tmp.ax.eff && tmp.ax.eff[0]) || E(1)
+    tmp.supernova.timeMult = (AXIONS.unl() && tmp.ax.eff[0]) || E(1)
 }
 
 function updateSupernovaEndingHTML() {
@@ -255,6 +259,8 @@ function updateSupernovaEndingHTML() {
     tmp.el.app_supernova.setDisplay(reached && tmp.tab == 5)
 
     if (tmp.tab == 5) {
+        tmp.el.supernova_sweep.setTxt("Auto-Sweep: " + (player.supernova.auto.toggle ? "ON" : "OFF"))
+        tmp.el.supernova_sweep.setDisplay(hasTreeUpg("qol8"))
         tmp.el.supernova_scale.setTxt(getScalingName('supernova'))
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
         tmp.el.supernova_next.setTxt("Next Supernova at " + format(tmp.supernova.maxlimit,2) + " stars")
@@ -266,7 +272,7 @@ function updateSupernovaEndingHTML() {
         if (tmp.stab[5] == 2) updateFermionsHTML()
         if (tmp.stab[5] == 3) updateRadiationHTML()
 		if (player.supernova.auto.on > -2) {
-			tmp.el.supernova_next.setTxt("You are currently sweeping through challenges and fermions! Next in " + (1.5 - player.supernova.auto.t).toFixed(2) + " seconds, ending in " + (1.5 * tmp.supernova.auto.length - 1.5 * player.supernova.auto.on - player.supernova.auto.t).toFixed(2) + " seconds")
+			tmp.el.supernova_next.setTxt("You are currently sweeping through challenges and fermions! Next in " + (1.5 - player.supernova.auto.t).toFixed(2) + " seconds, ending in " + (1.5 * player.supernova.auto.list.length - 1.5 * player.supernova.auto.on - player.supernova.auto.t).toFixed(2) + " seconds")
 		}
     }
 }
@@ -274,17 +280,24 @@ function updateSupernovaEndingHTML() {
 //CHALLENGE AUTOMATION: Go through all unlocked challenges that have at least 15 completions / tiers.
 function updateSupernovaAutoTemp() {
 	tmp.supernova.auto = []
-	if (!player.supernova.tree.includes("qol8")) return
+	if (!hasTreeUpg("qol8")) return
 
 	let thres = 15
-	if (player.supernova.tree.includes("qol_ext2")) thres = 10
-	if (player.supernova.tree.includes("feat4")) thres -= 2
+	if (hasTreeUpg("qol_ext2")) thres = 10
+	if (hasTreeUpg("feat4")) thres -= 2
 	for (var x = 1; x <= CHALS.cols; x++) {
-		if (player.chal.comps[x].gte(thres)) tmp.supernova.auto.push(x)
+		let tier = player.chal.comps[x]
+		if (tier.gte(thres) && tier.lt(CHALS.getMax(x))) tmp.supernova.auto.push(x)
 	}
 	for (var y = 0; y < 2; y++) {
 		for (var x = 0; x < 6; x++) {
-			if (player.supernova.fermions.tiers[y][x].gte(15)) tmp.supernova.auto.push(-(y*10+x+1))
+			let tier = player.supernova.fermions.tiers[y][x]
+			if (tier.gte(thres) && tier.lt(FERMIONS.maxTier(y, x))) tmp.supernova.auto.push(-(y*10+x+1))
 		}
 	}
+}
+
+function updateSupernovaSweep() {
+	player.supernova.auto.toggle = !player.supernova.auto.toggle
+	if (!player.supernova.auto.toggle) player.supernova.auto.on = -2
 }

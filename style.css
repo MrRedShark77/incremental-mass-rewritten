@@ -135,11 +135,26 @@ button {
 	height: calc(100% - 320px);
 }
 
-#tree_table {
+#tree_table_fix {
 	width: 95%;
 	height: 100%;
+	max-width: 1406px;
+	max-height: 834px;
 	border: solid 2px white;
 	overflow: auto;
+}
+
+#tree_table {
+	width: 100%;
+	height: 100%;
+}
+
+#tree_table div:first-child {
+    margin-left: auto;
+}
+
+#tree_table div:last-child {
+    margin-right: auto;
 }
 
 #tree_canvas {
@@ -153,6 +168,20 @@ button {
 	color: hsl(237, 15%, 47%);
 	font-weight: bold;
 	text-shadow: 0px 1px 0px hsl(252, 19%, 57%);
+	pointer-events: none;
+}
+
+.soft2 {
+	color: hsl(0, 50%, 50%);
+	font-weight: bold;
+	text-shadow: -1px -1px 3px hsl(0, 25%, 50%), 1px 1px 3px hsl(0, 75%, 50%);
+	pointer-events: none;
+}
+
+.soft3 {
+	color: #ff00bf;
+	font-weight: bold;
+	text-shadow: 0.5px 0.5px 0 black, -0.5px -0.5px 0 black, 1px 1px 0 #ff00ff, -1px -1px 0 #ff00ff;
 	pointer-events: none;
 }
 

@@ -51,7 +51,6 @@ function resetTemp() {
 }
 
 resetTemp()
-setInterval(updateSupernovaAutoTemp, 1000)
 
 function updateMassTemp() {
     tmp.massSoftPower = FORMS.massSoftPower()

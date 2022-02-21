@@ -23,7 +23,7 @@ const FORMS = {
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         x = x.mul(tmp.stars.effect)
-        if (player.supernova.tree.includes("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
+        if (hasTreeUpg("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
 
@@ -32,7 +32,7 @@ const FORMS = {
         if (!CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) x = x.pow(tmp.chal.eff[3])
         if (tmp.md.active) {
             x = MASS_DILATION.applyDil(x)
-            if (player.atom.elements.includes(28)) x = x.pow(1.5)
+            if (hasElement(28)) x = x.pow(1.5)
         }
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
 
@@ -56,8 +56,8 @@ const FORMS = {
     },
     massSoftGain2() {
         let s = E('1.5e1000056')
-        if (player.supernova.tree.includes("m2")) s = s.pow(1.5)
-        if (player.supernova.tree.includes("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
+        if (hasTreeUpg("m2")) s = s.pow(1.5)
+        if (hasTreeUpg("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
         if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
 
         s = s.pow(tmp.bosons.effect.neg_w[0])
@@ -66,12 +66,12 @@ const FORMS = {
     },
     massSoftPower2() {
         let p = E(0.25)
-        if (player.atom.elements.includes(51)) p = p.pow(0.9)
+        if (hasElement(51)) p = p.pow(0.9)
         return p
     },
     massSoftGain3() {
         let s = uni("ee8")
-        if (player.supernova.tree.includes("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
+        if (hasTreeUpg("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         s = s.pow(tmp.radiation.bs.eff[2])
         return s
     },
@@ -96,7 +96,7 @@ const FORMS = {
         },
         effect() {
             let t = player.tickspeed
-            if (player.atom.elements.includes(63)) t = t.mul(25)
+            if (hasElement(63)) t = t.mul(25)
             t = t.mul(tmp.radiation.bs.eff[1])
             let bonus = E(0)
             if (player.atom.unl) bonus = bonus.add(tmp.atom.atomicEff)
@@ -108,13 +108,13 @@ const FORMS = {
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
                 step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
-            if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
+            if (hasTreeUpg("t1")) step = step.pow(1.15)
 
             let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
             step = step.softcap(ss,0.1,0)
             
             let eff = step.pow(t.add(bonus))
-            if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
+            if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
             return {step: step, eff: eff, bonus: bonus}
         },
@@ -130,7 +130,7 @@ const FORMS = {
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
             gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
-            if (player.supernova.tree.includes("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
+            if (hasTreeUpg("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) gain = gain.root(10)
@@ -157,7 +157,7 @@ const FORMS = {
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
 
-            if (player.supernova.tree.includes("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
+            if (hasTreeUpg("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
             gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
 
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = gain.root(6)
@@ -170,7 +170,7 @@ const FORMS = {
         massPowerGain() {
             let x = E(0.33)
             if (FERMIONS.onActive("11")) return E(-1)
-            if (player.atom.elements.includes(59)) x = E(0.45)
+            if (hasElement(59)) x = E(0.45)
             x = x.add(tmp.radiation.bs.eff[4])
             return x
         },
@@ -178,7 +178,7 @@ const FORMS = {
             let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
-            if (player.atom.elements.includes(46)) x = x.mul(tmp.elements.effect[46])
+            if (hasElement(46)) x = x.mul(tmp.elements.effect[46])
             x = x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
@@ -191,8 +191,7 @@ const FORMS = {
             return s
         },
         massSoftPower() {
-            let p = E(1)
-            return E(1).div(p.add(1))
+            return E(0.5)
         },
         reset() {
             if (tmp.bh.dm_can) if (player.confirms.bh?confirm("Are you sure to reset?"):true) {
@@ -243,7 +242,7 @@ const FORMS = {
                     pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
                     if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
                     pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
-                    if (player.supernova.tree.includes("bh2")) pow = pow.pow(1.15)
+                    if (hasTreeUpg("bh2")) pow = pow.pow(1.15)
                 pow = pow
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
                 return {pow: pow, eff: eff}
@@ -373,7 +372,9 @@ const UPGS = {
                 let step = E(1)
                 if (player.ranks.rank.gte(3)) step = step.add(RANKS.effect.rank[3]())
                 step = step.mul(tmp.upgs.mass[2]?tmp.upgs.mass[2].eff.eff:1)
-                let ret = step.mul(x.add(tmp.upgs.mass[1].bonus))
+                let total = x.add(tmp.upgs.mass[1].bonus)
+                if (player.ranks.pent.gte(10)) total = total.pow(RANKS.effect.pent[10]())
+                let ret = step.mul(total)
                 return {step: step, eff: ret}
             },
             effDesc(eff) {
@@ -398,7 +399,9 @@ const UPGS = {
                 let step = E(2)
                 if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
                 step = step.pow(tmp.upgs.mass[3]?tmp.upgs.mass[3].eff.eff:1)
-                let ret = step.mul(x.add(tmp.upgs.mass[2].bonus)).add(1)
+                let total = x.add(tmp.upgs.mass[2].bonus)
+                if (player.ranks.pent.gte(10)) total = total.pow(RANKS.effect.pent[10]())
+                let ret = step.mul(total).add(1)
                 return {step: step, eff: ret}
             },
             effDesc(eff) {
@@ -426,7 +429,7 @@ const UPGS = {
                 let step = E(1).add(RANKS.effect.tetr[2]())
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
-                if (player.atom.elements.includes(4)) step = step.mul(tmp.elements.effect[4])
+                if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
                 if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
@@ -437,7 +440,7 @@ const UPGS = {
             effDesc(eff) {
                 return {
                     step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Booster Power"+(eff.eff.gte(eff.ss)?` <span class='soft'>(softcapped${eff.eff.gte(1.8e5)?"^2":""})</span>`:"")
+                    eff: "^"+format(eff.eff)+" to Booster Power"+getSoftcapHTML(eff.eff,eff.es,1.8e5)
                 }
             },
             bonus() {
@@ -514,7 +517,7 @@ const UPGS = {
                 desc: "For every 3 tickspeeds adds Stronger.",
                 cost: E(1e7),
                 effect() {
-                    let ret = player.tickspeed.div(3).add(player.atom.elements.includes(38)?tmp.elements.effect[38]:0).floor()
+                    let ret = player.tickspeed.div(3).add(hasElement(38)?tmp.elements.effect[38]:0).floor()
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -529,7 +532,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.9).gte(2.5)?" <span class='soft'>(softcapped)</span>":"")
+                    return format(E(1).sub(x).mul(100))+"% weaker"+getSoftcapHTML(x.log(0.9),2.5)
                 },
             },
             9: {
@@ -551,7 +554,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return format(x)+"x"+(x.gte("e4000")?" <span class='soft'>(softcapped)</span>":"")
+                    return format(x)+"x"+getSoftcapHTML(x,"1e4000")
                 },
             },
             12: {
@@ -563,7 +566,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return "+^"+format(x)+(x.gte(0.2)?" <span class='soft'>(softcapped)</span>":"")
+                    return "+^"+format(x)+getSoftcapHTML(x,0.2)
                 },
             },
             13: {
@@ -632,7 +635,7 @@ const UPGS = {
                     return ret.min(400)
                 },
                 effDesc(x=this.effect()) {
-                    return "+"+format(x,0)+" later"+(x.gte(100)?" <span class='soft'>(softcapped)</span>":"")
+                    return "+"+format(x,0)+" later"+getSoftcapHTML(x,100)
                 },
             },
             4: {
@@ -692,7 +695,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return format(x)+"x"+(x.max(1).log2().gte(11600)?" <span class='soft'>(softcapped)</span>":"")
+                    return format(x)+"x"+getSoftcapHTML(x.max(1).log2(),11600)
                 },
             },
             11: {
@@ -746,7 +749,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            auto_unl() { return player.supernova.tree.includes("qol1") },
+            auto_unl() { return hasTreeUpg("qol1") },
             lens: 12,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
@@ -931,6 +934,7 @@ function formatMass(ex) {
 
 function formatGain(amt, gain, isMass=false) {
     let f = isMass?formatMass:format
+	if (gain.gte("ee12") && gain.log(amt).gte(1.1)) return "(x"+format(gain.max(1).log10().div(amt.max(1).log10().max(1)).times(50))+" OoMs)"
 	if (gain.gte(1e100) && gain.gt(amt)) return "(+"+format(gain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50))+" OoMs/sec)"
 	else return "(+"+f(gain)+"/sec)"
 }

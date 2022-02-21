@@ -41,8 +41,12 @@
     <div id="loading" class='table_center' style="align-items: center; height: 100%;">
         <div>
             <h1>Loading game...</h1><br>
-            <h2>Loading Offline Progress... (<span id='offlineSpeed'>1</span>x speed)</h2>
+            <h2>Loading Offline Progress... <span id='offlineSpeed'></span></h2>
         </div>
+        <span id="offlineGain" style="position: fixed; top: 75%; display: none">
+            <span id="offlineGainDiv">1.00x mass gained!</span>
+            <br><button class="btn" id="offlineSkip" onclick="player.offline.time = 0">Skip</button>
+        </span>
     </div>
     <div id="notify" class="hide">
         Hello, world!
@@ -65,6 +69,7 @@
         <div style="position: absolute; top: 25px; left: 25px;">
             <button class="btn" onclick="tmp.tab = tmp.sn_tab;">Back to Main</button>
             <button class="btn" onclick="SUPERNOVA.reset(true)">Reset without being Supernova</button>
+            <button class="btn" onclick="updateSupernovaSweep()" id="supernova_sweep">Auto-Sweep: ON</button>
         </div>
         <div style="min-height: 70px; margin-top: 15px;">
             <h2>You become <span id="supernova_rank"></span> <span id="supernova_scale"></span> Supernova</h2><br>
@@ -81,7 +86,9 @@
             </div>
             <div id="tree" class="table_center">
                 <canvas id="tree_canvas"></canvas>
-                <div id="tree_table"></div>
+                <div class="table_center" id="tree_table_fix">
+					<div id="tree_table"></div>
+				</div>
             </div>
         </div><div id="stab_frame5_1">
             <div class="bosons">
@@ -143,14 +150,12 @@
 		</div>
 		<div style="position: absolute; height: 80%; width: 80%; top: 10%; left: 10%; border: 3px solid #ff3f00; background: rgba(0, 0, 0, 0.9)">
 			<div id="stab_frame6_0">
-				<span id="st_res0"></span> X Axions <span id="st_gain0"></span><!--, <span id="st_res1"></span> Y Axions <span id="st_gain1"></span>--><br>
-				<table><tr>
-					<td><button class="btn full" id="st_upg0" onclick="AXIONS.buy(0)">Supernova Time Boost<br>Speed up all Supernova productions by <span id="st_eff0"></span>x.<br>Cost: <span id="st_cost0"></span><br>Level: <span id="st_lvl0"></span></button></td>
-					<td><button class="btn full" id="st_upg1" onclick="AXIONS.buy(1)">Cosmic Burst Boost<br>Cosmic Ray softcap starts <span id="st_eff1"></span>x later.<br>Cost: <span id="st_cost1"></span><br>Level: <span id="st_lvl1"></span></button></td>
-					<td><button class="btn full" id="st_upg2" onclick="AXIONS.buy(2)">Tickspeed Balance Boost<br>Outside of challenges, Tickspeed scales <span id="st_eff2"></span>x weaker, but reduce the non-bonus.<br>Cost: <span id="st_cost2"></span><br>Level: <span id="st_lvl2"></span></button></td>
-					<td><button class="btn full" id="st_upg3" onclick="AXIONS.buy(3)">Radiation Scaling Boost<br>Reduce the Radiation Booster scaling by ^<span id="st_eff3"></span>.<br>Cost: <span id="st_cost3"></span><br>Level: <span id="st_lvl3"></span></button></td>
-				</tr></table>
-				<!--<table id="ax_table"></table>-->
+				<span id="st_res0"></span> X Axions <span id="st_gain0"></span>, <span id="st_res1"></span> Y Axions <span id="st_gain1"></span><br><br>
+				<div id="ax_desc" style="min-height: 70px;">
+                    <span id="ax_title" class='sky'>Cosmic Burst</span><br>
+                    <span id="ax_req">Requirement: 0 / 1</span><br>
+                    <span id="ax_eff" class='green'>Cosmic Ray softcap starts later.</span>
+                </div><table id="ax_table"></table>
 			</div>
 		</div>
 	</div>

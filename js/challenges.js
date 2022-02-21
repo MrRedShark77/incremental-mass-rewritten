@@ -19,7 +19,7 @@ function updateChalHTML() {
     }
     tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
     tmp.el.chal_exit.setVisible(player.chal.active != 0)
-    tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !player.supernova.tree.includes("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
+    tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTreeUpg("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
     if (player.chal.choosed != 0) {
         let chal = CHALS[player.chal.choosed]
@@ -107,15 +107,16 @@ const CHALS = {
     getMax(i) {
         let x = this[i].max
         if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
-        if (player.atom.elements.includes(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
-        if (player.atom.elements.includes(75) && (i==5||i==6)) x = x.add(tmp.elements.effect[75])
-        if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
-        if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
-        if (player.atom.elements.includes(60) && (i==7)) x = x.add(100)
-        if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
-        if (player.atom.elements.includes(56) && (i==8)) x = x.add(200)
-        if (player.atom.elements.includes(65) && (i==7||i==8)) x = x.add(200)
-        if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
+        if (hasElement(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
+        if (hasElement(75) && (i==5||i==6)) x = x.add(tmp.elements.effect[75])
+        if (hasElement(20) && (i==7)) x = x.add(50)
+        if (hasElement(41) && (i==7)) x = x.add(50)
+        if (hasElement(60) && (i==7)) x = x.add(100)
+        if (hasElement(33) && (i==8)) x = x.add(50)
+        if (hasElement(56) && (i==8)) x = x.add(200)
+        if (hasElement(65) && (i==7||i==8)) x = x.add(200)
+        if (hasTreeUpg("chal1") && (i==7||i==8)) x = x.add(100)
+        if (AXIONS.unl() && (i==7||i==10)) x = x.add(tmp.ax.eff[13])
         return x.floor()
     },
     getScaleName(i) {
@@ -126,8 +127,9 @@ const CHALS = {
     },
     getPower(i) {
         let x = E(1)
-        if (player.atom.elements.includes(2)) x = x.mul(0.75)
-        if (player.atom.elements.includes(26)) x = x.mul(tmp.elements.effect[26])
+        if (hasElement(2)) x = x.mul(0.75)
+        if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
+        if (hasTreeUpg("feat7")) x = x.mul(0.9)
         return x
     },
     getPower2(i) {
@@ -136,6 +138,7 @@ const CHALS = {
     },
     getPower3(i) {
         let x = E(1)
+        if (AXIONS.unl()) x = x.mul(tmp.ax.eff[14])
         return x
     },
     getChalData(x, r=E(-1)) {
@@ -148,7 +151,7 @@ const CHALS = {
         if (x > 8) s2 = 50
         let s3 = 1000
         let pow = chal.pow
-        if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
+        if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
         let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
         let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
@@ -197,10 +200,11 @@ const CHALS = {
             let start2 = E(s2);
             let exp2 = E(4.5).pow(this.getPower2())
             let start3 = E(s3);
-            let exp3 = E(1.001).pow(this.getPower3())
+            let power3 = this.getPower3()
+            let exp3_base = E(1.001)
             goal =
             chal.inc.pow(
-                    exp3.pow(lvl.sub(start3)).mul(start3)
+                    exp3_base.pow(lvl.sub(start3).mul(power3)).mul(start3)
                     .pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
                 ).mul(chal.start)
             bulk = res
@@ -214,7 +218,8 @@ const CHALS = {
                 .root(exp2)
                 .div(start3)
 			    .max(1)
-			    .log(exp3)
+			    .log(exp3_base)
+			    .div(power3)
 			    .add(start3)
                 .add(1)
                 .floor();
@@ -247,12 +252,12 @@ const CHALS = {
         start: E(1.989e40),
         effect(x) {
             let sp = E(0.5)
-            if (player.atom.elements.includes(8)) sp = sp.pow(0.25)
-            if (player.atom.elements.includes(39)) sp = E(1)
+            if (hasElement(8)) sp = sp.pow(0.25)
+            if (hasElement(39)) sp = E(1)
             let ret = x.mul(0.075).add(1).softcap(1.3,sp,0).sub(1)
             return ret
         },
-        effDesc(x) { return "+"+format(x.mul(100))+"%"+(x.gte(0.3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return "+"+format(x.mul(100))+"%"+getSoftcapHTML(x,0.3) },
     },
     3: {
         unl() { return player.chal.comps[2].gte(1) || player.atom.unl },
@@ -264,10 +269,10 @@ const CHALS = {
         pow: E(1.25),
         start: E(2.9835e49),
 		effect(x) {
-			if (player.atom.elements.includes(64)) x = x.mul(1.5)
+			if (hasElement(64)) x = x.mul(1.5)
 			let ret = x.root(1.5).mul(0.01).add(1)
 			let cap = E(2.4).add(tmp.radiation && tmp.radiation.bs.eff[19])
-			if (player.supernova.tree.includes("feat5")) {
+			if (hasTreeUpg("feat5")) {
 				ret = ret.add(0.05)
 				cap = cap.add(0.05)
 			}
@@ -285,10 +290,10 @@ const CHALS = {
         pow: E(1.25),
         start: E(1.736881338559743e133),
 		effect(x) {
-			if (player.atom.elements.includes(64)) x = x.mul(1.5)
+			if (hasElement(64)) x = x.mul(1.5)
 			let ret = x.root(1.5).mul(0.01).add(1)
 			let cap = E(2.4).add(tmp.fermions && tmp.fermions.effs[1][5])
-			if (player.supernova.tree.includes("feat5")) {
+			if (hasTreeUpg("feat5")) {
 				ret = ret.add(0.05)
 				cap = cap.add(0.05)
 			}
@@ -309,7 +314,7 @@ const CHALS = {
             let ret = E(0.97).pow(x.root(2).softcap(5,0.5,0))
             return ret
         },
-        effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker"+getSoftcapHTML(x.log(0.97),5) },
     },
     6: {
         unl() { return player.chal.comps[5].gte(1) || player.supernova.times.gte(1) },
@@ -321,10 +326,10 @@ const CHALS = {
         pow: E(1.25),
         start: E(1.989e38),
         effect(x) {
-            let ret = x.mul(0.1).add(1).softcap(1.5,player.atom.elements.includes(39)?1:0.5,0).sub(1)
+            let ret = x.mul(0.1).add(1).softcap(1.5,hasElement(39)?1:0.5,0).sub(1)
             return ret
         },
-        effDesc(x) { return "+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return "+"+format(x)+"x"+getSoftcapHTML(x,0.5) },
     },
     7: {
         unl() { return player.chal.comps[6].gte(1) || player.supernova.times.gte(1) },
@@ -337,7 +342,7 @@ const CHALS = {
         start: E(1.5e76),
         effect(x) {
             let ret = x.mul(2)
-            if (player.atom.elements.includes(5)) ret = ret.mul(2)
+            if (hasElement(5)) ret = ret.mul(2)
             return ret.floor()
         },
         effDesc(x) { return "+"+format(x,0) },
@@ -352,14 +357,14 @@ const CHALS = {
         pow: E(1.3),
         start: E(1.989e38),
         effect(x) {
-            if (player.atom.elements.includes(64)) x = x.mul(1.5)
+            if (hasElement(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
             return ret
         },
         effDesc(x) { return "^"+format(x) },
     },
     9: {
-        unl() { return player.supernova.tree.includes("chal4") },
+        unl() { return hasTreeUpg("chal4") },
         title: "No Particles",
         desc: "You cannot assign quarks. In addtional, mass gains exponent is raised to 0.9th power.",
         reward: `Improve Magnesium-12 better.`,
@@ -368,13 +373,13 @@ const CHALS = {
         pow: E(2),
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
-            let ret = x.root(player.supernova.tree.includes("chal4a")?3.5:4).mul(0.1).add(1)
-            return ret
+            let ret = x.root(hasTreeUpg("chal4a")?3.5:4).mul(0.1).add(1)
+            return ret.min(1.3)
         },
         effDesc(x) { return "^"+format(x) },
     },
     10: {
-        unl() { return player.supernova.tree.includes("chal5") },
+        unl() { return hasTreeUpg("chal5") },
         title: "The Reality I",
         desc: "All challenges 1-8 are applied at once. In addtional, you are trapped in Mass Dilation!",
         reward: `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions!</span>`,
@@ -389,7 +394,7 @@ const CHALS = {
         effDesc(x) { return format(x)+"x" },
     },
     11: {
-        unl() { return player.supernova.tree.includes("chal6") },
+        unl() { return hasTreeUpg("chal6") },
         title: "Absolutism",
         desc: "You cannot gain relativistic particles or dilated mass. However, you are stuck in Mass Dilation.",
         reward: `Star Booster is stonger by completions.`,
@@ -404,7 +409,7 @@ const CHALS = {
         effDesc(x) { return format(x)+"x stronger" },
     },
 	12: {
-		unl() { return player.supernova.tree.includes("chal7") },
+		unl() { return hasTreeUpg("chal7") },
 		title: "Wormhole Devourer",
 		desc: "You are stuck in Mass Dilation, but has a static ^0.428 penalty and doesn't affect Dark Matter and Black Hole.",
 		reward: `Radiation Boosters scale slower.<br><span class="yellow">On first completion, unlock a new prestige layer!</span>`,

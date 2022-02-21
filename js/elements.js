@@ -113,7 +113,7 @@ function setupHTML() {
 	setupBosonsHTML()
 	setupFermionsHTML()
 	setupRadiationHTML()
-	//setupAxionHTML()
+	setupAxionHTML()
 
 	/*
 	function setupTestHTML() {
@@ -175,7 +175,7 @@ function updateUpperHTML() {
 	tmp.el.atom_div.setVisible(unl)
 	if (unl) {
 		tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
-		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+(player.atom.elements.includes(24)?formatGain(player.atom.points,tmp.atom.gain):"(+"+format(tmp.atom.gain,0)+")"))
+		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain):"(+"+format(tmp.atom.gain,0)+")"))
 	}
 	unl = !CHALS.inChal(0)
 	tmp.el.chal_upper.setVisible(unl)
@@ -186,11 +186,11 @@ function updateUpperHTML() {
 	}
 	unl = player.atom.unl
 	tmp.el.quark_div.setVisible(unl)
-	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(player.atom.elements.includes(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
+	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(hasElement(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
 
 	unl = MASS_DILATION.unlocked()
 	tmp.el.md_div.setVisible(unl)
-	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(player.supernova.tree.includes("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
+	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(hasTreeUpg("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
 
 	unl = player.supernova.post_10
 	tmp.el.sn_div.setVisible(unl)
@@ -252,8 +252,7 @@ function updateTickspeedHTML() {
 		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(tmp.atom.atomicEff.gte(1)?" + "+format(tmp.atom.atomicEff,0):""))
 		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
 		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
-		tmp.el.tickspeed_step.setHTML((tmp.tickspeedEffect.step.gte(10)?format(tmp.tickspeedEffect.step)+"x":format(tmp.tickspeedEffect.step.sub(1).mul(100))+"%")
-		+(tmp.tickspeedEffect.step.gte(1e50)?" <span class='soft'>(softcapped)</span>":""))
+		tmp.el.tickspeed_step.setHTML((tmp.tickspeedEffect.step.gte(10)?format(tmp.tickspeedEffect.step)+"x":format(tmp.tickspeedEffect.step.sub(1).mul(100))+"%")+getSoftcapHTML(tmp.tickspeedEffect.step,1e50))
 		tmp.el.tickspeed_eff.setTxt(format(tmp.tickspeedEffect.eff))
 
 		tmp.el.tickspeed_auto.setDisplay(FORMS.tickspeed.autoUnl())
@@ -332,7 +331,13 @@ function updateOptionsHTML() {
 
 function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
-	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
+	tmp.el.offlineGain.setDisplay(tmp.offlineActive)
+	if (tmp.offlineActive) tmp.el.offlineSpeed.setTxt("(" + format(tmp.offlineMult) + "x speed, " + formatTime(player.offline.time) + " left)")
+	if (tmp.offlineActive) tmp.el.offlineGainDiv.setHTML(
+		player.mass.gte(uni("ee9")) && player.offline.mass.gt(1)
+		? "^" + format(player.mass.log10().div(player.offline.mass.log10()).max(1)) + " mass gained!"
+		: format(player.mass.div(player.offline.mass)) + "x mass gained!"
+	)
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(!tmp.offlineActive && tmp.tab != 5 && (!tmp.supernova.reached || player.supernova.unl))
 	updateSupernovaEndingHTML()

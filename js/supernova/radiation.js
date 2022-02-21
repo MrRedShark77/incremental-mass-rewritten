@@ -4,7 +4,7 @@ const RADIATION = {
     hz_gain() {
         let x = E(1)
         x = x.mul(tmp.radiation.ds_eff[0])
-        if (player.supernova.tree.includes('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
+        if (hasTreeUpg('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
         x = x.mul(tmp.supernova.timeMult)
         return x
     },
@@ -16,11 +16,11 @@ const RADIATION = {
     ds_gain(i) {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
         let x = E(RADIATION.ds_gains[i])
-        if (player.supernova.tree.includes('rad2')) x = x.mul(tmp.supernova.tree_eff.rad2||1)
-        if (player.supernova.tree.includes('feat1')) x = x.mul(3)
-        if (i == 3 && player.atom.elements.includes(70)) x = x.mul(10)
+        if (hasTreeUpg('rad2')) x = x.mul(tmp.supernova.tree_eff.rad2||1)
+        if (hasTreeUpg('feat1')) x = x.mul(3)
+        if (i == 3 && hasElement(70)) x = x.mul(10)
         if (i<RAD_LEN-1) {
-            if (player.supernova.tree.includes('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
+            if (hasTreeUpg('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
             x = x.mul(tmp.radiation.ds_eff[i+1])
         }
         x = x.mul(tmp.radiation.bs.eff[3*i])
@@ -50,7 +50,7 @@ const RADIATION = {
     getBoostScalingExp(i) {
 		let f2 = 1.3+i*0.05
 		if (tmp.radiation.bs.eff[17] && i % 2 == 1) f2 -= tmp.radiation.bs.eff[17][1]
-		if (tmp.ax && tmp.ax.eff) f2 -= tmp.ax.eff[3]
+		if (AXIONS.unl()) f2 -= tmp.ax.eff[3]
 		return Math.max(f2,1.25)
     },
     getLevelEffect(i) {
@@ -59,21 +59,28 @@ const RADIATION = {
     },
     getbonusLevel(i) {
         let x = E(0)
-        if (i < 8) x = x.add(RADIATION.applyBonusExp(tmp.radiation.bs.eff[8]&&tmp.radiation.bs.eff[8],8,i))
-        if (i < 12 && player.atom.elements.includes(69)) x = x.add(1)
-        if (i < 17) x = x.add(RADIATION.applyBonusExp(tmp.radiation.bs.eff[17]&&tmp.radiation.bs.eff[17][0],17,i))
+        if (i < 8) x = x.add(RADIATION.applyBonus(tmp.radiation.bs.eff[8]&&tmp.radiation.bs.eff[8],8,i))
+        if (i < 12 && hasElement(69)) x = x.add(1)
+        if (i < 17) x = x.add(RADIATION.applyBonus(tmp.radiation.bs.eff[17]&&tmp.radiation.bs.eff[17][0],17,i))
 
-		if (tmp.eb.ag3) x = x.add(RADIATION.applyBonusExp(tmp.eb.ag3.eff,20,i))
+		if (tmp.eb.ag3) x = x.add(RADIATION.applyBonus(tmp.eb.ag3.eff,20,i))
         return x
     },
-    applyBonusExp(x,a,b) {
+    applyBonus(x,a,b) {
 		if (!x) x = E(0)
+		var m = RADIATION.bonusMul(a,b)
 		var e = RADIATION.bonusExp(a,b)
-		if (e <= 1) return x
-		return x.add(1).pow(e).sub(1)
+		if (e <= 1) return x.mul(m)
+		return x.add(1).pow(e).sub(1).mul(m)
+    },
+    bonusMul(a,b) {
+		if (!hasTreeUpg("rad3")) return 1
+		a = Math.floor(a / 3)
+		b = Math.floor(b / 3)
+        return AXIONS.unl() ? tmp.ax.eff[7].pow(a - b) : E(1)
     },
     bonusExp(a,b) {
-		if (!player.supernova.tree.includes("rad3")) return 1
+		if (!hasTreeUpg("rad3")) return 1
 		a = Math.floor(a / 3) * 2
 		b = Math.floor(b / 3) * 2
         return RADIATION.getBoostScalingExp(a) / RADIATION.getBoostScalingExp(b)
@@ -93,12 +100,12 @@ const RADIATION = {
                 let x = player.supernova.radiation.hz.add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `Radiowave is boosted by ${format(x)}x (based on Frequency)` },
+            desc(x) { return `Radiowave is boosted by ${format(x)}x (based on Frequency)`+getSoftcapHTML(x,1e30) },
         },{
             title: `Tickspeed Boost`,
 			eff(b) {
 				let x = b.add(1).root(2)
-				let d = chalOutside() && tmp.ax && tmp.ax.eff ? tmp.ax.eff[2] : E(1)
+				let d = chalOutside() && AXIONS.unl() ? tmp.ax.eff[2] : E(1)
 				if (d.gt(1)) x = x.sub(1).div(d).add(1)
 				return x
 			},
@@ -116,7 +123,7 @@ const RADIATION = {
                 let x = player.supernova.radiation.ds[0].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `Microwave is boosted by ${format(x)}x (based on Radio)` },
+            desc(x) { return `Microwave is boosted by ${format(x)}x (based on Radio)`+getSoftcapHTML(x,1e30) },
         },{
             title: `BH-Exponent Boost`,
             eff(b) {
@@ -130,14 +137,14 @@ const RADIATION = {
                 let x = b.add(1).pow(2)
                 return x.softcap(100,0.5,0)
             },
-            desc(x) { return `Non-bonus BH condenser is ${format(x)}x stronger`+(x.gte(100)?" <span class='soft'>(softcapped)</span>":"") },
+            desc(x) { return `Non-bonus BH condenser is ${format(x)}x stronger`+getSoftcapHTML(x,100) },
         },{
             title: `Infrared Boost`,
             eff(b) {
                 let x = player.supernova.radiation.ds[1].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `Infrared is boosted by ${format(x)}x (based on Microwave)` },
+            desc(x) { return `Infrared is boosted by ${format(x)}x (based on Microwave)`+getSoftcapHTML(x,1e30) },
         },{
             title: `Photo-Gluon Boost`,
             eff(b) {
@@ -148,7 +155,8 @@ const RADIATION = {
         },{
             title: `Meta-Boost I`,
             eff(b) {
-                let x = b.root(2.5).div(1.75).mul(player.supernova.tree.includes("rad4")?1.5:1)
+                let x = b.root(2.5).div(1.75).mul(hasTreeUpg("rad4")?1.5:1)
+                if (hasTreeUpg("rad5")) x = x.mul(player.ranks.pent.div(5).add(1).log10().div(2)).add(1).pow(1.5).mul(x)
                 return x
             },
             desc(x) { return `Add ${format(x)} levels to all above boosts` },
@@ -158,7 +166,7 @@ const RADIATION = {
                 let x = player.supernova.radiation.ds[2].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `Visible is boosted by ${format(x)}x (based on Infrared)` },
+            desc(x) { return `Visible is boosted by ${format(x)}x (based on Infrared)`+getSoftcapHTML(x,1e30) },
         },{
             title: `Cosmic-Ray Boost`,
             eff(b) {
@@ -179,7 +187,7 @@ const RADIATION = {
                 let x = player.supernova.radiation.ds[3].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `Ultraviolet is boosted by ${format(x)}x (based on Visible)` },
+            desc(x) { return `Ultraviolet is boosted by ${format(x)}x (based on Visible)`+getSoftcapHTML(x,1e30) },
         },{
             title: `Tickspeed-Softcap Boost`,
             eff(b) {
@@ -190,29 +198,29 @@ const RADIATION = {
         },{
             title: `Meta-Tickspeed Boost`,
             eff(b) {
-                let x = E(1.1).pow(b)
+                let x = E(1.1).pow(b).min(300)
                 return x
             },
-            desc(x) { return `Meta-Tickspeed starts ${format(x)}x later` },
+            desc(x) { return `Meta-Tickspeed starts ${format(x)}x later (hardcapped at 300)` },
         },{
             title: `X-Ray Boost`,
             eff(b) {
                 let x = player.supernova.radiation.ds[4].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `X-Ray is boosted by ${format(x)}x (based on Ultraviolet)` },
+            desc(x) { return `X-Ray is boosted by ${format(x)}x (based on Ultraviolet)`+getSoftcapHTML(x,1e30) },
         },{
-            title: `U-Fermion Boost`,
+            title: `U-Lepton Boost`,
             eff(b) {
                 let x = b.add(1).log(2).div(50).add(1)
                 return x
             },
-            desc(x) { return `U-Fermion boosts are ${format(x)}x stronger.` },
+            desc(x) { return `U-Lepton boosts are ${format(x)}x stronger.` },
         },{
             title: `Meta Boost II / Synergy Boost`,
             eff(b) {
 				let r = b.mul(player.supernova.radiation.ds[5].add(1).log10().pow(5/6)).pow(2/5)
-                return [r.div(10).mul(player.supernova.tree.includes("rad4")?1.5:1), r.div(100).min(0.05).toNumber()]
+                return [r.div(10).mul(hasTreeUpg("rad4")?1.5:1), r.div(100).min(0.05).toNumber()]
             },
             desc(x) { return `Add ${format(x[0])} levels to all above boosts, reduce Velocity cost scalings by ^${format(x[1])}` },
         },
@@ -222,7 +230,7 @@ const RADIATION = {
                 let x = player.supernova.radiation.ds[5].add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `Gamma is boosted by ${format(x)}x (based on X-Ray)` },
+            desc(x) { return `Gamma is boosted by ${format(x)}x (based on X-Ray)`+getSoftcapHTML(x,1e30) },
         },
         {
             title: `Mass Exponent Boost`,
@@ -256,7 +264,7 @@ const RADIATION = {
 const RAD_LEN = 7
 
 function updateRadiationTemp() {
-    tmp.radiation.unl = player.supernova.tree.includes("unl1")
+    tmp.radiation.unl = hasTreeUpg("unl1")
     tmp.radiation.hz_gain = RADIATION.hz_gain()
     tmp.radiation.hz_effect = RADIATION.hz_effect()
     for (let x = 0; x < RAD_LEN; x++) {

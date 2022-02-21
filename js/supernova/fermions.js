@@ -5,7 +5,7 @@ const FERMIONS = {
         let x = E(1)
         if (tmp.radiation.unl) x = x.mul(tmp.radiation.hz_effect)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(E(1.25).pow(player.supernova.fermions.tiers[i][j]))
-        if (player.supernova.tree.includes("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
+        if (hasTreeUpg("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
         x = x.mul(tmp.supernova.timeMult)
         return x
     },
@@ -21,7 +21,7 @@ const FERMIONS = {
 		let id = i+""+x
 		tmp.tickspeedEffect.eff = E(1)
 		tmp.tickspeedEffect.step = E(1)
-		if (player.supernova.tree.includes("qol9") && player.supernova.fermions.choosed && player.supernova.fermions.choosed[0] != i) {
+		if (hasTreeUpg("qol9") && player.supernova.fermions.choosed && player.supernova.fermions.choosed[0] != i) {
 			if (player.supernova.fermions.choosed2 != id) {
 				player.supernova.fermions.choosed2 = id
 				SUPERNOVA.reset(false,false,false,true)
@@ -70,12 +70,16 @@ const FERMIONS = {
         }
         return x
     },
+	maxTier(i, x) {
+		let f = FERMIONS.types[i][x]
+		return typeof f.maxTier == "function" ? f.maxTier() : f.maxTier || 1/0
+	},
     getUnlLength(x) {
         let u = 2
-        if (player.supernova.tree.includes("fn2")) u++
-        if (player.supernova.tree.includes("fn6")) u++
-        if (player.supernova.tree.includes("fn7")) u++
-        if (player.supernova.tree.includes("fn8")) u++
+        if (hasTreeUpg("fn2")) u++
+        if (hasTreeUpg("fn6")) u++
+        if (hasTreeUpg("fn7")) u++
+        if (hasTreeUpg("fn8")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -120,7 +124,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `x${format(x)} to Relativistic Particles gain`+(x.gte('ee3')?" <span class='soft'>(softcapped)</span>":"")
+                    return `x${format(x)} to Relativistic Particles gain`+getSoftcapHTML(x,'ee3')
                 },
                 inc: "Relativistic Particle",
                 cons: "The exponent of the RP formula is divided by 10",
@@ -141,7 +145,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+(x.gte(5)?" <span class='soft'>(softcapped)</span>":"")
+                    return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+getSoftcapHTML(x,5)
                 },
                 inc: "Mass",
                 cons: "You are trapped in Mass Dilation, but they are twice effective",
@@ -164,7 +168,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `4th Photon & Gluon upgrades are ${format(x)}x stronger`+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"")
+                    return `4th Photon & Gluon upgrades are ${format(x)}x stronger`+getSoftcapHTML(x,1.5)
                 },
                 inc: "Rage Power",
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
@@ -214,7 +218,7 @@ const FERMIONS = {
             {
                 maxTier() {
                     let x = 15
-                    if (player.supernova.tree.includes("fn5")) x += 35
+                    if (hasTreeUpg("fn5")) x += 35
                     return x
                 },
                 nextTierAt(x) {
@@ -229,11 +233,11 @@ const FERMIONS = {
                 },
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
-                    let x = i.add(1).log10().mul(t).div(100).add(1).softcap(1.5,player.supernova.tree.includes("fn5")?0.75:0.25,0)
+                    let x = i.add(1).log10().mul(t).div(100).add(1).softcap(1.5,hasTreeUpg("fn5")?0.75:0.25,0)
                     return x
                 },
                 desc(x) {
-                    return `Collapse Stars gain softcap starts ^${format(x)} later`+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"")
+                    return `Collapse Stars gain softcap starts ^${format(x)} later`+getSoftcapHTML(x,1.5)
                 },
                 inc: "Quark",
                 cons: "^0.625 to the exponent of Atoms gain",
@@ -254,7 +258,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `x${format(x)} to Higgs Bosons & Gravitons gain`+(x.gte(1e6)?" <span class='soft'>(softcapped)</span>":"")
+                    return `x${format(x)} to Higgs Bosons & Gravitons gain`+getSoftcapHTML(x,1e6)
                 },
                 isMass: true,
                 inc: "Mass of Black Hole",
@@ -299,7 +303,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `Tier requirement is ${format(x)}x cheaper`+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"")
+                    return `Tier requirement is ${format(x)}x cheaper`+getSoftcapHTML(x,1.5)
                 },
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
@@ -317,14 +321,15 @@ const FERMIONS = {
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
 					if (t.eq(0)) return E(1)
-                    return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, 0.25, 0)
+					let sc = AXIONS.unl() ? tmp.ax.eff[11].div(4) : E(0.25)
+                    return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, sc, 0)
                 },
                 desc(x) {
-                    return `Meta Rank scaling starts ${format(x)}x later.`+(x.gte(2.5)?" <span class='soft'>(softcapped)</span>":"")
+                    return `Meta Rank scaling starts ${format(x)}x later.`+getSoftcapHTML(x,2.5)
                 },
 				isMass: true,
                 inc: "Dilated mass",
-                cons: "There's no Meta Scalings, but U-Leptons do nothing.",
+                cons: "There's no Meta Scalings, but U-Leptons do nothing and Rank is capped at 20,000.",
             },
             {
                 nextTierAt(x) {
@@ -340,6 +345,7 @@ const FERMIONS = {
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(0)
                     let x = i.add(1).log10().times(t.add(1).log10()).add(1).log10().div(20)
+			        if (AXIONS.unl()) x = x.mul(tmp.ax.eff[5])
                     return x
                 },
                 desc(x) {
@@ -403,7 +409,7 @@ function updateFermionsTemp() {
         tmp.fermions.gains[i] = FERMIONS.gain(i)
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]
-            tmp.fermions.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0
+            tmp.fermions.maxTier[i][x] = FERMIONS.maxTier(i, x)
             tmp.fermions.tiers[i][x] = f.calcTier()
 
 			let t = player.supernova.fermions.tiers[i][x]
