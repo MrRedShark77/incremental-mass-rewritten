@@ -1,5 +1,6 @@
 :root {
     --font: 'Verdana, Geneva, Tahoma, sans-serif';
+	color-scheme: dark;
 }
 
 @font-face {
