@@ -205,7 +205,7 @@ const RANKS = {
 			},
 			'10'() {
 				let ret = tmp.upgs.mass[3]?tmp.upgs.mass[3].eff.eff:E(1)
-				ret = ret.times(player.ranks.pent.div(100))
+				ret = ret.times(player.ranks.pent.div(100).min(5))
 				return ret
 			},
 			'13'() {

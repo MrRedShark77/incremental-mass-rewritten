@@ -300,7 +300,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
-                    let x = i.max(1).log10().add(1).mul(t).div(200).add(1).softcap(1.5,0.5,0).softcap(100,4,3)
+                    let x = i.max(1).log10().add(1).mul(t).div(200).add(1).softcap(1.5,0.5,0).softcap(250,0.5,0)
                     return x
                 },
                 desc(x) {
@@ -322,7 +322,7 @@ const FERMIONS = {
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
 					if (t.eq(0)) return E(1)
-					let sc = future ? E(0.35) : AXIONS.unl() ? tmp.ax.eff[11].div(4) : E(0.25)
+					let sc = future ? E(0.3) : AXIONS.unl() ? tmp.ax.eff[11].div(4) : E(0.25)
                     return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, sc, 0)
                 },
                 desc(x) {

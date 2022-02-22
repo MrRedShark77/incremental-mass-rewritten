@@ -267,7 +267,7 @@ function loadPlayer(load) {
     player = deepNaN(load, DATA)
     player = deepUndefinedAndDecimal(player, DATA)
     convertStringToDecimal()
-    player.offline.mass = player.mass.max(1)
+    player.offline.mass = player.stats.maxMass.max(player.mass)
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0

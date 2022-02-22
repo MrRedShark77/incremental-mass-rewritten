@@ -337,9 +337,9 @@ function updateHTML() {
 	tmp.el.offlineGain.setDisplay(tmp.offlineActive)
 	if (tmp.offlineActive) tmp.el.offlineSpeed.setTxt("(" + format(tmp.offlineMult) + "x speed, " + formatTime(player.offline.time) + " left)")
 	if (tmp.offlineActive) tmp.el.offlineGainDiv.setHTML(
-		player.mass.gte(uni("ee9")) && player.offline.mass.gt(1)
-		? "^" + format(player.mass.log10().div(player.offline.mass.log10()).max(1)) + " mass gained!"
-		: format(player.mass.div(player.offline.mass)) + "x mass gained!"
+		player.stats.maxMass.eq(player.offline.mass) ? "" :
+		player.stats.maxMass.gte(uni("ee9")) ? "^" + format(player.stats.maxMass.log10().div(player.offline.mass.log10()).max(1)) + " mass gained!"
+		: format(player.stats.maxMass.div(player.offline.mass)) + "x mass gained!"
 	)
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(!tmp.offlineActive && tmp.tab != 5 && (!tmp.supernova.reached || player.supernova.unl))

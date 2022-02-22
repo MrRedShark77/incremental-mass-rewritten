@@ -10,8 +10,8 @@ const TREE_IDS = [
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","eb1","eb2","ext_c","","","","","","",""],
     ["","","","","","","","","","","ext_l1","","ext_b1","","","","","",""],
-    ["","","","","","","","","","ext_l2","ext_l3","","","","","","","",""],
-    ["","","","","","","","","","","ext_l4","","","","","","","",""],
+    ["","","","","","","","","","ext_l2","ext_l3","","ext_b2","ext_b3","","","","",""],
+    ["","","","","","","","","","ext_l5","ext_l4","","ext_b4","ext_b5","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -541,7 +541,7 @@ const TREE_UPGS = {
 			desc: `Start producing Y-Axions based on Supernovas.`,
 			cost: E("3.333e333"),
 			perm: true,
-			noIcon: true,
+			icon: "axion",
 		},
 		ext_l1: {
 			branch: ["ext_c"],
@@ -550,7 +550,7 @@ const TREE_UPGS = {
 			desc: `Axion Levels increase costs 20% slower.`,
 			cost: E("1e400"),
 			perm: true,
-			noIcon: true,
+			icon: "axion",
 		},
 		ext_l2: {
 			branch: ["ext_l1"],
@@ -559,7 +559,7 @@ const TREE_UPGS = {
 			desc: `Axion Levels synergize with ones from the other side.`,
 			cost: E(0),
 			perm: true,
-			noIcon: true,
+			icon: "axion",
 		},
 		ext_l3: {
 			branch: ["ext_l1"],
@@ -568,7 +568,7 @@ const TREE_UPGS = {
 			desc: `Axion Levels cheapen the nearest ones.`,
 			cost: E(0),
 			perm: true,
-			noIcon: true,
+			icon: "axion",
 		},
 		ext_l4: {
 			branch: ["ext_l2", "ext_l3"],
@@ -577,7 +577,16 @@ const TREE_UPGS = {
 			desc: `Axion Levels cheapen far levels from the same side.`,
 			cost: E(1/0),
 			perm: true,
-			noIcon: true,
+			icon: "axion",
+		},
+		ext_l5: {
+			branch: ["ext_l4"],
+			req() { return player.ext.amt.gte(1/0) },
+			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			desc: `Axion Levels cheapen levels on the right / under ones.`,
+			cost: E(1/0),
+			perm: true,
+			icon: "axion",
 		},
 		ext_b1: {
 			unl() { return hasTreeUpg("ext_l2") || hasTreeUpg("ext_l3") },
@@ -587,8 +596,54 @@ const TREE_UPGS = {
 			desc: `Row-4 levels synergize with row-1 levels.`,
 			cost: E(0),
 			perm: true,
-			noIcon: true,
+			icon: "axion",
 		},
+		ext_b2: {
+			branch: ["ext_b1"],
+			req() { return player.ext.amt.gte(1/0) },
+			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			desc: `Levels synergize boosts diagonally on the right. [Coming soon!]`,
+			cost: E(0),
+			perm: true,
+			icon: "axion",
+		},
+		ext_b3: {
+			branch: ["ext_b1"],
+			req() { return player.ext.amt.gte(1/0) },
+			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			desc: `Levels synergize boosts diagonally on the left. [Coming soon!]`,
+			cost: E(0),
+			perm: true,
+			icon: "axion",
+		},
+		ext_b4: {
+			branch: ["ext_b2", "ext_b3"],
+			req() { return hasTreeUpg("ext_b2") && hasTreeUpg("ext_b3") },
+			reqDesc() { return "Get 'ext_b2' and 'ext_b3' upgrades." },
+			desc: `??? [Coming soon!]`,
+			cost: E(1/0),
+			perm: true,
+			icon: "axion",
+		},
+		ext_b5: {
+			branch: ["ext_b4"],
+			req() { return player.ext.amt.gte(1/0) },
+			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			desc: `??? [Coming soon!]`,
+			cost: E(0),
+			perm: true,
+			icon: "axion",
+		},
+		/*ext_e1: {
+			unl() { return hasTreeUpg("ext_b1") },
+			branch: ["ext_c"],
+			req() { return player.ext.amt.gte(1/0) },
+			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			desc: `Unlock the fifth row of Axion Upgrades. [Unconfirmed]`,
+			cost: E(0),
+			perm: true,
+			noIcon: true,
+		},*/
 		qol_ext1: {
 			branch: ["qol1"],
 			unl() { return hasTreeUpg("qol_ext4") },
@@ -597,7 +652,7 @@ const TREE_UPGS = {
 			desc: `You don't need to do requirements before buying several Supernova upgrades.`,
 			perm: true,
 			cost: E(2000),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -611,7 +666,7 @@ const TREE_UPGS = {
 			desc: `Reduce the auto-sweeper threshold to 10.`,
 			perm: true,
 			cost: E(1e150),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -625,7 +680,7 @@ const TREE_UPGS = {
 			desc: `Radiation Boosters are fully automated for at least 1,000,000 radiation.`,
 			perm: true,
 			cost: E(1e275),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -643,7 +698,7 @@ const TREE_UPGS = {
 			desc: `Keep the 'chal' upgrades except you start with 50 completions.`,
 			perm: true,
 			cost: E(1e250),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -655,7 +710,7 @@ const TREE_UPGS = {
 			desc: `Keep the core Supernova upgrades.`,
 			perm: true,
 			cost: E(1e200),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -667,7 +722,7 @@ const TREE_UPGS = {
 			desc: `Keep the Fermion Supernova upgrades.`,
 			perm: true,
 			cost: E("1e1000"),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -679,7 +734,7 @@ const TREE_UPGS = {
 			desc: `Keep the Radiation Supernova upgrades.`,
 			perm: true,
 			cost: E("1e2000"),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -691,7 +746,7 @@ const TREE_UPGS = {
 			desc: `[Coming soon!]`,
 			perm: true,
 			cost: E(1/0),
-			noIcon: true,
+			icon: "exotic",
 			effect() {
 				let x = E(1)
 				return x
@@ -816,7 +871,7 @@ function setupTreeHTML() {
         for (let j = 0; j < 19; j++) {
             let id = TREE_IDS[i][j]
             let option = id == "" ? `style="visibility: hidden"` : ``
-            let img = !TREE_UPGS.ids[id] ? `` : TREE_UPGS.ids[id].noIcon ? ` <img src="images/tree/placeholder.png">` : `<img src="images/tree/${id}.png">`
+            let img = !TREE_UPGS.ids[id] ? `` : TREE_UPGS.ids[id].icon ? ` <img src="images/tree/${TREE_UPGS.ids[id].icon}.png">` : TREE_UPGS.ids[id].noIcon ? ` <img src="images/tree/placeholder.png">` : `<img src="images/tree/${id}.png">`
             table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.supernova.tree_choosed = '${id}'" ${option}>${img}</button>`
         }
         table += `</div>`

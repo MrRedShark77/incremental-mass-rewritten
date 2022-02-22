@@ -17,7 +17,7 @@ function updateChalHTML() {
             tmp.el["chal_comp_"+x].setTxt(player.chal.comps[x].gte(tmp.chal.max[x])?"Completed":format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
         }
     }
-    tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed && player.chal.comps[player.chal.choosed].lt(tmp.chal.max[player.chal.choosed]))
+    tmp.el.chal_enter.setVisible(player.chal.choosed && player.chal.active != player.chal.choosed && player.chal.comps[player.chal.choosed].lt(tmp.chal.max[player.chal.choosed]))
     tmp.el.chal_exit.setVisible(player.chal.active != 0)
     tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTreeUpg("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)

@@ -259,7 +259,7 @@ const FORMS = {
         },
 
 		radSoftStart() {
-			return E(10).pow(player.supernova.times.add(1).pow(5))
+			return E(10).pow(player.supernova.times.add(1).pow(6).div(100))
 		}
     },
     reset_msg: {

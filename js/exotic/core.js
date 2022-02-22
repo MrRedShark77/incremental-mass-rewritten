@@ -151,7 +151,8 @@ let EXTRA_BUILDINGS = {
 		pow: E(2),
 		eff(x) {
 			if (x.eq(0)) return E(0)
-			return E(tmp.atom ? tmp.atom.atomicEff : E(0)).add(1).pow(x.add(1).log(3).div(100)).sub(1).mul(hasTreeUpg("rad4")?1:2/3)
+			let exp = x.add(1).log(3).div(100)
+			return E(tmp.atom ? tmp.atom.atomicEff : E(0)).add(1).pow(exp.min(1/10)).sub(1).mul(hasTreeUpg("rad4")?1:2/3).mul(exp.mul(10).max(1))
 		}
 	}
 }
@@ -314,7 +315,7 @@ let AXIONS = {
 		var x = p % 4
 		var y = Math.floor(p / 4)
 		var r = E(0)
-		if (y > 0) r = tmp.ax.upg[y + 3].sub(x + y).div(y + 1).max(0)
+		if (y > 0) r = tmp.ax.upg[y + 3].div(y + 2).sub(x + y).max(0)
 		if (hasTreeUpg("ext_b1") && y == 0) r = AXIONS.getBaseLvl(p + 12)
 		return r
 	},
@@ -448,10 +449,10 @@ let AXIONS = {
 		},
 		11: {
 			title: "Lepton Anomaly",
-			desc: "Meut-Muon softcap is weaker.",
+			desc: "Neut-Muon softcap is weaker.",
 			req: E(15),
 			eff(x) {
-				return x.add(1).log10().sqrt().add(5).min(7).div(5)
+				return x.add(1).log10().sqrt().add(5).min(6).div(5)
 			},
 			effDesc(x) {
 				return "^" + format(x)
@@ -511,9 +512,9 @@ function setupAxionHTML() {
 		html += "</tr><tr>"
 		for (var x = -1; x < 4; x++) {
 			if (x == -1 && y == -1) html += "<td class='ax'></td>"
-			if (x > -1 && y == -1) html += `<td class='ax'><button class='btn_ax normal' id='ax_upg`+x+`' onmouseover='tmp.ax.hover = "u`+x+`"' onmouseleave='tmp.ax.hover = undefined' onclick="AXIONS.buy(`+x+`)">X`+(x+1)+`</button></td>`
-			if (x == -1 && y > -1) html += `<td class='ax'><button class='btn_ax normal' id='ax_upg` +(y+4)+`' onmouseover='tmp.ax.hover = "u`+(y+4)+`"' onmouseleave='tmp.ax.hover = undefined' onclick="AXIONS.buy(`+(y+4)+`)">Y`+(y+1)+`</button></td>`
-			if (x > -1 && y > -1) html += `<td class='ax'><button class='btn_ax' id='ax_boost`+(y*4+x)+`' onmouseover='tmp.ax.hover = "b`+(y*4+x)+`"' onmouseleave='tmp.ax.hover = undefined'><img src='images/tree/placeholder.png' style="position: relative"></img></button></td>`
+			if (x > -1 && y == -1) html += `<td class='ax'><button class='btn_ax normal' id='ax_upg`+x+`' onmouseover='hoverAxion("u`+x+`")' onmouseleave='hoverAxion()' onclick="AXIONS.buy(`+x+`)">X`+(x+1)+`</button></td>`
+			if (x == -1 && y > -1) html += `<td class='ax'><button class='btn_ax normal' id='ax_upg` +(y+4)+`' onmouseover='hoverAxion("u`+(y+4)+`")' onmouseleave='hoverAxion()' onclick="AXIONS.buy(`+(y+4)+`)">Y`+(y+1)+`</button></td>`
+			if (x > -1 && y > -1) html += `<td class='ax'><button class='btn_ax' id='ax_boost`+(y*4+x)+`' onmouseover='hoverAxion("b`+(y*4+x)+`")' onmouseleave='hoverAxion()'><img src='images/axion/b`+(y*4+x)+`.png' style="position: relative"></img></button></td>`
 		}
 	}
 	new Element("ax_table").setHTML(html)
@@ -525,20 +526,26 @@ function updateAxionHTML() {
 	tmp.el.st_gain0.setHTML(formatGain(player.ext.ax.res[0], AXIONS.prod(0)))
 	tmp.el.st_gain1.setHTML(formatGain(player.ext.ax.res[1], AXIONS.prod(1)))
 
-	for (var i = 0; i < 8; i++) tmp.el["ax_upg"+i].setClasses({btn_ax: true, locked: !AXIONS.canBuy(i)})
-	for (var i = 0; i < 16; i++) tmp.el["ax_boost"+i].setClasses({btn_ax: true, locked: tmp.ax.lvl[i].eq(0)})
+	for (var i = 0; i < 8; i++) {
+		tmp.el["ax_upg"+i].setClasses({btn_ax: true, locked: !AXIONS.canBuy(i)})
+		tmp.el["ax_upg"+i].setOpacity(tmp.ax.hover.hide.includes("u"+i) ? 0.25 : 1)
+	}
+	for (var i = 0; i < 16; i++) {
+		tmp.el["ax_boost"+i].setClasses({btn_ax: true, locked: tmp.ax.lvl[i].eq(0)})
+		tmp.el["ax_boost"+i].setOpacity(tmp.ax.hover.hide.includes("b"+i) ? 0.25 : 1)
+	}
 
-	tmp.el.ax_desc.setOpacity(tmp.ax.hover ? 1 : 0)
-	if (tmp.ax.hover) {
-		if (tmp.ax.hover[0] == "u") {
-			var id = tmp.ax.hover[1]
+	tmp.el.ax_desc.setOpacity(tmp.ax.hover.id ? 1 : 0)
+	if (tmp.ax.hover.id) {
+		if (tmp.ax.hover.id[0] == "u") {
+			var id = tmp.ax.hover.id[1]
 			tmp.el.ax_title.setTxt((id >= 4 ? "Y" : "X") + "-Axion Upgrade " + ((id % 4) + 1))
 			tmp.el.ax_req.setHTML("Cost: " + format(tmp.ax.cost[id]) + " " + (id >= 4 ? "Y" : "X") + "-Axions")
 			tmp.el.ax_req.setClasses({"red": !AXIONS.canBuy(id)})
-			tmp.el.ax_eff.setHTML("Level: " + format(player.ext.ax.upgs[id], 0) + " / " + format(AXIONS.maxLvl(Math.floor(id / 4)), 0))
+			tmp.el.ax_eff.setHTML("Level: " + format(player.ext.ax.upgs[id], 0) + " / " + format(AXIONS.maxLvl(Math.floor(id / 4)), 0) + " (" + format(tmp.ax.upg[id]) + ")")
 		}
-		if (tmp.ax.hover[0] == "b") {
-			var id = tmp.ax.hover.split("b")[1]
+		if (tmp.ax.hover.id[0] == "b") {
+			var id = Number(tmp.ax.hover.id.split("b")[1])
 			var locked = tmp.ax.lvl[id].eq(0)
 			tmp.el.ax_title.setTxt(AXIONS.ids[id].title + " (b" + id + ")")
 			tmp.el.ax_req.setTxt(locked ? "Locked (requires " + format(AXIONS.getLvl(id, true)) + " / " + format(AXIONS.ids[id].req, 0) + ")" : AXIONS.ids[id].desc)
@@ -564,7 +571,7 @@ function updateAxionTemp() {
 	tmp.ax = {
 		lvl: tmp.ax && tmp.ax.lvl,
 		upg: tmp.ax && tmp.ax.upg,
-		hover: tmp.ax && tmp.ax.hover
+		hover: (tmp.ax && tmp.ax.hover) || {id: "", hide: []}
 	}
 	if (!tmp.ax.lvl) updateAxionLevelTemp()
 
@@ -576,6 +583,37 @@ function updateAxionTemp() {
 		tmp.ax.bulk[i] = AXIONS.bulk(i)
 	}
 	for (var i = 0; i < 16; i++) tmp.ax.eff[i] = AXIONS.getEff(i, tmp.ax.lvl[i])
+}
+
+function hoverAxion(x) {
+	tmp.ax.hover.id = x
+	tmp.ax.hover.hide = []
+	if (!x) return
+	if (tmp.ax.hover.id[0] == "u") {
+		let id = tmp.ax.hover.id[1]
+		for (var i = 0; i < 8; i++) if (i != id) tmp.ax.hover.hide.push("u"+i)
+		for (var i = 0; i < 16; i++) {
+			let hide = true
+			let [px,py] = [i%4,Math.floor(i/4)]
+			if (id >= 4) hide = (py == id - 3 ? tmp.ax.upg[id].div(py + 2).lte(px + py) : py == id - 4 ? tmp.ax.upg[id].lte(px+py) : true)
+			else hide = (px != id) || (tmp.ax.upg[id].lte(py*4))
+
+			if (hide) tmp.ax.hover.hide.push("b"+i)
+		}
+	}
+	if (tmp.ax.hover.id[0] == "b") {
+		let id = Number(tmp.ax.hover.id.split("b")[1])
+		let [px, py] = [id%4, Math.floor(id/4)]
+		for (var i = 0; i < 16; i++) if (i != id) tmp.ax.hover.hide.push("b"+i)
+		for (var i = 0; i < 8; i++) {
+			let hide = true
+			if (i < 4 && px == i && tmp.ax.upg[i].gt(py * 4)) hide = false
+			if (i >= 4 && py == i - 4 && tmp.ax.upg[i].gt(px + py)) hide = false
+			if (i >= 4 && py == i - 3 && tmp.ax.upg[i].div(py + 2).gt(px + py)) hide = false
+
+			if (hide) tmp.ax.hover.hide.push("u"+i)
+		}
+	}
 }
 
 /*
