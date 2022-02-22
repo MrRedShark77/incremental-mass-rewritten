@@ -30,6 +30,8 @@ let EXOTIC = {
 		let list = []
 		if (hasTreeUpg("qol_ext4")) list = list.concat("chal1","chal2","chal3","chal4","chal4a","chal5","chal6","chal7")
 		if (hasTreeUpg("qol_ext5")) list = list.concat("c","s1","s2","s3","s4","sn1","sn2","sn3","sn4","sn5","m1","m2","m3","rp1","bh1","bh2","t1","gr1","gr2","d1")
+		if (hasTreeUpg("qol_ext7")) list = list.concat("fn1","fn2","fn3","fn4","fn5","fn6","fn7","fn8")
+		if (hasTreeUpg("qol_ext8")) list = list.concat("rad1","rad2","rad3","rad4","rad5")
 
 		let list_keep = []
 		for (let x = 0; x < player.supernova.tree.length; x++) {
@@ -39,7 +41,7 @@ let EXOTIC = {
 		}
 		player.supernova.times = E(0)
 		player.supernova.stars = E(0)
-		player.supernova.tree = list_keep
+		if (!future) player.supernova.tree = list_keep
 
 		for (let c = 1; c <= 12; c++) player.chal.comps[c] = E(hasTreeUpg("qol_ext4") && c <= 8 ? 50 : 0)
 
@@ -219,8 +221,8 @@ let AXIONS = {
 		var sum = E(0)
 		var min = E(1/0)
 		for (var i = 4 * x; i < 4 * x + 4; i++) {
-			sum = player.ext.ax.upgs[i].add(sum)
-			min = player.ext.ax.upgs[i].min(min)
+			sum = tmp.ax.upg[i].add(sum)
+			min = tmp.ax.upg[i].min(min)
 		}
 		if (x == 0) return sum.add(1).div(15/4).min(min.mul(1.2).add(1)).floor().add(1)
 		if (x == 1) return sum.div(4).min(min.mul(1.5).add(1)).floor().add(2)
@@ -235,6 +237,16 @@ let AXIONS = {
 			else other = other.add(lvl)
 		}
 		if (hasTreeUpg("ext_l1")) other = other.mul(0.8)
+		if (hasTreeUpg("ext_l3")) {
+			if (i % 4 < 3) other = other.sub(player.ext.ax.upgs[i + 1].div(2))
+			if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(2))
+		}
+		if (hasTreeUpg("ext_l4")) {
+			if (i == 0) other = other.sub(player.ext.ax.upgs[3].div(2))
+			if (i == 3) other = other.sub(player.ext.ax.upgs[0].div(2))
+			if (i == 4) other = other.sub(player.ext.ax.upgs[7].div(2))
+			if (i == 7) other = other.sub(player.ext.ax.upgs[4].div(2))
+		}
 
 		var sum = normal.add(other).mul(AXIONS.costScale())
 
@@ -281,6 +293,11 @@ let AXIONS = {
 		return r
 	},
 
+	getUpgLvl(i) {
+		var r = player.ext.ax.upgs[i]
+		if (hasTreeUpg("ext_l2")) r = r.add(player.ext.ax.upgs[i >= 4 ? i - 4 : i + 4].div(i >= 4 ? 16 : 4))
+		return r.max(0)
+	},
 	getLvl(p, base) {
 		var req = AXIONS.ids[p].req
 		var r = AXIONS.getBaseLvl(p).add(AXIONS.getBonusLvl(p))
@@ -290,12 +307,16 @@ let AXIONS = {
 	getBaseLvl(p) {
 		var x = p % 4
 		var y = Math.floor(p / 4)
-		return player.ext.ax.upgs[x].sub(y * 4).max(0)
-			.add(player.ext.ax.upgs[y + 4].sub(x * y).max(0))
-			.add(x > 0 ? player.ext.ax.upgs[x - 1].sub(y * 4 + 16).max(0) : 0)
+		return tmp.ax.upg[x].sub(y * 4).div(y + 1).max(0)
+			.add(tmp.ax.upg[y + 4].sub(x + y).max(0))
 	},
 	getBonusLvl(p) {
-		return E(0)
+		var x = p % 4
+		var y = Math.floor(p / 4)
+		var r = E(0)
+		if (y > 0) r = tmp.ax.upg[y + 3].sub(x + y).div(y + 1).max(0)
+		if (hasTreeUpg("ext_b1") && y == 0) r = AXIONS.getBaseLvl(p + 12)
+		return r
 	},
 	getEff(p, l) {
 		return AXIONS.ids[p].eff(l)
@@ -318,7 +339,7 @@ let AXIONS = {
 			desc: "Cosmic Ray softcap starts later.",
 			req: E(1),
 			eff(x) {
-				return x.sqrt().div(10).add(1.2).min(1.6).pow(x)
+				return x.sqrt().div(10).min(4).add(1.2).pow(x)
 			},
 			effDesc(x) {
 				return format(x) + "x later"
@@ -340,7 +361,7 @@ let AXIONS = {
 			desc: "Radiation Boosters scale slower.",
 			req: E(1),
 			eff(x) {
-				return x.pow(0.6).div(135).toNumber()
+				return x.pow(0.6).div(135).min(0.05).toNumber()
 			},
 			effDesc(x) {
 				return "-^"+format(x)
@@ -426,11 +447,11 @@ let AXIONS = {
 			}
 		},
 		11: {
-			title: "Lepton Anomaly [Coming soon!]",
+			title: "Lepton Anomaly",
 			desc: "Meut-Muon softcap is weaker.",
-			req: E(1/0),
+			req: E(15),
 			eff(x) {
-				return E(1)
+				return x.add(1).log10().sqrt().add(5).min(7).div(5)
 			},
 			effDesc(x) {
 				return "^" + format(x)
@@ -449,9 +470,9 @@ let AXIONS = {
 			}
 		},
 		13: {
-			title: "Challenge [Coming soon!]",
+			title: "Challenge",
 			desc: "Increase the cap of Challenges 7 and 10.",
-			req: E(1/0),
+			req: E(1),
 			eff(x) {
 				return x.times(25)
 			},
@@ -460,11 +481,11 @@ let AXIONS = {
 			}
 		},
 		14: {
-			title: "Impossible [Coming soon!]",
+			title: "Impossible",
 			desc: "Impossible Challenge scaling is weaker.",
-			req: E(1/0),
+			req: E(5),
 			eff(x) {
-				return E(1)
+				return E(1).div(x.add(1).log10().div(100).add(1))
 			},
 			effDesc(x) {
 				return format(E(1).sub(x).mul(100)) + "%"
@@ -513,6 +534,7 @@ function updateAxionHTML() {
 			var id = tmp.ax.hover[1]
 			tmp.el.ax_title.setTxt((id >= 4 ? "Y" : "X") + "-Axion Upgrade " + ((id % 4) + 1))
 			tmp.el.ax_req.setHTML("Cost: " + format(tmp.ax.cost[id]) + " " + (id >= 4 ? "Y" : "X") + "-Axions")
+			tmp.el.ax_req.setClasses({"red": !AXIONS.canBuy(id)})
 			tmp.el.ax_eff.setHTML("Level: " + format(player.ext.ax.upgs[id], 0) + " / " + format(AXIONS.maxLvl(Math.floor(id / 4)), 0))
 		}
 		if (tmp.ax.hover[0] == "b") {
@@ -521,13 +543,15 @@ function updateAxionHTML() {
 			tmp.el.ax_title.setTxt(AXIONS.ids[id].title + " (b" + id + ")")
 			tmp.el.ax_req.setTxt(locked ? "Locked (requires " + format(AXIONS.getLvl(id, true)) + " / " + format(AXIONS.ids[id].req, 0) + ")" : AXIONS.ids[id].desc)
 			tmp.el.ax_req.setClasses({"red": locked})
-			tmp.el.ax_eff.setHTML(locked ? "" : "Level: " + format(AXIONS.getBaseLvl(id).sub(AXIONS.ids[id].req.sub(1)), 0) + (AXIONS.getBonusLvl(id).gt(0) ? "+" + format(AXIONS.getBonusLvl(i)) : "") + ", Currently: " + AXIONS.ids[id].effDesc(tmp.ax.eff[id]))
+			tmp.el.ax_eff.setHTML(locked ? "" : "Level: " + format(AXIONS.getBaseLvl(id).sub(AXIONS.ids[id].req.sub(1)), 0) + (AXIONS.getBonusLvl(id).gt(0) ? "+" + format(AXIONS.getBonusLvl(id)) : "") + ", Currently: " + AXIONS.ids[id].effDesc(tmp.ax.eff[id]))
 		}
 	}
 }
 
 function updateAxionLevelTemp() {
+	tmp.ax.upg = {}
 	tmp.ax.lvl = {}
+	for (var i = 0; i < 8; i++) tmp.ax.upg[i] = AXIONS.getUpgLvl(i)
 	for (var i = 0; i < 16; i++) tmp.ax.lvl[i] = AXIONS.getLvl(i)
 }
 
@@ -539,7 +563,7 @@ function updateAxionTemp() {
 
 	tmp.ax = {
 		lvl: tmp.ax && tmp.ax.lvl,
-		bonus: tmp.ax && tmp.ax.bonus,
+		upg: tmp.ax && tmp.ax.upg,
 		hover: tmp.ax && tmp.ax.hover
 	}
 	if (!tmp.ax.lvl) updateAxionLevelTemp()

@@ -29,6 +29,7 @@ const SCALE_START = {
 	},
 	meta: {
 		rank: E(1e4),
+		supernova: E(1e4),
 		tickspeed: E(5e4),
 	},
 }
@@ -174,6 +175,9 @@ function getScalingStart(type, name) {
 			if (player.ranks.tetr.gte(18)) start = start.mul(RANKS.effect.tetr[18]())
 			if (tmp.radiation) start = start.mul(tmp.radiation.bs.eff[14])
 		}
+		if (name=='supernova') {
+			if (tmp.elements && hasElement(71)) start = start.add(tmp.elements.effect[71])
+		}
 	}
 	if (SCALING_FLOORS[name] && !SCALING_FLOORS[name]()) return start
 	return start.floor()
@@ -215,6 +219,10 @@ function getScalingPower(type, name) {
 		if (name=="rank") {
 			if (player.ranks.tetr.gte(1)) power = power.mul(0.85)
 			if (hasElement(27)) power = power.mul(0.75)
+		}
+		if (name=="tier") {
+			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
+			if (hasElement(37)) power = power.mul(tmp.elements.effect[37])
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)

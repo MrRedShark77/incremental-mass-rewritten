@@ -9,7 +9,7 @@ const TREE_IDS = [
     ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","eb1","eb2","ext_c","","","","","","",""],
-    ["","","","","","","","","","","ext_l1","","","","","","","",""],
+    ["","","","","","","","","","","ext_l1","","ext_b1","","","","","",""],
     ["","","","","","","","","","ext_l2","ext_l3","","","","","","","",""],
     ["","","","","","","","","","","ext_l4","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -27,6 +27,7 @@ const TREE_UPGS = {
         if (tmp.supernova.tree_choosed == x && tmp.supernova.tree_afford[x]) {
             player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
             player.supernova.tree.push(x)
+            if (AXIONS.unl()) updateAxionLevelTemp()
         }
     },
     ids: {
@@ -496,8 +497,8 @@ const TREE_UPGS = {
         },
 		chal8: {
 			branch: ["chal7"],
-			req() { return player.ext.amt.gte(1/0) },
-			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(1e100) },
+			reqDesc() { return "Get " + format(1e100) + " Exotic Matter." },
 			desc: `Unlock the introduction challenge of the Exotic side, Challenge 13.`,
 			cost: E(0),
 			perm: true,
@@ -553,8 +554,8 @@ const TREE_UPGS = {
 		},
 		ext_l2: {
 			branch: ["ext_l1"],
-			req() { return player.ext.amt.gte(hasTreeUpg("ext_l3") ? 1e20 : 1e12) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e20 : 1e12) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_l3") ? 1e50 : 1e12) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e50 : 1e12) + " Exotic Matter." },
 			desc: `Axion Levels synergize with ones from the other side.`,
 			cost: E(0),
 			perm: true,
@@ -562,8 +563,8 @@ const TREE_UPGS = {
 		},
 		ext_l3: {
 			branch: ["ext_l1"],
-			req() { return player.ext.amt.gte(hasTreeUpg("ext_l2") ? 1e20 : 1e12) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e20 : 1e12) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_l2") ? 1e50 : 1e12) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e50 : 1e12) + " Exotic Matter." },
 			desc: `Axion Levels cheapen the nearest ones.`,
 			cost: E(0),
 			perm: true,
@@ -574,6 +575,16 @@ const TREE_UPGS = {
 			req() { return hasTreeUpg("ext_l2") && hasTreeUpg("ext_l3") },
 			reqDesc() { return "Get 'ext_l2' and 'ext_l3' upgrades." },
 			desc: `Axion Levels cheapen far levels from the same side.`,
+			cost: E(1/0),
+			perm: true,
+			noIcon: true,
+		},
+		ext_b1: {
+			unl() { return hasTreeUpg("ext_l2") || hasTreeUpg("ext_l3") },
+			branch: ["ext_c"],
+			req() { return player.ext.amt.gte(1e30) },
+			reqDesc() { return "Get " + format(1e30) + " Exotic Matter." },
+			desc: `Row-4 levels synergize with row-1 levels.`,
 			cost: E(0),
 			perm: true,
 			noIcon: true,
@@ -653,9 +664,9 @@ const TREE_UPGS = {
 		},
 		qol_ext6: {
 			branch: ["qol_ext1"],
-			desc: `[Coming soon!]`,
+			desc: `Keep the Fermion Supernova upgrades.`,
 			perm: true,
-			cost: E(1/0),
+			cost: E("1e1000"),
 			noIcon: true,
 			effect() {
 				let x = E(1)
@@ -665,9 +676,9 @@ const TREE_UPGS = {
 		},
 		qol_ext7: {
 			branch: ["qol_ext1"],
-			desc: `[Coming soon!]`,
+			desc: `Keep the Radiation Supernova upgrades.`,
 			perm: true,
-			cost: E(1/0),
+			cost: E("1e2000"),
 			noIcon: true,
 			effect() {
 				let x = E(1)

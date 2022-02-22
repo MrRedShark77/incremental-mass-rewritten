@@ -516,7 +516,6 @@ h2 {
 .fermion_btn.quark:hover {
 	background-color: hsl(39, 100%, 6%);
 }
-
 .fermion_btn.quark.choosed {
 	background: repeating-linear-gradient(45deg, #0005 0%, #0005 1%, hsl(39, 100%, 21%) 5%, #0005 9%, #0005 10%);
 	animation: f_spin 2s linear infinite;
@@ -526,13 +525,21 @@ h2 {
 .fermion_btn.lepton {
 	border-color: lime;
 }
-
 .fermion_btn.lepton:hover {
 	background-color: hsl(120, 100%, 6%);
 }
-
 .fermion_btn.lepton.choosed {
 	background: repeating-linear-gradient(45deg, #0005 0%, #0005 1%, hsl(120, 100%, 21%) 5%, #0005 9%, #0005 10%);
+	animation: f_spin 2s linear infinite;
+	cursor: default;
+}
+
+.fermion_btn.comp {
+	background: #3f5f3f;
+	border-color: #7fff7f;
+}
+.fermion_btn.comp.choosed {
+	background: repeating-linear-gradient(45deg, #0005 0%, #0005 1%, #7fff7f 5%, #0005 9%, #0005 10%);
 	animation: f_spin 2s linear infinite;
 	cursor: default;
 }

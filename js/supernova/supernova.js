@@ -162,6 +162,49 @@ const SUPERNOVA = {
                 .add(1)
                 .floor();
         }
+        if (scalingActive("supernova", x.max(bulk), "meta")) {
+            let start = getScalingStart("super", "supernova");
+            let power = getScalingPower("super", "supernova");
+            let exp = E(3).pow(power);
+            let start2 = getScalingStart("hyper", "supernova");
+            let power2 = getScalingPower("hyper", "supernova");
+            let exp2 = E(3).pow(power2);
+            let start3 = getScalingStart("ultra", "supernova");
+            let power3 = getScalingPower("ultra", "supernova");
+            let exp3 = E(5).pow(power3);
+            let start4 = getScalingStart("meta", "supernova");
+            let power4 = getScalingPower("meta", "supernova");
+            let exp4_base = E(1.0002);
+            maxlimit =
+                E(1e20).pow(
+				    exp4_base.pow(x.sub(start4).mul(power4)).mul(start4)
+                    .pow(exp3)
+                    .div(start3.pow(exp3.sub(1)))
+                    .pow(exp2)
+                    .div(start2.pow(exp2.sub(1)))
+                    .pow(exp)
+                    .div(start.pow(exp.sub(1))).div(ml_fp)
+                    .pow(1.25)
+                ).mul(1e90).floor()
+            bulk = player.stars.points
+                .div(1e90)
+                .max(1)
+                .log(1e20)
+                .root(1.25).mul(ml_fp)
+                .mul(start.pow(exp.sub(1)))
+                .root(exp)
+                .mul(start2.pow(exp2.sub(1)))
+                .root(exp2)
+                .mul(start3.pow(exp3.sub(1)))
+                .root(exp3)
+                .div(start4)
+			    .max(1)
+			    .log(exp4_base)
+			    .div(power4)
+			    .add(start4)
+                .add(1)
+                .floor();
+        }
         return {maxlimit: maxlimit, bulk: bulk}
     },
 }
@@ -261,7 +304,7 @@ function updateSupernovaEndingHTML() {
     if (tmp.tab == 5) {
         tmp.el.supernova_sweep.setTxt("Auto-Sweep: " + (player.supernova.auto.toggle ? "ON" : "OFF"))
         tmp.el.supernova_sweep.setDisplay(hasTreeUpg("qol8"))
-        tmp.el.supernova_scale.setTxt(getScalingName('supernova'))
+        tmp.el.supernova_scale.setTxt(getScalingName('supernova', true))
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
         tmp.el.supernova_next.setTxt("Next Supernova at " + format(tmp.supernova.maxlimit,2) + " stars")
         if (tmp.stab[5] == 0) {

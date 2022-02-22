@@ -72,7 +72,7 @@
             <button class="btn" onclick="updateSupernovaSweep()" id="supernova_sweep">Auto-Sweep: ON</button>
         </div>
         <div style="min-height: 70px; margin-top: 15px;">
-            <h2>You become <span id="supernova_rank"></span> <span id="supernova_scale"></span> Supernova</h2><br>
+            <h2>You become <span id="supernova_rank"></span> <span id="supernova_scale"></span>Supernova</h2><br>
             <span id="supernova_next">X</span>
         </div>
         <div style="width: 100%; border-bottom: solid 2px white; height: 5px; margin-bottom: 13px;"></div>
@@ -121,7 +121,7 @@
             </div>
         </div><div id="stab_frame5_2">
             Note: Choosing any fermion will reset without being Supernova!<br><br>
-            <button class="btn" onclick="FERMIONS.backNormal()">Back to Normal</button><br><br>
+            <button class="btn" onclick="FERMIONS.backNormal()" id="f_normal">Back to Normal</button><br><br>
             <div class="fermions">
                 <div class="f_quark sub_f">
                     You have <span id="fquarkAmt">X</span> U-Quark<br><br>
@@ -267,7 +267,8 @@
                         Exponent Gain Power: ^<span id="bh_b3_pow">X</span><br>
                     </div>
                 </div><br><div>
-                    <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> worth of mass gain from Black Hole, mass gain will be softcapped!</span>
+                    <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> worth of mass gain from Black Hole, mass gain will be softcapped!</span><br>
+                    <span id="massRadSoft" style="color: #7fff00">After <b id="massRadSoftStart">X</b> worth of mass gain from Black Hole, it will be evaporated away!</span>
                 </div>
             </div><div id="stab_frame0_2">
                 You have <span id="atomicAmt">X</span> Atomic Power<br>

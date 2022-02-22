@@ -14,16 +14,16 @@ function updateChalHTML() {
         tmp.el["chal_div_"+x].setDisplay(unl)
         tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
         if (unl) {
-            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
+            tmp.el["chal_comp_"+x].setTxt(player.chal.comps[x].gte(tmp.chal.max[x])?"Completed":format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
         }
     }
-    tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
+    tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed && player.chal.comps[player.chal.choosed].lt(tmp.chal.max[player.chal.choosed]))
     tmp.el.chal_exit.setVisible(player.chal.active != 0)
     tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTreeUpg("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
     if (player.chal.choosed != 0) {
         let chal = CHALS[player.chal.choosed]
-        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
+        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${format(player.chal.comps[player.chal.choosed],0)+" / "+format(tmp.chal.max[player.chal.choosed],0)} Completions]`)
         tmp.el.chal_ch_desc.setHTML(chal.desc)
         tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
         tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
@@ -80,6 +80,7 @@ const CHALS = {
         }
     },
     enter() {
+        if (player.chal.comps[player.chal.choosed].gte(tmp.chal.max[player.chal.choosed])) return
         if (player.chal.active == 0) {
             player.chal.active = player.chal.choosed
             this.reset(player.chal.choosed, false)
@@ -118,6 +119,7 @@ const CHALS = {
         if (hasElement(56) && (i==8)) x = x.add(200)
         if (hasElement(65) && (i==7||i==8)) x = x.add(200)
         if (hasTreeUpg("chal1") && (i==7||i==8)) x = x.add(100)
+        if (future && (i==7||i==10)) x = x.add(1e3)
         if (AXIONS.unl() && (i==7||i==10)) x = x.add(tmp.ax.eff[13])
         return x.floor()
     },
@@ -428,7 +430,7 @@ const CHALS = {
 		unl() { return hasTreeUpg("chal8") },
 		title: "Decay of Atom",
 		desc: "You can't gain atoms and quarks.",
-		reward: `Axion Upgrades scale slower.`,
+		reward: `Axion Upgrades scale slower.<br><span class="yellow">On first completion, unlock ??? Tree! [Coming soon!]</span>`,
 		max: E(50),
 		inc: E(10),
 		pow: E(5),

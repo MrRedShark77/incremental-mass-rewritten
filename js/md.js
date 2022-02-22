@@ -55,6 +55,7 @@ const MASS_DILATION = {
     },
     effect() {
         let x = player.md.mass.max(1).log10().add(1).root(3).mul(tmp.md.upgs[1].eff)
+        if (future) x = x.log10().sqrt().div(10).add(1)
         return x
     },
     upgs: {
@@ -158,9 +159,9 @@ const MASS_DILATION = {
                 cost(x) { return E(1e100).pow(x.pow(2)).mul('1.5e8056') },
                 bulk() { return player.md.mass.gte('1.5e8056')?player.md.mass.div('1.5e8056').max(1).log(1e100).max(0).root(2).add(1).floor():E(0) },
                 effect(x) {
-                    return x.pow(0.5).softcap(3.5,0.5,0).div(100).add(1)
+                    return x.sqrt().softcap(3.5,0.5,0).div(100).add(1).softcap(4,0.25,0)
                 },
-                effDesc(x) { return "+"+format(x.sub(1).mul(100))+"% stronger" },
+                effDesc(x) { return "+"+format(x.sub(1).mul(100))+"% stronger"+getSoftcapHTML(x,1.035,4) },
             },
         ],
     },
@@ -211,7 +212,7 @@ function updateMDTemp() {
 
 function updateMDHTML() {
     tmp.el.md_particles.setTxt(format(player.md.particles,0)+(hasTreeUpg("qol3")?" "+formatGain(player.md.particles,tmp.md.passive_rp_gain):""))
-    tmp.el.md_eff.setTxt(tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
+    tmp.el.md_eff.setTxt(future?"^"+format(tmp.md.mass_eff):tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
     tmp.el.md_mass.setTxt(formatMass(player.md.mass)+" "+formatGain(player.md.mass,tmp.md.mass_gain,true))
     tmp.el.md_btn.setTxt(player.md.active
         ?(tmp.md.rp_gain.gte(1)?`Cancel for ${format(tmp.md.rp_gain,0)} Relativistic particles`:`Reach ${formatMass(tmp.md.mass_req)} to gain Relativistic particles, or cancel dilation`)

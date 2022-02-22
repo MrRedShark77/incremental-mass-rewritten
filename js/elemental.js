@@ -254,13 +254,13 @@ const ELEMENTS = {
             cost: E(1e225),
         },
         {
-            desc: `Super Tier scale weaker based on Tetr.`,
+            desc: `Tier scalings are weaker based on Tetr.`,
             cost: E(1e245),
             effect() {
                 let x = E(0.9).pow(player.ranks.tetr.softcap(6,0.5,0))
                 return x
             },
-            effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
+            effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker"+getSoftcapHTML(player.ranks.tetr,6) },
         },
         {
             desc: `Cosmic Ray's free tickspeeds now adds to RU7.`,
@@ -478,7 +478,7 @@ const ELEMENTS = {
         },
         {
             desc: `Raise Lutetium-71 effect based on Neutron Stars.`,
-            cost: E('e4e7'),
+            cost: E('e5e7'),
             effect() {
 				let r = player.supernova.stars.max(1).log10().div(75).max(1)
 				if (hasTreeUpg("feat2")) r = r.add(0.015)

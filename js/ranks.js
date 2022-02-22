@@ -209,7 +209,7 @@ const RANKS = {
 				return ret
 			},
 			'13'() {
-				return player.ranks.pent.div(12).min(2).sqrt()
+				return player.ranks.pent.div(12).sqrt().min(1.5)
 			}
 		},
     },
@@ -450,7 +450,7 @@ function updateRanksTemp() {
 		let exp = E(1.5).pow(power);
         let start2 = getScalingStart("hyper", "tier");
 		let power2 = getScalingPower("hyper", "tier");
-		let exp2 = E(2.5).pow(power);
+		let exp2 = E(2.5).pow(power2);
 		tmp.ranks.tier.req =
 			player.ranks.tier
             .pow(exp2)

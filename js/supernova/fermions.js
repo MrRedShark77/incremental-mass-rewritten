@@ -18,6 +18,7 @@ const FERMIONS = {
     },
     choose(i,x,a) {
 		if (!a && player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
+		if (player.supernova.fermions.tiers[i][x].gte(FERMIONS.maxTier(i, x))) return
 		let id = i+""+x
 		tmp.tickspeedEffect.eff = E(1)
 		tmp.tickspeedEffect.step = E(1)
@@ -299,11 +300,11 @@ const FERMIONS = {
                 },
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
-                    let x = i.max(1).log10().add(1).mul(t).div(200).add(1).softcap(1.5,0.5,0)
+                    let x = i.max(1).log10().add(1).mul(t).div(200).add(1).softcap(1.5,0.5,0).softcap(100,4,3)
                     return x
                 },
                 desc(x) {
-                    return `Tier requirement is ${format(x)}x cheaper`+getSoftcapHTML(x,1.5)
+                    return `Tier requirement is ${format(x)}x cheaper`+getSoftcapHTML(x,1.5,250)
                 },
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
@@ -321,7 +322,7 @@ const FERMIONS = {
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
 					if (t.eq(0)) return E(1)
-					let sc = AXIONS.unl() ? tmp.ax.eff[11].div(4) : E(0.25)
+					let sc = future ? E(0.35) : AXIONS.unl() ? tmp.ax.eff[11].div(4) : E(0.25)
                     return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, sc, 0)
                 },
                 desc(x) {
@@ -391,10 +392,9 @@ function setupFermionsHTML() {
             <button id="${id}_div" class="fermion_btn ${FERMIONS.names[i]}" onclick="FERMIONS.choose(${i},${x})">
                 <b>[${FERMIONS.sub_names[i][x]}]</b><br>[<span id="${id}_tier_scale"></span>Tier <span id="${id}_tier">0</span>]<br>
                 <span id="${id}_cur">Currently: X</span><br>
-                Next Tier at: <span id="${id}_nextTier">X</span><br>
-                (Increased by ${f.inc})<br><br>
-                Effect: <span id="${id}_desc">X</span><br>
-                On Active: ${f.cons}
+                <span id="${id}_nextTier">X</span>
+                Effect: <span id="${id}_desc">X</span>
+                <span id="${id}_cons">X</span>
             </button>
             `
         }
@@ -420,6 +420,7 @@ function updateFermionsTemp() {
 }
 
 function updateFermionsHTML() {
+	tmp.el.f_normal.setDisplay(player.supernova.fermions.choosed ? 1 : 0)
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i]))
         let unls = FERMIONS.getUnlLength(i)
@@ -428,20 +429,22 @@ function updateFermionsHTML() {
             let f = FERMIONS.types[i][x]
             let id = `f${FERMIONS.names[i]}${x}`
             let fm = f.isMass?formatMass:format
+            let max = player.supernova.fermions.tiers[i][x].gte(FERMIONS.maxTier(i, x))
             let active = FERMIONS.onActive(i+""+x)
 
             tmp.el[id+"_div"].setDisplay(unl)
 
             if (unl) {
-                tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: (tmp.fermions.ch[0] == i && tmp.fermions.ch[1] == x) || (tmp.fermions.ch2[0] == i && tmp.fermions.ch2[1] == x)})
-                tmp.el[id+"_nextTier"].setTxt(fm(f.nextTierAt(player.supernova.fermions.tiers[i][x])))
+                tmp.el[id+"_div"].setClasses({fermion_btn: true, [max ? "comp" : FERMIONS.names[i]]: true, choosed: active})
+                tmp.el[id+"_nextTier"].setHTML(max ? "" : "Next at: " + fm(f.nextTierAt(player.supernova.fermions.tiers[i][x])) + `<br>(Increased by ${f.inc})<br><br>`)
                 tmp.el[id+"_tier_scale"].setTxt(getScalingName('fTier', i, x))
-                tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(tmp.fermions.maxTier[i][x] < Infinity?" / "+format(tmp.fermions.maxTier[i][x],0):""))
+                tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(tmp.fermions.maxTier[i][x] < Infinity && !max ? " / " + format(tmp.fermions.maxTier[i][x],0) : ""))
                 tmp.el[id+"_desc"].setHTML(f.desc(tmp.fermions.effs[i][x]))
+                tmp.el[id+"_cons"].setHTML(max ? "" : `<br>On Active: ${f.cons}`)
 
                 tmp.el[id+"_cur"].setDisplay(active)
                 if (active) {
-                    tmp.el[id+"_cur"].setTxt(`Currently: ${fm(
+                    tmp.el[id+"_cur"].setTxt(max ? "" : `Currently: ${fm(
                         [
                             [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.atom.points, tmp.tickspeedEffect.eff],
                             [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.md.mass, tmp.tickspeedEffect.step]

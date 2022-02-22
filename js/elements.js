@@ -318,6 +318,9 @@ function updateBlackHoleHTML() {
 
 	updateExtraBuildingHTML("bh", 2)
 	updateExtraBuildingHTML("bh", 3)
+
+	tmp.el.massRadSoft.setDisplay(tmp.bh.mass_gain.gte(FORMS.bh.radSoftStart()))
+	tmp.el.massRadSoftStart.setTxt(formatMass(FORMS.bh.radSoftStart()))
 }
 
 function updateOptionsHTML() {

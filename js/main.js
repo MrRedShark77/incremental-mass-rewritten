@@ -3,10 +3,13 @@ var date = Date.now();
 var player
 
 const ST_NAMES = [
-    ["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
-    ["","Dc","Vg","Tg","Qag","Qtg","Sxg","Spg","Ocg","Nog"],
-    ["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
-    ["","Mi","Mc","Na","Pc"],
+	[
+		["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
+		["","Dc","Vg","Tg","Qag","Qtg","Sxg","Spg","Ocg","Nog"],
+		["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
+	],[
+		["","Mi","Mc","Na","Pc","Fm","At","Zp","Yc","Xn","Vc","Mec","Duc","Trc","Tec","Pec","Hec","Hpc","Otc","Enc","Ic","MeIc","DuIc","TrIc","TeIc","PeIc","HeIc","HpIc","OtIc","EnIc","Tcn","MeTcn","DuTcn","TrTcn"]
+	]
 ]
 const CONFIRMS = ['rp', 'bh', 'atom', 'sn']
 
@@ -106,9 +109,10 @@ const FORMS = {
                 step = step.add(tmp.atom.particles[0].powerEffect.eff2)
                 if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
-                step = step.mul(tmp.md.mass_eff)
+                if (!future) step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
             if (hasTreeUpg("t1")) step = step.pow(1.15)
+            if (future) step = step.pow(tmp.md.mass_eff)
 
             let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
             step = step.softcap(ss,0.1,0)
@@ -253,6 +257,10 @@ const FORMS = {
                 return x
             },
         },
+
+		radSoftStart() {
+			return E(10).pow(player.supernova.times.add(1).pow(5))
+		}
     },
     reset_msg: {
         msgs: {
@@ -875,46 +883,60 @@ function loop() {
 }
 
 function format(ex, acc=4, type=player.options.notation) {
-    ex = E(ex)
-    neg = ex.lt(0)?"-":""
-    if (ex.mag == Infinity) return neg + 'Infinity'
-    if (Number.isNaN(ex.mag)) return neg + 'NaN'
-    if (ex.lt(0)) ex = ex.mul(-1)
-    if (ex.eq(0)) return ex.toFixed(acc)
-    let e = ex.log10().floor()
-    switch (type) {
-        case "sc":
-            if (e.lt(4)) {
-                return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
-            } else {
-                if (ex.gte("eeee10")) {
-                    let slog = ex.slog()
-                    return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
-                }
-                let m = ex.div(E(10).pow(e))
-                return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
-            }
-        case "st":
-            if (e.lt(3)) {
-                return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
-            } else {
-                if (e.gte(3e15+3)) return "e"+format(e, acc, "st")
-                let str = e.div(3).floor().sub(1).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ').split(" ")
-                let final = ""
-                let m = ex.div(E(10).pow(e.div(3).floor().mul(3)))
-                str.forEach((arr, i) => {
-                    let ret = ""
-                    arr.split('').forEach((v, j) => {
-                        if (i == str.length - 1) ret = (Number(arr) < 3 ? ["K", "M", "B"][v] : ST_NAMES[arr.length-j-1][v]) + ret 
-                        else if (Number(arr) > 1) ret = ST_NAMES[arr.length-j-1][v] + ret
-                    })
-                    final += (i > 0 && Number(arr) > 0 ? "-" : "") + ret + (i < str.length - 1 && Number(arr) > 0 ? ST_NAMES[3][str.length-i-1] : "")
-                });
-                return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(acc==0?0:1).toNumber())))+final
-            }
-        default:
-            return neg+FORMATS[type].format(ex, acc)
-    }
+	ex = E(ex)
+	neg = ex.lt(0)?"-":""
+	if (ex.mag == Infinity) return neg + 'Infinity'
+	if (Number.isNaN(ex.mag)) return neg + 'NaN'
+	if (ex.lt(0)) ex = ex.mul(-1)
+	if (ex.eq(0)) return ex.toFixed(acc)
+	let e = ex.log10().floor()
+	switch (type) {
+		case "sc":
+			if (e.lt(4)) {
+				return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+			} else {
+				if (ex.gte("eeee10")) {
+					let slog = ex.slog()
+					return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
+				}
+				let m = ex.div(E(10).pow(e))
+				return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
+			}
+		case "st":
+			let e3 = ex.log(1e3).floor()
+			if (e3.lt(1)) {
+				return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+			} else {
+				let e3_mul = e3.mul(3)
+				let ee = e3.log10().floor()
+				if (ee.gte(102)) return "e"+format(e, acc, "st")
+
+				let final = ""
+				if (e3.lt(4)) final = ["", "K", "M", "B"][Math.round(e3.toNumber())]
+				else {
+					let ee3 = Math.max(Math.floor(e3.log(1e3).toNumber())-1,0)
+					e3 = e3.sub(1).div(E(10).pow(ee3*3))
+					while (e3.gt(0)) {
+						let div1000 = e3.div(1e3).floor()
+						let mod1000 = e3.sub(div1000.mul(1e3)).floor().toNumber()
+						if (mod1000 > 0) {
+							if (mod1000 == 1 && !ee3) final = "U"
+							if (ee3) final = ST_NAMES[1][0][ee3] + (final ? "-" + final : "")
+							if (mod1000 > 1) final = ST_NAMES[0][0][mod1000 % 10] +
+								ST_NAMES[0][1][Math.floor(mod1000 / 10) % 10] +
+								ST_NAMES[0][2][Math.floor(mod1000 / 100)] + final
+						}
+						e3 = div1000
+						ee3++
+					}
+				}
+
+				let m = ex.div(E(10).pow(e3_mul))
+				return neg+(ee.gte(4)?'':(m.toFixed(E(3).sub(e.sub(e3_mul)).add(acc==0?0:1).toNumber()))+' ')+final
+			}
+		default:
+			return neg+FORMATS[type].format(ex, acc)
+	}
 }
 
 function turnOffline() { player.offline.active = !player.offline.active }
@@ -934,7 +956,7 @@ function formatMass(ex) {
 
 function formatGain(amt, gain, isMass=false) {
     let f = isMass?formatMass:format
-	if (gain.gte("ee12") && gain.log(amt).gte(1.1)) return "(x"+format(gain.max(1).log10().div(amt.max(1).log10().max(1)).times(50))+" OoMs)"
+	if (gain.gte("ee12") && gain.log(amt).pow(50).gte(1.01)) return "(x"+format(gain.log(amt).pow(50))+" OoMs/s)"
 	if (gain.gte(1e100) && gain.gt(amt)) return "(+"+format(gain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50))+" OoMs/sec)"
 	else return "(+"+f(gain)+"/sec)"
 }
