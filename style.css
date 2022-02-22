@@ -118,6 +118,7 @@ button {
 }
 
 #popup {
+	z-index: 3;
 	position: absolute;
     left: 50%;
     top: 50%;
