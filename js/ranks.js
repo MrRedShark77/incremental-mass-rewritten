@@ -188,14 +188,14 @@ const RANKS = {
 				if (!p) p = player.ranks.pent.mul(STARS.rankStr())
 				let exp = E(0.8)
 				if (player.ranks.pent.gte(13)) exp = RANKS.effect.pent[13]()
-				return p.pow(exp).div(30).add(1)
+				return p.pow(exp).div(40).add(1)
 			},
 			'2'() {
 				let ret = player.supernova.times.pow(1.5).div(200)
 				return ret
 			},
 			'4'() {
-				let ret = E(2).div(player.ranks.pent.softcap(10,2,1))
+				let ret = E(1).div(player.ranks.pent.sub(2).log2())
 				return ret
 			},
 			'5'() {
@@ -479,7 +479,7 @@ function updateRanksTemp() {
     if (scalingActive("tetr", player.ranks.tetr.max(tmp.ranks.tetr.bulk), "super")) {
 		let start = getScalingStart("super", "tetr");
 		let power = getScalingPower("super", "tetr");
-		let exp = E(2).pow(power);
+		let exp = E(1).pow(power);
 		tmp.ranks.tetr.req =
 			player.ranks.tetr
 			.pow(exp)
@@ -497,23 +497,6 @@ function updateRanksTemp() {
 	fp = RANKS.fp.pent()
 	tmp.ranks.pent.req = player.ranks.pent.mul(fp).pow(1.25).add(15).floor()
 	tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).max(0).root(1.25).div(fp).add(1).floor();
-	if (scalingActive("pent", player.ranks.pent.max(tmp.ranks.pent.bulk), "super")) {
-		let start = getScalingStart("super", "pent");
-		let power = getScalingPower("super", "pent");
-		let exp = E(2).pow(power);
-		tmp.ranks.pent.req = player.ranks.pent
-			.pow(exp)
-			.div(start.pow(exp.sub(1)))
-
-			.mul(fp).pow(1.25).add(15).floor()
-		tmp.ranks.pent.bulk = player.ranks.tetr
-			.sub(15).max(0).root(1.25).div(fp)
-
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-			.add(1)
-			.floor();
-	}
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

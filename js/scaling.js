@@ -3,7 +3,6 @@ const SCALE_START = {
         rank: E(50),
 		tier: E(10),
 		tetr: E(7),
-		pent: E(30),
         massUpg: E(100),
 		tickspeed: E(100),
 		bh_condenser: E(100),
@@ -212,9 +211,6 @@ function getScalingPower(type, name) {
 		}
 		if (name=="tetr") {
 			if (player.ranks.pent.gte(4)) power = power.mul(RANKS.effect.pent[4]())
-		}
-		if (name=="pent") {
-			if (AXIONS.unl()) power = power.mul(tmp.ax.eff[15])
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)

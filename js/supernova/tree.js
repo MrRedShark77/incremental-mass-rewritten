@@ -3,7 +3,7 @@ const TREE_IDS = [
     ["qol_ext4","qol_ext3","qol2","qol3","qol4","","s4","","m1","rp1","bh1","","sn4","","chal2","chal4a","chal3","","feat2"],
     ["qol_ext6","qol_ext5","qol5","qol6","qol7","","","m2","t1","","bh2","gr1","sn5","","","chal4","","","feat3"],
     ["qol_ext8","qol_ext7","","unl1","qol8","","m3","","","d1","","","gr2","","chal5","chal6","chal7","","feat4"],
-    ["","","","qol10","qol9","","","bs4","bs2","bs1","bs3","","","","chal8","chal9","chal10","chal11","feat5"],
+    ["qol_ext9","","","qol10","qol9","","","bs4","bs2","bs1","bs3","","","","chal8","chal9","chal10","chal11","feat5"],
     ["","","","","","","fn8","","","fn1","fn5","","","","","","","","feat6"],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","","feat7"],
     ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
@@ -319,8 +319,8 @@ const TREE_UPGS = {
             desc: `Photon, Gluon powers up each other.`,
             cost: E(1e14),
             effect() {
-                let x = expMult(player.supernova.bosons.photon,1/2,2)
-                let y = expMult(player.supernova.bosons.gluon,1/2,2)
+                let x = expMult(player.supernova.bosons.photon.max(1),1/2,2)
+                let y = expMult(player.supernova.bosons.gluon.max(1),1/2,2)
                 return [x,y]
             },
             effDesc(x) { return format(x[1])+"x to Photon, "+format(x[0])+"x to Gluon" },
@@ -497,8 +497,8 @@ const TREE_UPGS = {
         },
 		chal8: {
 			branch: ["chal7"],
-			req() { return player.ext.amt.gte(1e35) },
-			reqDesc() { return "Get " + format(1e35) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(1e32) },
+			reqDesc() { return "Get " + format(1e32) + " Exotic Matter." },
 			desc: `Unlock the introduction challenge of the Exotic side, Challenge 13.`,
 			cost: E(0),
 			perm: true,
@@ -554,8 +554,8 @@ const TREE_UPGS = {
 		},
 		ext_l2: {
 			branch: ["ext_l1"],
-			req() { return player.ext.amt.gte(hasTreeUpg("ext_l3") ? 1e40 : 1e11) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e40 : 1e11) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_l3") ? 1e35 : 1e11) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e35 : 1e11) + " Exotic Matter." },
 			desc: `Axion Levels synergize with ones from the other side.`,
 			cost: E(0),
 			perm: true,
@@ -563,8 +563,8 @@ const TREE_UPGS = {
 		},
 		ext_l3: {
 			branch: ["ext_l1"],
-			req() { return player.ext.amt.gte(hasTreeUpg("ext_l2") ? 1e40 : 1e11) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e40 : 1e11) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_l2") ? 1e35 : 1e11) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e35 : 1e11) + " Exotic Matter." },
 			desc: `Axion Levels cheapen the nearest ones.`,
 			cost: E(0),
 			perm: true,
@@ -719,7 +719,7 @@ const TREE_UPGS = {
 		},
 		qol_ext6: {
 			branch: ["qol_ext1"],
-			desc: `Keep the Fermion Supernova upgrades.`,
+			desc: `Keep the Boson - Fermion upgrades.`,
 			perm: true,
 			cost: E("1e500"),
 			icon: "exotic",
@@ -731,7 +731,7 @@ const TREE_UPGS = {
 		},
 		qol_ext7: {
 			branch: ["qol_ext1"],
-			desc: `Keep the Radiation Supernova upgrades.`,
+			desc: `Keep the Radiation upgrades.`,
 			perm: true,
 			cost: E("1e1000"),
 			icon: "exotic",
@@ -746,6 +746,18 @@ const TREE_UPGS = {
 			desc: `Automatically gain C1 - 4 completions without entering.`,
 			perm: true,
 			cost: E("1e2000"),
+			icon: "exotic",
+			effect() {
+				let x = E(1)
+				return x
+			},
+			effDesc(x) { return format(x)+"x" },
+		},
+		qol_ext9: {
+			branch: ["qol_ext8"],
+			desc: `Automatically gain C5 - 8 completions without entering.`,
+			perm: true,
+			cost: E("1e4000"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)

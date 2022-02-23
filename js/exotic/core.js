@@ -30,8 +30,8 @@ let EXOTIC = {
 		let list = []
 		if (hasTreeUpg("qol_ext4")) list = list.concat("chal1","chal2","chal3","chal4","chal4a","chal5","chal6","chal7")
 		if (hasTreeUpg("qol_ext5")) list = list.concat("c","s1","s2","s3","s4","sn1","sn2","sn3","sn4","sn5","m1","m2","m3","rp1","bh1","bh2","t1","gr1","gr2","d1")
-		if (hasTreeUpg("qol_ext7")) list = list.concat("fn1","fn2","fn3","fn4","fn5","fn6","fn7","fn8")
-		if (hasTreeUpg("qol_ext8")) list = list.concat("rad1","rad2","rad3","rad4","rad5")
+		if (hasTreeUpg("qol_ext6")) list = list.concat("bs1","bs2","bs3","bs4","fn1","fn2","fn3","fn4","fn5","fn6","fn7","fn8")
+		if (hasTreeUpg("qol_ext7")) list = list.concat("unl1","rad1","rad2","rad3","rad4","rad5")
 
 		let list_keep = []
 		for (let x = 0; x < player.supernova.tree.length; x++) {

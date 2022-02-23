@@ -41,7 +41,10 @@ function calc(dt, dt_offline) {
     }
     if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
     if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
-    if (hasTreeUpg("qol_ext8")) for (var c = 1; c <= 4; c++) player.chal.comps[c] = CHALS.getChalData(c,E(0),true).bulk.min(tmp.chal.max[c]).max(player.chal.comps[c])
+    if (hasTreeUpg("qol_ext8")) {
+		let max = hasTreeUpg("qol_ext9") ? 8 : 4
+		for (var c = 1; c <= max; c++) player.chal.comps[c] = CHALS.getChalData(c,E(0),true).bulk.min(tmp.chal.max[c]).max(player.chal.comps[c])
+	}
     if (hasElement(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
     if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
     if (hasElement(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(dt/10))
@@ -88,7 +91,7 @@ function calc(dt, dt_offline) {
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
-        addPopup(POPUP_GROUPS.fermions)
+        if (player.ext.amt.lt(1e10)) addPopup(POPUP_GROUPS.fermions)
     }
 
 	if (player.supernova.auto.on > -2) {
@@ -396,8 +399,6 @@ function loadGame(start=true, save) {
     setupHTML()
 
     if (start) {
-        FORMATS.elemental.setupLengths() // To-do: generalize the formulas. (sum of squares)
-
         for (let x = 0; x < 3; x++) updateTemp()
         updateHTML()
         for (let x = 0; x < 3; x++) {
