@@ -16,9 +16,13 @@ const FERMIONS = {
             SUPERNOVA.reset(false,false,false,true)
         }
     },
+	canChoose(i,x) {
+		if (FERMIONS.types[i][x].keep) return true
+		return player.supernova.fermions.tiers[i][x].lt(FERMIONS.maxTier(i, x))
+	},
     choose(i,x,a) {
+		if (!FERMIONS.canChoose(i, x)) return
 		if (!a && player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
-		if (player.supernova.fermions.tiers[i][x].gte(FERMIONS.maxTier(i, x))) return
 		let id = i+""+x
 		tmp.tickspeedEffect.eff = E(1)
 		tmp.tickspeedEffect.step = E(1)
@@ -240,6 +244,7 @@ const FERMIONS = {
                 desc(x) {
                     return `Collapse Stars gain softcap starts ^${format(x)} later`+getSoftcapHTML(x,1.5)
                 },
+                keep: true,
                 inc: "Quark",
                 cons: "^0.625 to the exponent of Atoms gain",
             },{
@@ -429,7 +434,8 @@ function updateFermionsHTML() {
             let f = FERMIONS.types[i][x]
             let id = `f${FERMIONS.names[i]}${x}`
             let fm = f.isMass?formatMass:format
-            let max = player.supernova.fermions.tiers[i][x].gte(FERMIONS.maxTier(i, x))
+            let max = player.supernova.fermions.tiers[i][x].gte(FERMIONS.maxTier(i,x))
+            let cant = !FERMIONS.canChoose(i, x)
             let active = FERMIONS.onActive(i+""+x)
 
             tmp.el[id+"_div"].setDisplay(unl)
@@ -440,7 +446,7 @@ function updateFermionsHTML() {
                 tmp.el[id+"_tier_scale"].setTxt(getScalingName('fTier', i, x))
                 tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(tmp.fermions.maxTier[i][x] < Infinity && !max ? " / " + format(tmp.fermions.maxTier[i][x],0) : ""))
                 tmp.el[id+"_desc"].setHTML(f.desc(tmp.fermions.effs[i][x]))
-                tmp.el[id+"_cons"].setHTML(max ? "" : `<br>On Active: ${f.cons}`)
+                tmp.el[id+"_cons"].setHTML(cant ? "" : `<br>On Active: ${f.cons}`)
 
                 tmp.el[id+"_cur"].setDisplay(active)
                 if (active) {

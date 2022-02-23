@@ -34,7 +34,8 @@
 
     <script src="js/main.js"></script>
 
-    <title>Incremental Mass Rewritten</title>
+	<title>IM: Alternative Path</title>
+	<meta name="IM: Alternative Path" content="An alternative path mod to Incremental Mass Rewritten. By Aarex." charset="utf-8"/>
 </head>
 <body onload="loadGame()">
     <input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
@@ -138,9 +139,9 @@
             <div id="radiation_table"></div>
         </div>
     </div>
-	<div id="app_ext">
-		<button class="btn" onclick="EXOTIC.reset(true)" style="position: absolute; top: 5px; left: 5px">Restart</button>
-		<button class="btn" onclick="TABS.choose(0)" style="position: absolute; top: 5px; right: 5px">Close</button>
+	<div id="app_ext" style="z-index: 1">
+		<button class="btn" onclick="EXOTIC.reset(true)" style="position: absolute; top: 5px; right: 5px">Restart</button>
+		<button class="btn" onclick="TABS.choose(0)" style="position: absolute; top: 5px; left: 5px">Close</button>
 		<div class="resources sml yellow" style="position: absolute; left: 5px; top: 65px; height: 2px; width: 50%">
 			<img src="images/exotic.png" onclick="EXOTIC.reset()" style="cursor: pointer;">
 			<span style="margin-left: 5px; text-align: left;" id="extAmt2">X</span>
@@ -150,7 +151,10 @@
 		</div>
 		<div style="position: absolute; height: 80%; width: 80%; top: 10%; left: 10%; border: 3px solid #ff3f00; background: rgba(0, 0, 0, 0.9)">
 			<div id="stab_frame6_0">
-				<span id="st_res0"></span> X Axions <span id="st_gain0"></span>, <span id="st_res1"></span> Y Axions <span id="st_gain1"></span><br><br>
+				<span id="st_res0"></span> X Axions <span id="st_gain0"></span><br>
+				<span id="st_res1"></span> Y Axions <span id="st_gain1"></span><br>
+				<span id="st_res2"></span> Z Axions <span id="st_gain2"></span><br>
+				<br>
 				<div id="ax_desc" style="min-height: 70px;">
                     <span id="ax_title" class='sky'>Cosmic Burst</span><br>
                     <span id="ax_req">Requirement: 0 / 1</span><br>
@@ -318,10 +322,10 @@
             </div>
         </div><div id="tab_frame1">
             <div id="stab_frame1_0">
-                <button onclick="player.ranks_reward = Math.max(player.ranks_reward-1,0)" class="btn"><--</button><span id="ranks_reward_name" style="margin: 0px 10px">aaa</span><button onclick="player.ranks_reward = Math.min(player.ranks_reward+1,Math.max(...RANKS.names.map((v, i) => i==0 ? i : (RANKS.unl[v]() && i))))" class="btn">--></button><br><br>
+                <button onclick="player.ranks_reward = Math.max(player.ranks_reward-1,0)" class="btn" id="ranks_left_arrow"><--</button><span id="ranks_reward_name" style="margin: 0px 10px">aaa</span><button onclick="player.ranks_reward = Math.min(player.ranks_reward+1,Math.max(...RANKS.names.map((v, i) => i==0 ? i : (RANKS.unl[v]() && i))))" class="btn" id="ranks_right_arrow">--></button><br><br>
                 <div id="ranks_rewards_table"></div>
             </div><div id="stab_frame1_1">
-                <button onclick="player.scaling_ch = Math.max(player.scaling_ch-1,0)" class="btn"><--</button><span id="scaling_name" style="margin: 0px 10px">aaa</span><button onclick="player.scaling_ch = Math.min(player.scaling_ch+1,SCALE_TYPE.length-1)" class="btn">--></button><br><br>
+                <button onclick="player.scaling_ch = Math.max(player.scaling_ch-1,0)" class="btn" id="scaling_left_arrow"><--</button><span id="scaling_name" style="margin: 0px 10px">aaa</span><button onclick="player.scaling_ch = Math.min(player.scaling_ch+1,Math.max(...SCALE_TYPE.map((type, i) => tmp.scaling[type].length > 0 ? i : -1)))" class="btn" id="scaling_right_arrow">--></button><br><br>
                 <div id="scaling_table"></div>
             </div>
         </div><div id="tab_frame2">
@@ -383,7 +387,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten: Alternative Path - by Aarex<br>
+            Incremental Mass: Alternative Path - by Aarex - Twosday Update<br>
             This mod is an alternative path from original Incremental Mass by MrRedShark77.<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

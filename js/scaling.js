@@ -3,6 +3,7 @@ const SCALE_START = {
         rank: E(50),
 		tier: E(10),
 		tetr: E(7),
+		pent: E(30),
         massUpg: E(100),
 		tickspeed: E(100),
 		bh_condenser: E(100),
@@ -58,6 +59,7 @@ const NAME_FROM_RES = {
 	rank: "Rank",
 	tier: "Tier",
 	tetr: "Tetr",
+	pent: "Pent",
 	massUpg: "Mass Upgrades",
 	tickspeed: "Tickspeed",
 	bh_condenser: "Black Hole Condenser",
@@ -69,6 +71,20 @@ const NAME_FROM_RES = {
 function updateScalingHTML() {
 	let s = SCALE_TYPE[player.scaling_ch]
 	tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
+
+	if (player.scaling_ch === 0) {
+		tmp.el.scaling_left_arrow.addClass("locked")
+	} else {
+		tmp.el.scaling_left_arrow.removeClass("locked")
+	}
+
+	let maxActiveScaling = Math.max(...SCALE_TYPE.map((type, i) => tmp.scaling[type].length > 0 ? i : -1))
+	if (player.scaling_ch === maxActiveScaling) {
+		tmp.el.scaling_right_arrow.addClass("locked")
+	} else {
+		tmp.el.scaling_right_arrow.removeClass("locked")
+	}
+
 	if (!tmp.scaling) return
 	for (let x = 0; x < SCALE_TYPE.length; x++) {
 		tmp.el["scaling_div_"+x].setDisplay(player.scaling_ch == x)
@@ -196,6 +212,9 @@ function getScalingPower(type, name) {
 		}
 		if (name=="tetr") {
 			if (player.ranks.pent.gte(4)) power = power.mul(RANKS.effect.pent[4]())
+		}
+		if (name=="pent") {
+			if (AXIONS.unl()) power = power.mul(tmp.ax.eff[15])
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)

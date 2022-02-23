@@ -1,5 +1,6 @@
 :root {
     --font: 'Verdana, Geneva, Tahoma, sans-serif';
+	color-scheme: dark;
 }
 
 @font-face {
@@ -117,6 +118,7 @@ button {
 }
 
 #popup {
+	z-index: 3;
 	position: absolute;
     left: 50%;
     top: 50%;
@@ -603,8 +605,11 @@ td.ax {
 	background-color: grey
 }
 
-.btn_ax.locked {
+.btn_ax:not(.bonus).locked {
 	border-color: #333;
+}
+.btn_ax.bonus {
+	border-color: #0f0;
 }
 
 [tooltip] {

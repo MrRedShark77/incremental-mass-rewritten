@@ -2,15 +2,6 @@ var diff = 0;
 var date = Date.now();
 var player
 
-const ST_NAMES = [
-	[
-		["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
-		["","Dc","Vg","Tg","Qag","Qtg","Sxg","Spg","Ocg","Nog"],
-		["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
-	],[
-		["","Mi","Mc","Na","Pc","Fm","At","Zp","Yc","Xn","Vc","Mec","Duc","Trc","Tec","Pec","Hec","Hpc","Otc","Enc","Ic","MeIc","DuIc","TrIc","TeIc","PeIc","HeIc","HpIc","OtIc","EnIc","Tcn","MeTcn","DuTcn","TrTcn"]
-	]
-]
 const CONFIRMS = ['rp', 'bh', 'atom', 'sn']
 
 const FORMS = {
@@ -255,11 +246,13 @@ const FORMS = {
                 let x = E(0)
                 if (player.mainUpg.bh.includes(15)) x = x.add(tmp.upgs.main?tmp.upgs.main[2][15].effect:E(0))
                 return x
-            },
+            }
         },
 
 		radSoftStart() {
-			return E(10).pow(player.supernova.times.add(1).pow(6).div(100))
+			let r = E(10).pow(player.supernova.times.add(1).pow(6).div(100))
+			if (hasElement(79)) r = r.pow(1.5)
+			return r
 		}
     },
     reset_msg: {
@@ -909,22 +902,21 @@ function format(ex, acc=4, type=player.options.notation) {
 			} else {
 				let e3_mul = e3.mul(3)
 				let ee = e3.log10().floor()
-				if (ee.gte(102)) return "e"+format(e, acc, "st")
+				if (ee.gte(3000)) return "e"+format(e, acc, "st")
 
 				let final = ""
 				if (e3.lt(4)) final = ["", "K", "M", "B"][Math.round(e3.toNumber())]
 				else {
-					let ee3 = Math.max(Math.floor(e3.log(1e3).toNumber())-1,0)
+					let ee3 = Math.floor(e3.log(1e3).toNumber())
+					if (ee3 < 100) ee3 = Math.max(ee3 - 1, 0)
 					e3 = e3.sub(1).div(E(10).pow(ee3*3))
 					while (e3.gt(0)) {
 						let div1000 = e3.div(1e3).floor()
 						let mod1000 = e3.sub(div1000.mul(1e3)).floor().toNumber()
 						if (mod1000 > 0) {
 							if (mod1000 == 1 && !ee3) final = "U"
-							if (ee3) final = ST_NAMES[1][0][ee3] + (final ? "-" + final : "")
-							if (mod1000 > 1) final = ST_NAMES[0][0][mod1000 % 10] +
-								ST_NAMES[0][1][Math.floor(mod1000 / 10) % 10] +
-								ST_NAMES[0][2][Math.floor(mod1000 / 100)] + final
+							if (ee3) final = FORMATS.standard.tier2(ee3) + (final ? "-" + final : "")
+							if (mod1000 > 1) final = FORMATS.standard.tier1(mod1000) + final
 						}
 						e3 = div1000
 						ee3++
@@ -956,7 +948,7 @@ function formatMass(ex) {
 
 function formatGain(amt, gain, isMass=false) {
     let f = isMass?formatMass:format
-	if (gain.gte("ee12") && gain.log(amt).pow(50).gte(1.01)) return "(x"+format(gain.log(amt).pow(50))+" OoMs/s)"
+	if (gain.gte("ee12") && amt.gt(1) && gain.log(amt).pow(50).gte(1.01)) return "(x"+format(gain.log(amt).pow(50))+" OoMs/s)"
 	if (gain.gte(1e100) && gain.gt(amt)) return "(+"+format(gain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50))+" OoMs/sec)"
 	else return "(+"+f(gain)+"/sec)"
 }

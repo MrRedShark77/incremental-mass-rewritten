@@ -205,11 +205,11 @@ const RANKS = {
 			},
 			'10'() {
 				let ret = tmp.upgs.mass[3]?tmp.upgs.mass[3].eff.eff:E(1)
-				ret = ret.times(player.ranks.pent.div(100).min(5))
+				ret = ret.times(player.ranks.pent.softcap(25,0.5,0).div(100).min(5))
 				return ret
 			},
 			'13'() {
-				return player.ranks.pent.div(12).sqrt().min(1.5)
+				return player.ranks.pent.add(6).div(18).sqrt().min(1.5)
 			}
 		},
     },
@@ -267,7 +267,7 @@ const RANKS = {
         pent() {
             let f = E(5/6)
             if (AXIONS.unl()) f = f.mul(tmp.ax.eff[15])
-            if (hasElement(80)) f = f.mul(0.85)
+            if (hasElement(80)) f = f.mul(0.88)
             return f
         },
     },
@@ -494,10 +494,26 @@ function updateRanksTemp() {
 			.floor();
 	}
 
-    fp = RANKS.fp.pent()
-    let pow2 = 1.25
-    tmp.ranks.pent.req = player.ranks.pent.mul(fp).pow(pow2).add(15).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).max(0).root(pow2).div(fp).add(1).floor();
+	fp = RANKS.fp.pent()
+	tmp.ranks.pent.req = player.ranks.pent.mul(fp).pow(1.25).add(15).floor()
+	tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).max(0).root(1.25).div(fp).add(1).floor();
+	if (scalingActive("pent", player.ranks.pent.max(tmp.ranks.pent.bulk), "super")) {
+		let start = getScalingStart("super", "pent");
+		let power = getScalingPower("super", "pent");
+		let exp = E(2).pow(power);
+		tmp.ranks.pent.req = player.ranks.pent
+			.pow(exp)
+			.div(start.pow(exp.sub(1)))
+
+			.mul(fp).pow(1.25).add(15).floor()
+		tmp.ranks.pent.bulk = player.ranks.tetr
+			.sub(15).max(0).root(1.25).div(fp)
+
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+			.add(1)
+			.floor();
+	}
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

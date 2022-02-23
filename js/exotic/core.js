@@ -122,9 +122,9 @@ let EXTRA_BUILDINGS = {
 		mul: E("ee6"),
 		pow: E(2),
 		eff(x) {
-			let r = x
+			let r = x.times(5).add(1).log(2).div(500)
 			if (AXIONS.unl()) r = r.mul(tmp.ax.eff[9])
-			return r.times(5).add(1).log(2).div(500)
+			return r
 		}
 	},
 	bh3: {
@@ -132,9 +132,9 @@ let EXTRA_BUILDINGS = {
 		mul: E("ee9"),
 		pow: E(3),
 		eff(x) {
-			let r = x
+			let r = x.add(1).log10().div(3).add(1).div(10)
 			if (AXIONS.unl()) r = r.mul(tmp.ax.eff[10])
-			return r.add(1).log10().div(3).add(1).div(10)
+			return r
 		}
 	},
 	ag2: {
@@ -214,8 +214,8 @@ let AXIONS = {
 
 	setup() {
 		return {
-			res: [ E(0), E(0) ],
-			upgs: [ E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0) ]
+			res: [ E(0), E(0), E(0) ],
+			upgs: [ E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0) ]
 		}
 	},
 	maxLvl(x) {
@@ -227,6 +227,7 @@ let AXIONS = {
 		}
 		if (x == 0) return sum.add(1).div(15/4).min(min.mul(1.2).add(1)).floor().add(1)
 		if (x == 1) return sum.div(4).min(min.mul(1.5).add(1)).floor().add(2)
+		if (x == 2) return E(1)
 	},
 	cost(i) {
 		var normal = E(0)
@@ -237,33 +238,31 @@ let AXIONS = {
 			if (i == x) normal = lvl
 			else other = other.add(lvl)
 		}
-		if (hasTreeUpg("ext_l1")) other = other.mul(0.8)
 		if (hasTreeUpg("ext_l3")) {
 			if (i % 4 < 3) other = other.sub(player.ext.ax.upgs[i + 1].div(2))
 			if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(2))
 		}
 		if (hasTreeUpg("ext_l4")) {
-			if (i == 0) other = other.sub(player.ext.ax.upgs[3].div(2))
-			if (i == 3) other = other.sub(player.ext.ax.upgs[0].div(2))
-			if (i == 4) other = other.sub(player.ext.ax.upgs[7].div(2))
-			if (i == 7) other = other.sub(player.ext.ax.upgs[4].div(2))
+			if (i % 4 == 0) other = other.sub(player.ext.ax.upgs[i + 3].div(1.5))
+			if (i % 4 == 3) other = other.sub(player.ext.ax.upgs[i - 3].div(1.5))
 		}
 
 		var sum = normal.add(other).mul(AXIONS.costScale())
 
-		var r = E(i >= 4 ? 3 : 2)
+		var r = E([2,3,5][type])
 			.pow(sum.add(i - 4))
 			.mul(i >= 4 ? (1e3 * Math.pow(5, i - 4)) : (50 / (i + 5) * Math.pow(3, i)))
 		return r
 	},
 	costScale() {
 		var r = E(1)
+		if (hasTreeUpg("ext_l1")) r = E(0.8)
 		if (tmp.chal) r = r.mul(tmp.chal.eff[13])
 		return r
 	},
 	bulk(p) {
 		var type = Math.floor(p / 4)
-		var bulk = player.ext.ax.res[type].max(1).div(tmp.ax.cost[p]).log(i >= 4 ? 3 : 2).div(AXIONS.costScale()).add(1).floor()
+		var bulk = player.ext.ax.res[type].max(1).div(tmp.ax.cost[p]).log([2,3,5][type]).div(AXIONS.costScale()).add(1).floor()
 
 		var lvl = player.ext.ax.upgs[p]
 		var max = AXIONS.maxLvl(type)
@@ -276,9 +275,10 @@ let AXIONS = {
 	buy(i) {
 		var bulk = tmp.ax.bulk[i]
 		var cost = tmp.ax.cost[i]
+		var type = Math.floor(i / 4)
 		if (bulk.eq(0)) return
 		player.ext.ax.upgs[i] = player.ext.ax.upgs[i].add(bulk)
-		player.ext.ax.res[Math.floor(i / 4)] = player.ext.ax.res[Math.floor(i / 4)].sub(E(i >= 4 ? 2 : 1.75, bulk).mul(cost)).max(0)
+		player.ext.ax.res[type] = player.ext.ax.res[type].sub(E([2,3,5][type], bulk).mul(cost)).max(0)
 		updateAxionLevelTemp()
 	},
 
@@ -289,6 +289,7 @@ let AXIONS = {
 		if (x == 0) r = player.mass.max(1).log10().pow(0.6)
 			.mul(player.ext.amt.add(1).log(100).add(1).pow(3))
 		if (x == 1 && hasTreeUpg("ext_c")) r = player.supernova.times.div(20).max(1).pow(3)
+		if (x == 2 && hasTreeUpg("ext_e1")) r = E(0)
 
 		if (hasElement(76)) r = r.mul(tmp.elements && tmp.elements.effect[76])
 		return r
@@ -296,27 +297,28 @@ let AXIONS = {
 
 	getUpgLvl(i) {
 		var r = player.ext.ax.upgs[i]
-		if (hasTreeUpg("ext_l2")) r = r.add(player.ext.ax.upgs[i >= 4 ? i - 4 : i + 4].div(i >= 4 ? 16 : 4))
+		var type = Math.floor(i / 4)
+		if (hasTreeUpg("ext_l2") && type < 2) r = r.add(player.ext.ax.upgs[[i+4,i-4][type]].div([1.5,i*1.5][type]))
 		return r.max(0)
 	},
 	getLvl(p, base) {
 		var req = AXIONS.ids[p].req
 		var r = AXIONS.getBaseLvl(p).add(AXIONS.getBonusLvl(p))
-		if (!base) r = r.sub(req.sub(1))
+		if (!base) r = r.sub(req)
 		return r.max(0)
 	},
 	getBaseLvl(p) {
 		var x = p % 4
 		var y = Math.floor(p / 4)
 		return tmp.ax.upg[x].sub(y * 4).div(y + 1).max(0)
-			.add(tmp.ax.upg[y + 4].sub(x + y).max(0))
+			.add(tmp.ax.upg[y + 4].sub(x * y).max(0))
 	},
 	getBonusLvl(p) {
 		var x = p % 4
 		var y = Math.floor(p / 4)
 		var r = E(0)
-		if (y > 0) r = tmp.ax.upg[y + 3].div(y + 2).sub(x + y).max(0)
-		if (hasTreeUpg("ext_b1") && y == 0) r = AXIONS.getBaseLvl(p + 12)
+		if (y > 0) r = tmp.ax.upg[y + 3].sub((x + 4) * (y + 1)).div(y + 2).max(0)
+		if (hasTreeUpg("ext_b1") && y == 0) r = AXIONS.getBaseLvl(p + 12).mul(2).add(r)
 		return r
 	},
 	getEff(p, l) {
@@ -327,7 +329,7 @@ let AXIONS = {
 		0: {
 			title: "Supernova Time",
 			desc: "Speed up the Supernova productions.",
-			req: E(1),
+			req: E(0),
 			eff(x) {
 				return x.mul(2).add(1).pow(2)
 			},
@@ -338,7 +340,7 @@ let AXIONS = {
 		1: {
 			title: "Cosmic Burst",
 			desc: "Cosmic Ray softcap starts later.",
-			req: E(1),
+			req: E(00),
 			eff(x) {
 				return x.sqrt().div(10).min(4).add(1.2).pow(x)
 			},
@@ -349,7 +351,7 @@ let AXIONS = {
 		2: {
 			title: "Tickspeed Balancing",
 			desc: "Outside of challenges, Tickspeed scalings are weaker, but reduce the non-bonus.",
-			req: E(1),
+			req: E(0),
 			eff(x) {
 				return x.add(1).log10().div(2).add(1)
 			},
@@ -360,9 +362,9 @@ let AXIONS = {
 		3: {
 			title: "Radiation Scaling",
 			desc: "Radiation Boosters scale slower.",
-			req: E(1),
+			req: E(0.5),
 			eff(x) {
-				return x.pow(0.6).div(135).min(0.05).toNumber()
+				return x.pow(0.6).div(135).min(0.05)
 			},
 			effDesc(x) {
 				return "-^"+format(x)
@@ -372,7 +374,7 @@ let AXIONS = {
 		4: {
 			title: "Excited Atomic",
 			desc: "Raise the base Atomic Power gains.",
-			req: E(2),
+			req: E(1),
 			eff(x) {
 				return x.div(5).add(1).sqrt()
 			},
@@ -383,7 +385,7 @@ let AXIONS = {
 		5: {
 			title: "Outrageous",
 			desc: "Multiply the cap increases to Rage Power.",
-			req: E(2),
+			req: E(0.5),
 			eff(x) {
 				return x.add(1).div(x.max(1).log(5).add(1))
 			},
@@ -405,9 +407,9 @@ let AXIONS = {
 		7: {
 			title: "Meta Zone",
 			desc: "Multiply Meta Boosts based on radiation types.",
-			req: E(10),
+			req: E(7),
 			eff(x) {
-				return x.add(1).log(2).div(10).add(1).min(1.6)
+				return x.add(1).log(3).div(10).add(1).min(1.6)
 			},
 			effDesc(x) {
 				return format(x) + "x"
@@ -426,11 +428,11 @@ let AXIONS = {
 			}
 		},
 		9: {
-			title: "Dark Radiation [Coming soon!]",
+			title: "Dark Radiation",
 			desc: "Hawking Radiation is more powerful.",
-			req: E(1/0),
+			req: E(4),
 			eff(x) {
-				return E(1)
+				return x.add(1).sqrt()
 			},
 			effDesc(x) {
 				return format(x) + "x"
@@ -473,7 +475,7 @@ let AXIONS = {
 		13: {
 			title: "Challenge",
 			desc: "Increase the cap of Challenges 7 and 10.",
-			req: E(1),
+			req: E(0),
 			eff(x) {
 				return x.times(25)
 			},
@@ -493,28 +495,54 @@ let AXIONS = {
 			}
 		},
 		15: {
-			title: "Pent [Coming soon!]",
+			title: "Pent",
 			desc: "Pent scales slower.",
-			req: E(1/0),
+			req: E(1),
 			eff(x) {
-				return x.add(1).log2().div(20).add(1)
+				return E(1).div(x.mul(2).add(1).log2().div(10).add(1))
 			},
 			effDesc(x) {
 				return format(E(1).sub(x).mul(100)) + "%"
 			}
+		},
+
+		16: {
+			title: "Placeholder [Unlock]",
+			desc: "Placeholder.",
+			req: E(1/0)
+		},
+		17: {
+			title: "Placeholder [Unlock]",
+			desc: "Placeholder.",
+			req: E(1/0)
+		},
+		18: {
+			title: "Placeholder [Unlock]",
+			desc: "Placeholder.",
+			req: E(1/0)
+		},
+		19: {
+			title: "Placeholder [Unlock]",
+			desc: "Placeholder.",
+			req: E(1/0)
 		},
 	}
 }
 
 function setupAxionHTML() {
 	var html = ""
-	for (var y = -1; y < 4; y++) {
+	for (var y = -1; y < 5; y++) {
 		html += "</tr><tr>"
-		for (var x = -1; x < 4; x++) {
-			if (x == -1 && y == -1) html += "<td class='ax'></td>"
-			if (x > -1 && y == -1) html += `<td class='ax'><button class='btn_ax normal' id='ax_upg`+x+`' onmouseover='hoverAxion("u`+x+`")' onmouseleave='hoverAxion()' onclick="AXIONS.buy(`+x+`)">X`+(x+1)+`</button></td>`
-			if (x == -1 && y > -1) html += `<td class='ax'><button class='btn_ax normal' id='ax_upg` +(y+4)+`' onmouseover='hoverAxion("u`+(y+4)+`")' onmouseleave='hoverAxion()' onclick="AXIONS.buy(`+(y+4)+`)">Y`+(y+1)+`</button></td>`
-			if (x > -1 && y > -1) html += `<td class='ax'><button class='btn_ax' id='ax_boost`+(y*4+x)+`' onmouseover='hoverAxion("b`+(y*4+x)+`")' onmouseleave='hoverAxion()'><img src='images/axion/b`+(y*4+x)+`.png' style="position: relative"></img></button></td>`
+		for (var x = -1; x < 5; x++) {
+			var x_empty = x == -1 || x == 4
+			var y_empty = y == -1
+			if (x_empty && y_empty) html += "<td class='ax'></td>"
+			if (!x_empty && y_empty) html += `<td class='ax'><button class='btn_ax normal' id='ax_upg`+x+`' onmouseover='hoverAxion("u`+x+`")' onmouseleave='hoverAxion()' onclick="AXIONS.buy(`+x+`)">X`+(x+1)+`</button></td>`
+			if (x_empty && !y_empty && y < 4) {
+				var type = x == 4 ? 2 : 1
+				html += `<td class='ax'><button class='btn_ax normal' id='ax_upg` +(y+4*type)+`' onmouseover='hoverAxion("u`+(y+4*type)+`")' onmouseleave='hoverAxion()' onclick="AXIONS.buy(`+(y+4*type)+`)">`+["","Y","Z"][type]+(y+1)+`</button></td>`
+			}
+			if (!x_empty && !y_empty) html += `<td class='ax'><button class='btn_ax' id='ax_boost`+(y*4+x)+`' onmouseover='hoverAxion("b`+(y*4+x)+`")' onmouseleave='hoverAxion()'><img src='images/axion/b`+(y*4+x)+`.png' style="position: relative"></img></button></td>`
 		}
 	}
 	new Element("ax_table").setHTML(html)
@@ -523,26 +551,30 @@ function setupAxionHTML() {
 function updateAxionHTML() {
 	tmp.el.st_res0.setHTML(format(player.ext.ax.res[0]))
 	tmp.el.st_res1.setHTML(format(player.ext.ax.res[1]))
+	tmp.el.st_res2.setHTML(format(player.ext.ax.res[2]))
 	tmp.el.st_gain0.setHTML(formatGain(player.ext.ax.res[0], AXIONS.prod(0)))
 	tmp.el.st_gain1.setHTML(formatGain(player.ext.ax.res[1], AXIONS.prod(1)))
+	tmp.el.st_gain2.setHTML(formatGain(player.ext.ax.res[2], AXIONS.prod(2)))
 
-	for (var i = 0; i < 8; i++) {
+	for (var i = 0; i < 12; i++) {
 		tmp.el["ax_upg"+i].setClasses({btn_ax: true, locked: !AXIONS.canBuy(i)})
 		tmp.el["ax_upg"+i].setOpacity(tmp.ax.hover.hide.includes("u"+i) ? 0.25 : 1)
 	}
-	for (var i = 0; i < 16; i++) {
-		tmp.el["ax_boost"+i].setClasses({btn_ax: true, locked: tmp.ax.lvl[i].eq(0)})
-		tmp.el["ax_boost"+i].setOpacity(tmp.ax.hover.hide.includes("b"+i) ? 0.25 : 1)
+	for (var i = 0; i < 20; i++) {
+		tmp.el["ax_boost"+i].setClasses({btn_ax: true, locked: tmp.ax.lvl[i].eq(0), bonus: tmp.ax.hover.bonus.includes("b"+i)})
+		tmp.el["ax_boost"+i].setOpacity(tmp.ax.hover.bonus.includes("b"+i) ? 1 : tmp.ax.hover.hide.includes("b"+i) || tmp.ax.lvl[i].eq(0) ? 0.25 : 1)
 	}
 
 	tmp.el.ax_desc.setOpacity(tmp.ax.hover.id ? 1 : 0)
 	if (tmp.ax.hover.id) {
 		if (tmp.ax.hover.id[0] == "u") {
-			var id = tmp.ax.hover.id[1]
-			tmp.el.ax_title.setTxt((id >= 4 ? "Y" : "X") + "-Axion Upgrade " + ((id % 4) + 1))
-			tmp.el.ax_req.setHTML("Cost: " + format(tmp.ax.cost[id]) + " " + (id >= 4 ? "Y" : "X") + "-Axions")
+			var id = Number(tmp.ax.hover.id.split("u")[1])
+			var type = Math.floor(id / 4)
+			var name = ["X","Y","Z"][type]
+			tmp.el.ax_title.setTxt(name + "-Axion Upgrade " + ((id % 4) + 1))
+			tmp.el.ax_req.setHTML("Cost: " + format(tmp.ax.cost[id]) + " " + name + "-Axions")
 			tmp.el.ax_req.setClasses({"red": !AXIONS.canBuy(id)})
-			tmp.el.ax_eff.setHTML("Level: " + format(player.ext.ax.upgs[id], 0) + " / " + format(AXIONS.maxLvl(Math.floor(id / 4)), 0) + " (" + format(tmp.ax.upg[id]) + ")")
+			tmp.el.ax_eff.setHTML("Level: " + format(player.ext.ax.upgs[id], 0) + " / " + format(AXIONS.maxLvl(type), 0) + " (" + format(tmp.ax.upg[id]) + ")")
 		}
 		if (tmp.ax.hover.id[0] == "b") {
 			var id = Number(tmp.ax.hover.id.split("b")[1])
@@ -550,7 +582,7 @@ function updateAxionHTML() {
 			tmp.el.ax_title.setTxt(AXIONS.ids[id].title + " (b" + id + ")")
 			tmp.el.ax_req.setTxt(locked ? "Locked (requires " + format(AXIONS.getLvl(id, true)) + " / " + format(AXIONS.ids[id].req, 0) + ")" : AXIONS.ids[id].desc)
 			tmp.el.ax_req.setClasses({"red": locked})
-			tmp.el.ax_eff.setHTML(locked ? "" : "Level: " + format(AXIONS.getBaseLvl(id).sub(AXIONS.ids[id].req.sub(1)), 0) + (AXIONS.getBonusLvl(id).gt(0) ? "+" + format(AXIONS.getBonusLvl(id)) : "") + ", Currently: " + AXIONS.ids[id].effDesc(tmp.ax.eff[id]))
+			tmp.el.ax_eff.setHTML(locked ? "" : "Level: " + format(AXIONS.getBaseLvl(id).sub(AXIONS.ids[id].req.sub(1)), 0) + (AXIONS.getBonusLvl(id).gt(0) ? "+" + format(AXIONS.getBonusLvl(id)) : "") + (id < 16 ? ", Currently: " + AXIONS.ids[id].effDesc(tmp.ax.eff[id]) : ""))
 		}
 	}
 }
@@ -558,8 +590,8 @@ function updateAxionHTML() {
 function updateAxionLevelTemp() {
 	tmp.ax.upg = {}
 	tmp.ax.lvl = {}
-	for (var i = 0; i < 8; i++) tmp.ax.upg[i] = AXIONS.getUpgLvl(i)
-	for (var i = 0; i < 16; i++) tmp.ax.lvl[i] = AXIONS.getLvl(i)
+	for (var i = 0; i < 12; i++) tmp.ax.upg[i] = AXIONS.getUpgLvl(i)
+	for (var i = 0; i < 20; i++) tmp.ax.lvl[i] = AXIONS.getLvl(i)
 }
 
 function updateAxionTemp() {
@@ -571,14 +603,14 @@ function updateAxionTemp() {
 	tmp.ax = {
 		lvl: tmp.ax && tmp.ax.lvl,
 		upg: tmp.ax && tmp.ax.upg,
-		hover: (tmp.ax && tmp.ax.hover) || {id: "", hide: []}
+		hover: (tmp.ax && tmp.ax.hover) || {id: "", hide: [], bonus: []}
 	}
 	if (!tmp.ax.lvl) updateAxionLevelTemp()
 
 	tmp.ax.cost = {}
 	tmp.ax.bulk = {}
 	tmp.ax.eff = {}
-	for (var i = 0; i < 8; i++) {
+	for (var i = 0; i < 12; i++) {
 		tmp.ax.cost[i] = AXIONS.cost(i)
 		tmp.ax.bulk[i] = AXIONS.bulk(i)
 	}
@@ -588,52 +620,42 @@ function updateAxionTemp() {
 function hoverAxion(x) {
 	tmp.ax.hover.id = x
 	tmp.ax.hover.hide = []
+	tmp.ax.hover.bonus = []
 	if (!x) return
 	if (tmp.ax.hover.id[0] == "u") {
-		let id = tmp.ax.hover.id[1]
-		for (var i = 0; i < 8; i++) if (i != id) tmp.ax.hover.hide.push("u"+i)
-		for (var i = 0; i < 16; i++) {
-			let hide = true
-			let [px,py] = [i%4,Math.floor(i/4)]
-			if (id >= 4) hide = (py == id - 3 ? tmp.ax.upg[id].div(py + 2).lte(px + py) : py == id - 4 ? tmp.ax.upg[id].lte(px+py) : true)
-			else hide = (px != id) || (tmp.ax.upg[id].lte(py*4))
+		let id = Number(tmp.ax.hover.id.split("u")[1])
+		for (var i = 0; i < 12; i++) if (i != id) tmp.ax.hover.hide.push("u"+i)
+		for (var i = 0; i < 20; i++) {
+			let [px,py] = [i%4, Math.floor(i/4)]
 
+			let hide = true
+			let bonus = false
+			if (id >= 8) hide = true
+			else if (id >= 4) {
+				bonus = py == id - 3 && tmp.ax.upg[id].gt((px + 4) * (py + 1))
+				hide = !bonus && (py == id - 4 ? tmp.ax.upg[id].lte(px * py) : true)
+			} else hide = (px != id) || (tmp.ax.upg[id].lte(py*4))
 			if (hide) tmp.ax.hover.hide.push("b"+i)
+			if (bonus) tmp.ax.hover.bonus.push("b"+i)
 		}
 	}
 	if (tmp.ax.hover.id[0] == "b") {
 		let id = Number(tmp.ax.hover.id.split("b")[1])
 		let [px, py] = [id%4, Math.floor(id/4)]
-		for (var i = 0; i < 16; i++) if (i != id) tmp.ax.hover.hide.push("b"+i)
-		for (var i = 0; i < 8; i++) {
+		for (var i = 0; i < 20; i++) if (i != id) tmp.ax.hover.hide.push("b"+i)
+		for (var i = 0; i < 12; i++) {
 			let hide = true
-			if (i < 4 && px == i && tmp.ax.upg[i].gt(py * 4)) hide = false
-			if (i >= 4 && py == i - 4 && tmp.ax.upg[i].gt(px + py)) hide = false
-			if (i >= 4 && py == i - 3 && tmp.ax.upg[i].div(py + 2).gt(px + py)) hide = false
-
+			if (py < 4) {
+				if (i < 4 && px == i && tmp.ax.upg[i].gt(py * 4)) hide = false
+				if (i >= 4 && py == i - 4 && tmp.ax.upg[i].gt(px * py)) hide = false
+				if (i >= 4 && py == i - 3 && tmp.ax.upg[i - 1].div(py + 2).gt((px + 4) * py)) hide = false
+			}
 			if (hide) tmp.ax.hover.hide.push("u"+i)
 		}
 	}
 }
 
 /*
-11. Supernova Time Boost: Speed up all Supernova productions.
-12. Cosmic Burst Boost: Cosmic Ray softcap starts later.
-13. Tickspeed Balance Boost: Outside of challenges, Tickspeed scales weaker but reduce the non-bonus.
-14. Radiation Scaling Boost: Reduce the Radiation Booster scaling by subtracting the exponent.
-21. Excited Atomic Boost: Raise the Atomic Power gains.
-22. Outrageous Boost: Multiply the cap increases to RP exponents.
-23. Superranked Boost: Meta Rank scaling is weaker.
-24. Meta Zone Boost: Meta Boosts are multiplied based on radiation types. - Added
-31. Supermassive Boost: Hawking Radiation softcap starts later.
-32. Dark Radiation Boost: Hawking Radiation is more powerful.
-33. Quark Condenser Boost: Neutron Condensers are more powerful.
-34. Lepton Anomaly Boost: Neut-Muon softcap is weaker.
-41. Supernova Boost: Raise the Titanium-73 effect more.
-42. Challenge Boost: Increase the cap of Challenges 7 and 10.
-43. Impossible Boost: Weaken the Impossible Challenge scalings.
-44. Pent Boost: Pent requirement increases slower.
-
 Missed. Heavier Boost: Stronger raises levels from Muscler and Booster.
 Missed. Meta Radiation Boost: Meta-Boost I is raised. (capped at ^2.5) - Added
 */

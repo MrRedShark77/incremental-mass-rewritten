@@ -225,9 +225,41 @@ const FORMATS = {
         let layer_id = layer.toNumber()%10-1
         return format(ex,Math.max(4,acc),"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?"^"+format(meta,0,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
       },
-    }
-    
+    },
+	standard: {
+		tier1(x) {
+			return ST_NAMES[1][0][x % 10] +
+			ST_NAMES[1][1][Math.floor(x / 10) % 10] +
+			ST_NAMES[1][2][Math.floor(x / 100)]
+		},
+		tier2(x) {
+			let o = x % 10
+			let t = Math.floor(x / 10) % 10
+			let h = Math.floor(x / 100) % 10
+
+			let r = ''
+			if (x < 10) return ST_NAMES[2][0][x]
+			if (t == 1 && o == 0) r += "Vec"
+			else r += ST_NAMES[2][1][o] + ST_NAMES[2][2][t]
+			r += ST_NAMES[2][3][h]
+
+			return r
+		}
+	}
 }
+
+const ST_NAMES = [
+	null, [
+		["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
+		["","Dc","Vg","Tg","Qag","Qtg","Sxg","Spg","Ocg","Nog"],
+		["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
+	],[
+		["","Mi","Mc","Na","Pc","Fm","At","Zp","Yc","Xn"],
+		["","Me","Du","Tr","Te","Pe","He","Hp","Ot","En"],
+		["","c","Ic","TCn","TeC","PCn","HCn","HpC","OCn","ECn"],
+		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
+	]
+]
 
 
 const INFINITY_NUM = E(2).pow(1024);

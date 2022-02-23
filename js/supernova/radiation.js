@@ -51,7 +51,7 @@ const RADIATION = {
     getBoostScalingExp(i) {
 		let f2 = 1.3+i*0.05
 		if (tmp.radiation.bs.eff[17] && i % 2 == 1) f2 -= tmp.radiation.bs.eff[17][1]
-		if (AXIONS.unl()) f2 -= tmp.ax.eff[3]
+		if (AXIONS.unl()) f2 -= tmp.ax.eff[3].toNumber()
 		return Math.max(f2,1.2)
     },
     getLevelEffect(i) {

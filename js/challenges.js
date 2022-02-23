@@ -145,8 +145,8 @@ const CHALS = {
         if (AXIONS.unl()) x = x.mul(tmp.ax.eff[14])
         return x
     },
-    getChalData(x, r=E(-1)) {
-        let res = !CHALS.inChal(0)?this.getResource(x):E(0)
+    getChalData(x, r=E(-1), a) {
+        let res = !CHALS.inChal(0)||a?this.getResource(x):E(0)
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
         let s1 = x > 8 ? 10 : 75
@@ -430,13 +430,13 @@ const CHALS = {
 		unl() { return hasTreeUpg("chal8") },
 		title: "Decay of Atom",
 		desc: "You can't gain atoms and quarks.",
-		reward: `Axion Upgrades scale slower.<br><span class="yellow">On first completion, unlock ??? Tree! [Coming soon!]</span>`,
+		reward: `Axion Upgrades scale slower.<br><span class="yellow">On 3rd completion, unlock ??? Tree! [Coming soon!]</span>`,
 		max: E(50),
-		inc: E(10),
-		pow: E(5),
-		start: E(1/0),
+		inc: E("e1e5"),
+		pow: E(1.5),
+		start: uni("e4.5e5"),
 		effect(x) {
-            return E(1).div(x.div(100).add(1))
+            return E(0.5).add(E(0.5).div(x.div(3).add(1).sqrt()))
 		},
 		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
 	},

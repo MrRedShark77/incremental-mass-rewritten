@@ -520,12 +520,12 @@ const ELEMENTS = {
             cost: E('e8e9'),
         },
         {
-            desc: `Hawking Radiation softcap starts at ^1.25.`,
+            desc: `Hawking Radiation softcap starts ^1.5 later.`,
             cost: E('e1.6e10')
         },
         {
             desc: `[Final Element] Pent requirement is reduced by 15%.`,
-            cost: E('e1e11'),
+            cost: E('e3.2e10'),
         },
     ],
     /*

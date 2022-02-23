@@ -10,7 +10,7 @@ const TREE_IDS = [
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","eb1","eb2","ext_c","","","","","","",""],
     ["","","","","","","","","","","ext_l1","","ext_b1","","","","","",""],
-    ["","","","","","","","","","ext_l2","ext_l3","","ext_b2","ext_b3","","","","",""],
+    ["","","","","","","","","","ext_l2","ext_l3","ext_e1","ext_b2","ext_b3","","","","",""],
     ["","","","","","","","","","ext_l5","ext_l4","","ext_b4","ext_b5","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -497,8 +497,8 @@ const TREE_UPGS = {
         },
 		chal8: {
 			branch: ["chal7"],
-			req() { return player.ext.amt.gte(1e100) },
-			reqDesc() { return "Get " + format(1e100) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(1e35) },
+			reqDesc() { return "Get " + format(1e35) + " Exotic Matter." },
 			desc: `Unlock the introduction challenge of the Exotic side, Challenge 13.`,
 			cost: E(0),
 			perm: true,
@@ -554,8 +554,8 @@ const TREE_UPGS = {
 		},
 		ext_l2: {
 			branch: ["ext_l1"],
-			req() { return player.ext.amt.gte(hasTreeUpg("ext_l3") ? 1e50 : 1e12) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e50 : 1e12) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_l3") ? 1e40 : 1e11) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e40 : 1e11) + " Exotic Matter." },
 			desc: `Axion Levels synergize with ones from the other side.`,
 			cost: E(0),
 			perm: true,
@@ -563,8 +563,8 @@ const TREE_UPGS = {
 		},
 		ext_l3: {
 			branch: ["ext_l1"],
-			req() { return player.ext.amt.gte(hasTreeUpg("ext_l2") ? 1e50 : 1e12) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e50 : 1e12) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_l2") ? 1e40 : 1e11) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e40 : 1e11) + " Exotic Matter." },
 			desc: `Axion Levels cheapen the nearest ones.`,
 			cost: E(0),
 			perm: true,
@@ -591,8 +591,8 @@ const TREE_UPGS = {
 		ext_b1: {
 			unl() { return hasTreeUpg("ext_l2") || hasTreeUpg("ext_l3") },
 			branch: ["ext_c"],
-			req() { return player.ext.amt.gte(1e30) },
-			reqDesc() { return "Get " + format(1e30) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(1e25) },
+			reqDesc() { return "Get " + format(1e25) + " Exotic Matter." },
 			desc: `Row-4 levels synergize with row-1 levels.`,
 			cost: E(0),
 			perm: true,
@@ -600,8 +600,8 @@ const TREE_UPGS = {
 		},
 		ext_b2: {
 			branch: ["ext_b1"],
-			req() { return player.ext.amt.gte(1/0) },
-			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_b3") ? 1e200 : 1e100) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_b3") ? 1e200 : 1e100) + " Exotic Matter." },
 			desc: `Levels synergize boosts diagonally on the right. [Coming soon!]`,
 			cost: E(0),
 			perm: true,
@@ -609,8 +609,8 @@ const TREE_UPGS = {
 		},
 		ext_b3: {
 			branch: ["ext_b1"],
-			req() { return player.ext.amt.gte(1/0) },
-			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
+			req() { return player.ext.amt.gte(hasTreeUpg("ext_b2") ? 1e200 : 1e100) },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_b2") ? 1e200 : 1e100) + " Exotic Matter." },
 			desc: `Levels synergize boosts diagonally on the left. [Coming soon!]`,
 			cost: E(0),
 			perm: true,
@@ -634,16 +634,16 @@ const TREE_UPGS = {
 			perm: true,
 			icon: "axion",
 		},
-		/*ext_e1: {
+		ext_e1: {
 			unl() { return hasTreeUpg("ext_b1") },
 			branch: ["ext_c"],
 			req() { return player.ext.amt.gte(1/0) },
 			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
-			desc: `Unlock the fifth row of Axion Upgrades. [Unconfirmed]`,
+			desc: `Start producing Z-Axions based on ???.`,
 			cost: E(0),
 			perm: true,
-			noIcon: true,
-		},*/
+			icon: "axion",
+		},
 		qol_ext1: {
 			branch: ["qol1"],
 			unl() { return hasTreeUpg("qol_ext4") },
@@ -721,7 +721,7 @@ const TREE_UPGS = {
 			branch: ["qol_ext1"],
 			desc: `Keep the Fermion Supernova upgrades.`,
 			perm: true,
-			cost: E("1e1000"),
+			cost: E("1e500"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -733,7 +733,7 @@ const TREE_UPGS = {
 			branch: ["qol_ext1"],
 			desc: `Keep the Radiation Supernova upgrades.`,
 			perm: true,
-			cost: E("1e2000"),
+			cost: E("1e1000"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -743,9 +743,9 @@ const TREE_UPGS = {
 		},
 		qol_ext8: {
 			branch: ["qol_ext1"],
-			desc: `[Coming soon!]`,
+			desc: `Automatically gain C1 - 4 completions without entering.`,
 			perm: true,
-			cost: E(1/0),
+			cost: E("1e2000"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
