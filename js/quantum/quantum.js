@@ -96,7 +96,7 @@ const QUANTUM = {
     mils: [
         [E(1), `You start with QoL (qol1-6), Bosons & Fermions unlocked.`],
         [E(2), `Pre-Quantum Supernova tree will be without the requirement. Pre-Quantum global speed is increased by 10x.`],
-        [E(3), `You start with the pre-Quantum tree of Challenges, tree [c] unlocked.`],
+        [E(3), `You start with the pre-Quantum tree of Challenges, tree [c, qol7] unlocked.`],
     ],
 }
 
