@@ -3,14 +3,26 @@ var date = Date.now();
 var player
 
 const ST_NAMES = [
-    ["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
-    ["","Dc","Vg","Tg","Qag","Qtg","Sxg","Spg","Ocg","Nog"],
-    ["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
-    ["","Mi","Mc","Na","Pc"],
+	null, [
+		["","U","D","T","Qa","Qt","Sx","Sp","Oc","No"],
+		["","Dc","Vg","Tg","Qag","Qtg","Sxg","Spg","Ocg","Nog"],
+		["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
+	],[
+		["","Mi","Mc","Na","Pc","Fm","At","Zp","Yc","Xn"],
+		["","Me","Du","Tr","Te","Pe","He","Hp","Ot","En"],
+		["","c","Ic","TCn","TeC","PCn","HCn","HpC","OCn","ECn"],
+		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
+	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu']
 
 const FORMS = {
+    getPreQUGlobalSpeed() {
+        let x = E(1)
+        if (tmp.qu.mul_reached[1]) x = x.mul(10)
+        if (quUnl()) x = x.mul(tmp.qu.bpEff)
+        return x
+    },
     massGain() {
         let x = E(1)
         x = x.add(tmp.upgs.mass[1]?tmp.upgs.mass[1].eff.eff:1)
@@ -79,6 +91,7 @@ const FORMS = {
     },
     massSoftPower3() {
         let p = E(0.2)
+        if (player.atom.elements.includes(77)) p = p.pow(0.825)
         return p
     },
     massSoftGain4() {
@@ -86,7 +99,7 @@ const FORMS = {
         return s
     },
     massSoftPower4() {
-        let p = E(0.01)
+        let p = E(0.05)
         return p
     },
     tickspeed: {
@@ -118,6 +131,7 @@ const FORMS = {
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
                 step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
+            step = step.pow(tmp.qu.chroma_eff[0])
             if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
 
             let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
@@ -208,6 +222,7 @@ const FORMS = {
         },
         fSoftPower() {
             let x = 0.95
+            if (player.supernova.tree.includes("qu3")) x **= 0.7
             return x
         },
         massSoftGain() {
@@ -288,6 +303,10 @@ const FORMS = {
         set(id) {
             if (id=="sn") {
                 player.reset_msg = "Reach over "+format(tmp.supernova.maxlimit)+" collapsed stars to be Supernova"
+                return
+            }
+            if (id=="qu") {
+                player.reset_msg = "Require over "+formatMass(mlt(1e4))+" of mass to go Quantum"
                 return
             }
             player.reset_msg = this.msgs[id]
@@ -914,23 +933,36 @@ function format(ex, acc=4, type=player.options.notation) {
                 return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
             }
         case "st":
-            if (e.lt(3)) {
-                return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
-            } else {
-                if (e.gte(3e15+3)) return "e"+format(e, acc, "st")
-                let str = e.div(3).floor().sub(1).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ').split(" ")
-                let final = ""
-                let m = ex.div(E(10).pow(e.div(3).floor().mul(3)))
-                str.forEach((arr, i) => {
-                    let ret = ""
-                    arr.split('').forEach((v, j) => {
-                        if (i == str.length - 1) ret = (Number(arr) < 3 ? ["K", "M", "B"][v] : ST_NAMES[arr.length-j-1][v]) + ret 
-                        else if (Number(arr) > 1) ret = ST_NAMES[arr.length-j-1][v] + ret
-                    })
-                    final += (i > 0 && Number(arr) > 0 ? "-" : "") + ret + (i < str.length - 1 && Number(arr) > 0 ? ST_NAMES[3][str.length-i-1] : "")
-                });
-                return neg+(e.log10().gte(9)?'':(m.toFixed(E(3).sub(e.sub(e.div(3).floor().mul(3))).add(acc==0?0:1).toNumber())))+final
-            }
+            let e3 = ex.log(1e3).floor()
+			if (e3.lt(1)) {
+				return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+			} else {
+				let e3_mul = e3.mul(3)
+				let ee = e3.log10().floor()
+				if (ee.gte(3000)) return "e"+format(e, acc, "st")
+
+				let final = ""
+				if (e3.lt(4)) final = ["", "K", "M", "B"][Math.round(e3.toNumber())]
+				else {
+					let ee3 = Math.floor(e3.log(1e3).toNumber())
+					if (ee3 < 100) ee3 = Math.max(ee3 - 1, 0)
+					e3 = e3.sub(1).div(E(10).pow(ee3*3))
+					while (e3.gt(0)) {
+						let div1000 = e3.div(1e3).floor()
+						let mod1000 = e3.sub(div1000.mul(1e3)).floor().toNumber()
+						if (mod1000 > 0) {
+							if (mod1000 == 1 && !ee3) final = "U"
+							if (ee3) final = FORMATS.standard.tier2(ee3) + (final ? "-" + final : "")
+							if (mod1000 > 1) final = FORMATS.standard.tier1(mod1000) + final
+						}
+						e3 = div1000
+						ee3++
+					}
+				}
+
+				let m = ex.div(E(10).pow(e3_mul))
+				return neg+(ee.gte(4)?'':(m.toFixed(E(3).sub(e.sub(e3_mul)).add(acc==0?0:1).toNumber()))+' ')+final
+			}
         default:
             return neg+FORMATS[type].format(ex, acc)
     }

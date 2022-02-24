@@ -43,14 +43,14 @@ const RADIATION = {
     },
     getLevelEffect(i) {
         let b = tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i])
-        if (FERMIONS.onActive("15") || Math.floor(i/2)>0&&player.supernova.radiation.hz.lt(RADIATION.unls[Math.floor(i/2)])) b = E(0)
+        if (FERMIONS.onActive("15") || Math.floor(i/3)>0&&player.supernova.radiation.hz.lt(RADIATION.unls[Math.floor(i/3)])) b = E(0)
         //b = b.mul(tmp.chal?tmp.chal.eff[12]:1)
         let x = this.boosts[i].eff(b)
         return x
     },
     getbonusLevel(i) {
         let x = E(0)
-        x = x.add(tmp.chal?tmp.chal.eff[12]:1)
+        x = x.add(tmp.chal?tmp.chal.eff[12]:0)
         if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
         if (i < 17) x = x.add(tmp.radiation.bs.eff[17])
         return x
@@ -294,13 +294,13 @@ function setupRadiationHTML() {
 }
 
 function updateRadiationHTML() {
-    tmp.el.frequency.setTxt(format(player.supernova.radiation.hz,1)+" "+formatGain(player.supernova.radiation.hz,tmp.radiation.hz_gain))
+    tmp.el.frequency.setTxt(format(player.supernova.radiation.hz,1)+" "+formatGain(player.supernova.radiation.hz,tmp.radiation.hz_gain.mul(tmp.preQUGlobalSpeed)))
     tmp.el.frequency_eff.setTxt(format(tmp.radiation.hz_effect))
 
     let rad_id = 1
     let comp = false
     for (let x = 1; x < RAD_LEN; x++) {
-        if (x == RAD_LEN-1) comp = true;
+        if (x == RAD_LEN) comp = true;
         if (player.supernova.radiation.hz.lt(RADIATION.unls[x]||1/0)) break
         rad_id++
     }
@@ -316,7 +316,7 @@ function updateRadiationHTML() {
 
         tmp.el[id+"_div"].setDisplay(unl)
         if (unl) {
-            tmp.el[id+"_distance"].setTxt(format(player.supernova.radiation.ds[x],1)+" "+formatGain(player.supernova.radiation.ds[x],tmp.radiation.ds_gain[x]))
+            tmp.el[id+"_distance"].setTxt(format(player.supernova.radiation.ds[x],1)+" "+formatGain(player.supernova.radiation.ds[x],tmp.radiation.ds_gain[x].mul(tmp.preQUGlobalSpeed)))
             tmp.el[id+"_disEff"].setTxt(format(tmp.radiation.ds_eff[x]))
 
             for (let y = 0; y < 2; y++) {

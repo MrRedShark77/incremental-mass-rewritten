@@ -41,12 +41,13 @@ function updateChalTemp() {
         canFinish: false,
         gain: E(0),
     }
+    let s = tmp.qu.chroma_eff[2]
     for (let x = 1; x <= CHALS.cols; x++) {
         let data = CHALS.getChalData(x)
         tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
-        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x])
+        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(x<=8?s:1))
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
@@ -397,7 +398,7 @@ const CHALS = {
         unl() { return player.supernova.tree.includes("chal7") },
         title: "Decay of Atom",
         desc: "You cannot gain Atoms & Quarks.",
-        reward: `Completions add free Radiation Boosters.<br><span class="yellow">On first completion, unlock new prestige layer! (coming soon in v0.5)</span>`,
+        reward: `Completions add free Radiation Boosters.<br><span class="yellow">On first completion, unlock new prestige layer!</span>`,
         max: E(100),
         inc: E('e2e7'),
         pow: E(2),

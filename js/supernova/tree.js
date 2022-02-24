@@ -1,6 +1,6 @@
 const TREE_IDS = [
-    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
-    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
+    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
+    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
     ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
@@ -22,15 +22,25 @@ const TREE_IDS = [
 
 var tree_canvas,tree_ctx,tree_update=true
 
+const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
+'qol6','qol7','qol8','qol9','unl1',
+'c','s2','s3','s4','sn3',
+'sn4','t1','bh2','gr1','chal1',
+'chal2','chal3','bs1','fn2','fn3',
+'fn5','fn6']
+
 const TREE_UPGS = {
     buy(x) {
         if (tmp.supernova.tree_choosed == x && tmp.supernova.tree_afford[x]) {
-            player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
+            if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
+            else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
             player.supernova.tree.push(x)
         }
     },
     ids: {
         c: {
+            req() { return player.supernova.times.gte(1) },
+            reqDesc: `1 Supernova.`,
             desc: `Start generating 0.1 Neutron Star per second (not affected by offline production).`,
             cost: E(0),
         },
@@ -459,6 +469,31 @@ const TREE_UPGS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+
+        qu0: {
+            unl() { return quUnl() },
+            qf: true,
+            desc: `Good luck with new era!.`,
+            cost: E(0),
+        },
+        qu1: {
+            qf: true,
+            branch: ["qu0"],
+            desc: `Fermion's requirement is decreased by 15%.`,
+            cost: E(1),
+        },
+        qu2: {
+            qf: true,
+            branch: ["qu0"],
+            desc: `W+ Boson's 1st effect is overpowered.`,
+            cost: E(1),
+        },
+        qu3: {
+            qf: true,
+            branch: ["qu0"],
+            desc: `From BH the formula's softcap is 30% weaker.`,
+            cost: E(1),
+        },
         /*
         x: {
             unl() { return true },
@@ -541,9 +576,9 @@ function drawTreeBranch(num1, num2) {
     var start = document.getElementById("treeUpg_"+num1).getBoundingClientRect();
     var end = document.getElementById("treeUpg_"+num2).getBoundingClientRect();
     var x1 = start.left + (start.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y1 = start.top + (start.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-7);
+    var y1 = start.top + (start.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-25);
     var x2 = end.left + (end.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-7);
+    var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-25);
     tree_ctx.lineWidth=10;
     tree_ctx.beginPath();
     tree_ctx.strokeStyle = player.supernova.tree.includes(num2)?"#00520b":tmp.supernova.tree_afford[num2]?"#fff":"#333";
@@ -554,13 +589,14 @@ function drawTreeBranch(num1, num2) {
 
 function updateTreeHTML() {
     let req = ""
-    if (tmp.supernova.tree_choosed != "") req = TREE_UPGS.ids[tmp.supernova.tree_choosed].req?`<span class="${TREE_UPGS.ids[tmp.supernova.tree_choosed].req()?"green":"red"}">${TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc?" Require: "+(typeof TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc == "function"?TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc():TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc):""}</span>`:""
+    let t_ch = TREE_UPGS.ids[tmp.supernova.tree_choosed]
+    if (tmp.supernova.tree_choosed != "") req = t_ch.req?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Require: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
-        <span class="sky">[${tmp.supernova.tree_choosed}] ${TREE_UPGS.ids[tmp.supernova.tree_choosed].desc}</span><br>
-        <span>Cost: ${format(TREE_UPGS.ids[tmp.supernova.tree_choosed].cost,2)} Neutron star</span><br>
-        <span class="green">${TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc?"Currently: "+TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
+        <span class="sky">[${tmp.supernova.tree_choosed}] ${t_ch.desc}</span><br>
+        <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':'Neutron star'}</span><br>
+        <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `
     )
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {

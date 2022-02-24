@@ -1,6 +1,7 @@
 function E(x){return new Decimal(x)};
 
 function uni(x) { return E(1.5e56).mul(x) }
+function mlt(x) { return uni("ee9").pow(x) }
 
 Decimal.prototype.modular=Decimal.prototype.mod=function (other){
     other=E(other);
@@ -21,47 +22,52 @@ Decimal.prototype.softcap = function (start, power, mode) {
 }
 
 function calc(dt, dt_offline) {
-    player.mass = player.mass.add(tmp.massGain.mul(dt))
-    if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
-    if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
-    if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
-    if (player.atom.elements.includes(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
-    if (player.mass.gte(1.5e136)) player.chal.unl = true
-    for (let x = 0; x < RANKS.names.length; x++) {
-        let rn = RANKS.names[x]
-        if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
-    }
-    for (let x = 1; x <= UPGS.main.cols; x++) {
-        let id = UPGS.main.ids[x]
-        let upg = UPGS.main[x]
-        if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) if (upg[y].unl ? upg[y].unl() : true) upg.buy(y)
-    }
-    if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(dt))
-    if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
-    if (player.atom.elements.includes(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
-    if (player.atom.elements.includes(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
-    if (player.atom.elements.includes(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(dt/10))
-    if (player.atom.elements.includes(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if ((player.supernova.tree.includes("qol3") || player.md.upgs[x].gte(1)) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
-    if (player.bh.unl && tmp.pass) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(dt))
-    if (player.atom.unl && tmp.pass) {
-        player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(dt))
-        for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(dt))
-    }
-    if (player.supernova.tree.includes("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
-    player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(dt))
-    if (player.supernova.tree.includes("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(dt) : tmp.md.passive_rp_gain.mul(dt))
-    if (player.supernova.tree.includes("qol4")) STARS.generators.unl(true)
-    if (player.supernova.tree.includes("qol7")) {
-        for (let x = 0; x < BOSONS.upgs.ids.length; x++) {
-            let id = BOSONS.upgs.ids[x]
-            for (let y = 0; y < BOSONS.upgs[id].length; y++) BOSONS.upgs.buy(id,y)
-        }
-    }
-    RADIATION.autoBuyBoosts()
-    calcStars(dt)
-    calcSupernova(dt, dt_offline)
+    let du_gs = tmp.preQUGlobalSpeed.mul(dt)
 
-    if (player.supernova.tree.includes("qol6")) CHALS.exit(true)
+    if (tmp.pass) {
+        player.mass = player.mass.add(tmp.massGain.mul(du_gs))
+        if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
+        if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
+        if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
+        if (player.atom.elements.includes(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
+        if (player.mass.gte(1.5e136)) player.chal.unl = true
+        for (let x = 0; x < RANKS.names.length; x++) {
+            let rn = RANKS.names[x]
+            if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
+        }
+        for (let x = 1; x <= UPGS.main.cols; x++) {
+            let id = UPGS.main.ids[x]
+            let upg = UPGS.main[x]
+            if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) if (upg[y].unl ? upg[y].unl() : true) upg.buy(y)
+        }
+        if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(du_gs))
+        if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(du_gs))
+        if (player.atom.elements.includes(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(du_gs*tmp.atom.quarkGainSec))
+        if (player.atom.elements.includes(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
+        if (player.atom.elements.includes(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(du_gs).div(10))
+        if (player.atom.elements.includes(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if ((player.supernova.tree.includes("qol3") || player.md.upgs[x].gte(1)) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
+        if (player.bh.unl) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(du_gs))
+        if (player.atom.unl) {
+            player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(du_gs))
+            for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(du_gs))
+        }
+        if (player.supernova.tree.includes("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
+        player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(du_gs))
+        if (player.supernova.tree.includes("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
+        if (player.supernova.tree.includes("qol4")) STARS.generators.unl(true)
+        if (player.supernova.tree.includes("qol7")) {
+            for (let x = 0; x < BOSONS.upgs.ids.length; x++) {
+                let id = BOSONS.upgs.ids[x]
+                for (let y = 0; y < BOSONS.upgs[id].length; y++) BOSONS.upgs.buy(id,y)
+            }
+        }
+        RADIATION.autoBuyBoosts()
+        calcStars(du_gs)
+        calcSupernova(dt, dt_offline)
+        calcQuantum(dt, dt_offline)
+
+        if (player.supernova.tree.includes("qol6")) CHALS.exit(true)
+    }
 
     tmp.pass = true
 
@@ -201,6 +207,7 @@ function getPlayerData() {
         s.supernova.radiation.ds.push(E(0))
         s.supernova.radiation.bs.push(E(0),E(0))
     }
+    s.qu = getQUSave()
     return s
 }
 
@@ -264,12 +271,12 @@ function convertStringToDecimal() {
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
 }
 
-function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) }
+function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) && !quUnl() }
 
 function save(){
     if (cannotSave()) return
-    if (localStorage.getItem("testSave") == '') wipe()
-    localStorage.setItem("testSave",btoa(JSON.stringify(player)))
+    if (localStorage.getItem("IMR_QU_Save") == '') wipe()
+    localStorage.setItem("IMR_QU_Save",btoa(JSON.stringify(player)))
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 
@@ -333,7 +340,7 @@ function importy() {
 
 function loadGame(start=true) {
     wipe()
-    load(localStorage.getItem("testSave"))
+    load(localStorage.getItem("IMR_QU_Save"))
     setupHTML()
     
     if (start) {

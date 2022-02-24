@@ -489,6 +489,10 @@ const ELEMENTS = {
             desc: `Collapsed Star's effect is 25% stronger.`,
             cost: E('e3.75e10'),
         },
+        {
+            desc: `Softcap^3 from mass gain is 17.5% weaker.`,
+            cost: E('e4e11'),
+        },
     ],
     /*
     {
@@ -503,16 +507,19 @@ const ELEMENTS = {
     */
     getUnlLength() {
         let u = 4
-        if (player.supernova.times.gte(1)) u = 49+5
+        if (quUnl()) u = 77
         else {
-            if (player.chal.comps[8].gte(1)) u += 14
-            if (player.atom.elements.includes(18)) u += 3
-            if (MASS_DILATION.unlocked()) u += 15
-            if (STARS.unlocked()) u += 18
+            if (player.supernova.times.gte(1)) u = 49+5
+            else {
+                if (player.chal.comps[8].gte(1)) u += 14
+                if (player.atom.elements.includes(18)) u += 3
+                if (MASS_DILATION.unlocked()) u += 15
+                if (STARS.unlocked()) u += 18
+            }
+            if (player.supernova.post_10) u += 3
+            if (player.supernova.fermions.unl) u += 10
+            if (tmp.radiation.unl) u += 10
         }
-        if (player.supernova.post_10) u += 3
-        if (player.supernova.fermions.unl) u += 10
-        if (tmp.radiation.unl) u += 16
         return u
     },
 }

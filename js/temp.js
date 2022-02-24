@@ -40,6 +40,12 @@ function resetTemp() {
                 eff: [],
             },
         },
+
+        qu: {
+            chroma_gain: [],
+            chroma_eff: [],
+            mul_reached: [],
+        },
     }
     for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
     for (let i = 0; i < 19; i++) {
@@ -298,10 +304,14 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+
+    updateQuantumTemp()
+
     updateRadiationTemp()
     updateFermionsTemp()
     updateBosonsTemp()
     updateSupernovaTemp()
+
     updateElementsTemp()
     updateMDTemp()
     updateStarsTemp()
@@ -314,4 +324,6 @@ function updateTemp() {
     updateTickspeedTemp()
     updateRanksTemp()
     updateMassTemp()
+
+    tmp.preQUGlobalSpeed = FORMS.getPreQUGlobalSpeed()
 }

@@ -39,6 +39,7 @@ const BOSONS = {
     effect: {
         pos_w(x) {
             let a = x.add(1).pow(2e4)
+            if (player.supernova.tree.includes("qu2")) a = a.pow(x.add(1).log10().add(1).pow(4/3))
             let b = expMult(x.add(1),2/3,2)
             return [a,b]
         },
@@ -185,7 +186,7 @@ function updateBosonsTemp() {
 function updateBosonsHTML() {
     for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
-        tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.bosons.gain[id]))
+        tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.bosons.gain[id].mul(tmp.preQUGlobalSpeed)))
         if (tmp.bosons.effect[id]) for (let y in tmp.bosons.effect[id]) tmp.el[id+"_eff"+y].setTxt(format(tmp.bosons.effect[id][y]))
 
         if (BOSONS.upgs.ids.includes(id)) for (let y in BOSONS.upgs[id]) {

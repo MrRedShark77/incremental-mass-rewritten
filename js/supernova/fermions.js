@@ -22,14 +22,20 @@ const FERMIONS = {
             SUPERNOVA.reset(false,false,false,true)
         }
     },
+    fp() {
+        let x = E(1)
+        if (player.supernova.tree.includes("qu1")) x = x.mul(1.15)
+        return x
+    },
     getTierScaling(t, bulk=false) {
         let x = t
+        let fp = tmp.fermions.fp
         if (bulk) {
             if (x.sub(1).gte(getScalingStart('super',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
                 let exp = E(2.5).pow(power)
-                x = t.mul(start.pow(exp.sub(1))).root(exp).add(1).floor()
+                x = t.mul(start.pow(exp.sub(1))).root(exp).mul(fp).add(1).floor()
             }
             if (x.sub(1).gte(getScalingStart('hyper',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
@@ -39,7 +45,7 @@ const FERMIONS = {
                 let power2 = getScalingPower('hyper',"fTier")
                 let exp2 = E(4).pow(power2)
                 x = t.mul(start.pow(exp.sub(1))).root(exp)
-                .mul(start2.pow(exp2.sub(1))).root(exp2).add(1).floor()
+                .mul(start2.pow(exp2.sub(1))).root(exp2).mul(fp).add(1).floor()
             }
             if (x.sub(1).gte(getScalingStart('ultra',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
@@ -53,14 +59,14 @@ const FERMIONS = {
                 let exp3 = E(6).pow(power3)
                 x = t.mul(start.pow(exp.sub(1))).root(exp)
                 .mul(start2.pow(exp2.sub(1))).root(exp2)
-                .mul(start3.pow(exp3.sub(1))).root(exp3).add(1).floor()
+                .mul(start3.pow(exp3.sub(1))).root(exp3).mul(fp).add(1).floor()
             }
         } else {
             if (t.sub(1).gte(getScalingStart('super',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
                 let power = getScalingPower('super',"fTier")
                 let exp = E(2.5).pow(power)
-                x = t.pow(exp).div(start.pow(exp.sub(1))).floor()
+                x = t.div(fp).pow(exp).div(start.pow(exp.sub(1))).floor()
             }
             if (t.sub(1).gte(getScalingStart('hyper',"fTier"))) {
                 let start = getScalingStart('super',"fTier")
@@ -69,7 +75,7 @@ const FERMIONS = {
                 let start2 = getScalingStart('hyper',"fTier")
                 let power2 = getScalingPower('hyper',"fTier")
                 let exp2 = E(4).pow(power2)
-                x = t.pow(exp2).div(start2.pow(exp2.sub(1)))
+                x = t.div(fp).pow(exp2).div(start2.pow(exp2.sub(1)))
                 .pow(exp).div(start.pow(exp.sub(1))).floor()
             }
             if (t.sub(1).gte(getScalingStart('ultra',"fTier"))) {
@@ -83,7 +89,7 @@ const FERMIONS = {
                 let power3 = getScalingPower('ultra',"fTier")
                 let exp3 = E(6).pow(power3)
                 
-                x = t.pow(exp3).div(start3.pow(exp3.sub(1)))
+                x = t.div(fp).pow(exp3).div(start3.pow(exp3.sub(1)))
                 .pow(exp2).div(start2.pow(exp2.sub(1)))
                 .pow(exp).div(start.pow(exp.sub(1))).floor()
             }
@@ -417,6 +423,7 @@ function setupFermionsHTML() {
 
 function updateFermionsTemp() {
     tmp.fermions.ch = player.supernova.fermions.choosed == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed[0]),Number(player.supernova.fermions.choosed[1])]
+    tmp.fermions.fp = FERMIONS.fp()
     for (i = 0; i < 2; i++) {
         tmp.fermions.gains[i] = FERMIONS.gain(i)
 
@@ -432,7 +439,7 @@ function updateFermionsTemp() {
 
 function updateFermionsHTML() {
     for (i = 0; i < 2; i++) {
-        tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i]))
+        tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))
         let unls = FERMIONS.getUnlLength(i)
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let unl = x < unls
