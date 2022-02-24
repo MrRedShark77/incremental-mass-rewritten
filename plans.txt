@@ -1,0 +1,33 @@
+TO-DO LIST:
+1: A new layer: Exotic
+	1a. Axions: (WIP)
+		Starting off with a grid of boosts, coming with upgrades on each side.
+		Each upgrade gives levels to boosts, but increase the costs and have level limits.
+		1a-i. Upgrades:
+			Row Buildup: One upgrade gives levels to more boosts in a row, and wrap to next row.
+			Link Upgrades: One gives levels to other Axion boosts.
+			Cheapen Upgrades: A upgrade in a row cheapens other upgrades in a row.
+			Turnback Upgrades: Levels cheapen upgrades.
+	1b. Chroma Tree:
+		A grid system which lines grow from things by iterating.
+		There are 3 kinds of lines and 3 anti-kinds which iterate off from normal ones.
+		These lines require iterations and cost things, and activate things on touch.
+	1c. Quantum Foam:
+		Connectable products?
+	1d. Spectra Generators:
+		You get Spectra Generators by fusing from Quantum Foam resources.
+		Spectra Generators generate Chroma which is used to mix for both kinds from Chroma Tree.
+		Spectra Generators boost stuff by upgrades, and boosted by Exotic Matter.
+2: Another new layer: Strange
+	2a. Blueprint:
+		Coding with groups.
+	2b. Primordium:
+		???
+	2c. ???:
+		Mirror Mechanic?
+3: Another Post-Strange layer or a new game?
+	(Maybe called Hex, the High Ranked)
+	(or Strange, the Strangely Matter?)
+	(or Lightning / Cloudy)
+
+B: Add a upgrade: No scalings to Tickspeed, except scales faster.

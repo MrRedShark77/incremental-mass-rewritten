@@ -422,7 +422,7 @@ const CHALS = {
 		pow: E(1.4),
 		start: uni("e47250"),
 		effect(x) {
-            return E(1).div(x.div(25).add(1).sqrt())
+            return E(1).div(x.div(25).add(1).pow(0.35))
 		},
 		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
 	},
