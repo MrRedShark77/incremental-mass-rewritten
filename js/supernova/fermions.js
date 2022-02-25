@@ -160,7 +160,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1).softcap(5,0.75,0)
+                    let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1).softcap(5,0.75,0).softcap(449,0.25,0)
                     return x
                 },
                 desc(x) {
@@ -368,7 +368,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `BH Condensers & Cosmic Rays are ${format(x)}x cheaper`
+                    return `Pre-Meta BH Condensers & Cosmic Rays are ${format(x)}x cheaper`
                 },
                 inc: "Tickspeed Power",
                 cons: "Radiation Boosts are disabled",

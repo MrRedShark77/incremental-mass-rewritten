@@ -30,6 +30,7 @@ const QUANTUM = {
         let keep = ['qol1','qol2','qol3','qol4','qol5','qol6']
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
         if (tmp.qu.mul_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7')
+        if (tmp.qu.mul_reached[3]) keep.push('qol8','qol9','unl1')
 
         let save_keep = []
         for (let x in keep) if (player.supernova.tree.includes(keep[x])) save_keep.push(keep[x])
@@ -97,6 +98,7 @@ const QUANTUM = {
         [E(1), `You start with QoL (qol1-6), Bosons & Fermions unlocked.`],
         [E(2), `Pre-Quantum Supernova tree will be without the requirement. Pre-Quantum global speed is increased by 10x.`],
         [E(3), `You start with the pre-Quantum tree of Challenges, tree [c, qol7] unlocked.`],
+        [E(5), `You start with QoL (qol8-9 & unl1), Radiation unlocked.`],
     ],
 }
 
@@ -125,6 +127,8 @@ function calcQuantum(dt, dt_offline) {
         player.qu.bp = player.qu.bp.add(tmp.qu.bpGain.mul(dt))
         for (let x = 0; x < CHROMA_LEN; x++) player.qu.chroma[x] = player.qu.chroma[x].add(tmp.qu.chroma_gain[x].mul(dt))
     }
+
+    if (player.supernova.tree.includes("qu_qol1")) for (let x = 0; x < tmp.supernova.auto_tree.length; x++) TREE_UPGS.buy(tmp.supernova.auto_tree[x], true)
 }
 
 function updateQuantumTemp() {

@@ -29,6 +29,8 @@ const SCALE_START = {
 		fTier: E(100),
 	},
 	meta: {
+		bh_condenser: E(5e6),
+		gamma_ray: E(5e5),
 		rank: E(1e4),
 		tickspeed: E(5e4),
 		supernova: E(100),

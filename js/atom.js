@@ -57,7 +57,7 @@ const ATOM = {
         effect() {
             let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75)
             if (!player.atom.elements.includes(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
-            return x.softcap(1e10,0.25,0).floor()
+            return x.softcap(1e10,0.1,0).floor()
         },
     },
     gamma_ray: {
@@ -124,19 +124,19 @@ const ATOM = {
         },
         powerEffect: [
             x=>{
-                let a = x.add(1).pow(3)
+                let a = x.add(1).pow(3).softcap("ee14",0.9,2)
                 let b = player.atom.elements.includes(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1).pow(2)
+                let a = x.add(1).pow(2).softcap("ee14",0.9,2)
                 let b = player.atom.elements.includes(19)
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1)
+                let a = x.add(1).softcap("ee14",0.9,2)
                 let b = player.atom.elements.includes(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
@@ -250,6 +250,45 @@ function updateAtomTemp() {
 			.root(exp2)
             .mul(start3.pow(exp3.sub(1)))
 			.root(exp3).mul(fp)
+			.add(1)
+			.floor();
+	}
+    if (scalingActive("gamma_ray", player.atom.gamma_ray.max(tmp.atom.gamma_ray_bulk), "meta")) {
+		let start = getScalingStart("super", "gamma_ray");
+		let power = getScalingPower("super", "gamma_ray");
+        let start2 = getScalingStart("hyper", "gamma_ray");
+		let power2 = getScalingPower("hyper", "gamma_ray");
+        let start3 = getScalingStart("ultra", "gamma_ray");
+		let power3 = getScalingPower("ultra", "gamma_ray");
+		let exp = E(2).pow(power);
+        let exp2 = E(4).pow(power2);
+        let exp3 = E(6).pow(power3);
+        let start4 = getScalingStart("meta", "gamma_ray");
+		let power4 = getScalingPower("meta", "gamma_ray");
+		let exp4 = E(1.001).pow(power4);
+		tmp.atom.gamma_ray_cost =
+			E(2).pow(
+                exp4.pow(player.atom.gamma_ray.sub(start4)).mul(start4).div(fp)
+                .pow(exp3)
+			    .div(start3.pow(exp3.sub(1)))
+                .pow(exp2)
+			    .div(start2.pow(exp2.sub(1)))
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+            ).floor()
+        tmp.atom.gamma_ray_bulk = player.atom.points
+            .max(1)
+            .log(2)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
+            .mul(start3.pow(exp3.sub(1)))
+			.root(exp3).mul(fp)
+            .div(start4)
+			.max(1)
+			.log(exp4)
+			.add(start4)
 			.add(1)
 			.floor();
 	}

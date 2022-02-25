@@ -1,5 +1,5 @@
 const TREE_IDS = [
-    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
+    ["","qu_qol1","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
     ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
     ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
@@ -30,8 +30,8 @@ const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
 'fn5','fn6']
 
 const TREE_UPGS = {
-    buy(x) {
-        if (tmp.supernova.tree_choosed == x && tmp.supernova.tree_afford[x]) {
+    buy(x, auto=false) {
+        if ((tmp.supernova.tree_choosed == x || auto) && tmp.supernova.tree_afford[x]) {
             if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
             else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
             player.supernova.tree.push(x)
@@ -473,7 +473,7 @@ const TREE_UPGS = {
         qu0: {
             unl() { return quUnl() },
             qf: true,
-            desc: `Good luck with new era!.`,
+            desc: `Good luck with new era!`,
             cost: E(0),
         },
         qu1: {
@@ -493,6 +493,14 @@ const TREE_UPGS = {
             branch: ["qu0"],
             desc: `From BH the formula's softcap is 30% weaker.`,
             cost: E(1),
+        },
+        qu_qol1: {
+            qf: true,
+            unl() { return quUnl() },
+            req() { return player.qu.times.gte(4) },
+            reqDesc: `Quantumed 4 times.`,
+            desc: `You can now automatically purchase supernova tree except with cost of quantum foam.`,
+            cost: E(5),
         },
         /*
         x: {

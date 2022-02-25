@@ -26,7 +26,7 @@ const TABS = {
             { id: "Black Hole", unl() { return player.bh.unl }, style: "bh" },
             { id: "Atomic Generator", unl() { return player.atom.unl }, style: "atom" },
             { id: "Stars", unl() { return STARS.unlocked() } },
-            { id: "Indescribable Matter", unl() { return STARS.unlocked() } },
+            { id: "Indescribable Matter", unl() { return quUnl() } },
         ],
         1: [
             { id: "Ranks Rewards" },
