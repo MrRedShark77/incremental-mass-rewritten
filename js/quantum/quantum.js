@@ -2,7 +2,7 @@ const QUANTUM = {
     gain() {
         let x = player.mass.max(1).log10().div(1e13).max(0).pow(1.5)
         if (x.lt(1)) return E(0)
-        return x
+        return x.floor()
     },
     enter() {
         if (tmp.qu.gain.gte(1)) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?confirm("ARE YOU SURE ABOUT IT???"):false) {
