@@ -19,7 +19,7 @@ const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu']
 const FORMS = {
     getPreQUGlobalSpeed() {
         let x = E(1)
-        if (tmp.qu.mul_reached[1]) x = x.mul(10)
+        if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)
         return x
     },

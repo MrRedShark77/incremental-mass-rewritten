@@ -7,6 +7,7 @@ const CHROMA = {
     gain(i) {
         if (!player.qu.chr_get.includes(i)) return E(0)
         let x = E(1)
+        if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.root(2))
         return x
     },
     names: [

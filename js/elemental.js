@@ -493,6 +493,10 @@ const ELEMENTS = {
             desc: `Softcap^3 from mass gain is 17.5% weaker.`,
             cost: E('e4e11'),
         },
+        {
+            desc: `Meta-Supernova scales 20% weaker.`,
+            cost: E('e3.5e12'),
+        },
     ],
     /*
     {
@@ -507,7 +511,7 @@ const ELEMENTS = {
     */
     getUnlLength() {
         let u = 4
-        if (quUnl()) u = 77
+        if (quUnl()) u = 77+1
         else {
             if (player.supernova.times.gte(1)) u = 49+5
             else {

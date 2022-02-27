@@ -236,8 +236,8 @@ function getScalingPower(type, name) {
 		}
 	}
 	if (type=="meta") {
-		if (name=='tickspeed') {
-			
+		if (name=='supernova') {
+			if (player.atom.elements.includes(78)) power = power.mul(0.8)
 		}
 	}
 	return power

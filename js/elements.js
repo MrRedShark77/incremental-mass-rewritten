@@ -316,11 +316,19 @@ function updateBlackHoleHTML() {
 
 function updateOptionsHTML() {
 	for (let x = 0; x < CONFIRMS.length; x++) {
-		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x] == "sn"?player.supernova.times.gte(1):player[CONFIRMS[x]].unl)
+		let unl = 
+		CONFIRMS[x] == "sn"
+		?player.supernova.times.gte(1)
+		:CONFIRMS[x] == "qu"
+		?player.qu.times.gte(1)
+		:player[CONFIRMS[x]].unl
+
+		tmp.el["confirm_div_"+x].setDisplay(unl)
 		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 	}
 	tmp.el.total_time.setTxt(formatTime(player.time))
 	tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
+	tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
 }
 
 function updateHTML() {

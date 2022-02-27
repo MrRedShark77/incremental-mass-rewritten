@@ -6,8 +6,10 @@ const SUPERNOVA = {
             if (!force && !fermion) {
                 player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
             }
-            tmp.pass = true
-            this.doReset()
+            if (post?!player.supernova.tree.includes("qu_qol4"):true) {
+                tmp.pass = true
+                this.doReset()
+            }
         }
     },
     doReset() {
@@ -250,16 +252,16 @@ function updateSupernovaTemp() {
         let t = TREE_UPGS.ids[id]
 
         let branch = t.branch||""
-        let unl = (t.unl?t.unl():true) || player.supernova.tree.includes(id)
+        let unl = (t.unl?t.unl():true)
         let req = t.req?t.req():true
-        if (tmp.qu.mul_reached[1] && NO_REQ_QU.includes(id)) req = true
+        if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
         let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !player.supernova.tree.includes(id) && req
         if (branch != "") for (let x = 0; x < branch.length; x++) if (!player.supernova.tree.includes(branch[x])) {
             unl = false
             can = false
             break
         }
-        tmp.supernova.tree_unlocked[id] = unl
+        tmp.supernova.tree_unlocked[id] = unl || player.supernova.tree.includes(id)
         tmp.supernova.tree_afford[id] = can
         if (t.effect) tmp.supernova.tree_eff[id] = t.effect()
     }

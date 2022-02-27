@@ -2,6 +2,8 @@ var tmp = {}
 
 function resetTemp() {
     tmp = {
+        tree_time: 0,
+
         sn_tab: 0,
         tab: 0,
         stab: [],
@@ -45,7 +47,7 @@ function resetTemp() {
         qu: {
             chroma_gain: [],
             chroma_eff: [],
-            mul_reached: [],
+            mil_reached: [],
         },
     }
     for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)

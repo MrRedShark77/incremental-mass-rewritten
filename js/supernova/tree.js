@@ -1,13 +1,13 @@
 const TREE_IDS = [
-    ["","qu_qol1","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
-    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
-    ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
+    ["qu_qol2","qu_qol1","qu_qol6","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
+    ["qu_qol3","qu_qol4","qu_qol5","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
+    ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
     ["","","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","fn8","","fn9","fn1","fn5","","","","","","","",""],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    ["","","","","","","","","","qf1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -470,6 +470,17 @@ const TREE_UPGS = {
             effDesc(x) { return format(x)+"x" },
         },
 
+        qf1: {
+            unl() { return quUnl() },
+            desc: `Gain more Quantum Foams based on Supernovas`,
+            cost: E(1e290),
+            effect() {
+                let x = player.supernova.times.root(2).div(10).add(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+
         qu0: {
             unl() { return quUnl() },
             qf: true,
@@ -500,7 +511,68 @@ const TREE_UPGS = {
             req() { return player.qu.times.gte(4) },
             reqDesc: `Quantumed 4 times.`,
             desc: `You can now automatically purchase supernova tree except with cost of quantum foam.`,
-            cost: E(5),
+            cost: E(3),
+        },
+        qu_qol2: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 0; x < 6; x++) if (player.supernova.fermions.tiers[0][x].gte(1)) return false
+                return player.supernova.times.gte(81)
+            },
+            reqDesc: `Become 81 Supernovas without getting tiers from U-Quark per Quantum run.`,
+            desc: `Keep U-Quark Tiers on going Quantum.`,
+            cost: E(4),
+        },
+        qu_qol3: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 1; x <= 4; x++) if (player.chal.comps[x].gte(1)) return false
+                return player.mass.gte(mlt(1e4))
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(1e4))} of mass without completing Challenges 1-4 per Quantum run.` },
+            desc: `You can now automatically complete Challenges 1-4 any Challenge.`,
+            cost: E(4),
+        },
+        qu_qol4: {
+            qf: true,
+            branch: ["qu_qol1"],
+            desc: `You can now automatically become a supernova, it no longer resets anything.`,
+            cost: E(4),
+        },
+        qu_qol5: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 5; x <= 8; x++) if (player.chal.comps[x].gte(1) && x != 7) return false
+                return player.mass.gte(mlt(1.35e4))
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(1.35e4))} of mass without completing Challenges 5, 6 & 8 per Quantum run.` },
+            desc: `You can now automatically complete Challenges 5-8 any Challenge.`,
+            cost: E(4),
+        },
+        qu_qol6: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 0; x < 6; x++) if (player.supernova.fermions.tiers[1][x].gte(1)) return false
+                return player.supernova.times.gte(42)
+            },
+            reqDesc: `Become 42 Supernovas without getting tiers from U-Lepton per Quantum run.`,
+            desc: `Keep U-Lepton Tiers on going Quantum.`,
+            cost: E(4),
+        },
+        qu_qol7: {
+            qf: true,
+            branch: ["qu_qol3","qu_qol5"],
+            req() {
+                for (let x = 9; x <= 12; x++) if (player.chal.comps[x].gte(1)) return false
+                return player.mass.gte(mlt(5e3)) && FERMIONS.onActive("05")
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(5e3))} of mass without completing Challenges 9-12 per Quantum run, while in [Bottom].` },
+            desc: `Keep challenge 9-12 completions on going Quantum.`,
+            cost: E(25),
         },
         /*
         x: {
@@ -564,7 +636,7 @@ function drawTree() {
 	for (let x in tmp.supernova.tree_had) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||[]
-        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) {
+        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) if (tmp.supernova.tree_unlocked[branch[y]]) {
 			drawTreeBranch(branch[y], id)
 		}
 	}
@@ -580,6 +652,10 @@ function treeCanvas() {
     }
 }
 
+const TREE_ANIM = ["Circle", "Square", "OFF"]
+const CR = 5
+const SR = 7.0710678118654755
+
 function drawTreeBranch(num1, num2) {
     var start = document.getElementById("treeUpg_"+num1).getBoundingClientRect();
     var end = document.getElementById("treeUpg_"+num2).getBoundingClientRect();
@@ -589,10 +665,34 @@ function drawTreeBranch(num1, num2) {
     var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-25);
     tree_ctx.lineWidth=10;
     tree_ctx.beginPath();
-    tree_ctx.strokeStyle = player.supernova.tree.includes(num2)?"#00520b":tmp.supernova.tree_afford[num2]?"#fff":"#333";
+    let color = TREE_UPGS.ids[num2].qf?"#39FF49":"#00520b"
+    let color2 = TREE_UPGS.ids[num2].qf?"#009C15":"#fff"
+    tree_ctx.strokeStyle = player.supernova.tree.includes(num2)?color:tmp.supernova.tree_afford[num2]?"#fff":"#333";
     tree_ctx.moveTo(x1, y1);
     tree_ctx.lineTo(x2, y2);
     tree_ctx.stroke();
+
+    if (player.options.tree_animation != 2) {
+        tree_ctx.fillStyle = player.supernova.tree.includes(num2)?color2:"#888";
+        let tt = [tmp.tree_time, (tmp.tree_time+1)%3, (tmp.tree_time+2)%3]
+        for (let i = 0; i < 3; i++) {
+            let [t, dx, dy] = [tt[i], x2-x1, y2-y1]
+            let [x, y] = [x1+dx*t/3, y1+dy*t/3]
+            tree_ctx.beginPath();
+            if (player.options.tree_animation == 1) {
+                let a = Math.atan2(y1-y2,dx)-Math.PI/4
+                tree_ctx.moveTo(x+SR*Math.cos(a), y-SR*Math.sin(a))
+                for (let j = 1; j <= 3; j++) tree_ctx.lineTo(x+SR*Math.cos(a+Math.PI*j/2), y-SR*Math.sin(a+Math.PI*j/2))
+            } else if (player.options.tree_animation == 0) {
+                tree_ctx.arc(x, y, CR, 0, Math.PI*2, true);
+            }
+            tree_ctx.fill();
+        }
+    }
+}
+
+function changeTreeAnimation() {
+    player.options.tree_animation = (player.options.tree_animation + 1) % 3;
 }
 
 function updateTreeHTML() {
@@ -611,6 +711,6 @@ function updateTreeHTML() {
         let id = tmp.supernova.tree_had[x]
         let unl = tmp.supernova.tree_unlocked[id]
         tmp.el["treeUpg_"+id].setVisible(unl)
-        if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, locked: !tmp.supernova.tree_afford[id], bought: player.supernova.tree.includes(id), choosed: id == tmp.supernova.tree_choosed})
+        if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, locked: !tmp.supernova.tree_afford[id], bought: player.supernova.tree.includes(id), choosed: id == tmp.supernova.tree_choosed})
     }
 }

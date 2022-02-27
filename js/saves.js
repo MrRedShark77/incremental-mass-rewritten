@@ -67,12 +67,18 @@ function calc(dt, dt_offline) {
         calcQuantum(dt, dt_offline)
 
         if (player.supernova.tree.includes("qol6")) CHALS.exit(true)
+        if (CHALS.inChal(0)) {
+            if (player.supernova.tree.includes("qu_qol3")) for (let x = 1; x <= 4; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
+            if (player.supernova.tree.includes("qu_qol5")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
+        }
     }
 
     tmp.pass = true
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
     player.time += dt
+
+    tmp.tree_time = (tmp.tree_time+dt_offline) % 3
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
@@ -185,7 +191,8 @@ function getPlayerData() {
         tickspeed: E(0),
         options: {
             font: 'Verdana',
-            notation: 'sc'
+            notation: 'sc',
+            tree_animation: 0,
         },
         confirms: {},
         offline: {
@@ -364,6 +371,6 @@ function loadGame(start=true) {
         setInterval(loop, 50)
         setInterval(updateStarsScreenHTML, 50)
         treeCanvas()
-        setInterval(drawTreeHTML, 50)
+        setInterval(drawTreeHTML, 10)
     }
 }

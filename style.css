@@ -344,7 +344,12 @@ button {
 	border-color: #171717;
 }
 
-.btn_tree.bought {
+.btn_tree.qu_tree.bought {
+	border-color: #39FF49;
+	box-shadow: 0px 0px 10px 0px #39ff4a7e;
+}
+
+.btn_tree:not(.qu_tree).bought {
 	border-color: #00520b;
 }
 
