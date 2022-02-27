@@ -254,7 +254,7 @@ const FORMS = {
             let x = player.mainUpg.atom.includes(12)
             ?player.bh.mass.add(1).pow(1.25)
             :player.bh.mass.add(1).root(4)
-            return x.softcap("ee14",0.95,2)
+            return x//.softcap("ee14",0.95,2)
         },
         condenser: {
             autoSwitch() { player.bh.autoCondenser = !player.bh.autoCondenser },
@@ -439,8 +439,8 @@ const UPGS = {
                 let step = E(2)
                 if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
                 step = step.pow(tmp.upgs.mass[3]?tmp.upgs.mass[3].eff.eff:1)
-                let ret = step.mul(x.add(tmp.upgs.mass[2].bonus)).add(1)
-                return {step: step, eff: ret.softcap("ee14",0.95,2)}
+                let ret = step.mul(x.add(tmp.upgs.mass[2].bonus)).add(1)//.softcap("ee14",0.95,2)
+                return {step: step, eff: ret}
             },
             effDesc(eff) {
                 return {
@@ -472,7 +472,7 @@ const UPGS = {
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
-                let ret = step.mul(x.add(tmp.upgs.mass[3].bonus)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0).softcap(1e14,0.1,0)
+                let ret = step.mul(x.add(tmp.upgs.mass[3].bonus)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)//.softcap(1e14,0.1,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
@@ -589,7 +589,7 @@ const UPGS = {
                 cost: E(1e72),
                 effect() {
                     let ret = player.rp.points.add(1).root(10).softcap('e4000',0.1,0)
-                    return ret.softcap("ee13",0.9,2)
+                    return ret//.softcap("ee13",0.9,2)
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"+(x.gte("e4000")?" <span class='soft'>(softcapped)</span>":"")
@@ -757,7 +757,7 @@ const UPGS = {
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
-                    return ret.softcap("ee13",0.9,2)
+                    return ret//.softcap("ee13",0.9,2)
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"

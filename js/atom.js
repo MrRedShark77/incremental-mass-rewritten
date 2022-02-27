@@ -124,19 +124,19 @@ const ATOM = {
         },
         powerEffect: [
             x=>{
-                let a = x.add(1).pow(3).softcap("ee14",0.9,2)
+                let a = x.add(1).pow(3)//.softcap("ee14",0.9,2)
                 let b = player.atom.elements.includes(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1).pow(2).softcap("ee14",0.9,2)
+                let a = x.add(1).pow(2)//.softcap("ee14",0.9,2)
                 let b = player.atom.elements.includes(19)
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1).softcap("ee14",0.9,2)
+                let a = x.add(1)//.softcap("ee14",0.9,2)
                 let b = player.atom.elements.includes(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
