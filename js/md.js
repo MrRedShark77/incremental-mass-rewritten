@@ -133,7 +133,7 @@ const MASS_DILATION = {
                 cost(x) { return E(5).pow(x).mul('1.50001e536') },
                 bulk() { return player.md.mass.gte('1.50001e536')?player.md.mass.div('1.50001e536').max(1).log(5).add(1).floor():E(0) },
                 effect(x) {
-                    return E(2).pow(x).softcap(1e25,2/3,0)
+                    return E(2).pow(x).softcap(1e25,2/3,0)//.softcap("ee12",0.8,2)
                 },
                 effDesc(x) { return format(x)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
             },{

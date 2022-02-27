@@ -280,7 +280,7 @@ const ELEMENTS = {
             cost: E(1e303),
             effect() {
                 let x = player.stars.points.add(1).pow(0.5)
-                return x
+                return x.softcap("ee12",0.8,2)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -293,7 +293,7 @@ const ELEMENTS = {
             cost: E('e325'),
             effect() {
                 let x = player.stars.points.add(1).pow(1/3)
-                return x
+                return x.softcap("ee11",0.8,2)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -310,7 +310,7 @@ const ELEMENTS = {
             cost: E('e420'),
             effect() {
                 let x = player.stars.points.add(1).pow(0.15).min(1e20)
-                return x
+                return x.softcap("ee12",0.8,2)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -439,7 +439,7 @@ const ELEMENTS = {
             cost: E('e1.7e6'),
             effect() {
                 let x = player.stars.points.add(1)
-                return x
+                return x.softcap("ee12",0.8,2)
             },
             effDesc(x) { return format(x)+"x" },
         },

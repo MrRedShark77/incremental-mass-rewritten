@@ -99,7 +99,7 @@ const FORMS = {
         return s
     },
     massSoftPower4() {
-        let p = E(0.05)
+        let p = E(0.1)
         return p
     },
     tickspeed: {
