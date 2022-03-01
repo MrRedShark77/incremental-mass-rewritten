@@ -1,6 +1,6 @@
 const SUPERNOVA = {
-    reset(force=false, chal=false, post=false, fermion=false) {
-        if (!chal && !post && !fermion) if ((force && player.confirms.sn)?!confirm("Are you sure to reset without being Supernova?"):false) return
+    reset(force=false, chal=false, post=false, fermion=false, auto=false) {
+        if (!chal && !post && !fermion && !auto) if ((force && player.confirms.sn)?!confirm("Are you sure to reset without being Supernova?"):false) return
 		if (tmp.supernova.reached && !force && !fermion && hasTreeUpg("qol8") && player.supernova.auto.toggle) {
 			updateSupernovaAutoTemp()
 			player.supernova.auto.on = -1

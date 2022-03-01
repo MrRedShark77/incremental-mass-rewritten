@@ -181,7 +181,7 @@ const FORMATS = {
                 return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
             }
             let m = ex.div(E(10).pow(e))
-            return (e.log10().gte(9)?'':m.toFixed(4))+'e'+this.format(e,0)
+            return (e.log10().gte(4)?'':m.toFixed(4))+'e'+this.format(e,0)
         }
       }
     },
@@ -200,7 +200,7 @@ const FORMATS = {
             return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
           }
           let m = ex.div(E(1000).pow(e.div(3).floor()))
-          return (e.log10().gte(9)?'':m.toFixed(E(4).sub(e.sub(e.div(3).floor().mul(3)))))+'e'+this.format(e.div(3).floor().mul(3),0)
+          return (e.log10().gte(4)?'':m.toFixed(E(4).sub(e.sub(e.div(3).floor().mul(3)))))+'e'+this.format(e.div(3).floor().mul(3),0)
         }
       },
     },
@@ -211,7 +211,7 @@ const FORMATS = {
         if (e.lt(63)) return format(ex,acc,"st")
         else {
           let m = ex.div(E(10).pow(e))
-          return e.gte(1e3) ? (e.gte(1e9)?"":m.toFixed(4))+"e"+this.format(e,0) : format(ex,acc,"sc")
+          return e.gte(1e4) ? (e.gte(1e4)?"":m.toFixed(4))+"e"+this.format(e,0) : format(ex,acc,"sc")
         }
       }
     },

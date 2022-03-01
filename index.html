@@ -122,7 +122,8 @@
             </div>
         </div><div id="stab_frame5_2">
             Note: Choosing any fermion will reset without being Supernova!<br><br>
-            <button class="btn" onclick="FERMIONS.backNormal()" id="f_normal">Back to Normal</button><br><br>
+            <button class="btn" onclick="FERMIONS.backNormal()" id="f_normal">Back to Normal</button>
+            <button class="btn" onclick="player.supernova.fermions.dual=!player.supernova.fermions.dual" id="f_dual">Dual: ON</button><br><br>
             <div class="fermions">
                 <div class="f_quark sub_f">
                     You have <span id="fquarkAmt">X</span> U-Quark<br><br>
@@ -143,7 +144,7 @@
 		<button class="btn" onclick="EXOTIC.reset(true)" style="position: absolute; top: 5px; right: 5px">Restart</button>
 		<button class="btn" onclick="TABS.choose(0)" style="position: absolute; top: 5px; left: 5px">Close</button>
 		<div class="resources sml yellow" style="position: absolute; left: 5px; top: 65px; height: 2px; width: 50%">
-			<img src="images/exotic.png" onclick="EXOTIC.reset()" style="cursor: pointer;">
+			<img src="images/ext.png" onclick="EXOTIC.reset()" style="cursor: pointer;">
 			<span style="margin-left: 5px; text-align: left;" id="extAmt2">X</span>
 		</div>
 		<div style="position: absolute; left: 25%; top: 24px; height: 2px; width: 50%; background: #ff3f00">
@@ -173,7 +174,7 @@
                     <div class="resources sml">
                         <img class="res_img" src="images/mass.png">
                         <span style="margin-left: 5px; text-align: left;" id="mass">X</span>
-                    </div><div class="resources sml red">
+                    </div><div class="resources sml red" id="rp_div">
                         <img class="res_img" src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="rpAmt">X</span>
                     </div><div class="resources sml yellow" id="dm_div">
@@ -201,7 +202,7 @@
                         <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
                     </div>
                     <div class="resources sml scarlet" id="ext_div">
-                        <img class="res_img" src="images/exotic.png" onclick="EXOTIC.reset()" onmousemove="FORMS.reset_msg.set('ext')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                        <img class="res_img" src="images/ext.png" onclick="EXOTIC.reset()" onmousemove="FORMS.reset_msg.set('ext')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="extAmt">X</span>
                     </div>
                 </div>

@@ -199,7 +199,7 @@ const RADIATION = {
         },{
             title: `Meta-Tickspeed Boost`,
             eff(b) {
-                let x = E(1.1).pow(b).softcap(20,3,4)
+                let x = E(1.1).pow(b).softcap(20,3,3)
                 return x
             },
             desc(x) { return `Meta-Tickspeed starts ${format(x)}x later`+getSoftcapHTML(x,20) },

@@ -19,7 +19,7 @@ let EXOTIC = {
 		if (!force) {
 			if (player.chal.comps[12].eq(0)) return
 			player.ext.amt = player.ext.amt.add(EXOTIC.gain())
-		}
+		} else if (player.confirms.ext && !confirm("Are you sure?")) return
 		EXOTIC.doReset()
 	},
 	doReset() {
@@ -43,7 +43,7 @@ let EXOTIC = {
 		player.supernova.stars = E(0)
 		if (!future) player.supernova.tree = list_keep
 
-		for (let c = 1; c <= 12; c++) player.chal.comps[c] = E(hasTreeUpg("qol_ext4") && c <= 8 ? 50 : 0)
+		for (let c = 1; c <= 12; c++) player.chal.comps[c] = E(hasTreeUpg("qol_ext4") && c <= 8 ? 50 : hasTreeUpg("qol_ext8") ? 10 : 0)
 
 		player.supernova.bosons = {
 			pos_w: E(0),
@@ -64,6 +64,12 @@ let EXOTIC = {
 			tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
 			choosed: "",
 			choosed2: "",
+			dual: player.supernova.fermions.dual
+		}
+		if (hasTreeUpg("qol_ext6")) {
+			for (var i = 0; i < 2; i++) {
+				for (var t = 0; t < 6; t++) player.supernova.fermions.tiers[i][t] = E(10)
+			}
 		}
 		player.supernova.radiation = {
 			hz: E(0),
@@ -71,6 +77,7 @@ let EXOTIC = {
 			bs: [ E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0), E(0) ],
 		}
 		player.supernova.auto = {
+			toggle: player.supernova.auto.toggle,
 			on: -2,
 			t: 0
 		}
@@ -91,7 +98,7 @@ let EXOTIC = {
 function updateExoticHTML() {
 	tmp.el.app_ext.setDisplay(tmp.tab == 6)
 	if (tmp.tab == 6) {
-		tmp.el.extAmt2.setHTML(format(player.ext.amt,2) + " (+" + format(EXOTIC.gain(),2) + ")")
+		tmp.el.extAmt2.setHTML(format(player.ext.amt,2)+"<br>"+formatGainOrGet(EXOTIC.gain(), player.ext.amt))
 		updateAxionHTML()
 	}
 }
@@ -243,7 +250,14 @@ let AXIONS = {
 			if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(2))
 		}
 		if (hasTreeUpg("ext_l4")) {
+			if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(3))
+			if (i % 4 > 1) other = other.sub(player.ext.ax.upgs[i - 2].div(3))
+			if (i % 4 > 2) other = other.sub(player.ext.ax.upgs[i - 3].div(3))
+		}
+		if (hasTreeUpg("ext_l5")) {
 			if (i % 4 == 0) other = other.sub(player.ext.ax.upgs[i + 3].div(1.5))
+			if (i % 4 <= 1) other = other.sub(player.ext.ax.upgs[i + 2].div(1.5))
+			if (i % 4 >= 2) other = other.sub(player.ext.ax.upgs[i - 2].div(1.5))
 			if (i % 4 == 3) other = other.sub(player.ext.ax.upgs[i - 3].div(1.5))
 		}
 
@@ -289,6 +303,7 @@ let AXIONS = {
 		if (x == 0) r = player.mass.max(1).log10().pow(0.6)
 			.mul(player.ext.amt.add(1).log(100).add(1).pow(3))
 		if (x == 1 && hasTreeUpg("ext_c")) r = player.supernova.times.div(20).max(1).pow(3)
+			.mul(player.ext.amt.add(1).log10().add(1).sqrt())
 		if (x == 2 && hasTreeUpg("ext_e1")) r = E(0)
 
 		if (hasElement(76)) r = r.mul(tmp.elements && tmp.elements.effect[76])
@@ -376,7 +391,7 @@ let AXIONS = {
 			desc: "Raise the base Atomic Power gains.",
 			req: E(1),
 			eff(x) {
-				return x.div(5).add(1).sqrt()
+				return x.div(3).add(1).pow(2/3).min(7.5)
 			},
 			effDesc(x) {
 				return "^" + format(x)
@@ -452,7 +467,7 @@ let AXIONS = {
 		11: {
 			title: "Lepton Anomaly",
 			desc: "Neut-Muon softcap is weaker.",
-			req: E(15),
+			req: E(0),
 			eff(x) {
 				return x.add(1).log10().sqrt().add(5).min(6).div(5)
 			},

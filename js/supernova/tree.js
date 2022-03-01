@@ -3,7 +3,7 @@ const TREE_IDS = [
     ["qol_ext4","qol_ext3","qol2","qol3","qol4","","s4","","m1","rp1","bh1","","sn4","","chal2","chal4a","chal3","","feat2"],
     ["qol_ext6","qol_ext5","qol5","qol6","qol7","","","m2","t1","","bh2","gr1","sn5","","","chal4","","","feat3"],
     ["qol_ext8","qol_ext7","","unl1","qol8","","m3","","","d1","","","gr2","","chal5","chal6","chal7","","feat4"],
-    ["qol_ext9","","","qol10","qol9","","","bs4","bs2","bs1","bs3","","","","chal8","chal9","chal10","chal11","feat5"],
+    ["qol_ext9","qol_ext10","","qol10","qol9","","","bs4","bs2","bs1","bs3","","","","chal8","chal9","chal10","chal11","feat5"],
     ["","","","","","","fn8","","","fn1","fn5","","","","","","","","feat6"],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","","feat7"],
     ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
@@ -555,7 +555,7 @@ const TREE_UPGS = {
 		ext_l2: {
 			branch: ["ext_l1"],
 			req() { return player.ext.amt.gte(hasTreeUpg("ext_l3") ? 1e35 : 1e11) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e35 : 1e11) + " Exotic Matter." },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l3") ? 1e35 : 1e11) + " Exotic Matter. [increased with ext_l3]" },
 			desc: `Axion Levels synergize with ones from the other side.`,
 			cost: E(0),
 			perm: true,
@@ -564,7 +564,7 @@ const TREE_UPGS = {
 		ext_l3: {
 			branch: ["ext_l1"],
 			req() { return player.ext.amt.gte(hasTreeUpg("ext_l2") ? 1e35 : 1e11) },
-			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e35 : 1e11) + " Exotic Matter." },
+			reqDesc() { return "Get " + format(hasTreeUpg("ext_l2") ? 1e35 : 1e11) + " Exotic Matter. [increased with ext_l2]" },
 			desc: `Axion Levels cheapen the nearest ones.`,
 			cost: E(0),
 			perm: true,
@@ -574,8 +574,8 @@ const TREE_UPGS = {
 			branch: ["ext_l2", "ext_l3"],
 			req() { return hasTreeUpg("ext_l2") && hasTreeUpg("ext_l3") },
 			reqDesc() { return "Get 'ext_l2' and 'ext_l3' upgrades." },
-			desc: `Axion Levels cheapen far levels from the same side.`,
-			cost: E(1/0),
+			desc: `Axion Levels cheapen ones on the right / underneath.`,
+			cost: E("1e2500"),
 			perm: true,
 			icon: "axion",
 		},
@@ -583,7 +583,7 @@ const TREE_UPGS = {
 			branch: ["ext_l4"],
 			req() { return player.ext.amt.gte(1/0) },
 			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
-			desc: `Axion Levels cheapen levels on the right / under ones.`,
+			desc: `Axion Levels cheapen the farther ones.`,
 			cost: E(1/0),
 			perm: true,
 			icon: "axion",
@@ -603,7 +603,7 @@ const TREE_UPGS = {
 			req() { return player.ext.amt.gte(hasTreeUpg("ext_b3") ? 1e200 : 1e100) },
 			reqDesc() { return "Get " + format(hasTreeUpg("ext_b3") ? 1e200 : 1e100) + " Exotic Matter." },
 			desc: `Levels synergize boosts diagonally on the right. [Coming soon!]`,
-			cost: E(0),
+			cost: E(1/0),
 			perm: true,
 			icon: "axion",
 		},
@@ -612,7 +612,7 @@ const TREE_UPGS = {
 			req() { return player.ext.amt.gte(hasTreeUpg("ext_b2") ? 1e200 : 1e100) },
 			reqDesc() { return "Get " + format(hasTreeUpg("ext_b2") ? 1e200 : 1e100) + " Exotic Matter." },
 			desc: `Levels synergize boosts diagonally on the left. [Coming soon!]`,
-			cost: E(0),
+			cost: E(1/0),
 			perm: true,
 			icon: "axion",
 		},
@@ -719,7 +719,7 @@ const TREE_UPGS = {
 		},
 		qol_ext6: {
 			branch: ["qol_ext1"],
-			desc: `Keep the Boson - Fermion upgrades.`,
+			desc: `Keep the Boson - Fermion upgrades, and start with 10 tiers for each Fermion.`,
 			perm: true,
 			cost: E("1e500"),
 			icon: "exotic",
@@ -733,7 +733,7 @@ const TREE_UPGS = {
 			branch: ["qol_ext1"],
 			desc: `Keep the Radiation upgrades.`,
 			perm: true,
-			cost: E("1e1000"),
+			cost: E("1e750"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -743,9 +743,9 @@ const TREE_UPGS = {
 		},
 		qol_ext8: {
 			branch: ["qol_ext1"],
-			desc: `Automatically gain C1 - 4 completions without entering.`,
+			desc: `Automatically gain C1 - 4 completions without entering, and start with 10 completions each.`,
 			perm: true,
-			cost: E("1e2000"),
+			cost: E("1e800"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -757,7 +757,19 @@ const TREE_UPGS = {
 			branch: ["qol_ext8"],
 			desc: `Automatically gain C5 - 8 completions without entering.`,
 			perm: true,
-			cost: E("1e4000"),
+			cost: E("1e2000"),
+			icon: "exotic",
+			effect() {
+				let x = E(1)
+				return x
+			},
+			effDesc(x) { return format(x)+"x" },
+		},
+		qol_ext10: {
+			branch: ["qol_ext9"],
+			desc: `Automatically go Supernova when you gain 30% more.`,
+			perm: true,
+			cost: E("1e3000"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)

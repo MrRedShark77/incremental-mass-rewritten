@@ -2,7 +2,7 @@ var diff = 0;
 var date = Date.now();
 var player
 
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'ext']
 
 const FORMS = {
     massGain() {
@@ -893,7 +893,7 @@ function format(ex, acc=4, type=player.options.notation) {
 					return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
 				}
 				let m = ex.div(E(10).pow(e))
-				return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
+				return neg+(e.log10().gte(4)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
 			}
 		case "st":
 			let e3 = ex.log(1e3).floor()
@@ -946,11 +946,32 @@ function formatMass(ex) {
     return format(ex) + ' g'
 }
 
-function formatGain(amt, gain, isMass=false) {
-    let f = isMass?formatMass:format
-	if (gain.gte("ee12") && amt.gt(1) && gain.log(amt).pow(50).gte(1.01)) return "(x"+format(gain.log(amt).pow(50))+" OoMs/s)"
-	if (gain.gte(1e100) && gain.gt(amt)) return "(+"+format(gain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50))+" OoMs/sec)"
-	else return "(+"+f(gain)+"/sec)"
+function formatMultiply(a) {
+	if (a.gte(10)) return "x"+format(a,0)
+	return "+"+format(a.sub(1).mul(100),2)+"%"
+}
+
+function formatGain(amt, gain, isMass=false, main=false) {
+	let [al, gl] = [amt.max(1).log10(), gain.max(1).log10()]
+	let [al2, gl2] = [al.max(1).log10(), gl.max(1).log10()]
+
+	let f = isMass?formatMass:format
+	if (!main && gain.max(amt).gte("ee4")) return ""
+	if (al2.gte(4) && gl2.sub(al2).gte(0.005)) return "(^"+format(E(10).pow(gl2.sub(al2).mul(20)))+"/sec)"
+	if (al.gte(4) && gl.sub(al).gte(0.005)) return "("+formatMultiply(E(10).pow(gl.sub(al).mul(20)))+"/sec)"
+	if (gain.div(amt).gte(1e-6)) return "(+"+f(gain)+"/sec)"
+	return ""
+}
+
+function formatGet(g, a) {
+	g = g.max(0)
+	if (g.gte(10)) return "("+formatMultiply(g.div(a).add(1),2)+")"
+	if (g.eq(0)) return ""
+	return "(+"+format(g,0)+")"
+}
+
+function formatGainOrGet(g, a, p) {
+	return (p ? formatGain : formatGet)(g, a)
 }
 
 function formatTime(ex,type="s") {

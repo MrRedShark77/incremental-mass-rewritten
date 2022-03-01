@@ -23,10 +23,15 @@ const FERMIONS = {
     choose(i,x,a) {
 		if (!FERMIONS.canChoose(i, x)) return
 		if (!a && player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
-		let id = i+""+x
+
+		let dual = hasTreeUpg("qol9") && player.supernova.fermions.dual
+		if (!dual) player.supernova.fermions.choosed2 = ""
+
 		tmp.tickspeedEffect.eff = E(1)
 		tmp.tickspeedEffect.step = E(1)
-		if (hasTreeUpg("qol9") && player.supernova.fermions.choosed && player.supernova.fermions.choosed[0] != i) {
+
+		let id = i+""+x
+		if (dual && player.supernova.fermions.choosed && player.supernova.fermions.choosed[0] != i) {
 			if (player.supernova.fermions.choosed2 != id) {
 				player.supernova.fermions.choosed2 = id
 				SUPERNOVA.reset(false,false,false,true)
@@ -305,7 +310,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
-                    let x = i.max(1).log10().add(1).mul(t).div(200).add(1).softcap(1.5,0.5,0).softcap(250,0.5,0)
+                    let x = i.max(1).log10().add(1).mul(t).div(200).add(1).softcap(1.5,0.5,0).softcap(20,0.25,0)
                     return x
                 },
                 desc(x) {
@@ -327,7 +332,8 @@ const FERMIONS = {
                 eff(i, t) {
 					if (FERMIONS.onActive(14)) return E(1)
 					if (t.eq(0)) return E(1)
-					let sc = future ? E(0.3) : AXIONS.unl() ? tmp.ax.eff[11].div(4) : E(0.25)
+					let sc = E(0.25)
+					if (AXIONS.unl()) sc = tmp.ax.eff[11].mul(sc)
                     return t.add(1).times(i.div(1e30).add(1).log10()).div(400).add(1).softcap(2.5, sc, 0)
                 },
                 desc(x) {
@@ -426,6 +432,8 @@ function updateFermionsTemp() {
 
 function updateFermionsHTML() {
 	tmp.el.f_normal.setDisplay(player.supernova.fermions.choosed ? 1 : 0)
+	tmp.el.f_dual.setDisplay(hasTreeUpg("qol9"))
+	tmp.el.f_dual.setTxt("Dual: " + (player.supernova.fermions.dual ? "ON" : "OFF"))
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i]))
         let unls = FERMIONS.getUnlLength(i)

@@ -479,7 +479,7 @@ function updateRanksTemp() {
     if (scalingActive("tetr", player.ranks.tetr.max(tmp.ranks.tetr.bulk), "super")) {
 		let start = getScalingStart("super", "tetr");
 		let power = getScalingPower("super", "tetr");
-		let exp = E(1).pow(power);
+		let exp = E(2).pow(power);
 		tmp.ranks.tetr.req =
 			player.ranks.tetr
 			.pow(exp)

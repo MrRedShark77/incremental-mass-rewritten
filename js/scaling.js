@@ -29,7 +29,6 @@ const SCALE_START = {
 	},
 	meta: {
 		rank: E(1e4),
-		supernova: E(1e4),
 		tickspeed: E(5e4),
 	},
 }

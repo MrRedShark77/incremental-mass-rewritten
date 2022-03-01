@@ -94,6 +94,7 @@ function calc(dt, dt_offline) {
         if (player.ext.amt.lt(1e10)) addPopup(POPUP_GROUPS.fermions)
     }
 
+	if (hasTreeUpg("qol_ext10") && tmp.supernova.bulk.div(player.supernova.times).gte(1.3)) SUPERNOVA.reset(false, false, false, false, true)
 	if (player.supernova.auto.on > -2) {
 		var list = player.supernova.auto.list
 		player.supernova.auto.t += dt
@@ -210,6 +211,7 @@ function getPlayerData() {
                 tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
                 choosed: "",
                 choosed2: "",
+                dual: true,
             },
             radiation: {
                 hz: E(0),
