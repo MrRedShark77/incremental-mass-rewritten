@@ -1,7 +1,7 @@
 const TREE_IDS = [
     ["qu_qol2","qu_qol1","qu_qol6","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
     ["qu_qol3","qu_qol4","qu_qol5","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
-    ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
+    ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","qu4",""],
     ["","","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","fn8","","fn9","fn1","fn5","","","","","","","",""],
@@ -59,7 +59,9 @@ const TREE_UPGS = {
             desc: `Supernova boosts Neutron Star gain.`,
             cost: E(350),
             effect() {
-                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.8,0).softcap(25,0.5,0))
+                let sn = player.supernova.times
+                if (!player.supernova.tree.includes("qu4")) sn = sn.softcap(15,0.8,0).softcap(25,0.5,0)
+                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(sn)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -504,6 +506,12 @@ const TREE_UPGS = {
             branch: ["qu0"],
             desc: `From BH the formula's softcap is 30% weaker.`,
             cost: E(1),
+        },
+        qu4: {
+            qf: true,
+            branch: ["qu1", 'qu2', 'qu3'],
+            desc: `Remove effect's softcaps from [sn2].`,
+            cost: E(35),
         },
         qu_qol1: {
             qf: true,

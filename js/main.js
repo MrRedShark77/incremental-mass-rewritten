@@ -985,8 +985,15 @@ function formatMass(ex) {
 
 function formatGain(amt, gain, isMass=false) {
     let f = isMass?formatMass:format
-	if (gain.gte(1e100) && gain.gt(amt)) return "(+"+format(gain.max(1).log10().sub(amt.max(1).log10().max(1)).times(50))+" OoMs/sec)"
-	else return "(+"+f(gain)+"/sec)"
+    let next = amt.add(gain)
+    let rate
+    if (next.div(amt).gte(10) && amt.gte(1e100)) {
+        let ooms = next.div(amt).log10().mul(20)
+        if (isMass && amt.gte(mlt(1)) && ooms.gte(1e7)) rate = "(+"+format(ooms.div(1e9)) + " mlt/sec)"
+        else rate = "(x"+format(ooms) + "/sec)"
+    }
+    else rate = "(+"+f(gain)+"/sec)"
+    return rate
 }
 
 function formatTime(ex,type="s") {

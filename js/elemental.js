@@ -495,7 +495,7 @@ const ELEMENTS = {
         },
         {
             desc: `Meta-Supernova scales 20% weaker.`,
-            cost: E('e3.5e12'),
+            cost: E('e3.4e12'),
         },
     ],
     /*
