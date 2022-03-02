@@ -43,7 +43,8 @@ const TABS = {
             { id: "Radiation", unl() { return tmp.radiation.unl } },
         ],
         6: [
-            { id: "Axions" }
+            { id: "Axions" },
+            { id: "Chroma", unl() { return player.chal.comps[13].gte(12) } }
         ],
     },
 }

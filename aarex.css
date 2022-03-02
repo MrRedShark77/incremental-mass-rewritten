@@ -163,3 +163,11 @@ body {
 	color: #ff3f00 !important;
 	text-shadow: 0 0 3px #ff3f00, 0 0 6px #ff3f00, 0 0 3px #ff3f00
 }
+
+#stab6_1 {
+	background: linear-gradient(#ff0000, #7fff00, #003fff) !important;
+	box-shadow: 0 -6px 6px #ff0000, 0 0 6px #7fff00, 0 6px 6px #003fff, 0 0 60px white;
+
+	color: rgba(255, 255, 255, 0.75) !important;
+	text-shadow: 0 0 3px white
+}

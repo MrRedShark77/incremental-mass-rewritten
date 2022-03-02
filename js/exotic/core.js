@@ -15,12 +15,13 @@ let EXOTIC = {
 		return player.mass.add(1).log10().div(1e9).add(1)
 			.pow(player.supernova.times.mul(player.chal.comps[12].add(1)).div(500))
 	},
-	reset(force) {
+	reset(force, auto) {
 		if (!force) {
-			if (player.chal.comps[12].eq(0)) return
+			if (player.chal.comps[12].eq(0)) return false
 			player.ext.amt = player.ext.amt.add(EXOTIC.gain())
-		} else if (player.confirms.ext && !confirm("Are you sure?")) return
+		} else if (!auto && player.confirms.ext && !confirm("Are you sure?")) return false
 		EXOTIC.doReset()
+		return true
 	},
 	doReset() {
 		player.ext.time = 0
@@ -98,7 +99,7 @@ let EXOTIC = {
 function updateExoticHTML() {
 	tmp.el.app_ext.setDisplay(tmp.tab == 6)
 	if (tmp.tab == 6) {
-		tmp.el.extAmt2.setHTML(format(player.ext.amt,2)+"<br>"+formatGainOrGet(EXOTIC.gain(), player.ext.amt))
+		tmp.el.extAmt2.setHTML(format(player.ext.amt,2)+"<br>"+formatGainOrGet(player.ext.amt, EXOTIC.gain()))
 		updateAxionHTML()
 	}
 }
@@ -467,12 +468,12 @@ let AXIONS = {
 		11: {
 			title: "Lepton Anomaly",
 			desc: "Neut-Muon softcap is weaker.",
-			req: E(0),
+			req: E(10),
 			eff(x) {
-				return x.add(1).log10().sqrt().add(5).min(6).div(5)
+				return x.div(2).add(16).sqrt().add(1).min(6).div(5)
 			},
 			effDesc(x) {
-				return "^" + format(x)
+				return "^" + format(x,3)
 			}
 		},
 

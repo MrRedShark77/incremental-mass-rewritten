@@ -166,25 +166,15 @@ const FORMATS = {
 			return `${formattedMantissa} × (${parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ")})`;
 		},
     },
-    old_sc: {
-      format(ex, acc) {
-        ex = E(ex)
-        let e = ex.log10().floor()
-        if (e.lt(9)) {
-            if (e.lt(3)) {
-                return ex.toFixed(acc)
-            }
-            return ex.floor().toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-        } else {
-            if (ex.gte("eeee10")) {
-                let slog = ex.slog()
-                return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
-            }
-            let m = ex.div(E(10).pow(e))
-            return (e.log10().gte(4)?'':m.toFixed(4))+'e'+this.format(e,0)
-        }
-      }
-    },
+	log: {
+		format(ex, acc, log) {
+			ex = E(ex)
+			let e = ex.log10()
+			if (e.lt(3)) return ex.toFixed(log ? acc : Math.max(Math.min(acc - e.toNumber(), acc), 0))
+			else if (e.lt(6)) return ex.floor().toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+			return neg + 'e' + this.format(e, Math.max(acc, 2), true)
+		}
+	},
     eng: {
       format(ex, acc) {
         ex = E(ex)
@@ -200,7 +190,7 @@ const FORMATS = {
             return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
           }
           let m = ex.div(E(1000).pow(e.div(3).floor()))
-          return (e.log10().gte(4)?'':m.toFixed(E(4).sub(e.sub(e.div(3).floor().mul(3)))))+'e'+this.format(e.div(3).floor().mul(3),0)
+          return (e.log10().gte(4)?'':m.toFixed(E(2).max(acc).sub(e.sub(e.div(3).floor().mul(3))).toNumber()))+'e'+this.format(e.div(3).floor().mul(3),0)
         }
       },
     },
@@ -208,10 +198,11 @@ const FORMATS = {
       format(ex, acc) {
         ex = E(ex)
         let e = ex.log10().floor()
-        if (e.lt(63)) return format(ex,acc,"st")
+        if (e.lt(6)) return format(ex,acc,"sc")
+        else if (e.lt(63)) return format(ex,acc,"st")
         else {
           let m = ex.div(E(10).pow(e))
-          return e.gte(1e4) ? (e.gte(1e4)?"":m.toFixed(4))+"e"+this.format(e,0) : format(ex,acc,"sc")
+          return (e.gte(1e4) ? 'e' + format(e, Math.max(acc, 3)) : m.toFixed(Math.max(acc, 2)) + 'e' + format(e, 0))
         }
       }
     },

@@ -123,7 +123,7 @@ const ATOM = {
             let x = p.pow(2)
             if (hasElement(12)) x = p.pow(p.add(1).log10().add(1).pow(tmp.chal.eff[9].div(4)))
 			if (AXIONS.unl()) x = x.pow(tmp.ax.eff[4])
-            x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2).softcap('e1e11',0.95,2)
+            x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2).softcap('e1e11',0.949,2)
             return x
         },
         gain(i) {

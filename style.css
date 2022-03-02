@@ -187,6 +187,13 @@ button {
 	pointer-events: none;
 }
 
+.soft4 {
+	color: rgba(0, 0, 0, 0.25);
+	font-weight: bold;
+	text-shadow: 12px -3px 12px cyan, 4px -3px 12px blue, 3px 5px 4px red, -6px -3px 8px yellow, 1px 1px 1px black, 0px 0px 2px black;
+	pointer-events: none;
+}
+
 .img_btn {
 	cursor: pointer;
 	background-color: #444;
@@ -610,6 +617,66 @@ td.ax {
 }
 .btn_ax.bonus {
 	border-color: #0f0;
+}
+
+.rainbow {
+	color: #7fff00;
+	text-shadow: -2px -2px 2px #ff0000, 2px 2px 2px #002fff
+}
+
+#chroma_bg {
+	z-index: -1
+}
+
+#chroma_bg1 {
+	z-index: -2;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	animation: 5s rainbow linear infinite;
+	opacity: 0.25;
+}
+
+#chroma_bg2 {
+	z-index: -2;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(45deg, transparent, white, transparent, transparent);
+	opacity: 0.25;
+}
+
+#chroma_bg3 {
+	z-index: -2;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(transparent, white, transparent), linear-gradient(transparent, transparent, black, transparent, transparent);
+	opacity: 0.25;
+}
+
+@keyframes rainbow {
+	0% {
+		background: #ff0000
+	}
+	16% {
+		background: #ffbf00
+	}
+	33% {
+		background: #7fff00
+	}
+	50% {
+		background: #ffbf00
+	}
+	67% {
+		background: #003fff
+	}
+	83% {
+		background: #bf00ff
+	}
+	100% {
+		background: #ff0000
+	}
 }
 
 [tooltip] {

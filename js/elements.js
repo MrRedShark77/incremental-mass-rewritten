@@ -169,38 +169,45 @@ function updateUpperHTML() {
     let hideSome = player.ext.amt.gte(1)
 	tmp.el.rp_div.setVisible(!hideSome)
 	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+formatGainOrGet(player.rp.points, tmp.rp.gain, player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)))
-	let unl = FORMS.bh.see()
-	tmp.el.dm_div.setVisible(unl && !hideSome)
+	let unl = FORMS.bh.see() && !hideSome
+	tmp.el.dm_div.setVisible(unl)
 	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>"+formatGainOrGet(player.bh.dm, tmp.bh.dm_gain, player.mainUpg.atom.includes(6)))
-	unl = player.bh.unl
-	tmp.el.bh_div.setVisible(unl && !hideSome)
-	tmp.el.atom_div.setVisible(unl && !hideSome)
+	unl = player.bh.unl && !hideSome
+	tmp.el.bh_div.setVisible(unl)
+	tmp.el.atom_div.setVisible(unl)
 	if (unl) {
 		tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain, true))
 		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+formatGainOrGet(player.atom.points, tmp.atom.gain,hasElement(24)))
 	}
-	unl = !CHALS.inChal(0)
-	tmp.el.chal_upper.setVisible(unl)
-	if (unl) {
+
+	let chal = !CHALS.inChal(0)
+	tmp.el.chal_upper.setVisible(chal)
+	if (chal) {
 		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
-		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
-		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
+			tmp.el.chal_upper.setHTML(
+			`You are now in [${CHALS[player.chal.active].title}] Challenge!` +
+			(player.chal.comps[player.chal.active].gte(tmp.chal.max[player.chal.active]) ? `` :
+				` Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.` +
+				`<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`
+			)
+		)
 	}
-	unl = player.atom.unl
-	tmp.el.quark_div.setVisible(unl && !hideSome)
+
+	unl = player.atom.unl && !hideSome
+	tmp.el.quark_div.setVisible(unl)
 	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+formatGainOrGet(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec):0,hasElement(14)))
 
 	unl = MASS_DILATION.unlocked()
-	tmp.el.md_div.setVisible(unl && !hideSome)
-	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?formatGet(tmp.md.rp_gain):(hasTreeUpg("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
+	tmp.el.md_div.setVisible(unl)
+	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?formatGet(player.md.particles,tmp.md.rp_gain):(hasTreeUpg("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain):"(inactive)")))
 
 	unl = player.supernova.post_10
 	tmp.el.sn_div.setVisible(unl)
-	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>"+formatGet(tmp.supernova.bulk.sub(player.supernova.times),player.supernova.times))
+	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>"+formatGet(player.supernova.times, tmp.supernova.bulk.sub(player.supernova.times)))
 
 	unl = EXOTIC.unlocked()
 	tmp.el.ext_div.setVisible(unl)
-	if (unl) tmp.el.extAmt.setHTML(format(player.ext.amt,2)+"<br>"+formatGainOrGet(EXOTIC.gain(), player.ext.amt))
+	if (unl) tmp.el.extAmt.setHTML(format(player.ext.amt,2)+"<br>"+formatGainOrGet(player.ext.amt, EXOTIC.gain()))
 }
 
 function updateRanksHTML() {
@@ -335,7 +342,7 @@ function updateBlackHoleHTML() {
 	updateExtraBuildingHTML("bh", 2)
 	updateExtraBuildingHTML("bh", 3)
 
-	tmp.el.massRadSoft.setDisplay(tmp.bh.mass_gain.gte(FORMS.bh.radSoftStart()))
+	tmp.el.massRadSoft.setDisplay(player.bh.eb2 && tmp.bh.mass_gain.gte(FORMS.bh.radSoftStart()))
 	tmp.el.massRadSoftStart.setTxt(formatMass(FORMS.bh.radSoftStart()))
 }
 

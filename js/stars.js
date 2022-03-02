@@ -93,26 +93,32 @@ function setupStarsHTML() {
 	stars_table.setHTML(table)
 }
 
-function updateStarsScreenHTML() {
-    if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
-        let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
-        let percent = 0
-        if (g.gte(1) && player.supernova.post_10) {
-            let d = SUPERNOVA.req(tmp.supernova.bulk).maxlimit
-            let e = SUPERNOVA.req(tmp.supernova.bulk.sub(1)).maxlimit
-            percent = player.stars.points.div(e).max(1).log10().div(d.div(tmp.supernova.maxlimit).max(1).log10()).max(0).min(1).toNumber()
-        }
-        else percent = player.stars.points.max(1).log10().div(tmp.supernova.maxlimit.max(1).log10()).max(0).min(1).toNumber()
-        let size = Math.min(window.innerWidth, window.innerHeight)*percent*0.9
-        let color = `rgb(${percent/0.4*191}, ${percent/0.4*91+133}, 255)`
-        if (percent>0.4) color = `rgb(${(percent-0.4)/0.2*64+191}, ${224-(percent-0.4)/0.2*11}, ${255-(percent-0.4)/0.2*255})`
-        if (percent>0.6) color = `rgb(255, ${213-(percent-0.6)/0.1*131}, 0)`
-        if (percent>0.7) color = `rgb(${255-(percent-0.7)/0.1*102}, ${82-(percent-0.7)/0.1*82}, 0)`
-        if (percent>0.8) color = `rgb(153, 0, 0)`
-        tmp.el.star.changeStyle('background-color',color)
-        tmp.el.star.changeStyle('width',size+"px")
-        tmp.el.star.changeStyle('height',size+"px")
-    }
+function updateScreensHTML() {
+	//STARS
+	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
+		let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
+		let percent = 0
+		if (g.gte(1) && player.supernova.post_10) {
+			let d = SUPERNOVA.req(tmp.supernova.bulk).maxlimit
+			let e = SUPERNOVA.req(tmp.supernova.bulk.sub(1)).maxlimit
+			percent = player.stars.points.div(e).max(1).log10().div(d.div(tmp.supernova.maxlimit).max(1).log10()).max(0).min(1).toNumber()
+		}
+		else percent = player.stars.points.max(1).log10().div(tmp.supernova.maxlimit.max(1).log10()).max(0).min(1).toNumber()
+		let size = Math.min(window.innerWidth, window.innerHeight)*percent*0.9
+		let color = `rgb(${percent/0.4*191}, ${percent/0.4*91+133}, 255)`
+		if (percent>0.4) color = `rgb(${(percent-0.4)/0.2*64+191}, ${224-(percent-0.4)/0.2*11}, ${255-(percent-0.4)/0.2*255})`
+		if (percent>0.6) color = `rgb(255, ${213-(percent-0.6)/0.1*131}, 0)`
+		if (percent>0.7) color = `rgb(${255-(percent-0.7)/0.1*102}, ${82-(percent-0.7)/0.1*82}, 0)`
+		if (percent>0.8) color = `rgb(153, 0, 0)`
+		tmp.el.star.changeStyle('background-color',color)
+		tmp.el.star.changeStyle('width',size+"px")
+		tmp.el.star.changeStyle('height',size+"px")
+	}
+
+	//CHROMA
+	tmp.el.chroma_bg1.setDisplay(false)
+	tmp.el.chroma_bg2.setDisplay(false)
+	tmp.el.chroma_bg3.setDisplay(false)
 }
 
 function updateStarsHTML() {

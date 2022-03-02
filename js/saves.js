@@ -43,7 +43,7 @@ function calc(dt, dt_offline) {
     if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
     if (hasTreeUpg("qol_ext8")) {
 		let max = hasTreeUpg("qol_ext9") ? 8 : 4
-		for (var c = 1; c <= max; c++) player.chal.comps[c] = CHALS.getChalData(c,E(0),true).bulk.min(tmp.chal.max[c]).max(player.chal.comps[c])
+		for (var c = 1; c <= max; c++) player.chal.comps[c] = CHALS.getChalData(c,E(0),true).bulk.max(player.chal.comps[c]).min(tmp.chal.max[c])
 	}
     if (hasElement(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
     if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
@@ -230,7 +230,7 @@ function getPlayerData() {
         tickspeed: E(0),
         options: {
             font: 'Verdana',
-            notation: 'sc'
+            notation: 'mixed_sc'
         },
         confirms: {},
 		stats: {
@@ -326,17 +326,25 @@ function convertStringToDecimal() {
 
 function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) }
 
+function encode(x) {
+	return btoa(JSON.stringify(x, function(k, v) { return v === Infinity ? "Infinity" : v; }))
+}
+
+function decode(x) {
+	return JSON.parse(atob(x))
+}
+
 function save(){
     if (cannotSave()) return
     if (localStorage.getItem("testSave") == '') wipe()
-    localStorage.setItem("testSave",btoa(JSON.stringify(player)))
+    localStorage.setItem("testSave",encode(player))
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 setInterval(save, 30000)
 
 function load(x){
 	try {
-		if (typeof x == "string" & x != '') loadPlayer(JSON.parse(atob(x)))
+		if (typeof x == "string" & x != '') loadPlayer(decode(x))
 		else wipe()
 	} catch (error) {
 		alert("Your save have been wiped due to not being valid!")
@@ -380,7 +388,7 @@ function importy() {
     }
     if (loadgame != null) {
         try {
-			let safe = JSON.parse(atob(loadgame))
+			let safe = decode(loadgame)
 			if (safe) {
 				setTimeout(_=>{
 					load(loadgame)
@@ -418,7 +426,7 @@ function loadGame(start=true, save) {
             })
         }
         setInterval(loop, 50)
-        setInterval(updateStarsScreenHTML, 50)
+        setInterval(updateScreensHTML, 50)
         treeCanvas()
         setInterval(drawTreeHTML, 50)
     }

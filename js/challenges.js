@@ -9,26 +9,29 @@ function setupChalHTML() {
 
 function updateChalHTML() {
     for (let x = 1; x <= CHALS.cols; x++) {
+        let max = player.chal.comps[x].gte(tmp.chal.max[x])
         let chal = CHALS[x]
         let unl = chal.unl ? chal.unl() : true
         tmp.el["chal_div_"+x].setDisplay(unl)
-        tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
+        tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: max})
         if (unl) {
-            tmp.el["chal_comp_"+x].setTxt(player.chal.comps[x].gte(tmp.chal.max[x])?"Completed":format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
+            tmp.el["chal_comp_"+x].setTxt(max?"Completed":format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
         }
     }
-    tmp.el.chal_enter.setVisible(player.chal.choosed && player.chal.active != player.chal.choosed && player.chal.comps[player.chal.choosed].lt(tmp.chal.max[player.chal.choosed]))
+    tmp.el.chal_enter.setVisible(player.chal.choosed && player.chal.active != player.chal.choosed)
     tmp.el.chal_exit.setVisible(player.chal.active != 0)
     tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTreeUpg("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
     if (player.chal.choosed != 0) {
-        let chal = CHALS[player.chal.choosed]
-        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${format(player.chal.comps[player.chal.choosed],0)+" / "+format(tmp.chal.max[player.chal.choosed],0)} Completions]`)
+        let x = player.chal.choosed
+        let chal = CHALS[x]
+        let max = player.chal.comps[x].gte(tmp.chal.max[x])
+        tmp.el.chal_ch_title.setTxt(`[${x}]${CHALS.getScaleName(x)} ${chal.title} [${format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0)} Completions]`)
         tmp.el.chal_ch_desc.setHTML(chal.desc)
-        tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
-        tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
+        tmp.el.chal_ch_reset.setTxt(CHALS.getReset(x))
+        tmp.el.chal_ch_goal.setTxt(max ? "" : "Goal: "+CHALS.getFormat(x)(tmp.chal.goal[x])+CHALS.getResName(x))
         tmp.el.chal_ch_reward.setHTML("Reward: "+chal.reward)
-        tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
+        tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[x]))
     }
 }
 
@@ -66,7 +69,7 @@ const CHALS = {
         if (x < 5) FORMS.bh.doReset()
         else if (x < 9) ATOM.doReset(chal_reset)
         else if (x < 13) SUPERNOVA.reset(true, true)
-        else EXOTIC.reset(true)
+        else EXOTIC.reset(true, true)
     },
     exit(auto=false) {
         if (!player.chal.active == 0) {
@@ -80,7 +83,6 @@ const CHALS = {
         }
     },
     enter() {
-        if (player.chal.comps[player.chal.choosed].gte(tmp.chal.max[player.chal.choosed])) return
         if (player.chal.active == 0) {
             player.chal.active = player.chal.choosed
             this.reset(player.chal.choosed, false)
@@ -430,7 +432,7 @@ const CHALS = {
 		unl() { return hasTreeUpg("chal8") },
 		title: "Decay of Atom",
 		desc: "You can't gain atoms and quarks.",
-		reward: `Axion Upgrades scale slower.<br><span class="yellow">On 3rd completion, unlock ??? Tree! [Coming soon!]</span>`,
+		reward: `Axion Upgrades scale slower.<br><span class="rainbow">On 12th completion, unlock Chroma! [Coming soon!]</span>`,
 		max: E(50),
 		inc: E("e1e5"),
 		pow: E(1.5),

@@ -424,24 +424,26 @@ const UPGS = {
             start: E(1000),
             inc: E(9),
             effect(x) {
-                let ss = E(10)
-                if (player.ranks.rank.gte(34)) ss = ss.add(2)
-                if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
                 let step = E(1).add(RANKS.effect.tetr[2]())
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
                 if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
                 if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
+
+                let ss = E(10)
                 let sp = 0.5
+                if (player.ranks.rank.gte(34)) ss = ss.add(2)
+                if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
+
                 let ret = step.mul(x.add(tmp.upgs.mass[3].bonus)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
                 return {
                     step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Booster Power"+getSoftcapHTML(eff.eff,eff.es,1.8e5)
+                    eff: "^"+format(eff.eff)+" to Booster Power"+getSoftcapHTML(eff.eff,eff.ss,1.8e5)
                 }
             },
             bonus() {
@@ -875,7 +877,7 @@ function loop() {
     player.offline.current = date
 }
 
-function format(ex, acc=4, type=player.options.notation) {
+function format(ex, acc=2, type=player.options.notation) {
 	ex = E(ex)
 	neg = ex.lt(0)?"-":""
 	if (ex.mag == Infinity) return neg + 'Infinity'
@@ -885,20 +887,22 @@ function format(ex, acc=4, type=player.options.notation) {
 	let e = ex.log10().floor()
 	switch (type) {
 		case "sc":
-			if (e.lt(4)) {
+			if (e.lt(3)) {
 				return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+			} else if (e.lt(6)) {
+				return neg+ex.floor().toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 			} else {
 				if (ex.gte("eeee10")) {
 					let slog = ex.slog()
 					return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
 				}
 				let m = ex.div(E(10).pow(e))
-				return neg+(e.log10().gte(4)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
+				return neg + (e.gte(1e4) ? 'e' + format(e, Math.max(acc, 3)) : m.toFixed(Math.max(acc, 2)) + 'e' + format(e, 0))
 			}
 		case "st":
 			let e3 = ex.log(1e3).floor()
 			if (e3.lt(1)) {
-				return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+				return neg+ex.toFixed(Math.max(Math.min(acc - e.toNumber(), acc), 0))
 			} else {
 				let e3_mul = e3.mul(3)
 				let ee = e3.log10().floor()
@@ -924,7 +928,7 @@ function format(ex, acc=4, type=player.options.notation) {
 				}
 
 				let m = ex.div(E(10).pow(e3_mul))
-				return neg+(ee.gte(4)?'':(m.toFixed(E(3).sub(e.sub(e3_mul)).add(acc==0?0:1).toNumber()))+' ')+final
+				return neg + (ee.gte(4) ? '' : (m.toFixed(E(2).max(acc).sub(e.sub(e3_mul)).toNumber())) + ' ') + final
 			}
 		default:
 			return neg+FORMATS[type].format(ex, acc)
@@ -935,7 +939,7 @@ function turnOffline() { player.offline.active = !player.offline.active }
 
 function formatMass(ex) {
     ex = E(ex)
-    if (ex.gte(uni('ee9'))) return format(ex.div(1.5e56).log10().div(1e9)) + ' mlt'
+    if (ex.gte(uni('ee9'))) return format(ex.div(1.5e56).log10().div(1e9),3) + ' mlt'
     if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' uni'
     if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' MMWG'
     if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' M☉'
@@ -947,8 +951,8 @@ function formatMass(ex) {
 }
 
 function formatMultiply(a) {
-	if (a.gte(10)) return "x"+format(a,0)
-	return "+"+format(a.sub(1).mul(100),2)+"%"
+	if (a.gte(2)) return "x"+format(a)
+	return "+"+format(a.sub(1).mul(100))+"%"
 }
 
 function formatGain(amt, gain, isMass=false, main=false) {
@@ -957,21 +961,20 @@ function formatGain(amt, gain, isMass=false, main=false) {
 
 	let f = isMass?formatMass:format
 	if (!main && gain.max(amt).gte("ee4")) return ""
-	if (al2.gte(4) && gl2.sub(al2).gte(0.005)) return "(^"+format(E(10).pow(gl2.sub(al2).mul(20)))+"/sec)"
-	if (al.gte(4) && gl.sub(al).gte(0.005)) return "("+formatMultiply(E(10).pow(gl.sub(al).mul(20)))+"/sec)"
-	if (gain.div(amt).gte(1e-6)) return "(+"+f(gain)+"/sec)"
+	if (al2.gt(0) && gl2.sub(al2).gte(E(1e3).div(al2))) return "(^"+format(E(10).pow(gl2.sub(al2).mul(20)))+"/s)"
+	if (al.gt(0) && gl.sub(al).gte(E(1e3).div(al))) return "("+formatMultiply(E(10).pow(gl.sub(al).mul(20)))+"/s)"
+	if (gain.div(amt).gte(1e-6)) return "(+"+f(gain)+"/s)"
 	return ""
 }
 
-function formatGet(g, a) {
+function formatGet(a, g) {
 	g = g.max(0)
-	if (g.gte(10)) return "("+formatMultiply(g.div(a).add(1),2)+")"
-	if (g.eq(0)) return ""
-	return "(+"+format(g,0)+")"
+	if (g.lt(a)) return ""
+	return "(+" + format(g,0) + (a.gte(100) && g.gte(a.div(5)) ? "/" + formatMultiply(g.div(a).add(1),2) : "") + ")"
 }
 
-function formatGainOrGet(g, a, p) {
-	return (p ? formatGain : formatGet)(g, a)
+function formatGainOrGet(a, g, p) {
+	return (p ? formatGain : formatGet)(a, g)
 }
 
 function formatTime(ex,type="s") {
