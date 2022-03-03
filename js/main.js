@@ -75,7 +75,7 @@ const FORMS = {
     },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
-        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(10) },
+        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(10) && !CHALS.inChal(14) },
         buy() {
             if (this.can()) {
                 if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost).max(0)
@@ -100,10 +100,10 @@ const FORMS = {
                 step = step.add(tmp.atom.particles[0].powerEffect.eff2)
                 if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
-                if (!future) step = step.mul(tmp.md.mass_eff)
+                step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
             if (hasTreeUpg("t1")) step = step.pow(1.15)
-            if (future) step = step.pow(tmp.md.mass_eff)
+            if (future) step = step.pow(tmp.md.mass_eff.pow(0.01))
 
             let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
             step = step.softcap(ss,0.1,0)
@@ -286,7 +286,7 @@ const UPGS = {
                 tmp.upgs.mass[x].cost = data.cost
                 tmp.upgs.mass[x].bulk = data.bulk
                 
-                tmp.upgs.mass[x].bonus = this[x].bonus?this[x].bonus():E(0)
+                tmp.upgs.mass[x].bonus = this[x].bonus&&!CHALS.inChal(14)?this[x].bonus():E(0)
                 tmp.upgs.mass[x].eff = this[x].effect(player.massUpg[x]||E(0))
                 tmp.upgs.mass[x].effDesc = this[x].effDesc(tmp.upgs.mass[x].eff)
             }
@@ -295,6 +295,8 @@ const UPGS = {
             player.autoMassUpg[x] = !player.autoMassUpg[x]
         },
         buy(x, manual=false) {
+            if (CHALS.inChal(14)) return
+
             let cost = manual ? this.getData(x).cost : tmp.upgs.mass[x].cost
             if (player.mass.gte(cost)) {
                 if (!player.mainUpg.bh.includes(1)) player.mass = player.mass.sub(cost)
@@ -303,6 +305,8 @@ const UPGS = {
             }
         },
         buyMax(x) {
+            if (CHALS.inChal(14)) return
+
             let bulk = tmp.upgs.mass[x].bulk
             let cost = tmp.upgs.mass[x].cost
             if (player.mass.gte(cost)) {
@@ -429,6 +433,7 @@ const UPGS = {
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
                 if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
                 if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
+		        step = step.pow(tmp.chal?tmp.chal.eff[14]:1)
 
                 let ss = E(10)
                 let sp = 0.5
@@ -954,22 +959,24 @@ function formatMultiply(a) {
 	if (a.gte(2)) return "x"+format(a)
 	return "+"+format(a.sub(1).mul(100))+"%"
 }
-
+	
 function formatGain(amt, gain, isMass=false, main=false) {
 	let [al, gl] = [amt.max(1).log10(), gain.max(1).log10()]
 	let [al2, gl2] = [al.max(1).log10(), gl.max(1).log10()]
 
 	let f = isMass?formatMass:format
 	if (!main && gain.max(amt).gte("ee4")) return ""
-	if (al2.gt(0) && gl2.sub(al2).gte(E(1e3).div(al2))) return "(^"+format(E(10).pow(gl2.sub(al2).mul(20)))+"/s)"
-	if (al.gt(0) && gl.sub(al).gte(E(1e3).div(al))) return "("+formatMultiply(E(10).pow(gl.sub(al).mul(20)))+"/s)"
+	if (al.gt(0) && gl.sub(al).gte(E(1e3).div(al))) {
+		if (al2.gt(0) && gl2.sub(al2).gte(E(1e3).div(al2))) return "(x"+format(E(10).pow(gl2.sub(al2).mul(20)))+"s)"
+		if (amt.gte(mlt(1))) return "(+"+format(gl.sub(al).mul(2e-8),3)+" mlt/s)"
+		return "("+formatMultiply(E(10).pow(gl.sub(al).mul(20)))+"/s)"
+	}
 	if (gain.div(amt).gte(1e-6)) return "(+"+f(gain)+"/s)"
 	return ""
 }
 
 function formatGet(a, g) {
 	g = g.max(0)
-	if (g.lt(a)) return ""
 	return "(+" + format(g,0) + (a.gte(100) && g.gte(a.div(5)) ? "/" + formatMultiply(g.div(a).add(1),2) : "") + ")"
 }
 

@@ -31,3 +31,14 @@ TO-DO LIST:
 	(or Lightning / Cloudy)
 
 B: Add a upgrade: No scalings to Tickspeed, except scales faster.
+B2 (powerful upgrades):
+1. All Tickspeed scalings start later based on mass.
+2. All Rank scalings are weaker based on mass.
+3. Hardened - Insane Challenge scalings are weaker based on mass.
+4. Rank - Pent scale slower.
+5. Dilated mass raises tickspeed.
+
+Ideas by Elund:
+F1. Reach ??? mass while only going Supernova for at least 5 Supernovae at a time in this Exotic run
+F2. Reach ??? mass without being outside of a fermion in this Exotic run
+F3. Have some banked Supernovae while in Bottom or Neut-Tau

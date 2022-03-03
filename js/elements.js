@@ -353,6 +353,8 @@ function updateOptionsHTML() {
 	}
 	tmp.el.total_time.setTxt(formatTime(player.time))
 	tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
+	tmp.el.tree_anim.setDisplay(player.supernova.unl)
+	tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
 }
 
 function updateHTML() {

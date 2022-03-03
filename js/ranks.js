@@ -99,7 +99,7 @@ const RANKS = {
         },
         pent: {
             '1': "raise collapsed star effect by Pents.",
-            '2': "Super Tetr scaling starts later based on Supernovas.",
+            '2': "Super Tetr scaling starts later based on Supernovae.",
             '4': "Meta Rank and Super Tier scales weaker based on Pents.",
             '5': "Meta Tickspeed scales weaker based on their starting point.",
             '6': "Pent 5 effect is 2x stronger.",
@@ -250,6 +250,7 @@ const RANKS = {
             let f = E(1)
             if (player.ranks.tier.gte(1)) f = f.mul(1/0.8)
             f = f.mul(tmp.chal.eff[5].pow(-1))
+            if (future) f = f.mul(player.mass.max(1).log10().add(1).pow(0.01))
             return f
         },
         tier() {
@@ -257,17 +258,20 @@ const RANKS = {
             f = f.mul(tmp.fermions.effs[1][3])
             if (player.ranks.tetr.gte(1)) f = f.mul(1/0.75)
             if (player.mainUpg.atom.includes(10)) f = f.mul(2)
+            if (future) f = f.mul(player.mass.max(1).log10().add(1).pow(0.01))
             return f
         },
         tetr() {
             let f = E(1)
 			if (hasElement(9)) f = f.mul(1/0.85)
+            if (future) f = f.mul(player.mass.max(1).log10().add(1).pow(0.01))
             return f
         },
         pent() {
             let f = E(5/6)
             if (AXIONS.unl()) f = f.mul(tmp.ax.eff[15])
             if (hasElement(80)) f = f.mul(0.88)
+            if (future) f = f.div(player.mass.max(1).log10().add(1).pow(0.01))
             return f
         },
     },

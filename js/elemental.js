@@ -496,7 +496,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `Increase the maximum completions of C5-6 by Supernovas.`,
+            desc: `Increase the maximum completions of C5-6 by Supernovae.`,
             cost: E('e1.6e8'),
             effect() {
 				return player.supernova.times.times(3)

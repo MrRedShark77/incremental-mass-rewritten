@@ -62,6 +62,7 @@ const ATOM = {
 			return r
 		},
 		effect() {
+			if (CHALS.inChal(14)) return E(0)
 			let sc = ATOM.atomic.softcap()
 			let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75).softcap(sc,0.75,0).softcap(sc.mul(800),0.25,0)
 			return x.floor()

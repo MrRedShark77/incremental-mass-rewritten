@@ -2,6 +2,8 @@ var tmp = {}
 
 function resetTemp() {
     tmp = {
+        tree_time: 0,
+
         sn_tab: 0,
         tab: 0,
         stab: [],

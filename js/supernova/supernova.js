@@ -261,6 +261,7 @@ function updateSupernovaEndingHTML() {
     if (tmp.tab == 5) {
         tmp.el.supernova_sweep.setTxt("Auto-Sweep: " + (player.supernova.auto.toggle ? "ON" : "OFF"))
         tmp.el.supernova_sweep.setDisplay(hasTreeUpg("qol8"))
+        tmp.el.supernova_title.setTxt("Supernova" + (player.supernova.times.eq(1) ? "" : "e"))
         tmp.el.supernova_scale.setTxt(getScalingName('supernova', true))
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
         tmp.el.supernova_next.setTxt("Next Supernova at " + format(tmp.supernova.maxlimit,2) + " stars")
@@ -285,9 +286,11 @@ function updateSupernovaAutoTemp() {
 	let thres = 15
 	if (hasTreeUpg("qol_ext2")) thres = 10
 	if (hasTreeUpg("feat4")) thres -= 2
-	for (var x = (hasTreeUpg("qol_ext9") ? 9 : hasTreeUpg("qol_ext8") ? 5 : 1); x <= 12; x++) {
-		let tier = player.chal.comps[x]
-		if (tier.gte(thres) && tier.lt(CHALS.getMax(x))) tmp.supernova.auto.push(x)
+	if (!player.chal.active || player.chal.active <= 12) {
+		for (var x = (hasTreeUpg("qol_ext9") ? 9 : hasTreeUpg("qol_ext8") ? 5 : 1); x <= 12; x++) {
+			let tier = player.chal.comps[x]
+			if (tier.gte(thres) && tier.lt(CHALS.getMax(x))) tmp.supernova.auto.push(x)
+		}
 	}
 	for (var y = 0; y < 2; y++) {
 		for (var x = 0; x < 6; x++) {

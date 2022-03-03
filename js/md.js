@@ -55,7 +55,6 @@ const MASS_DILATION = {
     },
     effect() {
         let x = player.md.mass.max(1).log10().add(1).root(3).mul(tmp.md.upgs[1].eff)
-        if (future) x = x.log10().sqrt().div(10).add(1)
         return x
     },
     upgs: {
@@ -212,7 +211,7 @@ function updateMDTemp() {
 
 function updateMDHTML() {
     tmp.el.md_particles.setTxt(format(player.md.particles,0)+(hasTreeUpg("qol3")?" "+formatGain(player.md.particles,tmp.md.passive_rp_gain):""))
-    tmp.el.md_eff.setTxt(future?"^"+format(tmp.md.mass_eff):tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
+    tmp.el.md_eff.setTxt(tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
     tmp.el.md_mass.setTxt(formatMass(player.md.mass)+" "+formatGain(player.md.mass,tmp.md.mass_gain,true))
     tmp.el.md_btn.setTxt(player.md.active
         ?(tmp.md.rp_gain.gte(1)?`Cancel for ${format(tmp.md.rp_gain,0)} Relativistic particles`:`Reach ${formatMass(tmp.md.mass_req)} to gain Relativistic particles, or cancel dilation`)

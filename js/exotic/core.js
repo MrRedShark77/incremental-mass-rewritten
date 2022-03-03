@@ -42,7 +42,6 @@ let EXOTIC = {
 		}
 		player.supernova.times = E(0)
 		player.supernova.stars = E(0)
-		if (!future) player.supernova.tree = list_keep
 
 		for (let c = 1; c <= 12; c++) player.chal.comps[c] = E(hasTreeUpg("qol_ext4") && c <= 8 ? 50 : hasTreeUpg("qol_ext8") ? 10 : 0)
 
@@ -490,7 +489,7 @@ let AXIONS = {
 		},
 		13: {
 			title: "Challenge",
-			desc: "Increase the cap of Challenges 7 and 10.",
+			desc: "Increase the cap of Challenges 7, 10 - 12.",
 			req: E(0),
 			eff(x) {
 				return x.times(25)

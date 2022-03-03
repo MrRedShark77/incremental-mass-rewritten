@@ -69,11 +69,11 @@
     <div id='app_supernova' style='display: none'>
         <div style="position: absolute; top: 25px; left: 25px;">
             <button class="btn" onclick="tmp.tab = tmp.sn_tab;">Back to Main</button>
-            <button class="btn" onclick="SUPERNOVA.reset(true)">Reset without being Supernova</button>
+            <button class="btn" onclick="SUPERNOVA.reset(true)">Restart</button>
             <button class="btn" onclick="updateSupernovaSweep()" id="supernova_sweep">Auto-Sweep: ON</button>
         </div>
         <div style="min-height: 70px; margin-top: 15px;">
-            <h2>You become <span id="supernova_rank"></span> <span id="supernova_scale"></span>Supernova</h2><br>
+            <h2>You have became <span id="supernova_rank"></span> <span id="supernova_scale"></span><span id="supernova_title"></span></h2><br>
             <span id="supernova_next">X</span>
         </div>
         <div style="width: 100%; border-bottom: solid 2px white; height: 5px; margin-bottom: 13px;"></div>
@@ -391,11 +391,12 @@
             <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button>
             <button class="btn" onclick="addPopup(POPUP_GROUPS.fonts)">Fonts</button>
             <button class="btn" onclick="addPopup(POPUP_GROUPS.notations)">Notations</button>
+            <button class="btn" id="tree_ani_btn" onclick="changeTreeAnimation()">Tree Animation: <span id="tree_anim">ON</span></button>
             <button class="btn" onclick="updateAarex(true)">Aarex's Theme: <span id="aarex_active">ON</span></button><br><br>
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass: Alternative Path - by Aarex - Pre-Chromancy Patch<br>
+            Incremental Mass: Alternative Path - by Aarex - The Chroma Update<br>
             This mod is an alternative path from original Incremental Mass by MrRedShark77.<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

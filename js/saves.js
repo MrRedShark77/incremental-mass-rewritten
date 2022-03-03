@@ -1,6 +1,7 @@
 function E(x){return new Decimal(x)};
 
 function uni(x) { return E(1.5e56).mul(x) }
+function mlt(x) { return uni(E(10).pow(E(1e9).mul(x))) }
 
 Decimal.prototype.modular=Decimal.prototype.mod=function (other){
     other=E(other);
@@ -88,6 +89,7 @@ function calc(dt, dt_offline) {
     player.supernova.time += dt
     player.ext.time += dt
     player.time += dt
+    tmp.tree_time = (tmp.tree_time+dt_offline) % 3
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
@@ -100,7 +102,7 @@ function calc(dt, dt_offline) {
 		player.supernova.auto.t += dt
 		if (player.supernova.auto.t >= 1.5) {
 			player.supernova.auto.on++
-			CHALS.exit()
+			if (player.chal.active <= 12) CHALS.exit()
 			FERMIONS.backNormal()
 			if (player.supernova.auto.on == list.length) player.supernova.auto.on = -2
 			else {
@@ -230,7 +232,8 @@ function getPlayerData() {
         tickspeed: E(0),
         options: {
             font: 'Verdana',
-            notation: 'mixed_sc'
+            notation: 'mixed_sc',
+            tree_animation: 0
         },
         confirms: {},
 		stats: {
@@ -428,6 +431,6 @@ function loadGame(start=true, save) {
         setInterval(loop, 50)
         setInterval(updateScreensHTML, 50)
         treeCanvas()
-        setInterval(drawTreeHTML, 50)
+        setInterval(drawTreeHTML, 10)
     }
 }

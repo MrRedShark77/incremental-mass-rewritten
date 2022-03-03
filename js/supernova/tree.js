@@ -3,7 +3,7 @@ const TREE_IDS = [
     ["qol_ext4","qol_ext3","qol2","qol3","qol4","","s4","","m1","rp1","bh1","","sn4","","chal2","chal4a","chal3","","feat2"],
     ["qol_ext6","qol_ext5","qol5","qol6","qol7","","","m2","t1","","bh2","gr1","sn5","","","chal4","","","feat3"],
     ["qol_ext8","qol_ext7","","unl1","qol8","","m3","","","d1","","","gr2","","chal5","chal6","chal7","","feat4"],
-    ["qol_ext9","qol_ext10","","qol10","qol9","","","bs4","bs2","bs1","bs3","","","","chal8","chal9","chal10","chal11","feat5"],
+    ["qol_ext9","qol_ext10","","qol10","qol9","","","bs4","bs2","bs1","bs3","","","chal8","chal9","chal10","chal11","","feat5"],
     ["","","","","","","fn8","","","fn1","fn5","","","","","","","","feat6"],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","","feat7"],
     ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
@@ -60,7 +60,7 @@ const TREE_UPGS = {
             branch: ["sn2"],
             desc: `Blue star boost Neutron star gain at a reduced rate.`,
             req() { return player.supernova.times.gte(6) },
-            reqDesc: `6 Supernovas.`,
+            reqDesc: `6 Supernovae.`,
             cost: E(50000),
             effect() {
                 let x = player.stars.generators[4].max(1).log10().add(1)
@@ -73,7 +73,7 @@ const TREE_UPGS = {
             desc: `Tree “sn2”'s effect base is increased by Supernova.`,
             unl() { return player.supernova.post_10 },
             req() { return player.supernova.times.gte(13) },
-            reqDesc: `13 Supernovas.`,
+            reqDesc: `13 Supernovae.`,
             cost: E(1e8),
             effect() {
                 let x = player.supernova.times.mul(0.1).softcap(1.5,0.75,0)
@@ -99,7 +99,7 @@ const TREE_UPGS = {
         m3: {
             branch: ["m2"],
             unl() { return player.supernova.fermions.unl && hasTreeUpg("fn1") },
-            desc: `Mass gain softcap^2-3 starts later based on Supernovas.`,
+            desc: `Mass gain softcap^2-3 starts later based on Supernovae.`,
             cost: E(1e46),
             effect() {
                 let x = player.supernova.times.mul(0.0125).add(1)
@@ -160,14 +160,14 @@ const TREE_UPGS = {
         s2: {
             branch: ["s1"],
             req() { return player.supernova.times.gte(3) },
-            reqDesc: `3 Supernovas.`,
+            reqDesc: `3 Supernovae.`,
             desc: `Star boost's Tetr's softcap is 50% weaker.`,
             cost: E(2500),
         },
         s3: {
             branch: ["s2"],
             req() { return player.supernova.times.gte(4) },
-            reqDesc: `4 Supernovas.`,
+            reqDesc: `4 Supernovae.`,
             desc: `Star generators are stronger based on Supernova.`,
             cost: E(10000),
             effect() {
@@ -179,13 +179,13 @@ const TREE_UPGS = {
         s4: {
             branch: ["s3"],
             req() { return player.supernova.times.gte(6) },
-            reqDesc: `6 Supernovas.`,
+            reqDesc: `6 Supernovae.`,
             desc: `Beyond unlocking stars, Star Unlocker will transform into Booster.`,
             cost: E(1e5),
         },
         qol1: {
             req() { return player.supernova.times.gte(2) },
-            reqDesc: `2 Supernovas.`,
+            reqDesc: `2 Supernovae.`,
             desc: `Start with Silicon-14 & Argon-18 unlocked. You can now automatically buy Elements & Atom upgrades.`,
 			perm: true,
             cost: E(1500),
@@ -193,7 +193,7 @@ const TREE_UPGS = {
         qol2: {
             branch: ["qol1"],
             req() { return player.supernova.times.gte(3) },
-            reqDesc: `3 Supernovas.`,
+            reqDesc: `3 Supernovae.`,
             desc: `Start with Chromium-24 and Atom upgrade 6 unlocked.`,
 			perm: true,
             cost: E(2000),
@@ -201,7 +201,7 @@ const TREE_UPGS = {
         qol3: {
             branch: ["qol2"],
             req() { return player.supernova.times.gte(4) },
-            reqDesc: `4 Supernovas.`,
+            reqDesc: `4 Supernovae.`,
             desc: `Start with Techntium-43 unlocked, improve their element better. You can automatically gain Relativistic particles from mass.`,
 			perm: true,
             cost: E(10000),
@@ -210,7 +210,7 @@ const TREE_UPGS = {
             branch: ["qol3"],
             unl() { return player.supernova.post_10 },
             req() { return player.supernova.times.gte(12) },
-            reqDesc: `12 Supernovas.`,
+            reqDesc: `12 Supernovae.`,
             desc: `You can now automatically buy Star unlockers & boosters.`,
 			perm: true,
             cost: E(1e8),
@@ -218,7 +218,7 @@ const TREE_UPGS = {
         qol5: {
             branch: ["qol4"],
             req() { return player.supernova.times.gte(16) },
-            reqDesc: `16 Supernovas.`,
+            reqDesc: `16 Supernovae.`,
             desc: `Tetrs no longer resets anything.`,
 			perm: true,
             cost: E(1e13),
@@ -226,7 +226,7 @@ const TREE_UPGS = {
         qol6: {
             branch: ["qol5"],
             req() { return player.supernova.times.gte(17) },
-            reqDesc: `17 Supernovas.`,
+            reqDesc: `17 Supernovae.`,
             desc: `While in any challenge, you can now automatically complete it before exiting.`,
 			perm: true,
             cost: E(1e15),
@@ -235,14 +235,14 @@ const TREE_UPGS = {
             branch: ["qol6"],
             unl() { return player.supernova.fermions.unl && hasTreeUpg("fn2") },
             req() { return player.supernova.times.gte(40) },
-            reqDesc: `40 Supernovas.`,
+            reqDesc: `40 Supernovae.`,
             desc: `You can now automatically buy Photon & Gluon upgrades, they no longer spent their amount.`,
 			perm: true,
             cost: E(1e48),
         },
         chal1: {
             req() { return player.supernova.times.gte(4) },
-            reqDesc: `4 Supernovas.`,
+            reqDesc: `4 Supernovae.`,
             desc: `Add 100 more C7 & C8 maximum completions.`,
             cost: E(6000),
         },
@@ -288,7 +288,7 @@ const TREE_UPGS = {
             branch: ["bh1"],
             desc: `BH Condensers power boost Cosmic Rays power.`,
             req() { return player.supernova.times.gte(7) },
-            reqDesc: `7 Supernovas.`,
+            reqDesc: `7 Supernovae.`,
             cost: E(1e6),
             effect() {
                 let x = tmp.bh?tmp.bh.condenser_eff.pow.max(1).root(3):E(1)
@@ -305,7 +305,7 @@ const TREE_UPGS = {
         bs1: {
             unl() { return player.supernova.post_10 },
             req() { return player.supernova.times.gte(15) },
-            reqDesc: `15 supernovas`,
+            reqDesc: `15 Supernovae`,
             desc: `Tickspeed affect Higgs Bosons gain at a reduced rate.`,
             cost: E(1e13),
             effect() {
@@ -397,7 +397,7 @@ const TREE_UPGS = {
             branch: ["qol7"],
             unl() { return hasTreeUpg("fn6") },
             req() { return player.supernova.times.gte(44) },
-            reqDesc: `44 Supernovas.`,
+            reqDesc: `44 Supernovae.`,
             desc: `Unlock Radiation.`,
             cost: E(5e52),
         },
@@ -413,7 +413,7 @@ const TREE_UPGS = {
         },
         rad2: {
             branch: ["rad1"],
-            desc: `Gain more Radiation based on Supernovas.`,
+            desc: `Gain more Radiation based on Supernovae.`,
             cost: E(1e72),
             effect() {
 				let sn = player.supernova.times
@@ -426,7 +426,7 @@ const TREE_UPGS = {
             branch: ["qol7"],
             unl() { return hasTreeUpg("qol7") },
             req() { return player.supernova.times.gte(50) },
-            reqDesc: `50 Supernovas.`,
+            reqDesc: `50 Supernovae.`,
             desc: `You can automatically sweep challenges and fermions with at least 15 completions / tiers, after 1.5 seconds of Supernova.`,
             cost: E(1e65),
 			perm: true,
@@ -504,14 +504,16 @@ const TREE_UPGS = {
 			perm: true,
 		},
 		chal9: {
+			unl() { return player.chal.comps[13].gte(12) },
 			branch: ["chal8"],
 			req() { return player.ext.amt.gte(1/0) },
 			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
-			desc: `Unlock Challenge 14.`,
+			desc: `Unlock the mysterious chromacy challenge, Challenge 14.`,
 			cost: E(0),
 			perm: true,
 		},
 		chal10: {
+			unl() { return false },
 			branch: ["chal9"],
 			req() { return player.ext.amt.gte(1/0) },
 			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
@@ -520,6 +522,7 @@ const TREE_UPGS = {
 			perm: true,
 		},
 		chal11: {
+			unl() { return false },
 			branch: ["chal10"],
 			req() { return player.ext.amt.gte(1/0) },
 			reqDesc() { return "Get " + format(1/0) + " Exotic Matter." },
@@ -538,7 +541,7 @@ const TREE_UPGS = {
 			branch: ["eb2"],
 			req() { return player.ext.amt.gte(1e5) },
 			reqDesc() { return "Get " + format(1e5) + " Exotic Matter." },
-			desc: `Start producing Y-Axions based on Supernovas.`,
+			desc: `Start producing Y-Axions based on Supernovae.`,
 			cost: E("3.333e333"),
 			perm: true,
 			icon: "axion",
@@ -648,7 +651,7 @@ const TREE_UPGS = {
 			branch: ["qol1"],
 			unl() { return hasTreeUpg("qol_ext4") },
 			req() { return player.supernova.times.gte(4) },
-			reqDesc() { return `${format(4,0)} Supernovas` },
+			reqDesc() { return `${format(4,0)} Supernovae` },
 			desc: `You don't need to do requirements before buying several Supernova upgrades.`,
 			perm: true,
 			cost: E(2000),
@@ -820,21 +823,21 @@ const TREE_UPGS = {
 		feat4: {
 			unl() { return player.ext.amt.gte(1) },
 			req() {
-				if (player.mass.lt(uni("ee9"))) return false
+				if (player.mass.lt(mlt(1))) return false
 				let sum = E(0)
 				for (var i = 1; i <= CHALS.cols; i++) sum = sum.add(player.chal.comps[i])
 				for (var i = 1; i <= 4; i++) if (player.chal.comps[i].lte(sum.mul(.05))) return true
 				return false
 			},
-			reqDesc() { return `Get ${formatMass(uni("ee9"))} mass with one black hole challenge have at most 5% of total completions.` },
+			reqDesc() { return `Get ${formatMass(mlt(1))} mass with one black hole challenge have at most 5% of total completions.` },
 			desc: `Reduce the auto-sweeper threshold by 2 completions / tiers.`,
 			perm: true,
 			cost: E(1e100),
 		},
 		feat5: {
 			unl() { return player.ext.amt.gte(1) },
-			req() { return player.mass.gte(uni("ee9")) && player.ext.time <= 3600 },
-			reqDesc() { return `Reach ${formatMass(uni("ee9"))} mass in 1 hour of Exotic Run.` },
+			req() { return player.mass.gte(mlt(1)) && player.ext.time <= 3600 },
+			reqDesc() { return `Reach ${formatMass(mlt(1))} mass in 1 hour of Exotic Run.` },
 			desc: `+^0.05 to Mass and Rage gain exponents and their caps.`,
 			perm: true,
 			cost: E(1e40),
@@ -932,7 +935,7 @@ function drawTree() {
 	for (let x in tmp.supernova.tree_had) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||[]
-        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) {
+        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) if (tmp.supernova.tree_unlocked[branch[y]]) {
 			drawTreeBranch(branch[y], id)
 		}
 	}
@@ -948,6 +951,10 @@ function treeCanvas() {
     }
 }
 
+const TREE_ANIM = ["Circle", "Square", "OFF"]
+const CR = 5
+const SR = 7.0710678118654755
+
 function drawTreeBranch(num1, num2) {
     var start = document.getElementById("treeUpg_"+num1).getBoundingClientRect();
     var end = document.getElementById("treeUpg_"+num2).getBoundingClientRect();
@@ -961,6 +968,28 @@ function drawTreeBranch(num1, num2) {
     tree_ctx.moveTo(x1, y1);
     tree_ctx.lineTo(x2, y2);
     tree_ctx.stroke();
+
+    if (player.options.tree_animation != 2) {
+        tree_ctx.fillStyle = player.supernova.tree.includes(num2)?"#4b0":"#444";
+        let tt = [tmp.tree_time, (tmp.tree_time+1)%3, (tmp.tree_time+2)%3]
+        for (let i = 0; i < 3; i++) {
+            let [t, dx, dy] = [tt[i], x2-x1, y2-y1]
+            let [x, y] = [x1+dx*t/3, y1+dy*t/3]
+            tree_ctx.beginPath();
+            if (player.options.tree_animation == 1) {
+                let a = Math.atan2(y1-y2,dx)-Math.PI/4
+                tree_ctx.moveTo(x+SR*Math.cos(a), y-SR*Math.sin(a))
+                for (let j = 1; j <= 3; j++) tree_ctx.lineTo(x+SR*Math.cos(a+Math.PI*j/2), y-SR*Math.sin(a+Math.PI*j/2))
+            } else if (player.options.tree_animation == 0) {
+                tree_ctx.arc(x, y, CR, 0, Math.PI*2, true);
+            }
+            tree_ctx.fill();
+        }
+    }
+}
+
+function changeTreeAnimation() {
+    player.options.tree_animation = (player.options.tree_animation + 1) % 3;
 }
 
 function updateTreeHTML() {

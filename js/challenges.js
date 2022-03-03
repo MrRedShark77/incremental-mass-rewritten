@@ -121,11 +121,11 @@ const CHALS = {
         if (hasElement(56) && (i==8)) x = x.add(200)
         if (hasElement(65) && (i==7||i==8)) x = x.add(200)
         if (hasTreeUpg("chal1") && (i==7||i==8)) x = x.add(100)
-        if (future && (i==7||i==10)) x = x.add(1e3)
-        if (AXIONS.unl() && (i==7||i==10)) x = x.add(tmp.ax.eff[13])
+        if (AXIONS.unl() && (i==7||i>=10&&i<=12)) x = x.add(tmp.ax.eff[13])
         return x.floor()
     },
     getScaleName(i) {
+        if (i > 12) return ""
         if (player.chal.comps[i].gte(1000)) return " Impossible"
         if (player.chal.comps[i].gte(i==8?200:i>8?50:300)) return " Insane"
         if (player.chal.comps[i].gte(i>8?10:75)) return " Hardened"
@@ -136,10 +136,12 @@ const CHALS = {
         if (hasElement(2)) x = x.mul(0.75)
         if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
         if (hasTreeUpg("feat7")) x = x.mul(0.95)
+        if (future) x = x.div(player.mass.max(1).log10().max(1).log10().div(50).add(1))
         return x
     },
     getPower2(i) {
         let x = E(1)
+        if (future) x = x.div(player.mass.max(1).log10().max(1).log10().div(50).add(1))
         return x
     },
     getPower3(i) {
@@ -148,20 +150,30 @@ const CHALS = {
         return x
     },
     getChalData(x, r=E(-1), a) {
-        let res = !CHALS.inChal(0)||a?this.getResource(x):E(0)
-        let lvl = r.lt(0)?player.chal.comps[x]:r
-        let chal = this[x]
+		let res = !CHALS.inChal(0)||a?this.getResource(x):E(0)
+		let chal = this[x]
+
+		let lvl = r.lt(0)?player.chal.comps[x]:r
+		let pow = chal.pow
+		if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
+		if (x == 13) {
+			//Instant Exponential Scale.
+			let goal = chal.start.pow(chal.inc.pow(lvl.pow(pow)))
+			let bulk = res.log(chal.start).log(chal.inc).root(pow).add(1).floor()
+			if (res.lt(chal.start)) bulk = E(0)
+			return {goal: goal, bulk: bulk}
+		}
+
+        let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
+        let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
+        if (res.lt(chal.start)) bulk = E(0)
+
         let s1 = x > 8 ? 10 : 75
         let s2 = 300
         if (x == 8) s2 = 200
         if (x > 8) s2 = 50
         let s3 = 1000
-        let pow = chal.pow
-        if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
-        chal.pow = chal.pow.max(1)
-        let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
-        let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
-        if (res.lt(chal.start)) bulk = E(0)
+
         if (lvl.max(bulk).gte(s1)) {
             let start = E(s1);
             let exp = E(3).pow(this.getPower());
@@ -433,9 +445,9 @@ const CHALS = {
 		title: "Decay of Atom",
 		desc: "You can't gain atoms and quarks.",
 		reward: `Axion Upgrades scale slower.<br><span class="rainbow">On 12th completion, unlock Chroma! [Coming soon!]</span>`,
-		max: E(50),
-		inc: E("e1e5"),
-		pow: E(1.5),
+		max: E(100),
+		inc: E(11/9),
+		pow: E(1.25),
 		start: uni("e4.5e5"),
 		effect(x) {
             return E(0.5).add(E(0.5).div(x.div(3).add(1).sqrt()))
@@ -444,25 +456,24 @@ const CHALS = {
 	},
 	14: {
 		unl() { return hasTreeUpg("chal9") },
-		title: "Placeholder",
-		desc: "Placeholder.",
-		reward: `Placeholder.`,
-		max: E(50),
+		title: "Monochromatic Mass",
+		desc: "You can't gain Mass Upgrades.",
+		reward: `Stronger effect is extraordinary stronger!`,
+		max: E(100),
 		inc: E(10),
 		pow: E(1.25),
 		start: E(1/0),
 		effect(x) {
-			let ret = E(1)
-			return ret
+			return x.div(1e3).add(1)
 		},
-		effDesc(x) { return format(x)+"x" },
+        effDesc(x) { return "^"+format(x) },
 	},
 	15: {
 		unl() { return hasTreeUpg("chal10") },
 		title: "Placeholder",
 		desc: "Placeholder.",
 		reward: `Placeholder.`,
-		max: E(50),
+		max: E(100),
 		inc: E(10),
 		pow: E(1.25),
 		start: E(1/0),
@@ -477,7 +488,7 @@ const CHALS = {
 		title: "Placeholder",
 		desc: "Placeholder.",
 		reward: `Placeholder.`,
-		max: E(50),
+		max: E(100),
 		inc: E(10),
 		pow: E(1.25),
 		start: E(1/0),
