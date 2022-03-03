@@ -931,7 +931,7 @@ function format(ex, acc=2, type=player.options.notation) {
 				return neg + (ee.gte(4) ? '' : (m.toFixed(E(2).max(acc).sub(e.sub(e3_mul)).toNumber())) + ' ') + final
 			}
 		default:
-			return neg+FORMATS[type].format(ex, acc)
+			return FORMATS[type] ? neg+FORMATS[type].format(ex, acc) : neg+format(ex, acc, "sc")
 	}
 }
 

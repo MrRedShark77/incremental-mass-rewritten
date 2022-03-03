@@ -43,7 +43,7 @@ function calc(dt, dt_offline) {
     if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(dt))
     if (hasTreeUpg("qol_ext8")) {
 		let max = hasTreeUpg("qol_ext9") ? 8 : 4
-		for (var c = 1; c <= max; c++) player.chal.comps[c] = CHALS.getChalData(c,E(0),true).bulk.max(player.chal.comps[c]).min(tmp.chal.max[c])
+		for (var c = 1; c <= max; c++) player.chal.comps[c] = CHALS.getChalData(c,E(0),true).bulk.min(tmp.chal.max[c]).max(player.chal.comps[c])
 	}
     if (hasElement(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(dt*tmp.atom.quarkGainSec))
     if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(dt))
