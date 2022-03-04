@@ -94,6 +94,12 @@ const RADIATION = {
             if (!auto) player.supernova.radiation.ds[j] = player.supernova.radiation.ds[j].sub(E(f1).pow(bulk.sub(1).pow(f2).mul(f4)).mul(f3)).max(0)
         }
     },
+	max(auto) {
+		for (let x = 0; x < RAD_LEN; x++) {
+			RADIATION.buyBoost(x*2)
+			RADIATION.buyBoost(x*2+1)
+		}
+	},
     boosts: [
         {
             title: `Radio Boost`,

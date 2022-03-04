@@ -207,7 +207,7 @@ function calcSupernova(dt, dt_offline) {
         player.supernova.radiation.hz = player.supernova.radiation.hz.add(tmp.radiation.hz_gain.mul(dt))
         for (let x = 0; x < RAD_LEN; x++) {
             player.supernova.radiation.ds[x] = player.supernova.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(dt))
-	        if (player.supernova.radiation.ds[x].gte(1e6) && hasTreeUpg("qol_ext3")) {
+	        if (player.supernova.radiation.ds[x].gte(1e5) && hasTreeUpg("qol_ext3")) {
                 RADIATION.buyBoost(x*2,1)
                 RADIATION.buyBoost(x*2+1,1)
             }
