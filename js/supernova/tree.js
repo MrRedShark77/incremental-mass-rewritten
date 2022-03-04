@@ -446,7 +446,7 @@ const TREE_UPGS = {
             branch: ["sn4"],
             unl() { return hasTreeUpg("rad1") },
             desc: `Supernova scalings are no longer rounded down to a integer, and unlock Pent.`,
-            cost: E(3e99),
+            cost: E(1e90),
         },
         fn8: {
             branch: ["fn7"],
@@ -467,7 +467,7 @@ const TREE_UPGS = {
         chal7: {
             branch: ["chal6"],
             desc: `Unlock the finale of Supernova Challenges, Challenge 12.`,
-            cost: E(1e170),
+            cost: E(1e165),
         },
         qol10: {
             branch: ["qol9"],
@@ -668,7 +668,7 @@ const TREE_UPGS = {
 			reqDesc() { return format(10) + " Exotic Matter" },
 			desc: `Reduce the auto-sweeper threshold to 10.`,
 			perm: true,
-			cost: E(1e150),
+			cost: E(1e100),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -678,11 +678,9 @@ const TREE_UPGS = {
 		},
 		qol_ext3: {
 			branch: ["qol_ext1"],
-			req() { return player.supernova.radiation.hz.gte(1e50) },
-			reqDesc() { return "Get " + format(1e50) + " frequency of radiation." },
-			desc: `Radiation Boosters are fully automated for at least 1,000,000 radiation.`,
+			desc: `Radiation Boosters are fully automated for at least 100,000 radiation.`,
 			perm: true,
-			cost: E(1e275),
+			cost: E(1e185),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -695,12 +693,12 @@ const TREE_UPGS = {
 			req() {
 				let sum = E(0)
 				for (var i = 1; i <= CHALS.cols; i++) sum = sum.add(player.chal.comps[i])
-				return sum.round().gte(7e3)
+				return sum.round().gte(6e3)
 			},
-			reqDesc: `Get 7,000 challenge completions.`,
-			desc: `Keep the 'chal' upgrades except you start with 50 completions.`,
+			reqDesc: `Get 6,000 challenge completions.`,
+			desc: `Keep the 'chal' upgrades except you start with 50 completions and 10 tiers for each Fermion.`,
 			perm: true,
-			cost: E(1e250),
+			cost: E(1e200),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -712,7 +710,7 @@ const TREE_UPGS = {
 			branch: ["qol_ext1"],
 			desc: `Keep the core Supernova upgrades.`,
 			perm: true,
-			cost: E(1e200),
+			cost: E(1e170),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -722,9 +720,9 @@ const TREE_UPGS = {
 		},
 		qol_ext6: {
 			branch: ["qol_ext1"],
-			desc: `Keep the Boson - Fermion upgrades, and start with 10 tiers for each Fermion.`,
+			desc: `Keep the Boson - Fermion upgrades, and start with 10 completions for C9 - 12.`,
 			perm: true,
-			cost: E("1e500"),
+			cost: E(1e250),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -736,7 +734,7 @@ const TREE_UPGS = {
 			branch: ["qol_ext1"],
 			desc: `Keep the Radiation upgrades.`,
 			perm: true,
-			cost: E("1e750"),
+			cost: E("1e400"),
 			icon: "exotic",
 			effect() {
 				let x = E(1)
@@ -746,7 +744,7 @@ const TREE_UPGS = {
 		},
 		qol_ext8: {
 			branch: ["qol_ext1"],
-			desc: `Automatically gain C1 - 4 completions without entering, and start with 10 completions each.`,
+			desc: `Automatically gain C1 - 4 completions without entering.`,
 			perm: true,
 			cost: E("1e800"),
 			icon: "exotic",
@@ -792,7 +790,7 @@ const TREE_UPGS = {
 
 				return player.mass.lt(player.stats.maxMass.pow(1e-3))
 			},
-			reqDesc: `Get at most ^0.001 of best mass within a U-Quark and a U-Lepton. [Automation must be on for all feats!]`,
+			reqDesc: `Get at most ^0.001 of best mass within a U-Quark and a U-Lepton. [Automation must be on for feats 1 - 3!]`,
 			desc: `Gain 3x more Radiation.`,
 			cost: E(1e130),
 			perm: true,
@@ -815,7 +813,7 @@ const TREE_UPGS = {
 		feat3: {
 			unl() { return hasTreeUpg("rad1") },
 			req() { return player.mass.gte(uni("e2.5e10")) && player.mainUpg.rp.length + player.mainUpg.bh.length + player.mainUpg.atom.length < 30 },
-			reqDesc() { return "Get " + formatMass(uni("ee25")) + " with at most 30 Main Upgrades." },
+			reqDesc() { return "Get " + formatMass(uni("ee25")) + " with at most 30 Main Upgrades. [Turn off automation in Upgrades and restart a Supernova run first!]" },
 			desc: `All Tickspeed scalings scale 35% weaker.`,
 			cost: E(1e155),
 			perm: true,

@@ -43,7 +43,7 @@ let EXOTIC = {
 		player.supernova.times = E(0)
 		player.supernova.stars = E(0)
 
-		for (let c = 1; c <= 12; c++) player.chal.comps[c] = E(hasTreeUpg("qol_ext4") && c <= 8 ? 50 : hasTreeUpg("qol_ext8") ? 10 : 0)
+		for (let c = 1; c <= 12; c++) player.chal.comps[c] = E(hasTreeUpg("qol_ext4") && c <= 8 ? 50 : hasTreeUpg("qol_ext6") ? 10 : 0)
 
 		player.supernova.bosons = {
 			pos_w: E(0),
@@ -66,7 +66,7 @@ let EXOTIC = {
 			choosed2: "",
 			dual: player.supernova.fermions.dual
 		}
-		if (hasTreeUpg("qol_ext6")) {
+		if (hasTreeUpg("qol_ext4")) {
 			for (var i = 0; i < 2; i++) {
 				for (var t = 0; t < 6; t++) player.supernova.fermions.tiers[i][t] = E(10)
 			}
