@@ -2,12 +2,12 @@ const PRIM = {
     unl() { return hasTree('unl2') },
     getTheorems() {
         let b = tmp.prim.t_base
-        let x = player.qu.bp.max(1).log(b)
+        let x = player.qu.bp.max(1).log(b).mul(2)
         return x.floor()
     },
     getNextTheorem() {
         let b = tmp.prim.t_base
-        let x = E(b).pow(player.qu.prim.theorems.add(1))
+        let x = E(b).pow(player.qu.prim.theorems.div(2).add(1))
 
         return x
     },
@@ -86,6 +86,13 @@ function giveRandomPParticles(v, max=false) {
             player.qu.prim.particles[y] = player.qu.prim.particles[y].add(1)
             break
         }
+    }
+}
+
+function respecPParticles() {
+    if (confirm("Are you sure you want to respec all Particles?")) {
+        for (let i =0; i < 8; i++) player.qu.prim.particles[i] = E(0)
+        QUANTUM.doReset()
     }
 }
 
