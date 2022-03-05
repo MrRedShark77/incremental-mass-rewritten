@@ -48,11 +48,11 @@ const PRIM = {
                 return x
             },
             p=>{
-                let x = E(10).pow(p.pow(0.75))
+                let x = E(5).pow(p.pow(0.75))
                 return x
             },
             p=>{
-                let x = p.pow(0.9)
+                let x = p.pow(0.9).mul(1.5)
                 return x
             },
         ],
