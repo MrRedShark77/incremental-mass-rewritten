@@ -22,6 +22,7 @@ const SCALE_START = {
 	},
 	ultra: {
 		rank: E(600),
+		//tier: E(1500),
 		tickspeed: E(700),
 		bh_condenser: E(750),
 		gamma_ray: E(800),
@@ -29,8 +30,8 @@ const SCALE_START = {
 		fTier: E(100),
 	},
 	meta: {
-		bh_condenser: E(5e6),
-		gamma_ray: E(5e5),
+		bh_condenser: E(1e7),
+		gamma_ray: E(1e6),
 		rank: E(1e4),
 		tickspeed: E(5e4),
 		supernova: E(100),
@@ -163,6 +164,9 @@ function getScalingStart(type, name) {
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
 			start = start.mul(tmp.fermions.effs[0][5])
 		}
+		if (name=='supernova') {
+			start = start.add(tmp.prim.eff[7])
+		}
 	}
 	return start.floor()
 }
@@ -197,13 +201,17 @@ function getScalingPower(type, name) {
 			if (player.atom.elements.includes(15)) power = power.mul(0.8)
 		}
 		if (name=="fTier") {
-			if (player.supernova.tree.includes("fn3")) power = power.mul(0.925)
+			if (hasTree("fn3")) power = power.mul(0.925)
 		}
 	}
 	if (type=="hyper") {
 		if (name=="rank") {
 			if (player.ranks.tetr.gte(1)) power = power.mul(0.85)
 			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+		}
+		if (name=="tier") {
+			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
+			if (player.atom.elements.includes(37)) power = power.mul(tmp.elements.effect[37])
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)

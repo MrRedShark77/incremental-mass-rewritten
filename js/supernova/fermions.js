@@ -3,9 +3,10 @@ const FERMIONS = {
     gain(i) {
         if (!player.supernova.fermions.unl) return E(0)
         let x = E(1)
+        let base = E(1.25).add(tmp.prim.eff[5])
         if (tmp.radiation.unl) x = x.mul(tmp.radiation.hz_effect)
-        for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(E(1.25).pow(player.supernova.fermions.tiers[i][j]))
-        if (player.supernova.tree.includes("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
+        for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(base.pow(player.supernova.fermions.tiers[i][j]))
+        if (hasTree("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
         return x
     },
     backNormal() {
@@ -24,7 +25,7 @@ const FERMIONS = {
     },
     fp() {
         let x = E(1)
-        if (player.supernova.tree.includes("qu1")) x = x.mul(1.15)
+        if (hasTree("qu1")) x = x.mul(1.15)
         return x
     },
     getTierScaling(t, bulk=false) {
@@ -98,10 +99,10 @@ const FERMIONS = {
     },
     getUnlLength(x) {
         let u = 2
-        if (player.supernova.tree.includes("fn2")) u++
-        if (player.supernova.tree.includes("fn6")) u++
-        if (player.supernova.tree.includes("fn7")) u++
-        if (player.supernova.tree.includes("fn8")) u++
+        if (hasTree("fn2")) u++
+        if (hasTree("fn6")) u++
+        if (hasTree("fn7")) u++
+        if (hasTree("fn8")) u++
         return u
     },
     names: ['quark', 'lepton'],
@@ -172,7 +173,7 @@ const FERMIONS = {
             },{
                 maxTier() {
                     let x = 15
-                    if (player.supernova.tree.includes("fn9")) x += 2
+                    if (hasTree("fn9")) x += 2
                     return x
                 },
                 nextTierAt(x) {
@@ -186,7 +187,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0)
+                    let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0).softcap(5,1/3,0)
                     return x
                 },
                 desc(x) {
@@ -208,7 +209,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().div(500).mul(t.root(2)).add(1)
-                    return x.softcap(1.15,0.5,0)
+                    return x.softcap(1.15,0.5,0).softcap(1.8,1/3,0).min(2)
                 },
                 desc(x) {
                     return `Radiation Boosters are ${format(x)}x cheaper`+(x.gte(1.15)?" <span class='soft'>(softcapped)</span>":"")
@@ -243,7 +244,7 @@ const FERMIONS = {
             {
                 maxTier() {
                     let x = 15
-                    if (player.supernova.tree.includes("fn5")) x += 35
+                    if (hasTree("fn5")) x += 35
                     return x
                 },
                 nextTierAt(x) {
@@ -257,7 +258,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = i.add(1).log10().mul(t).div(100).add(1).softcap(1.5,player.supernova.tree.includes("fn5")?0.75:0.25,0)
+                    let x = i.add(1).log10().mul(t).div(100).add(1).softcap(1.5,hasTree("fn5")?0.75:0.25,0)
                     return x
                 },
                 desc(x) {
@@ -309,7 +310,7 @@ const FERMIONS = {
             },{
                 maxTier() {
                     let x = 15
-                    if (player.supernova.tree.includes("fn9")) x += 2
+                    if (hasTree("fn9")) x += 2
                     return x
                 },
                 nextTierAt(x) {

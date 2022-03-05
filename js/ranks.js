@@ -7,8 +7,8 @@ const RANKS = {
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
-            if (type == "tetr" && player.supernova.tree.includes("qol5")) reset = false
-            if (type == "pent" && player.supernova.tree.includes("qol8")) reset = false
+            if (type == "tetr" && hasTree("qol5")) reset = false
+            if (type == "pent" && hasTree("qol8")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -19,8 +19,8 @@ const RANKS = {
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
-            if (type == "tetr" && player.supernova.tree.includes("qol5")) reset = false
-            if (type == "pent" && player.supernova.tree.includes("qol8")) reset = false
+            if (type == "tetr" && hasTree("qol5")) reset = false
+            if (type == "pent" && hasTree("qol8")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -53,7 +53,7 @@ const RANKS = {
         rank() { return player.mainUpg.rp.includes(5) },
         tier() { return player.mainUpg.rp.includes(6) },
         tetr() { return player.mainUpg.atom.includes(5) },
-        pent() { return player.supernova.tree.includes("qol8") },
+        pent() { return hasTree("qol8") },
     },
     desc: {
         rank: {
@@ -416,7 +416,7 @@ function updateRanksTemp() {
 		let exp = E(1.5).pow(power);
         let start2 = getScalingStart("hyper", "tier");
 		let power2 = getScalingPower("hyper", "tier");
-		let exp2 = E(2.5).pow(power);
+		let exp2 = E(2.5).pow(power2);
 		tmp.ranks.tier.req =
 			player.ranks.tier.div(fp2)
             .pow(exp2)

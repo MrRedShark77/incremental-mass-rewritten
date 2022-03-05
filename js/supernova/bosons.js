@@ -11,19 +11,19 @@ const BOSONS = {
         },
         z_boson() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
-            if (player.supernova.tree.includes("sn4")) x = x.pow(1.5)
+            if (hasTree("sn4")) x = x.pow(1.5)
             return x
         },
         photon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1)
-            if (player.supernova.tree.includes("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[1])
+            if (hasTree("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[1])
             return x
         },
         gluon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             x = x.mul(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1)
-            if (player.supernova.tree.includes("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[0])
+            if (hasTree("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[0])
             return x
         },
         graviton() {
@@ -32,14 +32,14 @@ const BOSONS = {
         },
         hb() {
             let x = E(0.01).mul(tmp.fermions.effs[1][1])
-            if (player.supernova.tree.includes("bs1")) x = x.mul(tmp.supernova?tmp.supernova.tree_eff.bs1:1)
+            if (hasTree("bs1")) x = x.mul(tmp.supernova?tmp.supernova.tree_eff.bs1:1)
             return x
         },
     },
     effect: {
         pos_w(x) {
             let a = x.add(1).pow(2e4)
-            if (player.supernova.tree.includes("qu2")) a = a.pow(x.add(1).log10().add(1).pow(4/3))
+            if (hasTree("qu2")) a = a.pow(x.add(1).log10().add(1).pow(4/3))
             let b = expMult(x.add(1),2/3,2)
             return [a,b]
         },
@@ -58,7 +58,7 @@ const BOSONS = {
             return [a]
         },
         hb(x) {
-            let a = x.add(1).log10().max(0).root(2)
+            let a = x.add(1).log10().max(0).root(2).mul(tmp.prim.eff[4])
             return [a]
         },
     },
@@ -67,7 +67,7 @@ const BOSONS = {
         buy(id,x) {
             if (tmp.bosons.upgs[id][x].can) {
                 player.supernova.b_upgs[id][x] = player.supernova.b_upgs[id][x].max(tmp.bosons.upgs[id][x].bulk)
-                if (!player.supernova.tree.includes("qol7")) player.supernova.bosons[id] = player.supernova.bosons[id].sub(BOSONS.upgs[id][x].cost(tmp.bosons.upgs[id][x].bulk.sub(1))).max(0)
+                if (!hasTree("qol7")) player.supernova.bosons[id] = player.supernova.bosons[id].sub(BOSONS.upgs[id][x].cost(tmp.bosons.upgs[id][x].bulk.sub(1))).max(0)
             }
         },
         photon: [
@@ -83,7 +83,7 @@ const BOSONS = {
                 bulk(x=player.supernova.bosons.photon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
                     let a = x.add(1).pow(0.75)
-                    if (player.supernova.tree.includes("fn4")) a = a.pow(2)
+                    if (hasTree("fn4")) a = a.pow(2)
                     return a
                 },
                 effDesc(x) { return format(x)+"x" },
@@ -114,7 +114,7 @@ const BOSONS = {
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
                     let a = x.add(1).pow(0.75)
-                    if (player.supernova.tree.includes("fn4")) a = a.pow(2)
+                    if (hasTree("fn4")) a = a.pow(2)
                     return a
                 },
                 effDesc(x) { return format(x)+"x" },

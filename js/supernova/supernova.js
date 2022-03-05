@@ -6,7 +6,7 @@ const SUPERNOVA = {
             if (!force && !fermion) {
                 player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
             }
-            if (post?!player.supernova.tree.includes("qu_qol4"):true) {
+            if (post?!hasTree("qu_qol4"):true) {
                 tmp.pass = true
                 this.doReset()
             }
@@ -23,15 +23,15 @@ const SUPERNOVA = {
         player.atom.gamma_ray = E(0)
         
         let list_keep = [2,5]
-        if (player.supernova.tree.includes("qol2")) list_keep.push(6)
+        if (hasTree("qol2")) list_keep.push(6)
         let keep = []
         for (let x = 0; x < player.mainUpg.atom.length; x++) if (list_keep.includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
         player.mainUpg.atom = keep
 
         list_keep = [21,36]
-        if (player.supernova.tree.includes("qol1")) list_keep.push(14,18)
-        if (player.supernova.tree.includes("qol2")) list_keep.push(24)
-        if (player.supernova.tree.includes("qol3")) list_keep.push(43)
+        if (hasTree("qol1")) list_keep.push(14,18)
+        if (hasTree("qol2")) list_keep.push(24)
+        if (hasTree("qol3")) list_keep.push(43)
         if (quUnl()) list_keep.push(30)
         keep = []
         for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
@@ -47,7 +47,7 @@ const SUPERNOVA = {
         player.stars.points = E(0)
         player.stars.boost = E(0)
 
-        if (!player.supernova.tree.includes("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
+        if (!hasTree("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
 
         ATOM.doReset()
 
@@ -57,11 +57,11 @@ const SUPERNOVA = {
         tmp.pass = false
     },
     starGain() {
-        let x = E(player.supernova.tree.includes("c")?0.1:0)
-        if (player.supernova.tree.includes("sn1")) x = x.mul(tmp.supernova.tree_eff.sn1)
-        if (player.supernova.tree.includes("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
-        if (player.supernova.tree.includes("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
-        if (player.supernova.tree.includes("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
+        let x = E(hasTree("c")?0.1:0)
+        if (hasTree("sn1")) x = x.mul(tmp.supernova.tree_eff.sn1)
+        if (hasTree("sn2")) x = x.mul(tmp.supernova.tree_eff.sn2)
+        if (hasTree("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
+        if (hasTree("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
         x = x.mul(tmp.radiation.bs.eff[11])
         return x
     },
@@ -255,13 +255,13 @@ function updateSupernovaTemp() {
         let unl = (t.unl?t.unl():true)
         let req = t.req?t.req():true
         if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
-        let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !player.supernova.tree.includes(id) && req
-        if (branch != "") for (let x = 0; x < branch.length; x++) if (!player.supernova.tree.includes(branch[x])) {
+        let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !hasTree(id) && req
+        if (branch != "") for (let x = 0; x < branch.length; x++) if (!hasTree(branch[x])) {
             unl = false
             can = false
             break
         }
-        tmp.supernova.tree_unlocked[id] = unl || player.supernova.tree.includes(id)
+        tmp.supernova.tree_unlocked[id] = unl || hasTree(id)
         tmp.supernova.tree_afford[id] = can
         if (t.effect) tmp.supernova.tree_eff[id] = t.effect()
     }

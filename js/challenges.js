@@ -19,7 +19,7 @@ function updateChalHTML() {
     }
     tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
     tmp.el.chal_exit.setVisible(player.chal.active != 0)
-    tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !player.supernova.tree.includes("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
+    tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTree("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
     tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
     if (player.chal.choosed != 0) {
         let chal = CHALS[player.chal.choosed]
@@ -116,7 +116,7 @@ const CHALS = {
         if (player.atom.elements.includes(65) && (i==7||i==8)) x = x.add(200)
         if (player.atom.elements.includes(70) && (i==7||i==8)) x = x.add(200)
         if (player.atom.elements.includes(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
-        if (player.supernova.tree.includes("chal1") && (i==7||i==8))  x = x.add(100)
+        if (hasTree("chal1") && (i==7||i==8))  x = x.add(100)
         return x.floor()
     },
     getScaleName(i) {
@@ -350,7 +350,7 @@ const CHALS = {
         effDesc(x) { return "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     9: {
-        unl() { return player.supernova.tree.includes("chal4") },
+        unl() { return hasTree("chal4") },
         title: "No Particles",
         desc: "You cannot assign quarks. In addtional, mass gains exponent is raised to 0.9th power.",
         reward: `Improve Magnesium-12 better.`,
@@ -359,13 +359,13 @@ const CHALS = {
         pow: E(2),
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
-            let ret = x.root(player.supernova.tree.includes("chal4a")?3.5:4).mul(0.1).add(1)
+            let ret = x.root(hasTree("chal4a")?3.5:4).mul(0.1).add(1)
             return ret
         },
         effDesc(x) { return "^"+format(x) },
     },
     10: {
-        unl() { return player.supernova.tree.includes("chal5") },
+        unl() { return hasTree("chal5") },
         title: "The Reality I",
         desc: "All challenges 1-8 are applied at once. In addtional, you are trapped in Mass Dilation!",
         reward: `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions!</span>`,
@@ -380,7 +380,7 @@ const CHALS = {
         effDesc(x) { return format(x)+"x" },
     },
     11: {
-        unl() { return player.supernova.tree.includes("chal6") },
+        unl() { return hasTree("chal6") },
         title: "Absolutism",
         desc: "You cannot gain relativistic particles or dilated mass. However, you are stuck in Mass Dilation.",
         reward: `Star Booster is stonger by completions.`,
@@ -395,7 +395,7 @@ const CHALS = {
         effDesc(x) { return format(x)+"x stronger" },
     },
     12: {
-        unl() { return player.supernova.tree.includes("chal7") },
+        unl() { return hasTree("chal7") },
         title: "Decay of Atom",
         desc: "You cannot gain Atoms & Quarks.",
         reward: `Completions add free Radiation Boosters.<br><span class="yellow">On first completion, unlock new prestige layer!</span>`,

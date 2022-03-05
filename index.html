@@ -13,6 +13,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
 
+    <script src="js/quantum/primordium.js"></script>
     <script src="js/quantum/chroma.js"></script>
     <script src="js/quantum/quantum.js"></script>
 
@@ -261,7 +262,7 @@
                     <!--<button id="cosmic_str_auto" class="btn" style="width: 80px;" onclick="player.atom.auto_gr = !player.atom.auto_gr">OFF</button>-->
                     <div style="margin-left: 5px; text-align: left; width: 400px">
                         Cosmic Strings Power: <span id="cosmic_str_pow">X</span>x<br>
-                        Cosmic Strings Effect: <span id="cosmic_str_eff">X</span>
+                        Cosmic Strings Effect: <span id="cosmic_str_eff">X</span>x
                     </div>
                 </div>
             </div>
@@ -321,8 +322,15 @@
                 <span id="qu_theory_div">You have <span id="qu_theory">0</span> Quantum Theory (based on every going quantum)</span><br><br>
                 <div id="chroma_table" class="table_center" style="justify-content: space-evenly;"></div>
             </div><div id="stab_frame6_1">
-                You quantumed <span id="qu_times">0</span> times<br><br>
+                You Quantized <span id="qu_times">0</span> times<br><br>
                 <div id="qu_milestones_table"></div>
+            </div><div id="stab_frame6_2">
+                You have <span id="prim_theorem">0</span> Primordium Theorem (based on Blueprint Particles)<br>
+                (+1 at <span id="prim_next_theorem">X</span>)<br><br>
+                <button class="btn" onclick="giveRandomPParticles(1)">Give 1 random Particle</button>
+                <button class="btn" onclick="giveRandomPParticles(10)">Give 10 random Particles</button>
+                <button class="btn" onclick="giveRandomPParticles(1,true)">Give all random Particles</button><br><br>
+                <div id="primordium_table"></div>
             </div>
         </div><div id="tab_frame7">
             <button class="btn" onclick="save()">Save</button>
@@ -340,7 +348,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.5 beta 4 - Quantum Update - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5 beta 5 - Quantum Update - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

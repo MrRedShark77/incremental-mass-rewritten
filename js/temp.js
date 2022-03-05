@@ -49,6 +49,10 @@ function resetTemp() {
             chroma_eff: [],
             mil_reached: [],
         },
+
+        prim: {
+            eff: [],
+        },
     }
     for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
     for (let i = 0; i < 19; i++) {

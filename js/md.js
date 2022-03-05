@@ -13,7 +13,7 @@ const MASS_DILATION = {
     },
     RPexpgain() {
         let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
-        if (!player.md.active && player.supernova.tree.includes("d1")) x = x.mul(1.25)
+        if (!player.md.active && hasTree("d1")) x = x.mul(1.25)
         if (FERMIONS.onActive("01")) x = x.div(10)
         return x
     },
@@ -195,14 +195,14 @@ function updateMDTemp() {
     tmp.md.rp_exp_gain = MASS_DILATION.RPexpgain()
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()
     tmp.md.rp_gain = MASS_DILATION.RPgain()
-    tmp.md.passive_rp_gain = player.supernova.tree.includes("qol3")?MASS_DILATION.RPgain(expMult(player.mass,tmp.md.pen)):E(0)
+    tmp.md.passive_rp_gain = hasTree("qol3")?MASS_DILATION.RPgain(expMult(player.mass,tmp.md.pen)):E(0)
     tmp.md.mass_gain = MASS_DILATION.massGain()
     tmp.md.mass_req = MASS_DILATION.mass_req()
     tmp.md.mass_eff = MASS_DILATION.effect()
 }
 
 function updateMDHTML() {
-    tmp.el.md_particles.setTxt(format(player.md.particles,0)+(player.supernova.tree.includes("qol3")?" "+formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(tmp.preQUGlobalSpeed)):""))
+    tmp.el.md_particles.setTxt(format(player.md.particles,0)+(hasTree("qol3")?" "+formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(tmp.preQUGlobalSpeed)):""))
     tmp.el.md_eff.setTxt(tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
     tmp.el.md_mass.setTxt(formatMass(player.md.mass)+" "+formatGain(player.md.mass,tmp.md.mass_gain.mul(tmp.preQUGlobalSpeed),true))
     tmp.el.md_btn.setTxt(player.md.active

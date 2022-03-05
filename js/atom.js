@@ -7,6 +7,8 @@ const ATOM = {
         if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))
         x = x.mul(tmp.bosons.upgs.gluon[0].effect)
         if (player.atom.elements.includes(17)) x = x.pow(1.1)
+        x = x.pow(tmp.prim.eff[3][0])
+
         if (FERMIONS.onActive("10")) x = expMult(x,0.625)
         return x.floor()
     },
@@ -41,7 +43,7 @@ const ATOM = {
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
-        if (chal_reset && !player.mainUpg.atom.includes(4) && !player.supernova.tree.includes("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
+        if (chal_reset && !player.mainUpg.atom.includes(4) && !hasTree("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
         FORMS.bh.doReset()
     },
     atomic: {
@@ -79,9 +81,10 @@ const ATOM = {
             let pow = E(2)
             if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
             if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
-            if (player.supernova.tree.includes("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
+            if (hasTree("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
             pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
-            if (player.supernova.tree.includes("gr2")) pow = pow.pow(1.25)
+            pow = pow.mul(tmp.prim.eff[3][1])
+            if (hasTree("gr2")) pow = pow.pow(1.25)
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
             return {pow: pow, eff: eff}
         },

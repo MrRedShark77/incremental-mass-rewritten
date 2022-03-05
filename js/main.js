@@ -35,7 +35,7 @@ const FORMS = {
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         x = x.mul(tmp.stars.effect)
-        if (player.supernova.tree.includes("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
+        if (hasTree("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
 
@@ -70,8 +70,8 @@ const FORMS = {
     },
     massSoftGain2() {
         let s = E('1.5e1000056')
-        if (player.supernova.tree.includes("m2")) s = s.pow(1.5)
-        if (player.supernova.tree.includes("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
+        if (hasTree("m2")) s = s.pow(1.5)
+        if (hasTree("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
         if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
 
         s = s.pow(tmp.bosons.effect.neg_w[0])
@@ -85,7 +85,7 @@ const FORMS = {
     },
     massSoftGain3() {
         let s = uni("ee8")
-        if (player.supernova.tree.includes("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
+        if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         s = s.pow(tmp.radiation.bs.eff[2])
         return s
     },
@@ -120,6 +120,7 @@ const FORMS = {
         effect() {
             let t = player.tickspeed
             if (player.atom.elements.includes(63)) t = t.mul(25)
+            t = t.mul(tmp.prim.eff[1][1])
             t = t.mul(tmp.radiation.bs.eff[1])
             let bonus = E(0)
             if (player.atom.unl) bonus = bonus.add(tmp.atom.atomicEff)
@@ -132,7 +133,7 @@ const FORMS = {
                 step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
             step = step.pow(tmp.qu.chroma_eff[0])
-            if (player.supernova.tree.includes("t1")) step = step.pow(1.15)
+            if (hasTree("t1")) step = step.pow(1.15)
 
             let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
             step = step.softcap(ss,0.1,0)
@@ -154,10 +155,12 @@ const FORMS = {
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
             gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
-            if (player.supernova.tree.includes("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
+            if (hasTree("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) gain = gain.root(10)
+            gain = gain.pow(tmp.prim.eff[1][0])
+
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
             return gain.floor()
         },
@@ -181,13 +184,15 @@ const FORMS = {
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
 
-            if (player.supernova.tree.includes("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
+            if (hasTree("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
             gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
 
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = gain.root(6)
             gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) gain = gain.root(8)
             gain = gain.pow(tmp.chal.eff[8])
+            gain = gain.pow(tmp.prim.eff[2][0])
+
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
             return gain.floor()
         },
@@ -222,7 +227,7 @@ const FORMS = {
         },
         fSoftPower() {
             let x = 0.95
-            if (player.supernova.tree.includes("qu3")) x **= 0.7
+            if (hasTree("qu3")) x **= 0.7
             return x
         },
         massSoftGain() {
@@ -281,8 +286,9 @@ const FORMS = {
                     pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
                     if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
                     pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
-                    if (player.supernova.tree.includes("bh2")) pow = pow.pow(1.15)
-                pow = pow
+                    pow = pow.mul(tmp.prim.eff[2][1])
+                    if (hasTree("bh2")) pow = pow.pow(1.15)
+                
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
                 return {pow: pow, eff: eff}
             },
@@ -473,6 +479,7 @@ const UPGS = {
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
                 let ret = step.mul(x.add(tmp.upgs.mass[3].bonus)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)//.softcap(1e14,0.1,0)
+                ret = ret.mul(tmp.prim.eff[0])
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
@@ -787,7 +794,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            auto_unl() { return player.supernova.tree.includes("qol1") },
+            auto_unl() { return hasTree("qol1") },
             lens: 12,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
@@ -912,7 +919,7 @@ function loop() {
     player.offline.current = date
 }
 
-function format(ex, acc=4, type=player.options.notation) {
+function format(ex, acc=4, max=12, type=player.options.notation) {
     ex = E(ex)
     neg = ex.lt(0)?"-":""
     if (ex.mag == Infinity) return neg + 'Infinity'
@@ -922,15 +929,22 @@ function format(ex, acc=4, type=player.options.notation) {
     let e = ex.log10().floor()
     switch (type) {
         case "sc":
-            if (e.lt(4)) {
-                return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
+            if (ex.log10().lt(Math.min(-acc,0)) && acc > 0) {
+                let e = ex.log10().ceil()
+                let m = ex.div(e.eq(-1)?E(0.1):E(10).pow(e))
+                let be = e.mul(-1).max(1).log10().gte(9)
+                return neg+(be?'':m.toFixed(4))+'e'+format(e, 0, max, "sc")
+            } else if (e.lt(max)) {
+                let a = Math.max(Math.min(acc-e.toNumber(), acc), 0)
+                return neg+(a>0?ex.toFixed(a):ex.toFixed(a).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
             } else {
                 if (ex.gte("eeee10")) {
                     let slog = ex.slog()
-                    return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
+                    return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + format(slog.floor(), 0)
                 }
                 let m = ex.div(E(10).pow(e))
-                return neg+(e.log10().gte(9)?'':m.toFixed(4))+'e'+format(e, 0, "sc")
+                let be = e.log10().gte(9)
+                return neg+(be?'':m.toFixed(4))+'e'+format(e, 0, max, "sc")
             }
         case "st":
             let e3 = ex.log(1e3).floor()
@@ -939,7 +953,7 @@ function format(ex, acc=4, type=player.options.notation) {
 			} else {
 				let e3_mul = e3.mul(3)
 				let ee = e3.log10().floor()
-				if (ee.gte(3000)) return "e"+format(e, acc, "st")
+				if (ee.gte(3000)) return "e"+format(e, acc, max, "st")
 
 				let final = ""
 				if (e3.lt(4)) final = ["", "K", "M", "B"][Math.round(e3.toNumber())]
@@ -989,7 +1003,7 @@ function formatGain(amt, gain, isMass=false) {
     let rate
     if (next.div(amt).gte(10) && amt.gte(1e100)) {
         let ooms = next.div(amt).log10().mul(20)
-        if (isMass && amt.gte(mlt(1)) && ooms.gte(1e7)) rate = "(+"+format(ooms.div(1e9)) + " mlt/sec)"
+        if (isMass && amt.gte(mlt(1)) && ooms.gte(1e6)) rate = "(+"+format(ooms.div(1e9)) + " mlt/sec)"
         else rate = "(x"+format(ooms) + "/sec)"
     }
     else rate = "(+"+f(gain)+"/sec)"

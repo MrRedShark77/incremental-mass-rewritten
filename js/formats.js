@@ -171,26 +171,26 @@ const FORMATS = {
       },
     },
     mixed_sc: {
-      format(ex, acc) {
+      format(ex, acc, max) {
         ex = E(ex)
         let e = ex.log10().floor()
-        if (e.lt(63)) return format(ex,acc,"st")
+        if (e.lt(63)) return format(ex,acc,max,"st")
         else {
           let m = ex.div(E(10).pow(e))
-          return e.gte(1e3) ? (e.gte(1e9)?"":m.toFixed(4))+"e"+this.format(e,0) : format(ex,acc,"sc")
+          return e.gte(1e3) ? (e.gte(1e9)?"":m.toFixed(4))+"e"+this.format(e,0,max) : format(ex,acc,max,"sc")
         }
       }
     },
     layer: {
       layers: ["infinity","eternity","reality","equality","affinity","celerity","identity","vitality","immunity","atrocity"],
-      format(ex, acc) {
+      format(ex, acc, max) {
         ex = E(ex)
         let layer = ex.max(1).log10().max(1).log(INFINITY_NUM.log10()).floor()
-        if (layer.lte(0)) return format(ex,acc,"sc")
+        if (layer.lte(0)) return format(ex,acc,max,"sc")
         ex = E(10).pow(ex.max(1).log10().div(INFINITY_NUM.log10().pow(layer)).sub(layer.gte(1)?1:0))
         let meta = layer.div(10).floor()
         let layer_id = layer.toNumber()%10-1
-        return format(ex,Math.max(4,acc),"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?"^"+format(meta,0,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
+        return format(ex,Math.max(4,acc),max,"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?"^"+format(meta,0,max,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
       },
     },
     standard: {

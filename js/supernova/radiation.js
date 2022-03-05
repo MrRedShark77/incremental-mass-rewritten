@@ -4,7 +4,7 @@ const RADIATION = {
     hz_gain() {
         let x = E(1)
         x = x.mul(tmp.radiation.ds_eff[0])
-        if (player.supernova.tree.includes('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
+        if (hasTree('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         return x
     },
@@ -14,14 +14,14 @@ const RADIATION = {
     },
     ds_gain(i) {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
-        let x = E(1)
-        if (player.supernova.tree.includes('rad2')) x = x.mul(10)
+        let x = E(1).mul(tmp.prim.eff[6])
+        if (hasTree('rad2')) x = x.mul(10)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         if (i<RAD_LEN-1) {
-            if (player.supernova.tree.includes('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
+            if (hasTree('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
             x = x.mul(tmp.radiation.ds_eff[i+1])
         }
-        if (player.supernova.tree.includes('rad5')) x = x.mul(tmp.supernova.tree_eff.rad5||1)
+        if (hasTree('rad5')) x = x.mul(tmp.supernova.tree_eff.rad5||1)
         x = x.mul(tmp.radiation.bs.eff[3*i])
         return x
     },
@@ -59,18 +59,18 @@ const RADIATION = {
         let [cost, bulk, j] = [tmp.radiation.bs.cost[i], tmp.radiation.bs.bulk[i], Math.floor(i/2)]
         if (player.supernova.radiation.ds[j].gte(cost) && bulk.gt(player.supernova.radiation.bs[i])) {
             player.supernova.radiation.bs[i] = player.supernova.radiation.bs[i].max(bulk)
-            if (!player.supernova.tree.includes("qol9")) {
+            if (!hasTree("qol9")) {
                 let [f1,f2,f3,fp] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10,tmp.radiation.bs.fp]
                 player.supernova.radiation.ds[j] = player.supernova.radiation.ds[j].sub(E(f1).pow(bulk.sub(1).div(fp).pow(f2)).mul(f3)).max(0)
             }
         }
     },
     autoBuyBoosts() {
-        if (player.supernova.tree.includes("qol9")) for (let x = 0; x < 2*RAD_LEN; x++) this.buyBoost(x)
+        if (hasTree("qol9")) for (let x = 0; x < 2*RAD_LEN; x++) this.buyBoost(x)
     },
     getBoostsFP() {
         let x = E(1)
-        if (player.supernova.tree.includes('rad3')) x = x.mul(1.1)
+        if (hasTree('rad3')) x = x.mul(1.1)
         x = x.mul(tmp.fermions.effs[0][4])
         return x
     },
@@ -134,7 +134,7 @@ const RADIATION = {
         },{
             title: `Meta-Boost I`,
             eff(b) {
-                if (player.supernova.tree.includes('rad4')) b = b.pow(2)
+                if (hasTree('rad4')) b = b.pow(2)
                 let x = b.root(2.5).div(1.75)
                 return x
             },
@@ -198,7 +198,7 @@ const RADIATION = {
         },{
             title: `Meta-Boost II`,
             eff(b) {
-                if (player.supernova.tree.includes('rad4')) b = b.pow(2)
+                if (hasTree('rad4')) b = b.pow(2)
                 let x = b.root(2.5).div(1.75)
                 return x
             },
@@ -242,7 +242,7 @@ const RADIATION = {
 const RAD_LEN = 7
 
 function updateRadiationTemp() {
-    tmp.radiation.unl = player.supernova.tree.includes("unl1")
+    tmp.radiation.unl = hasTree("unl1")
     tmp.radiation.hz_gain = RADIATION.hz_gain()
     tmp.radiation.hz_effect = RADIATION.hz_effect()
     tmp.radiation.bs.fp = RADIATION.getBoostsFP()

@@ -46,6 +46,7 @@ const TABS = {
         6: [
             { id: "Chroma" },
             { id: "Quantum Milestones" },
+            { id: "Primordium", unl() { return PRIM.unl() } },
         ],
     },
 }
