@@ -504,7 +504,15 @@ const ELEMENTS = {
             effDesc(x) { return "+"+format(x) },
         },
         {
-            desc: `Pent multiplies the X-Axion production.`,
+            desc: `Gain more Frequency based on Tau and Neut-Muon.`,
+            cost: E('e3.5e8'),
+            effect() {
+				return player.supernova.fermions.tiers[1][2].mul(.02).add(1).pow(player.supernova.fermions.tiers[1][4].div(2).pow(2))
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        {
+            desc: `Pent multiplies all Axion productions.`,
             cost: E('e2e9'),
             effect() {
 				return player.ranks.pent.add(1)
@@ -542,7 +550,7 @@ const ELEMENTS = {
 	getUnlLength() {
 		let u = 4
 		if (player.ext.amt.gte(1)) {
-			u = 80
+			u = 81
 		} else if (player.supernova.unl) {
 			u = 49+5
 			if (player.supernova.post_10) u += 3

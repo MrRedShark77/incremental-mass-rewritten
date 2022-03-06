@@ -5,6 +5,7 @@ const RADIATION = {
         let x = E(1)
         x = x.mul(tmp.radiation.ds_eff[0])
         if (hasTreeUpg('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
+        if (hasElement(76)) x = x.mul(tmp.elements && tmp.elements.effect[76])
         x = x.mul(tmp.supernova.timeMult)
         return x
     },
@@ -45,7 +46,7 @@ const RADIATION = {
 		let f4 = E(1)
 		if (tmp.fermions) f4 = f4.mul(tmp.fermions.effs[0][5])
 		f4 = f4.mul(tmp.chal?tmp.chal.eff[12]:1)
-		if (hasElement(77) && i % 2 == 1) f4 = f4.mul(0.85)
+		if (hasElement(78) && i % 2 == 1) f4 = f4.mul(0.85)
 		return f4
     },
     getBoostScalingExp(i) {
@@ -220,7 +221,7 @@ const RADIATION = {
             title: `U-Lepton Boost`,
             eff(b) {
                 let x = b.add(1).log(2)
-				if (hasElement(78)) x = b.pow(.75).mul(2)
+				if (hasElement(79)) x = b.pow(.75).mul(2)
                 return x.div(50).add(1)
             },
             desc(x) { return `U-Lepton boosts are ${format(x)}x stronger.` },

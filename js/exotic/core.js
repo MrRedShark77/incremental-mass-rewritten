@@ -307,7 +307,7 @@ let AXIONS = {
 			.mul(player.ext.amt.add(1).log10().add(1).sqrt())
 		if (x == 2 && hasTreeUpg("ext_e1")) r = E(0)
 
-		if (hasElement(76)) r = r.mul(tmp.elements && tmp.elements.effect[76])
+		if (hasElement(77)) r = r.mul(tmp.elements && tmp.elements.effect[77])
 		return r
 	},
 
