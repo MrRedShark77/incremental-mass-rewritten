@@ -31,7 +31,7 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !player.atom.elements.includes(x) },
+    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
             player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
@@ -77,7 +77,7 @@ const ELEMENTS = {
             effect() {
                 let x = E(0)
                 for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
-                if (player.atom.elements.includes(7)) x = x.mul(tmp.elements.effect[7])
+                if (hasElement(7)) x = x.mul(tmp.elements.effect[7])
                 return x.div(100).add(1).max(1)
             },
             effDesc(x) { return format(x)+"x" },
@@ -87,7 +87,7 @@ const ELEMENTS = {
             cost: E(1e20),
             effect() {
                 let x = E(player.atom.elements.length+1)
-                if (player.atom.elements.includes(11)) x = x.pow(2)
+                if (hasElement(11)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -383,7 +383,7 @@ const ELEMENTS = {
             cost: E('e3.6e4'),
             effect() {
                 let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10).max(1):E(1)
-                if (player.atom.elements.includes(66)) x = x.pow(2)
+                if (hasElement(66)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -516,7 +516,7 @@ const ELEMENTS = {
             if (player.supernova.times.gte(1)) u = 49+5
             else {
                 if (player.chal.comps[8].gte(1)) u += 14
-                if (player.atom.elements.includes(18)) u += 3
+                if (hasElement(18)) u += 3
                 if (MASS_DILATION.unlocked()) u += 15
                 if (STARS.unlocked()) u += 18
             }
@@ -527,6 +527,8 @@ const ELEMENTS = {
         return u
     },
 }
+
+function hasElement(x) { return player.atom.elements.includes(x) }
 
 function setupElementsHTML() {
     let elements_table = new Element("elements_table")
@@ -566,7 +568,7 @@ function updateElementsHTML() {
         if (upg) {
             upg.setVisible(x <= tmp.elements.unl_length)
             if (x <= tmp.elements.unl_length) {
-                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: player.atom.elements.includes(x)})
+                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x)})
             }
         }
     }

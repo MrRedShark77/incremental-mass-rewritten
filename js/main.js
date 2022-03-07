@@ -44,7 +44,7 @@ const FORMS = {
         if (!CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) x = x.pow(tmp.chal.eff[3])
         if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) {
             x = expMult(x,tmp.md.pen)
-            if (player.atom.elements.includes(28)) x = x.pow(1.5)
+            if (hasElement(28)) x = x.pow(1.5)
         }
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
@@ -80,7 +80,7 @@ const FORMS = {
     },
     massSoftPower2() {
         let p = E(0.25)
-        if (player.atom.elements.includes(51)) p = p.pow(0.9)
+        if (hasElement(51)) p = p.pow(0.9)
         return p
     },
     massSoftGain3() {
@@ -91,11 +91,12 @@ const FORMS = {
     },
     massSoftPower3() {
         let p = E(0.2)
-        if (player.atom.elements.includes(77)) p = p.pow(0.825)
+        if (hasElement(77)) p = p.pow(0.825)
         return p
     },
     massSoftGain4() {
-        let s = uni("e1e13")
+        let s = mlt(1e4)
+        if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         return s
     },
     massSoftPower4() {
@@ -119,7 +120,7 @@ const FORMS = {
         },
         effect() {
             let t = player.tickspeed
-            if (player.atom.elements.includes(63)) t = t.mul(25)
+            if (hasElement(63)) t = t.mul(25)
             t = t.mul(tmp.prim.eff[1][1])
             t = t.mul(tmp.radiation.bs.eff[1])
             let bonus = E(0)
@@ -139,7 +140,7 @@ const FORMS = {
             step = step.softcap(ss,0.1,0)
             
             let eff = step.pow(t.add(bonus))
-            if (player.atom.elements.includes(18)) eff = eff.pow(tmp.elements.effect[18])
+            if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
             return {step: step, eff: eff, bonus: bonus}
         },
@@ -199,7 +200,7 @@ const FORMS = {
         massPowerGain() {
             let x = E(0.33)
             if (FERMIONS.onActive("11")) return E(-1)
-            if (player.atom.elements.includes(59)) x = E(0.45)
+            if (hasElement(59)) x = E(0.45)
             x = x.add(tmp.radiation.bs.eff[4])
             return x
         },
@@ -208,7 +209,7 @@ const FORMS = {
             .mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
-            if (player.atom.elements.includes(46)) x = x.mul(tmp.elements.effect[46])
+            if (hasElement(46)) x = x.mul(tmp.elements.effect[46])
             x = x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
@@ -221,7 +222,7 @@ const FORMS = {
         },
         fSoftStart() {
             let x = uni("e3e9")
-            if (player.atom.elements.includes(71)) x = x.pow(tmp.elements.effect[71])
+            if (hasElement(71)) x = x.pow(tmp.elements.effect[71])
             x = x.pow(tmp.radiation.bs.eff[20])
             return x
         },
@@ -473,7 +474,7 @@ const UPGS = {
                 let step = E(1).add(RANKS.effect.tetr[2]())
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
-                if (player.atom.elements.includes(4)) step = step.mul(tmp.elements.effect[4])
+                if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
                 if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
@@ -562,7 +563,7 @@ const UPGS = {
                 desc: "For every 3 tickspeeds adds Stronger.",
                 cost: E(1e7),
                 effect() {
-                    let ret = player.tickspeed.div(3).add(player.atom.elements.includes(38)?tmp.elements.effect[38]:0).floor()
+                    let ret = player.tickspeed.div(3).add(hasElement(38)?tmp.elements.effect[38]:0).floor()
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -975,10 +976,10 @@ function format(ex, acc=4, max=12, type=player.options.notation) {
 				}
 
 				let m = ex.div(E(10).pow(e3_mul))
-				return neg+(ee.gte(4)?'':(m.toFixed(E(3).sub(e.sub(e3_mul)).add(acc==0?0:1).toNumber()))+' ')+final
+				return neg+(ee.gte(10)?'':(m.toFixed(E(3).sub(e.sub(e3_mul)).add(acc==0?0:1).toNumber()))+' ')+final
 			}
         default:
-            return neg+FORMATS[type].format(ex, acc)
+            return neg+FORMATS[type].format(ex, acc, max)
     }
 }
 

@@ -1,5 +1,5 @@
 const MASS_DILATION = {
-    unlocked() { return player.atom.elements.includes(21) },
+    unlocked() { return hasElement(21) },
     penalty() {
         let x = 0.8
         if (FERMIONS.onActive("02")) x **= 2
@@ -19,10 +19,10 @@ const MASS_DILATION = {
     },
     RPmultgain() {
         let x = E(1).mul(tmp.md.upgs[2].eff)
-        if (player.atom.elements.includes(24)) x = x.mul(tmp.elements.effect[24])
-        if (player.atom.elements.includes(31)) x = x.mul(tmp.elements.effect[31])
-        if (player.atom.elements.includes(34)) x = x.mul(tmp.elements.effect[34])
-        if (player.atom.elements.includes(45)) x = x.mul(tmp.elements.effect[45])
+        if (hasElement(24)) x = x.mul(tmp.elements.effect[24])
+        if (hasElement(31)) x = x.mul(tmp.elements.effect[31])
+        if (hasElement(34)) x = x.mul(tmp.elements.effect[34])
+        if (hasElement(45)) x = x.mul(tmp.elements.effect[45])
         x = x.mul(tmp.fermions.effs[0][1]||1)
         return x
     },
@@ -36,10 +36,10 @@ const MASS_DILATION = {
         let pow = E(2)
         let x = player.md.particles.pow(pow)
         x = x.mul(tmp.md.upgs[0].eff)
-        if (player.atom.elements.includes(22)) x = x.mul(tmp.elements.effect[22])
-        if (player.atom.elements.includes(35)) x = x.mul(tmp.elements.effect[35])
-        if (player.atom.elements.includes(40)) x = x.mul(tmp.elements.effect[40])
-        if (player.atom.elements.includes(32)) x = x.pow(1.05)
+        if (hasElement(22)) x = x.mul(tmp.elements.effect[22])
+        if (hasElement(35)) x = x.mul(tmp.elements.effect[35])
+        if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
+        if (hasElement(32)) x = x.pow(1.05)
         return x
     },
     mass_req() {
@@ -53,7 +53,7 @@ const MASS_DILATION = {
     upgs: {
         buy(x) {
             if (tmp.md.upgs[x].can) {
-                if (!player.atom.elements.includes(43)) player.md.mass = player.md.mass.sub(this.ids[x].cost(tmp.md.upgs[x].bulk.sub(1))).max(0)
+                if (!hasElement(43)) player.md.mass = player.md.mass.sub(this.ids[x].cost(tmp.md.upgs[x].bulk.sub(1))).max(0)
                 player.md.upgs[x] = player.md.upgs[x].max(tmp.md.upgs[x].bulk)
             }
         },
@@ -64,7 +64,7 @@ const MASS_DILATION = {
                 bulk() { return player.md.mass.gte(10)?player.md.mass.div(10).max(1).log10().add(1).floor():E(0) },
                 effect(x) {
                     let b = 2
-                    if (player.atom.elements.includes(25)) b++
+                    if (hasElement(25)) b++
                     return E(b).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap('e1.2e4',0.96,2)//.softcap('e2e4',0.92,2)
                 },
                 effDesc(x) { return format(x,0)+"x"+(x.gte('e1.2e4')?` <span class='soft'>(softcapped${x.gte('e2e400')?"^2":""})</span>`:"")},
@@ -103,7 +103,7 @@ const MASS_DILATION = {
                 effect(i) {
                     let s = E(0.25).add(tmp.md.upgs[10].eff||1)
                     let x = i.mul(s)
-                    if (player.atom.elements.includes(53)) x = x.mul(1.75)
+                    if (hasElement(53)) x = x.mul(1.75)
                     return x.softcap(1e3,0.6,0)//.softcap(3e4,0.5,0)
                 },
                 effDesc(x) { return "+^"+format(x)+(x.gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },

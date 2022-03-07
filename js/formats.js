@@ -211,8 +211,25 @@ const FORMATS = {
         r += ST_NAMES[2][3][h]
   
         return r
+      },
+    },
+    inf: {
+      format(ex, acc, max) {
+        let meta = 0
+        let inf = E(Number.MAX_VALUE)
+        let symbols = ["", "∞", "Ω", "Ψ", "ʊ"]
+        let symbols2 = ["", "", "m", "mm", "mmm"]
+        while (ex.gte(inf)) {
+          ex = ex.log(inf)
+          meta++
+        }
+  
+        if (meta == 0) return format(ex, acc, max, "sc")
+        if (ex.gte(3)) return symbols2[meta] + symbols[meta] + "ω^"+format(ex.sub(1), acc, max, "sc")
+        if (ex.gte(2)) return symbols2[meta] + "ω" + symbols[meta] + "-"+format(inf.pow(ex.sub(2)), acc, max, "sc")
+        return symbols2[meta] + symbols[meta] + "-"+format(inf.pow(ex.sub(1)), acc, max, "sc")
       }
-    }
+    },
 }
 
 

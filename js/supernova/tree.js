@@ -1,8 +1,8 @@
 const TREE_IDS = [
     ["qu_qol2","qu_qol1","qu_qol6","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
     ["qu_qol3","qu_qol4","qu_qol5","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
-    ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","qu4",""],
-    ["","unl2","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
+    ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","chal4b","chal4","","","qu4",""],
+    ["","unl2","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","qu5",""],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","fn8","","fn9","fn1","fn5","","","","","","","",""],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
@@ -90,6 +90,17 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return "+"+format(x)+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"") },
+        },
+        sn5: {
+            branch: ["sn4"],
+            desc: `Mass boosts Neutron Stars gain.`,
+            unl() { return quUnl() },
+            cost: E('e450'),
+            effect() {
+                let x = player.mass.add(1).log10().add(1).pow(2)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         m1: {
             branch: ["c"],
@@ -287,6 +298,12 @@ const TREE_UPGS = {
             branch: ["chal4"],
             desc: `Make 9th Challenges effect better.`,
             cost: E(1e8),
+        },
+        chal4b: {
+            unl() { return quUnl() },
+            branch: ["chal4"],
+            desc: `Add 100 more C9 completions.`,
+            cost: E('e480'),
         },
         chal5: {
             branch: ["chal4"],
@@ -506,6 +523,18 @@ const TREE_UPGS = {
             branch: ["qu1", 'qu2', 'qu3'],
             desc: `Remove effect's softcaps from [sn2].`,
             cost: E(35),
+        },
+        qu5: {
+            qf: true,
+            unl() { return PRIM.unl() },
+            branch: ['qu4'],
+            desc: `Blueprint Particles & Chromas are affected by Tickspeed Effect at a reduced rate.`,
+            cost: E(100),
+            effect() {
+                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.eff.add(1).log10().add(1).log10().add(1).pow(3):E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         qu_qol1: {
             qf: true,

@@ -101,6 +101,7 @@ const RANKS = {
             '2': "tetr boost all radiations gain.",
             '4': "Meta-Tickspeeds start later based on Supernovas.",
             '5': "Meta-Ranks start later based on Pent.",
+            '8': "Mass gain softcap^4 starts later based on Pent.",
         },
     },
     effect: {
@@ -188,6 +189,10 @@ const RANKS = {
                 let ret = E(1.05).pow(player.ranks.pent)
                 return ret
             },
+            '8'() {
+                let ret = E(1.1).pow(player.ranks.pent)
+                return ret
+            },
         },
     },
     effDesc: {
@@ -216,6 +221,7 @@ const RANKS = {
             2(x) { return format(x)+"x" },
             4(x) { return format(x)+"x later" },
             5(x) { return format(x)+"x later" },
+            8(x) { return "^"+format(x)+" later" },
         },
     },
     fp: {
@@ -440,10 +446,10 @@ function updateRanksTemp() {
 
     fp = E(1)
     let pow = 2
-    if (player.atom.elements.includes(44)) pow = 1.75
-    if (player.atom.elements.includes(9)) fp = fp.mul(1/0.85)
+    if (hasElement(44)) pow = 1.75
+    if (hasElement(9)) fp = fp.mul(1/0.85)
     if (player.ranks.pent.gte(1)) fp = fp.mul(1/0.85)
-    if (player.atom.elements.includes(72)) fp = fp.mul(1/0.85)
+    if (hasElement(72)) fp = fp.mul(1/0.85)
     tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).div(fp).pow(pow).mul(3).add(10).floor()
     tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(pow).mul(fp).mul(fp2).add(1).floor();
     if (scalingActive("tetr", player.ranks.tetr.max(tmp.ranks.tetr.bulk), "super")) {

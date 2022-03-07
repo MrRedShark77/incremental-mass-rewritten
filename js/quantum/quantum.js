@@ -81,6 +81,7 @@ const QUANTUM = {
     bpGain() {
         let x = E(1)
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.root(2))
+        if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         x = x.mul(tmp.qu.cosmic_str_eff.eff)
         return x
     },

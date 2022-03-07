@@ -63,6 +63,7 @@ const POPUP_GROUPS = {
         html: `
             <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
             <button class="btn" onclick="player.options.notation = 'eng'">Engineering</button>
+            <button class="btn" onclick="player.options.notation = 'inf'">Infinity</button>
             <button class="btn" onclick="player.options.notation = 'mixed_sc'">Mixed Scientific</button>
             <button class="btn" onclick="player.options.notation = 'layer'">Prestige Layer</button>
             <button class="btn" onclick="player.options.notation = 'sc'">Scientific</button>

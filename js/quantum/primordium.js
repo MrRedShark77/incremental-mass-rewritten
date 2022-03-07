@@ -62,7 +62,7 @@ const PRIM = {
             x=>{ return `Boost Dark Matters gain by ^${format(x[0])} /<br> Boost BH Condenser Power by ${format(x[1])}x` },
             x=>{ return `Boost Atoms gain by ^${format(x[0])} /<br> Boost Cosmic Ray Power by ${format(x[1])}x` },
             x=>{ return `Boost Higgs Boson's effect by ${format(x)}x` },
-            x=>{ return `Add ${format(x)} to base from Fermions gain by ` },
+            x=>{ return `Add ${format(x)} to base from Fermions gain ` },
             x=>{ return `Boost all Radiations gains by ${format(x)}x` },
             x=>{ return `Make Meta-Supernova starts ${format(x)} later` },
         ],

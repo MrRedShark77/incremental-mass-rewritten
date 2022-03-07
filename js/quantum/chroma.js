@@ -8,6 +8,7 @@ const CHROMA = {
         if (!player.qu.chr_get.includes(i)) return E(0)
         let x = E(1)
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.root(2))
+        if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         return x
     },
     names: [

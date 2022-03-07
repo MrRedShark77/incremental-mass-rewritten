@@ -107,16 +107,17 @@ const CHALS = {
     getMax(i) {
         let x = this[i].max
         if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
-        if (player.atom.elements.includes(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
-        if (player.atom.elements.includes(20) && (i==7)) x = x.add(50)
-        if (player.atom.elements.includes(41) && (i==7)) x = x.add(50)
-        if (player.atom.elements.includes(60) && (i==7)) x = x.add(100)
-        if (player.atom.elements.includes(33) && (i==8)) x = x.add(50)
-        if (player.atom.elements.includes(56) && (i==8)) x = x.add(200)
-        if (player.atom.elements.includes(65) && (i==7||i==8)) x = x.add(200)
-        if (player.atom.elements.includes(70) && (i==7||i==8)) x = x.add(200)
-        if (player.atom.elements.includes(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
+        if (hasElement(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
+        if (hasElement(20) && (i==7)) x = x.add(50)
+        if (hasElement(41) && (i==7)) x = x.add(50)
+        if (hasElement(60) && (i==7)) x = x.add(100)
+        if (hasElement(33) && (i==8)) x = x.add(50)
+        if (hasElement(56) && (i==8)) x = x.add(200)
+        if (hasElement(65) && (i==7||i==8)) x = x.add(200)
+        if (hasElement(70) && (i==7||i==8)) x = x.add(200)
+        if (hasElement(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
         if (hasTree("chal1") && (i==7||i==8))  x = x.add(100)
+        if (hasTree("chal4b") && (i==9))  x = x.add(100)
         return x.floor()
     },
     getScaleName(i) {
@@ -127,8 +128,8 @@ const CHALS = {
     },
     getPower(i) {
         let x = E(1)
-        if (player.atom.elements.includes(2)) x = x.mul(0.75)
-        if (player.atom.elements.includes(26)) x = x.mul(tmp.elements.effect[26])
+        if (hasElement(2)) x = x.mul(0.75)
+        if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
         return x
     },
     getPower2(i) {
@@ -149,7 +150,7 @@ const CHALS = {
         if (x > 8) s2 = 50
         let s3 = 1000
         let pow = chal.pow
-        if (player.atom.elements.includes(10) && (x==3||x==4)) pow = pow.mul(0.95)
+        if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
         let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
         let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
@@ -248,8 +249,8 @@ const CHALS = {
         start: E(1.989e40),
         effect(x) {
             let sp = E(0.5)
-            if (player.atom.elements.includes(8)) sp = sp.pow(0.25)
-            if (player.atom.elements.includes(39)) sp = E(1)
+            if (hasElement(8)) sp = sp.pow(0.25)
+            if (hasElement(39)) sp = E(1)
             let ret = x.mul(0.075).add(1).softcap(1.3,sp,0).sub(1)
             return ret
         },
@@ -265,7 +266,7 @@ const CHALS = {
         pow: E(1.25),
         start: E(2.9835e49),
         effect(x) {
-            if (player.atom.elements.includes(64)) x = x.mul(1.5)
+            if (hasElement(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
             return ret.softcap(3,0.25,0)
         },
@@ -281,7 +282,7 @@ const CHALS = {
         pow: E(1.25),
         start: E(1.736881338559743e133),
         effect(x) {
-            if (player.atom.elements.includes(64)) x = x.mul(1.5)
+            if (hasElement(64)) x = x.mul(1.5)
             let ret = x.root(1.5).mul(0.01).add(1)
             return ret.softcap(3,0.25,0)
         },
@@ -312,7 +313,7 @@ const CHALS = {
         pow: E(1.25),
         start: E(1.989e38),
         effect(x) {
-            let ret = x.mul(0.1).add(1).softcap(1.5,player.atom.elements.includes(39)?1:0.5,0).sub(1)
+            let ret = x.mul(0.1).add(1).softcap(1.5,hasElement(39)?1:0.5,0).sub(1)
             return ret
         },
         effDesc(x) { return "+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
@@ -328,7 +329,7 @@ const CHALS = {
         start: E(1.5e76),
         effect(x) {
             let ret = x.mul(2)
-            if (player.atom.elements.includes(5)) ret = ret.mul(2)
+            if (hasElement(5)) ret = ret.mul(2)
             return ret.floor()
         },
         effDesc(x) { return "+"+format(x,0) },
@@ -343,7 +344,7 @@ const CHALS = {
         pow: E(1.3),
         start: E(1.989e38),
         effect(x) {
-            if (player.atom.elements.includes(64)) x = x.mul(1.5)
+            if (hasElement(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
             return ret.softcap(2.3,0.25,0)
         },
