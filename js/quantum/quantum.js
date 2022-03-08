@@ -115,6 +115,7 @@ const QUANTUM = {
         [E(5), `You start with QoL (qol8-9 & unl1), Radiation unlocked.`],
         [E(6), `Double Quantum Foam gain.`],
         [E(8), `Pre-Quantum global speed can affect Blueprint Particle & Chroma at a reduced rate.`],
+        [E(10), `Supernova stars are boosted by Quantum times (capped at 1e10).`],
     ],
 }
 

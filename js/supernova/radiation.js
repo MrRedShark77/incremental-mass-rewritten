@@ -14,7 +14,7 @@ const RADIATION = {
     },
     ds_gain(i) {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
-        let x = E(1).mul(tmp.prim.eff[6])
+        let x = E(1).mul(tmp.prim.eff[6][0])
         if (hasTree('rad2')) x = x.mul(10)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         if (i<RAD_LEN-1) {
@@ -27,6 +27,7 @@ const RADIATION = {
     },
     ds_eff(i) {
         let x = player.supernova.radiation.ds[i].add(1).root(3)
+        if (hasTree('prim2')) x = x.pow(tmp.prim.eff[6][1])
         return x
     },
     getBoostData(i) {
@@ -53,6 +54,9 @@ const RADIATION = {
         x = x.add(tmp.chal?tmp.chal.eff[12]:0)
         if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
         if (i < 17) x = x.add(tmp.radiation.bs.eff[17])
+
+        if (hasTree('rad6')) x = x.mul(1.6-0.05*Math.floor(i/3))
+
         return x
     },
     buyBoost(i) {

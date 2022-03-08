@@ -192,7 +192,7 @@ function updateBosonsHTML() {
         if (BOSONS.upgs.ids.includes(id)) for (let y in BOSONS.upgs[id]) {
             let id2 = id+"_upg"+y
             tmp.el[id2+"_div"].setClasses({btn: true, full: true, b_btn: true, locked: !tmp.bosons.upgs[id][y].can})
-            tmp.el[id2+"_lvl"].setTxt(format(player.supernova.b_upgs[id][y],0,"sc"))
+            tmp.el[id2+"_lvl"].setTxt(format(player.supernova.b_upgs[id][y],0))
             tmp.el[id2+"_eff"].setHTML(BOSONS.upgs[id][y].effDesc(tmp.bosons.upgs[id][y].effect))
             tmp.el[id2+"_cost"].setTxt(format(tmp.bosons.upgs[id][y].cost))
         }

@@ -117,6 +117,7 @@ const ELEMENTS = {
             cost: E(2.5e30),
             effect() {
                 let x = player.chal.comps[7].mul(2)
+                if (hasElement(79)) x = x.mul(tmp.qu.chroma_eff[2])
                 return x
             },
             effDesc(x) { return "+"+format(x) },
@@ -473,6 +474,7 @@ const ELEMENTS = {
             cost: E('e1.3e9'),
             effect() {
                 let x = player.supernova.times.mul(5)
+                if (hasElement(79)) x = x.mul(tmp.qu.chroma_eff[2])
                 return x
             },
             effDesc(x) { return "+"+format(x,0) },
@@ -497,6 +499,14 @@ const ELEMENTS = {
             desc: `Meta-Supernova scales 20% weaker.`,
             cost: E('e3.4e12'),
         },
+        {
+            desc: `Neutronium-0 affects Aluminium-13 & Titanium-73.`,
+            cost: E('e4.8e12'),
+        },
+        {
+            desc: `Stronger & Tickspeed are 10x stronger.`,
+            cost: E('e1.4e13'),
+        },
     ],
     /*
     {
@@ -511,7 +521,7 @@ const ELEMENTS = {
     */
     getUnlLength() {
         let u = 4
-        if (quUnl()) u = 77+1
+        if (quUnl()) u = 77+3
         else {
             if (player.supernova.times.gte(1)) u = 49+5
             else {

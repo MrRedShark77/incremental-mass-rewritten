@@ -48,7 +48,7 @@ const PRIM = {
                 return x
             },
             p=>{
-                let x = E(5).pow(p.pow(0.75))
+                let x = [E(5).pow(p.pow(0.75)), p.root(5).div(10).add(1)]
                 return x
             },
             p=>{
@@ -63,7 +63,7 @@ const PRIM = {
             x=>{ return `Boost Atoms gain by ^${format(x[0])} /<br> Boost Cosmic Ray Power by ${format(x[1])}x` },
             x=>{ return `Boost Higgs Boson's effect by ${format(x)}x` },
             x=>{ return `Add ${format(x)} to base from Fermions gain ` },
-            x=>{ return `Boost all Radiations gains by ${format(x)}x` },
+            x=>{ return `Boost all Radiations gains by ${format(x[0])}x` + (hasTree("prim2") ? ` /<br> Make all Radiations effects ${format(x[1])}x stronger` : "") },
             x=>{ return `Make Meta-Supernova starts ${format(x)} later` },
         ],
     },
@@ -108,6 +108,7 @@ calcPartChances()
 
 function updatePrimordiumTemp() {
     tmp.prim.t_base = E(5)
+    if (hasTree('prim1')) tmp.prim.t_base = tmp.prim.t_base.sub(1)
     tmp.prim.theorems = PRIM.getTheorems()
     tmp.prim.next_theorem = PRIM.getNextTheorem()
     tmp.prim.unspent = player.qu.prim.theorems.sub(PRIM.spentTheorems()).max(0)

@@ -2,11 +2,11 @@ const TREE_IDS = [
     ["qu_qol2","qu_qol1","qu_qol6","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
     ["qu_qol3","qu_qol4","qu_qol5","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
     ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","chal4b","chal4","","","qu4",""],
-    ["","unl2","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","qu5",""],
+    ["","unl2","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","prim1","qu5","prim2"],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","fn8","","fn9","fn1","fn5","","","","","","","",""],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
-    ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
+    ["","","","","","","rad6","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
     ["","","","","","","","","","qf1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -480,6 +480,12 @@ const TREE_UPGS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        rad6: {
+            unl() { return PRIM.unl() },
+            branch: ["rad4"],
+            desc: `Bonus radiation boosts are stronger for every radiation index.`,
+            cost: E('e490'),
+        },
 
         qf1: {
             unl() { return quUnl() },
@@ -604,6 +610,18 @@ const TREE_UPGS = {
             reqDesc() { return `Reach ${formatMass(mlt(5e3))} of mass without completing Challenges 9-12 per Quantum run, while in [Bottom].` },
             desc: `Keep challenge 9-12 completions on going Quantum.`,
             cost: E(25),
+        },
+        prim1: {
+            qf: true,
+            branch: ["qu5"],
+            desc: `Primordium Theorem’s base requirement is reduced by 1.`,
+            cost: E(200),
+        },
+        prim2: {
+            qf: true,
+            branch: ["qu5"],
+            desc: `Theta Particle’s second effect is now added.`,
+            cost: E(500),
         },
 
         // Other

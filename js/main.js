@@ -139,7 +139,7 @@ const FORMS = {
             let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
             step = step.softcap(ss,0.1,0)
             
-            let eff = step.pow(t.add(bonus))
+            let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
             if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
             return {step: step, eff: eff, bonus: bonus}
@@ -479,7 +479,7 @@ const UPGS = {
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
-                let ret = step.mul(x.add(tmp.upgs.mass[3].bonus)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)//.softcap(1e14,0.1,0)
+                let ret = step.mul(x.add(tmp.upgs.mass[3].bonus).mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)//.softcap(1e14,0.1,0)
                 ret = ret.mul(tmp.prim.eff[0])
                 return {step: step, eff: ret, ss: ss}
             },
