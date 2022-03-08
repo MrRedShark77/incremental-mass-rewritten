@@ -270,7 +270,7 @@ const RANKS = {
         pent() {
             let f = E(5/6)
             if (AXIONS.unl()) f = f.mul(tmp.ax.eff[15])
-            if (hasElement(80)) f = f.mul(0.88)
+            if (hasElement(81)) f = f.mul(0.88)
             if (future) f = f.div(player.mass.max(1).log10().add(1).pow(0.01))
             return f
         },

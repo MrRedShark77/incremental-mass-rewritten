@@ -245,20 +245,20 @@ let AXIONS = {
 			if (i == x) normal = lvl
 			else other = other.add(lvl)
 		}
-		if (hasTreeUpg("ext_l3")) {
-			if (i % 4 < 3) other = other.sub(player.ext.ax.upgs[i + 1].div(2))
-			if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(2))
-		}
-		if (hasTreeUpg("ext_l4")) {
-			if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(3))
-			if (i % 4 > 1) other = other.sub(player.ext.ax.upgs[i - 2].div(3))
-			if (i % 4 > 2) other = other.sub(player.ext.ax.upgs[i - 3].div(3))
-		}
-		if (hasTreeUpg("ext_l5")) {
-			if (i % 4 == 0) other = other.sub(player.ext.ax.upgs[i + 3].div(1.5))
-			if (i % 4 <= 1) other = other.sub(player.ext.ax.upgs[i + 2].div(1.5))
-			if (i % 4 >= 2) other = other.sub(player.ext.ax.upgs[i - 2].div(1.5))
-			if (i % 4 == 3) other = other.sub(player.ext.ax.upgs[i - 3].div(1.5))
+		if (type < 2) {
+			if (hasTreeUpg("ext_l3")) {
+				if (i % 4 < 3) other = other.sub(player.ext.ax.upgs[i + 1].div(2))
+				if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(2))
+			}
+			if (hasTreeUpg("ext_l4")) {
+				if (i % 4 > 0) other = other.sub(player.ext.ax.upgs[i - 1].div(3))
+				if (i % 4 > 1) other = other.sub(player.ext.ax.upgs[i - 2].div(3))
+				if (i % 4 > 2) other = other.sub(player.ext.ax.upgs[i - 3].div(3))
+			}
+			if (hasTreeUpg("ext_l5")) {
+				if (i % 4 == 0) other = other.sub(player.ext.ax.upgs[i + 3].div(5))
+				if (i % 4 <= 1) other = other.sub(player.ext.ax.upgs[i + 2].div(5))
+			}
 		}
 
 		var sum = normal.add(other).mul(AXIONS.costScale())
@@ -306,7 +306,7 @@ let AXIONS = {
 			.mul(player.ext.amt.add(1).log10().add(1).sqrt())
 		if (x == 2 && hasTreeUpg("ext_e1")) r = E(0)
 
-		if (hasElement(76)) r = r.mul(tmp.elements && tmp.elements.effect[76])
+		if (hasElement(77)) r = r.mul(tmp.elements && tmp.elements.effect[77])
 		return r
 	},
 

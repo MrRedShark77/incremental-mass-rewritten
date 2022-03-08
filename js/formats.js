@@ -172,7 +172,33 @@ const FORMATS = {
 			let e = ex.log10()
 			if (e.lt(3)) return ex.toFixed(log ? acc : Math.max(Math.min(acc - e.toNumber(), acc), 0))
 			else if (e.lt(6)) return ex.floor().toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-			return neg + 'e' + this.format(e, Math.max(acc, 2), true)
+			return 'e' + this.format(e, Math.max(acc, 2), true)
+		}
+	},
+	inf: {
+		format(ex, acc, log) {
+			let meta = 0
+			let inf = E(Number.MAX_VALUE)
+			let symbols = ["", "∞", "Ω", "Ψ", "ʊ"]
+			let symbols2 = ["", "", "m", "mm", "mmm"]
+			while (ex.gte(inf)) {
+				ex = ex.log(inf)
+				meta++
+			}
+
+			if (meta == 0) return format(ex, acc, "sci")
+			if (ex.gte(3)) return symbols2[meta] + symbols[meta] + "ω^"+format(ex.sub(1), acc, "sci")
+			if (ex.gte(2)) return symbols2[meta] + "ω" + symbols[meta] + "-"+format(inf.pow(ex.sub(2)), acc, "sci")
+			return symbols2[meta] + symbols[meta] + "-"+format(inf.pow(ex.sub(1)), acc, "sci")
+		}
+	},
+	max: {
+		format(ex, acc, log) {
+			ex = E(ex)
+			let e = ex.log10()
+			if (e.lt(3)) return ex.toFixed(log ? acc : Math.max(Math.min(acc - e.toNumber(), acc), 0))
+			else if (e.lt(6)) return ex.floor().toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+			return 'MX-' + format(e, Math.max(acc, 2), "st")
 		}
 	},
     eng: {

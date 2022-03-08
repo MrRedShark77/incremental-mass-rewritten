@@ -251,7 +251,7 @@ const FORMS = {
 
 		radSoftStart() {
 			let r = E(10).pow(player.supernova.times.add(1).pow(6).div(100))
-			if (hasElement(79)) r = r.pow(1.5)
+			if (hasElement(80)) r = r.pow(1.5)
 			return r
 		}
     },

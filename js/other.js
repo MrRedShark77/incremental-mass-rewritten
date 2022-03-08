@@ -70,6 +70,8 @@ const POPUP_GROUPS = {
             <button class="btn" onclick="player.options.notation = 'layer'">Prestige Layer</button>
             <button class="btn" onclick="player.options.notation = 'omega'">Omega</button>
             <button class="btn" onclick="player.options.notation = 'omega_short'">Omega Short</button>
+            <button class="btn" onclick="player.options.notation = 'inf'">Infinity</button>
+            <button class="btn" onclick="player.options.notation = 'max'">Maximus</button>
         `,
     },
     supernova10: {
