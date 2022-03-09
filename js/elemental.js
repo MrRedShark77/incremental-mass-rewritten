@@ -11,7 +11,7 @@ const ELEMENTS = {
         'Sb','Te','I','Xe','Cs','Ba','La','Ce','Pr','Nd',
         'Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb',
         'Lu','Hf','Ta','W','Re','Os','Ir','Pt','At','Hg',
-        'Ti','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th',
+        'Ti','Pb','Bi','Po','Au','Rn','Fr','Ra','Ac','Th',
         'Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm',
         'Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds',
         'Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'
@@ -25,7 +25,7 @@ const ELEMENTS = {
         'Niobium','Molybdenum','Technetium','Ruthenium','Rhodium','Palladium','Silver','Cadmium','Indium','Tin',
         'Antimony','Tellurium','Iodine','Xenon','Caesium','Barium','Lanthanum','Cerium','Praseodymium','Neodymium',
         'Promethium','Samarium','Europium','Gadolinium','Terbium','Dysprosium','Holmium','Erbium','Thulium','Ytterbium',
-        'Lutetium','Hafnium','Titanium','Tungsten','Rhenium','Osmium','Iridium','Platinum','Gold','Mercury',
+        'Lutetium','Hafnium','Tantalum','Tungsten','Rhenium','Osmium','Iridium','Platinum','Gold','Mercury',
         'Thallium','Lead','Bismuth','Polonium','Astatine','Radon','Francium','Radium','Actinium','Thorium',
         'Protactinium','Uranium','Neptunium','Plutonium','Americium','Curium','Berkelium','Californium','Einsteinium','Fermium',
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',

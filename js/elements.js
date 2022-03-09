@@ -203,7 +203,7 @@ function updateUpperHTML() {
 
 	unl = player.supernova.post_10
 	tmp.el.sn_div.setVisible(unl)
-	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>"+formatGet(player.supernova.times, tmp.supernova.bulk.sub(player.supernova.times)))
+	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>"+formatGet(player.supernova.times, tmp.supernova.bulk.sub(player.supernova.times), true))
 
 	unl = EXOTIC.unlocked()
 	tmp.el.ext_div.setVisible(unl)

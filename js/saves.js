@@ -1,6 +1,7 @@
 function E(x){return new Decimal(x)};
 
 function uni(x) { return E(1.5e56).mul(x) }
+function mlt(x) { return uni(E(10).pow(E(1e9).mul(x))) }
 
 Decimal.prototype.modular=Decimal.prototype.mod=function (other){
     other=E(other);

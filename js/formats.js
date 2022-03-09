@@ -257,8 +257,11 @@ const FORMATS = {
 
 			let r = ''
 			if (x < 10) return ST_NAMES[2][0][x]
-			if (t == 1 && o == 0) r += "Vec"
-			else r += ST_NAMES[2][1][o] + ST_NAMES[2][2][t]
+			r += ST_NAMES[2][1][o]
+			r += ST_NAMES[2][2][t]
+			if (x % 100 == 10) r += "Ve"
+			if (x == 20) r += "o"
+			if (h > 0 && t == 1 && o > 0) r += "c"
 			r += ST_NAMES[2][3][h]
 
 			return r
@@ -273,9 +276,9 @@ const ST_NAMES = [
 		["","Ce","De","Te","Qae","Qte","Sxe","Spe","Oce","Noe"],
 	],[
 		["","Mi","Mc","Na","Pc","Fm","At","Zp","Yc","Xn"],
-		["","Me","Du","Tr","Te","Pe","He","Hp","Ot","En"],
-		["","c","Ic","TCn","TeC","PCn","HCn","HpC","OCn","ECn"],
-		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
+		["","Me","Du","Tre","Te","Pe","He","Hp","Ot","En"],
+		["","","Is","Trc","Tec","Pec","Hec","Hpc","Otc","Enc"],
+		["","Hec","DHc","TrH","TeH","PeH","HeH","HpH","OtH","EnH"]
 	]
 ]
 

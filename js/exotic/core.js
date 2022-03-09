@@ -293,7 +293,7 @@ let AXIONS = {
 		var type = Math.floor(i / 4)
 		if (bulk.eq(0)) return
 		player.ext.ax.upgs[i] = player.ext.ax.upgs[i].add(bulk)
-		player.ext.ax.res[type] = player.ext.ax.res[type].sub(E([2,3,5][type], bulk).mul(cost)).max(0)
+		player.ext.ax.res[type] = player.ext.ax.res[type].sub(E([2,3,5][type]).pow(bulk.sub(1)).mul(cost)).max(0)
 		updateAxionLevelTemp()
 	},
 
@@ -369,7 +369,7 @@ let AXIONS = {
 			desc: "Outside of challenges, Tickspeed scalings are weaker, but reduce the non-bonus.",
 			req: E(0),
 			eff(x) {
-				return x.add(1).log10().div(2).add(1)
+				return x.add(1).log10().div(3).add(1)
 			},
 			effDesc(x) {
 				return format(x) + "x"
@@ -392,10 +392,10 @@ let AXIONS = {
 			desc: "Raise the base Atomic Power gains.",
 			req: E(1),
 			eff(x) {
-				return x.div(3).add(1).pow(2/3).min(7.5)
+				return x.div(3).add(1).pow(5/9).softcap(5,5,3).min(7.5)
 			},
 			effDesc(x) {
-				return "^" + format(x)
+				return "^" + format(x) + getSoftcapHTML(x, 5)
 			}
 		},
 		5: {
@@ -425,7 +425,7 @@ let AXIONS = {
 			desc: "Multiply Meta Boosts based on radiation types.",
 			req: E(7),
 			eff(x) {
-				return x.add(1).log(3).div(10).add(1).min(1.6)
+				return x.add(1).log(3).div(10).add(1)
 			},
 			effDesc(x) {
 				return format(x) + "x"
@@ -468,9 +468,9 @@ let AXIONS = {
 		11: {
 			title: "Lepton Anomaly",
 			desc: "Neut-Muon softcap is weaker.",
-			req: E(10),
+			req: E(5),
 			eff(x) {
-				return x.div(2).add(16).sqrt().add(1).min(6).div(5)
+				return x.div(2).add(27).cbrt().add(2).min(6).div(5)
 			},
 			effDesc(x) {
 				return "^" + format(x,3)

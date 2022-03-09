@@ -939,8 +939,8 @@ function turnOffline() { player.offline.active = !player.offline.active }
 
 function formatMass(ex) {
     ex = E(ex)
-    if (ex.gte(uni('ee9'))) return format(ex.div(1.5e56).log10().div(1e9),3) + ' mlt'
-    if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' uni'
+    if (ex.gte(mlt(1))) return format(ex.div(1.5e56).log10().div(1e9),3) + ' mlt'
+    if (ex.gte(uni(1))) return format(ex.div(1.5e56)) + ' uni'
     if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' MMWG'
     if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' M☉'
     if (ex.gte(5.972e27)) return format(ex.div(5.972e27)) + ' M⊕'
@@ -954,22 +954,25 @@ function formatMultiply(a) {
 	if (a.gte(2)) return "x"+format(a)
 	return "+"+format(a.sub(1).mul(100))+"%"
 }
-
+	
 function formatGain(amt, gain, isMass=false, main=false) {
 	let [al, gl] = [amt.max(1).log10(), gain.max(1).log10()]
 	let [al2, gl2] = [al.max(1).log10(), gl.max(1).log10()]
 
 	let f = isMass?formatMass:format
 	if (!main && gain.max(amt).gte("ee4")) return ""
-	if (al2.gt(0) && gl2.sub(al2).gte(E(1e3).div(al2))) return "(^"+format(E(10).pow(gl2.sub(al2).mul(20)))+"/s)"
-	if (al.gt(0) && gl.sub(al).gte(E(1e3).div(al))) return "("+formatMultiply(E(10).pow(gl.sub(al).mul(20)))+"/s)"
+	if (al.gt(0) && gl.sub(al).gte(E(1e3).div(al))) {
+		if (al2.gt(0) && gl2.sub(al2).gte(E(1e3).div(al2))) return "(x"+format(E(10).pow(gl2.sub(al2).mul(20)))+"s)"
+		if (amt.gte(mlt(1))) return "(+"+format(gl.sub(al).mul(2e-8),3)+" mlt/s)"
+		return "("+formatMultiply(E(10).pow(gl.sub(al).mul(20)))+"/s)"
+	}
 	if (gain.div(amt).gte(1e-6)) return "(+"+f(gain)+"/s)"
 	return ""
 }
 
-function formatGet(a, g) {
+function formatGet(a, g, static) {
 	g = g.max(0)
-	if (g.lt(a)) return ""
+	if (g.lt(static ? 0 : a)) return ""
 	return "(+" + format(g,0) + (a.gte(100) && g.gte(a.div(5)) ? "/" + formatMultiply(g.div(a).add(1),2) : "") + ")"
 }
 
