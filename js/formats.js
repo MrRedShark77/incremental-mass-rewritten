@@ -171,29 +171,65 @@ const FORMATS = {
       },
     },
     mixed_sc: {
-      format(ex, acc) {
+      format(ex, acc, max) {
         ex = E(ex)
         let e = ex.log10().floor()
-        if (e.lt(63)) return format(ex,acc,"st")
+        if (e.lt(63)) return format(ex,acc,max,"st")
         else {
           let m = ex.div(E(10).pow(e))
-          return e.gte(1e3) ? (e.gte(1e9)?"":m.toFixed(4))+"e"+this.format(e,0) : format(ex,acc,"sc")
+          return e.gte(1e3) ? (e.gte(1e9)?"":m.toFixed(4))+"e"+this.format(e,0,max) : format(ex,acc,max,"sc")
         }
       }
     },
     layer: {
       layers: ["infinity","eternity","reality","equality","affinity","celerity","identity","vitality","immunity","atrocity"],
-      format(ex, acc) {
+      format(ex, acc, max) {
         ex = E(ex)
         let layer = ex.max(1).log10().max(1).log(INFINITY_NUM.log10()).floor()
-        if (layer.lte(0)) return format(ex,acc,"sc")
+        if (layer.lte(0)) return format(ex,acc,max,"sc")
         ex = E(10).pow(ex.max(1).log10().div(INFINITY_NUM.log10().pow(layer)).sub(layer.gte(1)?1:0))
         let meta = layer.div(10).floor()
         let layer_id = layer.toNumber()%10-1
-        return format(ex,Math.max(4,acc),"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?"^"+format(meta,0,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
+        return format(ex,Math.max(4,acc),max,"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?"^"+format(meta,0,max,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
       },
-    }
-    
+    },
+    standard: {
+      tier1(x) {
+        return ST_NAMES[1][0][x % 10] +
+        ST_NAMES[1][1][Math.floor(x / 10) % 10] +
+        ST_NAMES[1][2][Math.floor(x / 100)]
+      },
+      tier2(x) {
+        let o = x % 10
+        let t = Math.floor(x / 10) % 10
+        let h = Math.floor(x / 100) % 10
+  
+        let r = ''
+        if (x < 10) return ST_NAMES[2][0][x]
+        if (t == 1 && o == 0) r += "Vec"
+        else r += ST_NAMES[2][1][o] + ST_NAMES[2][2][t]
+        r += ST_NAMES[2][3][h]
+  
+        return r
+      },
+    },
+    inf: {
+      format(ex, acc, max) {
+        let meta = 0
+        let inf = E(Number.MAX_VALUE)
+        let symbols = ["", "∞", "Ω", "Ψ", "ʊ"]
+        let symbols2 = ["", "", "m", "mm", "mmm"]
+        while (ex.gte(inf)) {
+          ex = ex.log(inf)
+          meta++
+        }
+  
+        if (meta == 0) return format(ex, acc, max, "sc")
+        if (ex.gte(3)) return symbols2[meta] + symbols[meta] + "ω^"+format(ex.sub(1), acc, max, "sc")
+        if (ex.gte(2)) return symbols2[meta] + "ω" + symbols[meta] + "-"+format(inf.pow(ex.sub(2)), acc, max, "sc")
+        return symbols2[meta] + symbols[meta] + "-"+format(inf.pow(ex.sub(1)), acc, max, "sc")
+      }
+    },
 }
 
 

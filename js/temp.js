@@ -2,6 +2,8 @@ var tmp = {}
 
 function resetTemp() {
     tmp = {
+        tree_time: 0,
+
         sn_tab: 0,
         tab: 0,
         stab: [],
@@ -22,6 +24,7 @@ function resetTemp() {
             time: 0,
             tree_choosed: "",
             tree_had: [],
+            auto_tree: [],
             tree_eff: {},
             tree_unlocked: {},
             tree_afford: {},
@@ -40,12 +43,25 @@ function resetTemp() {
                 eff: [],
             },
         },
+
+        qu: {
+            chroma_gain: [],
+            chroma_eff: [],
+            mil_reached: [],
+        },
+
+        prim: {
+            eff: [],
+        },
     }
     for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
     for (let i = 0; i < 19; i++) {
         for (let j = 0; j < 19; j++) {
             let id = TREE_IDS[i][j]
-            if (TREE_UPGS.ids[id]) tmp.supernova.tree_had.push(id)
+            if (TREE_UPGS.ids[id]) {
+                tmp.supernova.tree_had.push(id)
+                if (!TREE_UPGS.ids[id].qf) tmp.supernova.auto_tree.push(id)
+            }
         }
     }
 }
@@ -292,16 +308,59 @@ function updateBlackHoleTemp() {
 			.add(1)
 			.floor();
 	}
+    if (scalingActive("bh_condenser", player.bh.condenser.max(tmp.bh.condenser_bulk), "meta")) {
+		let start = getScalingStart("super", "bh_condenser");
+		let power = getScalingPower("super", "bh_condenser");
+        let start2 = getScalingStart("hyper", "bh_condenser");
+		let power2 = getScalingPower("hyper", "bh_condenser");
+        let start3 = getScalingStart("ultra", "bh_condenser");
+		let power3 = getScalingPower("ultra", "bh_condenser");
+		let exp = E(2).pow(power);
+        let exp2 = E(2).pow(power2);
+        let exp3 = E(4).pow(power3);
+        let start4 = getScalingStart("meta", "bh_condenser");
+		let power4 = getScalingPower("meta", "bh_condenser");
+		let exp4 = E(1.001).pow(power4);
+		tmp.bh.condenser_cost =
+			E(1.75).pow(
+                exp4.pow(player.bh.condenser.sub(start4)).mul(start4).div(fp)
+                .pow(exp3)
+			    .div(start3.pow(exp3.sub(1)))
+                .pow(exp2)
+			    .div(start2.pow(exp2.sub(1)))
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+            ).floor()
+        tmp.bh.condenser_bulk = player.bh.dm
+            .max(1)
+            .log(1.75)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
+            .mul(start3.pow(exp3.sub(1)))
+			.root(exp3).mul(fp)
+            .div(start4)
+			.max(1)
+			.log(exp4)
+			.add(start4)
+			.add(1)
+			.floor();
+	}
     tmp.bh.condenser_eff = FORMS.bh.condenser.effect()
 }
 
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+
+    updateQuantumTemp()
+
     updateRadiationTemp()
     updateFermionsTemp()
     updateBosonsTemp()
     updateSupernovaTemp()
+
     updateElementsTemp()
     updateMDTemp()
     updateStarsTemp()
@@ -314,4 +373,6 @@ function updateTemp() {
     updateTickspeedTemp()
     updateRanksTemp()
     updateMassTemp()
+
+    tmp.preQUGlobalSpeed = FORMS.getPreQUGlobalSpeed()
 }

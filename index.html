@@ -1,8 +1,16 @@
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Incremental Mass REWRITTEN made by MrRedShark77">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Incremental Mass Rewritten made by MrRedShark77" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mrredshark77.github.io/incremental-mass-rewritten/" />
+    <meta property="og:title" content="Incremental Mass Rewritten v0.5" />
+    <meta property="og:description" content="Incremental Mass Rewritten made by MrRedShark77." />
+    <meta property="og:image" content="https://mrredshark77.github.io/incremental-mass-rewritten//images/thumbail.jpg" />
+
+    <link rel="image_src" href="images/thumbail.png">
     <link rel="icon" href="images/mass.png">
     <link rel="stylesheet" href="style.css">
 
@@ -12,6 +20,10 @@
     <script src="js/other.js"></script>
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
+
+    <script src="js/quantum/primordium.js"></script>
+    <script src="js/quantum/chroma.js"></script>
+    <script src="js/quantum/quantum.js"></script>
 
     <script src="js/supernova/radiation.js"></script>
     <script src="js/supernova/fermions.js"></script>
@@ -58,6 +70,9 @@
         <div id="sns3" style='font-size: 15px;'>You can pass it...</div><br>
         <div id="sns4" style='font-size: 20px;'>... to discover!</div><br>
         <button class="btn" id="sns5" onclick="SUPERNOVA.reset()">You'll be Supernova...</button>
+    </div>
+    <div id="other_stats">
+        
     </div>
     <div id='app_supernova' style='display: none'>
         <div style="position: absolute; top: 25px; left: 25px;">
@@ -162,9 +177,13 @@
                         <img class="res_img" class="res_img" src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="md_massAmt">X</span>
                     </div>
-                    <div class="resources magenta" id="sn_div">
+                    <div class="resources sml magenta" id="sn_div">
                         <img class="res_img" src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
                         <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
+                    </div>
+                    <div class="resources light_green" id="qu_div">
+                        <img class="res_img" class="res_img" src="images/qu.png" onclick="QUANTUM.enter()" onmousemove="FORMS.reset_msg.set('qu')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;">
+                        <span style="margin-left: 5px; text-align: left;" id="quAmt">X</span>
                     </div>
                 </div>
             </div><span id="reset_desc"></span>
@@ -240,6 +259,23 @@
                 <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
                 <div id="stars_table" class="table_center"></div><br><br>
                 <span id="starSoft1" class="red">After <b id="starSoftStart1">X</b> of collapsed stars gain will softcap collapsed stars gain!</span><br>
+            </div><div id="stab_frame0_4">
+                You have <span id="bpAmt">0</span> Blueprint Particle<br>
+                <span class="green">Which increases pre-Quantum global speed by <span id="bpEff">1</span>x</span><br><br>
+                <div style="width: 100%; margin-bottom: 5px;" class="table_center">
+                    <div style="width: 400px">
+                        <div class="resources">
+                            <img src="images/cosmic_string.png">
+                            <span style="margin-left: 5px; text-align: left;"><span id="cosmic_str_scale"></span>Cosmic Strings [<span id="cosmic_str_lvl">X</span>]</span>
+                        </div>
+                    </div><button id="cosmic_str_btn" class="btn" style="width: 200px;" onclick="QUANTUM.cosmic_str.buy()">Cost: <span id="cosmic_str_cost">X</span> Quantum Foam</button>
+                    <button class="btn" style="width: 120px;" onclick="QUANTUM.cosmic_str.buyMax()">Buy Max</button>
+                    <!--<button id="cosmic_str_auto" class="btn" style="width: 80px;" onclick="player.atom.auto_gr = !player.atom.auto_gr">OFF</button>-->
+                    <div style="margin-left: 5px; text-align: left; width: 400px">
+                        Cosmic Strings Power: <span id="cosmic_str_pow">X</span>x<br>
+                        Cosmic Strings Effect: <span id="cosmic_str_eff">X</span>x
+                    </div>
+                </div>
             </div>
         </div><div id="tab_frame1">
             <div id="stab_frame1_0">
@@ -293,6 +329,22 @@
                 </div>
             </div>
         </div><div id="tab_frame6">
+            <div id="stab_frame6_0">
+                <span id="qu_theory_div">You have <span id="qu_theory">0</span> Quantum Theory (based on every going quantum)</span><br><br>
+                <div id="chroma_table" class="table_center" style="justify-content: space-evenly;"></div>
+            </div><div id="stab_frame6_1">
+                You Quantized <span id="qu_times">0</span> times<br><br>
+                <div id="qu_milestones_table"></div>
+            </div><div id="stab_frame6_2">
+                You have <span id="prim_theorem">0</span> Primordium Theorem (based on Blueprint Particles)<br>
+                (+1 at <span id="prim_next_theorem">X</span>)<br><br>
+                <button class="btn" onclick="giveRandomPParticles(1)">Give 1 random Particle</button>
+                <button class="btn" onclick="giveRandomPParticles(10)">Give 10 random Particles</button>
+                <button class="btn" onclick="giveRandomPParticles(1,true)">Give all random Particles</button>
+                <button class="btn" onclick="respecPParticles()">Respec all Particles</button><br><br>
+                <div id="primordium_table"></div>
+            </div>
+        </div><div id="tab_frame7">
             <button class="btn" onclick="save()">Save</button>
             <button class="btn" onclick="if (confirm('Are you sure you want to RESET your progress to new game?')) {wipe(true)}">Hard Reset</button>
             <button class="btn" onclick="exporty()">Export</button>
@@ -302,11 +354,13 @@
             <button class="btn" onclick="addPopup(POPUP_GROUPS.help)">Help</button><br>
             <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button>
             <button class="btn" onclick="addPopup(POPUP_GROUPS.fonts)">Fonts</button>
-            <button class="btn" onclick="addPopup(POPUP_GROUPS.notations)">Notations</button><br><br>
+            <button class="btn" onclick="addPopup(POPUP_GROUPS.notations)">Notations</button>
+            <button class="btn" id="tree_anim_btn" onclick="changeTreeAnimation()">Tree Animation: <span id="tree_anim">ON</span></button>
+            <br><br>
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.4.3.4.1 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5 - Quantum Update - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

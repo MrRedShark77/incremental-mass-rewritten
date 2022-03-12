@@ -117,6 +117,7 @@ button {
 }
 
 #popup {
+	z-index: 3;
 	position: absolute;
     left: 50%;
     top: 50%;
@@ -146,7 +147,7 @@ button {
 	z-index: -1;
 	position: absolute;
 	width: 95%;
-	height: calc(100% - 300px);
+	height: calc(100% - 318px);
 }
 
 .soft {
@@ -183,6 +184,10 @@ button {
 
 .green {
 	color: #00bb00;
+}
+
+.light_green {
+	color: lightgreen;
 }
 
 .sky {
@@ -237,7 +242,7 @@ button {
 }
 
 .btn_tab {
-	width: 120px;
+	width: 140px;
 }
 
 .btn_tab.bh {
@@ -266,6 +271,34 @@ button {
 .btn_tab.atom.choosed {
 	color: black;
 	background-color: #3157be;
+}
+
+.btn_tab.sn {
+	color: #ff009d;
+	border-color: #ff009d;
+}
+
+.btn_tab.sn:not(.choosed):hover {
+	background-color: #500031;
+}
+
+.btn_tab.sn.choosed {
+	color: black;
+	background-color: #ff009d;
+}
+
+.btn_tab.qu {
+	color: lightgreen;
+	border-color: lightgreen;
+}
+
+.btn_tab.qu:not(.choosed):hover {
+	background-color: #005a00;
+}
+
+.btn_tab.qu.choosed {
+	color: black;
+	background-color: lightgreen;
 }
 
 .btn_tab.dilation {
@@ -311,7 +344,12 @@ button {
 	border-color: #171717;
 }
 
-.btn_tree.bought {
+.btn_tree.qu_tree.bought {
+	border-color: #39FF49;
+	box-shadow: 0px 0px 10px 0px #39ff4a7e;
+}
+
+.btn_tree:not(.qu_tree).bought {
 	border-color: #00520b;
 }
 
@@ -523,6 +561,15 @@ h2 {
 	margin: 0px 15px
 }
 
+.primordium {
+	width: 100%;
+	align-items: center;
+}
+
+.primordium > div {
+	text-align: left;
+}
+
 @keyframes f_spin {
 	0% {
 		background-position-x: 0px;
@@ -530,6 +577,12 @@ h2 {
 	100% {
 		background-position-x: -48px;
 	}
+}
+
+@keyframes implode {
+    0% {transform:scale(1); filter:blur(0px)}
+    50% {transform:scale(0); filter:blur(5px)}
+    100% {transform:scale(1); filter:blur(0px)}
 }
 
 [tooltip] {

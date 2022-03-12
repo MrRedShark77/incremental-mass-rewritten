@@ -63,6 +63,7 @@ const POPUP_GROUPS = {
         html: `
             <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
             <button class="btn" onclick="player.options.notation = 'eng'">Engineering</button>
+            <button class="btn" onclick="player.options.notation = 'inf'">Infinity</button>
             <button class="btn" onclick="player.options.notation = 'mixed_sc'">Mixed Scientific</button>
             <button class="btn" onclick="player.options.notation = 'layer'">Prestige Layer</button>
             <button class="btn" onclick="player.options.notation = 'sc'">Scientific</button>
@@ -95,11 +96,42 @@ const POPUP_GROUPS = {
             'font-size': "14px",
         },
     },
+    qu: {
+        html() { return `
+            Congratulations!<br><br>You have reached ${formatMass(mlt(1e4))} of mass after beating Challenge 12!<br><br>
+            <b>You need to go Quantum!</b>
+        `},
+        width: 400,
+        height: 150,
+        otherStyle: {
+            'font-size': "14px",
+        },
+    },
+    qus1: {
+        html() { return `
+            <img src="images/qu_story1.png"><br><br>
+            Mass has collapsed while going Quantum! It looks like evaporation! But at what cost?
+        `},
+        button: "Uhh Oh",
+        otherStyle: {
+            'font-size': "14px",
+        },
+    },
+    qus2: {
+        html() { return `
+            <img src="images/qu_story2.png"><br><br>
+            Don’t worry, new mechanics will arrive for you!
+        `},
+        button: "Cool",
+        otherStyle: {
+            'font-size': "14px",
+        },
+    },
 }
 
 function addPopup(data) {
     tmp.popup.push({
-        html: data.html||"",
+        html: typeof data.html == "function" ? data.html() : data.html||"",
         button: data.button||"Okay",
         callFunctions: data.callFunction?function() {removePopup();data.callFunctions()}:removePopup,
 

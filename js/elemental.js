@@ -10,7 +10,7 @@ const ELEMENTS = {
         'Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn',
         'Sb','Te','I','Xe','Cs','Ba','La','Ce','Pr','Nd',
         'Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb',
-        'Lu','Hf','Ta','W','Re','Os','Ir','Pt','At','Hg',
+        'Lu','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg',
         'Ti','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th',
         'Pa','U','Np','Pu','Am','Cm','Bk','Cf','Es','Fm',
         'Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds',
@@ -25,13 +25,13 @@ const ELEMENTS = {
         'Niobium','Molybdenum','Technetium','Ruthenium','Rhodium','Palladium','Silver','Cadmium','Indium','Tin',
         'Antimony','Tellurium','Iodine','Xenon','Caesium','Barium','Lanthanum','Cerium','Praseodymium','Neodymium',
         'Promethium','Samarium','Europium','Gadolinium','Terbium','Dysprosium','Holmium','Erbium','Thulium','Ytterbium',
-        'Lutetium','Hafnium','Titanium','Tungsten','Rhenium','Osmium','Iridium','Platinum','Gold','Mercury',
+        'Lutetium','Hafnium','Tantalum','Tungsten','Rhenium','Osmium','Iridium','Platinum','Gold','Mercury',
         'Thallium','Lead','Bismuth','Polonium','Astatine','Radon','Francium','Radium','Actinium','Thorium',
         'Protactinium','Uranium','Neptunium','Plutonium','Americium','Curium','Berkelium','Californium','Einsteinium','Fermium',
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !player.atom.elements.includes(x) },
+    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
             player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
@@ -77,7 +77,7 @@ const ELEMENTS = {
             effect() {
                 let x = E(0)
                 for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
-                if (player.atom.elements.includes(7)) x = x.mul(tmp.elements.effect[7])
+                if (hasElement(7)) x = x.mul(tmp.elements.effect[7])
                 return x.div(100).add(1).max(1)
             },
             effDesc(x) { return format(x)+"x" },
@@ -87,7 +87,7 @@ const ELEMENTS = {
             cost: E(1e20),
             effect() {
                 let x = E(player.atom.elements.length+1)
-                if (player.atom.elements.includes(11)) x = x.pow(2)
+                if (hasElement(11)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -117,6 +117,7 @@ const ELEMENTS = {
             cost: E(2.5e30),
             effect() {
                 let x = player.chal.comps[7].mul(2)
+                if (hasElement(79)) x = x.mul(tmp.qu.chroma_eff[2])
                 return x
             },
             effDesc(x) { return "+"+format(x) },
@@ -383,7 +384,7 @@ const ELEMENTS = {
             cost: E('e3.6e4'),
             effect() {
                 let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10).max(1):E(1)
-                if (player.atom.elements.includes(66)) x = x.pow(2)
+                if (hasElement(66)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -473,6 +474,7 @@ const ELEMENTS = {
             cost: E('e1.3e9'),
             effect() {
                 let x = player.supernova.times.mul(5)
+                if (hasElement(79)) x = x.mul(tmp.qu.chroma_eff[2])
                 return x
             },
             effDesc(x) { return "+"+format(x,0) },
@@ -489,6 +491,22 @@ const ELEMENTS = {
             desc: `Collapsed Star's effect is 25% stronger.`,
             cost: E('e3.75e10'),
         },
+        {
+            desc: `Softcap^3 from mass gain is 17.5% weaker.`,
+            cost: E('e4e11'),
+        },
+        {
+            desc: `Meta-Supernova scales 20% weaker.`,
+            cost: E('e3.4e12'),
+        },
+        {
+            desc: `Neutronium-0 affects Aluminium-13 & Tantalum-73.`,
+            cost: E('e4.8e12'),
+        },
+        {
+            desc: `Stronger & Tickspeed are 10x stronger.`,
+            cost: E('e1.4e13'),
+        },
     ],
     /*
     {
@@ -503,19 +521,24 @@ const ELEMENTS = {
     */
     getUnlLength() {
         let u = 4
-        if (player.supernova.times.gte(1)) u = 49+5
+        if (quUnl()) u = 77+3
         else {
-            if (player.chal.comps[8].gte(1)) u += 14
-            if (player.atom.elements.includes(18)) u += 3
-            if (MASS_DILATION.unlocked()) u += 15
-            if (STARS.unlocked()) u += 18
+            if (player.supernova.times.gte(1)) u = 49+5
+            else {
+                if (player.chal.comps[8].gte(1)) u += 14
+                if (hasElement(18)) u += 3
+                if (MASS_DILATION.unlocked()) u += 15
+                if (STARS.unlocked()) u += 18
+            }
+            if (player.supernova.post_10) u += 3
+            if (player.supernova.fermions.unl) u += 10
+            if (tmp.radiation.unl) u += 10
         }
-        if (player.supernova.post_10) u += 3
-        if (player.supernova.fermions.unl) u += 10
-        if (tmp.radiation.unl) u += 16
         return u
     },
 }
+
+function hasElement(x) { return player.atom.elements.includes(x) }
 
 function setupElementsHTML() {
     let elements_table = new Element("elements_table")
@@ -555,7 +578,7 @@ function updateElementsHTML() {
         if (upg) {
             upg.setVisible(x <= tmp.elements.unl_length)
             if (x <= tmp.elements.unl_length) {
-                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: player.atom.elements.includes(x)})
+                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x)})
             }
         }
     }

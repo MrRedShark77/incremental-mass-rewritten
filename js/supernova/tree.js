@@ -1,13 +1,13 @@
 const TREE_IDS = [
-    ["","","","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","",""],
-    ["","","","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","","",""],
-    ["","","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","","","chal4","","","",""],
-    ["","","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","","",""],
+    ["qu_qol2","qu_qol1","qu_qol6","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
+    ["qu_qol3","qu_qol4","qu_qol5","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
+    ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","chal4b","chal4","","","qu4",""],
+    ["","unl2","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","prim1","qu5","prim2"],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","",""],
     ["","","","","","","fn8","","fn9","fn1","fn5","","","","","","","",""],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
-    ["","","","","","","","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    ["","","","","","","rad6","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
+    ["","","","","","","","","","qf1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -22,15 +22,25 @@ const TREE_IDS = [
 
 var tree_canvas,tree_ctx,tree_update=true
 
+const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
+'qol6','qol7','qol8','qol9','unl1',
+'c','s2','s3','s4','sn3',
+'sn4','t1','bh2','gr1','chal1',
+'chal2','chal3','bs1','fn2','fn3',
+'fn5','fn6']
+
 const TREE_UPGS = {
-    buy(x) {
-        if (tmp.supernova.tree_choosed == x && tmp.supernova.tree_afford[x]) {
-            player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
+    buy(x, auto=false) {
+        if ((tmp.supernova.tree_choosed == x || auto) && tmp.supernova.tree_afford[x]) {
+            if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
+            else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
             player.supernova.tree.push(x)
         }
     },
     ids: {
         c: {
+            req() { return player.supernova.times.gte(1) },
+            reqDesc: `1 Supernova.`,
             desc: `Start generating 0.1 Neutron Star per second (not affected by offline production).`,
             cost: E(0),
         },
@@ -49,7 +59,9 @@ const TREE_UPGS = {
             desc: `Supernova boosts Neutron Star gain.`,
             cost: E(350),
             effect() {
-                let x = E(2).add(player.supernova.tree.includes("sn4")?tmp.supernova.tree_eff.sn4:0).pow(player.supernova.times.softcap(15,0.8,0).softcap(25,0.5,0))
+                let sn = player.supernova.times
+                if (!hasTree("qu4")) sn = sn.softcap(15,0.8,0).softcap(25,0.5,0)
+                let x = E(2).add(hasTree("sn4")?tmp.supernova.tree_eff.sn4:0).pow(sn)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -79,6 +91,17 @@ const TREE_UPGS = {
             },
             effDesc(x) { return "+"+format(x)+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"") },
         },
+        sn5: {
+            branch: ["sn4"],
+            desc: `Mass boosts Neutron Stars gain.`,
+            unl() { return quUnl() },
+            cost: E('e450'),
+            effect() {
+                let x = player.mass.add(1).log10().add(1).pow(2)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
         m1: {
             branch: ["c"],
             desc: `Neutron star multiplies Mass gain.`,
@@ -96,7 +119,7 @@ const TREE_UPGS = {
         },
         m3: {
             branch: ["m2"],
-            unl() { return player.supernova.fermions.unl && player.supernova.tree.includes("fn1") },
+            unl() { return player.supernova.fermions.unl && hasTree("fn1") },
             desc: `Mass gain softcap^2-3 starts later based on Supernovas.`,
             cost: E(1e46),
             effect() {
@@ -107,8 +130,8 @@ const TREE_UPGS = {
         },
         t1: {
             branch: ["m1", 'rp1'],
-            req() { return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1)) },
-            reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(player.supernova.tree.includes('bh2')?1.46:1))} without buying Tickspeed in Supernova run. You can still obtain Tickspeed from Cosmic Rays.`},
+            req() { return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(hasTree('bh2')?1.46:1)) },
+            reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(hasTree('bh2')?1.46:1))} without buying Tickspeed in Supernova run. You can still obtain Tickspeed from Cosmic Rays.`},
             desc: `Tickspeed Power is raised to the 1.15th.`,
             cost: E(1500),
         },
@@ -219,7 +242,7 @@ const TREE_UPGS = {
         },
         qol7: {
             branch: ["qol6"],
-            unl() { return player.supernova.fermions.unl && player.supernova.tree.includes("fn2") },
+            unl() { return player.supernova.fermions.unl && hasTree("fn2") },
             req() { return player.supernova.times.gte(40) },
             reqDesc: `40 Supernovas.`,
             desc: `You can now automatically buy Photon & Gluon upgrades, they no longer spent their amount.`,
@@ -275,6 +298,12 @@ const TREE_UPGS = {
             branch: ["chal4"],
             desc: `Make 9th Challenges effect better.`,
             cost: E(1e8),
+        },
+        chal4b: {
+            unl() { return quUnl() },
+            branch: ["chal4"],
+            desc: `Add 100 more C9 completions.`,
+            cost: E('e480'),
         },
         chal5: {
             branch: ["chal4"],
@@ -375,13 +404,13 @@ const TREE_UPGS = {
             cost: E(1e30),
         },
         fn4: {
-            unl() { return player.supernova.tree.includes("fn2") },
+            unl() { return hasTree("fn2") },
             branch: ["fn1"],
             desc: `2nd Photon & Gluon upgrades are slightly stronger.`,
             cost: E(1e39),
         },
         fn5: {
-            unl() { return player.supernova.tree.includes("fn2") },
+            unl() { return hasTree("fn2") },
             branch: ["fn1"],
             req() { return player.atom.quarks.gte("e12500") && FERMIONS.onActive("10") },
             reqDesc() { return `Reach ${format("e12500")} quarks while in [Electron]` },
@@ -411,18 +440,10 @@ const TREE_UPGS = {
             cost: E(1e166),
         },
         d1: {
-            unl() { return player.supernova.tree.includes("fn6") },
+            unl() { return hasTree("fn6") },
             branch: ["rp1"],
             desc: `Generating Relativistic particles outside Mass dilation is 25% stronger.`,
             cost: E(1e51),
-        },
-        unl1: {
-            branch: ["qol7"],
-            unl() { return player.supernova.tree.includes("fn6") },
-            req() { return player.supernova.times.gte(44) },
-            reqDesc: `44 Supernovas.`,
-            desc: `Unlock Radiation.`,
-            cost: E(5e52),
         },
         rad1: {
             unl() { return tmp.radiation.unl },
@@ -459,6 +480,168 @@ const TREE_UPGS = {
             },
             effDesc(x) { return format(x)+"x" },
         },
+        rad6: {
+            unl() { return PRIM.unl() },
+            branch: ["rad4"],
+            desc: `Bonus radiation boosts are stronger for every radiation index.`,
+            cost: E('e490'),
+        },
+
+        qf1: {
+            unl() { return quUnl() },
+            desc: `Gain more Quantum Foams based on Supernovas`,
+            cost: E(1e290),
+            effect() {
+                let x = player.supernova.times.root(2).div(10).add(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+
+        // Quatnum
+
+        qu0: {
+            unl() { return quUnl() },
+            qf: true,
+            desc: `Good luck with new era!`,
+            cost: E(0),
+        },
+        qu1: {
+            qf: true,
+            branch: ["qu0"],
+            desc: `Fermion's requirement is decreased by 15%.`,
+            cost: E(1),
+        },
+        qu2: {
+            qf: true,
+            branch: ["qu0"],
+            desc: `W+ Boson's 1st effect is overpowered.`,
+            cost: E(1),
+        },
+        qu3: {
+            qf: true,
+            branch: ["qu0"],
+            desc: `From BH the formula's softcap is 30% weaker.`,
+            cost: E(1),
+        },
+        qu4: {
+            qf: true,
+            branch: ["qu1", 'qu2', 'qu3'],
+            desc: `Remove effect's softcaps from [sn2].`,
+            cost: E(35),
+        },
+        qu5: {
+            qf: true,
+            unl() { return PRIM.unl() },
+            branch: ['qu4'],
+            desc: `Blueprint Particles & Chromas are affected by Tickspeed Effect at a reduced rate.`,
+            cost: E(100),
+            effect() {
+                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.eff.add(1).log10().add(1).log10().add(1).pow(3):E(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qu_qol1: {
+            qf: true,
+            unl() { return quUnl() },
+            req() { return player.qu.times.gte(4) },
+            reqDesc: `Quantized 4 times.`,
+            desc: `You can now automatically purchase supernova tree except with cost of quantum foam.`,
+            cost: E(3),
+        },
+        qu_qol2: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 0; x < 6; x++) if (player.supernova.fermions.tiers[0][x].gte(1)) return false
+                return player.supernova.times.gte(81)
+            },
+            reqDesc: `Become 81 Supernovas without getting tiers from U-Quark per Quantum run.`,
+            desc: `Keep U-Quark Tiers on going Quantum.`,
+            cost: E(4),
+        },
+        qu_qol3: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 1; x <= 4; x++) if (player.chal.comps[x].gte(1)) return false
+                return player.mass.gte(mlt(1e4))
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(1e4))} of mass without completing Challenges 1-4 per Quantum run.` },
+            desc: `You can now automatically complete Challenges 1-4 any Challenge.`,
+            cost: E(4),
+        },
+        qu_qol4: {
+            qf: true,
+            branch: ["qu_qol1"],
+            desc: `You can now automatically become a supernova, it no longer resets anything.`,
+            cost: E(4),
+        },
+        qu_qol5: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 5; x <= 8; x++) if (player.chal.comps[x].gte(1) && x != 7) return false
+                return player.mass.gte(mlt(1.35e4))
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(1.35e4))} of mass without completing Challenges 5, 6 & 8 per Quantum run.` },
+            desc: `You can now automatically complete Challenges 5-8 any Challenge.`,
+            cost: E(4),
+        },
+        qu_qol6: {
+            qf: true,
+            branch: ["qu_qol1"],
+            req() {
+                for (let x = 0; x < 6; x++) if (player.supernova.fermions.tiers[1][x].gte(1)) return false
+                return player.supernova.times.gte(42)
+            },
+            reqDesc: `Become 42 Supernovas without getting tiers from U-Lepton per Quantum run.`,
+            desc: `Keep U-Lepton Tiers on going Quantum.`,
+            cost: E(4),
+        },
+        qu_qol7: {
+            qf: true,
+            branch: ["qu_qol3","qu_qol5"],
+            req() {
+                for (let x = 9; x <= 12; x++) if (player.chal.comps[x].gte(1)) return false
+                return player.mass.gte(mlt(5e3)) && FERMIONS.onActive("05")
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(5e3))} of mass without completing Challenges 9-12 per Quantum run, while in [Bottom].` },
+            desc: `Keep challenge 9-12 completions on going Quantum.`,
+            cost: E(25),
+        },
+        prim1: {
+            qf: true,
+            branch: ["qu5"],
+            desc: `Primordium Theorem’s base requirement is reduced by 1.`,
+            cost: E(200),
+        },
+        prim2: {
+            qf: true,
+            branch: ["qu5"],
+            desc: `Theta Particle’s second effect is now added.`,
+            cost: E(500),
+        },
+
+        // Other
+
+        unl1: {
+            branch: ["qol7"],
+            unl() { return hasTree("fn6") },
+            req() { return player.supernova.times.gte(44) },
+            reqDesc: `44 Supernovas.`,
+            desc: `Unlock Radiation.`,
+            cost: E(5e52),
+        },
+        unl2: {
+            qf: true,
+            branch: ["qu_qol7"],
+            req() { return player.qu.times.gte(20) },
+            reqDesc: `Quantize 20 times.`,
+            desc: `Unlock Primordium.`,
+            cost: E(50),
+        },
         /*
         x: {
             unl() { return true },
@@ -475,6 +658,8 @@ const TREE_UPGS = {
         */
     },
 }
+
+function hasTree(id) { return player.supernova.tree.includes(id) }
 
 function setupTreeHTML() {
     let tree_table = new Element("tree_table")
@@ -521,7 +706,7 @@ function drawTree() {
 	for (let x in tmp.supernova.tree_had) {
         let id = tmp.supernova.tree_had[x]
         let branch = TREE_UPGS.ids[id].branch||[]
-        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) {
+        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) if (tmp.supernova.tree_unlocked[branch[y]]) {
 			drawTreeBranch(branch[y], id)
 		}
 	}
@@ -537,36 +722,65 @@ function treeCanvas() {
     }
 }
 
+const TREE_ANIM = ["Circle", "Square", "OFF"]
+const CR = 5
+const SR = 7.0710678118654755
+
 function drawTreeBranch(num1, num2) {
     var start = document.getElementById("treeUpg_"+num1).getBoundingClientRect();
     var end = document.getElementById("treeUpg_"+num2).getBoundingClientRect();
     var x1 = start.left + (start.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y1 = start.top + (start.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-7);
+    var y1 = start.top + (start.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-25);
     var x2 = end.left + (end.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-7);
+    var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-25);
     tree_ctx.lineWidth=10;
     tree_ctx.beginPath();
-    tree_ctx.strokeStyle = player.supernova.tree.includes(num2)?"#00520b":tmp.supernova.tree_afford[num2]?"#fff":"#333";
+    let color = TREE_UPGS.ids[num2].qf?"#39FF49":"#00520b"
+    let color2 = TREE_UPGS.ids[num2].qf?"#009C15":"#fff"
+    tree_ctx.strokeStyle = hasTree(num2)?color:tmp.supernova.tree_afford[num2]?"#fff":"#333";
     tree_ctx.moveTo(x1, y1);
     tree_ctx.lineTo(x2, y2);
     tree_ctx.stroke();
+
+    if (player.options.tree_animation != 2) {
+        tree_ctx.fillStyle = hasTree(num2)?color2:"#888";
+        let tt = [tmp.tree_time, (tmp.tree_time+1)%3, (tmp.tree_time+2)%3]
+        for (let i = 0; i < 3; i++) {
+            let [t, dx, dy] = [tt[i], x2-x1, y2-y1]
+            let [x, y] = [x1+dx*t/3, y1+dy*t/3]
+            tree_ctx.beginPath();
+            if (player.options.tree_animation == 1) {
+                let a = Math.atan2(y1-y2,dx)-Math.PI/4
+                tree_ctx.moveTo(x+SR*Math.cos(a), y-SR*Math.sin(a))
+                for (let j = 1; j <= 3; j++) tree_ctx.lineTo(x+SR*Math.cos(a+Math.PI*j/2), y-SR*Math.sin(a+Math.PI*j/2))
+            } else if (player.options.tree_animation == 0) {
+                tree_ctx.arc(x, y, CR, 0, Math.PI*2, true);
+            }
+            tree_ctx.fill();
+        }
+    }
+}
+
+function changeTreeAnimation() {
+    player.options.tree_animation = (player.options.tree_animation + 1) % 3;
 }
 
 function updateTreeHTML() {
     let req = ""
-    if (tmp.supernova.tree_choosed != "") req = TREE_UPGS.ids[tmp.supernova.tree_choosed].req?`<span class="${TREE_UPGS.ids[tmp.supernova.tree_choosed].req()?"green":"red"}">${TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc?" Require: "+(typeof TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc == "function"?TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc():TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc):""}</span>`:""
+    let t_ch = TREE_UPGS.ids[tmp.supernova.tree_choosed]
+    if (tmp.supernova.tree_choosed != "") req = t_ch.req?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Require: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
-        <span class="sky">[${tmp.supernova.tree_choosed}] ${TREE_UPGS.ids[tmp.supernova.tree_choosed].desc}</span><br>
-        <span>Cost: ${format(TREE_UPGS.ids[tmp.supernova.tree_choosed].cost,2)} Neutron star</span><br>
-        <span class="green">${TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc?"Currently: "+TREE_UPGS.ids[tmp.supernova.tree_choosed].effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
+        <span class="sky">[${tmp.supernova.tree_choosed}] ${t_ch.desc}</span><br>
+        <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':'Neutron star'}</span><br>
+        <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `
     )
     for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
         let id = tmp.supernova.tree_had[x]
         let unl = tmp.supernova.tree_unlocked[id]
         tmp.el["treeUpg_"+id].setVisible(unl)
-        if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, locked: !tmp.supernova.tree_afford[id], bought: player.supernova.tree.includes(id), choosed: id == tmp.supernova.tree_choosed})
+        if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, locked: !tmp.supernova.tree_afford[id], bought: hasTree(id), choosed: id == tmp.supernova.tree_choosed})
     }
 }

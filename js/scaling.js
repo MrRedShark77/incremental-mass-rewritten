@@ -22,6 +22,7 @@ const SCALE_START = {
 	},
 	ultra: {
 		rank: E(600),
+		//tier: E(1500),
 		tickspeed: E(700),
 		bh_condenser: E(750),
 		gamma_ray: E(800),
@@ -29,6 +30,8 @@ const SCALE_START = {
 		fTier: E(100),
 	},
 	meta: {
+		bh_condenser: E(1e7),
+		gamma_ray: E(1e6),
 		rank: E(1e4),
 		tickspeed: E(5e4),
 		supernova: E(100),
@@ -144,7 +147,7 @@ function getScalingStart(type, name) {
 	}
 	if (type=="ultra") {
 		if (name=="rank") {
-			if (player.atom.elements.includes(62)) start = start.add(tmp.elements.effect[62])
+			if (hasElement(62)) start = start.add(tmp.elements.effect[62])
 		}
 		if (name=="tickspeed") {
 			if (player.ranks.tetr.gte(5)) start = start.add(RANKS.effect.tetr[5]())
@@ -157,9 +160,12 @@ function getScalingStart(type, name) {
 			start = start.mul(tmp.radiation.bs.eff[14])
 		}
 		if (name=="tickspeed") {
-			if (player.atom.elements.includes(68)) start = start.mul(2)
+			if (hasElement(68)) start = start.mul(2)
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
 			start = start.mul(tmp.fermions.effs[0][5])
+		}
+		if (name=='supernova') {
+			start = start.add(tmp.prim.eff[7])
 		}
 	}
 	return start.floor()
@@ -177,10 +183,10 @@ function getScalingPower(type, name) {
 		}
 		if (name=="tier") {
 			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
-			if (player.atom.elements.includes(37)) power = power.mul(tmp.elements.effect[37])
+			if (hasElement(37)) power = power.mul(tmp.elements.effect[37])
 		}
 		if (name=="tetr") {
-			if (player.atom.elements.includes(74)) power = power.mul(0.75)
+			if (hasElement(74)) power = power.mul(0.75)
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)
@@ -189,53 +195,57 @@ function getScalingPower(type, name) {
 			power = power.mul(tmp.chal?tmp.chal.eff[1].tick:1)
 		}
 		if (name=='bh_condenser') {
-			if (player.atom.elements.includes(15)) power = power.mul(0.8)
+			if (hasElement(15)) power = power.mul(0.8)
 		}
 		if (name=='gamma_ray') {
-			if (player.atom.elements.includes(15)) power = power.mul(0.8)
+			if (hasElement(15)) power = power.mul(0.8)
 		}
 		if (name=="fTier") {
-			if (player.supernova.tree.includes("fn3")) power = power.mul(0.925)
+			if (hasTree("fn3")) power = power.mul(0.925)
 		}
 	}
 	if (type=="hyper") {
 		if (name=="rank") {
 			if (player.ranks.tetr.gte(1)) power = power.mul(0.85)
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+			if (hasElement(27)) power = power.mul(0.75)
+		}
+		if (name=="tier") {
+			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
+			if (hasElement(37)) power = power.mul(tmp.elements.effect[37])
 		}
 		if (name=="massUpg") {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 		}
 		if (name=='tickspeed') {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
+			if (hasElement(27)) power = power.mul(0.75)
 		}
 		if (name=='bh_condenser') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 		if (name=='gamma_ray') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 	}
 	if (type=="ultra") {
 		if (name=="rank") {
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
-			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
+			if (hasElement(27)) power = power.mul(0.75)
+			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
 		}
 		if (name=='tickspeed') {
-			if (player.atom.elements.includes(27)) power = power.mul(0.75)
-			if (player.atom.elements.includes(58)) power = power.mul(tmp.elements.effect[58])
+			if (hasElement(27)) power = power.mul(0.75)
+			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
 		}
 		if (name=='bh_condenser') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 		if (name=='gamma_ray') {
-			if (player.atom.elements.includes(55)) power = power.mul(0.75)
+			if (hasElement(55)) power = power.mul(0.75)
 		}
 	}
 	if (type=="meta") {
-		if (name=='tickspeed') {
-			
+		if (name=='supernova') {
+			if (hasElement(78)) power = power.mul(0.8)
 		}
 	}
 	return power

@@ -6,23 +6,25 @@ const ATOM = {
         x = x.root(5)
         if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))
         x = x.mul(tmp.bosons.upgs.gluon[0].effect)
-        if (player.atom.elements.includes(17)) x = x.pow(1.1)
+        if (hasElement(17)) x = x.pow(1.1)
+        x = x.pow(tmp.prim.eff[3][0])
+
         if (FERMIONS.onActive("10")) x = expMult(x,0.625)
         return x.floor()
     },
     quarkGain() {
         if (tmp.atom.gain.lt(1)) return E(0)
         x = tmp.atom.gain.max(1).log10().pow(1.1).add(1)
-        if (player.atom.elements.includes(1)) x = E(1.25).pow(tmp.atom.gain.max(1).log10())
+        if (hasElement(1)) x = E(1.25).pow(tmp.atom.gain.max(1).log10())
         if (player.mainUpg.bh.includes(13)) x = x.mul(10)
         if (player.mainUpg.atom.includes(8)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
-        if (player.atom.elements.includes(6)) x = x.mul(tmp.elements.effect[6])
-        if (player.atom.elements.includes(42)) x = x.mul(tmp.elements.effect[42])
-        if (player.atom.elements.includes(67)) x = x.mul(tmp.elements.effect[67])
+        if (hasElement(6)) x = x.mul(tmp.elements.effect[6])
+        if (hasElement(42)) x = x.mul(tmp.elements.effect[42])
+        if (hasElement(67)) x = x.mul(tmp.elements.effect[67])
         if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
         x = x.mul(tmp.md.upgs[9].eff)
-        if (player.atom.elements.includes(47)) x = x.pow(1.1)
+        if (hasElement(47)) x = x.pow(1.1)
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },
@@ -41,23 +43,23 @@ const ATOM = {
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
-        if (chal_reset && !player.mainUpg.atom.includes(4) && !player.supernova.tree.includes("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
+        if (chal_reset && !player.mainUpg.atom.includes(4) && !hasTree("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
         FORMS.bh.doReset()
     },
     atomic: {
         gain() {
             let x = tmp.atom.gamma_ray_eff?tmp.atom.gamma_ray_eff.eff:E(0)
-            if (player.atom.elements.includes(3)) x = x.mul(tmp.elements.effect[3])
-            if (player.atom.elements.includes(52)) x = x.mul(tmp.elements.effect[52])
+            if (hasElement(3)) x = x.mul(tmp.elements.effect[3])
+            if (hasElement(52)) x = x.mul(tmp.elements.effect[52])
             x = x.mul(tmp.bosons.upgs.gluon[0].effect)
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(player.atom.elements.includes(23)?1.5:1.75)
-            if (!player.atom.elements.includes(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
-            return x.softcap(1e10,0.25,0).floor()
+            let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75)
+            if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
+            return x.softcap(1e10,0.1,0).floor()
         },
     },
     gamma_ray: {
@@ -79,9 +81,10 @@ const ATOM = {
             let pow = E(2)
             if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
             if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
-            if (player.supernova.tree.includes("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
+            if (hasTree("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
             pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
-            if (player.supernova.tree.includes("gr2")) pow = pow.pow(1.25)
+            pow = pow.mul(tmp.prim.eff[3][1])
+            if (hasTree("gr2")) pow = pow.pow(1.25)
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
             return {pow: pow, eff: eff}
         },
@@ -112,10 +115,10 @@ const ATOM = {
         effect(i) {
             let p = player.atom.particles[i]
             let x = p.pow(2)
-            if (player.atom.elements.includes(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]))
+            if (hasElement(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]).softcap(40000,0.1,0))
             x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
-            if (player.atom.elements.includes(61)) x = x.mul(p.add(1).root(2))
-            return x.softcap('ee11',0.9,2)
+            if (hasElement(61)) x = x.mul(p.add(1).root(2))
+            return x.softcap('ee11',0.9,2).softcap('ee13',0.9,2)
         },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)
@@ -124,20 +127,20 @@ const ATOM = {
         },
         powerEffect: [
             x=>{
-                let a = x.add(1).pow(3)
-                let b = player.atom.elements.includes(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
+                let a = x.add(1).pow(3)//.softcap("ee14",0.9,2)
+                let b = hasElement(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1).pow(2)
-                let b = player.atom.elements.includes(19)
+                let a = x.add(1).pow(2)//.softcap("ee14",0.9,2)
+                let b = hasElement(19)
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1)
-                let b = player.atom.elements.includes(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
+                let a = x.add(1)//.softcap("ee14",0.9,2)
+                let b = hasElement(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
         ],
@@ -168,7 +171,7 @@ function updateAtomTemp() {
     tmp.atom.gain = ATOM.gain()
     tmp.atom.quarkGain = ATOM.quarkGain()
     tmp.atom.quarkGainSec = 0.05
-    if (player.atom.elements.includes(16)) tmp.atom.quarkGainSec += tmp.elements.effect[16]
+    if (hasElement(16)) tmp.atom.quarkGainSec += tmp.elements.effect[16]
     tmp.atom.canReset = ATOM.canReset()
     tmp.atom.atomicGain = ATOM.atomic.gain()
     tmp.atom.atomicEff = ATOM.atomic.effect()
@@ -253,6 +256,45 @@ function updateAtomTemp() {
 			.add(1)
 			.floor();
 	}
+    if (scalingActive("gamma_ray", player.atom.gamma_ray.max(tmp.atom.gamma_ray_bulk), "meta")) {
+		let start = getScalingStart("super", "gamma_ray");
+		let power = getScalingPower("super", "gamma_ray");
+        let start2 = getScalingStart("hyper", "gamma_ray");
+		let power2 = getScalingPower("hyper", "gamma_ray");
+        let start3 = getScalingStart("ultra", "gamma_ray");
+		let power3 = getScalingPower("ultra", "gamma_ray");
+		let exp = E(2).pow(power);
+        let exp2 = E(4).pow(power2);
+        let exp3 = E(6).pow(power3);
+        let start4 = getScalingStart("meta", "gamma_ray");
+		let power4 = getScalingPower("meta", "gamma_ray");
+		let exp4 = E(1.001).pow(power4);
+		tmp.atom.gamma_ray_cost =
+			E(2).pow(
+                exp4.pow(player.atom.gamma_ray.sub(start4)).mul(start4).div(fp)
+                .pow(exp3)
+			    .div(start3.pow(exp3.sub(1)))
+                .pow(exp2)
+			    .div(start2.pow(exp2.sub(1)))
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+            ).floor()
+        tmp.atom.gamma_ray_bulk = player.atom.points
+            .max(1)
+            .log(2)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .mul(start2.pow(exp2.sub(1)))
+			.root(exp2)
+            .mul(start3.pow(exp3.sub(1)))
+			.root(exp3).mul(fp)
+            .div(start4)
+			.max(1)
+			.log(exp4)
+			.add(start4)
+			.add(1)
+			.floor();
+	}
     tmp.atom.gamma_ray_can = player.atom.points.gte(tmp.atom.gamma_ray_cost)
     tmp.atom.gamma_ray_bonus = ATOM.gamma_ray.bonus()
     tmp.atom.gamma_ray_eff = ATOM.gamma_ray.effect()
@@ -284,7 +326,7 @@ function setupAtomHTML() {
 }
 
 function updateAtomicHTML() {
-    tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain))
+    tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain.mul(tmp.preQUGlobalSpeed)))
 	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(5e4)?" <span class='soft'>(softcapped)</span>":""))
 
 	tmp.el.gamma_ray_lvl.setTxt(format(player.atom.gamma_ray,0)+(tmp.atom.gamma_ray_bonus.gte(1)?" + "+format(tmp.atom.gamma_ray_bonus,0):""))
@@ -293,7 +335,7 @@ function updateAtomicHTML() {
 	tmp.el.gamma_ray_cost.setTxt(format(tmp.atom.gamma_ray_cost,0))
 	tmp.el.gamma_ray_pow.setTxt(format(tmp.atom.gamma_ray_eff.pow))
 	tmp.el.gamma_ray_eff.setHTML(format(tmp.atom.gamma_ray_eff.eff))
-    tmp.el.gamma_ray_auto.setDisplay(player.atom.elements.includes(18))
+    tmp.el.gamma_ray_auto.setDisplay(hasElement(18))
 	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
 }
 
@@ -303,7 +345,7 @@ function updateAtomHTML() {
     for (let x = 0; x < ATOM.particles.names.length; x++) {
         tmp.el["particle_"+x+"_amt"].setTxt(format(player.atom.particles[x],0))
         tmp.el["particle_"+x+"_amtEff"].setTxt(format(tmp.atom.particles[x].powerGain))
-        tmp.el["particle_"+x+"_power"].setTxt(format(player.atom.powers[x])+" "+formatGain(player.atom.powers[x],tmp.atom.particles[x].powerGain))
+        tmp.el["particle_"+x+"_power"].setTxt(format(player.atom.powers[x])+" "+formatGain(player.atom.powers[x],tmp.atom.particles[x].powerGain.mul(tmp.preQUGlobalSpeed)))
         tmp.el["particle_"+x+"_powerEff"].setHTML(ATOM.particles.desc[x](tmp.atom.particles[x].powerEffect))
     }
 }
