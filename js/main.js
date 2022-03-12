@@ -252,6 +252,7 @@ const FORMS = {
 		radSoftStart() {
 			let r = E(10).pow(player.supernova.times.add(1).pow(6).div(100))
 			if (hasElement(80)) r = r.pow(1.5)
+			if (AXIONS.unl()) r = r.pow(tmp.ax.eff[8])
 			return r
 		}
     },
@@ -882,7 +883,7 @@ function loop() {
     player.offline.current = date
 }
 
-function format(ex, acc=2, type=player.options.notation) {
+function format(ex, acc=2, type=player.options.notation, color) {
 	ex = E(ex)
 	neg = ex.lt(0)?"-":""
 	if (ex.mag == Infinity) return neg + 'Infinity'
@@ -924,7 +925,7 @@ function format(ex, acc=2, type=player.options.notation) {
 						let mod1000 = e3.sub(div1000.mul(1e3)).floor().toNumber()
 						if (mod1000 > 0) {
 							if (mod1000 == 1 && !ee3) final = "U"
-							if (ee3) final = FORMATS.standard.tier2(ee3) + (final ? "-" + final : "")
+							if (ee3) final = colorize(FORMATS.standard.tier2(ee3), color) + (final ? "-" + final : "")
 							if (mod1000 > 1) final = FORMATS.standard.tier1(mod1000) + final
 						}
 						e3 = div1000
@@ -940,19 +941,27 @@ function format(ex, acc=2, type=player.options.notation) {
 	}
 }
 
-function turnOffline() { player.offline.active = !player.offline.active }
+function formatColored(x, p, mass) {
+	return mass ? formatMass(x, true) : format(x, p, player.options.notation, true)
+}
 
-function formatMass(ex) {
+function colorize(x, color) {
+	if (color) x = "<span class='rainbow'>" + x + "</span>"
+	return x
+}
+
+function formatMass(ex, color) {
+	let f = color ? formatColored : format
     ex = E(ex)
-    if (ex.gte(uni('ee9'))) return format(ex.div(1.5e56).log10().div(1e9),3) + ' mlt'
-    if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' uni'
-    if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' MMWG'
-    if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' M☉'
-    if (ex.gte(5.972e27)) return format(ex.div(5.972e27)) + ' M⊕'
-    if (ex.gte(1.619e20)) return format(ex.div(1.619e20)) + ' MME'
-    if (ex.gte(1e6)) return format(ex.div(1e6)) + ' tonne'
-    if (ex.gte(1e3)) return format(ex.div(1e3)) + ' kg'
-    return format(ex) + ' g'
+    if (ex.gte(mlt(1))) return f(ex.div(1.5e56).log10().div(1e9), 3) + ' ' + colorize('mlt', color)
+    if (ex.gte(uni(1))) return f(ex.div(1.5e56)) + ' uni'
+    if (ex.gte(2.9835e45)) return f(ex.div(2.9835e45)) + ' MMWG'
+    if (ex.gte(1.989e33)) return f(ex.div(1.989e33)) + ' M☉'
+    if (ex.gte(5.972e27)) return f(ex.div(5.972e27)) + ' M⊕'
+    if (ex.gte(1.619e20)) return f(ex.div(1.619e20)) + ' MME'
+    if (ex.gte(1e6)) return f(ex.div(1e6)) + ' tonne'
+    if (ex.gte(1e3)) return f(ex.div(1e3)) + ' kg'
+    return f(ex) + ' g'
 }
 
 function formatMultiply(a) {
@@ -975,8 +984,9 @@ function formatGain(amt, gain, isMass=false, main=false) {
 	return ""
 }
 
-function formatGet(a, g) {
+function formatGet(a, g, static) {
 	g = g.max(0)
+	if (g.lt(static ? 0 : a)) return ""
 	return "(+" + format(g,0) + (a.gte(100) && g.gte(a.div(5)) ? "/" + formatMultiply(g.div(a).add(1),2) : "") + ")"
 }
 
@@ -991,6 +1001,8 @@ function formatTime(ex,type="s") {
     if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0)+":"+formatTime(ex.mod(60),'m')
     return (ex.gte(10)||type!="m" ?"":"0")+format(ex)
 }
+
+function turnOffline() { player.offline.active = !player.offline.active }
 
 function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
 

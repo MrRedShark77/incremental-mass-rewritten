@@ -153,6 +153,7 @@ function getScalingStart(type, name) {
 		if (name=='supernova') {
 			if (tmp.elements && hasElement(71)) start = start.add(tmp.elements.effect[71])
 			if (hasTreeUpg("feat6")) start = start.add(1)
+			if (hasTreeUpg("feat8")) start = start.add(3)
 		}
 	}
 	if (type=="hyper") {
@@ -167,6 +168,7 @@ function getScalingStart(type, name) {
 		if (name=='supernova') {
 			if (tmp.elements && hasElement(71)) start = start.add(tmp.elements.effect[71])
 			if (hasTreeUpg("feat6")) start = start.add(1)
+			if (hasTreeUpg("feat8")) start = start.add(3)
 		}
 	}
 	if (type=="ultra") {
@@ -179,6 +181,7 @@ function getScalingStart(type, name) {
 		}
 		if (name=='supernova') {
 			if (tmp.elements && hasElement(71)) start = start.add(tmp.elements.effect[71])
+			if (hasTreeUpg("feat8")) start = start.add(3)
 		}
 	}
 	if (type=="meta") {

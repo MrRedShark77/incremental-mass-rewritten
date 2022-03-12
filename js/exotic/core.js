@@ -12,9 +12,35 @@ let EXOTIC = {
 	},
 	gain() {
 		if (player.chal.comps[12].eq(0)) return E(0)
-		return player.mass.add(1).log10().div(1e9).add(1)
+
+		let r = player.mass.add(1).log10().div(1e9).add(1)
 			.pow(player.supernova.times.mul(player.chal.comps[12].add(1)).div(500))
+		return this.amt(r)
 	},
+	extLvl() {
+		let l = 0
+		if (hasTreeUpg("feat9")) l++
+		if (hasTreeUpg("feat10")) l++
+		return l
+	},
+	amt(r) {
+		r = E(r)
+		if (this.extLvl() >= 1) r = this.reduce(1, r)
+		if (this.extLvl() >= 2) r = this.reduce(2, r)
+		return r
+	},
+	reduce(t, x) {
+		if (t == 1) return x.mul(10).log10().pow(5).mul(10)
+		if (t == 2) return x.div(10).sqrt().mul(10)
+		return x
+	},
+	eff() {
+		let r = player.ext.amt
+		if (this.extLvl() >= 2) r = r.div(10).pow(2).mul(10)
+		if (this.extLvl() >= 1) r = E(10).pow(r.div(10).root(5)).div(10)
+		return r
+	},
+
 	reset(force, auto) {
 		if (!force) {
 			if (player.chal.comps[12].eq(0)) return false
@@ -92,6 +118,7 @@ let EXOTIC = {
 		if (tmp.chal.outside) player.ext.chal.f7 = false
 		player.ext.ax.res[0] = player.ext.ax.res[0].add(AXIONS.prod(0).mul(dt))
 		player.ext.ax.res[1] = player.ext.ax.res[1].add(AXIONS.prod(1).mul(dt))
+		player.ext.ax.res[2] = player.ext.ax.res[2].add(AXIONS.prod(2).mul(dt))
 	}
 }
 
@@ -256,8 +283,8 @@ let AXIONS = {
 				if (i % 4 > 2) other = other.sub(player.ext.ax.upgs[i - 3].div(3))
 			}
 			if (hasTreeUpg("ext_l5")) {
-				if (i % 4 == 0) other = other.sub(player.ext.ax.upgs[i + 3].div(5))
-				if (i % 4 <= 1) other = other.sub(player.ext.ax.upgs[i + 2].div(5))
+				if (i % 4 == 0) other = other.sub(player.ext.ax.upgs[i + 3].div(15))
+				if (i % 4 <= 1) other = other.sub(player.ext.ax.upgs[i + 2].div(15))
 			}
 		}
 
@@ -292,7 +319,7 @@ let AXIONS = {
 		var type = Math.floor(i / 4)
 		if (bulk.eq(0)) return
 		player.ext.ax.upgs[i] = player.ext.ax.upgs[i].add(bulk)
-		player.ext.ax.res[type] = player.ext.ax.res[type].sub(E([2,3,5][type], bulk).mul(cost)).max(0)
+		player.ext.ax.res[type] = player.ext.ax.res[type].sub(E([2,3,5][type]).pow(bulk.sub(1)).mul(cost)).max(0)
 		updateAxionLevelTemp()
 	},
 
@@ -301,10 +328,10 @@ let AXIONS = {
 
 		let r = E(0)
 		if (x == 0) r = player.mass.max(1).log10().pow(0.6)
-			.mul(player.ext.amt.add(1).log(100).add(1).pow(3))
+			.mul(EXOTIC.eff().add(1).log(100).add(1).pow(3))
 		if (x == 1 && hasTreeUpg("ext_c")) r = player.supernova.times.div(20).max(1).pow(3)
-			.mul(player.ext.amt.add(1).log10().add(1).sqrt())
-		if (x == 2 && hasTreeUpg("ext_e1")) r = E(0)
+			.mul(EXOTIC.eff().add(1).log10().add(1).sqrt())
+		if (x == 2 && hasTreeUpg("ext_e1")) r = player.supernova.radiation.hz.max(1).log10().div(1e3).pow(3).div(1e3)
 
 		if (hasElement(77)) r = r.mul(tmp.elements && tmp.elements.effect[77])
 		return r
@@ -368,7 +395,7 @@ let AXIONS = {
 			desc: "Outside of challenges, Tickspeed scalings are weaker, but reduce the non-bonus.",
 			req: E(0),
 			eff(x) {
-				return x.add(1).log10().div(2).add(1)
+				return x.add(1).log10().div(3).add(1)
 			},
 			effDesc(x) {
 				return format(x) + "x"
@@ -391,10 +418,10 @@ let AXIONS = {
 			desc: "Raise the base Atomic Power gains.",
 			req: E(1),
 			eff(x) {
-				return x.div(3).add(1).pow(2/3).min(7.5)
+				return x.div(3).add(1).pow(5/9).softcap(5,0.1,0).min(7.5)
 			},
 			effDesc(x) {
-				return "^" + format(x)
+				return "^" + format(x) + getSoftcapHTML(x, 5)
 			}
 		},
 		5: {
@@ -424,7 +451,7 @@ let AXIONS = {
 			desc: "Multiply Meta Boosts based on radiation types.",
 			req: E(7),
 			eff(x) {
-				return x.add(1).log(3).div(10).add(1).min(1.6)
+				return x.add(1).log(3).div(10).add(1)
 			},
 			effDesc(x) {
 				return format(x) + "x"
@@ -432,7 +459,7 @@ let AXIONS = {
 		},
 
 		8: {
-			title: "Supermassive [Coming soon!]",
+			title: "Supermassive",
 			desc: "Hawking Radiation softcap starts later.",
 			req: E(1/0),
 			eff(x) {
@@ -454,7 +481,7 @@ let AXIONS = {
 			}
 		},
 		10: {
-			title: "Quark Condenser [Coming soon!]",
+			title: "Quark Condenser",
 			desc: "Neutron Condensers are more powerful.",
 			req: E(1/0),
 			eff(x) {
@@ -467,9 +494,9 @@ let AXIONS = {
 		11: {
 			title: "Lepton Anomaly",
 			desc: "Neut-Muon softcap is weaker.",
-			req: E(10),
+			req: E(5),
 			eff(x) {
-				return x.div(2).add(16).sqrt().add(1).min(6).div(5)
+				return x.div(2).add(27).cbrt().add(2).min(6).div(5)
 			},
 			effDesc(x) {
 				return "^" + format(x,3)
@@ -477,14 +504,14 @@ let AXIONS = {
 		},
 
 		12: {
-			title: "Supernova [Coming soon!]",
-			desc: "???",
+			title: "Supernova",
+			desc: "Supernova is cheaper.",
 			req: E(1/0),
 			eff(x) {
-				return E(1)
+				return E(1.03).pow(x)
 			},
 			effDesc(x) {
-				return format(x) + "x"
+				return "^1/"+format(x)
 			}
 		},
 		13: {

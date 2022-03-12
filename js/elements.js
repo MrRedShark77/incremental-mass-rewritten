@@ -165,7 +165,7 @@ function updateTabsHTML() {
 
 function updateUpperHTML() {
 	tmp.el.reset_desc.setHTML(player.reset_msg)
-	tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain, true, true))
+	tmp.el.mass.setHTML(formatMass(player.mass, true)+"<br>"+formatGain(player.mass, tmp.massGain, true, true))
     let hideSome = player.ext.amt.gte(1)
 	tmp.el.rp_div.setVisible(!hideSome)
 	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+formatGainOrGet(player.rp.points, tmp.rp.gain, player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)))
@@ -203,7 +203,7 @@ function updateUpperHTML() {
 
 	unl = player.supernova.post_10
 	tmp.el.sn_div.setVisible(unl)
-	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>"+formatGet(player.supernova.times, tmp.supernova.bulk.sub(player.supernova.times)))
+	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>"+formatGet(player.supernova.times, tmp.supernova.bulk.sub(player.supernova.times), true))
 
 	unl = EXOTIC.unlocked()
 	tmp.el.ext_div.setVisible(unl)
