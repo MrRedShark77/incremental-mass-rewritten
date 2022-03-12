@@ -28,7 +28,7 @@ const PRIM = {
                 return x
             },
             p=>{
-                let x = [p.root(3).div(5).add(1),p.pow(1.25)]
+                let x = [p.root(3).div(5).add(1),p.pow(1.25).add(1)]
                 return x
             },
             p=>{
