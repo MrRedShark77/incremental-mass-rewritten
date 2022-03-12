@@ -282,8 +282,8 @@ function cannotSave() { return tmp.supernova.reached && player.supernova.times.l
 
 function save(){
     if (cannotSave()) return
-    if (localStorage.getItem("IMR_QU_Save") == '') wipe()
-    localStorage.setItem("IMR_QU_Save",btoa(JSON.stringify(player)))
+    if (localStorage.getItem("testSave") == '') wipe()
+    localStorage.setItem("testSave",btoa(JSON.stringify(player)))
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 
@@ -347,7 +347,7 @@ function importy() {
 
 function loadGame(start=true) {
     wipe()
-    load(localStorage.getItem("IMR_QU_Save"))
+    load(localStorage.getItem("testSave"))
     setupHTML()
     
     if (start) {
