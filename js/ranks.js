@@ -1,6 +1,7 @@
 const RANKS = {
-    names: ['rank', 'tier', 'tetr', 'pent'],
-    fullNames: ['Rank', 'Tier', 'Tetr', 'Pent'],
+    names: ['rank', 'tier', 'tetr', 'pent', 'hex'],
+    fullNames: ['Rank', 'Tier', 'Tetr', 'Pent', 'Hex'],
+	resetDescs: ['mass and upgrades', 'Rank', 'Tier', 'Tetr', 'Exotic'],
     reset(type) {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
@@ -28,7 +29,8 @@ const RANKS = {
     unl: {
         tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) },
         tetr() { return player.mainUpg.atom.includes(3) },
-        pent() { return hasTreeUpg("sn5") },
+        pent() { return hasTreeUpg("sn5") || this.hex() },
+        hex() { return false /*CHROMA.unl() || player.ranks.hex.gte(1)*/ },
     },
     doReset: {
         rank() {
@@ -47,6 +49,24 @@ const RANKS = {
             player.ranks.tetr = E(0)
             this.tetr()
         },
+        hex() {
+			player.ext.amt = E(0)
+			for (var i = 0; i < 3; i++) player.ext.ax.res[i] = E(0)
+			for (var i = 0; i < 12; i++) player.ext.ax.upgs[i] = E(0)
+			updateAxionLevelTemp()
+			//To-do: Reset Chroma
+
+			if (player.ranks.hex.eq(1)) {
+				let list_keep = []
+				for (let x = 0; x < player.supernova.tree.length; x++) {
+					var id = player.supernova.tree[x]
+					if (TREE_UPGS.ids[id] && TREE_UPGS.ids[id].perm === 2) list_keep.push(id)
+				}
+				player.supernova.tree = list_keep
+			}
+
+            EXOTIC.doReset(true)
+        },
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
@@ -54,6 +74,7 @@ const RANKS = {
         tier() { return player.mainUpg.rp.includes(6) },
         tetr() { return player.mainUpg.atom.includes(5) },
         pent() { return true },
+        hex() { return false },
     },
     desc: {
         rank: {
@@ -105,6 +126,9 @@ const RANKS = {
             '6': "Pent 5 effect is 2x stronger.",
             '10': "Stronger and Pent raise levels from Musculer and Booster.",
             '13': "Pent 1 effect is raised by Pents.",
+        },
+        hex: {
+            '1': "Unlock Chroma.",
         },
     },
     effect: {
@@ -209,8 +233,13 @@ const RANKS = {
 				return ret
 			},
 			'13'() {
-				return player.ranks.pent.add(6).div(18).sqrt().min(1.5)
+				let ret = player.ranks.pent.add(6).div(18).sqrt().softcap(1.5,0.2,0)
+				let cap = E(1.5)
+				if (AXIONS.unl()) cap = cap.add(tmp.ax.eff[16])
+				return ret.min(cap)
 			}
+		},
+		hex: {
 		},
     },
     effDesc: {
@@ -242,8 +271,10 @@ const RANKS = {
             4(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
             5(x) { return format(E(1).div(x))+"x weaker" },
             10(x) { return "^"+format(x) },
-            13(x) { return "^"+format(x) },
+            13(x) { return "^"+format(x,3) },
         },
+		hex: {
+		},
     },
     fp: {
         rank() {
@@ -274,6 +305,9 @@ const RANKS = {
             if (future) f = f.div(player.mass.max(1).log10().add(1).pow(0.01))
             return f
         },
+		hex() {
+			return E(1)
+		},
     },
 }
 
@@ -501,6 +535,10 @@ function updateRanksTemp() {
 	fp = RANKS.fp.pent()
 	tmp.ranks.pent.req = player.ranks.pent.mul(fp).pow(1.25).add(15).floor()
 	tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).max(0).root(1.25).div(fp).add(1).floor();
+
+	fp = RANKS.fp.hex()
+	tmp.ranks.hex.req = E(1.1).pow(player.ranks.hex.div(fp)).mul(50).floor()
+	tmp.ranks.pent.bulk = player.ranks.pent.div(50).log(1.1).mul(fp).add(1).floor()
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

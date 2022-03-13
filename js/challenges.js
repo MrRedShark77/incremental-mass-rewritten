@@ -122,6 +122,7 @@ const CHALS = {
         if (hasElement(65) && (i==7||i==8)) x = x.add(200)
         if (hasTreeUpg("chal1") && (i==7||i==8)) x = x.add(100)
         if (AXIONS.unl() && (i==7||i>=10&&i<=12)) x = x.add(tmp.ax.eff[13])
+		if (AXIONS.unl() && i==8) x = x.add(tmp.ax.eff[17])
         return x.floor()
     },
     getScaleName(i) {
@@ -377,9 +378,10 @@ const CHALS = {
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
+			if (ret.gte(1.98)) ret = E(2).sub(E(0.02).div(ret.sub(0.98)))
             return ret
         },
-        effDesc(x) { return "^"+format(x) },
+        effDesc(x) { return "^"+format(x,3)+getSoftcapHTML(x,1.98) },
     },
     9: {
         unl() { return hasTreeUpg("chal4") },
@@ -444,10 +446,10 @@ const CHALS = {
 		unl() { return hasTreeUpg("chal8") },
 		title: "Decay of Atom",
 		desc: "You can't gain atoms and quarks.",
-		reward: `Axion Upgrades scale slower.<br><span class="rainbow">On 12th completion, unlock Chroma! [Coming soon!]</span>`,
+		reward: `Axion Upgrades scale slower.<br><span class="rainbow">On 15th completion, unlock Chroma!</span>`,
 		max: E(100),
 		inc: E(11/9),
-		pow: E(1.25),
+		pow: E(1.2),
 		start: uni("e4.5e5"),
 		effect(x) {
             return E(0.5).add(E(0.5).div(x.div(3).add(1).sqrt()))
@@ -455,7 +457,7 @@ const CHALS = {
 		effDesc(x) { return format(E(1).sub(x).mul(100))+"% slower" },
 	},
 	14: {
-		unl() { return hasTreeUpg("chal9") },
+		unl() { return AXIONS.unl() && tmp.ax.lvl[22].gt(0) },
 		title: "Monochromatic Mass",
 		desc: "You can't gain Mass Upgrades.",
 		reward: `Stronger effect is extraordinary stronger!`,
@@ -469,7 +471,7 @@ const CHALS = {
         effDesc(x) { return "^"+format(x) },
 	},
 	15: {
-		unl() { return hasTreeUpg("chal10") },
+		unl() { return false },
 		title: "Placeholder",
 		desc: "Placeholder.",
 		reward: `Placeholder.`,
@@ -484,7 +486,7 @@ const CHALS = {
 		effDesc(x) { return format(x)+"x" },
 	},
 	16: {
-		unl() { return hasTreeUpg("chal11") },
+		unl() { return false },
 		title: "Placeholder",
 		desc: "Placeholder.",
 		reward: `Placeholder.`,

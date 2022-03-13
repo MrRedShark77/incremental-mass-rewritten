@@ -17,7 +17,7 @@ const TABS = {
         { id: "Challenges", unl() { return player.chal.unl } },
         { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
         { id: "Supernova", unl() { return player.supernova.unl } },
-        { id: "Exotic", unl() { return player.ext.amt.gte(1) } },
+        { id: "Exotic", unl() { return EXOTIC.unl() } },
         { id: "Options" },
     ],
     2: {
@@ -44,7 +44,7 @@ const TABS = {
         ],
         6: [
             { id: "Axions" },
-            { id: "Chroma", unl() { return player.chal.comps[13].gte(12) } }
+            { id: "Chroma", unl() { return CHROMA.unl() } }
         ],
     },
 }

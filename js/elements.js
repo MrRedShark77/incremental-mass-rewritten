@@ -37,7 +37,7 @@ function setupHTML() {
 			<button id="ranks_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('${rn}')">OFF</button>
 			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <span id="ranks_amt_${x}">X</span><br><br>
 			<button onclick="RANKS.reset('${rn}')" class="btn reset" id="ranks_${x}">
-				Reset your ${x>0?RANKS.fullNames[x-1]:'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
+				Reset your ${RANKS.resetDescs[x]}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
 				Req: <span id="ranks_req_${x}">X</span>
 			</button>
 		</div>`
@@ -166,7 +166,7 @@ function updateTabsHTML() {
 function updateUpperHTML() {
 	tmp.el.reset_desc.setHTML(player.reset_msg)
 	tmp.el.mass.setHTML(formatMass(player.mass, true)+"<br>"+formatGain(player.mass, tmp.massGain, true, true))
-    let hideSome = player.ext.amt.gte(1)
+    let hideSome = EXOTIC.unl()
 	tmp.el.rp_div.setVisible(!hideSome)
 	tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+formatGainOrGet(player.rp.points, tmp.rp.gain, player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)))
 	let unl = FORMS.bh.see() && !hideSome
@@ -205,7 +205,7 @@ function updateUpperHTML() {
 	tmp.el.sn_div.setVisible(unl)
 	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>"+formatGet(player.supernova.times, tmp.supernova.bulk.sub(player.supernova.times), true))
 
-	unl = EXOTIC.unlocked()
+	unl = EXOTIC.unl(true)
 	tmp.el.ext_div.setVisible(unl)
 	if (unl) tmp.el.extAmt.setHTML(format(player.ext.amt,2)+"<br>"+formatGainOrGet(player.ext.amt, EXOTIC.gain()))
 }
@@ -348,7 +348,7 @@ function updateBlackHoleHTML() {
 
 function updateOptionsHTML() {
 	for (let x = 0; x < CONFIRMS.length; x++) {
-		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x] == "ext"?player.ext.amt.gte(1):CONFIRMS[x] == "sn"?player.supernova.unl:player[CONFIRMS[x]].unl)
+		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x] == "ext"?EXOTIC.unl():CONFIRMS[x] == "sn"?player.supernova.unl:player[CONFIRMS[x]].unl)
 		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 	}
 	tmp.el.total_time.setTxt(formatTime(player.time))
@@ -371,7 +371,7 @@ function updateHTML() {
 	updateSupernovaEndingHTML()
 	updateExoticHTML()
 	updateTabsHTML()
-	if ((!tmp.supernova.reached || player.supernova.post_10 || EXOTIC.unlocked()) && tmp.tab != 5) {
+	if ((!tmp.supernova.reached || player.supernova.post_10 || EXOTIC.unl(true)) && tmp.tab != 5) {
 		updateUpperHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {

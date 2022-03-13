@@ -140,8 +140,9 @@ const FORMS = {
             }
         },
         doReset() {
-            player.ranks[RANKS.names[RANKS.names.length-1]] = E(0)
-            RANKS.doReset[RANKS.names[RANKS.names.length-1]]()
+			//Hex comes after Exotic. :)
+			player.ranks.pent = E(0)
+			RANKS.doReset.pent()
         },
     },
     bh: {
@@ -174,6 +175,7 @@ const FORMS = {
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
             if (hasElement(46)) x = x.mul(tmp.elements.effect[46])
+            if (AXIONS.unl()) x = x.mul(tmp.ax.eff[19])
             x = x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
@@ -444,6 +446,7 @@ const UPGS = {
                 if (player.ranks.tier.gte(30)) sp *= 1.1
 
                 let ret = step.mul(x.add(tmp.upgs.mass[3].bonus)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)
+                if (AXIONS.unl()) ret = ret.add(tmp.ax.eff[18])
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
@@ -739,7 +742,7 @@ const UPGS = {
                 desc: "Atomic Powers adds Black Hole Condensers at a reduced rate.",
                 cost: E('e420'),
                 effect() {
-                    let ret = player.atom.atomic.add(1).log(5)
+                    let ret = player.atom.atomic.add(1).log(5).min(1e20)
                     return ret.floor()
                 },
                 effDesc(x=this.effect()) {

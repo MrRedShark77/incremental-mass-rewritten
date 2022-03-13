@@ -116,9 +116,17 @@ function updateScreensHTML() {
 	}
 
 	//CHROMA
-	tmp.el.chroma_bg1.setDisplay(false)
-	tmp.el.chroma_bg2.setDisplay(false)
-	tmp.el.chroma_bg3.setDisplay(false)
+	let unl = CHROMA.unl()
+	tmp.el.chroma_bg1.setDisplay(unl)
+	tmp.el.chroma_bg2.setDisplay(unl)
+	tmp.el.chroma_bg3.setDisplay(unl)
+
+	if (unl) {
+		let progress = player.stats.maxMass.log10().log10().sub(14).div(16).max(0).min(1).toNumber()
+		tmp.el.chroma_bg1.setOpacity(progress)
+		tmp.el.chroma_bg2.setOpacity(progress)
+		tmp.el.chroma_bg3.setOpacity(progress)
+	}
 }
 
 function updateStarsHTML() {

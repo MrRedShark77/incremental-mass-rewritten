@@ -152,3 +152,5 @@ function updateAarex(toggle) {
 
 	document.getElementById("aarex_active").textContent = player.aarex ? "ON" : "OFF"
 }
+
+future = false

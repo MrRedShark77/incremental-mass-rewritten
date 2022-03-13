@@ -290,6 +290,7 @@ function updateSupernovaAutoTemp() {
 		for (var x = (hasTreeUpg("qol_ext9") ? 9 : hasTreeUpg("qol_ext8") ? 5 : 1); x <= 12; x++) {
 			let tier = player.chal.comps[x]
 			if (tier.gte(thres) && tier.lt(CHALS.getMax(x))) tmp.supernova.auto.push(x)
+			else if (x == 12 && hasTreeUpg("qol_ext2")) tmp.supernova.auto.push(x)
 		}
 	}
 	for (var y = 0; y < 2; y++) {

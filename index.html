@@ -14,6 +14,8 @@
     <script src="js/challenges.js"></script>
 
     <script src="js/exotic/core.js"></script>
+    <script src="js/exotic/axion.js"></script>
+    <script src="js/exotic/chroma.js"></script>
 
     <script src="js/supernova/radiation.js"></script>
     <script src="js/supernova/fermions.js"></script>
@@ -145,8 +147,12 @@
 		<button class="btn" onclick="EXOTIC.reset(true)" style="position: absolute; top: 5px; right: 5px">Restart</button>
 		<button class="btn" onclick="TABS.choose(0)" style="position: absolute; top: 5px; left: 5px">Close</button>
 		<div class="resources sml yellow" style="position: absolute; left: 5px; top: 65px; height: 2px; width: 50%">
-			<img src="images/ext.png" onclick="EXOTIC.reset()" style="cursor: pointer;">
+			<img src="images/ext.png" onclick="EXOTIC.reset()" style="cursor: pointer;  background: rgba(0, 0, 0, 0.9)">
 			<span style="margin-left: 5px; text-align: left;" id="extAmt2">X</span>
+		</div>
+		<div class="resources sml green" style="position: absolute; left: 5px; top: 110px; height: 2px; width: 50%" id="hexDisp">
+			<img src="images/hex.png" onclick="RANKS.reset('hex')" style="cursor: pointer; width: 40px; height: 40px; background: rgba(0, 0, 0, 0.9)">
+			<span style="margin-left: 5px; text-align: left;" id="hexAmt">X</span>
 		</div>
 		<div style="position: absolute; left: 25%; top: 24px; height: 2px; width: 50%; background: #ff3f00">
 			<div id="ext_stabs" style="position: absolute; left: 0; top: -10px; width: 100%; min-height: 40px;"></div>
@@ -155,7 +161,7 @@
 			<div id="stab_frame6_0">
 				<span id="st_res0"></span> X Axions <span id="st_gain0"></span><br>
 				<span id="st_res1"></span> Y Axions <span id="st_gain1"></span><br>
-				<span id="st_res2"></span> Z Axions <span id="st_gain2"></span><br>
+				<span id="st_res2_disp"><span id="st_res2"></span> Z Axions <span id="st_gain2"></span><br></span>
 				<br>
 				<div id="ax_desc" style="min-height: 70px;">
                     <span id="ax_title" class='sky'>Cosmic Burst</span><br>

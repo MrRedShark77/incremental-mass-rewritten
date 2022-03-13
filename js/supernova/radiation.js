@@ -252,7 +252,7 @@ const RADIATION = {
         {
             title: `Supernova Boost`,
             eff(b) {
-                return E(1).div(b.div(10).add(1).sqrt().min(8))
+                return E(1).div(b.div(10).add(1).sqrt().min(4))
             },
             desc(x) { return `Ultra Supernova scales ${format(E(1).sub(x).times(100))}% slower.` },
         },

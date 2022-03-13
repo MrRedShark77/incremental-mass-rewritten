@@ -33,7 +33,7 @@ const TREE_UPGS = {
     ids: {
         c: {
             desc: `Start generating 0.1 Neutron Star per second (not affected by offline production).`,
-			perm: true,
+			perm: 2,
             cost: E(0),
         },
         sn1: {
@@ -187,7 +187,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(2) },
             reqDesc: `2 Supernovae.`,
             desc: `Start with Silicon-14 & Argon-18 unlocked. You can now automatically buy Elements & Atom upgrades.`,
-			perm: true,
+			perm: 2,
             cost: E(1500),
         },
         qol2: {
@@ -195,7 +195,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(3) },
             reqDesc: `3 Supernovae.`,
             desc: `Start with Chromium-24 and Atom upgrade 6 unlocked.`,
-			perm: true,
+			perm: 2,
             cost: E(2000),
         },
         qol3: {
@@ -203,7 +203,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(4) },
             reqDesc: `4 Supernovae.`,
             desc: `Start with Techntium-43 unlocked, improve their element better. You can automatically gain Relativistic particles from mass.`,
-			perm: true,
+			perm: 2,
             cost: E(10000),
         },
         qol4: {
@@ -212,7 +212,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(12) },
             reqDesc: `12 Supernovae.`,
             desc: `You can now automatically buy Star unlockers & boosters.`,
-			perm: true,
+			perm: 2,
             cost: E(1e8),
         },
         qol5: {
@@ -220,7 +220,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(16) },
             reqDesc: `16 Supernovae.`,
             desc: `Tetrs no longer resets anything.`,
-			perm: true,
+			perm: 2,
             cost: E(1e13),
         },
         qol6: {
@@ -228,7 +228,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(17) },
             reqDesc: `17 Supernovae.`,
             desc: `While in any challenge, you can now automatically complete it before exiting.`,
-			perm: true,
+			perm: 2,
             cost: E(1e15),
         },
         qol7: {
@@ -237,7 +237,7 @@ const TREE_UPGS = {
             req() { return player.supernova.times.gte(40) },
             reqDesc: `40 Supernovae.`,
             desc: `You can now automatically buy Photon & Gluon upgrades, they no longer spent their amount.`,
-			perm: true,
+			perm: 2,
             cost: E(1e48),
         },
         chal1: {
@@ -431,7 +431,7 @@ const TREE_UPGS = {
             reqDesc: `50 Supernovae.`,
             desc: `You can automatically sweep challenges and fermions with at least 15 completions / tiers, after 1.5 seconds of Supernova.`,
             cost: E(1e65),
-			perm: true,
+			perm: 2,
         },
         fn7: {
             branch: ["fn6"],
@@ -464,7 +464,7 @@ const TREE_UPGS = {
             branch: ["qol8"],
             desc: `You can enter both U-Quarks and U-Leptons.`,
             cost: E(1e120),
-			perm: true,
+			perm: 2,
         },
         chal7: {
             branch: ["chal6"],
@@ -475,10 +475,10 @@ const TREE_UPGS = {
             branch: ["qol9"],
             desc: `You can do 2 challenges at once from sweeping. [Coming really soon!]`,
             cost: E(1/0),
-			perm: true,
+			perm: 2,
         },
         rad4: {
-            unl() { return player.ext.amt.gte(1) },
+            unl() { return EXOTIC.unl() },
             branch: ["rad2"],
             desc: `All Radiation Meta-Boosts are 50% stronger.`,
             cost: E(1e190),
@@ -486,16 +486,16 @@ const TREE_UPGS = {
 
 		/* EXOTIC */
         eb1: {
-            unl() { return player.ext.amt.gte(1) },
+            unl() { return EXOTIC.unl() },
             desc: `Unlock Black Hole and Atomic Buildings #2.`,
             cost: E(1e10),
-			perm: true,
+			perm: 2,
         },
         eb2: {
 			branch: ["eb1"],
             desc: `Unlock Black Hole and Atomic Buildings #3.`,
             cost: E(1e200),
-			perm: true,
+			perm: 2,
         },
 		chal8: {
 			branch: ["chal7"],
@@ -503,14 +503,13 @@ const TREE_UPGS = {
 			reqDesc() { return "Get " + format(EXOTIC.amt(1e32)) + " Exotic Matter." },
 			desc: `Unlock the introduction challenge of the Exotic side, Challenge 13.`,
 			cost: E(0),
-			perm: true,
+			perm: 1,
 		},
 		rad5: {
-			unl() { return player.ext.amt.gte(1) },
+			unl() { return EXOTIC.unl() },
 			branch: ["rad3"],
 			desc: `Meta-Boost I is stronger based on Pents.`,
 			cost: E("1e370"),
-			perm: true,
 		},
 		ext_c: {
 			branch: ["eb2"],
@@ -518,7 +517,7 @@ const TREE_UPGS = {
 			reqDesc() { return "Get " + format(EXOTIC.amt(1e5)) + " Exotic Matter." },
 			desc: `Start producing Y-Axions based on Supernovae.`,
 			cost: E("3.333e333"),
-			perm: true,
+			perm: 1,
 			icon: "axion",
 		},
 		ext_l1: {
@@ -527,8 +526,7 @@ const TREE_UPGS = {
 			reqDesc() { return "Get " + format(EXOTIC.amt(1e8)) + " Exotic Matter." },
 			desc: `Axion Levels increase costs 20% slower.`,
 			cost: E("1e400"),
-			perm: true,
-			onBuy: updateAxionLevelTemp,
+			perm: 1,
 			icon: "axion",
 		},
 		ext_l2: {
@@ -537,7 +535,7 @@ const TREE_UPGS = {
 			reqDesc() { return "Get " + format(EXOTIC.amt(hasTreeUpg("ext_l3") ? 1e35 : 1e11)) + " Exotic Matter. [increased with ext_l3]" },
 			desc: `Axion Levels synergize with ones from the other side.`,
 			cost: E(0),
-			perm: true,
+			perm: 1,
 			onBuy: updateAxionLevelTemp,
 			icon: "axion",
 		},
@@ -547,8 +545,7 @@ const TREE_UPGS = {
 			reqDesc() { return "Get " + format(EXOTIC.amt(hasTreeUpg("ext_l2") ? 1e35 : 1e11)) + " Exotic Matter. [increased with ext_l2]" },
 			desc: `Axion Levels cheapen the nearest ones.`,
 			cost: E(0),
-			perm: true,
-			onBuy: updateAxionLevelTemp,
+			perm: 1,
 			icon: "axion",
 		},
 		ext_l4: {
@@ -556,20 +553,22 @@ const TREE_UPGS = {
 			req() { return hasTreeUpg("ext_l2") && hasTreeUpg("ext_l3") },
 			reqDesc() { return "Get 'ext_l2' and 'ext_l3' upgrades." },
 			desc: `Axion Levels cheapen ones on the right / underneath.`,
-			cost: E("1e2500"),
-			perm: true,
-			onBuy: updateAxionLevelTemp,
+			cost: E("1e1700"),
+			perm: 1,
 			icon: "axion",
 		},
 		ext_l5: {
-			unl() { return player.chal.comps[13].gte(12) },
+			unl() { return CHROMA.unl() },
 			branch: ["ext_l4"],
 			req() { return player.ext.amt.gte(EXOTIC.amt(1e250)) },
 			reqDesc() { return "Get " + format(EXOTIC.amt(1e250)) + " Exotic Matter." },
-			desc: `Axion Levels cheapen the farther ones behind.`,
+			desc: `Axion Levels cheapen slower based on Exotic Matter.`,
+            effect() {
+                return EXOTIC.eff().add(1).log10().add(1).log10().div(20).add(1).pow(-3)
+            },
+            effDesc(x) { return format(E(1).sub(x).mul(100))+"%" },
 			cost: E(1/0),
-			perm: true,
-			onBuy: updateAxionLevelTemp,
+			perm: 1,
 			icon: "axion",
 		},
 		ext_b1: {
@@ -579,40 +578,40 @@ const TREE_UPGS = {
 			reqDesc() { return "Get " + format(EXOTIC.amt(1e25)) + " Exotic Matter." },
 			desc: `Row-4 levels synergize with row-1 levels.`,
 			cost: E(0),
-			perm: true,
+			perm: 1,
 			onBuy: updateAxionLevelTemp,
 			icon: "axion",
 		},
 		ext_b2: {
-			unl() { return player.chal.comps[13].gte(12) },
+			unl() { return CHROMA.unl() },
 			branch: ["ext_b1"],
 			req() { return player.ext.amt.gte(EXOTIC.amt(hasTreeUpg("ext_b3") ? "1e2000" : "1e600")) },
 			reqDesc() { return "Get " + format(EXOTIC.amt(hasTreeUpg("ext_b3") ? "1e2000" : "1e600")) + " Exotic Matter." },
 			desc: `Levels synergize boosts diagonally on the right. [Coming soon!]`,
 			cost: E(1/0),
-			perm: true,
+			perm: 1,
 			onBuy: updateAxionLevelTemp,
 			icon: "axion",
 		},
 		ext_b3: {
-			unl() { return player.chal.comps[13].gte(12) },
+			unl() { return CHROMA.unl() },
 			branch: ["ext_b1"],
 			req() { return player.ext.amt.gte(EXOTIC.amt(hasTreeUpg("ext_b2") ? "1e2000" : "1e600")) },
 			reqDesc() { return "Get " + format(EXOTIC.amt(hasTreeUpg("ext_b2") ? "1e2000" : "1e600")) + " Exotic Matter." },
 			desc: `Levels synergize boosts diagonally on the left. [Coming soon!]`,
 			cost: E(1/0),
-			perm: true,
+			perm: 1,
 			onBuy: updateAxionLevelTemp,
 			icon: "axion",
 		},
 		ext_e1: {
-			unl() { return player.chal.comps[13].gte(12) },
+			unl() { return CHROMA.unl() },
 			branch: ["ext_c"],
 			req() { return player.ext.amt.gte(EXOTIC.amt("1e400")) },
 			reqDesc() { return "Get " + format(EXOTIC.amt("1e400")) + " Exotic Matter." },
 			desc: `Start producing Z-Axions based on Frequency.`,
 			cost: E(0),
-			perm: true,
+			perm: 1,
 			icon: "axion",
 		},
 		qol_ext1: {
@@ -621,7 +620,7 @@ const TREE_UPGS = {
 			req() { return player.supernova.times.gte(4) },
 			reqDesc() { return `${format(4,0)} Supernovae` },
 			desc: `You don't need to do requirements before buying several Supernova upgrades.`,
-			perm: true,
+			perm: 2,
 			cost: E(2000),
 			icon: "exotic",
 			effect() {
@@ -634,8 +633,8 @@ const TREE_UPGS = {
 			branch: ["qol_ext1"],
 			req() { return player.ext.amt.gte(EXOTIC.amt(10)) },
 			reqDesc() { return format(EXOTIC.amt(10)) + " Exotic Matter" },
-			desc: `Reduce the auto-sweeper threshold to 10.`,
-			perm: true,
+			desc: `Reduce the auto-sweeper threshold to 10, and auto-sweep Challenge 12.`,
+			perm: 2,
 			cost: E(1e100),
 			icon: "exotic",
 			effect() {
@@ -647,7 +646,7 @@ const TREE_UPGS = {
 		qol_ext3: {
 			branch: ["qol_ext1"],
 			desc: `Radiation Boosters are fully automated for at least 100,000 radiation.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e185),
 			icon: "exotic",
 			effect() {
@@ -665,7 +664,7 @@ const TREE_UPGS = {
 			},
 			reqDesc: `Get 6,000 challenge completions.`,
 			desc: `Keep the 'chal' upgrades except you start with 50 completions and 10 tiers for each Fermion.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e200),
 			icon: "exotic",
 			effect() {
@@ -677,7 +676,7 @@ const TREE_UPGS = {
 		qol_ext5: {
 			branch: ["qol_ext1"],
 			desc: `Keep the core Supernova upgrades.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e170),
 			icon: "exotic",
 			effect() {
@@ -688,8 +687,8 @@ const TREE_UPGS = {
 		},
 		qol_ext6: {
 			branch: ["qol_ext1"],
-			desc: `Keep the Boson - Fermion upgrades, and start with 10 completions for C9 - 12.`,
-			perm: true,
+			desc: `Keep the Boson - Fermion upgrades, and start with 10 completions for C9 - 11.`,
+			perm: 2,
 			cost: E(1e250),
 			icon: "exotic",
 			effect() {
@@ -701,7 +700,7 @@ const TREE_UPGS = {
 		qol_ext7: {
 			branch: ["qol_ext1"],
 			desc: `Keep the Radiation upgrades.`,
-			perm: true,
+			perm: 2,
 			cost: E("1e400"),
 			icon: "exotic",
 			effect() {
@@ -713,7 +712,7 @@ const TREE_UPGS = {
 		qol_ext8: {
 			branch: ["qol_ext1"],
 			desc: `Automatically gain C1 - 4 completions without entering.`,
-			perm: true,
+			perm: 2,
 			cost: E("1e800"),
 			icon: "exotic",
 			effect() {
@@ -725,7 +724,7 @@ const TREE_UPGS = {
 		qol_ext9: {
 			branch: ["qol_ext8"],
 			desc: `Automatically gain C5 - 8 completions without entering.`,
-			perm: true,
+			perm: 2,
 			cost: E("1e2000"),
 			icon: "exotic",
 			effect() {
@@ -737,7 +736,7 @@ const TREE_UPGS = {
 		qol_ext10: {
 			branch: ["qol_ext9"],
 			desc: `Automatically go Supernova when you gain 30% more.`,
-			perm: true,
+			perm: 2,
 			cost: E("1e3000"),
 			icon: "exotic",
 			effect() {
@@ -749,7 +748,7 @@ const TREE_UPGS = {
 
 		/* FEATS */
 		feat1: {
-			unl() { return hasTreeUpg("rad1") },
+			unl() { return hasTreeUpg("rad1") || EXOTIC.unl() },
 			req() {
 				if (!player.supernova.fermions.choosed) return
 				if (!player.supernova.fermions.choosed2) return
@@ -760,11 +759,11 @@ const TREE_UPGS = {
 			},
 			reqDesc: `Get at most ^0.001 of best mass within a U-Quark and a U-Lepton. [Automation must be on for feats 1 - 3!]`,
 			desc: `Gain 3x more Radiation.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e130),
 		},
 		feat2: {
-			unl() { return hasTreeUpg("rad1") },
+			unl() { return hasTreeUpg("rad1") || EXOTIC.unl() },
 			req() {
 				if (player.chal.active) return
 				if (!player.md.active) return
@@ -775,19 +774,19 @@ const TREE_UPGS = {
 			},
 			reqDesc: `Get ^0.1 of best mass for this Supernova within Mass Dilation.`,
 			desc: `Add ^0.015 to Titanium-73 effect.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e140),
 		},
 		feat3: {
-			unl() { return hasTreeUpg("rad1") },
+			unl() { return hasTreeUpg("rad1") || EXOTIC.unl() },
 			req() { return player.mass.gte(uni("e2.5e10")) && player.mainUpg.rp.length + player.mainUpg.bh.length + player.mainUpg.atom.length < 30 },
 			reqDesc() { return "Get " + formatMass(uni("ee25")) + " with at most 30 Main Upgrades. [Turn off automation in Upgrades and restart a Supernova run first!]" },
 			desc: `All Tickspeed scalings scale 35% weaker.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e155),
 		},
 		feat4: {
-			unl() { return player.ext.amt.gte(1) },
+			unl() { return EXOTIC.unl() },
 			req() {
 				if (player.mass.lt(mlt(1))) return false
 				let sum = E(0)
@@ -797,56 +796,56 @@ const TREE_UPGS = {
 			},
 			reqDesc() { return `Get ${formatMass(mlt(1))} mass with one black hole challenge have at most 5% of total completions.` },
 			desc: `Reduce the auto-sweeper threshold by 2 completions / tiers.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e100),
 		},
 		feat5: {
-			unl() { return player.ext.amt.gte(1) },
+			unl() { return EXOTIC.unl() },
 			req() { return player.mass.gte(mlt(1)) && player.ext.time <= 3600 },
 			reqDesc() { return `Reach ${formatMass(mlt(1))} mass in 1 hour of Exotic Run.` },
 			desc: `+^0.05 to Mass and Rage gain exponents and their caps.`,
-			perm: true,
+			perm: 2,
 			cost: E(1e40),
 		},
 		feat6: {
-			unl() { return player.ext.amt.gte(1) },
+			unl() { return EXOTIC.unl() },
 			req() { return player.mass.lt(uni("ee10")) && tmp.supernova.bulk.sub(player.supernova.times).round().gte(15) },
 			reqDesc() { return `Get +15 Supernova gains in under ${formatMass(uni("ee10"))} mass` },
 			desc: `Pre-Ultra Supernova scalings start 1 later.`,
-			perm: true,
+			perm: 2,
 			cost: E(0),
 		},
 		feat7: {
-			unl() { return player.ext.amt.gte(1) },
+			unl() { return EXOTIC.unl() },
 			req() { return player.mass.gte(uni("ee11")) & player.ext.chal.f7 },
 			reqDesc() { return `Reach ${formatMass(uni("ee11"))} mass while being stuck in any challenge throughout a Exotic run.` },
 			desc: `Hardened Challenges scaling is 5% weaker.`,
-			perm: true,
+			perm: 2,
 			cost: E(0),
 		},
 		feat8: {
-			unl() { return player.chal.comps[13].gte(12) },
+			unl() { return CHROMA.unl() },
 			req() { return false },
 			reqDesc() { return `???` },
 			desc: `Supernova scalings start 3 later.`,
-			perm: true,
+			perm: 2,
 			cost: E(0),
 		},
 		feat9: {
-			unl() { return player.chal.comps[13].gte(12) },
+			unl() { return CHROMA.unl() },
 			req() { return false },
 			reqDesc() { return `???` },
 			desc: `Make Exotic Matter stranger than before!`,
-			perm: true,
+			perm: 2,
 			cost: E(0),
 			onBuy: () => player.ext.amt = EXOTIC.reduce(EXOTIC.extLvl(), player.ext.amt)
 		},
 		feat10: {
-			unl() { return player.chal.comps[13].gte(12) },
+			unl() { return CHROMA.unl() },
 			req() { return false },
 			reqDesc() { return `???` },
 			desc: `Make Exotic Matter stranger than before!`,
-			perm: true,
+			perm: 2,
 			cost: E(0),
 			onBuy: () => player.ext.amt = EXOTIC.reduce(EXOTIC.extLvl(), player.ext.amt)
 		},
@@ -989,7 +988,7 @@ function updateTreeHTML() {
 	let perm = ""
     if (tmp.supernova.tree_choosed != "") {
 		req = TREE_UPGS.ids[tmp.supernova.tree_choosed].req?`<span class="${TREE_UPGS.ids[tmp.supernova.tree_choosed].req()?"green":"red"}">${TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc?" Require: "+(typeof TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc == "function"?TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc():TREE_UPGS.ids[tmp.supernova.tree_choosed].reqDesc):""}</span>`:""
-		perm = TREE_UPGS.ids[tmp.supernova.tree_choosed].perm ? `<span class='yellow'> [Permanent]</span>` : ``
+		perm = TREE_UPGS.ids[tmp.supernova.tree_choosed].perm ? `<span class='yellow'> [${[null, "Last 1 Hex", "Permanent"][TREE_UPGS.ids[tmp.supernova.tree_choosed].perm]}]</span>` : ``
 	}
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`

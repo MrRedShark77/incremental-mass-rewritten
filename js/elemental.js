@@ -549,7 +549,7 @@ const ELEMENTS = {
     */
 	getUnlLength() {
 		let u = 4
-		if (player.ext.amt.gte(1)) {
+		if (EXOTIC.unl()) {
 			u = 81
 		} else if (player.supernova.unl) {
 			u = 49+5

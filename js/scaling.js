@@ -41,6 +41,7 @@ const SCALING_RES = {
 	tier(x=0) { return player.ranks.tier },
 	tetr(x=0) { return player.ranks.tetr },
 	pent(x=0) { return player.ranks.pent },
+	hex(x=0) { return player.ranks.hex },
 	tickspeed(x=0) { return player.tickspeed },
     massUpg(x=1) { return E(player.massUpg[x]||0) },
 	bh_condenser(x=0) { return player.bh.condenser },
