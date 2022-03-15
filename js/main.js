@@ -913,6 +913,7 @@ const UPGS = {
 
 function loop() {
     diff = Date.now()-date;
+    ssf[1]()
     updateTemp()
     updateHTML()
     calc(diff/1000*tmp.offlineMult,diff/1000);

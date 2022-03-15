@@ -1,0 +1,108 @@
+* {
+    table-align: center;
+	text-align: center;
+}
+
+body {
+    color: white;
+    background-color: black;
+	overflow-x: hidden;
+	font-size: 25px;
+	margin: 0px;
+	user-select: none;
+}
+
+table, tr {
+    display: flex;
+    justify-content: center;
+}
+
+#yes {
+    display: none;
+    width: 100%; height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    display: inline;
+    font-size: 40px;
+}
+
+h2 {
+	display: inline;
+    font-size: 30px;
+}
+
+.table_center {
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+}
+
+#answer {
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    width: 600px;
+    font-size: 30px;
+    background-color: black;
+    border: solid 2px white;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+#enter {
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: white;
+    border: solid 2px white;
+    border-radius: 10px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#life {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#sc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#omega {
+    transition-duration: 0.25s;
+    cursor: pointer;
+}
+
+#omega:hover {
+    transform: rotate(20deg) scale(1.1);
+}
+
+@keyframes hurt {
+    0% {
+        background-color: red;
+    }
+    100% {
+        background-color: #0000;
+    }
+}
+
+@keyframes fin {
+    0% {
+        background-color: white;
+    }
+    62.5% {
+        background-color: white;
+    }
+    100% {
+        background-color: #0000;
+    }
+}

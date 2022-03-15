@@ -551,7 +551,7 @@ function setupElementsHTML() {
         else if (m=='x') {
             num++
             table += ELEMENTS.upgs[num]===undefined?`<div style="width: 50px; height: 50px"></div>`
-            :`<button class="elements" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num})" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
+            :`<button class="elements" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num}); ssf[0]('${ELEMENTS.names[num]}')" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
             if (num==57 || num==89) num += 14
             else if (num==71) num += 18
             else if (num==118) num = 57

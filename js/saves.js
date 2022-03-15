@@ -317,6 +317,7 @@ function export_copy() {
 
 function importy() {
     let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
+    if (ssf[2](loadgame)) return
     if (loadgame == 'monke') {
         addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
         return
