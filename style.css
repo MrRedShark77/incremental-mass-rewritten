@@ -424,6 +424,12 @@ h2 {
     flex-flow: row wrap;
 }
 
+.table_left {
+    display: flex;
+    justify-content: start;
+    flex-flow: row wrap;
+}
+
 .md {
 	border-color: darkgreen;
 	background-color: #171717;
