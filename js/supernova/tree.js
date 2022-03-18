@@ -665,7 +665,7 @@ function setupTreeHTML() {
     let tree_table = new Element("tree_table")
 	let table = ``
 	for (let i = 0; i < 19; i++) {
-        table += `<div class="table_left"><div class="table_center" style="min-width: 1406px;">`
+        table += `<div class="table_left"><div style="width: calc(calc(100% - 1406px) / 2)"></div><div class="table_center" style="min-width: 1406px;">`
         for (let j = 0; j < 19; j++) {
             let id = TREE_IDS[i][j]
             let option = id == "" ? `style="visibility: hidden"` : ``
