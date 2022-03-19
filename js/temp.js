@@ -1,6 +1,7 @@
 var tmp = {}
 
 function resetTemp() {
+    keep = [tmp.el, tmp.prevSave]
     tmp = {
         tree_time: 0,
 
@@ -53,6 +54,8 @@ function resetTemp() {
         prim: {
             eff: [],
         },
+
+        prevSave: "",
     }
     for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
     for (let i = 0; i < 19; i++) {
@@ -64,6 +67,8 @@ function resetTemp() {
             }
         }
     }
+    tmp.el = keep[0]
+    tmp.prevSave = keep[1]
 }
 
 resetTemp()
