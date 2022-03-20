@@ -121,7 +121,7 @@ const CHALS = {
         if (hasElement(56) && (i==8)) x = x.add(200)
         if (hasElement(65) && (i==7||i==8)) x = x.add(200)
         if (hasTreeUpg("chal1") && (i==7||i==8)) x = x.add(100)
-        if (AXIONS.unl() && (i==7||i>=10&&i<=12)) x = x.add(tmp.ax.eff[13])
+        if (AXIONS.unl() && (i==7||i>=9&&i<=12)) x = x.add(tmp.ax.eff[13])
 		if (AXIONS.unl() && i==8) x = x.add(tmp.ax.eff[17])
         return x.floor()
     },
@@ -394,9 +394,9 @@ const CHALS = {
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
             let ret = x.root(hasTreeUpg("chal4a")?3.5:4).mul(0.1).add(1)
-            return ret.min(1.3)
+            return {exp: ret.min(1.3), mul: ret.sub(1.3).max(0).mul(1.5).add(1).pow(3.5) }
         },
-        effDesc(x) { return "^"+format(x) },
+        effDesc(x) { return "^"+format(x.exp)+(x.mul.gt(1)?", x"+format(x.mul):"") },
     },
     10: {
         unl() { return hasTreeUpg("chal5") },

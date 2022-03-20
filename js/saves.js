@@ -94,7 +94,7 @@ function calc(dt, dt_offline) {
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
-        if (player.ext.amt.lt(1e10)) addPopup(POPUP_GROUPS.fermions)
+        if (player.ext.amt.lt(1e10) && !CHROMA.unl()) addPopup(POPUP_GROUPS.fermions)
     }
 
 	//player.supernova.times = tmp.supernova.bulk.max(player.supernova.times)
@@ -247,6 +247,7 @@ function getPlayerData() {
             current: Date.now(),
             time: 0,
         },
+		ap_ver: 0,
         time: 0,
     }
     for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -342,8 +343,8 @@ function decode(x) {
 
 function save(){
     if (cannotSave()) return
-    if (localStorage.getItem("testSave") == '') wipe()
-    localStorage.setItem("testSave",encode(player))
+    if (localStorage.getItem(saveId) == '') wipe()
+    localStorage.setItem(saveId,encode(player))
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 setInterval(save, 30000)
@@ -356,6 +357,7 @@ function load(x){
 		alert("Your save have been wiped due to not being valid!")
 	}
 	updateAarex()
+	changeFont()
 }
 
 function exporty() {
@@ -411,11 +413,12 @@ function importy() {
 
 function loadGame(start=true, save) {
     wipe()
-    load(save || localStorage.getItem("testSave"))
+    load(save || localStorage.getItem(saveId))
     setupHTML()
 
     if (start) {
         for (let x = 0; x < 3; x++) updateTemp()
+		checkAPVers()
         updateHTML()
         for (let x = 0; x < 3; x++) {
             let r = document.getElementById('ratio_d'+x)
@@ -431,6 +434,11 @@ function loadGame(start=true, save) {
                 }
             })
         }
+		if (beta) {
+			document.getElementById("update").textContent = "3/19/22 BETA BUILD"
+			document.getElementById("update").className = "red"
+			document.getElementById("beta").style.display = "none"
+		}
         setInterval(loop, 50)
         setInterval(updateScreensHTML, 50)
         treeCanvas()

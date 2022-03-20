@@ -150,7 +150,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+getSoftcapHTML(x,5)
+                    return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+getSoftcapHTML(x,5,100)
                 },
                 inc: "Mass",
                 cons: "You are trapped in Mass Dilation, but they are twice effective",

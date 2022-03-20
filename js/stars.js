@@ -95,7 +95,9 @@ function setupStarsHTML() {
 
 function updateScreensHTML() {
 	//STARS
-	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
+	let shown = (!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5 && !CHROMA.unl()
+	tmp.el.star.setDisplay(shown)
+	if (shown) {
 		let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
 		let percent = 0
 		if (g.gte(1) && player.supernova.post_10) {
@@ -116,17 +118,7 @@ function updateScreensHTML() {
 	}
 
 	//CHROMA
-	let unl = CHROMA.unl()
-	tmp.el.chroma_bg1.setDisplay(unl)
-	tmp.el.chroma_bg2.setDisplay(unl)
-	tmp.el.chroma_bg3.setDisplay(unl)
-
-	if (unl) {
-		let progress = player.stats.maxMass.log10().log10().sub(14).div(16).max(0).min(1).toNumber()
-		tmp.el.chroma_bg1.setOpacity(progress)
-		tmp.el.chroma_bg2.setOpacity(progress)
-		tmp.el.chroma_bg3.setOpacity(progress)
-	}
+	updateChromaScreen()
 }
 
 function updateStarsHTML() {

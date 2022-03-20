@@ -2,7 +2,7 @@ var diff = 0;
 var date = Date.now();
 var player
 
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'ext']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'ext', 'hex']
 
 const FORMS = {
     massGain() {
@@ -999,10 +999,12 @@ function formatGainOrGet(a, g, p) {
 
 function formatTime(ex,type="s") {
     ex = E(ex)
-    if (ex.gte(86400)) return format(ex.div(86400).floor(),0)+":"+formatTime(ex.mod(86400),'d')
+    if (ex.gte(86400*365)) return format(ex.div(86400*365).floor(),0)+"y, "+formatTime(ex.mod(86400*365))
+    if (ex.gte(86400*7)) return format(ex.div(86400*7).floor(),0)+"w, "+formatTime(ex.mod(86400*7),'w')
+    if (ex.gte(86400)||type=="w") return format(ex.div(86400).floor(),0)+"d, "+formatTime(ex.mod(86400),'d')
     if (ex.gte(3600)||type=="d") return (ex.div(3600).gte(10)||type!="d"?"":"0")+format(ex.div(3600).floor(),0)+":"+formatTime(ex.mod(3600),'h')
     if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0)+":"+formatTime(ex.mod(60),'m')
-    return (ex.gte(10)||type!="m" ?"":"0")+format(ex)
+    return (ex.gte(10)||type!="m" ?"":"0")+format(ex,type=="m"?0:2)
 }
 
 function turnOffline() { player.offline.active = !player.offline.active }
@@ -1015,4 +1017,9 @@ function capitalFirst(str) {
 		.split(" ")
 		.map(x => x[0].toUpperCase() + x.slice(1))
 		.join(" ");
+}
+
+function changeFont(x) {
+	if (x) player.options.font = x
+	document.documentElement.style.setProperty('--font', player.options.font)
 }

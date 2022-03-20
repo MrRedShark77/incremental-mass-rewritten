@@ -1,0 +1,56 @@
+:root {
+    --font: 'Verdana, Geneva, Tahoma, sans-serif';
+	color-scheme: dark;
+}
+
+@font-face {
+	font-family: 'Andy Bold';
+	src: url('fonts/design.graffiti.ANDYB.ttf');
+	size-adjust: 120%;
+}
+
+@font-face {
+	font-family: 'Cousine';
+	src: url('fonts/Cousine-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Flexi IBM VGA False';
+	src: url('fonts/Flexi_IBM_VGA_False.ttf');
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src: url('fonts/Inconsolata-VariableFont_wdth\,wght.ttf');
+}
+
+@font-face {
+	font-family: 'Lucida Handwriting';
+	src: url('fonts/qkmarisa.ttf');
+}
+
+@font-face {
+	font-family: 'Monospace-Typewritter';
+	src: url('fonts/MonospaceTypewriter.ttf');
+}
+
+@font-face {
+	font-family: 'MS Sans Serif';
+	src: url('fonts/ms_sans_serif.woff');
+	size-adjust: 110%;
+}
+
+@font-face {
+	font-family: 'Nova Mono';
+	src: url('fonts/NovaMono-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Retron2000';
+	src: url('fonts/Retron2000.ttf');
+}
+
+@font-face {
+	font-family: 'Roboto Mono';
+	src: url('fonts/RobotoMono-VariableFont_wght.ttf');
+}

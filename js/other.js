@@ -42,21 +42,20 @@ const POPUP_GROUPS = {
     },
     fonts: {
         html: `
-            <button class="btn" style="font-family: 'Andy Bold';" onclick="player.options.font = 'Andy Bold'">Andy Bold</button>
-            <button class="btn" style="font-family: Arial, Helvetica, sans-ser;" onclick="player.options.font = 'Arial, Helvetica, sans-ser'">Arial</button>
-            <button class="btn" style="font-family: Bahnschrift;" onclick="player.options.font = 'Bahnschrift'">Bahnschrift</button>
-            <button class="btn" style="font-family: Comic Sans MS;" onclick="player.options.font = 'Comic Sans MS'">Comic Sans MS</button>
-            <button class="btn" style="font-family: Courier;" onclick="player.options.font = 'Courier'">Courier</button>
-            <button class="btn" style="font-family: Cousine;" onclick="player.options.font = 'Cousine'">Cousine</button>
-            <button class="btn" style="font-family: 'Flexi IBM VGA False';" onclick="player.options.font = 'Flexi IBM VGA False'">Flexi IBM VGA False</button>
-            <button class="btn" style="font-family: Inconsolata;" onclick="player.options.font = 'Inconsolata'">Inconsolata</button>
-            <button class="btn" style="font-family: 'Lucida Handwriting';" onclick="player.options.font = 'Lucida Handwriting'">Lucida Handwriting</button>
-            <button class="btn" style="font-family: Monospace-Typewritter;" onclick="player.options.font = 'Monospace-Typewritter'">Monospace Typewritter</button>
-            <button class="btn" style="font-family: 'MS Sans Serif';" onclick="player.options.font = 'MS Sans Serif'">MS Sans Serif</button>
-            <button class="btn" style="font-family: 'Nova Mono';" onclick="player.options.font = 'Nova Mono'">Nova Mono</button>
-            <button class="btn" style="font-family: 'Retron2000';" onclick="player.options.font = 'Retron2000'">Retron 2000</button>
-            <button class="btn" style="font-family: 'Roboto Mono';" onclick="player.options.font = 'Roboto Mono'">Roboto Mono</button>
-            <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="player.options.font = 'Verdana, Geneva, Tahoma, sans-serif'">Verdana</button>
+            <button class="btn" style="font-family: 'Andy Bold';" onclick="changeFont('Andy Bold')">Andy Bold</button>
+            <button class="btn" style="font-family: Arial, Helvetica, sans-ser;" onclick="changeFont('Arial, Helvetica, sans-ser')">Arial</button>
+            <button class="btn" style="font-family: Bahnschrift;" onclick="changeFont('Bahnschrift')">Bahnschrift</button>
+            <button class="btn" style="font-family: Comic Sans MS;" onclick="changeFont('Comic Sans MS')">Comic Sans MS</button>
+            <button class="btn" style="font-family: Courier;" onclick="changeFont('Courier')">Courier</button>
+            <button class="btn" style="font-family: Cousine;" onclick="changeFont('Cousine')">Cousine</button>
+            <button class="btn" style="font-family: 'Flexi IBM VGA False';" onclick="changeFont('Flexi IBM VGA False')">Flexi IBM VGA False</button>
+            <button class="btn" style="font-family: Inconsolata;" onclick="changeFont('Inconsolata')">Inconsolata</button>
+            <button class="btn" style="font-family: 'Lucida Handwriting';" onclick="changeFont('Lucida Handwriting')">Lucida Handwriting</button>
+            <button class="btn" style="font-family: Monospace-Typewritter;" onclick="changeFont('Monospace-Typewritter')">Monospace Typewritter</button>
+            <button class="btn" style="font-family: 'Nova Mono';" onclick="changeFont('Nova Mono')">Nova Mono</button>
+            <button class="btn" style="font-family: 'Retron2000';" onclick="changeFont('Retron2000')">Retron 2000</button>
+            <button class="btn" style="font-family: 'Roboto Mono';" onclick="changeFont('Roboto Mono')">Roboto Mono</button>
+            <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="changeFont('Verdana, Geneva, Tahoma, sans-serif')">Verdana</button>
         `,
     },
     notations: {
@@ -97,6 +96,25 @@ const POPUP_GROUPS = {
             'font-size': "14px",
         },
     },
+
+	ap_chroma: {
+		html: `
+			<b class='rainbow' style='font-size: 20px'>Welcome to Chroma update!</b><br>
+			This update adds a new mechanic called Chroma, bringing out colors with a new buildable spectrum!<br>
+			Final pack of Neutron upgrades and 2 rows of Axion Boosts have been added in this update!<br>
+			<span class='rainbow'>Colors</span> <span class='red'>aw</span><span class='green'>ai</span><span class='sky'>t.</span><span class='magenta'>..</span><br><br>
+			Good luck!<br>
+			You need to get 15 C13 completions to unlock Chroma.<br>
+			End-game: ???<br><br>
+			
+			<b class='rainbow' style='font-size: 7px'>Oh, this is the first of Spectraglow series.</b>
+		`,
+		width: 600,
+		height: 300,
+		otherStyle: {
+			'font-size': "14px",
+		},
+	},
 }
 
 function addPopup(data) {
@@ -153,4 +171,19 @@ function updateAarex(toggle) {
 	document.getElementById("aarex_active").textContent = player.aarex ? "ON" : "OFF"
 }
 
+//ALTERNATE PATH
+function checkAPVers() {
+	if (player.ap_ver == 0) addPopup(POPUP_GROUPS.ap_chroma)
+	else {
+		if (player.ap_ver < 1) addPopup(POPUP_GROUPS.ap_chroma)
+	}
+	player.ap_ver = 1
+}
+
+let beta = true
+let betaLink = "2-chroma"
+let saveId = "testSave"
+if (beta) saveId = "testBeta"
+
+//TECHNICAL
 future = false

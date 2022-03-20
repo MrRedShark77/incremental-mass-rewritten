@@ -10,6 +10,7 @@ const RANKS = {
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             if (type == "tetr" && hasTreeUpg("qol5")) reset = false
             if (type == "pent") reset = false
+            if (type == "hex" && player.confirms.hex && !confirm("This will reset all your Exotic content and below, in trade of the study for stranger physics. Metaphysics awaits from Chakra's request. Are you really sure?")) return
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -22,6 +23,7 @@ const RANKS = {
             if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             if (type == "tetr" && hasTreeUpg("qol5")) reset = false
             if (type == "pent") reset = false
+            if (type == "hex" && player.confirms.hex && !confirm("This will reset all your Exotic content and below, in trade of the study for stranger physics. Metaphysics awaits from Chakra's request. Are you really sure?")) return
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -538,7 +540,7 @@ function updateRanksTemp() {
 
 	fp = RANKS.fp.hex()
 	tmp.ranks.hex.req = E(1.1).pow(player.ranks.hex.div(fp)).mul(50).floor()
-	tmp.ranks.pent.bulk = player.ranks.pent.div(50).log(1.1).mul(fp).add(1).floor()
+	tmp.ranks.hex.bulk = player.ranks.pent.div(50).log(1.1).mul(fp).add(1).floor()
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

@@ -257,7 +257,6 @@ function updateSupernovaEndingHTML() {
     if (reached) document.body.style.backgroundColor = tmp.tab == 5 ? "#000" : "#111"
 
     tmp.el.app_supernova.setDisplay(reached && tmp.tab == 5)
-
     if (tmp.tab == 5) {
         tmp.el.supernova_sweep.setTxt("Auto-Sweep: " + (player.supernova.auto.toggle ? "ON" : "OFF"))
         tmp.el.supernova_sweep.setDisplay(hasTreeUpg("qol8"))

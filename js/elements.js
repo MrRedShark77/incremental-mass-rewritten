@@ -131,7 +131,7 @@ function setupHTML() {
 	let confirm_table = new Element("confirm_table")
 	table = ""
 	for (let x = 0; x < CONFIRMS.length; x++) {
-		table += `<div style="width: 100px" id="confirm_div_${x}"><img src="images/${x == 1 ? "dm" : CONFIRMS[x]}.png"><br><button onclick="player.confirms.${CONFIRMS[x]} = !player.confirms.${CONFIRMS[x]}" class="btn" id="confirm_btn_${x}">OFF</button></div>`
+		table += `<div style="width: 100px" id="confirm_div_${x}"><img src="images/${x == 1 ? "dm" : CONFIRMS[x]}.png" style='width: 40px; height: 40px'><br><button onclick="player.confirms.${CONFIRMS[x]} = !player.confirms.${CONFIRMS[x]}" class="btn" id="confirm_btn_${x}">OFF</button></div>`
 	}
 	confirm_table.setHTML(table)
 
@@ -348,26 +348,30 @@ function updateBlackHoleHTML() {
 
 function updateOptionsHTML() {
 	for (let x = 0; x < CONFIRMS.length; x++) {
-		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x] == "ext"?EXOTIC.unl():CONFIRMS[x] == "sn"?player.supernova.unl:player[CONFIRMS[x]].unl)
+		tmp.el["confirm_div_"+x].setDisplay(CONFIRMS[x]=="hex"?RANKS.unl.hex():CONFIRMS[x]=="ext"?EXOTIC.unl():CONFIRMS[x] == "sn"?player.supernova.unl:player[CONFIRMS[x]].unl)
 		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 	}
-	tmp.el.total_time.setTxt(formatTime(player.time))
 	tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
 	tmp.el.tree_anim.setDisplay(player.supernova.unl)
 	tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
+	tmp.el.chroma_bg_btn.setDisplay(CHROMA.unl())
+	tmp.el.chroma_bg_btn.setTxt("Chroma BG: "+(player.options.noChroma?"OFF":"ON"))
 }
 
 function updateHTML() {
-	document.documentElement.style.setProperty('--font', player.options.font)
-	tmp.el.offlineGain.setDisplay(tmp.offlineActive)
-	if (tmp.offlineActive) tmp.el.offlineSpeed.setTxt("(" + format(tmp.offlineMult) + "x speed, " + formatTime(player.offline.time) + " left)")
-	if (tmp.offlineActive) tmp.el.offlineGainDiv.setHTML(
-		player.stats.maxMass.eq(player.offline.mass) || player.offline.mass.eq(0) ? "" :
-		(player.stats.maxMass.gte(uni("ee9")) ? "^" + format(player.stats.maxMass.log10().div(player.offline.mass.log10()).max(1)) + " mass gained!"
-		: format(player.stats.maxMass.div(player.offline.mass)) + "x mass gained!") + " " + formatGain(player.mass, tmp.massGain, true, true)
-	)
+	if (tmp.offlineActive) {
+		tmp.el.offlineGain.setDisplay(tmp.offlineActive)
+		tmp.el.offlineSpeed.setTxt("(" + format(tmp.offlineMult) + "x speed, " + formatTime(player.offline.time) + " left)")
+		tmp.el.offlineGainDiv.setHTML(
+			player.stats.maxMass.eq(player.offline.mass) || player.offline.mass.eq(0) ? "" :
+			(player.stats.maxMass.gte(uni("ee9")) ? "^" + format(player.stats.maxMass.log10().div(player.offline.mass.log10()).max(1)) + " mass gained!"
+			: format(player.stats.maxMass.div(player.offline.mass)) + "x mass gained!") + " " + formatGain(player.mass, tmp.massGain, true, true)
+		)
+	}
+
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(!tmp.offlineActive && tmp.tab != 5 && (!tmp.supernova.reached || player.supernova.unl))
+
 	updateSupernovaEndingHTML()
 	updateExoticHTML()
 	updateTabsHTML()
@@ -397,6 +401,7 @@ function updateHTML() {
 			}
 		}
 		if (tmp.tab == 1) {
+			tmp.el.total_time.setTxt(formatTime(player.time))
 			if (tmp.stab[1] == 0) updateRanksRewardHTML()
 			if (tmp.stab[1] == 1) updateScalingHTML()
 		}

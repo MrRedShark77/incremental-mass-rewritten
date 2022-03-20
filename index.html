@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Incremental Mass REWRITTEN made by MrRedShark77">
     <link rel="icon" href="images/mass.png">
+    <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="style.css">
 
     <script src="js/break_eternity.js"></script>
@@ -209,9 +210,11 @@
 	</div>
     <div id='app' style='display: none'>
         <div id="star"></div>
-		<div id="chroma_bg1" style='display: none'></div>
-		<div id="chroma_bg2" style='display: none'></div>
-		<div id="chroma_bg3" style='display: none'></div>
+		<div id="chroma_bg" style='display: none'>
+			<div id="chroma_bg1"></div>
+			<div id="chroma_bg2"></div>
+			<div id="chroma_bg3"></div>
+		</div>
 
         <div style='height: 5px'></div>
         <div style="height: 190px">
@@ -369,6 +372,7 @@
                 <span id="starSoft1" class="red">After <b id="starSoftStart1">X</b> of collapsed stars gain will softcap collapsed stars gain!</span><br>
             </div>
         </div><div id="tab_frame1">
+            Total time played: <span id="total_time">X</span><br><br>
             <div id="stab_frame1_0">
                 <button onclick="player.ranks_reward = Math.max(player.ranks_reward-1,0)" class="btn" id="ranks_left_arrow"><--</button><span id="ranks_reward_name" style="margin: 0px 10px">aaa</span><button onclick="player.ranks_reward = Math.min(player.ranks_reward+1,Math.max(...RANKS.names.map((v, i) => i==0 ? i : (RANKS.unl[v]() && i))))" class="btn" id="ranks_right_arrow">--></button><br><br>
                 <div id="ranks_rewards_table"></div>
@@ -425,21 +429,25 @@
             <button class="btn" onclick="exporty()">Export</button>
             <button class="btn" onclick="export_copy()">Export to clipboard</button>
             <button class="btn" onclick="importy()">Import</button>
-            <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join IMR Discord</button>
-            <button class="btn locked">Join IM:AP Discord (Soon)</button>
-            <button class="btn" onclick="addPopup(POPUP_GROUPS.help)">Help</button><br>
-            <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button>
+            <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button><br><br>
             <button class="btn" onclick="addPopup(POPUP_GROUPS.fonts)">Fonts</button>
+            <button class="btn" onclick="updateAarex(true)">Aarex's Theme: <span id="aarex_active">ON</span></button>
             <button class="btn" onclick="addPopup(POPUP_GROUPS.notations)">Notations</button>
             <button class="btn" id="tree_ani_btn" onclick="changeTreeAnimation()">Tree Animation: <span id="tree_anim">ON</span></button>
-            <button class="btn" onclick="updateAarex(true)">Aarex's Theme: <span id="aarex_active">ON</span></button><br><br>
+            <button class="btn" id="chroma_bg_btn" onclick="toggleChromaBG()">Chroma BG: <span id="chroma_bg">ON</span></button><br><br>
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass: Alternative Path - by Aarex - The Chroma Update<br>
-            This mod is an alternative path from original Incremental Mass by MrRedShark77.<br><br><br>
-            Hint 1: Hover top image above tabs to show description...<br><br>
-            Total time played: <span id="total_time">X</span>
+            Incremental Mass: Alternative Path - by Aarex - <span class="rainbow" id="update">The Chroma Update</span><br>
+            This mod is an alternative path from original <a href="https://mrredshark77.github.io/incremental-mass-rewritten/">Incremental Mass</a> by MrRedShark77.<br><br><br>
+            Hint 1: Hover top image above tabs to show description...
+			<div style="position: fixed; left: 3px; bottom: 3px; text-align: left">
+				<button class="btn" onclick="addPopup(POPUP_GROUPS.help)">Help</button><br>
+				<button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join IMR Discord</button>
+				<button class="btn locked">Join IM:AP Discord (Soon)</button><br>
+				<button class="btn" onclick="window.open('https://aarextiaokhiao.github.io')">Aarex's Home</button>
+				<button id="beta" class="btn" onclick="window.open('http://raw.githack.com/aarextiaokhiao/incremental-mass-rewritten/'+betaLink+'/')">Test Server</button>
+			</div>
         </div>
     </div>
 </body>

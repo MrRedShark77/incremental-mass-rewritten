@@ -174,7 +174,7 @@ let AXIONS = {
 			desc: "Raise the base Atomic Power gains.",
 			req: E(1),
 			eff(x) {
-				return x.div(3).add(1).pow(2/3)
+				return x.div(3).add(1).log(3).add(1)
 			},
 			effDesc(x) {
 				return "^" + format(x)
@@ -275,7 +275,7 @@ let AXIONS = {
 		},
 		13: {
 			title: "Challenge",
-			desc: "Increase the cap of Challenges 7, 10 - 12.",
+			desc: "Increase the cap of Challenges 7, 9 - 12.",
 			req: E(0),
 			eff(x) {
 				return x.times(25)

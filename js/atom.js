@@ -122,7 +122,7 @@ const ATOM = {
         effect(i) {
             let p = player.atom.particles[i]
             let x = p.pow(2)
-            if (hasElement(12)) x = p.pow(p.add(1).log10().add(1).pow(tmp.chal.eff[9].div(4))) //Maximum of ^1.325
+            if (hasElement(12)) x = p.pow(p.add(1).log10().add(1).pow(tmp.chal.eff[9].exp.div(4)).mul(tmp.chal.eff[9].mul)) //Maximum of ^1.325
 			if (AXIONS.unl()) x = x.pow(tmp.ax.eff[4])
             x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2).softcap('e1e11',0.931,2)
             return x
