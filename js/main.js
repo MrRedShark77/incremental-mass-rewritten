@@ -324,8 +324,7 @@ const FORMS = {
 
 const UPGS = {
     mass: {
-        cols: 3,
-        autoOnly: [0,1,2],
+        cols: 4,
         temp() {
             if (!tmp.upgs.mass) tmp.upgs.mass = {}
             for (let x = this.cols; x >= 1; x--) {
@@ -362,54 +361,64 @@ const UPGS = {
         getData(i) {
             let upg = this[i]
             let inc = upg.inc
-            if (i == 1 && player.ranks.rank.gte(2)) inc = inc.pow(0.8)
-            if (i == 2 && player.ranks.rank.gte(3)) inc = inc.pow(0.8)
-            if (i == 3 && player.ranks.rank.gte(4)) inc = inc.pow(0.8)
-            if (player.ranks.tier.gte(3)) inc = inc.pow(0.8)
+            let start = upg.start
             let lvl = player.massUpg[i]||E(0)
-            let cost = inc.pow(lvl).mul(upg.start)
-            let bulk = player.mass.div(upg.start).max(1).log(inc).add(1).floor()
-            if (player.mass.lt(upg.start)) bulk = E(0)
+            let cost, bulk
 
-            if (scalingActive("massUpg", lvl.max(bulk), "super")) {
-                let start = getScalingStart("super", "massUpg");
-                let power = getScalingPower("super", "massUpg");
-                let exp = E(2.5).pow(power);
-                cost =
-                    inc.pow(
-                        lvl.pow(exp).div(start.pow(exp.sub(1)))
-                    ).mul(upg.start)
-                bulk = player.mass
-                    .div(upg.start)
-                    .max(1)
-                    .log(inc)
-                    .times(start.pow(exp.sub(1)))
-                    .root(exp)
-                    .add(1)
-                    .floor();
+            if (i==4) {
+                cost = mlt(inc.pow(lvl).mul(start))
+                bulk = player.mass.div(1.5e56).max(1).log10().div(start.mul(1e9)).max(1).log(inc).add(1).floor()
+                if (player.mass.lt(start)) bulk = E(0)
+            } else {
+                if (i == 1 && player.ranks.rank.gte(2)) inc = inc.pow(0.8)
+                if (i == 2 && player.ranks.rank.gte(3)) inc = inc.pow(0.8)
+                if (i == 3 && player.ranks.rank.gte(4)) inc = inc.pow(0.8)
+                if (player.ranks.tier.gte(3)) inc = inc.pow(0.8)
+                cost = inc.pow(lvl).mul(start)
+                bulk = player.mass.div(start).max(1).log(inc).add(1).floor()
+                if (player.mass.lt(start)) bulk = E(0)
+
+                if (scalingActive("massUpg", lvl.max(bulk), "super")) {
+                    let start = getScalingStart("super", "massUpg");
+                    let power = getScalingPower("super", "massUpg");
+                    let exp = E(2.5).pow(power);
+                    cost =
+                        inc.pow(
+                            lvl.pow(exp).div(start.pow(exp.sub(1)))
+                        ).mul(start)
+                    bulk = player.mass
+                        .div(start)
+                        .max(1)
+                        .log(inc)
+                        .times(start.pow(exp.sub(1)))
+                        .root(exp)
+                        .add(1)
+                        .floor();
+                }
+                if (scalingActive("massUpg", lvl.max(bulk), "hyper")) {
+                    let start = getScalingStart("super", "massUpg");
+                    let power = getScalingPower("super", "massUpg");
+                    let start2 = getScalingStart("hyper", "massUpg");
+                    let power2 = getScalingPower("hyper", "massUpg");
+                    let exp = E(2.5).pow(power);
+                    let exp2 = E(5).pow(power);
+                    cost =
+                        inc.pow(
+                            lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1)))
+                        ).mul(start)
+                    bulk = player.mass
+                        .div(start)
+                        .max(1)
+                        .log(inc)
+                        .times(start.pow(exp.sub(1)))
+                        .root(exp)
+                        .times(start2.pow(exp2.sub(1)))
+                        .root(exp2)
+                        .add(1)
+                        .floor();
+                }
             }
-            if (scalingActive("massUpg", lvl.max(bulk), "hyper")) {
-                let start = getScalingStart("super", "massUpg");
-                let power = getScalingPower("super", "massUpg");
-                let start2 = getScalingStart("hyper", "massUpg");
-                let power2 = getScalingPower("hyper", "massUpg");
-                let exp = E(2.5).pow(power);
-                let exp2 = E(5).pow(power);
-                cost =
-                    inc.pow(
-                        lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1)))
-                    ).mul(upg.start)
-                bulk = player.mass
-                    .div(upg.start)
-                    .max(1)
-                    .log(inc)
-                    .times(start.pow(exp.sub(1)))
-                    .root(exp)
-                    .times(start2.pow(exp2.sub(1)))
-                    .root(exp2)
-                    .add(1)
-                    .floor();
-            }
+        
             return {cost: cost, bulk: bulk}
         },
         1: {
@@ -468,6 +477,7 @@ const UPGS = {
             start: E(1000),
             inc: E(9),
             effect(x) {
+                let xx = x.add(tmp.upgs.mass[3].bonus).pow(tmp.upgs.mass[4].eff.eff)
                 let ss = E(10)
                 if (player.ranks.rank.gte(34)) ss = ss.add(2)
                 if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
@@ -479,7 +489,7 @@ const UPGS = {
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
-                let ret = step.mul(x.add(tmp.upgs.mass[3].bonus).mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)//.softcap(1e14,0.1,0)
+                let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)//.softcap(1e14,0.1,0)
                 ret = ret.mul(tmp.prim.eff[0])
                 return {step: step, eff: ret, ss: ss}
             },
@@ -492,6 +502,29 @@ const UPGS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:0)
+                return x
+            },
+        },
+        4: {
+            unl() { return player.ranks.rank.gte(3) && PRIM.unl() },
+            title: "Exponent",
+            start: E(1e5),
+            inc: E(1.1),
+            effect(x) {
+                let step = E(0.01)
+                let ret = step.mul(x).add(1)
+
+                ret = ret.softcap(1.1,0.5,0)
+                return {step: step, eff: ret}
+            },
+            effDesc(eff) {
+                return {
+                    step: "+^"+format(eff.step),
+                    eff: "^"+format(eff.eff)+" to Stronger"+eff.eff.softcapHTML(1.1)
+                }
+            },
+            bonus() {
+                let x = E(0)
                 return x
             },
         },

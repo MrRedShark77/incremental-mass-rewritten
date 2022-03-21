@@ -243,6 +243,7 @@ const FERMIONS = {
         ],[
             {
                 maxTier() {
+                    if (hasTree("fn10")) return 1/0
                     let x = 15
                     if (hasTree("fn5")) x += 35
                     return x
@@ -259,6 +260,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().mul(t).div(100).add(1).softcap(1.5,hasTree("fn5")?0.75:0.25,0)
+                    if (hasTree("fn10")) x = x.pow(4.5)
                     return x
                 },
                 desc(x) {

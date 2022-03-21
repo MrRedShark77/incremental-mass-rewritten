@@ -41,7 +41,7 @@ const QUANTUM = {
         player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
-        let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9']
+        let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10']
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
         if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b')
         if (tmp.qu.mil_reached[3]) keep.push('qol8','qol9','unl1')
@@ -104,6 +104,7 @@ const QUANTUM = {
         },
         eff() {
             let pow = E(2)
+            if (hasTree('qu6')) pow = pow.mul(treeEff('qu6'))
             let x = pow.pow(player.qu.cosmic_str)
             return {pow: pow, eff: x}
         },

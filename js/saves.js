@@ -25,6 +25,10 @@ Decimal.prototype.format = function (acc=4, max=12) { return format(this.clone()
 
 Decimal.prototype.formatGain = function (gain, mass=false) { return formatGain(this.clone(), gain, mass) }
 
+function softcapHTML(x, start) { return E(x).gte(start)?` <span class='soft'>(softcapped)</span>`:"" }
+
+Decimal.prototype.softcapHTML = function (start) { return softcapHTML(this.clone(), start) }
+
 function calc(dt, dt_offline) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
 
