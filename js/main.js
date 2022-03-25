@@ -1023,12 +1023,12 @@ function formatGain(amt, gain, isMass=false) {
     return rate
 }
 
-function formatTime(ex,type="s") {
+function formatTime(ex,acc=2,type="s") {
     ex = E(ex)
-    if (ex.gte(86400)) return format(ex.div(86400).floor(),0)+":"+formatTime(ex.mod(86400),'d')
-    if (ex.gte(3600)||type=="d") return (ex.div(3600).gte(10)||type!="d"?"":"0")+format(ex.div(3600).floor(),0)+":"+formatTime(ex.mod(3600),'h')
-    if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0)+":"+formatTime(ex.mod(60),'m')
-    return (ex.gte(10)||type!="m" ?"":"0")+format(ex)
+    if (ex.gte(86400)) return format(ex.div(86400).floor(),0,12,"sc")+":"+formatTime(ex.mod(86400),acc,'d')
+    if (ex.gte(3600)||type=="d") return (ex.div(3600).gte(10)||type!="d"?"":"0")+format(ex.div(3600).floor(),0,12,"sc")+":"+formatTime(ex.mod(3600),acc,'h')
+    if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0,12,"sc")+":"+formatTime(ex.mod(60),acc,'m')
+    return (ex.gte(10)||type!="m" ?"":"0")+format(ex,acc,12,"sc")
 }
 
 function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }

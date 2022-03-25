@@ -401,6 +401,15 @@ button {
 	background-color: #171717;
 }
 
+#auto_qu_input {
+	color: white;
+	font-size: 20px;
+	width: 200px;
+	border: solid 2px white;
+	background-color: #171717;
+	text-align: left;
+}
+
 .img_btn {
 	cursor: pointer;
 	background-color: #444;

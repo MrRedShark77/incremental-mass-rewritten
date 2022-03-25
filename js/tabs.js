@@ -46,6 +46,7 @@ const TABS = {
         6: [
             { id: "Chroma" },
             { id: "Quantum Milestones" },
+            { id: "Auto-Quantum", unl() { return tmp.qu.mil_reached[6] } },
             { id: "Primordium", unl() { return PRIM.unl() } },
         ],
     },

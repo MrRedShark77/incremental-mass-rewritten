@@ -338,6 +338,11 @@
                 You Quantized <span id="qu_times">0</span> times<br><br>
                 <div id="qu_milestones_table"></div>
             </div><div id="stab_frame6_2">
+                <button class="btn" onclick="QUANTUM.auto.switch()">Auto-Quantum: <span id="auto_qu">OFF</span></button>
+                <button class="btn" onclick="QUANTUM.auto.switchMode()">Auto-Quantum Mode: <span id="auto_qu_mode">Amount</span></button><br><br>
+                <input type="text" id="auto_qu_input"><br>
+                = <span id="auto_qu_res"></span>
+            </div><div id="stab_frame6_3">
                 You have <span id="prim_theorem">0</span> Primordium Theorem (based on Blueprint Particles)<br>
                 (+1 at <span id="prim_next_theorem">X</span>)<br><br>
                 <button class="btn" onclick="giveRandomPParticles(1)">Give 1 random Particle</button>
@@ -362,7 +367,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.5.0.5 - Quantum Update - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5.0.6 - Quantum Update - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

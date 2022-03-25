@@ -9,9 +9,9 @@ const QUANTUM = {
         if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
         return x.floor()
     },
-    enter() {
+    enter(auto=false) {
         if (tmp.qu.gain.gte(1)) {
-            if (player.confirms.qu) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
+            if (player.confirms.qu&&!auto) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
             if (player.qu.times.gte(10)) {
                 player.qu.points = player.qu.points.add(tmp.qu.gain)
                 player.qu.times = player.qu.times.add(1)
@@ -36,6 +36,7 @@ const QUANTUM = {
                     document.body.style.animation = ""
                 },2000)
             }
+            player.qu.auto.time = 0
         }
     },
     doReset() {
@@ -117,8 +118,25 @@ const QUANTUM = {
         [E(5), `You start with QoL (qol8-9 & unl1), Radiation unlocked.`],
         [E(6), `Double Quantum Foam gain.`],
         [E(8), `Pre-Quantum global speed can affect Blueprint Particle & Chroma at a reduced rate.`],
-        [E(10), `Supernova stars are boosted by Quantum times (capped at 1e10).`],
+        [E(10), `Supernova stars are boosted by Quantum times (capped at 1e10). Unlock Auto-Quantum.`],
     ],
+    auto: {
+        mode: ["Amount","Time"],
+        switch() { player.qu.auto.enabled = !player.qu.auto.enabled; player.qu.auto.time = 0 },
+        switchMode() { player.qu.auto.mode = (player.qu.auto.mode+1)%this.mode.length; player.qu.auto.time = 0 },
+        temp() {
+            let n, i = player.qu.auto.input
+            if (player.qu.auto.mode==0) {
+                n = E(i)
+                if (isNaN(n.mag) || n.lt(0)) n = E(1)
+                n = n.floor()
+            } else if (player.qu.auto.mode==1) {
+                n = Number(i)
+                if (isNaN(n) || n < 0 || !isFinite(n)) n = 1
+            }
+            return n
+        }
+    },
 }
 
 function quUnl() { return player.qu.times.gte(1) }
@@ -126,6 +144,12 @@ function quUnl() { return player.qu.times.gte(1) }
 function getQUSave() {
     return {
         reached: false,
+        auto: {
+            enabled: false,
+            time: 0,
+            mode: 0,
+            input: "1",
+        },
         points: E(0),
         times: E(0),
         bp: E(0),
@@ -153,6 +177,15 @@ function calcQuantum(dt, dt_offline) {
 
         if (PRIM.unl()) {
             player.qu.prim.theorems = player.qu.prim.theorems.max(tmp.prim.theorems)
+        }
+
+        if (player.qu.auto.enabled) {
+            player.qu.auto.time += dt_offline
+
+            let can = false
+            if (player.qu.auto.mode == 0) can = tmp.qu.gain.gte(tmp.qu.auto_input)
+            else if (player.qu.auto.mode == 1) can = player.qu.auto.time >= tmp.qu.auto_input
+            if (can) QUANTUM.enter(true)
         }
     }
 
@@ -198,6 +231,8 @@ function updateQuantumTemp() {
     tmp.qu.bpEff = QUANTUM.bpEff()
 
     for (let x = 0; x < QUANTUM.mils.length; x++) tmp.qu.mil_reached[x] = player.qu.times.gte(QUANTUM.mils[x][0])
+
+    tmp.qu.auto_input = QUANTUM.auto.temp()
 }
 
 function updateQuantumHTML() {
@@ -226,7 +261,12 @@ function updateQuantumHTML() {
                 tmp.el['qu_mil_goal'+x].setTxt(format(QUANTUM.mils[x][0],0))
             }
         }
-        if (tmp.stab[6] == 2) updatePrimordiumHTML()
+        if (tmp.stab[6] == 2) {
+            tmp.el.auto_qu.setTxt(player.qu.auto.enabled?"ON":"OFF")
+            tmp.el.auto_qu_mode.setTxt(QUANTUM.auto.mode[player.qu.auto.mode])
+            tmp.el.auto_qu_res.setTxt(player.qu.auto.mode==0?format(tmp.qu.auto_input,0):formatTime(tmp.qu.auto_input,1)+"s")
+        }
+        if (tmp.stab[6] == 3) updatePrimordiumHTML()
     }
 
     if (hasTree("qu_qol4")) SUPERNOVA.reset(false,false,true)

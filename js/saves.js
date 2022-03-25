@@ -395,6 +395,10 @@ function loadGame(start=true, gotNaN=false) {
                 }
             })
         }
+        document.getElementById('auto_qu_input').value = player.qu.auto.input
+        document.getElementById('auto_qu_input').addEventListener('input', e=>{
+            player.qu.auto.input = e.target.value
+        })
         setInterval(loop, 50)
         setInterval(updateStarsScreenHTML, 50)
         treeCanvas()
