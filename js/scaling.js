@@ -9,6 +9,7 @@ const SCALE_START = {
 		gamma_ray: E(100),
 		supernova: E(15),
 		fTier: E(10),
+		cosmic_str: E(15),
     },
 	hyper: {
 		rank: E(120),
@@ -52,6 +53,7 @@ const SCALING_RES = {
 	gamma_ray(x=0) { return player.atom.gamma_ray },
 	supernova(x=0) { return player.supernova.times },
 	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
+	cosmic_str(x=0) { return player.qu.cosmic_str },
 }
 
 const NAME_FROM_RES = {
@@ -65,6 +67,7 @@ const NAME_FROM_RES = {
 	gamma_ray: "Cosmic Ray",
 	supernova: "Supernova",
 	fTier: "Fermion Tier",
+	cosmic_str: "Cosmic String",
 }
 
 function updateScalingHTML() {

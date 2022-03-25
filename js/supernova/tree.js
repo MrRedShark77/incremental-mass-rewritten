@@ -4,10 +4,10 @@ const TREE_IDS = [
     ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","chal4b","chal4","","","qu4",""],
     ["","unl2","","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","prim1","qu5","prim2"],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","qu6",""],
-    ["","","","","","","fn8","","fn9","fn1","fn5","fn10","","","","","","",""],
+    ["","","","","","","fn8","fn11","fn9","fn1","fn5","fn10","","","","","","",""],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","rad6","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
-    ["","","","","","","","","","qf1","","","","","","","","",""],
+    ["","","","","","","","","qf2","qf1","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
     ["","","","","","","","","","","","","","","","","","",""],
@@ -436,7 +436,7 @@ const TREE_UPGS = {
         },
         fn9: {
             branch: ["fn1"],
-            desc: `[Strange] & [Neutrion] max tier is increased by 2.`,
+            desc: `[Strange] & [Neutrino] max tier is increased by 2.`,
             cost: E(1e166),
         },
         fn10: {
@@ -446,6 +446,12 @@ const TREE_UPGS = {
             reqDesc() { return `Reach ${format("e1.5e8")} atoms while in [Electron] and 9th Challenge.` },
             desc: `Break [Electron] maximum tier, its effect is overpowered.`,
             cost: E('e600'),
+        },
+        fn11: {
+            unl() { return PRIM.unl() },
+            branch: ["fn9"],
+            desc: `[Strange], [Top], [Bottom], [Neutrino], [Neut-Muon] max tier is increased by 5.`,
+            cost: E('e680'),
         },
         d1: {
             unl() { return hasTree("fn6") },
@@ -491,16 +497,27 @@ const TREE_UPGS = {
         rad6: {
             unl() { return PRIM.unl() },
             branch: ["rad4"],
-            desc: `Bonus radiation boosts are stronger for every radiation index.`,
+            desc: `Bonus radiation boosts are stronger based on radiation type.`,
             cost: E('e490'),
         },
 
         qf1: {
             unl() { return quUnl() },
-            desc: `Gain more Quantum Foams based on Supernovas`,
+            desc: `Gain more Quantum Foams based on Supernovas.`,
             cost: E(1e290),
             effect() {
                 let x = player.supernova.times.root(2).div(10).add(1)
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
+        },
+        qf2: {
+            unl() { return PRIM.unl() },
+            branch: ["qf1"],
+            desc: `Quantum Foams are boosted by Neutron Stars.`,
+            cost: E('e735'),
+            effect() {
+                let x = player.supernova.stars.add(1).log10().add(1).root(3)
                 return x
             },
             effDesc(x) { return format(x)+"x" },

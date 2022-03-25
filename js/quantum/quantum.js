@@ -6,6 +6,7 @@ const QUANTUM = {
 
         if (tmp.qu.mil_reached[4]) x = x.mul(2)
         if (hasTree("qf1")) x = x.mul(tmp.supernova.tree_eff.qf1||1)
+        if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
         return x.floor()
     },
     enter() {
@@ -41,7 +42,7 @@ const QUANTUM = {
         player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
-        let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10']
+        let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11']
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
         if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b')
         if (tmp.qu.mil_reached[3]) keep.push('qol8','qol9','unl1')
@@ -170,6 +171,26 @@ function updateQuantumTemp() {
     tmp.qu.cosmic_str_cost = E(2).pow(player.qu.cosmic_str.add(1)).floor()
     tmp.qu.cosmic_str_bulk = player.qu.points.max(1).log(2).floor()
 
+    if (scalingActive("cosmic_str", player.qu.cosmic_str.max(tmp.qu.cosmic_str_bulk), "super")) {
+		let start = getScalingStart("super", "cosmic_str");
+		let power = getScalingPower("super", "cosmic_str");
+		let exp = E(2).pow(power);
+		tmp.qu.cosmic_str_cost =
+			E(2).pow(
+                player.qu.cosmic_str
+                .pow(exp)
+			    .div(start.pow(exp.sub(1)))
+                .add(1)
+            ).floor()
+            tmp.qu.cosmic_str_bulk = player.qu.points
+            .max(1)
+            .log(2)
+			.mul(start.pow(exp.sub(1)))
+			.root(exp)
+            .add(1)
+			.floor();
+	}
+
     tmp.qu.cosmic_str_can = player.qu.points.gte(tmp.qu.cosmic_str_cost)
     tmp.qu.cosmic_str_eff = QUANTUM.cosmic_str.eff()
 
@@ -189,7 +210,7 @@ function updateQuantumHTML() {
 
         tmp.el.cosmic_str_lvl.setTxt(format(player.qu.cosmic_str,0))//+(tmp.qu.cosmic_str_bonus.gte(1)?" + "+format(tmp.qu.cosmic_str_bonus,0):"")
         tmp.el.cosmic_str_btn.setClasses({btn: true, locked: !tmp.qu.cosmic_str_can})
-        //tmp.el.cosmic_str_scale.setTxt(getScalingName('cosmic_str'))
+        tmp.el.cosmic_str_scale.setTxt(getScalingName('cosmic_str'))
         tmp.el.cosmic_str_cost.setTxt(format(tmp.qu.cosmic_str_cost,0))
         tmp.el.cosmic_str_pow.setTxt(format(tmp.qu.cosmic_str_eff.pow))
         tmp.el.cosmic_str_eff.setHTML(format(tmp.qu.cosmic_str_eff.eff))

@@ -268,7 +268,7 @@ const ELEMENTS = {
             cost: E(1e260),
             effect() {
                 let x = tmp.atom?tmp.atom.atomicEff:E(0)
-                if (hasElement(81)) x = x.mul(3)
+                if (hasElement(82)) x = x.mul(3)
                 return x.div(6).floor()
             },
             effDesc(x) { return "+"+format(x,0)+" to Rage Power Upgrade 7" },
@@ -509,8 +509,12 @@ const ELEMENTS = {
             cost: E('e1.4e13'),
         },
         {
+            desc: `Stronger is ^1.1 stronger.`,
+            cost: E('e2.8e13'),
+        },
+        {
             desc: `Strontium-38 is thrice effective.`,
-            cost: E('e3.6e13'),
+            cost: E('e4e13'),
         },
     ],
     /*
@@ -540,7 +544,7 @@ const ELEMENTS = {
             if (player.supernova.fermions.unl) u += 10
             if (tmp.radiation.unl) u += 10
         }
-        if (PRIM.unl()) u += 1
+        if (PRIM.unl()) u += 2
         
         return u
     },

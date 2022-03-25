@@ -106,7 +106,7 @@ const FERMIONS = {
         return u
     },
     names: ['quark', 'lepton'],
-    sub_names: [["Up","Down","Charm","Strange","Top","Bottom"],["Electron","Muon","Tau","Neutrion","Neut-Muon","Neut-Tau"]],
+    sub_names: [["Up","Down","Charm","Strange","Top","Bottom"],["Electron","Muon","Tau","Neutrino","Neut-Muon","Neut-Tau"]],
     types: [
         [
             {
@@ -174,6 +174,7 @@ const FERMIONS = {
                 maxTier() {
                     let x = 15
                     if (hasTree("fn9")) x += 2
+                    if (hasTree("fn11")) x += 5
                     return x
                 },
                 nextTierAt(x) {
@@ -196,7 +197,11 @@ const FERMIONS = {
                 inc: "Rage Power",
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },{
-                maxTier: 30,
+                maxTier() {
+                    let x = 30
+                    if (hasTree("fn11")) x += 5
+                    return x
+                },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('ee4').pow(t.pow(1.5)).mul(uni('e5.75e5'))
@@ -218,7 +223,11 @@ const FERMIONS = {
                 cons: "U-Quarks, Photons & Gluons do nothing",
                 isMass: true,
             },{
-                maxTier: 10,
+                maxTier() {
+                    let x = 10
+                    if (hasTree("fn11")) x += 5
+                    return x
+                },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e5e8').pow(t.pow(2)).mul('e6e9')
@@ -313,6 +322,7 @@ const FERMIONS = {
                 maxTier() {
                     let x = 15
                     if (hasTree("fn9")) x += 2
+                    if (hasTree("fn11")) x += 5
                     return x
                 },
                 nextTierAt(x) {
@@ -335,7 +345,11 @@ const FERMIONS = {
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
             },{
-                maxTier: 25,
+                maxTier() {
+                    let x = 25
+                    if (hasTree("fn11")) x += 5
+                    return x
+                },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e1.5e7').pow(t.pow(2)).mul("e3.5e8")

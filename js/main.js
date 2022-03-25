@@ -324,7 +324,7 @@ const FORMS = {
 
 const UPGS = {
     mass: {
-        cols: 4,
+        cols: 3,
         temp() {
             if (!tmp.upgs.mass) tmp.upgs.mass = {}
             for (let x = this.cols; x >= 1; x--) {
@@ -477,7 +477,8 @@ const UPGS = {
             start: E(1000),
             inc: E(9),
             effect(x) {
-                let xx = x.add(tmp.upgs.mass[3].bonus).pow(tmp.upgs.mass[4].eff.eff)
+                let xx = x.add(tmp.upgs.mass[3].bonus)
+                if (hasElement(81)) xx = xx.pow(1.1)
                 let ss = E(10)
                 if (player.ranks.rank.gte(34)) ss = ss.add(2)
                 if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
@@ -502,29 +503,6 @@ const UPGS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:0)
-                return x
-            },
-        },
-        4: {
-            unl() { return player.ranks.rank.gte(3) && PRIM.unl() },
-            title: "Exponent",
-            start: E(1e5),
-            inc: E(1.1),
-            effect(x) {
-                let step = E(0.01)
-                let ret = step.mul(x).add(1)
-
-                ret = ret.softcap(1.1,0.5,0)
-                return {step: step, eff: ret}
-            },
-            effDesc(eff) {
-                return {
-                    step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Stronger"+eff.eff.softcapHTML(1.1)
-                }
-            },
-            bonus() {
-                let x = E(0)
                 return x
             },
         },
