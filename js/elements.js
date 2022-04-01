@@ -318,7 +318,7 @@ function updateOptionsHTML() {
 	for (let x = 0; x < CONFIRMS.length; x++) {
 		let unl = 
 		CONFIRMS[x] == "sn"
-		?player.supernova.times.gte(1)
+		?(player.supernova.times.gte(1) || player.qu.times.gte(1))
 		:CONFIRMS[x] == "qu"
 		?player.qu.times.gte(1)
 		:player[CONFIRMS[x]].unl

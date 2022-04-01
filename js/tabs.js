@@ -32,6 +32,10 @@ const TABS = {
             { id: "Ranks Rewards" },
             { id: "Scaling", unl() { return tmp.scaling ? tmp.scaling.super.length>0 : false } },
         ],
+        3: [
+            { id: "Challenges" },
+            { id: "Quantum Challenge", unl() { return hasTree("unl3") } },
+        ],
         4: [
             { id: "Particles" },
             { id: "Elements", unl() { return player.chal.comps[7].gte(16) || player.supernova.times.gte(1) || quUnl() } },

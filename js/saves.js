@@ -74,6 +74,8 @@ function calc(dt, dt_offline) {
         calcSupernova(dt, dt_offline)
         calcQuantum(dt, dt_offline)
 
+        if (hasTree("qu_qol4")) SUPERNOVA.reset(false,false,true)
+
         if (hasTree("qol6")) CHALS.exit(true)
         if (CHALS.inChal(0)) {
             if (hasTree("qu_qol3")) for (let x = 1; x <= 4; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
@@ -376,6 +378,7 @@ function loadGame(start=true, gotNaN=false) {
     wipe()
     load(tmp.prevSave)
     setupHTML()
+    updateQCModPresets()
     
     if (start) {
         setInterval(save,60000)

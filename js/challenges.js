@@ -8,27 +8,32 @@ function setupChalHTML() {
 }
 
 function updateChalHTML() {
-    for (let x = 1; x <= CHALS.cols; x++) {
-        let chal = CHALS[x]
-        let unl = chal.unl ? chal.unl() : true
-        tmp.el["chal_div_"+x].setDisplay(unl)
-        tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
-        if (unl) {
-            tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
+    if (tmp.stab[3]==0){
+        for (let x = 1; x <= CHALS.cols; x++) {
+            let chal = CHALS[x]
+            let unl = chal.unl ? chal.unl() : true
+            tmp.el["chal_div_"+x].setDisplay(unl)
+            tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
+            if (unl) {
+                tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
+            }
+        }
+        tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
+        tmp.el.chal_exit.setVisible(player.chal.active != 0)
+        tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTree("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
+        tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
+        if (player.chal.choosed != 0) {
+            let chal = CHALS[player.chal.choosed]
+            tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
+            tmp.el.chal_ch_desc.setHTML(chal.desc)
+            tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
+            tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
+            tmp.el.chal_ch_reward.setHTML("Reward: "+chal.reward)
+            tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
         }
     }
-    tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
-    tmp.el.chal_exit.setVisible(player.chal.active != 0)
-    tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTree("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
-    tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
-    if (player.chal.choosed != 0) {
-        let chal = CHALS[player.chal.choosed]
-        tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${player.chal.comps[player.chal.choosed]+"/"+tmp.chal.max[player.chal.choosed]} Completions]`)
-        tmp.el.chal_ch_desc.setHTML(chal.desc)
-        tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
-        tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
-        tmp.el.chal_ch_reward.setHTML("Reward: "+chal.reward)
-        tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
+    if (tmp.stab[3]==1){
+        updateQCHTML()
     }
 }
 
@@ -144,6 +149,8 @@ const CHALS = {
         let res = this.getResource(x)
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
+        let fp = 1
+        if (QCs.active()) fp /= tmp.qu.qc_eff[5]
         let s1 = x > 8 ? 10 : 75
         let s2 = 300
         if (x == 8) s2 = 200
@@ -152,15 +159,15 @@ const CHALS = {
         let pow = chal.pow
         if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
-        let goal = chal.inc.pow(lvl.pow(pow)).mul(chal.start)
-        let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).add(1).floor()
+        let goal = chal.inc.pow(lvl.div(fp).pow(pow)).mul(chal.start)
+        let bulk = res.div(chal.start).max(1).log(chal.inc).root(pow).mul(fp).add(1).floor()
         if (res.lt(chal.start)) bulk = E(0)
         if (lvl.max(bulk).gte(s1)) {
             let start = E(s1);
             let exp = E(3).pow(this.getPower());
             goal =
             chal.inc.pow(
-                    lvl.pow(exp).div(start.pow(exp.sub(1))).pow(pow)
+                    lvl.div(fp).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
                 ).mul(chal.start)
             bulk = res
                 .div(chal.start)
@@ -168,7 +175,7 @@ const CHALS = {
                 .log(chal.inc)
                 .root(pow)
                 .times(start.pow(exp.sub(1)))
-                .root(exp)
+                .root(exp).mul(fp)
                 .add(1)
                 .floor();
         }
@@ -179,7 +186,7 @@ const CHALS = {
             let exp2 = E(4.5).pow(this.getPower2())
             goal =
             chal.inc.pow(
-                    lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
+                    lvl.div(fp).pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
                 ).mul(chal.start)
             bulk = res
                 .div(chal.start)
@@ -189,7 +196,7 @@ const CHALS = {
                 .times(start.pow(exp.sub(1)))
                 .root(exp)
                 .times(start2.pow(exp2.sub(1)))
-                .root(exp2)
+                .root(exp2).mul(fp)
                 .add(1)
                 .floor();
         }
@@ -202,7 +209,7 @@ const CHALS = {
             let exp3 = E(1.001).pow(this.getPower3())
             goal =
             chal.inc.pow(
-                    exp3.pow(lvl.sub(start3)).mul(start3)
+                    exp3.pow(lvl.div(fp).sub(start3)).mul(start3)
                     .pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
                 ).mul(chal.start)
             bulk = res
@@ -217,7 +224,7 @@ const CHALS = {
                 .div(start3)
 			    .max(1)
 			    .log(exp3)
-			    .add(start3)
+			    .add(start3).mul(fp)
                 .add(1)
                 .floor();
         }

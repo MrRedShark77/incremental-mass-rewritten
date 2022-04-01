@@ -3,6 +3,7 @@ const MASS_DILATION = {
     penalty() {
         let x = 0.8
         if (FERMIONS.onActive("02")) x **= 2
+        if (QCs.active()) x **= tmp.qu.qc_eff[6]
         return x
     },
     onactive() {
@@ -15,6 +16,7 @@ const MASS_DILATION = {
         let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
         if (!player.md.active && hasTree("d1")) x = x.mul(1.25)
         if (FERMIONS.onActive("01")) x = x.div(10)
+        if (QCs.active()) x = x.mul(tmp.qu.qc_eff[4])
         return x
     },
     RPmultgain() {
@@ -40,6 +42,7 @@ const MASS_DILATION = {
         if (hasElement(35)) x = x.mul(tmp.elements.effect[35])
         if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
         if (hasElement(32)) x = x.pow(1.05)
+        if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
         return x
     },
     mass_req() {
@@ -73,6 +76,7 @@ const MASS_DILATION = {
                 cost(x) { return E(10).pow(x).mul(100) },
                 bulk() { return player.md.mass.gte(100)?player.md.mass.div(100).max(1).log10().add(1).floor():E(0) },
                 effect(x) {
+                    if (hasElement(83)) return expMult(x,2,1.5).add(1)
                     return player.md.upgs[7].gte(1)?x.mul(tmp.md.upgs[11].eff||1).root(1.5).mul(0.25).add(1):x.mul(tmp.md.upgs[11].eff||1).root(2).mul(0.15).add(1)
                 },
                 effDesc(x) { return (x.gte(10)?format(x)+"x":format(x.sub(1).mul(100))+"%")+" stronger" },

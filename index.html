@@ -20,7 +20,8 @@
     <script src="js/other.js"></script>
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
-
+    
+    <script src="js/quantum/qc.js"></script>
     <script src="js/quantum/primordium.js"></script>
     <script src="js/quantum/chroma.js"></script>
     <script src="js/quantum/quantum.js"></script>
@@ -189,7 +190,7 @@
                     </div>
                 </div>
             </div><span id="reset_desc"></span>
-        </div><div id="tabs" class="table_center" style="height: 30px"></div>
+        </div><div id="tabs" class="table_center" style="min-height: 30px"></div>
         <div style="width: 100%; border-bottom: solid 2px white; height: 5px; margin-bottom: 13px;"></div>
         <div id="stabs" style="min-height: 30px;"></div><br>
         <div id="tab_frame0">
@@ -291,17 +292,43 @@
             <div id="main_upg_msg" style="min-height: 100px;"></div>
             <div id="main_upgs_table" class="table_center"></div>
         </div><div id="tab_frame3">
-            Hint: Click any image to show challenge description. Click again to enter any challenge<br><br>
-            <button class="btn" id="chal_exit" onclick="CHALS.exit()">Exit Challenge</button><br><br>
-            <div style="min-height: 120px;" id="chals_table" class="table_center"></div><br><br>
-            <div id="chal_desc_div">
-                <button class="btn" id="chal_enter" onclick="CHALS.enter()">Enter Challenge</button>
-                <p id="chal_ch_title"></p>
-                <span class="red" id="chal_ch_desc"></span><br>
-                <span class="red" id="chal_ch_reset"></span>
-                <p id="chal_ch_goal"></p>
-                <span class="green" id="chal_ch_reward"></span><br>
-                <span class="green" id="chal_ch_eff"></span>
+            <div id="stab_frame3_0">
+                Note 1: Click any image to show challenge description. Click again to enter any challenge<br><br>
+                <button class="btn" id="chal_exit" onclick="CHALS.exit()">Exit Challenge</button><br><br>
+                <div style="min-height: 120px;" id="chals_table" class="table_center"></div><br><br>
+                <div id="chal_desc_div">
+                    <button class="btn" id="chal_enter" onclick="CHALS.enter()">Enter Challenge</button>
+                    <p id="chal_ch_title"></p>
+                    <span class="red" id="chal_ch_desc"></span><br>
+                    <span class="red" id="chal_ch_reset"></span>
+                    <p id="chal_ch_goal"></p>
+                    <span class="green" id="chal_ch_reward"></span><br>
+                    <span class="green" id="chal_ch_eff"></span>
+                </div>
+            </div><div id="stab_frame3_1">
+                You have <span id="qc_shard">0</span> Quantum Shard, which raises to <span id="qc_shard_b">2</span><br>
+                <span class="green">Translated to <span id="qc_shard_eff">1</span>x multiplier of Quantum Foams</span><br><br>
+                <button class="btn" onclick="QCs.enter()" id="qc_btn">Enter the Quantum Challenge</button><br><br>
+                <div class="table_center" style="min-height: 30px;">
+                    <div style="width: 145px">
+                        <button onclick="tmp.qc_tab = 0" class="btn_tab">Modifications</button>
+                    </div><div style="width: 145px">
+                        <button onclick="tmp.qc_tab = 1" class="btn_tab">Presets</button>
+                    </div>
+                </div><br>
+                <div id="qc_tab0">
+                    Note 1: Click any image to show challenge description<br>
+                    Note 2: While in Quantum challenge, you need to go to Quantum to complete the Quantum Challenge<br><br>
+                    <div class="table_center" id="QC_table"></div><br>
+                    <div id="qc_desc_div">
+                        <p id="qc_ch_title"></p>
+                        <span class="red" id="qc_ch_desc"></span>
+                    </div>
+                </div><div id="qc_tab1">
+                    <button class="btn" onclick="addQCPresetAs()">Add present as your modifications</button><br><br>
+                    <div id="QC_Presets_table"></div>
+                </div>
+                
             </div>
         </div><div id="tab_frame4">
             <div id="stab_frame4_0">
@@ -367,7 +394,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.5.0.6 - Quantum Update - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5.1 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

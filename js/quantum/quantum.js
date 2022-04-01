@@ -4,19 +4,26 @@ const QUANTUM = {
         if (x.lt(1)) return E(0)
         x = x.max(0).pow(1.5)
 
+        x = x.mul(tmp.qu.qc_s_eff)
         if (tmp.qu.mil_reached[4]) x = x.mul(2)
         if (hasTree("qf1")) x = x.mul(tmp.supernova.tree_eff.qf1||1)
         if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
         return x.floor()
     },
-    enter(auto=false) {
-        if (tmp.qu.gain.gte(1)) {
-            if (player.confirms.qu&&!auto) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
-            if (player.qu.times.gte(10)) {
-                player.qu.points = player.qu.points.add(tmp.qu.gain)
-                player.qu.times = player.qu.times.add(1)
+    enter(auto=false,force=false) {
+        if (tmp.qu.gain.gte(1) || force) {
+            if (player.confirms.qu&&!auto&&!force) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
+            if (QCs.active()) {
+                player.qu.qc.shard = tmp.qu.qc_s
+                player.qu.qc.active = false
+            }
+            if (player.qu.times.gte(10) || force) {
+                if (!force) {
+                    player.qu.points = player.qu.points.add(tmp.qu.gain)
+                    player.qu.times = player.qu.times.add(1)
+                }
                 updateQuantumTemp()
-                this.doReset()
+                this.doReset(force)
             } else {
                 document.body.style.animation = "implode 2s 1"
                 setTimeout(_=>{
@@ -30,7 +37,7 @@ const QUANTUM = {
 
                     updateQuantumTemp()
                     
-                    this.doReset()
+                    this.doReset(force)
                 },1000)
                 setTimeout(_=>{
                     document.body.style.animation = ""
@@ -39,14 +46,17 @@ const QUANTUM = {
             player.qu.auto.time = 0
         }
     },
-    doReset() {
+    doReset(force=false) {
         player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
         let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11']
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
         if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b')
-        if (tmp.qu.mil_reached[3]) keep.push('qol8','qol9','unl1')
+        if (tmp.qu.mil_reached[3]) {
+            if (!force) keep.push('unl1')
+            keep.push('qol8','qol9')
+        }
 
         let save_keep = []
         for (let x in keep) if (hasTree(keep[x])) save_keep.push(keep[x])
@@ -66,7 +76,7 @@ const QUANTUM = {
         player.supernova.fermions.points = [E(0),E(0)]
         player.supernova.fermions.choosed = ""
 
-        for (let x = 0; x < 2; x++) if (!hasTree("qu_qol"+(2+4*x))) player.supernova.fermions.tiers[x] = [E(0),E(0),E(0),E(0),E(0),E(0)]
+        for (let x = 0; x < 2; x++) if (!hasTree("qu_qol"+(2+4*x)) || force) player.supernova.fermions.tiers[x] = [E(0),E(0),E(0),E(0),E(0),E(0)]
 
         player.supernova.radiation.hz = E(0)
         for (let x = 0; x < 7; x++) {
@@ -74,7 +84,7 @@ const QUANTUM = {
             for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
         }
 
-        for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8) player.chal.comps[x] = E(0)
+        for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8 || force) player.chal.comps[x] = E(0)
 
         SUPERNOVA.doReset()
 
@@ -162,6 +172,13 @@ function getQUSave() {
             theorems: E(0),
             particles: [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)],
         },
+        
+        qc: {
+            shard: 0,
+            presets: [],
+            mods: [0,0,0,0,0,0,0,0],
+            active: false,
+        },
     }
 }
 
@@ -193,6 +210,7 @@ function calcQuantum(dt, dt_offline) {
 }
 
 function updateQuantumTemp() {
+    updateQCTemp()
     updatePrimordiumTemp()
     updateChromaTemp()
 
@@ -268,8 +286,6 @@ function updateQuantumHTML() {
         }
         if (tmp.stab[6] == 3) updatePrimordiumHTML()
     }
-
-    if (hasTree("qu_qol4")) SUPERNOVA.reset(false,false,true)
 }
 
 function setupQuantumHTML() {
@@ -321,4 +337,6 @@ function setupQuantumHTML() {
         `
     }
     new_table.setHTML(html)
+
+    setupQCHTML()
 }

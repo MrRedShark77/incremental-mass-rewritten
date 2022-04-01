@@ -39,6 +39,7 @@ const SCALE_START = {
 	},
 }
 
+const QCM8_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta'] // super, hyper, ultra, meta
 const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta']
 
@@ -167,10 +168,11 @@ function getScalingStart(type, name) {
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
 			start = start.mul(tmp.fermions.effs[0][5])
 		}
-		if (name=='supernova') {
-			start = start.add(tmp.prim.eff[7])
-		}
 	}
+	if (name=='supernova') {
+		start = start.add(tmp.prim.eff[7])
+	}
+	if (QCs.active() && QCM8_SCALES.includes(name)) start = start.pow(tmp.qu.qc_eff[7][0])
 	return start.floor()
 }
 
@@ -251,5 +253,6 @@ function getScalingPower(type, name) {
 			if (hasElement(78)) power = power.mul(0.8)
 		}
 	}
+	if (QCs.active() && QCM8_SCALES.includes(name)) power = power.mul(tmp.qu.qc_eff[7][1])
 	return power
 }

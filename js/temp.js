@@ -8,6 +8,8 @@ function resetTemp() {
         sn_tab: 0,
         tab: 0,
         stab: [],
+        qc_tab: 0,
+        qc_ch: -1,
         pass: true,
         notify: [],
         popup: [],
@@ -49,6 +51,7 @@ function resetTemp() {
             chroma_gain: [],
             chroma_eff: [],
             mil_reached: [],
+            qc_eff: [],
         },
 
         prim: {

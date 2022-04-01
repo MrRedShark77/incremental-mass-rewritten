@@ -52,7 +52,7 @@ const PRIM = {
                 return x
             },
             p=>{
-                let x = p.pow(0.9).mul(1.5)
+                let x = p.pow(0.9).mul(2)
                 return x
             },
         ],
@@ -64,7 +64,7 @@ const PRIM = {
             x=>{ return `Boost Higgs Boson's effect by ${format(x)}x` },
             x=>{ return `Add ${format(x)} to base from Fermions gain ` },
             x=>{ return `Boost all Radiations gains by ${format(x[0])}x` + (hasTree("prim2") ? ` /<br> Make all Radiations effects ${format(x[1])}x stronger` : "") },
-            x=>{ return `Make Meta-Supernova starts ${format(x)} later` },
+            x=>{ return `Make all Supernova's scalings start ${format(x)} later` },
         ],
     },
 }

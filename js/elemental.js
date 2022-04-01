@@ -516,6 +516,10 @@ const ELEMENTS = {
             desc: `Strontium-38 is thrice effective.`,
             cost: E('e4e13'),
         },
+        {
+            desc: `Mass Dilation upgrade 2 effect is overpowered.`,
+            cost: E('e3e14'),
+        },
     ],
     /*
     {
@@ -544,7 +548,7 @@ const ELEMENTS = {
             if (player.supernova.fermions.unl) u += 10
             if (tmp.radiation.unl) u += 10
         }
-        if (PRIM.unl()) u += 2
+        if (PRIM.unl()) u += 3
         
         return u
     },
