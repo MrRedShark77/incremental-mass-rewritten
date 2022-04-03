@@ -255,6 +255,20 @@ function updateTickspeedHTML() {
 
 function updateRanksRewardHTML() {
 	tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
+
+	if (player.ranks_reward === 0) {
+		tmp.el.ranks_left_arrow.addClass("locked")
+	} else {
+		tmp.el.ranks_left_arrow.removeClass("locked")
+	}
+
+	const maxUnlockedRank = Math.max(...RANKS.names.map((v, i) => i==0 ? i : (RANKS.unl[v]() && i)))
+	if (player.ranks_reward === maxUnlockedRank) {
+		tmp.el.ranks_right_arrow.addClass("locked")
+	} else {
+		tmp.el.ranks_right_arrow.removeClass("locked")
+	}
+ 
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
 		tmp.el["ranks_reward_div_"+x].setDisplay(player.ranks_reward == x)

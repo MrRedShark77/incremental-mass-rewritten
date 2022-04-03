@@ -282,10 +282,10 @@
             </div>
         </div><div id="tab_frame1">
             <div id="stab_frame1_0">
-                <button onclick="player.ranks_reward = Math.max(player.ranks_reward-1,0)" class="btn"><--</button><span id="ranks_reward_name" style="margin: 0px 10px">aaa</span><button onclick="player.ranks_reward = Math.min(player.ranks_reward+1,Math.max(...RANKS.names.map((v, i) => i==0 ? i : (RANKS.unl[v]() && i))))" class="btn">--></button><br><br>
+                <button onclick="player.ranks_reward = Math.max(player.ranks_reward-1,0)" class="btn" id="ranks_left_arrow"><--</button><span id="ranks_reward_name" style="margin: 0px 10px">aaa</span><button onclick="player.ranks_reward = Math.min(player.ranks_reward+1,Math.max(...RANKS.names.map((v, i) => i==0 ? i : (RANKS.unl[v]() && i))))" class="btn" id="ranks_right_arrow">--></button><br><br>
                 <div id="ranks_rewards_table"></div>
             </div><div id="stab_frame1_1">
-                <button onclick="player.scaling_ch = Math.max(player.scaling_ch-1,0)" class="btn"><--</button><span id="scaling_name" style="margin: 0px 10px">aaa</span><button onclick="player.scaling_ch = Math.min(player.scaling_ch+1,SCALE_TYPE.length-1)" class="btn">--></button><br><br>
+                <button onclick="player.scaling_ch = Math.max(player.scaling_ch-1,0)" class="btn" id="scaling_left_arrow"><--</button><span id="scaling_name" style="margin: 0px 10px">aaa</span><button onclick="player.scaling_ch = Math.min(player.scaling_ch+1,Math.max(...SCALE_TYPE.map((type, i) => tmp.scaling[type].length > 0 ? i : -1)))" class="btn" id="scaling_right_arrow">--></button><br><br>
                 <div id="scaling_table"></div>
             </div>
         </div><div id="tab_frame2">
