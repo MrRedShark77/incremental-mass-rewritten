@@ -356,8 +356,8 @@ const TREE_UPGS = {
             desc: `Photon, Gluon powers up each other.`,
             cost: E(1e14),
             effect() {
-                let x = expMult(player.supernova.bosons.photon,1/2,2)
-                let y = expMult(player.supernova.bosons.gluon,1/2,2)
+                let x = expMult(player.supernova.bosons.photon,1/2,2).max(1)
+                let y = expMult(player.supernova.bosons.gluon,1/2,2).max(1)
                 return [x,y]
             },
             effDesc(x) { return format(x[1])+"x to Photon, "+format(x[0])+"x to Gluon" },
