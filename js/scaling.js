@@ -39,6 +39,21 @@ const SCALE_START = {
 	},
 }
 
+const SCALE_POWER= {
+    super: {
+		fTier: 2.5,
+    },
+	hyper: {
+		fTier: 4,
+	},
+	ultra: {
+		fTier: 6,
+	},
+	meta: {
+		
+	},
+}
+
 const QCM8_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta'] // super, hyper, ultra, meta
 const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta']
@@ -114,7 +129,7 @@ function getScalingName(name, x=0, y=0) {
 	let amt = SCALING_RES[name](x,y);
 	for (let n = cap - 1; n >= 0; n--) {
 		if (scalingActive(name, amt, Object.keys(SCALE_START)[n]))
-			return capitalFirst(Object.keys(SCALE_START)[n]) + (Object.keys(SCALE_START)[n]=="meta"?"-":" ");
+			return capitalFirst(Object.keys(SCALE_START)[n]) + (n==3?"-":" ");
 	}
 	return current;
 }

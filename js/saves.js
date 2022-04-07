@@ -21,6 +21,40 @@ Decimal.prototype.softcap = function (start, power, mode) {
     return x
 }
 
+Decimal.prototype.scale = function (s, p, mode, rev=false) {
+    s = E(s)
+    p = E(p)
+    var x = this.clone()
+    if (x.gte(s)) {
+        if ([0, "pow"].includes(mode)) x = rev ? x.mul(s.pow(p.sub(1))).root(p) : x.pow(p).div(s.pow(p.sub(1)))
+        if ([1, "exp"].includes(mode)) x = rev ? x.div(s).max(1).log(p).add(s) : Decimal.pow(p,x.sub(s)).mul(s)
+    }
+    return x
+}
+
+Decimal.prototype.scaleName = function (type, id, rev=false) {
+    var x = this.clone()
+    if (SCALE_START[type][id] && SCALE_POWER[type][id]) {
+        let s = getScalingStart(type,id)
+        let p = getScalingPower(type,id)
+        let e = Decimal.pow(SCALE_POWER[type][id],p)
+
+        x = x.scale(s,e,type=="meta"?1:0,rev)
+    }
+    return x
+}
+
+Decimal.prototype.scaleEvery = function (id, rev=false) {
+    var x = this.clone()
+    for (let i = 0; i < 4; i++) {
+        let s = rev?i:3-i
+        let sc = SCALE_TYPE[s]
+
+        x = x.scaleName(sc,id,rev)
+    }
+    return x
+}
+
 Decimal.prototype.format = function (acc=4, max=12) { return format(this.clone(), acc, max) }
 
 Decimal.prototype.formatGain = function (gain, mass=false) { return formatGain(this.clone(), gain, mass) }

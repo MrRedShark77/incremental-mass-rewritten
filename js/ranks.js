@@ -248,7 +248,7 @@ function updateRanksTemp() {
     let fp = RANKS.fp.rank()
     tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(fp).div(fp2).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).mul(fp2).add(1).floor();
-    if (player.mass.lt(10)) tmp.ranks.rank.bulk = 0
+    if (player.mass.lt(10)) tmp.ranks.rank.bulk = E(0)
     if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "super")) {
 		let start = getScalingStart("super", "rank");
 		let power = getScalingPower("super", "rank");

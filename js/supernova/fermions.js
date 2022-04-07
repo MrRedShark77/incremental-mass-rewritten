@@ -33,70 +33,9 @@ const FERMIONS = {
         let x = t
         let fp = tmp.fermions.fp
         if (bulk) {
-            x = t.mul(fp).add(1).floor()
-            if (x.sub(1).gte(getScalingStart('super',"fTier"))) {
-                let start = getScalingStart('super',"fTier")
-                let power = getScalingPower('super',"fTier")
-                let exp = E(2.5).pow(power)
-                x = t.mul(start.pow(exp.sub(1))).root(exp).mul(fp).add(1).floor()
-            }
-            if (x.sub(1).gte(getScalingStart('hyper',"fTier"))) {
-                let start = getScalingStart('super',"fTier")
-                let power = getScalingPower('super',"fTier")
-                let exp = E(2.5).pow(power)
-                let start2 = getScalingStart('hyper',"fTier")
-                let power2 = getScalingPower('hyper',"fTier")
-                let exp2 = E(4).pow(power2)
-                x = t.mul(start.pow(exp.sub(1))).root(exp)
-                .mul(start2.pow(exp2.sub(1))).root(exp2).mul(fp).add(1).floor()
-            }
-            if (x.sub(1).gte(getScalingStart('ultra',"fTier"))) {
-                let start = getScalingStart('super',"fTier")
-                let power = getScalingPower('super',"fTier")
-                let exp = E(2.5).pow(power)
-                let start2 = getScalingStart('hyper',"fTier")
-                let power2 = getScalingPower('hyper',"fTier")
-                let exp2 = E(4).pow(power2)
-                let start3 = getScalingStart('ultra',"fTier")
-                let power3 = getScalingPower('ultra',"fTier")
-                let exp3 = E(6).pow(power3)
-                x = t.mul(start.pow(exp.sub(1))).root(exp)
-                .mul(start2.pow(exp2.sub(1))).root(exp2)
-                .mul(start3.pow(exp3.sub(1))).root(exp3).mul(fp).add(1).floor()
-            }
+            x = t.scaleEvery('fTier',true).mul(fp).add(1).floor()
         } else {
-            x = t.div(fp).round()
-            if (t.sub(1).gte(getScalingStart('super',"fTier"))) {
-                let start = getScalingStart('super',"fTier")
-                let power = getScalingPower('super',"fTier")
-                let exp = E(2.5).pow(power)
-                x = t.div(fp).pow(exp).div(start.pow(exp.sub(1))).round()
-            }
-            if (t.sub(1).gte(getScalingStart('hyper',"fTier"))) {
-                let start = getScalingStart('super',"fTier")
-                let power = getScalingPower('super',"fTier")
-                let exp = E(2.5).pow(power)
-                let start2 = getScalingStart('hyper',"fTier")
-                let power2 = getScalingPower('hyper',"fTier")
-                let exp2 = E(4).pow(power2)
-                x = t.div(fp).pow(exp2).div(start2.pow(exp2.sub(1)))
-                .pow(exp).div(start.pow(exp.sub(1))).round()
-            }
-            if (t.sub(1).gte(getScalingStart('ultra',"fTier"))) {
-                let start = getScalingStart('super',"fTier")
-                let power = getScalingPower('super',"fTier")
-                let exp = E(2.5).pow(power)
-                let start2 = getScalingStart('hyper',"fTier")
-                let power2 = getScalingPower('hyper',"fTier")
-                let exp2 = E(4).pow(power2)
-                let start3 = getScalingStart('ultra',"fTier")
-                let power3 = getScalingPower('ultra',"fTier")
-                let exp3 = E(6).pow(power3)
-                
-                x = t.div(fp).pow(exp3).div(start3.pow(exp3.sub(1)))
-                .pow(exp2).div(start2.pow(exp2.sub(1)))
-                .pow(exp).div(start.pow(exp.sub(1))).round()
-            }
+            x = t.div(fp).scaleEvery('fTier')
         }
         return x
     },
