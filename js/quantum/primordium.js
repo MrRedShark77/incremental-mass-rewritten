@@ -2,12 +2,12 @@ const PRIM = {
     unl() { return hasTree('unl2') },
     getTheorems() {
         let b = tmp.prim.t_base
-        let x = player.qu.bp.max(1).log(b).mul(2)
+        let x = player.qu.bp.max(1).log(b).mul(2).scale(150,2,true)
         return x.floor()
     },
     getNextTheorem() {
         let b = tmp.prim.t_base
-        let x = E(b).pow(player.qu.prim.theorems.div(2).add(1))
+        let x = E(b).pow(player.qu.prim.theorems.scale(150,2).div(2).add(1))
 
         return x
     },
@@ -87,6 +87,8 @@ function giveRandomPParticles(v, max=false) {
             break
         }
     }
+
+    updatePrimordiumTemp()
 }
 
 function respecPParticles() {
