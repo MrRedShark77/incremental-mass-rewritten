@@ -99,6 +99,7 @@ const FORMS = {
     massSoftGain4() {
         let s = mlt(1e4)
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
+        if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
         return s
     },
     massSoftPower4() {
@@ -380,49 +381,9 @@ const UPGS = {
                 if (i == 2 && player.ranks.rank.gte(3)) inc = inc.pow(0.8)
                 if (i == 3 && player.ranks.rank.gte(4)) inc = inc.pow(0.8)
                 if (player.ranks.tier.gte(3)) inc = inc.pow(0.8)
-                cost = inc.pow(lvl).mul(start)
-                bulk = player.mass.div(start).max(1).log(inc).add(1).floor()
-                if (player.mass.lt(start)) bulk = E(0)
-
-                if (scalingActive("massUpg", lvl.max(bulk), "super")) {
-                    let start = getScalingStart("super", "massUpg");
-                    let power = getScalingPower("super", "massUpg");
-                    let exp = E(2.5).pow(power);
-                    cost =
-                        inc.pow(
-                            lvl.pow(exp).div(start.pow(exp.sub(1)))
-                        ).mul(start)
-                    bulk = player.mass
-                        .div(start)
-                        .max(1)
-                        .log(inc)
-                        .times(start.pow(exp.sub(1)))
-                        .root(exp)
-                        .add(1)
-                        .floor();
-                }
-                if (scalingActive("massUpg", lvl.max(bulk), "hyper")) {
-                    let start = getScalingStart("super", "massUpg");
-                    let power = getScalingPower("super", "massUpg");
-                    let start2 = getScalingStart("hyper", "massUpg");
-                    let power2 = getScalingPower("hyper", "massUpg");
-                    let exp = E(2.5).pow(power);
-                    let exp2 = E(5).pow(power);
-                    cost =
-                        inc.pow(
-                            lvl.pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1)))
-                        ).mul(start)
-                    bulk = player.mass
-                        .div(start)
-                        .max(1)
-                        .log(inc)
-                        .times(start.pow(exp.sub(1)))
-                        .root(exp)
-                        .times(start2.pow(exp2.sub(1)))
-                        .root(exp2)
-                        .add(1)
-                        .floor();
-                }
+                cost = inc.pow(lvl.scaleEvery("massUpg")).mul(start)
+                bulk = E(0)
+                if (player.mass.gte(start)) bulk = player.mass.div(start).max(1).log(inc).scaleEvery("massUpg",true).add(1).floor()
             }
         
             return {cost: cost, bulk: bulk}
@@ -496,14 +457,14 @@ const UPGS = {
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
-                let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)//.softcap(1e14,0.1,0)
-                ret = ret.mul(tmp.prim.eff[0])
+                let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)
+                ret = ret.mul(tmp.prim.eff[0]).softcap(5e15,0.1,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
                 return {
                     step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Booster Power"+(eff.eff.gte(eff.ss)?` <span class='soft'>(softcapped${eff.eff.gte(1.8e5)?eff.eff.gte(1e14)?"^3":"^2":""})</span>`:"")
+                    eff: "^"+format(eff.eff)+" to Booster Power"+(eff.eff.gte(eff.ss)?` <span class='soft'>(softcapped${eff.eff.gte(1.8e5)?eff.eff.gte(5e15)?"^3":"^2":""})</span>`:"")
                 }
             },
             bonus() {
@@ -588,7 +549,7 @@ const UPGS = {
                 },
             },
             8: {
-                desc: "Super Mass Upgrades scaling is weaker by Rage Points.",
+                desc: "Super, Hyper Mass Upgrades scaling is weaker by Rage Points.",
                 cost: E(1e15),
                 effect() {
                     let ret = E(0.9).pow(player.rp.points.max(1).log10().max(1).log10().pow(1.25).softcap(2.5,0.5,0))
@@ -768,7 +729,7 @@ const UPGS = {
             },
             12: {
                 unl() { return player.atom.unl },
-                desc: "Hyper Mass Upgrade & Tickspeed scales 15% weaker.",
+                desc: "Hyper Tickspeed scales 15% weaker.",
                 cost: E(1e120),
             },
             13: {
@@ -1036,6 +997,8 @@ function formatTime(ex,acc=2,type="s") {
     if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0,12,"sc")+":"+formatTime(ex.mod(60),acc,'m')
     return (ex.gte(10)||type!="m" ?"":"0")+format(ex,acc,12,"sc")
 }
+
+function formatReduction(ex) { ex = E(ex); return format(E(1).sub(ex).mul(100))+"%" }
 
 function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
 

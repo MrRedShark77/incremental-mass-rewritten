@@ -6,9 +6,15 @@ const QUANTUM = {
 
         x = x.mul(tmp.qu.qc_s_eff)
         if (tmp.qu.mil_reached[4]) x = x.mul(2)
-        if (hasTree("qf1")) x = x.mul(tmp.supernova.tree_eff.qf1||1)
+        if (hasTree("qf1")) x = x.mul(treeEff("qf1"))
         if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
+        if (hasTree("qf3")) x = x.mul(treeEff("qf3"))
         return x.floor()
+    },
+    gainTimes() {
+        let x = E(1)
+        if (hasTree("qu7")) x = x.mul(treeEff("qu7"))
+        return x
     },
     enter(auto=false,force=false) {
         if (tmp.qu.gain.gte(1) || force) {
@@ -20,7 +26,7 @@ const QUANTUM = {
             if (player.qu.times.gte(10) || force) {
                 if (!force) {
                     player.qu.points = player.qu.points.add(tmp.qu.gain)
-                    player.qu.times = player.qu.times.add(1)
+                    player.qu.times = player.qu.times.add(tmp.qu.gainTimes)
                 }
                 updateQuantumTemp()
                 this.doReset(force)
@@ -215,32 +221,13 @@ function updateQuantumTemp() {
     updateChromaTemp()
 
     tmp.qu.gain = QUANTUM.gain()
+    tmp.qu.gainTimes = QUANTUM.gainTimes()
 
     tmp.qu.theories = player.qu.times.sub(player.qu.chr_get.length).max(0).min(3).toNumber()
     tmp.qu.pick_chr = tmp.qu.theories > 0
 
-    tmp.qu.cosmic_str_cost = E(2).pow(player.qu.cosmic_str.add(1)).floor()
-    tmp.qu.cosmic_str_bulk = player.qu.points.max(1).log(2).floor()
-
-    if (scalingActive("cosmic_str", player.qu.cosmic_str.max(tmp.qu.cosmic_str_bulk), "super")) {
-		let start = getScalingStart("super", "cosmic_str");
-		let power = getScalingPower("super", "cosmic_str");
-		let exp = E(2).pow(power);
-		tmp.qu.cosmic_str_cost =
-			E(2).pow(
-                player.qu.cosmic_str
-                .pow(exp)
-			    .div(start.pow(exp.sub(1)))
-                .add(1)
-            ).floor()
-            tmp.qu.cosmic_str_bulk = player.qu.points
-            .max(1)
-            .log(2)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .add(1)
-			.floor();
-	}
+    tmp.qu.cosmic_str_cost = E(2).pow(player.qu.cosmic_str.scaleEvery("cosmic_str").add(1)).floor()
+    tmp.qu.cosmic_str_bulk = player.qu.points.max(1).log(2).scaleEvery("cosmic_str",true).add(scalingActive('cosmic_str',player.qu.cosmic_str.max(tmp.qu.cosmic_str_bulk),'super')?1:0).floor()
 
     tmp.qu.cosmic_str_can = player.qu.points.gte(tmp.qu.cosmic_str_cost)
     tmp.qu.cosmic_str_eff = QUANTUM.cosmic_str.eff()

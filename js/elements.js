@@ -336,6 +336,9 @@ function updateOptionsHTML() {
 
 function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
+	document.documentElement.style.setProperty('--cx', tmp.cx)
+	document.documentElement.style.setProperty('--cy', tmp.cy)
+	
 	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
 	tmp.el.loading.setDisplay(tmp.offlineActive)
     tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && tmp.tab != 5))

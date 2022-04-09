@@ -38,19 +38,19 @@ Decimal.prototype.scaleName = function (type, id, rev=false) {
         let s = getScalingStart(type,id)
         let p = getScalingPower(type,id)
         let e = Decimal.pow(SCALE_POWER[type][id],p)
-
+        
         x = x.scale(s,e,type=="meta"?1:0,rev)
     }
     return x
 }
 
-Decimal.prototype.scaleEvery = function (id, rev=false) {
+Decimal.prototype.scaleEvery = function (id, rev=false, fp=SCALE_FP[id]?SCALE_FP[id]():[1,1,1,1]) {
     var x = this.clone()
     for (let i = 0; i < 4; i++) {
         let s = rev?i:3-i
         let sc = SCALE_TYPE[s]
 
-        x = x.scaleName(sc,id,rev)
+        x = rev?x.mul(fp[s]).scaleName(sc,id,rev):x.scaleName(sc,id,rev).div(fp[s])
     }
     return x
 }
@@ -436,6 +436,10 @@ function loadGame(start=true, gotNaN=false) {
         document.getElementById('auto_qu_input').addEventListener('input', e=>{
             player.qu.auto.input = e.target.value
         })
+        document.onmousemove = e => {
+            tmp.cx = e.clientX
+            tmp.cy = e.clientY
+        }
         setInterval(loop, 50)
         setInterval(updateStarsScreenHTML, 50)
         treeCanvas()

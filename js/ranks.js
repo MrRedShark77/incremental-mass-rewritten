@@ -246,203 +246,14 @@ function updateRanksTemp() {
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
     let fp2 = tmp.qu.chroma_eff[1]
     let fp = RANKS.fp.rank()
-    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(fp).div(fp2).pow(1.15)).mul(10)
-    tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).mul(fp2).add(1).floor();
-    if (player.mass.lt(10)) tmp.ranks.rank.bulk = E(0)
-    if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "super")) {
-		let start = getScalingStart("super", "rank");
-		let power = getScalingPower("super", "rank");
-		let exp = E(1.5).pow(power);
-		tmp.ranks.rank.req =
-			E(10).pow(
-				player.ranks.rank.div(fp2)
-					.pow(exp)
-					.div(start.pow(exp.sub(1)))
-                    .div(fp)
-					.pow(1.15)
-			).mul(10)
-		tmp.ranks.rank.bulk = player.mass
-            .div(10)
-			.max(1)
-			.log10()
-            
-			.root(1.15)
-            .mul(fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(fp2)
-			.add(1)
-			.floor();
-	}
-    if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "hyper")) {
-		let start = getScalingStart("super", "rank");
-		let power = getScalingPower("super", "rank");
-		let exp = E(1.5).pow(power);
-        let start2 = getScalingStart("hyper", "rank");
-		let power2 = getScalingPower("hyper", "rank");
-		let exp2 = E(2.5).pow(power2);
-		tmp.ranks.rank.req =
-			E(10).pow(
-				player.ranks.rank.div(fp2)
-                    .pow(exp2)
-                    .div(start2.pow(exp2.sub(1)))
-					.pow(exp)
-					.div(start.pow(exp.sub(1)))
-                    .div(fp)
-					.pow(1.15)
-			).mul(10)
-		tmp.ranks.rank.bulk = player.mass
-            .div(10)
-			.max(1)
-			.log10()
-            
-			.root(1.15)
-            .mul(fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
-            .mul(fp2)
-			.add(1)
-			.floor();
-	}
-    if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "ultra")) {
-		let start = getScalingStart("super", "rank");
-		let power = getScalingPower("super", "rank");
-		let exp = E(1.5).pow(power);
-        let start2 = getScalingStart("hyper", "rank");
-		let power2 = getScalingPower("hyper", "rank");
-		let exp2 = E(2.5).pow(power2);
-        let start3 = getScalingStart("ultra", "rank");
-		let power3 = getScalingPower("ultra", "rank");
-		let exp3 = E(4).pow(power3);
-		tmp.ranks.rank.req =
-			E(10).pow(
-				player.ranks.rank.div(fp2)
-                    .pow(exp3)
-                    .div(start3.pow(exp3.sub(1)))
-                    .pow(exp2)
-                    .div(start2.pow(exp2.sub(1)))
-					.pow(exp)
-					.div(start.pow(exp.sub(1)))
-                    .div(fp)
-					.pow(1.15)
-			).mul(10)
-		tmp.ranks.rank.bulk = player.mass
-            .div(10)
-			.max(1)
-			.log10()
-            
-			.root(1.15)
-            .mul(fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
-            .mul(start3.pow(exp3.sub(1)))
-			.root(exp3)
-            .mul(fp2)
-			.add(1)
-			.floor();
-	}
-    if (scalingActive("rank", player.ranks.rank.max(tmp.ranks.rank.bulk), "meta")) {
-		let start = getScalingStart("super", "rank");
-		let power = getScalingPower("super", "rank");
-		let exp = E(1.5).pow(power);
-        let start2 = getScalingStart("hyper", "rank");
-		let power2 = getScalingPower("hyper", "rank");
-		let exp2 = E(2.5).pow(power2);
-        let start3 = getScalingStart("ultra", "rank");
-		let power3 = getScalingPower("ultra", "rank");
-		let exp3 = E(4).pow(power3);
-        let start4 = getScalingStart("meta", "rank");
-		let power4 = getScalingPower("meta", "rank");
-		let exp4 = E(1.0025).pow(power4);
-		tmp.ranks.rank.req =
-			E(10).pow(
-				exp4.pow(player.ranks.rank.div(fp2).sub(start4)).mul(start4)
-                    .pow(exp3)
-                    .div(start3.pow(exp3.sub(1)))
-                    .pow(exp2)
-                    .div(start2.pow(exp2.sub(1)))
-					.pow(exp)
-					.div(start.pow(exp.sub(1)))
-                    .div(fp)
-					.pow(1.15)
-			).mul(10)
-		tmp.ranks.rank.bulk = player.mass
-            .div(10)
-			.max(1)
-			.log10()
-            
-			.root(1.15)
-            .mul(fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
-            .mul(start3.pow(exp3.sub(1)))
-			.root(exp3)
-            .div(start4)
-			.max(1)
-			.log(exp4)
-			.add(start4)
-            .mul(fp2)
-			.add(1)
-			.floor();
-	}
+    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(fp2).scaleEvery('rank').div(fp).pow(1.15)).mul(10)
+    tmp.ranks.rank.bulk = E(0)
+    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true).mul(fp2).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier()
-    tmp.ranks.tier.req = player.ranks.tier.div(fp2).div(fp).add(2).pow(2).floor()
-    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).mul(fp2).add(1).floor();
-    if (scalingActive("tier", player.ranks.tier.max(tmp.ranks.tier.bulk), "super")) {
-		let start = getScalingStart("super", "tier");
-		let power = getScalingPower("super", "tier");
-		let exp = E(1.5).pow(power);
-		tmp.ranks.tier.req =
-			player.ranks.tier.div(fp2)
-			.pow(exp)
-			.div(start.pow(exp.sub(1))).div(fp)
-			.add(2).pow(2).floor()
-		tmp.ranks.tier.bulk = player.ranks.rank
-            .max(0)
-            .root(2)
-            .sub(2)
-            .mul(fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(fp2)
-			.add(1)
-			.floor();
-	}
-    if (scalingActive("tier", player.ranks.tier.max(tmp.ranks.tier.bulk), "hyper")) {
-		let start = getScalingStart("super", "tier");
-		let power = getScalingPower("super", "tier");
-		let exp = E(1.5).pow(power);
-        let start2 = getScalingStart("hyper", "tier");
-		let power2 = getScalingPower("hyper", "tier");
-		let exp2 = E(2.5).pow(power2);
-		tmp.ranks.tier.req =
-			player.ranks.tier.div(fp2)
-            .pow(exp2)
-			.div(start2.pow(exp2.sub(1)))
-			.pow(exp)
-			.div(start.pow(exp.sub(1))).div(fp)
-			.add(2).pow(2).floor()
-		tmp.ranks.tier.bulk = player.ranks.rank
-            .max(0)
-            .root(2)
-            .sub(2)
-            .mul(fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(start2.pow(exp2.sub(1)))
-			.root(exp2)
-            .mul(fp2)
-			.add(1)
-			.floor();
-	}
+    tmp.ranks.tier.req = player.ranks.tier.div(fp2).scaleEvery('tier').div(fp).add(2).pow(2).floor()
+    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true).mul(fp2).add(1).floor();
 
     fp = E(1)
     let pow = 2
@@ -450,26 +261,8 @@ function updateRanksTemp() {
     if (hasElement(9)) fp = fp.mul(1/0.85)
     if (player.ranks.pent.gte(1)) fp = fp.mul(1/0.85)
     if (hasElement(72)) fp = fp.mul(1/0.85)
-    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).div(fp).pow(pow).mul(3).add(10).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(pow).mul(fp).mul(fp2).add(1).floor();
-    if (scalingActive("tetr", player.ranks.tetr.max(tmp.ranks.tetr.bulk), "super")) {
-		let start = getScalingStart("super", "tetr");
-		let power = getScalingPower("super", "tetr");
-		let exp = E(2).pow(power);
-		tmp.ranks.tetr.req =
-			player.ranks.tetr.div(fp2)
-			.pow(exp)
-			.div(start.pow(exp.sub(1))).div(fp)
-			.pow(pow).mul(3).add(10).floor()
-		tmp.ranks.tetr.bulk = player.ranks.tier
-            .sub(10).div(3).max(0).root(pow)
-            .mul(fp)
-			.mul(start.pow(exp.sub(1)))
-			.root(exp)
-            .mul(fp2)
-			.add(1)
-			.floor();
-	}
+    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).scaleEvery('tetr').div(fp).pow(pow).mul(3).add(10).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).add(1).floor();
 
     fp = E(1)
     pow = 1.5

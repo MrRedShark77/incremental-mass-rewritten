@@ -1,0 +1,80 @@
+[tooltip] {
+	position: relative;
+	z-index: 2;
+	white-space: pre-wrap;
+	text-align: center;
+}
+
+[tooltip]:before,
+[tooltip]:after {
+	visibility: hidden;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+	opacity: 0;
+    bottom: calc(100% - 5px);
+	pointer-events: none;
+	white-space: pre-wrap;
+}
+
+[tooltip]:before {
+	position: absolute;
+	bottom: calc(100% - 5px);
+	left: 50%;
+	margin-bottom: 5px;
+	padding: 7px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #000;
+	background-color: hsla(0, 0%, 5%, 0.9);
+	color: #fff;
+	content: attr(tooltip);
+	text-align: center;
+	font-size: 14px;
+	line-height: 1.2;
+	transition-duration: 0.5s;
+	white-space: pre-wrap;
+}
+
+[tooltip]:not([t-size]):before {
+	margin-left: -160px;
+    width: 320px;
+}
+
+[tooltip][t-size^='small']:before {
+	margin-left: -60px;
+    width: 120px;
+}
+
+[tooltip][t-size^='medium']:before {
+	margin-left: -120px;
+    width: 240px;
+}
+
+[tooltip]:after {
+	position: absolute;
+	bottom: calc(100% - 5px);
+	left: 50%;
+	margin-left: -5px;
+	width: 0;
+	text-align: center;
+	border-top: 5px solid #000;
+	border-top: 5px solid hsla(0, 0%, 5%, 0.9);
+	border-right: 5px solid transparent;
+	border-left: 5px solid transparent;
+	content: " ";
+	font-size: 0;
+	line-height: 0;
+	transition-duration: 0.5s;
+	white-space: pre-wrap;
+}
+
+[tooltip]:hover:before,
+[tooltip]:hover:after {
+	visibility: visible;
+    bottom: calc(100% + 1px);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+	opacity: 1;
+	white-space: pre-wrap;
+}

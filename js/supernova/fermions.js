@@ -390,7 +390,7 @@ function updateFermionsTemp() {
             let f = FERMIONS.types[i][x]
 
             tmp.fermions.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0
-            tmp.fermions.tiers[i][x] = f.calcTier()
+            tmp.fermions.tiers[i][x] = f.calcTier().min(tmp.fermions.maxTier[i][x])
             tmp.fermions.effs[i][x] = f.eff(player.supernova.fermions.points[i], (FERMIONS.onActive("04") && i == 0) || (FERMIONS.onActive("14") && i == 1) ? E(0) : player.supernova.fermions.tiers[i][x].mul(i==1?tmp.radiation.bs.eff[16]:1).mul(i==0?tmp.radiation.bs.eff[19]:1))
         }
     }

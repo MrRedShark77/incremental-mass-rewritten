@@ -520,6 +520,15 @@ const ELEMENTS = {
             desc: `Mass Dilation upgrade 2 effect is overpowered.`,
             cost: E('e3e14'),
         },
+        {
+            desc: `Pre-Ultra Mass Upgrades scale weaker based on Cosmic Ray's free tickspeeds.`,
+            cost: E('e7e14'),
+            effect() {
+                let x = tmp.atom?E(0.9).pow(tmp.atom.atomicEff.add(1).log10().pow(2/3)):E(1)
+                return x
+            },
+            effDesc(x) { return formatReduction(x)+" weaker" },
+        },
     ],
     /*
     {
@@ -549,7 +558,8 @@ const ELEMENTS = {
             if (tmp.radiation.unl) u += 10
         }
         if (PRIM.unl()) u += 3
-        
+        if (hasTree('unl3')) u += 1
+
         return u
     },
 }

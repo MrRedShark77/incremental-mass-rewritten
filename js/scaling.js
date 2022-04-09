@@ -24,6 +24,7 @@ const SCALE_START = {
 	ultra: {
 		rank: E(600),
 		//tier: E(1500),
+		//massUpg: E(5e9),
 		tickspeed: E(700),
 		bh_condenser: E(750),
 		gamma_ray: E(800),
@@ -31,27 +32,57 @@ const SCALE_START = {
 		fTier: E(100),
 	},
 	meta: {
-		bh_condenser: E(1e7),
-		gamma_ray: E(1e6),
 		rank: E(1e4),
 		tickspeed: E(5e4),
+		bh_condenser: E(1e7),
+		gamma_ray: E(1e6),
 		supernova: E(100),
 	},
 }
 
 const SCALE_POWER= {
     super: {
+		rank: 1.5,
+		tier: 1.5,
+		tetr: 2,
+		massUpg: 2.5,
+		tickspeed: 2,
+		bh_condenser: 2,
+		gamma_ray: 2,
+		supernova: 3,
 		fTier: 2.5,
+		cosmic_str: 2,
     },
 	hyper: {
+		rank: 2.5,
+		tier: 2.5,
+		massUpg: 5,
+		tickspeed: 4,
+		bh_condenser: 2,
+		gamma_ray: 4,
+		supernova: 3,
 		fTier: 4,
 	},
 	ultra: {
+		rank: 4,
+		//massUpg: 10,
+		tickspeed: 7,
+		bh_condenser: 4,
+		gamma_ray: 6,
+		supernova: 5,
 		fTier: 6,
 	},
 	meta: {
-		
+		rank: 1.0025,
+		tickspeed: 1.001,
+		bh_condenser: 1.001,
+		gamma_ray: 1.001,
+		supernova: 1.025,
 	},
+}
+
+const SCALE_FP = {
+	tickspeed() { return [1,1,1,tmp.tickspeedFP] },
 }
 
 const QCM8_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
@@ -112,7 +143,19 @@ function updateScalingTemp() {
 		tmp.scaling[SCALE_TYPE[x]] = []
 		let key = Object.keys(SCALE_START[SCALE_TYPE[x]])
 		for (let y = 0; y < key.length; y++) {
-			if (scalingActive(key[y], SCALING_RES[key[y]](), SCALE_TYPE[x])) tmp.scaling[SCALE_TYPE[x]].push(key[y])
+			if (key[y] == "massUpg") for (let i = 0; i < UPGS.mass.cols; i++) {
+				if (scalingActive(key[y], SCALING_RES[key[y]](i), SCALE_TYPE[x])) {
+					tmp.scaling[SCALE_TYPE[x]].push(key[y])
+					break
+				}
+			}
+			else if (key[y] == "fTier") for (let i = 0; i < 2; i++) for (let j = 0; j < 6; j++) {
+				if (scalingActive(key[y], SCALING_RES[key[y]](i,j), SCALE_TYPE[x])) {
+					tmp.scaling[SCALE_TYPE[x]].push(key[y])
+					break
+				}
+			}
+			else if (scalingActive(key[y], SCALING_RES[key[y]](), SCALE_TYPE[x])) tmp.scaling[SCALE_TYPE[x]].push(key[y])
 		}
 	}
 }
@@ -196,6 +239,7 @@ function getScalingPower(type, name) {
 	if (name == "supernova" && type != "meta") {
 		power = power.mul(tmp.fermions.effs[1][4])
 	}
+	if (name == "massUpg" && type != "ultra") power = power.mul(tmp.elements.effect[84])
 	if (type=="super") {
 		if (name=="rank") {
 			if (player.mainUpg.rp.includes(10)) power = power.mul(0.8)
@@ -234,7 +278,7 @@ function getScalingPower(type, name) {
 			if (hasElement(37)) power = power.mul(tmp.elements.effect[37])
 		}
 		if (name=="massUpg") {
-			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
+			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)
 		}
 		if (name=='tickspeed') {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
@@ -269,5 +313,5 @@ function getScalingPower(type, name) {
 		}
 	}
 	if (QCs.active() && QCM8_SCALES.includes(name)) power = power.mul(tmp.qu.qc_eff[7][1])
-	return power
+	return power.max(type=="meta"?0.5:0)
 }
