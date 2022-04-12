@@ -24,6 +24,7 @@ function resetTemp() {
             maxTier: [[],[]],
             tiers: [[],[]],
             effs:  [[],[]],
+            bonuses: [[],[]],
         },
     
         supernova: {

@@ -412,7 +412,7 @@ const CHALS = {
         pow: E(2),
         start: uni('e8.4e8'),
         effect(x) {
-            let ret = x.root(2)
+            let ret = x.root(hasTree("chal7a")?1.5:2)
             return ret
         },
         effDesc(x) { return "+"+format(x) },

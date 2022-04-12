@@ -1,10 +1,10 @@
 const TREE_IDS = [
     ["qu_qol2","qu_qol1","qu_qol6","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
     ["qu_qol3","qu_qol4","qu_qol5","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
-    ["","qu_qol7","","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","chal4b","chal4","","prim1","qu4","prim2"],
+    ["","qu_qol7","qu_qol9","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","chal4b","chal4","chal7a","prim1","qu4","prim2"],
     ["unl2","unl3","qu_qol8","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","qu6","qu5","qu7"],
     ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","qc1",""],
-    ["","","","","","","fn8","fn11","fn9","fn1","fn5","fn10","","","","","","",""],
+    ["","","","","","","fn8","fn11","fn9","fn1","fn5","fn10","","","","","","prim3",""],
     ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
     ["","","","","","","rad6","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
     ["","","","","","","","","qf2","qf1","qf3","","","","","","","",""],
@@ -320,6 +320,12 @@ const TREE_UPGS = {
             branch: ["chal6"],
             desc: `Unlock 12th Challenge.`,
             cost: E(1e200),
+        },
+        chal7a: {
+            unl() { return hasTree("unl3") },
+            branch: ["chal7"],
+            desc: `Make 12th Challenges effect better.`,
+            cost: E('e900'),
         },
         gr1: {
             branch: ["bh1"],
@@ -677,6 +683,14 @@ const TREE_UPGS = {
             desc: `You can now automatically get all Fermions Tiers outside any Fermion, except during Quantum Challenge.`,
             cost: E(1e11),
         },
+        qu_qol9: {
+            qf: true,
+            branch: ["qu_qol8"],
+            req() { return player.qu.qc.shard >= 24 },
+            reqDesc() { return `Get 24 Quantum Shards.` },
+            desc: `Start with Polonium–84 unlocked when entering in Quantum Challenge.`,
+            cost: E(1e17),
+        },
         prim1: {
             qf: true,
             branch: ["qu5"],
@@ -688,6 +702,12 @@ const TREE_UPGS = {
             branch: ["qu5"],
             desc: `Theta Particle’s second effect is now added.`,
             cost: E(500),
+        },
+        prim3: {
+            qf: true,
+            branch: ["qc1"],
+            desc: `Epsilon Particle’s second effect is now added, stronger if you are in Quantum Challenge.`,
+            cost: E(1e16),
         },
         qc1: {
             qf: true,

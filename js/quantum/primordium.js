@@ -44,7 +44,7 @@ const PRIM = {
                 return x
             },
             p=>{
-                let x = p.root(3).div(10)
+                let x = [p.root(3).div(10), p.root(3).pow(QCs.active()?2:1)]
                 return x
             },
             p=>{
@@ -62,7 +62,7 @@ const PRIM = {
             x=>{ return `Boost Dark Matters gain by ^${format(x[0])} /<br> Boost BH Condenser Power by ${format(x[1])}x` },
             x=>{ return `Boost Atoms gain by ^${format(x[0])} /<br> Boost Cosmic Ray Power by ${format(x[1])}x` },
             x=>{ return `Boost Higgs Boson's effect by ${format(x)}x` },
-            x=>{ return `Add ${format(x)} to base from Fermions gain ` },
+            x=>{ return `Add ${format(x[0])} to base from Fermions gain ` + (hasTree("prim3") ? ` /<br> Add ${format(x[1])} free tiers to Fermions` : "") },
             x=>{ return `Boost all Radiations gains by ${format(x[0])}x` + (hasTree("prim2") ? ` /<br> Make all Radiations effects ${format(x[1])}x stronger` : "") },
             x=>{ return `Make all Supernova's scalings start ${format(x)} later` },
         ],
