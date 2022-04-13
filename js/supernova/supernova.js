@@ -33,10 +33,10 @@ const SUPERNOVA = {
         if (hasTree("qol2")) list_keep.push(24)
         if (hasTree("qol3")) list_keep.push(43)
         if (quUnl()) list_keep.push(30)
-        if (hasTree("qu_qol9") && QCs.active()) list_keep.push(84)
         keep = []
         for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
         player.atom.elements = keep
+        if (hasTree("qu_qol9") && QCs.active() && !player.atom.elements.includes(84)) player.atom.elements.push(84)
 
         player.md.active = false
         player.md.particles = E(0)
