@@ -1,23 +1,49 @@
+const TREE_TAB = [
+    {title: "Main"},
+    {title: "Quality of life"},
+    {title: "Challenge"},
+    {title: "Post-Supernova", unl() { return player.supernova.post_10 } },
+    {title: "Quantum", unl() { return player.qu.times.gte(1) } },
+]
+
 const TREE_IDS = [
-    ["qu_qol2","qu_qol1","qu_qol6","","qol1","","s3","s2","s1","c","sn1","sn2","sn3","","chal1","","","qu0",""],
-    ["qu_qol3","qu_qol4","qu_qol5","qol2","qol3","qol4","s4","","m1","rp1","bh1","","sn4","chal2","chal4a","chal3","qu1","qu2","qu3"],
-    ["","qu_qol7","qu_qol9","qol5","qol6","qol7","","m2","t1","","bh2","gr1","sn5","chal4b","chal4","chal7a","prim1","qu4","prim2"],
-    ["unl2","unl3","qu_qol8","","unl1","","m3","","","d1","","","gr2","chal5","chal6","chal7","qu6","qu5","qu7"],
-    ["","","","qol9","qol8","","","bs4","bs2","bs1","bs3","","","","","","","qc1",""],
-    ["","","","","","","fn8","fn11","fn9","fn1","fn5","fn10","","","","","","prim3",""],
-    ["","","","","","","fn7","fn6","fn2","fn3","fn4","","","","","","","",""],
-    ["","","","","","","rad6","rad4","rad2","rad1","rad3","rad5","","","","","","",""],
-    ["","","","","","","","","qf2","qf1","qf3","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
-    ["","","","","","","","","","","","","","","","","","",""],
+    [
+        ['c'],
+        ['qol1','','','','qu_qol1',''],
+        ['chal1'],
+        ['','bs1','','qf1','','rad1'],
+        ['qu0'],
+    ],[
+        ['s1','m1','rp1','bh1','sn1'],
+        ['qol2','qol3','qol4','qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6'],
+        ['chal2','chal4a','chal4b','chal3'],
+        ['bs4','bs2','fn1','bs3','qf2','qf3','rad2','rad3'],
+        ['qu1','qu2','qu3'],
+    ],[
+        ['s2','m2','t1','d1','bh2','gr1','sn2'],
+        ['qol5','qol6','qol7','','','qu_qol7','',''],
+        ['chal4','chal7a'],
+        ['fn3','fn4','fn9','fn2','fn5','','rad4','rad5'],
+        ['qu4'],
+    ],[
+        ['s3','m3','gr2','sn3'],
+        ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9'],
+        ['chal5','chal6','chal7'],
+        ['fn11','fn6','fn10','rad6'],
+        ['prim1','qu5','prim2'],
+    ],[
+        ['s4','sn5','sn4'],
+        [],
+        [],
+        ['fn7','fn8'],
+        ['qu6','qc1','qu7'],
+    ],[
+        [],
+        [],
+        [],
+        [],
+        ['prim3'],
+    ],
 ]
 
 var tree_canvas,tree_ctx,tree_update=true
@@ -771,18 +797,31 @@ function treeEff(id,def=1) { return tmp.supernova.tree_eff[id]||E(def) }
 
 function setupTreeHTML() {
     let tree_table = new Element("tree_table")
+    let tree_tab_table = new Element("tree_tab_table")
 	let table = ``
-	for (let i = 0; i < 19; i++) {
-        table += `<div class="table_left"><div style="width: calc(calc(100% - 1406px) / 2)"></div><div class="table_center" style="min-width: 1406px;">`
-        for (let j = 0; j < 19; j++) {
-            let id = TREE_IDS[i][j]
-            let option = id == "" ? `style="visibility: hidden"` : ``
-            let img = TREE_UPGS.ids[id]?`<img src="images/tree/${id}.png">`:""
-            table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.supernova.tree_choosed = '${id}'" ${option}>${img}</button>`
+    let table2 = ``
+    for (let j = 0; j < TREE_TAB.length; j++) {
+        table2 += `
+        <div style="width: 145px">
+            <button onclick="tmp.tree_tab = ${j}" class="btn_tab" id="tree_tab${j}_btn">${TREE_TAB[j].title}<b id="tree_tab${j}_notify" style="color: red"> [!]</b></button>
+        </div>
+        `
+        table += `<div id="tree_tab${j}_div">`
+        for (let i = 0; i < TREE_IDS.length; i++) {
+            table += `<div class="tree_table_column">`
+            for (let k = 0; k < TREE_IDS[i][j].length; k++) {
+                let id = TREE_IDS[i][j][k]
+                let option = id == "" ? `style="visibility: hidden"` : ``
+                let img = TREE_UPGS.ids[id]?`<img src="images/tree/${id}.png">`:""
+                table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.supernova.tree_choosed = '${id}'" ${option}>${img}</button>`
+            }
+            table += `</div>`
         }
-        table += `</div></div>`
-	}
+        table += `</div>`
+    }
+
 	tree_table.setHTML(table)
+    tree_tab_table.setHTML(table2)
 }
 
 function retrieveCanvasData() {
@@ -811,8 +850,8 @@ function drawTreeHTML() {
 function drawTree() {
 	if (!retrieveCanvasData()) return;
 	tree_ctx.clearRect(0, 0, tree_canvas.width, tree_canvas.height);
-	for (let x in tmp.supernova.tree_had) {
-        let id = tmp.supernova.tree_had[x]
+	for (let x in tmp.supernova.tree_had2[tmp.tree_tab]) {
+        let id = tmp.supernova.tree_had2[tmp.tree_tab][x]
         let branch = TREE_UPGS.ids[id].branch||[]
         if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) if (tmp.supernova.tree_unlocked[branch[y]]) {
 			drawTreeBranch(branch[y], id)
@@ -837,10 +876,10 @@ const SR = 7.0710678118654755
 function drawTreeBranch(num1, num2) {
     var start = document.getElementById("treeUpg_"+num1).getBoundingClientRect();
     var end = document.getElementById("treeUpg_"+num2).getBoundingClientRect();
-    var x1 = start.left + (start.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y1 = start.top + (start.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-25);
-    var x2 = end.left + (end.width / 2) + (document.documentElement.scrollLeft || document.body.scrollLeft) - (window.innerWidth-tree_canvas.width)/2;
-    var y2 = end.top + (end.height / 2) + (document.documentElement.scrollTop || document.body.scrollTop) - (window.innerHeight-tree_canvas.height-25);
+    var x1 = start.left + (start.width / 2) - (document.body.scrollWidth-tree_canvas.width)/2;
+    var y1 = start.top + (start.height / 2) - (window.innerHeight-tree_canvas.height);
+    var x2 = end.left + (end.width / 2) - (document.body.scrollWidth-tree_canvas.width)/2;
+    var y2 = end.top + (end.height / 2) - (window.innerHeight-tree_canvas.height);
     tree_ctx.lineWidth=10;
     tree_ctx.beginPath();
     let color = TREE_UPGS.ids[num2].qf?"#39FF49":"#00520b"
@@ -885,10 +924,16 @@ function updateTreeHTML() {
         <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `
     )
-    for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
-        let id = tmp.supernova.tree_had[x]
-        let unl = tmp.supernova.tree_unlocked[id]
-        tmp.el["treeUpg_"+id].setVisible(unl)
-        if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, locked: !tmp.supernova.tree_afford[id], bought: hasTree(id), choosed: id == tmp.supernova.tree_choosed})
+
+    for (let i = 0; i < TREE_TAB.length; i++) {
+        tmp.el["tree_tab"+i+"_btn"].setDisplay(TREE_TAB[i].unl?TREE_TAB[i].unl():true)
+        tmp.el["tree_tab"+i+"_notify"].setDisplay(tmp.supernova.tree_afford2[i].length>0)
+        tmp.el["tree_tab"+i+"_div"].setDisplay(tmp.tree_tab == i)
+        if (tmp.tree_tab == i) for (let x = 0; x < tmp.supernova.tree_had2[i].length; x++) {
+            let id = tmp.supernova.tree_had2[i][x]
+            let unl = tmp.supernova.tree_unlocked[id]
+            tmp.el["treeUpg_"+id].setVisible(unl)
+            if (unl) tmp.el["treeUpg_"+id].setClasses({btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, locked: !tmp.supernova.tree_afford[id], bought: hasTree(id), choosed: id == tmp.supernova.tree_choosed})
+        }
     }
 }

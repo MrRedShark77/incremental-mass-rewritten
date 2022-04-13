@@ -441,7 +441,7 @@ const ELEMENTS = {
             cost: E('e1.7e6'),
             effect() {
                 let x = player.stars.points.add(1)
-                return x
+                return x.softcap('e3e15',0.85,2)
             },
             effDesc(x) { return format(x)+"x" },
         },

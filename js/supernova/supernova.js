@@ -126,24 +126,31 @@ function updateSupernovaTemp() {
 
     tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
 
-    for (let x = 0; x < tmp.supernova.tree_had.length; x++) {
-        let id = tmp.supernova.tree_had[x]
-        let t = TREE_UPGS.ids[id]
+    for (let i = 0; i < TREE_TAB.length; i++) {
+        tmp.supernova.tree_afford2[i] = []
+        for (let j = 0; j < tmp.supernova.tree_had2[i].length; j++) {
+            let id = tmp.supernova.tree_had2[i][j]
+            let t = TREE_UPGS.ids[id]
 
-        let branch = t.branch||""
-        let unl = (t.unl?t.unl():true)
-        let req = t.req?t.req():true
-        if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
-        let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !hasTree(id) && req
-        if (branch != "") for (let x = 0; x < branch.length; x++) if (!hasTree(branch[x])) {
-            unl = false
-            can = false
-            break
+            let branch = t.branch||""
+            let unl = (t.unl?t.unl():true)
+            let req = t.req?t.req():true
+            if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
+            let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !hasTree(id) && req
+            if (branch != "") for (let x = 0; x < branch.length; x++) if (!hasTree(branch[x])) {
+                unl = false
+                can = false
+                break
+            }
+            tmp.supernova.tree_unlocked[id] = unl || hasTree(id)
+            tmp.supernova.tree_afford[id] = can
+            if (can) tmp.supernova.tree_afford2[i].push(id)
+            if (t.effect) {
+                tmp.supernova.tree_eff[id] = t.effect()
+            }
         }
-        tmp.supernova.tree_unlocked[id] = unl || hasTree(id)
-        tmp.supernova.tree_afford[id] = can
-        if (t.effect) tmp.supernova.tree_eff[id] = t.effect()
     }
+
     tmp.supernova.star_gain = SUPERNOVA.starGain()
 }
 

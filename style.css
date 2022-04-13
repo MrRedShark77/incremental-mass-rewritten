@@ -90,7 +90,7 @@ button {
 }
 
 #star {
-	position: absolute;
+	position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -101,6 +101,7 @@ button {
 }
 
 #notify {
+	z-index: 3;
 	position: absolute;
     left: 50%;
     top: 20px;
@@ -134,22 +135,21 @@ button {
 	max-width: 90%;
 }
 
-#tree {
-	height: calc(100% - 320px);
-}
-
-#tree_table {
-	width: 95%;
-	height: 100%;
-	border: solid 2px white;
-	overflow: auto;
+.tree_table_column {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	flex-flow: row wrap;
+	margin-bottom: 5px;
 }
 
 #tree_canvas {
 	z-index: -1;
-	position: absolute;
-	width: 95%;
-	height: calc(100% - 318px);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .soft {
@@ -337,7 +337,7 @@ button {
 .btn_tree {
 	background-color: black;
 	border: solid 2px white;
-	margin: 10px;
+	margin: 15px;
 	width: 54px;
 	height: 54px;
 	padding: 0;
