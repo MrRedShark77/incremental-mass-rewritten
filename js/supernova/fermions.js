@@ -25,7 +25,7 @@ const FERMIONS = {
     },
     bonus(i,j) {
         let x = E(0)
-        if (hasTree("prim3")) x = x.add(tmp.prim.eff[5][1])
+        if (hasTree("prim3")) x = x.add(tmp.prim.eff[5][1].min(j>2?4:1/0))
         return x
     },
     fp() {
@@ -135,7 +135,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0).softcap(5,1/3,0)
+                    let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0).softcap(5,1/3,0).min(6.5)
                     return x
                 },
                 desc(x) {
