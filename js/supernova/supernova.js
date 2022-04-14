@@ -144,7 +144,7 @@ function updateSupernovaTemp() {
             }
             tmp.supernova.tree_unlocked[id] = unl || hasTree(id)
             tmp.supernova.tree_afford[id] = can
-            if (can) tmp.supernova.tree_afford2[i].push(id)
+            if (can && unl) tmp.supernova.tree_afford2[i].push(id)
             if (t.effect) {
                 tmp.supernova.tree_eff[id] = t.effect()
             }
