@@ -51,6 +51,12 @@
 }
 
 @font-face {
+	font-family: 'Nunito';
+	src: url('fonts/Nunito-VariableFont_wght.ttf');
+	size-adjust: 90%;
+}
+
+@font-face {
 	font-family: 'Retron2000';
 	src: url('fonts/Retron2000.ttf');
 	size-adjust: 85%;
