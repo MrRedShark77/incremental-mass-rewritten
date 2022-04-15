@@ -150,46 +150,43 @@
     <div id='app' style='display: none'>
         <div id="star"></div>
         <div style='height: 5px'></div>
-        <div style="height: 200px">
+        <div style="height: 160px">
             <div id="chal_upper" style='height: 40px'></div>
-            <div class="table_center top_text" style="margin: 5px 0px;">
-                <div>
+            <div class="table_left" style="overflow-y: auto;">
+                <div style="width: 100px;"></div>
+                <div id="table_resources" class="top_text">
                     <div class="resources sml">
                         <div tooltip="Mass" t-size="small"><img class="res_img" src="images/mass.png"></div>
                         <span style="margin-left: 5px; text-align: left;" id="mass">X</span>
-                    </div><div class="resources sml red">
+                    </div><div class="resources sml red" id="rp_div">
                         <div tooltip="Rage Power" t-size="small"><img class="res_img" src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="rpAmt">X</span>
-                    </div><div class="resources yellow" id="dm_div">
+                    </div><div class="resources sml yellow" id="dm_div">
                         <div tooltip="Dark Matter" t-size="small"><img class="res_img" src="images/dm.png" onclick="FORMS.bh.reset()" onmousemove="FORMS.reset_msg.set('dm')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="dmAmt">X</span>
-                    </div>
-                </div><div>
-                    <div class="resources sml yellow" id="bh_div">
+                    </div><div class="resources sml yellow" id="bh_div">
                         <div tooltip="Black Hole" t-size="small"><img class="res_img" src="images/bh.png"></div>
                         <span style="margin-left: 5px; text-align: left;" id="bhMass">X</span>
                     </div><div class="resources sml" id="atom_div">
                         <div tooltip="Atom" t-size="small"><img class="res_img" src="images/atom.png" onclick="ATOM.reset()" onmousemove="FORMS.reset_msg.set('atom')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="atomAmt">X</span>
-                    </div><div class="resources quark_color" id="quark_div">
+                    </div><div class="resources sml quark_color" id="quark_div">
                         <div tooltip="Quark" t-size="small"><img class="res_img" src="images/quark.png"></div>
                         <span style="margin-left: 5px; text-align: left;" id="quarkAmt">X</span>
-                    </div>
-                </div><div>
-                    <div class="resources sml green" id="md_div">
+                    </div><div class="resources sml green" id="md_div">
                         <div tooltip="Mass Dilation" t-size="small"><img class="res_img" class="res_img" src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="md_massAmt">X</span>
-                    </div>
-                    <div class="resources sml magenta" id="sn_div">
+                    </div> <div class="resources sml magenta" id="sn_div">
                         <div tooltip="Supernova" t-size="small"><img class="res_img" src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
-                    </div>
-                    <div class="resources light_green" id="qu_div">
+                    </div><div class="resources sml light_green" id="qu_div">
                         <div tooltip="Quantum Foam" t-size="small"><img class="res_img" class="res_img" src="images/qu.png" onclick="QUANTUM.enter()" onmousemove="FORMS.reset_msg.set('qu')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="quAmt">X</span>
                     </div>
                 </div>
-            </div><span id="reset_desc"></span>
+            </div>
+        </div><br><div style="min-height: 40px;">
+            <span id="reset_desc"></span>
         </div><div id="tabs" class="table_center" style="min-height: 30px"></div>
         <div style="width: 100%; border-bottom: solid 2px white; height: 5px; margin-bottom: 13px;"></div>
         <div id="stabs" style="min-height: 30px;"></div><br>
@@ -394,7 +391,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.5.1.2.1 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5.1.3 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>

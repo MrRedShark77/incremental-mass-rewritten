@@ -239,6 +239,9 @@ function getScalingPower(type, name) {
 	if (name == "supernova" && type != "meta") {
 		power = power.mul(tmp.fermions.effs[1][4])
 	}
+	if (name == "fTier" && type != "meta") {
+		if (hasTree("fn12")) power = power.mul(0.9)
+	}
 	if (name == "massUpg" && type != "ultra") power = power.mul(tmp.elements.effect[84])
 	if (type=="super") {
 		if (name=="rank") {

@@ -457,8 +457,14 @@ const UPGS = {
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
+                let sp2 = 0.1
+                let ss2 = E(5e15)
+                if (hasElement(85)) {
+                    sp2 **= 0.9
+                    ss2 = ss2.mul(3)
+                }
                 let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)
-                ret = ret.mul(tmp.prim.eff[0]).softcap(5e15,0.1,0)
+                ret = ret.mul(tmp.prim.eff[0]).softcap(ss2,sp2,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {

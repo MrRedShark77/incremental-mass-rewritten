@@ -118,7 +118,7 @@ function setupQCHTML() {
 	for (let x = 0; x < QCs_len; x++) {
         table += `
         <div style="margin: 5px;">
-        <div style="margin: 5px" tooltip="${QCs.names[x]}"><img onclick="tmp.qc_ch = ${x}" style="cursor: pointer" src="images/qcm_test.png"></div>
+        <div style="margin: 5px" tooltip="${QCs.names[x]}"><img onclick="tmp.qc_ch = ${x}" style="cursor: pointer" src="images/qcm${x}.png"></div>
         <div><span id="qcm_mod${x}">0</span>/10</div>
         <div id="qcm_btns${x}"><button onclick="QCs.incMod(${x},-1); tmp.qc_ch = ${x}">-</button><button onclick="QCs.incMod(${x},1); tmp.qc_ch = ${x}">+</button></div>
         </div>
@@ -139,7 +139,7 @@ function updateQCModPresets() {
         for (let y = 0; y < QCs_len; y++) {
             table += `
             <div style="margin: 5px; align-items: center;" class="table_center">
-            <div style="margin-right: 3px; width: 20px; text-align: right;">${p.mods[y]}</div><div tooltip="${QCs.names[y]}"><img style="width: 25px; height: 25px" src="images/qcm_test.png"></div>
+            <div style="margin-right: 3px; width: 20px; text-align: right;">${p.mods[y]}</div><div tooltip="${QCs.names[y]}"><img style="width: 25px; height: 25px" src="images/qcm${y}.png"></div>
             </div>
             `
         }
@@ -157,6 +157,7 @@ function updateQCModPresets() {
 
 function updateQCTemp() {
     tmp.qu.qc_s_b = E(2)
+    if (hasTree("qf4")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
     tmp.qu.qc_s_eff = tmp.qu.qc_s_b.pow(player.qu.qc.shard)
 
     let s = 0

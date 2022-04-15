@@ -529,6 +529,10 @@ const ELEMENTS = {
             },
             effDesc(x) { return formatReduction(x)+" weaker" },
         },
+        {
+            desc: `Stronger’s Power softcap starts 3x later, is 10% weaker.`,
+            cost: E('e7.5e15'),
+        },
     ],
     /*
     {
@@ -558,7 +562,7 @@ const ELEMENTS = {
             if (tmp.radiation.unl) u += 10
         }
         if (PRIM.unl()) u += 3
-        if (hasTree('unl3')) u += 1
+        if (hasTree('unl3')) u += 2
 
         return u
     },

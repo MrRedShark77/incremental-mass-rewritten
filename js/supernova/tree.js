@@ -23,13 +23,13 @@ const TREE_IDS = [
         ['s2','m2','t1','d1','bh2','gr1','sn2'],
         ['qol5','qol6','qol7','','','qu_qol7','',''],
         ['chal4','chal7a'],
-        ['fn3','fn4','fn9','fn2','fn5','','rad4','rad5'],
+        ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
         ['qu4'],
     ],[
         ['s3','m3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9'],
         ['chal5','chal6','chal7'],
-        ['fn11','fn6','fn10','rad6'],
+        ['fn12','fn11','fn6','fn10','rad6',""],
         ['prim1','qu5','prim2'],
     ],[
         ['s4','sn5','sn4'],
@@ -485,6 +485,11 @@ const TREE_UPGS = {
             desc: `[Strange], [Top], [Bottom], [Neutrino], [Neut-Muon] max tier is increased by 5.`,
             cost: E('e680'),
         },
+        fn12: {
+            branch: ["fn3"],
+            desc: `Pre-Meta Fermion's Tier is 10% weaker.`,
+            cost: E('e960'),
+        },
         d1: {
             unl() { return hasTree("fn6") },
             branch: ["rp1"],
@@ -564,6 +569,11 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x)+"x" },
+        },
+        qf4: {
+            branch: ["qf3"],
+            desc: `Quantum Shard's base is increased by 0.5.`,
+            cost: E('e1000'),
         },
 
         // Quatnum
