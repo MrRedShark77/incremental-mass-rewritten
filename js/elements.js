@@ -165,17 +165,17 @@ function updateUpperHTML() {
 	tmp.el.reset_desc.setHTML(player.reset_msg)
 	tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true))
 	
-	let unl = !player.qu.times.gte(1)
+	let unl = !quUnl()
 	tmp.el.rp_div.setDisplay(unl)
 	if (unl) tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"))
 	
-	unl = FORMS.bh.see() && !player.qu.times.gte(1)
+	unl = FORMS.bh.see() && !quUnl()
 	tmp.el.dm_div.setDisplay(unl)
 	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>"+(player.mainUpg.atom.includes(6)?formatGain(player.bh.dm, tmp.bh.dm_gain.mul(gs)):"(+"+format(tmp.bh.dm_gain,0)+")"))
 	
 	unl = player.bh.unl
 	tmp.el.bh_div.setDisplay(unl)
-	tmp.el.atom_div.setDisplay(unl && !player.qu.times.gte(1))
+	tmp.el.atom_div.setDisplay(unl && !quUnl())
 	if (unl) {
 		tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true))
 		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain.mul(gs)):"(+"+format(tmp.atom.gain,0)+")"))
@@ -327,9 +327,9 @@ function updateOptionsHTML() {
 	for (let x = 0; x < CONFIRMS.length; x++) {
 		let unl = 
 		CONFIRMS[x] == "sn"
-		?(player.supernova.times.gte(1) || player.qu.times.gte(1))
+		?(player.supernova.times.gte(1) || quUnl())
 		:CONFIRMS[x] == "qu"
-		?player.qu.times.gte(1)
+		?quUnl()
 		:player[CONFIRMS[x]].unl
 
 		tmp.el["confirm_div_"+x].setDisplay(unl)

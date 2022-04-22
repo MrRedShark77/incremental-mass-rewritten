@@ -3,7 +3,7 @@ const TREE_TAB = [
     {title: "Quality of life"},
     {title: "Challenge"},
     {title: "Post-Supernova", unl() { return player.supernova.post_10 } },
-    {title: "Quantum", unl() { return player.qu.times.gte(1) } },
+    {title: "Quantum", unl() { return quUnl() } },
 ]
 
 const TREE_IDS = [
@@ -42,7 +42,7 @@ const TREE_IDS = [
         [],
         [],
         [],
-        ['prim3'],
+        ['prim3','qu8'],
     ],
 ]
 
@@ -641,6 +641,17 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x,0)+"x" },
+        },
+        qu8: {
+            qf: true,
+            branch: ['qc1'],
+            desc: `Chromas are affected by Quantum Shard’s effect.`,
+            cost: E(1e15),
+            effect() {
+                let x = tmp.qu.qc_s_eff.max(1)
+                return x
+            },
+            effDesc(x) { return format(x,1)+"x" },
         },
         qu_qol1: {
             qf: true,

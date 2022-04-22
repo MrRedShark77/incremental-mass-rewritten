@@ -60,7 +60,7 @@ const ATOM = {
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75)
+            let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75).pow(getEnRewardEff(1))
             if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
             return x.softcap(1e10,0.1,0).floor()
         },
@@ -87,6 +87,7 @@ const ATOM = {
             if (hasTree("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
             pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
             pow = pow.mul(tmp.prim.eff[3][1])
+            pow = pow.mul(getEnRewardEff(3)[1])
             if (hasTree("gr2")) pow = pow.pow(1.25)
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
             return {pow: pow, eff: eff}

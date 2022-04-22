@@ -114,7 +114,7 @@ function calcSupernova(dt, dt_offline) {
     }
 
     if (tmp.radiation.unl) {
-        player.supernova.radiation.hz = player.supernova.radiation.hz.add(tmp.radiation.hz_gain.mul(du_gs))
+        if (!player.qu.en.eth[0]) player.supernova.radiation.hz = player.supernova.radiation.hz.add(tmp.radiation.hz_gain.mul(du_gs))
         for (let x = 0; x < RAD_LEN; x++) player.supernova.radiation.ds[x] = player.supernova.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(du_gs))
     }
 }

@@ -3,6 +3,7 @@ const SCALE_START = {
         rank: E(50),
 		tier: E(10),
 		tetr: E(7),
+		pent: E(15),
         massUpg: E(100),
 		tickspeed: E(100),
 		bh_condenser: E(100),
@@ -14,6 +15,7 @@ const SCALE_START = {
 	hyper: {
 		rank: E(120),
 		tier: E(200),
+		tetr: E(60),
 		massUpg: E(500),
 		tickspeed: E(250),
 		bh_condenser: E(300),
@@ -23,7 +25,7 @@ const SCALE_START = {
 	},
 	ultra: {
 		rank: E(600),
-		//tier: E(1500),
+		tier: E(7500),
 		//massUpg: E(5e9),
 		tickspeed: E(700),
 		bh_condenser: E(750),
@@ -45,6 +47,7 @@ const SCALE_POWER= {
 		rank: 1.5,
 		tier: 1.5,
 		tetr: 2,
+		pent: 2,
 		massUpg: 2.5,
 		tickspeed: 2,
 		bh_condenser: 2,
@@ -56,6 +59,7 @@ const SCALE_POWER= {
 	hyper: {
 		rank: 2.5,
 		tier: 2.5,
+		tetr: 3,
 		massUpg: 5,
 		tickspeed: 4,
 		bh_condenser: 2,
@@ -225,6 +229,10 @@ function getScalingStart(type, name) {
 			if (hasElement(68)) start = start.mul(2)
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
 			start = start.mul(tmp.fermions.effs[0][5])
+			start = start.mul(getEnRewardEff(0))
+		}
+		if (name=="bh_condenser" || name=="gamma_ray") {
+			start = start.mul(getEnRewardEff(0))
 		}
 	}
 	if (name=='supernova') {

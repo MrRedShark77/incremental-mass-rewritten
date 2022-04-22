@@ -52,6 +52,7 @@ const TABS = {
             { id: "Quantum Milestones" },
             { id: "Auto-Quantum", unl() { return tmp.qu.mil_reached[6] } },
             { id: "Primordium", unl() { return PRIM.unl() } },
+            { id: "Entropy", unl() { return player.qu.en.unl } },
         ],
     },
 }

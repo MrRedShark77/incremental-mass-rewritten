@@ -158,7 +158,7 @@ const QUANTUM = {
 function quUnl() { return player.qu.times.gte(1) }
 
 function getQUSave() {
-    return {
+    let s = {
         reached: false,
         auto: {
             enabled: false,
@@ -185,7 +185,17 @@ function getQUSave() {
             mods: [0,0,0,0,0,0,0,0],
             active: false,
         },
+
+        en: {
+            unl: false,
+            amt: E(0),
+            eth: [false,E(0),E(0),0],
+            hr: [false,E(0),E(0),0],
+            rewards: [],
+        },
     }
+    for (let x = 0; x < ENTROPY.rewards.length; x++) s.en.rewards.push(E(0))
+    return s
 }
 
 function calcQuantum(dt, dt_offline) {
@@ -212,10 +222,18 @@ function calcQuantum(dt, dt_offline) {
         }
     }
 
+    if (player.mass.gte(mlt(1.25e7)) && !player.qu.en.unl) {
+        player.qu.en.unl = true
+        addPopup(POPUP_GROUPS.en)
+    }
+
     if (hasTree("qu_qol1")) for (let x = 0; x < tmp.supernova.auto_tree.length; x++) TREE_UPGS.buy(tmp.supernova.auto_tree[x], true)
+
+    calcEntropy(dt, dt_offline)
 }
 
 function updateQuantumTemp() {
+    updateEntropyTemp()
     updateQCTemp()
     updatePrimordiumTemp()
     updateChromaTemp()
@@ -272,6 +290,7 @@ function updateQuantumHTML() {
             tmp.el.auto_qu_res.setTxt(player.qu.auto.mode==0?format(tmp.qu.auto_input,0):formatTime(tmp.qu.auto_input,1)+"s")
         }
         if (tmp.stab[6] == 3) updatePrimordiumHTML()
+        if (tmp.stab[6] == 4) updateEntropyHTML()
     }
 }
 
@@ -326,4 +345,5 @@ function setupQuantumHTML() {
     new_table.setHTML(html)
 
     setupQCHTML()
+    setupEntropyHTML()
 }

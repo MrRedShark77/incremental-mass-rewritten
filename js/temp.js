@@ -65,6 +65,13 @@ function resetTemp() {
             eff: [],
         },
 
+        en: {
+            gain: {},
+            eff: {},
+            rewards: [],
+            rewards_eff: [],
+        },
+
         prevSave: "",
     }
     for (let j = 0; j < TREE_TAB.length; j++) {

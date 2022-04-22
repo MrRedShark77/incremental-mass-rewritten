@@ -295,6 +295,7 @@ const FORMS = {
                     if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
                     pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                     pow = pow.mul(tmp.prim.eff[2][1])
+                    pow = pow.mul(getEnRewardEff(3)[1])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
@@ -915,7 +916,7 @@ function format(ex, acc=4, max=12, type=player.options.notation) {
     let e = ex.log10().floor()
     switch (type) {
         case "sc":
-            if (ex.log10().lt(Math.min(-acc,0)) && acc > 0) {
+            if (ex.log10().lt(Math.min(-acc,0)) && acc > 1) {
                 let e = ex.log10().ceil()
                 let m = ex.div(e.eq(-1)?E(0.1):E(10).pow(e))
                 let be = e.mul(-1).max(1).log10().gte(9)
@@ -1005,6 +1006,8 @@ function formatTime(ex,acc=2,type="s") {
 }
 
 function formatReduction(ex) { ex = E(ex); return format(E(1).sub(ex).mul(100))+"%" }
+
+function formatPercent(ex) { ex = E(ex); return format(ex.mul(100))+"%" }
 
 function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
 

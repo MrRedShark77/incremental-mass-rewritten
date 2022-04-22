@@ -266,8 +266,8 @@ function updateRanksTemp() {
 
     fp = E(1)
     pow = 1.5
-    tmp.ranks.pent.req = player.ranks.pent.div(fp).pow(pow).add(15).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).gte(0)?player.ranks.tetr.sub(15).max(0).root(pow).mul(fp).add(1).floor():E(0);
+    tmp.ranks.pent.req = player.ranks.pent.scaleEvery('pent').div(fp).pow(pow).add(15).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).gte(0)?player.ranks.tetr.sub(15).max(0).root(pow).mul(fp).scaleEvery('pent',true).add(1).floor():E(0);
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

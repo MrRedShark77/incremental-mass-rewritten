@@ -22,6 +22,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
     
+    <script src="js/quantum/entropy.js"></script>
     <script src="js/quantum/qc.js"></script>
     <script src="js/quantum/primordium.js"></script>
     <script src="js/quantum/chroma.js"></script>
@@ -374,6 +375,21 @@
                 <button class="btn" onclick="giveRandomPParticles(1,true)">Give all random Particles</button>
                 <button class="btn" onclick="respecPParticles()">Respec all Particles</button><br><br>
                 <div id="primordium_table"></div>
+            </div><div id="stab_frame6_4">
+                <div class="table_center" style="min-height: 250px">
+                    <div style="width: 33.3%; min-width: 300px;">
+                        Your frequency is <span id="enEva1">0</span> Hz<br><br>
+                        <button id="evaBtn1" class="btn half_full" onclick="ENTROPY.switch(0)">Evaporate your frequency to gain Enthalpy</button><br><br>
+                        You have <span id="enAmt1">0</span> Enthalpy, which increases Entropy gain to <span id="enEff1">0</span>
+                    </div><div style="width: 33.3%; min-width: 300px;">
+                        You have <span id="enAmt2">0</span> Entropy<br><span id="enGain"></span>
+                    </div><div style="width: 33.3%; min-width: 300px;">
+                        You have <span id="enEva2">0 g</span> of Black Hole<br><br>
+                        <button id="evaBtn2" class="btn half_full" onclick="ENTROPY.switch(1)">Evaporate your mass of Black Hole to gain Hawking Radiation</button><br><br>
+                        You have <span id="enAmt3">0</span> Hawking Radiation, which increases Entropy cap to <span id="enEff2">0</span>
+                    </div>
+                </div><br>
+                <div id="en_table" class="table_center"></div>
             </div>
         </div><div id="tab_frame7">
             <button class="btn" onclick="save()">Save</button>
@@ -391,7 +407,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.5.1.3 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5.2 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>
