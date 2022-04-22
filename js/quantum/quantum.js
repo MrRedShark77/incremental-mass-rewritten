@@ -222,7 +222,7 @@ function calcQuantum(dt, dt_offline) {
         }
     }
 
-    if (player.mass.gte(mlt(1.25e7)) && !player.qu.en.unl) {
+    if (player.mass.gte(mlt(7.5e6)) && !player.qu.en.unl) {
         player.qu.en.unl = true
         addPopup(POPUP_GROUPS.en)
     }

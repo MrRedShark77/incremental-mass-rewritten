@@ -130,7 +130,7 @@ const POPUP_GROUPS = {
     },
     en: {
         html() { return `
-            Congratulations!<br><br>You have reached ${formatMass(mlt(1.25e7))} of mass!<br><br>
+            Congratulations!<br><br>You have reached ${formatMass(mlt(7.5e6))} of mass!<br><br>
             <b>Entropy is unlocked in Quantum tab!</b>
         `},
         width: 400,
