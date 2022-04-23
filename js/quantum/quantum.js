@@ -199,7 +199,7 @@ function getQUSave() {
 }
 
 function calcQuantum(dt, dt_offline) {
-    if (player.mass.gte(mlt(1e4)) && !player.qu.reached) {
+    if (player.mass.gte(mlt(1e4)) && !player.qu.reached && player.chal.comps[12].gte(1)) {
         player.qu.reached = true
         addPopup(POPUP_GROUPS.qu)
     }
