@@ -26,7 +26,7 @@ const SCALE_START = {
 	ultra: {
 		rank: E(600),
 		tier: E(7500),
-		//massUpg: E(5e9),
+		massUpg: E(1e11),
 		tickspeed: E(700),
 		bh_condenser: E(750),
 		gamma_ray: E(800),
@@ -69,7 +69,7 @@ const SCALE_POWER= {
 	},
 	ultra: {
 		rank: 4,
-		//massUpg: 10,
+		massUpg: 10,
 		tickspeed: 7,
 		bh_condenser: 4,
 		gamma_ray: 6,

@@ -646,7 +646,7 @@ const TREE_UPGS = {
             qf: true,
             branch: ['qc1'],
             desc: `Chromas are affected by Quantum Shard’s effect.`,
-            cost: E(1e15),
+            cost: E(1e21),
             effect() {
                 let x = tmp.qu.qc_s_eff.max(1)
                 return x
