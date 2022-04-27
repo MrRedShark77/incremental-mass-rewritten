@@ -90,6 +90,7 @@ function saveQCPreset(x) {
 }
 
 function loadQCPreset(x) {
+    if (QCs.active()) return
     player.qu.qc.mods = player.qu.qc.presets[x].mods
     addNotify("Preset Loaded to Modifiers")
     updateQCModPresets()

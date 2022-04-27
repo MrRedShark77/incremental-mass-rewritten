@@ -77,6 +77,17 @@ const ENTROPY = {
                 return [x,y]
             },
             desc(x) { return `Tickspeed Power gives <b>^${x[0].format(2)}</b> boost to BHC & Cosmic Ray Powers.<br>Currently: <b>${x[1].format()}x</b>` },
+        },{
+            title: "Entropic Booster",
+
+            start: E(250000),
+            inc: E(2),
+
+            eff(i) {
+                let x = i.div(20).add(1)
+                return x
+            },
+            desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray.` },
         },
 
         /*

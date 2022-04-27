@@ -94,6 +94,7 @@ const ATOM = {
         },
         bonus() {
             let x = tmp.fermions.effs[0][0]||E(0)
+            x = x.mul(getEnRewardEff(4))
             return x
         },
     },

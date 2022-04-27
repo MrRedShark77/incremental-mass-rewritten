@@ -128,6 +128,7 @@ const FORMS = {
             t = t.mul(tmp.radiation.bs.eff[1])
             let bonus = E(0)
             if (player.atom.unl) bonus = bonus.add(tmp.atom.atomicEff)
+            bonus = bonus.mul(getEnRewardEff(4))
             let step = E(1.5)
                 step = step.add(tmp.chal.eff[6])
                 step = step.add(tmp.chal.eff[2])
@@ -304,6 +305,7 @@ const FORMS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.bh.includes(15)) x = x.add(tmp.upgs.main?tmp.upgs.main[2][15].effect:E(0))
+                x = x.mul(getEnRewardEff(4))
                 return x
             },
         },
@@ -411,6 +413,7 @@ const UPGS = {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(1)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][1].effect:E(0))
                 if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.mass[2].bonus)
+                x = x.mul(getEnRewardEff(4))
                 return x
             },
         },
@@ -436,6 +439,7 @@ const UPGS = {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][2].effect:E(0))
                 if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.mass[3].bonus)
+                x = x.mul(getEnRewardEff(4))
                 return x
             },
         },
@@ -477,6 +481,7 @@ const UPGS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:0)
+                x = x.mul(getEnRewardEff(4))
                 return x
             },
         },
