@@ -68,69 +68,103 @@ const FORMATS = {
         }
     },
     elemental: {
-        config: {
-            element_lists: [["H"],
-            ["He", "Li", "Be", "B", "C", "N", "O", "F"],
-            ["Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl"],
-            [
-              "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe",
-              "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br"
-            ],
-            [
-              "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru",
-              "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I"
-            ],
-            [
-              "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm",
-              "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm",
-              "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir",
-              "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At"
-            ],
-            [
-              "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np",
-              "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md",
-              "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
-              "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts"
-            ],
-            ["Og"]],
-        },
-        getAbbreviationAndValue(x) {
-            const abbreviationListIndexUnfloored = Math.log(x) / Math.log(118);
-            const abbreviationListIndex = Math.floor(abbreviationListIndexUnfloored);
-            const abbreviationList = this.config.element_lists[Math.floor(abbreviationListIndex)];
-            const abbreviationSublistIndex = Math.floor(
-              (abbreviationListIndexUnfloored - abbreviationListIndex) * abbreviationList.length);
-            const abbreviation = abbreviationList[abbreviationSublistIndex];
-            const value = 118 ** (abbreviationListIndex + abbreviationSublistIndex / abbreviationList.length);
-            return [abbreviation, value];
-        },
-        formatElementalPart(abbreviation, n) {
-            if (n === 1) {
-              return abbreviation;
-            }
-            return `${n} ${abbreviation}`;
-        },
-        format(value,acc) {
-            let log = value.log(118);
-            const parts = [];
-            while (log >= 1 && parts.length < 4) {
-              const [abbreviation, value] = this.getAbbreviationAndValue(log);
-              const n = Math.floor(log / value);
-              log -= n * value;
-              parts.unshift([abbreviation, n]);
-            }
-            if (parts.length >= 4) {
-              return parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ");
-            }
-            const formattedMantissa = Decimal.pow(118, log).toFixed(acc);
-            if (parts.length === 0) {
-              return formattedMantissa;
-            }
-            if (parts.length === 1) {
-              return `${formattedMantissa} × ${this.formatElementalPart(parts[0][0], parts[0][1])}`;
-            }
-            return `${formattedMantissa} × (${parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ")})`;
-        },
+      config: {
+        element_lists: [["H"],
+        ["He", "Li", "Be", "B", "C", "N", "O", "F"],
+        ["Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl"],
+        [
+          "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe",
+          "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br"
+        ],
+        [
+          "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru",
+          "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I"
+        ],
+        [
+          "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm",
+          "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm",
+          "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir",
+          "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At"
+        ],
+        [
+          "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np",
+          "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md",
+          "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
+          "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts"
+        ],
+        ["Og"]],
+      },
+      getOffset(group) {
+        if (group == 1) return 1
+        let n = Math.floor(group / 2)
+        let r = 2 * n * (n + 1) * (2 * n + 1) / 3 - 2
+        if (group % 2 == 1) r += 2 * Math.pow(n + 1, 2)
+        return r
+      },
+      getAbbreviation(group, progress) {
+        const length = this.abbreviationLength(group)
+        const elemRel = Math.floor(length * progress)
+  
+        const elem = elemRel + this.getOffset(group)
+  
+        return elem > 118 ? this.beyondOg(elem) : this.config.element_lists[group - 1][elemRel]
+      },
+      beyondOg(x) {
+        let log = Math.floor(Math.log10(x))
+        let list = ["n", "u", "b", "t", "q", "p", "h", "s", "o", "e"]
+        let r = ""
+        for (var i = log; i >= 0; i--) {
+          let n = Math.floor(x / Math.pow(10, i)) % 10
+          if (r == "") r = list[n].toUpperCase()
+          else r += list[n]
+        }
+        return r
+      },
+      abbreviationLength(group) {
+        return group == 1 ? 1 : Math.pow(Math.floor(group / 2) + 1, 2) * 2
+      },
+      getAbbreviationAndValue(x) {
+        const abbreviationListUnfloored = x.log(118).toNumber()
+        const abbreviationListIndex = Math.floor(abbreviationListUnfloored) + 1
+        const abbreviationLength = this.abbreviationLength(abbreviationListIndex)
+        const abbreviationProgress = abbreviationListUnfloored - abbreviationListIndex + 1
+        const abbreviationIndex = Math.floor(abbreviationProgress * abbreviationLength)
+        const abbreviation = this.getAbbreviation(abbreviationListIndex, abbreviationProgress)
+        const value = E(118).pow(abbreviationListIndex + abbreviationIndex / abbreviationLength - 1)
+        return [abbreviation, value];
+      },
+      formatElementalPart(abbreviation, n) {
+        if (n.eq(1)) {
+          return abbreviation;
+        }
+        return `${n} ${abbreviation}`;
+      },
+      format(value,acc) {
+        if (value.gt(E(118).pow(E(118).pow(E(118).pow(4))))) return "e"+this.format(value.log10(),acc)
+  
+        let log = value.log(118)
+        let slog = log.log(118)
+        let sslog = slog.log(118).toNumber()
+        let max = Math.max(4 - sslog * 2, 1)
+        const parts = [];
+        while (log.gte(1) && parts.length < max) {
+          const [abbreviation, value] = this.getAbbreviationAndValue(log)
+          const n = log.div(value).floor()
+          log = log.sub(n.mul(value))
+          parts.unshift([abbreviation, n])
+        }
+        if (parts.length >= max) {
+          return parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ");
+        }
+        const formattedMantissa = E(118).pow(log).toFixed(parts.length === 1 ? 3 : acc);
+        if (parts.length === 0) {
+          return formattedMantissa;
+        }
+        if (parts.length === 1) {
+          return `${formattedMantissa} × ${this.formatElementalPart(parts[0][0], parts[0][1])}`;
+        }
+        return `${formattedMantissa} × (${parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ")})`;
+      },
     },
     old_sc: {
       format(ex, acc) {

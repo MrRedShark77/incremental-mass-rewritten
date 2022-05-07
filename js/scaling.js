@@ -89,7 +89,8 @@ const SCALE_FP = {
 	tickspeed() { return [1,1,1,tmp.tickspeedFP] },
 }
 
-const QCM8_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
+const QCM8_SCALES = ['rank','tier','tetr','pent','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
+const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta'] // super, hyper, ultra, meta
 const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta']
 
@@ -324,5 +325,6 @@ function getScalingPower(type, name) {
 		}
 	}
 	if (QCs.active() && QCM8_SCALES.includes(name)) power = power.mul(tmp.qu.qc_eff[7][1])
+	if (PreQ_SCALES.includes(name) && type != "meta") power = power.mul(getEnRewardEff(5))
 	return power.max(type=="meta"?0.5:0)
 }

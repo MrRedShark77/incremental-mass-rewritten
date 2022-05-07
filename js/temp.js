@@ -131,24 +131,25 @@ function updateRagePowerTemp() {
 
 function updateBlackHoleTemp() {
     if (!tmp.bh) tmp.bh = {}
-    tmp.bh.dm_gain = FORMS.bh.DM_gain()
-    tmp.bh.fSoftStart = FORMS.bh.fSoftStart()
-    tmp.bh.fSoftPower = FORMS.bh.fSoftPower()
-    tmp.bh.f = FORMS.bh.f()
-    tmp.bh.massSoftPower = FORMS.bh.massSoftPower()
-    tmp.bh.massSoftGain = FORMS.bh.massSoftGain()
-    tmp.bh.massPowerGain = FORMS.bh.massPowerGain()
-    tmp.bh.mass_gain = FORMS.bh.massGain()
-    tmp.bh.dm_can = tmp.bh.dm_gain.gte(1)
-    tmp.bh.effect = FORMS.bh.effect()
+    let t = tmp.bh
+    t.dm_gain = FORMS.bh.DM_gain()
+    t.fSoftStart = FORMS.bh.fSoftStart()
+    t.fSoftPower = FORMS.bh.fSoftPower()
+    t.f = FORMS.bh.f()
+    t.massSoftPower = FORMS.bh.massSoftPower()
+    t.massSoftGain = FORMS.bh.massSoftGain()
+    t.massPowerGain = FORMS.bh.massPowerGain()
+    t.mass_gain = FORMS.bh.massGain()
+    t.dm_can = t.dm_gain.gte(1)
+    t.effect = FORMS.bh.effect()
 
     let fp = tmp.fermions.effs[1][5]
 
-    tmp.bh.condenser_bonus = FORMS.bh.condenser.bonus()
-    tmp.bh.condenser_cost = E(1.75).pow(player.bh.condenser.scaleEvery('bh_condenser',false,[1,1,1,fp])).floor()
-    tmp.bh.condenser_bulk = E(0)
-    if (player.bh.dm.gte(1)) tmp.bh.condenser_bulk = player.bh.dm.max(1).log(1.75).scaleEvery('bh_condenser',true,[1,1,1,fp]).add(1).floor()
-    tmp.bh.condenser_eff = FORMS.bh.condenser.effect()
+    t.condenser_bonus = FORMS.bh.condenser.bonus()
+    t.condenser_cost = E(1.75).pow(player.bh.condenser.scaleEvery('bh_condenser',false,[1,1,1,fp])).floor()
+    t.condenser_bulk = E(0)
+    if (player.bh.dm.gte(1)) t.condenser_bulk = player.bh.dm.max(1).log(1.75).scaleEvery('bh_condenser',true,[1,1,1,fp]).add(1).floor()
+    t.condenser_eff = FORMS.bh.condenser.effect()
 }
 
 function updateTemp() {

@@ -533,6 +533,10 @@ const ELEMENTS = {
             desc: `Stronger’s Power softcap starts 3x later, is 10% weaker.`,
             cost: E('e7.5e15'),
         },
+        {
+            desc: `Tickspeed’s Power softcap starts ^2 later, scales 50% weaker.`,
+            cost: E('e2e16'),
+        },
     ],
     /*
     {
@@ -562,7 +566,7 @@ const ELEMENTS = {
             if (tmp.radiation.unl) u += 10
         }
         if (PRIM.unl()) u += 3
-        if (hasTree('unl3')) u += 2
+        if (hasTree('unl3')) u += 3
 
         return u
     },

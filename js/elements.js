@@ -254,7 +254,7 @@ function updateTickspeedHTML() {
 		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
 		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
 		tmp.el.tickspeed_step.setHTML((tmp.tickspeedEffect.step.gte(10)?format(tmp.tickspeedEffect.step)+"x":format(tmp.tickspeedEffect.step.sub(1).mul(100))+"%")
-		+(tmp.tickspeedEffect.step.gte(1e50)?" <span class='soft'>(softcapped)</span>":""))
+		+(tmp.tickspeedEffect.step.gte(tmp.tickspeedEffect.ss)?" <span class='soft'>(softcapped)</span>":""))
 		tmp.el.tickspeed_eff.setTxt(format(tmp.tickspeedEffect.eff))
 
 		tmp.el.tickspeed_auto.setDisplay(FORMS.tickspeed.autoUnl())

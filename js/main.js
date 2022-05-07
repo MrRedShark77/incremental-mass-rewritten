@@ -141,12 +141,17 @@ const FORMS = {
             if (hasTree("t1")) step = step.pow(1.15)
 
             let ss = E(1e50).mul(tmp.radiation.bs.eff[13])
-            step = step.softcap(ss,0.1,0)
+            let p = 0.1
+            if (hasElement(86)) {
+                ss = ss.pow(2)
+                p **= 0.5
+            }
+            step = step.softcap(ss,p,0)
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
             if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
-            return {step: step, eff: eff, bonus: bonus}
+            return {step: step, eff: eff, bonus: bonus, ss: ss}
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
         autoSwitch() { player.autoTickspeed = !player.autoTickspeed },
@@ -338,14 +343,15 @@ const UPGS = {
         temp() {
             if (!tmp.upgs.mass) tmp.upgs.mass = {}
             for (let x = this.cols; x >= 1; x--) {
-                if (!tmp.upgs.mass[x]) tmp.upgs.mass[x] = {}
+                let d = tmp.upgs.mass
+                if (!d[x]) d[x] = {}
                 let data = this.getData(x)
-                tmp.upgs.mass[x].cost = data.cost
-                tmp.upgs.mass[x].bulk = data.bulk
+                d[x].cost = data.cost
+                d[x].bulk = data.bulk
                 
-                tmp.upgs.mass[x].bonus = this[x].bonus?this[x].bonus():E(0)
-                tmp.upgs.mass[x].eff = this[x].effect(player.massUpg[x]||E(0))
-                tmp.upgs.mass[x].effDesc = this[x].effDesc(tmp.upgs.mass[x].eff)
+                d[x].bonus = this[x].bonus?this[x].bonus():E(0)
+                d[x].eff = this[x].effect(player.massUpg[x]||E(0))
+                d[x].effDesc = this[x].effDesc(d[x].eff)
             }
         },
         autoSwitch(x) {
@@ -360,11 +366,14 @@ const UPGS = {
             }
         },
         buyMax(x) {
-            let bulk = tmp.upgs.mass[x].bulk
-            let cost = tmp.upgs.mass[x].cost
+            let d = tmp.upgs.mass[x]
+            let bulk = d.bulk
+            let cost = d.cost
             if (player.mass.gte(cost)) {
-                if (!player.massUpg[x]) player.massUpg[x] = E(0)
-                player.massUpg[x] = player.massUpg[x].max(bulk.floor().max(player.massUpg[x].plus(1)))
+                let m = player.massUpg[x]
+                if (!m) m = E(0)
+                m = m.max(bulk.floor().max(m.plus(1)))
+                player.massUpg[x] = m
                 if (!player.mainUpg.bh.includes(1)) player.mass = player.mass.sub(cost)
             }
         },
@@ -469,7 +478,8 @@ const UPGS = {
                     ss2 = ss2.mul(3)
                 }
                 let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,0.5,0)
-                ret = ret.mul(tmp.prim.eff[0]).softcap(ss2,sp2,0)
+                ret = ret.mul(tmp.prim.eff[0])
+                if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
@@ -491,7 +501,10 @@ const UPGS = {
             if (!tmp.upgs.main) tmp.upgs.main = {}
             for (let x = 1; x <= UPGS.main.cols; x++) {
                 if (!tmp.upgs.main[x]) tmp.upgs.main[x] = {}
-                for (let y = 1; y <= UPGS.main[x].lens; y++) if (UPGS.main[x][y].effDesc) tmp.upgs.main[x][y] = { effect: UPGS.main[x][y].effect(), effDesc: UPGS.main[x][y].effDesc() }
+                for (let y = 1; y <= UPGS.main[x].lens; y++) {
+                    let u = UPGS.main[x][y]
+                    if (u.effDesc) tmp.upgs.main[x][y] = { effect: u.effect(), effDesc: u.effDesc() }
+                }
             }
         },
         ids: [null, 'rp', 'bh', 'atom'],
@@ -993,8 +1006,14 @@ function formatGain(amt, gain, isMass=false) {
     let f = isMass?formatMass:format
     let next = amt.add(gain)
     let rate
-    if (next.div(amt).gte(10) && amt.gte(1e100)) {
-        let ooms = next.div(amt).log10().mul(20)
+    let ooms = next.max(1).log10().div(amt.max(1).log10())
+    if (ooms.gte(10) && amt.gte('ee10') && !isMass) {
+        ooms = ooms.log10().mul(20)
+        rate = "(+"+format(ooms) + " OoMs^2/sec)"
+    }
+    ooms = next.div(amt)
+    if (ooms.gte(10) && amt.gte(1e100)) {
+        ooms = ooms.log10().mul(20)
         if (isMass && amt.gte(mlt(1)) && ooms.gte(1e6)) rate = "(+"+format(ooms.div(1e9)) + " mlt/sec)"
         else rate = "(+"+format(ooms) + " OoMs/sec)"
     }

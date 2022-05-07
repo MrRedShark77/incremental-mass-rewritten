@@ -386,18 +386,20 @@ function setupFermionsHTML() {
 }
 
 function updateFermionsTemp() {
-    tmp.fermions.ch = player.supernova.fermions.choosed == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed[0]),Number(player.supernova.fermions.choosed[1])]
-    tmp.fermions.fp = FERMIONS.fp()
+    let tf = tmp.fermions
+
+    tf.ch = player.supernova.fermions.choosed == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed[0]),Number(player.supernova.fermions.choosed[1])]
+    tf.fp = FERMIONS.fp()
     for (i = 0; i < 2; i++) {
-        tmp.fermions.gains[i] = FERMIONS.gain(i)
+        tf.gains[i] = FERMIONS.gain(i)
 
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]
 
-            tmp.fermions.bonuses[i][x] = FERMIONS.bonus(i,x)
-            tmp.fermions.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0
-            tmp.fermions.tiers[i][x] = f.calcTier().min(tmp.fermions.maxTier[i][x])
-            tmp.fermions.effs[i][x] = f.eff(player.supernova.fermions.points[i], (FERMIONS.onActive("04") && i == 0) || (FERMIONS.onActive("14") && i == 1) ? E(0) : player.supernova.fermions.tiers[i][x].add(tmp.fermions.bonuses[i][x]).mul(i==1?tmp.radiation.bs.eff[16]:1).mul(i==0?tmp.radiation.bs.eff[19]:1))
+            tf.bonuses[i][x] = FERMIONS.bonus(i,x)
+            tf.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0
+            tf.tiers[i][x] = f.calcTier().min(tf.maxTier[i][x])
+            tf.effs[i][x] = f.eff(player.supernova.fermions.points[i], (FERMIONS.onActive("04") && i == 0) || (FERMIONS.onActive("14") && i == 1) ? E(0) : player.supernova.fermions.tiers[i][x].add(tmp.fermions.bonuses[i][x]).mul(i==1?tmp.radiation.bs.eff[16]:1).mul(i==0?tmp.radiation.bs.eff[19]:1))
         }
     }
 }

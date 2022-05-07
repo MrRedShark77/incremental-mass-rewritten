@@ -102,6 +102,7 @@ const RANKS = {
             '4': "Meta-Tickspeeds start later based on Supernovas.",
             '5': "Meta-Ranks start later based on Pent.",
             '8': "Mass gain softcap^4 starts later based on Pent.",
+            '15': "remove 3rd softcap of Stronger's effect.",
         },
     },
     effect: {

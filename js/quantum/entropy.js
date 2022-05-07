@@ -88,6 +88,17 @@ const ENTROPY = {
                 return x
             },
             desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray.` },
+        },{
+            title: "Entropic Scaling",
+
+            start: E(1e7),
+            inc: E(10),
+
+            eff(i) {
+                let x = i.root(2).div(10).add(1).pow(-1)
+                return x
+            },
+            desc(x) { return `All pre-Supernova scaling is ${formatReduction(x)} weaker before Meta scaling (not including Pent).` },
         },
 
         /*
