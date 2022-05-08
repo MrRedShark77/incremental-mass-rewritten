@@ -85,9 +85,9 @@ const ENTROPY = {
 
             eff(i) {
                 let x = i.div(20).add(1)
-                return x
+                return x.softcap(2,0.5,0)
             },
-            desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray.` },
+            desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray. ${x.softcapHTML(2)}` },
         },{
             title: "Entropic Scaling",
 
@@ -98,7 +98,7 @@ const ENTROPY = {
                 let x = i.root(2).div(10).add(1).pow(-1)
                 return x
             },
-            desc(x) { return `All pre-Supernova scaling is ${formatReduction(x)} weaker before Meta scaling (not including Pent).` },
+            desc(x) { return `All pre-Supernova scaling is <b>${formatReduction(x)}</b> weaker before Meta scaling (not including Pent).` },
         },
 
         /*

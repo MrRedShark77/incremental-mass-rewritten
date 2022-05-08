@@ -14,13 +14,14 @@ const QUANTUM = {
     gainTimes() {
         let x = E(1)
         if (hasTree("qu7")) x = x.mul(treeEff("qu7"))
+        if (hasTree("qu9")) x = x.mul(treeEff("qu9"))
         return x
     },
     enter(auto=false,force=false) {
         if (tmp.qu.gain.gte(1) || force) {
             if (player.confirms.qu&&!auto&&!force) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
             if (QCs.active()) {
-                player.qu.qc.shard = tmp.qu.qc_s
+                player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
                 player.qu.qc.active = false
             }
             if (player.qu.times.gte(10) || force) {
@@ -259,8 +260,13 @@ function updateQuantumTemp() {
 }
 
 function updateQuantumHTML() {
-    tmp.el.qu_div.setDisplay(quUnl() || player.chal.comps[12].gte(1))
-    tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>(+"+format(tmp.qu.gain,0)+")")
+    let unl = quUnl() || player.chal.comps[12].gte(1)
+    tmp.el.qu_div.setDisplay(unl)
+    if (unl) tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>(+"+format(tmp.qu.gain,0)+")")
+
+    unl = quUnl()
+    tmp.el.gs1_div.setDisplay(unl)
+    if (unl) tmp.el.preQGSpeed.setHTML(formatMult(tmp.preQUGlobalSpeed))
 
     if (tmp.tab == 0 && tmp.stab[0] == 4) {
         tmp.el.bpAmt.setTxt(format(player.qu.bp,1)+" "+formatGain(player.qu.bp,tmp.qu.bpGain))

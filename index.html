@@ -153,7 +153,7 @@
         <div style='height: 5px'></div>
         <div style="height: 160px">
             <div id="chal_upper" style='height: 40px'></div>
-            <div class="table_left" style="overflow-y: auto;">
+            <div id="table_res_main" class="table_left">
                 <div style="width: 100px;"></div>
                 <div id="table_resources" class="top_text">
                     <div class="resources sml">
@@ -175,14 +175,17 @@
                         <div tooltip="Quark" t-size="small"><img class="res_img" src="images/quark.png"></div>
                         <span style="margin-left: 5px; text-align: left;" id="quarkAmt">X</span>
                     </div><div class="resources sml green" id="md_div">
-                        <div tooltip="Mass Dilation" t-size="small"><img class="res_img" class="res_img" src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div tooltip="Mass Dilation" t-size="small"><img class="res_img" src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="md_massAmt">X</span>
                     </div> <div class="resources sml magenta" id="sn_div">
                         <div tooltip="Supernova" t-size="small"><img class="res_img" src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
                     </div><div class="resources sml light_green" id="qu_div">
-                        <div tooltip="Quantum Foam" t-size="small"><img class="res_img" class="res_img" src="images/qu.png" onclick="QUANTUM.enter()" onmousemove="FORMS.reset_msg.set('qu')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div tooltip="Quantum Foam" t-size="small"><img class="res_img" src="images/qu.png" onclick="QUANTUM.enter()" onmousemove="FORMS.reset_msg.set('qu')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="quAmt">X</span>
+                    </div><div class="resources sml orange" id="gs1_div">
+                        <div tooltip="Pre-Quantum Global Speed" t-size="medium"><img class="res_img" src="images/preQGSpeed.png"></div>
+                        <span style="margin-left: 5px; text-align: left;" id="preQGSpeed">X</span>
                     </div>
                 </div>
             </div>

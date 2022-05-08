@@ -108,8 +108,8 @@ function deleteQCPreset(x) {
         let represets = []
         for (let y = 0; y < player.qu.qc.presets.length; y++) if (x != y) represets.push(player.qu.qc.presets[y])
         player.qu.qc.presets = represets
+        addNotify("Preset Deleted")
     }
-    addNotify("Preset Deleted")
     updateQCModPresets()
 }
 
@@ -162,15 +162,19 @@ function updateQCTemp() {
     tmp.qu.qc_s_eff = tmp.qu.qc_s_b.pow(player.qu.qc.shard)
 
     let s = 0
+    let bs = 0
     for (let x = 0; x < QCs_len; x++) {
-        s += QCs.getMod(x)
-        tmp.qu.qc_eff[x] = QCs.ctn[x].eff(QCs.getMod(x))
+        let m = QCs.getMod(x)
+        s += m
+        tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m)
+        if (hasTree('qc2') && m >= 10) bs++
     }
     tmp.qu.qc_s = s
+    tmp.qu.qc_s_bouns = bs
 }
 
 function updateQCHTML() {
-    tmp.el.qc_shard.setTxt(player.qu.qc.shard+(tmp.qu.qc_s!=player.qu.qc.shard?(` (${tmp.qu.qc_s>=player.qu.qc.shard?"+":""}${tmp.qu.qc_s-player.qu.qc.shard})`):""))
+    tmp.el.qc_shard.setTxt(player.qu.qc.shard+(tmp.qu.qc_s+tmp.qu.qc_s_bouns!=player.qu.qc.shard?(` (${tmp.qu.qc_s+tmp.qu.qc_s_bouns>=player.qu.qc.shard?"+":""}${tmp.qu.qc_s+tmp.qu.qc_s_bouns-player.qu.qc.shard})`):""))
     tmp.el.qc_shard_b.setTxt(tmp.qu.qc_s_b.format(1))
     tmp.el.qc_shard_eff.setTxt(tmp.qu.qc_s_eff.format(1))
 

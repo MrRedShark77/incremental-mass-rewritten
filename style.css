@@ -192,6 +192,10 @@ button {
 	color: red;
 }
 
+.orange {
+	color: orange;
+}
+
 .yellow {
 	color: yellow;
 }
@@ -249,6 +253,18 @@ button {
 	min-height: 110px;
 	max-height: 115px;
 	margin: 5px 0px;
+	padding-top: 40px;
+}
+
+#chal_upper {
+	width: 100%;
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0%);
+}
+
+#table_res_main {
+	overflow-y: auto;
 }
 
 .resources {

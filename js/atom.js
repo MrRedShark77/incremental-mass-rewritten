@@ -88,6 +88,7 @@ const ATOM = {
             pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
             pow = pow.mul(tmp.prim.eff[3][1])
             pow = pow.mul(getEnRewardEff(3)[1])
+            if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
             if (hasTree("gr2")) pow = pow.pow(1.25)
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
             return {pow: pow, eff: eff}

@@ -302,6 +302,7 @@ const FORMS = {
                     pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                     pow = pow.mul(tmp.prim.eff[2][1])
                     pow = pow.mul(getEnRewardEff(3)[1])
+                    if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
@@ -1032,6 +1033,8 @@ function formatTime(ex,acc=2,type="s") {
 function formatReduction(ex) { ex = E(ex); return format(E(1).sub(ex).mul(100))+"%" }
 
 function formatPercent(ex) { ex = E(ex); return format(ex.mul(100))+"%" }
+
+function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
 
 function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
 
