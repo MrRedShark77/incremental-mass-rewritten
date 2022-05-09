@@ -176,14 +176,14 @@ function calcEntropy(dt, dt_offline) {
     if (player.qu.en.eth[0]) {
         player.qu.en.eth[3] += dt
         player.qu.en.eth[1] = player.qu.en.eth[1].add(tmp.en.gain.eth.mul(dt))
-        let s = player.supernova.radiation.hz.div(player.supernova.radiation.hz.pow(dt).pow(player.qu.en.eth[3]**(2/3))).sub(1)
+        let s = player.supernova.radiation.hz.div(player.supernova.radiation.hz.max(1).pow(dt).pow(player.qu.en.eth[3]**(2/3))).sub(1)
         if (s.lt(1)) ENTROPY.switch(0)
         else player.supernova.radiation.hz = s
     }
     if (player.qu.en.hr[0]) {
         player.qu.en.hr[3] += dt
         player.qu.en.hr[1] = player.qu.en.hr[1].add(tmp.en.gain.hr.mul(dt))
-        let s = player.bh.mass.div(player.bh.mass.pow(dt).pow(player.qu.en.hr[3]**(2/3))).sub(1)
+        let s = player.bh.mass.div(player.bh.mass.max(1).pow(dt).pow(player.qu.en.hr[3]**(2/3))).sub(1)
         if (s.lt(1)) ENTROPY.switch(1)
         else player.bh.mass = s
     }
