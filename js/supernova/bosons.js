@@ -66,6 +66,7 @@ const BOSONS = {
         },
         hb(x) {
             let a = x.add(1).log10().max(0).root(2).mul(tmp.prim.eff[4])
+            if (hasTree("qu10")) a = a.mul(treeEff('qu10'))
             return [a]
         },
     },
@@ -104,7 +105,7 @@ const BOSONS = {
                 desc: "All-Star resources gain is boosted by Photon.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(1e5) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1e5) ? x.div(1e5).max(1).log(5).root(1.25).add(1).floor() : E(0) },
-                effect(x) { return player.supernova.bosons.photon.add(1).log10().add(1).pow(x.pow(tmp.fermions.effs[0][3]).mul(0.5)).softcap("ee11",0.8,2).softcap("e4e14",0.75,2) },
+                effect(x) { return player.supernova.bosons.photon.add(1).log10().add(1).pow(x.softcap(8000,0.1,0).pow(tmp.fermions.effs[0][3]).mul(0.5)).softcap("ee11",0.8,2).softcap("e4e14",0.75,2).softcap("e4e15",0.5,2) },
                 effDesc(x) { return format(x)+"x" },
             },
         ],

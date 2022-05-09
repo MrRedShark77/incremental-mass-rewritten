@@ -24,25 +24,25 @@ const TREE_IDS = [
         ['qol5','qol6','qol7','','','qu_qol7','',''],
         ['chal4','chal7a'],
         ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
-        ['prim1','qu4','prim2'],
+        ['prim3','prim2','prim1','qu4','qc1','qc2',''],
     ],[
         ['s3','m3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9'],
         ['chal5','chal6','chal7'],
         ['fn12','fn11','fn6','fn10','rad6',""],
-        ['qu5','qc2'],
+        ['qu5'],
     ],[
         ['s4','sn5','sn4'],
         [],
         [],
         ['fn7','fn8'],
-        ['qu6','qc1','qu7'],
+        ['qu6','qu7','qu8','qu9','qu10'],
     ],[
         [],
         [],
         [],
         [],
-        ['prim3','qu9','qu8'],
+        [],
     ],
 ]
 
@@ -400,9 +400,9 @@ const TREE_UPGS = {
             cost: E(1e14),
             effect() {
                 let x = tmp.bosons.effect.graviton[0].add(1).root(2)
-                return x
+                return x.softcap('e1000',1/3,0)
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return format(x)+"x"+x.softcapHTML('e1000') },
         },
         bs4: {
             unl() { return player.supernova.fermions.unl },
@@ -639,7 +639,8 @@ const TREE_UPGS = {
         },
         qu7: {
             qf: true,
-            branch: ['qc1'],
+            unl() { return hasTree("unl3") },
+            branch: ['qu6'],
             desc: `Gain more Quantizes based on Quantum Shards.`,
             cost: E(1e15),
             effect() {
@@ -650,7 +651,8 @@ const TREE_UPGS = {
         },
         qu8: {
             qf: true,
-            branch: ['qc1'],
+            
+            branch: ['qu7'],
             desc: `Chromas are affected by Quantum Shard’s effect.`,
             cost: E(1e21),
             effect() {
@@ -662,7 +664,7 @@ const TREE_UPGS = {
         qu9: {
             unl() { return player.qu.en.unl },
             qf: true,
-            branch: ['qc1'],
+            branch: ['qu8'],
             desc: `Gain more Quantizes based on total Primordium Particles.`,
             cost: E(1e24),
             effect() {
@@ -670,6 +672,17 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return format(x,0)+"x" },
+        },
+        qu10: {
+            qf: true,
+            branch: ['qu9'],
+            desc: `Higgs Boson's effect is increased by 3.3% for every OoM of Blueprint Particles.`,
+            cost: E(1e32),
+            effect() {
+                let x = E(1.0333).pow(player.qu.bp.add(1).log10())
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         qu_qol1: {
             qf: true,
@@ -764,13 +777,14 @@ const TREE_UPGS = {
         },
         prim2: {
             qf: true,
-            branch: ["qu5"],
+            branch: ["prim1"],
             desc: `Theta Particle’s second effect is now added.`,
             cost: E(500),
         },
         prim3: {
             qf: true,
-            branch: ["qc1"],
+            unl() { return hasTree("unl3") },
+            branch: ["prim2"],
             desc: `Epsilon Particle’s second effect is now added, stronger if you are in Quantum Challenge.`,
             cost: E(1e16),
         },
