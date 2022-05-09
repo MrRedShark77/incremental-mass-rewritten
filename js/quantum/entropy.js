@@ -9,6 +9,12 @@ const ENTROPY = {
             player.qu.en[i][1] = E(0)
         }
     },
+    reset(x) {
+        let i = this.ids[x]
+        player.qu.en[i][0] = false
+        player.qu.en[i][1] = E(0)
+        player.qu.en[i][3] = 0
+    },
     gain() {
         let x = tmp.en.eff.eth.mul(getEnRewardEff(6))
         return x

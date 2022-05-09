@@ -29,6 +29,8 @@ const QUANTUM = {
                     player.qu.points = player.qu.points.add(tmp.qu.gain)
                     player.qu.times = player.qu.times.add(tmp.qu.gainTimes)
                 }
+                ENTROPY.reset(0)
+                ENTROPY.reset(1)
                 updateQuantumTemp()
                 this.doReset(force)
             } else {
