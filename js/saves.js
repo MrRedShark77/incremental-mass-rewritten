@@ -402,6 +402,7 @@ function importy() {
                 save()
                 resetTemp()
                 loadGame(false)
+                location.reload()
             }, 200)
         } catch (error) {
             addNotify("Error Importing")

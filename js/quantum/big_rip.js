@@ -5,6 +5,7 @@ const BIG_RIP = {
         Death Shards are gained based on your normal mass while Big Ripped.
         Unlock various upgrades from Big Rip.`)) return
         if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain)
+        player.qu.qc.active = false
         player.qu.rip.first = true
         player.qu.rip.active = !player.qu.rip.active
         QUANTUM.enter(false,true,true)
