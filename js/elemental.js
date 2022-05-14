@@ -78,7 +78,7 @@ const ELEMENTS = {
                 let x = E(0)
                 for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
                 if (hasElement(7)) x = x.mul(tmp.elements.effect[7])
-                if (hasElement(87)) x = E(1.01).pow(x)
+                if (hasElement(87)) x = E(1.01).pow(x).root(3)
                 else x = x.div(100).add(1).max(1)
                 return x
             },

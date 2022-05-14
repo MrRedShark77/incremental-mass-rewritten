@@ -17,7 +17,7 @@ const BIG_RIP = {
     },
 }
 
-const BIG_RIP_QC = [10,2,10,10,5,10,2,10]
+const BIG_RIP_QC = [10,2,10,10,5,0,2,10]
 
 function updateBigRipTemp() {
     tmp.rip.gain = BIG_RIP.gain()
