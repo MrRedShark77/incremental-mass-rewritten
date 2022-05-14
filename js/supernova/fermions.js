@@ -187,7 +187,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().pow(0.5).div(150).add(1).pow(t)
-                    return x
+                    return x.min(500)
                 },
                 desc(x) {
                     return `Meta-Tickspeed starts ${format(x)}x later`
@@ -341,7 +341,7 @@ const FERMIONS = {
             /*
             {
                 nextTierAt(x) {
-                    return E(1/0)
+                    return EINF
                 },
                 calcTier() {
                     let res = E(0)

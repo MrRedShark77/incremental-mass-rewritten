@@ -429,7 +429,7 @@ const CHALS = {
     max: E(50),
     inc: E(10),
     pow: E(1.25),
-    start: E(1/0),
+    start: EINF,
     effect(x) {
         let ret = E(1)
         return ret

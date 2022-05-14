@@ -1,6 +1,6 @@
 const QCs = {
-    active() { return player.qu.qc.active },
-    getMod(x) { return player.qu.qc.mods[x] },
+    active() { return player.qu.qc.active || player.qu.rip.active },
+    getMod(x) { return player.qu.rip.active ? BIG_RIP_QC[x] : player.qu.qc.mods[x] },
     incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),10) },
     enter() {
         if (!player.qu.qc.active) {
@@ -182,6 +182,7 @@ function updateQCHTML() {
         tmp.el["qc_tab"+x].setDisplay(tmp.qc_tab == x)
     }
     if (tmp.qc_tab == 0) {
+        tmp.el.qc_btn.setDisplay(!player.qu.rip.active)
         tmp.el.qc_btn.setTxt((QCs.active()?"Exit":"Enter") + " the Quantum Challenge")
         for (let x = 0; x < QCs_len; x++) {
             tmp.el["qcm_mod"+x].setTxt(QCs.getMod(x))

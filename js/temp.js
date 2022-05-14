@@ -72,6 +72,10 @@ function resetTemp() {
             rewards_eff: [],
         },
 
+        rip: {
+            
+        },
+
         prevSave: "",
     }
     for (let j = 0; j < TREE_TAB.length; j++) {

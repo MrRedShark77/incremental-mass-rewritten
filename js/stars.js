@@ -70,7 +70,7 @@ function updateStarsTemp() {
     if (!tmp.stars) tmp.stars = {
         generators_gain: [],
     }
-    tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:E(1/0)
+    tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:EINF
     tmp.stars.generator_boost_req = E("e100").pow(player.stars.boost.pow(1.25)).mul('e8000')
     tmp.stars.generator_boost_bulk = player.atom.quarks.gte("e8000")?player.atom.quarks.div("e8000").max(1).log("e100").root(1.25).add(1).floor():E(0)
 

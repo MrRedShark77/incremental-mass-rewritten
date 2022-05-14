@@ -239,7 +239,8 @@ function getScalingStart(type, name) {
 	if (name=='supernova') {
 		start = start.add(tmp.prim.eff[7])
 	}
-	if (QCs.active() && QCM8_SCALES.includes(name)) start = start.pow(tmp.qu.qc_eff[7][0])
+	if (QCs.active() && QCM8_SCALES.includes(name)) if (player.mainUpg.br.includes(2) ? !["massUpg","rank","tier","tetr","pent"].includes(name) : true) start = start.pow(tmp.qu.qc_eff[7][0])
+	if (hasElement(88) && name == "tickspeed") start = start.mul(player.qu.rip.active?100:10)
 	return start.floor()
 }
 
@@ -324,7 +325,7 @@ function getScalingPower(type, name) {
 			if (hasElement(78)) power = power.mul(0.8)
 		}
 	}
-	if (QCs.active() && QCM8_SCALES.includes(name)) power = power.mul(tmp.qu.qc_eff[7][1])
-	if (PreQ_SCALES.includes(name) && type != "meta") power = power.mul(getEnRewardEff(5))
+	if (QCs.active() && QCM8_SCALES.includes(name)) if (player.mainUpg.br.includes(2) ? !["massUpg","rank","tier","tetr","pent"].includes(name) : true) power = power.mul(tmp.qu.qc_eff[7][1])
+	if (PreQ_SCALES.includes(name) && type != "meta")  power = power.mul(getEnRewardEff(5))
 	return power.max(type=="meta"?0.5:0)
 }

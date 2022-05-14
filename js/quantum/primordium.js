@@ -114,7 +114,11 @@ function updatePrimordiumTemp() {
     tmp.prim.theorems = PRIM.getTheorems()
     tmp.prim.next_theorem = PRIM.getNextTheorem()
     tmp.prim.unspent = player.qu.prim.theorems.sub(PRIM.spentTheorems()).max(0)
-    for (let i = 0; i < player.qu.prim.particles.length; i++) tmp.prim.eff[i] = PRIM.particle.eff[i](player.qu.prim.particles[i].softcap(100,0.75,0))
+    for (let i = 0; i < player.qu.prim.particles.length; i++) {
+        let pp = player.qu.prim.particles[i]
+        if (player.qu.rip.active) pp = pp.mul(i==5?0:1/2)
+        tmp.prim.eff[i] = PRIM.particle.eff[i](pp.softcap(100,0.75,0))
+    }
 }
 
 function updatePrimordiumHTML() {

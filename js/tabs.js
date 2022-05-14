@@ -34,12 +34,14 @@ const TABS = {
         ],
         3: [
             { id: "Challenges" },
-            { id: "Quantum Challenge", unl() { return hasTree("unl3") } },
+            { id: "Quantum Challenge", unl() { return hasTree("unl3") }, style: "qu" },
+            //{ id: "Big Rip", unl() { return hasTree("unl4") }, style: "qu" },
         ],
         4: [
             { id: "Particles" },
             { id: "Elements", unl() { return player.chal.comps[7].gte(16) || player.supernova.times.gte(1) || quUnl() } },
             { id: "Mass Dilation", unl() { return MASS_DILATION.unlocked() }, style: "dilation" },
+            { id: "Break Dilation", unl() { return player.qu.rip.first }, style: "dilation" },
         ],
         5: [
             { id: "Neutron Tree" },

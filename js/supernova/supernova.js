@@ -13,6 +13,7 @@ const SUPERNOVA = {
         }
     },
     doReset() {
+        let br = player.qu.rip.active
         tmp.supernova.time = 0
 
         player.atom.points = E(0)
@@ -29,12 +30,13 @@ const SUPERNOVA = {
         player.mainUpg.atom = keep
 
         list_keep = [21,36]
+        if (br && player.mainUpg.br.includes(1)) list_keep.push(1)
         if (hasTree("qol1")) list_keep.push(14,18)
         if (hasTree("qol2")) list_keep.push(24)
         if (hasTree("qol3")) list_keep.push(43)
         if (quUnl()) list_keep.push(30)
         keep = []
-        for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x])) keep.push(player.atom.elements[x])
+        for (let x = 0; x < player.atom.elements.length; x++) if (list_keep.includes(player.atom.elements[x]) || player.atom.elements[x] > 86) keep.push(player.atom.elements[x])
         player.atom.elements = keep
         if (hasTree("qu_qol9") && QCs.active() && !player.atom.elements.includes(84)) player.atom.elements.push(84)
 
@@ -79,43 +81,44 @@ const SUPERNOVA = {
 
 function calcSupernova(dt, dt_offline) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
+    let su = player.supernova
 
-    if (player.tickspeed.gte(1)) player.supernova.chal.noTick = false
-    if (player.bh.condenser.gte(1)) player.supernova.chal.noBHC = false
+    if (player.tickspeed.gte(1)) su.chal.noTick = false
+    if (player.bh.condenser.gte(1)) su.chal.noBHC = false
 
-    if (tmp.supernova.reached && (!tmp.offlineActive || player.supernova.times.gte(1)) && !player.supernova.post_10) {
-        if (player.supernova.times.lte(0)) tmp.supernova.time += dt
+    if (tmp.supernova.reached && (!tmp.offlineActive || su.times.gte(1)) && !su.post_10) {
+        if (su.times.lte(0)) tmp.supernova.time += dt
         else {
             addNotify("You become Supernova!")
             SUPERNOVA.reset()
         }
     }
-    if (player.supernova.times.gte(1) || quUnl()) player.supernova.stars = player.supernova.stars.add(tmp.supernova.star_gain.mul(dt_offline).mul(tmp.preQUGlobalSpeed))
+    if (su.times.gte(1) || quUnl()) su.stars = su.stars.add(tmp.supernova.star_gain.mul(dt_offline).mul(tmp.preQUGlobalSpeed))
 
-    if (!player.supernova.post_10 && player.supernova.times.gte(10)) {
-        player.supernova.post_10 = true
+    if (!su.post_10 && su.times.gte(10)) {
+        su.post_10 = true
         addPopup(POPUP_GROUPS.supernova10)
     }
 
-    if (player.supernova.post_10) for (let x in BOSONS.names) {
+    if (su.post_10) for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
-        player.supernova.bosons[id] = player.supernova.bosons[id].add(tmp.bosons.gain[id].mul(du_gs))
+        su.bosons[id] = su.bosons[id].add(tmp.bosons.gain[id].mul(du_gs))
     }
 
-    if (player.supernova.fermions.unl) {
+    if (su.fermions.unl) {
         if (tmp.fermions.ch[0] >= 0) {
-            player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = player.supernova.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
+            su.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = su.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
             .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]])
         } else if (hasTree("qu_qol8") && !QCs.active()) for (let i = 0; i < 2; i++) for (let j = 0; j < 6; j++) if (j < FERMIONS.getUnlLength()) {
-            player.supernova.fermions.tiers[i][j] = player.supernova.fermions.tiers[i][j]
+            su.fermions.tiers[i][j] = su.fermions.tiers[i][j]
             .max(tmp.fermions.tiers[i][j])
         }
-        for (let x = 0; x < 2; x++) player.supernova.fermions.points[x] = player.supernova.fermions.points[x].add(tmp.fermions.gains[x].mul(du_gs))
+        for (let x = 0; x < 2; x++) su.fermions.points[x] = su.fermions.points[x].add(tmp.fermions.gains[x].mul(du_gs))
     }
 
     if (tmp.radiation.unl) {
-        if (!player.qu.en.eth[0]) player.supernova.radiation.hz = player.supernova.radiation.hz.add(tmp.radiation.hz_gain.mul(du_gs))
-        for (let x = 0; x < RAD_LEN; x++) player.supernova.radiation.ds[x] = player.supernova.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(du_gs))
+        if (!player.qu.en.eth[0]) su.radiation.hz = su.radiation.hz.add(tmp.radiation.hz_gain.mul(du_gs))
+        for (let x = 0; x < RAD_LEN; x++) su.radiation.ds[x] = su.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(du_gs))
     }
 }
 

@@ -195,7 +195,7 @@ function updateEntropyTemp() {
     for (let x = 0; x < ENTROPY.rewards.length; x++) {
         let rc = ENTROPY.rewards[x]
         tmp.en.rewards[x] = ENTROPY.getRewards(x)
-        tmp.en.rewards_eff[x] = rc.eff(player.qu.en.rewards[x])
+        tmp.en.rewards_eff[x] = rc.eff(player.qu.rip.active ? E(0) : player.qu.en.rewards[x])
     }
     for (let x = 0; x < 2; x++) {
         let id = ENTROPY.ids[x]

@@ -17,10 +17,10 @@ const QUANTUM = {
         if (hasTree("qu9")) x = x.mul(treeEff("qu9"))
         return x
     },
-    enter(auto=false,force=false) {
+    enter(auto=false,force=false,rip=false) {
         if (tmp.qu.gain.gte(1) || force) {
             if (player.confirms.qu&&!auto&&!force) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
-            if (QCs.active()) {
+            if (QCs.active() && !rip) {
                 player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
                 player.qu.qc.active = false
             }
@@ -196,6 +196,12 @@ function getQUSave() {
             hr: [false,E(0),E(0),0],
             rewards: [],
         },
+
+        rip: {
+            active: false,
+            first: false,
+            amt: E(0),
+        },
     }
     for (let x = 0; x < ENTROPY.rewards.length; x++) s.en.rewards.push(E(0))
     return s
@@ -236,6 +242,7 @@ function calcQuantum(dt, dt_offline) {
 }
 
 function updateQuantumTemp() {
+    updateBigRipTemp()
     updateEntropyTemp()
     updateQCTemp()
     updatePrimordiumTemp()
@@ -269,6 +276,10 @@ function updateQuantumHTML() {
     unl = quUnl()
     tmp.el.gs1_div.setDisplay(unl)
     if (unl) tmp.el.preQGSpeed.setHTML(formatMult(tmp.preQUGlobalSpeed))
+
+    unl = hasTree("unl4")
+    tmp.el.br_div.setDisplay(unl)
+    if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active?`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
 
     if (tmp.tab == 0 && tmp.stab[0] == 4) {
         tmp.el.bpAmt.setTxt(format(player.qu.bp,1)+" "+formatGain(player.qu.bp,tmp.qu.bpGain))

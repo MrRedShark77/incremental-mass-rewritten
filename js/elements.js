@@ -78,7 +78,7 @@ function setupHTML() {
 	table = ""
 	for (let x = 1; x <= UPGS.main.cols; x++) {
 		let id = UPGS.main.ids[x]
-		table += `<div id="main_upg_${x}_div" style="width: 230px; margin: 0px 10px;"><b>${UPGS.main[x].title}</b><br><br><div class="table_center" style="justify-content: start;">`
+		table += `<div id="main_upg_${x}_div" style="width: 230px; margin: 0px 10px;"><b>${UPGS.main[x].title}</b><br><br><div style="font-size: 13px; min-height: 50px" id="main_upg_${x}_res"></div><br><div class="table_center" style="justify-content: start;">`
 		for (let y = 1; y <= UPGS.main[x].lens; y++) {
 			let key = UPGS.main[x][y]
 			table += `<img onclick="UPGS.main[${x}].buy(${y})" onmouseover="UPGS.main.over(${x},${y})" onmouseleave="UPGS.main.reset()"
@@ -289,15 +289,17 @@ function updateMainUpgradesHTML() {
 	} else tmp.el.main_upg_msg.setTxt("")
 	for (let x = 1; x <= UPGS.main.cols; x++) {
 		let id = UPGS.main.ids[x]
-		let unl = UPGS.main[x].unl()
+		let upg = UPGS.main[x]
+		let unl = upg.unl()
 		tmp.el["main_upg_"+x+"_div"].changeStyle("visibility", unl?"visible":"hidden")
+		tmp.el["main_upg_"+x+"_res"].setTxt(`You have ${upg.getRes().format(0)} ${upg.res}`)
 		if (unl) {
-			for (let y = 1; y <= UPGS.main[x].lens; y++) {
-				let unl2 = UPGS.main[x][y].unl ? UPGS.main[x][y].unl() : true
+			for (let y = 1; y <= upg.lens; y++) {
+				let unl2 = upg[y].unl ? upg[y].unl() : true
 				tmp.el["main_upg_"+x+"_"+y].changeStyle("visibility", unl2?"visible":"hidden")
-				if (unl2) tmp.el["main_upg_"+x+"_"+y].setClasses({img_btn: true, locked: !UPGS.main[x].can(y), bought: player.mainUpg[id].includes(y)})
+				if (unl2) tmp.el["main_upg_"+x+"_"+y].setClasses({img_btn: true, locked: !upg.can(y), bought: player.mainUpg[id].includes(y)})
 			}
-			tmp.el["main_upg_"+x+"_auto"].setDisplay(UPGS.main[x].auto_unl ? UPGS.main[x].auto_unl() : false)
+			tmp.el["main_upg_"+x+"_auto"].setDisplay(upg.auto_unl ? upg.auto_unl() : false)
 			tmp.el["main_upg_"+x+"_auto"].setTxt(player.auto_mainUpg[id]?"ON":"OFF")
 		}
 	}
@@ -331,6 +333,8 @@ function updateOptionsHTML() {
 		?(player.supernova.times.gte(1) || quUnl())
 		:CONFIRMS[x] == "qu"
 		?quUnl()
+		:CONFIRMS[x] == "br"
+		?player.qu.rip.first
 		:player[CONFIRMS[x]].unl
 
 		tmp.el["confirm_div_"+x].setDisplay(unl)

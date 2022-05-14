@@ -1,7 +1,7 @@
 const ATOM = {
     gain() {
         if (CHALS.inChal(12)) return E(0)
-        let x = player.bh.mass.div(1.5e156)
+        let x = player.bh.mass.div(player.mainUpg.br.includes(1)?1.5e156**0.5:1.5e156)
         if (x.lt(1)) return E(0)
         x = x.root(5)
         if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))

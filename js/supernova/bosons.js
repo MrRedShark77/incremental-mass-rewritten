@@ -46,7 +46,7 @@ const BOSONS = {
     effect: {
         pos_w(x) {
             let a = x.add(1).pow(2e4)
-            if (hasTree("qu2")) a = a.pow(x.add(1).log10().add(1).pow(4/3))
+            if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3))
             let b = expMult(x.add(1),2/3,2)
             return [a,b]
         },
@@ -66,7 +66,7 @@ const BOSONS = {
         },
         hb(x) {
             let a = x.add(1).log10().max(0).root(2).mul(tmp.prim.eff[4])
-            if (hasTree("qu10")) a = a.mul(treeEff('qu10'))
+            if (hasTree("qu10") && !player.qu.rip.active) a = a.mul(treeEff('qu10'))
             return [a]
         },
     },

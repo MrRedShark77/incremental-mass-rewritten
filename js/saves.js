@@ -1,5 +1,7 @@
 function E(x){return new Decimal(x)};
 
+const EINF = Decimal.dInf
+
 function uni(x) { return E(1.5e56).mul(x) }
 function mlt(x) { return uni("ee9").pow(x) }
 

@@ -22,6 +22,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
     
+    <script src="js/quantum/big_rip.js"></script>
     <script src="js/quantum/entropy.js"></script>
     <script src="js/quantum/qc.js"></script>
     <script src="js/quantum/primordium.js"></script>
@@ -47,6 +48,7 @@
 
     <script src="js/secret.js"></script>
 
+    <script src="js/upgrades.js"></script>
     <script src="js/main.js"></script>
 
     <title>Incremental Mass Rewritten</title>
@@ -186,6 +188,9 @@
                     </div><div class="resources sml orange" id="gs1_div">
                         <div tooltip="Pre-Quantum Global Speed" t-size="medium"><img class="res_img" src="images/preQGSpeed.png"></div>
                         <span style="margin-left: 5px; text-align: left;" id="preQGSpeed">X</span>
+                    </div><div class="resources sml light_green" id="br_div">
+                        <div tooltip="Death Shard" t-size="small"><img class="res_img" src="images/br.png" onclick="BIG_RIP.rip()" onmousemove="FORMS.reset_msg.set('br')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <span style="margin-left: 5px; text-align: left;" id="brAmt">X</span>
                     </div>
                 </div>
             </div>
@@ -357,6 +362,8 @@
                 <div class="table_center">
                     <div id="md_upg_table" class="table_center" style="width: 1000px;"></div>
                 </div>
+            </div><div id="stab_frame4_3">
+                Coming Soon...
             </div>
         </div><div id="tab_frame6">
             <div id="stab_frame6_0">
@@ -410,7 +417,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.5.2.3 part 2 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5.3 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span>
