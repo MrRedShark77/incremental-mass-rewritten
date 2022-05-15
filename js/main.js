@@ -83,18 +83,18 @@ const FORMS = {
         return s.min(tmp.massSoftGain3||1/0)
     },
     massSoftPower2() {
-        let p = E(0.25)
+        let p = E(player.qu.rip.active ? 0.1 : 0.25)
         if (hasElement(51)) p = p.pow(0.9)
         return p
     },
     massSoftGain3() {
-        let s = uni("ee8")
+        let s = player.qu.rip.active ? uni("ee7") : uni("ee8")
         if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         s = s.pow(tmp.radiation.bs.eff[2])
         return s
     },
     massSoftPower3() {
-        let p = E(0.2)
+        let p = E(player.qu.rip.active ? 0.1 : 0.2)
         if (hasElement(77)) p = p.pow(0.825)
         return p
     },
