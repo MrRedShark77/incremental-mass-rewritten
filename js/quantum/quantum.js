@@ -2,7 +2,7 @@ const QUANTUM = {
     gain() {
         let x = player.mass.max(1).log10().div(1e13)
         if (x.lt(1)) return E(0)
-        x = x.max(0).pow(1.5)
+        x = x.max(0).pow(hasTree("qu11")?3:1.5)
 
         x = x.mul(tmp.qu.qc_s_eff)
         if (tmp.qu.mil_reached[4]) x = x.mul(2)
@@ -33,6 +33,9 @@ const QUANTUM = {
                 ENTROPY.reset(1)
                 updateQuantumTemp()
                 this.doReset(force)
+                if (rip) {
+                    if (hasUpgrade('br',4)) for (let x = 0; x < 2; x++) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(2)
+                }
             } else {
                 document.body.style.animation = "implode 2s 1"
                 setTimeout(_=>{

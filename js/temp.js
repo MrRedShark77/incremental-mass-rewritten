@@ -18,6 +18,11 @@ function resetTemp() {
         notify: [],
         popup: [],
         saving: 0,
+
+        upgs: {
+            main: {},
+            mass: {},
+        },
     
         fermions: {
             ch: [0,0],
@@ -78,6 +83,8 @@ function resetTemp() {
 
         prevSave: "",
     }
+    for (let x = UPGS.mass.cols; x >= 1; x--) tmp.upgs.mass[x] = {}
+    for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs.main[x] = {}
     for (let j = 0; j < TREE_TAB.length; j++) {
         tmp.supernova.tree_had2[j] = []
         tmp.supernova.tree_afford2[j] = []
@@ -122,9 +129,8 @@ function updateTickspeedTemp() {
 }
 
 function updateUpgradesTemp() {
-    if (!tmp.upgs) tmp.upgs = {}
-    UPGS.mass.temp()
     UPGS.main.temp()
+    UPGS.mass.temp()
 }
 
 function updateRagePowerTemp() {

@@ -23,17 +23,22 @@ const ENTROPY = {
         let x = tmp.en.eff.hr
         return x
     },
+    evaPow(i) {
+        let x = 1
+        if (hasTree("en1")) x *= 2
+        return x
+    },
     evaGain(i) {
-        let x = E(1).mul(player.qu.en[this.ids[i]][3]+1).mul(getEnRewardEff(2))
+        let x = E(player.qu.en[this.ids[i]][3]+1).pow(this.evaPow(i)).mul(getEnRewardEff(2))
         return x
     },
     evaEff(i) {
         let x
         let y = player.qu.en[this.ids[i]][2].max(0)
         if (i==0) {
-            x = y.div(2)
+            x = y.pow(hasTree("en1")?1.5:1).div(2)
         } else if (i==1) {
-            x = y.pow(2).mul(10)
+            x = y.pow(hasTree("en1")?3:2).mul(10)
         }
         return x
     },
@@ -112,6 +117,8 @@ const ENTROPY = {
 
             start: E(1e6),
             inc: E(100),
+
+            scale: {s: 5, p: 2.5},
 
             eff(i) {
                 let x = player.qu.en.amt.add(1).log10().mul(2).add(1).pow(i.pow(0.8))

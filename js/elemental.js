@@ -548,8 +548,13 @@ const ELEMENTS = {
             cost: E('e500'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Mass of Black Hole effect raises itself at a reduced logarithm rate.`,
+            cost: E('e1100'),
+            effect() {
+                let x = player.bh.mass.add(1).log10().add(1).log10().mul(1.25).add(1).pow(player.qu.rip.active?2:0.4)
+                return x
+            },
+            effDesc(x) { return "^"+x.format() },
         },
         {
             desc: `Placeholder.`,

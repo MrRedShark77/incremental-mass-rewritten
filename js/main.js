@@ -275,6 +275,7 @@ const FORMS = {
             let x = player.mainUpg.atom.includes(12)
             ?player.bh.mass.add(1).pow(1.25)
             :player.bh.mass.add(1).root(4)
+            if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
             return x//.softcap("ee14",0.95,2)
         },
         condenser: {
