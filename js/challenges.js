@@ -123,6 +123,7 @@ const CHALS = {
         if (hasElement(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
         if (hasTree("chal1") && (i==7||i==8))  x = x.add(100)
         if (hasTree("chal4b") && (i==9))  x = x.add(100)
+        if (hasTree("chal8") && (i>=9))  x = x.add(200)
         return x.floor()
     },
     getScaleName(i) {

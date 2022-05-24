@@ -13,7 +13,8 @@ const BIG_RIP = {
     gain() {
         let x = player.mass.add(1).log10().div(2e5).max(0)
         if (!player.qu.rip.active || x.lt(1)) return E(0)
-        x = x
+        if (hasTree('br1')) x = x.mul(treeEff('br1'))
+        if (hasElement(90)) x = x.mul(tmp.elements?tmp.elements.effect[90]:1)
         return x.floor()
     },
 }

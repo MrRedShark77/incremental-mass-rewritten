@@ -557,8 +557,13 @@ const ELEMENTS = {
             effDesc(x) { return "^"+x.format() },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Death Shard is boosted by Dilated Mass.`,
+            cost: E('e1300'),
+            effect() {
+                let x = player.md.mass.add(1).log10().add(1).pow(0.5)
+                return x
+            },
+            effDesc(x) { return "x"+x.format() },
         },
         {
             desc: `Placeholder.`,

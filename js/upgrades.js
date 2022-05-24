@@ -570,7 +570,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 4,
+            lens: 6,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -592,6 +592,19 @@ const UPGS = {
                 desc: `Start with 2 tiers of each Fermion in Big Rip.`,
                 cost: E(250),
             },
+            5: {
+                desc: `Reduce Star Booster’s starting cost to ^0.1. Star Booster’s base is increased based on Death Shards.`,
+                cost: E(2500),
+                effect() {
+                    let x = player.qu.rip.amt.add(1).log10().add(1).pow(3)
+                    return x
+                },
+                effDesc(x=this.effect()) { return "x"+format(x) },
+            },
+            6: {
+                desc: `Start with all Radiations unlocked.`,
+                cost: E(15000),
+            },
         },
     },
 }
@@ -611,4 +624,4 @@ const UPGS = {
 */
 
 function hasUpgrade(id,x) { return player.mainUpg[id].includes(x) }
-function hasUpgEffect(id,x,def=E(1)) { return tmp.upgs.main[id][x]||def }
+function upgEffect(id,x,def=E(1)) { return tmp.upgs.main[id][x]?tmp.upgs.main[id][x].effect:def }

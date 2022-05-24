@@ -71,11 +71,19 @@ function updateStarsTemp() {
         generators_gain: [],
     }
     tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:EINF
-    tmp.stars.generator_boost_req = E("e100").pow(player.stars.boost.pow(1.25)).mul('e8000')
-    tmp.stars.generator_boost_bulk = player.atom.quarks.gte("e8000")?player.atom.quarks.div("e8000").max(1).log("e100").root(1.25).add(1).floor():E(0)
+    let s = E("e8000")
+    let inc = E("e100")
+    if (hasUpgrade('br',5)) {
+        s = s.root(10)
+        inc = inc.root(10)
+    }
+    tmp.stars.generator_boost_req = inc.pow(player.stars.boost.pow(1.25)).mul(s)
+    tmp.stars.generator_boost_bulk = player.atom.quarks.gte(s)?player.atom.quarks.div(s).max(1).log(inc).root(1.25).add(1).floor():E(0)
 
     tmp.stars.generator_boost_base = E(2)
     if (hasElement(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])
+    if (hasUpgrade('br',5)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(upgEffect(4,5))
+
     tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost.mul(tmp.chal?tmp.chal.eff[11]:1))
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.softPower = STARS.softPower()

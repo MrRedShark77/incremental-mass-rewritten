@@ -64,11 +64,12 @@ const QUANTUM = {
 
         let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11']
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
-        if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b','chal7a')
+        if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b','chal7a','chal8')
         if (tmp.qu.mil_reached[3]) {
             if (!force) keep.push('unl1')
             keep.push('qol8','qol9')
         }
+        if (hasUpgrade('br',6) && !keep.includes('unl1')) keep.push('unl1')
 
         let save_keep = []
         for (let x in keep) if (hasTree(keep[x])) save_keep.push(keep[x])
@@ -90,7 +91,7 @@ const QUANTUM = {
 
         for (let x = 0; x < 2; x++) if (!hasTree("qu_qol"+(2+4*x)) || force) player.supernova.fermions.tiers[x] = [E(0),E(0),E(0),E(0),E(0),E(0)]
 
-        player.supernova.radiation.hz = E(0)
+        player.supernova.radiation.hz = hasUpgrade('br',6)?E(1e50):E(0)
         for (let x = 0; x < 7; x++) {
             player.supernova.radiation.ds[x] = E(0)
             for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
