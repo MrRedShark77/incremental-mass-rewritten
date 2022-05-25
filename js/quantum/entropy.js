@@ -17,6 +17,7 @@ const ENTROPY = {
     },
     gain() {
         let x = tmp.en.eff.eth.mul(getEnRewardEff(6))
+        if (hasElement(93)) x = x.mul(tmp.elements.effect[93]||1)
         return x
     },
     cap() {
@@ -175,6 +176,14 @@ const ENTROPY = {
         }
         return x
     },
+    getRewardEffect(i) {
+        if (player.qu.rip.active && !tmp.en.reward_br.includes(i)) return E(0)
+        let x = player.qu.en.rewards[i]
+
+        if (hasElement(91) && player.qu.rip.active && (i==1||i==4)) x = x.mul(0.1)
+
+        return x
+    },
 }
 
 function getEnRewardEff(x,def=1) { return tmp.en.rewards_eff[x] ?? E(def) }
@@ -199,10 +208,14 @@ function calcEntropy(dt, dt_offline) {
 }
 
 function updateEntropyTemp() {
+    let rbr = []
+    if (hasElement(91)) rbr.push(1,4)
+    tmp.en.reward_br = rbr
+
     for (let x = 0; x < ENTROPY.rewards.length; x++) {
         let rc = ENTROPY.rewards[x]
         tmp.en.rewards[x] = ENTROPY.getRewards(x)
-        tmp.en.rewards_eff[x] = rc.eff(player.qu.rip.active ? E(0) : player.qu.en.rewards[x])
+        tmp.en.rewards_eff[x] = rc.eff(ENTROPY.getRewardEffect(x))
     }
     for (let x = 0; x < 2; x++) {
         let id = ENTROPY.ids[x]

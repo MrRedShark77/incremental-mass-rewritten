@@ -188,6 +188,10 @@ button {
 	background-color: #444;
 }
 
+.light_red {
+	color: lightcoral;
+}
+
 .red {
 	color: red;
 }
@@ -386,10 +390,15 @@ button {
 	border-color: #171717;
 }
 
-.elements.bought.br,
 .btn_tree.qu_tree.bought {
 	border-color: #39FF49;
 	box-shadow: 0px 0px 10px 0px #39ff4a7e;
+}
+
+.elements.bought.br {
+	border-color: #ff3939;
+	box-shadow: 0px 0px 10px 0px #ff39397e;
+	background-color: #800;
 }
 
 .btn_tree:not(.qu_tree).bought {

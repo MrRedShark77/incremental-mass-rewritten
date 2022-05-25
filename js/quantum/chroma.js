@@ -24,6 +24,7 @@ const CHROMA = {
         },
         i => {
             let x = E(1.01).pow(i.add(1).log10().max(0).pow(0.8))
+            if (hasUpgrade('br',7) && player.qu.rip.active) x = x.pow(2)
             return x
         },
         i => {

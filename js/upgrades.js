@@ -570,7 +570,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 6,
+            lens: 7,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -602,8 +602,12 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "x"+format(x) },
             },
             6: {
-                desc: `Start with all Radiations unlocked.`,
+                desc: `Start with all Radiation features unlocked.`,
                 cost: E(15000),
+            },
+            7: {
+                desc: `Hybridized Uran-Astatine is twice effective, while Big Ripped.`,
+                cost: E(100000),
             },
         },
     },

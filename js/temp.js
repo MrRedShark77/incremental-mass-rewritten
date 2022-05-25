@@ -23,6 +23,11 @@ function resetTemp() {
             main: {},
             mass: {},
         },
+
+        elements: {
+            choosed: 0,
+            effect: [null],
+        },
     
         fermions: {
             ch: [0,0],
@@ -75,6 +80,7 @@ function resetTemp() {
             eff: {},
             rewards: [],
             rewards_eff: [],
+            reward_br: [],
         },
 
         rip: {

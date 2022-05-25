@@ -566,16 +566,21 @@ const ELEMENTS = {
             effDesc(x) { return "x"+x.format() },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Entropic Accelerator & Booster nerfing is 10% weaker.`,
+            cost: E('e2700'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Insane Challenges scale 25% weaker.`,
+            cost: E('e4800'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Entropy gain is increased by 66.7% every OoM^2 of normal mass.`,
+            cost: E('e29500'),
+            effect() {
+                let x = E(5/3).pow(player.mass.add(1).log10().add(1).log10())
+                return x
+            },
+            effDesc(x) { return "x"+x.format() },
         },
         {
             desc: `Placeholder.`,
@@ -760,11 +765,7 @@ function updateElementsHTML() {
 }
 
 function updateElementsTemp() {
-    if (!tmp.elements) tmp.elements = {
-        upg_length: ELEMENTS.upgs.length-1,
-        choosed: 0,
-    }
-    if (!tmp.elements.effect) tmp.elements.effect = [null]
+    if (!tmp.elements.upg_length) tmp.elements.upg_length = ELEMENTS.upgs.length-1
     for (let x = tmp.elements.upg_length; x >= 1; x--) if (ELEMENTS.upgs[x].effect) {
         tmp.elements.effect[x] = ELEMENTS.upgs[x].effect()
     }
