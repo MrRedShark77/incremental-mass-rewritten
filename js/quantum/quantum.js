@@ -233,6 +233,11 @@ function calcQuantum(dt, dt_offline) {
             else if (player.qu.auto.mode == 1) can = player.qu.auto.time >= tmp.qu.auto_input
             if (can) QUANTUM.enter(true)
         }
+
+        if (hasUpgrade('br',8)) {
+            player.qu.points = player.qu.points.add(tmp.qu.gain.mul(dt/10))
+            if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain.mul(dt/10))
+        }
     }
 
     if (player.mass.gte(mlt(7.5e6)) && !player.qu.en.unl) {
@@ -273,9 +278,11 @@ function updateQuantumTemp() {
 }
 
 function updateQuantumHTML() {
+    let gain2 = hasUpgrade('br',8)
+
     let unl = quUnl() || player.chal.comps[12].gte(1)
     tmp.el.qu_div.setDisplay(unl)
-    if (unl) tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>(+"+format(tmp.qu.gain,0)+")")
+    if (unl) tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>"+(gain2?player.qu.points.formatGain(tmp.qu.gain.div(10)):"(+"+format(tmp.qu.gain,0)+")"))
 
     unl = quUnl()
     tmp.el.gs1_div.setDisplay(unl)
@@ -283,7 +290,7 @@ function updateQuantumHTML() {
 
     unl = hasTree("unl4")
     tmp.el.br_div.setDisplay(unl)
-    if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active?`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
+    if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active?gain2?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
 
     if (tmp.tab == 0 && tmp.stab[0] == 4) {
         tmp.el.bpAmt.setTxt(format(player.qu.bp,1)+" "+formatGain(player.qu.bp,tmp.qu.bpGain))

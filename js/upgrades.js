@@ -570,7 +570,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 7,
+            lens: 8,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -608,6 +608,10 @@ const UPGS = {
             7: {
                 desc: `Hybridized Uran-Astatine is twice effective, while Big Ripped.`,
                 cost: E(100000),
+            },
+            8: {
+                desc: `Passively gain 10% of Quantum Foams & Death Shards you would get from resetting each second.`,
+                cost: E(750000),
             },
         },
     },

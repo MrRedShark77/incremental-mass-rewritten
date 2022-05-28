@@ -574,7 +574,7 @@ const ELEMENTS = {
             cost: E('e4800'),
         },
         {
-            desc: `Entropy gain is increased by 66.7% every OoM^2 of normal mass.`,
+            desc: `Entropy gain is increased by 66.7% for every OoM^2 of normal mass.`,
             cost: E('e29500'),
             effect() {
                 let x = E(5/3).pow(player.mass.add(1).log10().add(1).log10())
@@ -583,12 +583,17 @@ const ELEMENTS = {
             effDesc(x) { return "x"+x.format() },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Death Shard is increased by 10% for every supernova.`,
+            cost: E("e32000"),
+            effect() {
+                let x = E(1.1).pow(player.supernova.times)
+                return x
+            },
+            effDesc(x) { return "x"+x.format() },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Epsilon Particles are worked in Big Rip, but 95% weaker.`,
+            cost: E("e34500"),
         },
         {
             desc: `Placeholder.`,
