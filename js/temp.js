@@ -27,6 +27,7 @@ function resetTemp() {
         elements: {
             choosed: 0,
             effect: [null],
+            cannot: [],
         },
     
         fermions: {

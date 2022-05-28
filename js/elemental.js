@@ -31,7 +31,7 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : x <= 86) },
+    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : x <= 86) && !tmp.elements.cannot.includes(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
             player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
@@ -592,7 +592,7 @@ const ELEMENTS = {
             effDesc(x) { return "x"+x.format() },
         },
         {
-            desc: `Epsilon Particles are worked in Big Rip, but 95% weaker.`,
+            desc: `Epsilon Particles are worked in Big Rip, but 90% weaker.`,
             cost: E("e34500"),
         },
         {
@@ -770,6 +770,10 @@ function updateElementsHTML() {
 }
 
 function updateElementsTemp() {
+    let cannot = []
+    if (player.qu.rip.active) cannot.push(58)
+    tmp.elements.cannot = cannot
+
     if (!tmp.elements.upg_length) tmp.elements.upg_length = ELEMENTS.upgs.length-1
     for (let x = tmp.elements.upg_length; x >= 1; x--) if (ELEMENTS.upgs[x].effect) {
         tmp.elements.effect[x] = ELEMENTS.upgs[x].effect()
