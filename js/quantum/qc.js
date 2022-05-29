@@ -72,6 +72,11 @@ const QCs = {
 const QCs_len = 8
 
 function addQCPresetAs() {
+    if (player.qu.qc.presets.length >= 5) {
+        addNotify("You cannot add QC Preset because of maxmium length of presets")
+        return
+    }
+
     let copied_mods = []
     for (let x = 0; x < QCs_len; x++) copied_mods.push(player.qu.qc.mods[x])
     player.qu.qc.presets.push({

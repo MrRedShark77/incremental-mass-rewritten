@@ -280,6 +280,7 @@ function loadPlayer(load) {
     player = deepNaN(load, DATA)
     player = deepUndefinedAndDecimal(player, DATA)
     convertStringToDecimal()
+    player.qu.qc.presets = player.qu.qc.presets.slice(0,5)
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
