@@ -3,7 +3,7 @@ const MASS_DILATION = {
     penalty() {
         let x = 0.8
         if (FERMIONS.onActive("02")) x **= 2
-        if (QCs.active()) x **= tmp.qu.qc_eff[6]
+        if (QCs.active() && (player.md.break.active ? !player.qu.rip.active : true)) x **= tmp.qu.qc_eff[6]
         return x
     },
     onactive() {
@@ -35,7 +35,7 @@ const MASS_DILATION = {
     },
     massGain() {
         if (CHALS.inChal(11)) return E(0)
-        let pow = E(2)
+        let pow = E(2).add(tmp.bd.upgs[1].eff)
         let x = player.md.particles.pow(pow)
         x = x.mul(tmp.md.upgs[0].eff)
         if (hasElement(22)) x = x.mul(tmp.elements.effect[22])
@@ -161,7 +161,85 @@ const MASS_DILATION = {
             },
         ],
     },
+
+    break: {
+        toggle() {
+            let bd = player.md.break
+
+            bd.active = !bd.active
+
+            if (!bd.active) if (confirm("Are you sure you want to fix Dilation?")) {
+                bd.energy = E(0)
+                bd.mass = E(0)
+                for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) bd.upgs[x] = E(0)
+
+                QUANTUM.enter(false,true,false,true)
+            }
+        },
+        energyGain() {
+            if (!player.md.break.active || !player.qu.rip.active) return E(0)
+
+            let x = player.md.mass.add(1).log10().sub(400).div(2).max(0)
+            x = x.add(1).pow(x.add(1).log10()).sub(1)
+
+            return x
+        },
+        massGain() {
+            let x = player.md.break.energy.max(0).pow(2)
+            x = x.mul(tmp.bd.upgs[0].eff||1)
+
+            return x
+        },
+
+        upgs: {
+            buy(x) {
+                if (tmp.bd.upgs[x].can) {
+                    player.md.break.mass = player.md.break.mass.sub(this.ids[x].cost(tmp.bd.upgs[x].bulk.sub(1))).max(0)
+                    player.md.break.upgs[x] = player.md.break.upgs[x].max(tmp.bd.upgs[x].bulk)
+
+                    updateBDTemp()
+                }
+            },
+            ids: [
+                {
+                    desc: `Double Relativistic Mass gain.`,
+                    cost(x) { return E(10).pow(x.pow(1.1)).mul(1e5) },
+                    bulk() { return player.md.break.mass.gte(1e5)?player.md.break.mass.div(1e5).max(1).log10().root(1.1).add(1).floor():E(0) },
+                    effect(y) {
+                        let x = Decimal.pow(2,y)
+
+                        return x
+                    },
+                    effDesc(x) { return format(x,0)+"x" },
+                },{
+                    desc: `Increase the exponent of the Dilated Mass formula.`,
+                    cost(x) { return E(10).pow(x.pow(1.25)).mul(1e7) },
+                    bulk() { return player.md.break.mass.gte(1e7)?player.md.break.mass.div(1e7).max(1).log10().root(1.25).add(1).floor():E(0) },
+                    effect(y) {
+                        let x = y.div(40)
+                
+                        return x
+                    },
+                    effDesc(x) { return "+^"+format(x) },
+                },
+            ],
+        }
+    },
 }
+
+/*
+{
+    desc: `Placeholder.`,
+    cost(x) { return E(10).pow(x.pow(1.1)).mul(1e5) },
+    bulk() { return player.md.break.mass.gte(1e5)?player.md.break.mass.div(1e5).max(1).log10().root(1.1).add(1).floor():E(0) },
+    effect(y) {
+        let x = E(1)
+
+        return x
+    },
+    effDesc(x) { return format(x,0)+"x"},
+},
+*/
 
 function setupMDHTML() {
     let md_upg_table = new Element("md_upg_table")
@@ -180,6 +258,23 @@ function setupMDHTML() {
         `
 	}
 	md_upg_table.setHTML(table)
+
+    let bd_upg_table = new Element("bd_upg_table")
+	table = ""
+	for (let i = 0; i < MASS_DILATION.break.upgs.ids.length; i++) {
+        let upg = MASS_DILATION.break.upgs.ids[i]
+        table += `
+        <button onclick="MASS_DILATION.break.upgs.buy(${i})" class="btn full bd" id="bd_upg${i}_div" style="font-size: 11px;">
+        <div style="min-height: 80px">
+            [Level <span id="bd_upg${i}_lvl"></span>]<br>
+            ${upg.desc}<br>
+            ${upg.effDesc?`Currently: <span id="bd_upg${i}_eff"></span>`:""}
+        </div>
+        <span id="bd_upg${i}_cost"></span>
+        </button>
+        `
+	}
+	bd_upg_table.setHTML(table)
 }
 
 function updateMDTemp() {
@@ -203,6 +298,23 @@ function updateMDTemp() {
     tmp.md.mass_gain = MASS_DILATION.massGain()
     tmp.md.mass_req = MASS_DILATION.mass_req()
     tmp.md.mass_eff = MASS_DILATION.effect()
+
+    updateBDTemp()
+}
+
+function updateBDTemp() {
+    let bd = tmp.bd
+
+    bd.energyGain = MASS_DILATION.break.energyGain()
+    bd.massGain = MASS_DILATION.break.massGain()
+
+    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
+        let upg = MASS_DILATION.break.upgs.ids[x]
+        bd.upgs[x].cost = upg.cost(player.md.break.upgs[x])
+        bd.upgs[x].bulk = upg.bulk().min(upg.maxLvl||1/0)
+        bd.upgs[x].can = player.md.break.mass.gte(bd.upgs[x].cost) && player.md.break.upgs[x].lt(upg.maxLvl||1/0)
+        if (upg.effect) bd.upgs[x].eff = upg.effect(player.md.break.upgs[x])
+    }
 }
 
 function updateMDHTML() {
@@ -222,6 +334,27 @@ function updateMDHTML() {
             tmp.el["md_upg"+x+"_lvl"].setTxt(format(player.md.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
             if (upg.effDesc) tmp.el["md_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.md.upgs[x].eff))
             tmp.el["md_upg"+x+"_cost"].setTxt(player.md.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.md.upgs[x].cost):"")
+        }
+    }
+}
+
+function updateBDHTML() {
+    let bd = player.md.break
+
+    tmp.el.bd_btn.setTxt(bd.active?"Fix Dilation":"Break Dilation")
+
+    tmp.el.bd_energy.setTxt(bd.energy.format(1)+" "+bd.energy.formatGain(tmp.bd.energyGain))
+    tmp.el.bd_mass.setTxt(formatMass(bd.mass)+" "+bd.mass.formatGain(tmp.bd.massGain,true))
+
+    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
+        let upg = MASS_DILATION.break.upgs.ids[x]
+        let unl = upg.unl?upg.unl():true
+        tmp.el["bd_upg"+x+"_div"].setVisible(unl)
+        if (unl) {
+            tmp.el["bd_upg"+x+"_div"].setClasses({btn: true, full: true, bd: true, locked: !tmp.bd.upgs[x].can})
+            tmp.el["bd_upg"+x+"_lvl"].setTxt(format(bd.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
+            if (upg.effDesc) tmp.el["bd_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.bd.upgs[x].eff))
+            tmp.el["bd_upg"+x+"_cost"].setTxt(bd.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.bd.upgs[x].cost):"")
         }
     }
 }

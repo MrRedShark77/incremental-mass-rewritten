@@ -596,8 +596,8 @@ const ELEMENTS = {
             cost: E("e34500"),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Entropic Converter nerfing is 10% weaker.`,
+            cost: E('e202000'),
         },
         {
             desc: `Placeholder.`,
@@ -717,7 +717,8 @@ const ELEMENTS = {
         }
         if (PRIM.unl()) u += 3
         if (hasTree('unl3')) u += 3
-        if (player.qu.rip.first) u += 32
+        if (player.qu.rip.first) u += 9
+        if (hasUpgrade("br",9)) u += 23
 
         return u
     },

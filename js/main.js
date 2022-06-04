@@ -55,6 +55,7 @@ const FORMS = {
         .softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
         .softcap(tmp.massSoftGain3,tmp.massSoftPower3,0)
         .softcap(tmp.massSoftGain4,tmp.massSoftPower4,0)
+        .softcap(tmp.massSoftGain5,tmp.massSoftPower5,0)
     },
     massSoftGain() {
         let s = E(1.5e156)
@@ -62,6 +63,7 @@ const FORMS = {
         if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e100)
         if (player.mainUpg.bh.includes(7)) s = s.mul(tmp.upgs.main?tmp.upgs.main[2][7].effect:E(1))
         if (player.mainUpg.rp.includes(13)) s = s.mul(tmp.upgs.main?tmp.upgs.main[1][13].effect:E(1))
+        if (hasPrestige(0,1)) s = s.pow(10)
         return s.min(tmp.massSoftGain2||1/0)
     },
     massSoftPower() {
@@ -79,6 +81,7 @@ const FORMS = {
         if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
 
         s = s.pow(tmp.bosons.effect.neg_w[0])
+        if (hasPrestige(0,1)) s = s.pow(10)
 
         return s.min(tmp.massSoftGain3||1/0)
     },
@@ -91,6 +94,7 @@ const FORMS = {
         let s = player.qu.rip.active ? uni("ee7") : uni("ee8")
         if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         s = s.pow(tmp.radiation.bs.eff[2])
+        if (hasPrestige(0,1)) s = s.pow(10)
         return s
     },
     massSoftPower3() {
@@ -102,10 +106,19 @@ const FORMS = {
         let s = mlt(1e4)
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
+        if (hasPrestige(0,1)) s = s.pow(10)
         return s
     },
     massSoftPower4() {
         let p = E(0.1)
+        return p
+    },
+    massSoftGain5() {
+        let s = mlt(1e12)
+        return s
+    },
+    massSoftPower5() {
+        let p = E(0.05)
         return p
     },
     tickspeed: {

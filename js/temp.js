@@ -18,6 +18,17 @@ function resetTemp() {
         notify: [],
         popup: [],
         saving: 0,
+        rank_tab: 0,
+
+        prestiges: {
+            req: [],
+            bulk: [],
+            eff: [],
+        },
+
+        bd: {
+            upgs: [],
+        },
 
         upgs: {
             main: {},
@@ -90,6 +101,7 @@ function resetTemp() {
 
         prevSave: "",
     }
+    for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x = UPGS.mass.cols; x >= 1; x--) tmp.upgs.mass[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs.main[x] = {}
     for (let j = 0; j < TREE_TAB.length; j++) {
@@ -109,6 +121,7 @@ function resetTemp() {
             }
         }
     }
+    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) tmp.bd.upgs[x] = {}
     tmp.el = keep[0]
     tmp.prevSave = keep[1]
 }
@@ -124,6 +137,8 @@ function updateMassTemp() {
     tmp.massSoftGain3 = FORMS.massSoftGain3()
     tmp.massSoftPower4 = FORMS.massSoftPower4()
     tmp.massSoftGain4 = FORMS.massSoftGain4()
+    tmp.massSoftPower5 = FORMS.massSoftPower5()
+    tmp.massSoftGain5 = FORMS.massSoftGain5()
     tmp.massGain = FORMS.massGain()
 }
 

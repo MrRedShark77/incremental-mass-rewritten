@@ -570,7 +570,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 8,
+            lens: 9,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -612,6 +612,10 @@ const UPGS = {
             8: {
                 desc: `Passively gain 10% of Quantum Foams & Death Shards you would get from resetting each second.`,
                 cost: E(750000),
+            },
+            9: {
+                desc: `Unlock Break Dilation.`,
+                cost: E(1e7),
             },
         },
     },

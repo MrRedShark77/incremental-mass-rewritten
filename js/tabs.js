@@ -31,6 +31,7 @@ const TABS = {
         1: [
             { id: "Ranks Rewards" },
             { id: "Scaling", unl() { return tmp.scaling ? tmp.scaling.super.length>0 : false } },
+            { id: "Prestige Rewards", unl() { return hasUpgrade("br",9) } },
         ],
         3: [
             { id: "Challenges" },
@@ -41,7 +42,7 @@ const TABS = {
             { id: "Particles" },
             { id: "Elements", unl() { return player.chal.comps[7].gte(16) || player.supernova.times.gte(1) || quUnl() } },
             { id: "Mass Dilation", unl() { return MASS_DILATION.unlocked() }, style: "dilation" },
-            { id: "Break Dilation", unl() { return player.qu.rip.first }, style: "dilation" },
+            { id: "Break Dilation", unl() { return hasUpgrade("br",9) }, style: "break_dilation" },
         ],
         5: [
             { id: "Neutron Tree" },

@@ -242,6 +242,77 @@ const RANKS = {
     },
 }
 
+const PRESTIGES = {
+    fullNames: ["Prestige Level"],
+    base() {
+        let x = E(1)
+
+        for (let i = 0; i < RANKS.names.length; i++) x = x.mul(player.ranks[RANKS.names[i]].add(1))
+
+        return x.sub(1)
+    },
+    req(i) {
+        let x = EINF, y = player.prestiges[i]
+        switch (i) {
+            case 0:
+                x = Decimal.pow(1.1,y.pow(1.05)).mul(2e13)
+                break;
+            default:
+                x = EINF
+                break;
+        }
+        return x.ceil()
+    },
+    bulk(i) {
+        let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1]
+        switch (i) {
+            case 0:
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.05).add(1)
+                break;
+            default:
+                x = E(0)
+                break;
+        }
+        return x.floor()
+    },
+    unl: [
+        _=>{ return true },
+    ],
+    rewards: [
+        {
+            "1": `All Mass softcaps up to ^5 start ^10 later.`,
+            "2": `Quantum Shard Base is increased by 0.5.`,
+            "3": `Quadruple Quantum Foam and Death Shard gain.`,
+        },
+    ],
+    rewardEff: [
+        {
+
+            /*
+            "1": [_=>{
+                let x = E(1)
+                return x
+            },x=>{
+                return x.format()+"x"
+            }],
+            */
+        },
+    ],
+    reset(i) {
+        if (i==0?tmp.prestiges.base.gte(tmp.prestiges.req[i]):player.prestiges[i-1].gte(tmp.prestiges.req[i])) {
+            player.prestiges[i] = player.prestiges[i].add(1)
+            QUANTUM.enter(false,true,false,true)
+            updateRanksTemp()
+        }
+    },
+}
+
+const PRES_LEN = PRESTIGES.fullNames.length
+
+function hasPrestige(x,y) { return player.prestiges[x].gte(y) }
+
+function prestigeEff(x,y,def=E(1)) { return tmp.prestiges.eff[x][y] || def }
+
 function updateRanksTemp() {
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
@@ -274,6 +345,78 @@ function updateRanksTemp() {
         let rn = RANKS.names[x]
         if (x > 0) {
             tmp.ranks[rn].can = player.ranks[RANKS.names[x-1]].gte(tmp.ranks[rn].req)
+        }
+    }
+
+    // Prestige
+
+    tmp.prestiges.base = PRESTIGES.base()
+    for (let x = 0; x < PRES_LEN; x++) {
+        tmp.prestiges.req[x] = PRESTIGES.req(x)
+        for (let y in PRESTIGES.rewardEff[x]) {
+            if (PRESTIGES.rewardEff[x][y]) tmp.prestiges.eff[x][y] = PRESTIGES.rewardEff[x][y][0]()
+        }
+    }
+}
+
+function updateRanksHTML() {
+    tmp.el.rank_tabs.setDisplay(hasUpgrade('br',9))
+    for (let x = 0; x < 2; x++) {
+        tmp.el["rank_tab"+x].setDisplay(tmp.rank_tab == x)
+    }
+
+    if (tmp.rank_tab == 0) {
+        for (let x = 0; x < RANKS.names.length; x++) {
+            let rn = RANKS.names[x]
+            let unl = RANKS.unl[rn]?RANKS.unl[rn]():true
+            tmp.el["ranks_div_"+x].setDisplay(unl)
+            if (unl) {
+                let keys = Object.keys(RANKS.desc[rn])
+                let desc = ""
+                for (let i = 0; i < keys.length; i++) {
+                    if (player.ranks[rn].lt(keys[i])) {
+                        desc = ` At ${RANKS.fullNames[x]} ${format(keys[i],0)}, ${RANKS.desc[rn][keys[i]]}`
+                        break
+                    }
+                }
+    
+                tmp.el["ranks_scale_"+x].setTxt(getScalingName(rn))
+                tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0))
+                tmp.el["ranks_"+x].setClasses({btn: true, reset: true, locked: !tmp.ranks[rn].can})
+                tmp.el["ranks_desc_"+x].setTxt(desc)
+                tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0))
+                tmp.el["ranks_auto_"+x].setDisplay(RANKS.autoUnl[rn]())
+                tmp.el["ranks_auto_"+x].setTxt(player.auto_ranks[rn]?"ON":"OFF")
+            }
+        }
+    }
+    if (tmp.rank_tab == 1) {
+        tmp.el.pres_base.setTxt(tmp.prestiges.base.format(0))
+
+        for (let x = 0; x < PRES_LEN; x++) {
+            let unl = PRESTIGES.unl[x]?PRESTIGES.unl[x]():true
+
+            tmp.el["pres_div_"+x].setDisplay(unl)
+
+            if (unl) {
+                let p = player.prestiges[x] || E(0)
+                let keys = Object.keys(PRESTIGES.rewards[x])
+                let desc = ""
+                for (let i = 0; i < keys.length; i++) {
+                    if (p.lt(keys[i])) {
+                        desc = ` At ${PRESTIGES.fullNames[x]} ${format(keys[i],0)}, ${PRESTIGES.rewards[x][keys[i]]}`
+                        break
+                    }
+                }
+
+                //tmp.el["pres_scale_"+x].setTxt(getScalingName(rn))
+                tmp.el["pres_amt_"+x].setTxt(format(p,0))
+                tmp.el["pres_"+x].setClasses({btn: true, reset: true, locked: x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
+                tmp.el["pres_desc_"+x].setTxt(desc)
+                tmp.el["pres_req_"+x].setTxt(x==0?format(tmp.prestiges.req[x],0)+" of Prestige Base":PRESTIGES.fullNames[x-1]+" "+format(tmp.prestiges.req[x],0))
+                tmp.el["pres_auto_"+x].setDisplay(false)
+                tmp.el["pres_auto_"+x].setTxt(false?"ON":"OFF")
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ const BIG_RIP = {
         if (hasTree('br1')) x = x.mul(treeEff('br1'))
         if (hasElement(90)) x = x.mul(tmp.elements.effect[90]||1)
         if (hasElement(94)) x = x.mul(tmp.elements.effect[94]||1)
+        if (hasPrestige(0,2)) x = x.mul(4)
         return x.floor()
     },
 }

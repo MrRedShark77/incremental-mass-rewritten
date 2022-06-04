@@ -146,6 +146,7 @@ function getPlayerData() {
             rank: false,
             tier: false,
         },
+        prestiges: [],
         auto_mainUpg: {
             
         },
@@ -156,6 +157,7 @@ function getPlayerData() {
             
         },
         ranks_reward: 0,
+        pres_reward: 0,
         scaling_ch: 0,
         rp: {
             points: E(0),
@@ -192,6 +194,13 @@ function getPlayerData() {
             particles: E(0),
             mass: E(0),
             upgs: [],
+
+            break: {
+                active: false,
+                energy: E(0),
+                mass: E(0),
+                upgs: [],
+            },
         },
         stars: {
             unls: 0,
@@ -249,6 +258,7 @@ function getPlayerData() {
         },
         time: 0,
     }
+    for (let x = 0; x < PRES_LEN; x++) s.prestiges.push(E(0))
     for (let x = 1; x <= UPGS.main.cols; x++) {
         s.auto_mainUpg[UPGS.main.ids[x]] = false
         s.mainUpg[UPGS.main.ids[x]] = []
@@ -256,6 +266,7 @@ function getPlayerData() {
     for (let x = 1; x <= CHALS.cols; x++) s.chal.comps[x] = E(0)
     for (let x = 0; x < CONFIRMS.length; x++) s.confirms[CONFIRMS[x]] = true
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) s.md.upgs[x] = E(0)
+    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) s.md.break.upgs[x] = E(0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) s.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
     for (let x = 0; x < 7; x++) {
         s.supernova.radiation.ds.push(E(0))
@@ -323,6 +334,7 @@ function convertStringToDecimal() {
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
+    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) player.md.break.upgs[x] = E(player.md.break.upgs[x]||0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
 }
 

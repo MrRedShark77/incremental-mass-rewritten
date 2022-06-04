@@ -42,8 +42,8 @@
     <script src="js/tabs.js"></script>
     <script src="js/scaling.js"></script>
     <script src="js/upgrades.js"></script>
-    <script src="js/temp.js"></script>
     <script src="js/ranks.js"></script>
+    <script src="js/temp.js"></script>
 
     <script src="js/formats.js"></script>
 
@@ -201,7 +201,19 @@
         <div id="stabs" style="min-height: 30px;"></div><br>
         <div id="tab_frame0">
             <div id="stab_frame0_0">
-                <div id="ranks_table" class="table_center" style="min-height: 180px;"></div>
+                <div id="rank_tabs" class="table_center" style="min-height: 30px;">
+                    <div style="width: 145px">
+                        <button onclick="tmp.rank_tab = 0" class="btn_tab">Ranks</button>
+                    </div><div style="width: 145px">
+                        <button onclick="tmp.rank_tab = 1" class="btn_tab">Prestiges</button>
+                    </div>
+                </div>
+                <div id="rank_tab0">
+                    <div id="ranks_table" class="table_center" style="min-height: 180px;"></div>
+                </div><div id="rank_tab1">
+                    Your Prestige base is <span id="pres_base"></span> (based on products of Rank tiers)<br><br>
+                    <div id="pres_table" class="table_center" style="min-height: 180px;"></div>
+                </div>
                 <br><br>
                 <div id="mass_upgs_table"></div><br><br>
                 <div style="width: 100%; margin-bottom: 5px;" class="table_center" id="tickspeed_div">
@@ -221,7 +233,8 @@
                     <span id="massSoft1" class="red">After <b id="massSoftStart1">X</b> of mass gain will softcap mass gain!</span><br>
                     <span id="massSoft3" style="color: rgb(121, 0, 0)">After <b id="massSoftStart3">X</b> of mass gain will softcap^2 mass gain!</span><br>
                     <span id="massSoft4" style="color: rgb(122, 0, 86)">After <b id="massSoftStart4">X</b> of mass gain will softcap^3 mass gain!</span><br>
-                    <span id="massSoft5" style="color: rgb(255, 94, 0)">After <b id="massSoftStart5">X</b> of mass gain will softcap^4 mass gain!</span>
+                    <span id="massSoft5" style="color: rgb(255, 94, 0)">After <b id="massSoftStart5">X</b> of mass gain will softcap^4 mass gain!</span><br>
+                    <span id="massSoft6" style="color: rgb(255, 238, 0)">After <b id="massSoftStart6">X</b> of mass gain will softcap^5 mass gain!</span>
                 </div>
             </div><div id="stab_frame0_1">
                 You have <span id="bhMass2">X</span> of Black Hole<br>
@@ -293,6 +306,9 @@
             </div><div id="stab_frame1_1">
                 <button onclick="player.scaling_ch = Math.max(player.scaling_ch-1,0)" class="btn"><--</button><span id="scaling_name" style="margin: 0px 10px">aaa</span><button onclick="player.scaling_ch = Math.min(player.scaling_ch+1,SCALE_TYPE.length-1)" class="btn">--></button><br><br>
                 <div id="scaling_table"></div>
+            </div><div id="stab_frame1_2">
+                <button onclick="player.pres_reward = Math.max(player.pres_reward-1,0)" class="btn"><--</button><span id="pres_reward_name" style="margin: 0px 10px">aaa</span><button onclick="player.pres_reward = Math.min(player.pres_reward+1,Math.max(...PRESTIGES.fullNames.map((v, i) => i==0 ? i : (PRESTIGES.unl[i]() && i))))" class="btn">--></button><br><br>
+                <div id="pres_rewards_table"></div>
             </div>
         </div><div id="tab_frame2">
             <div id="main_upg_msg" style="min-height: 100px;"></div>
@@ -363,7 +379,12 @@
                     <div id="md_upg_table" class="table_center" style="width: 1000px;"></div>
                 </div>
             </div><div id="stab_frame4_3">
-                Coming Soon...
+                You have <span id="bd_energy">X</span> Relativistic Energy<br>
+                You have <span id="bd_mass">X</span> of Relativistic mass<br><br>
+                <button onclick="MASS_DILATION.break.toggle()" id="bd_btn" class="btn half_full bd" tooltip="When breaking dilation, while in Big Rip, BH Condensers & Cosmic Rays are no longer nerfed by 8th QC modifier, 7th QC modifier is disabled, you can gain Relativistic Energy based on dilated mass. Relativistic Energy gains Relativistic Mass. Fixing Dilation resets your relativistic energy & its mass, also forces a Quantum reset.">Break Dilation</button><br><br>
+                <div class="table_center">
+                    <div id="bd_upg_table" class="table_center" style="width: 1000px;"></div>
+                </div>
             </div>
         </div><div id="tab_frame6">
             <div id="stab_frame6_0">
@@ -417,7 +438,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            Incremental Mass Rewritten v0.5.3.4.2 - made by MrRedShark77<br>
+            Incremental Mass Rewritten v0.5.4 - made by MrRedShark77<br>
             The game is inspired by Distance Incremental & Synergism<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span><br><br>

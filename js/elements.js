@@ -33,12 +33,26 @@ function setupHTML() {
 			<button id="ranks_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('${rn}')">OFF</button>
 			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <span id="ranks_amt_${x}">X</span><br><br>
 			<button onclick="RANKS.reset('${rn}')" class="btn reset" id="ranks_${x}">
-				Reset your ${x>0?RANKS.fullNames[x-1]:'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
+				Reset your ${x>0?RANKS.fullNames[x-1]+"s":'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
 				Req: <span id="ranks_req_${x}">X</span>
 			</button>
 		</div>`
 	}
 	ranks_table.setHTML(table)
+
+	let pres_table = new Element("pres_table")
+	table = ""
+	for (let x = 0; x < PRES_LEN; x++) {
+		table += `<div style="width: 300px" id="pres_div_${x}">
+			<button id="pres_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch(${x})">OFF</button>
+			<span id="pres_scale_${x}""></span>${PRESTIGES.fullNames[x]} <span id="pres_amt_${x}">X</span><br><br>
+			<button onclick="PRESTIGES.reset(${x})" class="btn reset" id="pres_${x}">
+				${x>0?"Reset your "+PRESTIGES.fullNames[x-1]+"s":'Force a Quantum reset'}, but ${PRESTIGES.fullNames[x]} up.<span id="pres_desc_${x}"></span><br>
+				Req: <span id="pres_req_${x}">X</span>
+			</button>
+		</div>`
+	}
+	pres_table.setHTML(table)
 
 	let mass_upgs_table = new Element("mass_upgs_table")
 	table = ""
@@ -73,6 +87,18 @@ function setupHTML() {
 		table += `</div>`
 	}
 	ranks_rewards_table.setHTML(table)
+
+	let pres_rewards_table = new Element("pres_rewards_table")
+	table = ""
+	for (let x = 0; x < PRES_LEN; x++) {
+		table += `<div id="pres_reward_div_${x}">`
+		let keys = Object.keys(PRESTIGES.rewards[x])
+		for (let y = 0; y < keys.length; y++) {
+			table += `<span id="pres_reward_${x}_${y}"><b>${PRESTIGES.fullNames[x]} ${keys[y]}:</b> ${PRESTIGES.rewards[x][keys[y]]}${PRESTIGES.rewardEff[x][keys[y]]?` Currently: <span id='pres_eff_${x}_${y}'></span></span>`:""}<br>`
+		}
+		table += `</div>`
+	}
+	pres_rewards_table.setHTML(table)
 
 	let main_upgs_table = new Element("main_upgs_table")
 	table = ""
@@ -202,32 +228,6 @@ function updateUpperHTML() {
 	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")")
 }
 
-function updateRanksHTML() {
-	for (let x = 0; x < RANKS.names.length; x++) {
-        let rn = RANKS.names[x]
-		let unl = RANKS.unl[rn]?RANKS.unl[rn]():true
-		tmp.el["ranks_div_"+x].setDisplay(unl)
-		if (unl) {
-			let keys = Object.keys(RANKS.desc[rn])
-			let desc = ""
-			for (let i = 0; i < keys.length; i++) {
-				if (player.ranks[rn].lt(keys[i])) {
-					desc = ` At ${RANKS.fullNames[x]} ${format(keys[i],0)}, ${RANKS.desc[rn][keys[i]]}`
-					break
-				}
-			}
-
-			tmp.el["ranks_scale_"+x].setTxt(getScalingName(rn))
-			tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0))
-			tmp.el["ranks_"+x].setClasses({btn: true, reset: true, locked: !tmp.ranks[rn].can})
-			tmp.el["ranks_desc_"+x].setTxt(desc)
-			tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0))
-			tmp.el["ranks_auto_"+x].setDisplay(RANKS.autoUnl[rn]())
-			tmp.el["ranks_auto_"+x].setTxt(player.auto_ranks[rn]?"ON":"OFF")
-		}
-    }
-}
-
 function updateMassUpgradesHTML() {
 	for (let x = 1; x <= UPGS.mass.cols; x++) {
 		let upg = UPGS.mass[x]
@@ -274,6 +274,24 @@ function updateRanksRewardHTML() {
 				let unl = player.ranks[rn].gte(keys[y])
 				tmp.el["ranks_reward_"+rn+"_"+y].setDisplay(unl)
 				if (unl) if (tmp.el["ranks_eff_"+rn+"_"+y]) tmp.el["ranks_eff_"+rn+"_"+y].setTxt(RANKS.effDesc[rn][keys[y]](RANKS.effect[rn][keys[y]]()))
+			}
+		}
+	}
+}
+
+function updatePrestigesRewardHTML() {
+	tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
+	for (let x = 0; x < PRES_LEN; x++) {
+		tmp.el["pres_reward_div_"+x].setDisplay(player.pres_reward == x)
+		if (player.pres_reward == x) {
+			let keys = Object.keys(PRESTIGES.rewards[x])
+			for (let y = 0; y < keys.length; y++) {
+				let unl = player.prestiges[x].gte(keys[y])
+				tmp.el["pres_reward_"+x+"_"+y].setDisplay(unl)
+				if (unl) if (tmp.el["pres_eff_"+x+"_"+y]) {
+					let eff = PRESTIGES.rewardEff[x][keys[y]]
+					tmp.el["pres_eff_"+x+"_"+y].setTxt(eff[1](tmp.prestiges.eff[x][keys[y]]))
+				}
 			}
 		}
 	}
@@ -375,6 +393,8 @@ function updateHTML() {
 				tmp.el.massSoftStart4.setTxt(formatMass(tmp.massSoftGain3))
 				tmp.el.massSoft5.setDisplay(tmp.massGain.gte(tmp.massSoftGain4))
 				tmp.el.massSoftStart5.setTxt(formatMass(tmp.massSoftGain4))
+				tmp.el.massSoft6.setDisplay(tmp.massGain.gte(tmp.massSoftGain5))
+				tmp.el.massSoftStart6.setTxt(formatMass(tmp.massSoftGain5))
 			}
 			if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()
@@ -389,6 +409,7 @@ function updateHTML() {
 		if (tmp.tab == 1) {
 			if (tmp.stab[1] == 0) updateRanksRewardHTML()
 			if (tmp.stab[1] == 1) updateScalingHTML()
+			if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
 		}
 		if (tmp.tab == 2) {
 			updateMainUpgradesHTML()
@@ -400,6 +421,7 @@ function updateHTML() {
 			if (tmp.stab[4] == 0) updateAtomHTML()
 			if (tmp.stab[4] == 1) updateElementsHTML()
 			if (tmp.stab[4] == 2) updateMDHTML()
+			if (tmp.stab[4] == 3) updateBDHTML()
 		}
 		if (tmp.tab == 7) {
 			updateOptionsHTML()

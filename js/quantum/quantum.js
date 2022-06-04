@@ -9,6 +9,7 @@ const QUANTUM = {
         if (hasTree("qf1")) x = x.mul(treeEff("qf1"))
         if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
         if (hasTree("qf3")) x = x.mul(treeEff("qf3"))
+        if (hasPrestige(0,2)) x = x.mul(4)
         return x.floor()
     },
     gainTimes() {
@@ -17,10 +18,10 @@ const QUANTUM = {
         if (hasTree("qu9")) x = x.mul(treeEff("qu9"))
         return x
     },
-    enter(auto=false,force=false,rip=false) {
+    enter(auto=false,force=false,rip=false,bd=false) {
         if (tmp.qu.gain.gte(1) || force) {
             if (player.confirms.qu&&!auto&&!force) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
-            if (QCs.active() && !rip) {
+            if (QCs.active() && !rip && !bd) {
                 player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
                 player.qu.qc.active = false
             }
@@ -243,6 +244,11 @@ function calcQuantum(dt, dt_offline) {
     if (player.mass.gte(mlt(7.5e6)) && !player.qu.en.unl) {
         player.qu.en.unl = true
         addPopup(POPUP_GROUPS.en)
+    }
+
+    if (hasUpgrade('br',9)) {
+        player.md.break.energy = player.md.break.energy.add(tmp.bd.energyGain.mul(dt))
+        player.md.break.mass = player.md.break.mass.add(tmp.bd.massGain.mul(dt))
     }
 
     if (hasTree("qu_qol1")) for (let x = 0; x < tmp.supernova.auto_tree.length; x++) TREE_UPGS.buy(tmp.supernova.auto_tree[x], true)
