@@ -3,6 +3,7 @@ const STARS = {
     gain() {
         let x = player.stars.generators[0]
         if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
+        if (hasPrestige(1,1)) x = x.pow(2)
         return x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
     },
     softGain() {
@@ -24,7 +25,7 @@ const STARS = {
             ,(hasElement(69)?player.ranks.pent.mul(pp):E(0)).softcap(9,0.5,0)]
         let x =
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1))))
-        return x.softcap("ee15",0.95,2)
+        return x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2)
     },
     generators: {
         req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],
@@ -52,6 +53,7 @@ const STARS = {
             if (hasElement(54)) x = x.mul(tmp.elements.effect[54])
             x = x.mul(tmp.bosons.upgs.photon[3].effect)
             x = x.mul(tmp.stars.generator_boost_eff)
+            if (hasPrestige(1,1)) x = x.pow(2)
 
             if (QCs.active()) x = expMult(x,tmp.qu.qc_eff[0][0])
             return x

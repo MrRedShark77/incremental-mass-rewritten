@@ -22,6 +22,7 @@ const FORMS = {
         if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)
         if (player.mainUpg.br.includes(3)) x = x.pow(tmp.upgs.main[4][3].effect)
+        if (hasPrestige(0,5)) x = x.pow(2)
 
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[1])
         return x
@@ -103,7 +104,7 @@ const FORMS = {
         return p
     },
     massSoftGain4() {
-        let s = mlt(1e4)
+        let s = mlt(player.qu.rip.active ? 0.1 : 1e4)
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
         if (hasPrestige(0,1)) s = s.pow(10)
@@ -161,6 +162,7 @@ const FORMS = {
                 ss = ss.pow(2)
                 p **= 0.5
             }
+            if (hasPrestige(0,6)) ss = ss.pow(100)
             step = step.softcap(ss,p,0)
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))

@@ -570,7 +570,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 9,
+            lens: 10,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -616,6 +616,10 @@ const UPGS = {
             9: {
                 desc: `Unlock Break Dilation.`,
                 cost: E(1e7),
+            },
+            10: {
+                desc: `Chromas are 10% stronger.`,
+                cost: E(2.5e8),
             },
         },
     },

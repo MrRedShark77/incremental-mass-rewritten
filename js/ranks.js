@@ -243,7 +243,7 @@ const RANKS = {
 }
 
 const PRESTIGES = {
-    fullNames: ["Prestige Level"],
+    fullNames: ["Prestige Level", "Honor"],
     base() {
         let x = E(1)
 
@@ -255,7 +255,10 @@ const PRESTIGES = {
         let x = EINF, y = player.prestiges[i]
         switch (i) {
             case 0:
-                x = Decimal.pow(1.1,y.pow(1.05)).mul(2e13)
+                x = Decimal.pow(1.1,y.pow(1.1)).mul(2e13)
+                break;
+            case 1:
+                x = y.pow(1.25).mul(3).add(4)
                 break;
             default:
                 x = EINF
@@ -267,8 +270,11 @@ const PRESTIGES = {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1]
         switch (i) {
             case 0:
-                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.05).add(1)
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).add(1)
                 break;
+            case 1:
+                if (y.gte(4)) x = y.sub(4).div(2).max(0).root(1.5).add(1)
+                break
             default:
                 x = E(0)
                 break;
@@ -277,12 +283,18 @@ const PRESTIGES = {
     },
     unl: [
         _=>{ return true },
+        _=>{ return true },
     ],
     rewards: [
         {
             "1": `All Mass softcaps up to ^5 start ^10 later.`,
             "2": `Quantum Shard Base is increased by 0.5.`,
             "3": `Quadruple Quantum Foam and Death Shard gain.`,
+            "5": `Pre-Quantum Global Speed is raised by ^2 (before division).`,
+            "6": `Tickspeed Power softcap starts ^100 later.`,
+        },
+        {
+            "1": `All-Star resources are raised by ^2.`,
         },
     ],
     rewardEff: [
@@ -297,10 +309,16 @@ const PRESTIGES = {
             }],
             */
         },
+        {
+
+        },
     ],
     reset(i) {
         if (i==0?tmp.prestiges.base.gte(tmp.prestiges.req[i]):player.prestiges[i-1].gte(tmp.prestiges.req[i])) {
             player.prestiges[i] = player.prestiges[i].add(1)
+            for (let j = i-1; j >= 0; j--) {
+                player.prestiges[j] = E(0)
+            }
             QUANTUM.enter(false,true,false,true)
             updateRanksTemp()
         }
