@@ -20,6 +20,8 @@ function resetTemp() {
         saving: 0,
         rank_tab: 0,
 
+        scaling_qc8: [],
+
         prestiges: {
             req: [],
             bulk: [],

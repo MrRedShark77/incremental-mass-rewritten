@@ -116,6 +116,7 @@ const FORMS = {
     },
     massSoftGain5() {
         let s = mlt(1e12)
+        if (hasPrestige(0,8)) s = s.pow(prestigeEff(0,8))
         return s
     },
     massSoftPower5() {
@@ -151,8 +152,8 @@ const FORMS = {
                 step = step.add(tmp.atom.particles[0].powerEffect.eff2)
                 if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
-                step = step.mul(tmp.md.mass_eff)
             step = step.mul(tmp.bosons.effect.z_boson[0])
+            step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
             step = step.pow(tmp.qu.chroma_eff[0])
             if (hasTree("t1")) step = step.pow(1.15)
 

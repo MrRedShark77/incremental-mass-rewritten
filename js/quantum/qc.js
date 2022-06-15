@@ -61,6 +61,7 @@ const QCs = {
             effDesc(x) { return `^${format(x)} to Mass Dilation’s penalty.` },
         },{
             eff(i) {
+                if (hasElement(98) && player.qu.rip.active) i *= 0.8
                 let x = [1-0.05*i,i/10+1]
                 return x
             },

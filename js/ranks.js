@@ -292,14 +292,19 @@ const PRESTIGES = {
             "3": `Quadruple Quantum Foam and Death Shard gain.`,
             "5": `Pre-Quantum Global Speed is raised by ^2 (before division).`,
             "6": `Tickspeed Power softcap starts ^100 later.`,
+            "8": `Mass softcap^5 starts later based on Prestige.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
+            "2": `Meta-Supernova starts 100 later.`,
         },
     ],
     rewardEff: [
         {
-
+            "8": [_=>{
+                let x = player.prestiges[0].root(2).div(2).add(1)
+                return x
+            },x=>"^"+x.format()+" later"],
             /*
             "1": [_=>{
                 let x = E(1)

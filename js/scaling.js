@@ -163,6 +163,10 @@ function updateScalingTemp() {
 			else if (scalingActive(key[y], SCALING_RES[key[y]](), SCALE_TYPE[x])) tmp.scaling[SCALE_TYPE[x]].push(key[y])
 		}
 	}
+	let sqc8 = []
+	if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent")
+	if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
+	tmp.scaling_qc8 = sqc8
 }
 
 function scalingActive(name, amt, type) {
@@ -235,11 +239,12 @@ function getScalingStart(type, name) {
 		if (name=="bh_condenser" || name=="gamma_ray") {
 			start = start.mul(getEnRewardEff(0))
 		}
+		if (name == "supernova") if (hasPrestige(1,2)) start = start.add(100)
 	}
 	if (name=='supernova') {
 		start = start.add(tmp.prim.eff[7])
 	}
-	if (QCs.active() && QCM8_SCALES.includes(name)) if (player.mainUpg.br.includes(2) ? !["massUpg","rank","tier","tetr","pent"].includes(name) : true) if (player.md.break.active ? !["bh_condenser","gamma_ray"].includes(name) : true) start = start.pow(tmp.qu.qc_eff[7][0])
+	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) start = start.pow(tmp.qu.qc_eff[7][0])
 	if (hasElement(88) && name == "tickspeed") start = start.mul(player.qu.rip.active?100:10)
 	return start.floor()
 }
@@ -325,7 +330,7 @@ function getScalingPower(type, name) {
 			if (hasElement(78)) power = power.mul(0.8)
 		}
 	}
-	if (QCs.active() && QCM8_SCALES.includes(name)) if (player.mainUpg.br.includes(2) ? !["massUpg","rank","tier","tetr","pent"].includes(name) : true) if (player.md.break.active ? !["bh_condenser","gamma_ray"].includes(name) : true) power = power.mul(tmp.qu.qc_eff[7][1])
+	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(tmp.qu.qc_eff[7][1])
 	if (PreQ_SCALES.includes(name) && type != "meta")  power = power.mul(getEnRewardEff(5))
 	return power.max(type=="meta"?0.5:0)
 }

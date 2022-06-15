@@ -75,7 +75,9 @@ const ENTROPY = {
             scale: {s: 10, p: 2},
 
             eff(i) {
-                let x = E(3).pow(i)
+                let b = 3
+                if (hasElement(97)) b++
+                let x = Decimal.pow(b,i)
                 return x
             },
             desc(x) { return `Make evaporated resources gain <b>${x.format(1)}x</b> faster.` },

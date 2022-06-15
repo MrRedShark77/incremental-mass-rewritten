@@ -75,7 +75,7 @@ const CHALS = {
     exit(auto=false) {
         if (!player.chal.active == 0) {
             if (tmp.chal.canFinish) {
-                player.chal.comps[player.chal.active] = player.chal.comps[player.chal.active].add(tmp.chal.gain)
+                player.chal.comps[player.chal.active] = player.chal.comps[player.chal.active].add(tmp.chal.gain).min(tmp.chal.max[player.chal.active])
             }
             if (!auto) {
                 this.reset(player.chal.active)
