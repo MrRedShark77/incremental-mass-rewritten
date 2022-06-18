@@ -186,6 +186,8 @@ const MASS_DILATION = {
             let x = player.md.mass.add(1).log10().sub(400).div(2).max(0)
             x = x.add(1).pow(x.add(1).log10()).sub(1)
 
+            if (hasPrestige(0,10)) x = x.mul(prestigeEff(0,10))
+
             return x
         },
         massGain() {
@@ -241,6 +243,26 @@ const MASS_DILATION = {
                     maxLvl: 1,
                     cost(x) { return E(1.989e33) },
                     bulk() { return player.md.break.mass.gte(1.989e33)?E(1):E(0) },
+                },{
+                    desc: `Meta-Rank scales later.`,
+                    cost(x) { return E(10).pow(x.pow(2)).mul(1.989e36) },
+                    bulk() { return player.md.break.mass.gte(1.989e36)?player.md.break.mass.div(1.989e36).max(1).log10().root(2).add(1).floor():E(0) },
+                    effect(y) {
+                        let x = y.div(10).add(1)
+                
+                        return x
+                    },
+                    effDesc(x) { return "x"+format(x)+" later" },
+                },{
+                    desc: `Triple Relativistic Energies gain.`,
+                    cost(x) { return E(10).pow(x.pow(1.5)).mul(2.9835e48) },
+                    bulk() { return player.md.break.mass.gte(2.9835e48)?player.md.break.mass.div(2.9835e48).max(1).log10().root(1.5).add(1).floor():E(0) },
+                    effect(y) {
+                        let x = Decimal.pow(3,y)
+
+                        return x
+                    },
+                    effDesc(x) { return format(x,0)+"x" },
                 },
             ],
         }

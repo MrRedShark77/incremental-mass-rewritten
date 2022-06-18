@@ -11,6 +11,7 @@ const SCALE_START = {
 		supernova: E(15),
 		fTier: E(10),
 		cosmic_str: E(15),
+		prestige0: E(15),
     },
 	hyper: {
 		rank: E(120),
@@ -55,6 +56,7 @@ const SCALE_POWER= {
 		supernova: 3,
 		fTier: 2.5,
 		cosmic_str: 2,
+		prestige0: 1.5,
     },
 	hyper: {
 		rank: 2.5,
@@ -106,6 +108,7 @@ const SCALING_RES = {
 	supernova(x=0) { return player.supernova.times },
 	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
 	cosmic_str(x=0) { return player.qu.cosmic_str },
+	prestige0() { return player.prestiges[0] },
 }
 
 const NAME_FROM_RES = {
@@ -120,6 +123,7 @@ const NAME_FROM_RES = {
 	supernova: "Supernova",
 	fTier: "Fermion Tier",
 	cosmic_str: "Cosmic String",
+	prestige0: "Prestige Level",
 }
 
 function updateScalingHTML() {
@@ -176,6 +180,8 @@ function scalingActive(name, amt, type) {
 }
 
 function getScalingName(name, x=0, y=0) {
+	if (!NAME_FROM_RES[name]) return
+
 	let cap = Object.keys(SCALE_START).length;
 	let current = "";
 	let amt = SCALING_RES[name](x,y);
@@ -229,6 +235,7 @@ function getScalingStart(type, name) {
 			if (player.ranks.pent.gte(1)) start = start.mul(1.1)
 			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
 			start = start.mul(tmp.radiation.bs.eff[14])
+			start = start.mul(tmp.bd.upgs[4].eff)
 		}
 		if (name=="tickspeed") {
 			if (hasElement(68)) start = start.mul(2)

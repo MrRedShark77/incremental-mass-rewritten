@@ -608,12 +608,17 @@ const ELEMENTS = {
             cost: E('e1.2e7'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Remove softcap^3 from Photon Upgrade 3 effect, its softcap^2 is weaker.`,
+            cost: E('e2.15e7'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Prestige Base is raised based on Pent.`,
+            cost: E('e2.5e7'),
+            effect() {
+                let x = player.ranks.pent.root(2).div(1e3).add(1).toNumber()
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
         },
         {
             desc: `Placeholder.`,
@@ -718,7 +723,7 @@ const ELEMENTS = {
         if (PRIM.unl()) u += 3
         if (hasTree('unl3')) u += 3
         if (player.qu.rip.first) u += 9
-        if (hasUpgrade("br",9)) u += 23
+        if (hasUpgrade("br",9)) u += 23 // 23
 
         return u
     },

@@ -166,6 +166,7 @@ const RANKS = {
         tetr: {
             '2'() {
                 let ret = E(player.massUpg[3]||0).div(400)
+                if (ret.gte(1) && hasPrestige(0,15)) ret = ret.pow(1.5)
                 return ret
             },
             '4'() {
@@ -244,6 +245,11 @@ const RANKS = {
 
 const PRESTIGES = {
     fullNames: ["Prestige Level", "Honor"],
+    baseExponent() {
+        let x = 1
+        if (hasElement(100)) x *= tmp.elements.effect[100]
+        return x
+    },
     base() {
         let x = E(1)
 
@@ -255,7 +261,7 @@ const PRESTIGES = {
         let x = EINF, y = player.prestiges[i]
         switch (i) {
             case 0:
-                x = Decimal.pow(1.1,y.pow(1.1)).mul(2e13)
+                x = Decimal.pow(1.1,y.scaleEvery('prestige0').pow(1.1)).mul(2e13)
                 break;
             case 1:
                 x = y.pow(1.25).mul(3).add(4)
@@ -270,7 +276,7 @@ const PRESTIGES = {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1]
         switch (i) {
             case 0:
-                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).add(1)
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).add(1)
                 break;
             case 1:
                 if (y.gte(4)) x = y.sub(4).div(2).max(0).root(1.5).add(1)
@@ -293,10 +299,15 @@ const PRESTIGES = {
             "5": `Pre-Quantum Global Speed is raised by ^2 (before division).`,
             "6": `Tickspeed Power softcap starts ^100 later.`,
             "8": `Mass softcap^5 starts later based on Prestige.`,
+            "10": `Gain more Relativistic Energies based on Prestige.`,
+            "12": `Stronger Effect's softcap^2 is 7.04% weaker.`,
+            "15": `Tetr 2's reward is overpowered.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
             "2": `Meta-Supernova starts 100 later.`,
+            "3": `Bosonic resources are boosted based on Prestige Base.`,
+            "4": `Gain 5 free levels of each Primordium Particle.`,
         },
     ],
     rewardEff: [
@@ -305,6 +316,10 @@ const PRESTIGES = {
                 let x = player.prestiges[0].root(2).div(2).add(1)
                 return x
             },x=>"^"+x.format()+" later"],
+            "10": [_=>{
+                let x = Decimal.pow(2,player.prestiges[0])
+                return x
+            },x=>x.format()+"x"],
             /*
             "1": [_=>{
                 let x = E(1)
@@ -315,7 +330,10 @@ const PRESTIGES = {
             */
         },
         {
-
+            "3": [_=>{
+                let x = tmp.prestiges.base.max(1).log10().div(10).add(1).root(2)
+                return x
+            },x=>"^"+x.format()],
         },
     ],
     reset(i) {
@@ -373,7 +391,9 @@ function updateRanksTemp() {
 
     // Prestige
 
-    tmp.prestiges.base = PRESTIGES.base()
+    tmp.prestiges.baseMul = PRESTIGES.base()
+    tmp.prestiges.baseExp = PRESTIGES.baseExponent()
+    tmp.prestiges.base = tmp.prestiges.baseMul.pow(tmp.prestiges.baseExp)
     for (let x = 0; x < PRES_LEN; x++) {
         tmp.prestiges.req[x] = PRESTIGES.req(x)
         for (let y in PRESTIGES.rewardEff[x]) {
@@ -414,7 +434,7 @@ function updateRanksHTML() {
         }
     }
     if (tmp.rank_tab == 1) {
-        tmp.el.pres_base.setTxt(tmp.prestiges.base.format(0))
+        tmp.el.pres_base.setHTML(`${tmp.prestiges.baseMul.format(0)}<sup>${format(tmp.prestiges.baseExp)}</sup> = ${tmp.prestiges.base.format(0)}`)
 
         for (let x = 0; x < PRES_LEN; x++) {
             let unl = PRESTIGES.unl[x]?PRESTIGES.unl[x]():true
@@ -432,7 +452,7 @@ function updateRanksHTML() {
                     }
                 }
 
-                //tmp.el["pres_scale_"+x].setTxt(getScalingName(rn))
+                tmp.el["pres_scale_"+x].setTxt(getScalingName("prestige"+x))
                 tmp.el["pres_amt_"+x].setTxt(format(p,0))
                 tmp.el["pres_"+x].setClasses({btn: true, reset: true, locked: x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
                 tmp.el["pres_desc_"+x].setTxt(desc)
