@@ -621,12 +621,12 @@ const ELEMENTS = {
             effDesc(x) { return "^"+format(x) },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Blueprint Particles effect is overpowered.`,
+            cost: E('e3.5e7'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Tickspeed Power’s softcap starts ^100 later.`,
+            cost: E('e111111111'),
         },
         {
             desc: `Placeholder.`,

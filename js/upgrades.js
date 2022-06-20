@@ -570,7 +570,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 10,
+            lens: 11,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -620,6 +620,10 @@ const UPGS = {
             10: {
                 desc: `Chromas are 10% stronger.`,
                 cost: E(2.5e8),
+            },
+            11: {
+                desc: `Prestige Level no longer resets anything.`,
+                cost: E(1e10),
             },
         },
     },

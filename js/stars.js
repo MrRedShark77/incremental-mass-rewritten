@@ -85,6 +85,7 @@ function updateStarsTemp() {
     tmp.stars.generator_boost_base = E(2)
     if (hasElement(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])
     if (hasUpgrade('br',5)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(upgEffect(4,5))
+    tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.softcap(1e13,0.5,0)
 
     tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost.mul(tmp.chal?tmp.chal.eff[11]:1))
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)

@@ -112,7 +112,7 @@ const QUANTUM = {
         return x
     },
     bpEff() {
-        let x = player.qu.bp.add(1).log10().add(1).pow(1.5)
+        let x = hasElement(101) ? player.qu.bp.add(1).log10().add(1).tetrate(1.25) : player.qu.bp.add(1).log10().add(1).pow(1.5)
         return x
     },
     cosmic_str: {

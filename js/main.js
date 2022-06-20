@@ -164,6 +164,7 @@ const FORMS = {
                 p **= 0.5
             }
             if (hasPrestige(0,6)) ss = ss.pow(100)
+            if (hasElement(102)) ss = ss.pow(100)
             step = step.softcap(ss,p,0)
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))

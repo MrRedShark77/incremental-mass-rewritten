@@ -234,6 +234,7 @@ function getScalingStart(type, name) {
 		if (name=="rank") {
 			if (player.ranks.pent.gte(1)) start = start.mul(1.1)
 			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
+			if (hasPrestige(1,5)) start = start.mul(prestigeEff(1,5))
 			start = start.mul(tmp.radiation.bs.eff[14])
 			start = start.mul(tmp.bd.upgs[4].eff)
 		}

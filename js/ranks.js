@@ -253,7 +253,11 @@ const PRESTIGES = {
     base() {
         let x = E(1)
 
-        for (let i = 0; i < RANKS.names.length; i++) x = x.mul(player.ranks[RANKS.names[i]].add(1))
+        for (let i = 0; i < RANKS.names.length; i++) {
+            let r = player.ranks[RANKS.names[i]]
+            if (hasPrestige(0,18) && i == 0) r = r.mul(2)
+            x = x.mul(r.add(1))
+        }
 
         return x.sub(1)
     },
@@ -288,8 +292,12 @@ const PRESTIGES = {
         return x.floor()
     },
     unl: [
-        _=>{ return true },
-        _=>{ return true },
+        _=>true,
+        _=>true,
+    ],
+    noReset: [
+        _=>hasUpgrade('br',11),
+        _=>false,
     ],
     rewards: [
         {
@@ -302,12 +310,14 @@ const PRESTIGES = {
             "10": `Gain more Relativistic Energies based on Prestige.`,
             "12": `Stronger Effect's softcap^2 is 7.04% weaker.`,
             "15": `Tetr 2's reward is overpowered.`,
+            "18": `Gain 100% more Ranks to Prestige Base.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
             "2": `Meta-Supernova starts 100 later.`,
             "3": `Bosonic resources are boosted based on Prestige Base.`,
             "4": `Gain 5 free levels of each Primordium Particle.`,
+            "5": `Pent 5's reward is stronger based on Prestige Base.`,
         },
     ],
     rewardEff: [
@@ -334,15 +344,23 @@ const PRESTIGES = {
                 let x = tmp.prestiges.base.max(1).log10().div(10).add(1).root(2)
                 return x
             },x=>"^"+x.format()],
+            "5": [_=>{
+                let x = tmp.prestiges.base.max(1).log10().div(10).add(1).root(3)
+                return x
+            },x=>"x"+x.format()],
         },
     ],
     reset(i) {
         if (i==0?tmp.prestiges.base.gte(tmp.prestiges.req[i]):player.prestiges[i-1].gte(tmp.prestiges.req[i])) {
             player.prestiges[i] = player.prestiges[i].add(1)
-            for (let j = i-1; j >= 0; j--) {
-                player.prestiges[j] = E(0)
+
+            if (!this.noReset[i]()) {
+                for (let j = i-1; j >= 0; j--) {
+                    player.prestiges[j] = E(0)
+                }
+                QUANTUM.enter(false,true,false,true)
             }
-            QUANTUM.enter(false,true,false,true)
+            
             updateRanksTemp()
         }
     },
