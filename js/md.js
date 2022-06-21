@@ -221,9 +221,9 @@ const MASS_DILATION = {
                     effect(y) {
                         let x = Decimal.pow(2,y)
 
-                        return x
+                        return x.softcap(1e15,0.5,0)
                     },
-                    effDesc(x) { return format(x,0)+"x" },
+                    effDesc(x) { return format(x,0)+"x"+x.softcapHTML(1e15) },
                 },{
                     desc: `Increase the exponent of the Dilated Mass formula.`,
                     cost(x) { return E(10).pow(x.pow(1.25)).mul(1e7) },
