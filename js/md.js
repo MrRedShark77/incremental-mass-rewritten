@@ -43,7 +43,7 @@ const MASS_DILATION = {
         if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
         if (hasElement(32)) x = x.pow(1.05)
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-        return x
+        return x.softcap(mlt(1e12),0.1,0)
     },
     mass_req() {
         let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e56)
@@ -264,6 +264,17 @@ const MASS_DILATION = {
                         return x
                     },
                     effDesc(x) { return format(x,0)+"x" },
+                },{
+                    desc: `Death Shard & Entropy boosts each other.`,
+                    maxLvl: 1,
+                    cost(x) { return uni(1e35) },
+                    bulk() { return player.md.break.mass.gte(uni(1e35))?E(1):E(0) },
+                    effect(y) {
+                        let x = [player.qu.rip.amt.add(1).log10().add(1).pow(2),player.qu.en.amt.add(1).log10().add(1).pow(1.5)]
+
+                        return x
+                    },
+                    effDesc(x) { return x[0].format()+"x to Entropies gain, "+x[1].format()+"x to Death Shards gain" },
                 },
             ],
         }
@@ -380,6 +391,9 @@ function updateMDHTML() {
             tmp.el["md_upg"+x+"_cost"].setTxt(player.md.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.md.upgs[x].cost):"")
         }
     }
+
+    tmp.el.dmSoft1.setDisplay(player.md.mass.gte(mlt(1e12)))
+    tmp.el.dmSoftStart1.setTxt(formatMass(mlt(1e12)))
 }
 
 function updateBDHTML() {

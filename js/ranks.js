@@ -311,6 +311,7 @@ const PRESTIGES = {
             "12": `Stronger Effect's softcap^2 is 7.04% weaker.`,
             "15": `Tetr 2's reward is overpowered.`,
             "18": `Gain 100% more Ranks to Prestige Base.`,
+            "24": `Super Cosmic Strings scale 20% weaker.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,

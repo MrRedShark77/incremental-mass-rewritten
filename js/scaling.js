@@ -26,7 +26,8 @@ const SCALE_START = {
 	},
 	ultra: {
 		rank: E(600),
-		tier: E(7500),
+		tier: E(1e5),
+		tetr: E(150),
 		massUpg: E(1e11),
 		tickspeed: E(700),
 		bh_condenser: E(750),
@@ -71,6 +72,8 @@ const SCALE_POWER= {
 	},
 	ultra: {
 		rank: 4,
+		tier: 4,
+		tetr: 6,
 		massUpg: 10,
 		tickspeed: 7,
 		bh_condenser: 4,
@@ -292,6 +295,9 @@ function getScalingPower(type, name) {
 		}
 		if (name=="fTier") {
 			if (hasTree("fn3")) power = power.mul(0.925)
+		}
+		if (name=="cosmic_str") {
+			if (hasPrestige(0,24)) power = power.mul(0.8)
 		}
 	}
 	if (type=="hyper") {

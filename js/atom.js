@@ -134,34 +134,34 @@ const ATOM = {
         },
         powerEffect: [
             x=>{
-                let a = x.add(1).pow(3)//.softcap("ee14",0.9,2)
+                let a = hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(3)
                 let b = hasElement(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1).pow(2)//.softcap("ee14",0.9,2)
+                let a = hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(2)
                 let b = hasElement(19)
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = x.add(1)//.softcap("ee14",0.9,2)
+                let a = hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1)
                 let b = hasElement(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
         ],
         desc: [
             x=>{ return `
-                Multiplies Mass gain by ${format(x.eff1)}<br><br>
+                Boosts Mass gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
                 Adds Tickspeed Power by ${format(x.eff2.mul(100))}%
             ` },
             x=>{ return `
-                Multiplies Rage Power gain by ${format(x.eff1)}<br><br>
+                Boosts Rage Power gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
                 Makes Mass gain boosted by Rage Powers - ${format(x.eff2)}x<br><br>
             ` },
             x=>{ return `
-                Multiplies Dark Matter gain by ${format(x.eff1)}<br><br>
+                Boosts Dark Matter gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
                 Adds BH Condenser Power by ${format(x.eff2)}
             ` },
         ],

@@ -21,6 +21,8 @@ const FORMS = {
         let x = E(1)
         if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)
+        if (hasElement(103)) x = x.mul(tmp.elements.effect[103])
+
         if (player.mainUpg.br.includes(3)) x = x.pow(tmp.upgs.main[4][3].effect)
         if (hasPrestige(0,5)) x = x.pow(2)
 
@@ -35,13 +37,15 @@ const FORMS = {
         x = x.mul(tmp.tickspeedEffect.eff||E(1))
         if (player.bh.unl) x = x.mul(tmp.bh.effect)
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
-        x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         x = x.mul(tmp.stars.effect)
         if (hasTree("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
+
+        if (!hasElement(105)) x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
+        else x = x.pow(tmp.atom.particles[0].powerEffect.eff1)
 
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
@@ -51,6 +55,7 @@ const FORMS = {
             if (hasElement(28)) x = x.pow(1.5)
         }
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
         return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
         .softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
@@ -183,8 +188,11 @@ const FORMS = {
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
-            gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
             if (hasTree("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
+
+            if (!hasElement(105)) gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
+            else gain = gain.pow(tmp.atom.particles[1].powerEffect.eff1)
+
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) gain = gain.root(10)
@@ -218,7 +226,8 @@ const FORMS = {
             gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
 
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = gain.root(6)
-            gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
+            if (!hasElement(105)) gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
+            else gain = gain.pow(tmp.atom.particles[2].powerEffect.eff1)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) gain = gain.root(8)
             gain = gain.pow(tmp.chal.eff[8])
             gain = gain.pow(tmp.prim.eff[2][0])

@@ -629,16 +629,21 @@ const ELEMENTS = {
             cost: E('e111111111'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Pre-Quantum Global Speed is effective based on Honor.`,
+            cost: E('e5e8'),
+            effect() {
+                let x = E(2).pow(player.prestiges[1])
+                return x
+            },
+            effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Add 200 more C9-12 maximum completions.`,
+            cost: E('e1.2e9'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Each Particle Power’s 1st effect is exponentially overpowered.`,
+            cost: E('e2.2e9'),
         },
         {
             desc: `Placeholder.`,
@@ -757,7 +762,7 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         tmp.el.elem_desc.setTxt("["+ELEMENTS.fullNames[ch]+"] "+ELEMENTS.upgs[ch].desc)
-        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86?" in Big Rip":"")+(player.qu.rip.active&&ch==58?" [CANNOT AFFORD]":""))
+        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86?" in Big Rip":"")+(player.qu.rip.active&&tmp.elements.cannot.includes(ch)?" [CANNOT AFFORD]":""))
         tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tmp.elements.effect[ch]):"")
     }
     tmp.el.element_la_1.setVisible(tmp.elements.unl_length>57)
@@ -777,7 +782,7 @@ function updateElementsHTML() {
 
 function updateElementsTemp() {
     let cannot = []
-    if (player.qu.rip.active) cannot.push(58)
+    if (player.qu.rip.active) cannot.push(58,74)
     tmp.elements.cannot = cannot
 
     if (!tmp.elements.upg_length) tmp.elements.upg_length = ELEMENTS.upgs.length-1

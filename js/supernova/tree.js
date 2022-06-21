@@ -33,7 +33,7 @@ const TREE_IDS = [
         ['en1','qu5','br1'],
     ],[
         ['s4','sn5','sn4'],
-        [],
+        ['','','','qu_qol8a'],
         [],
         ['fn7','fn8'],
         ['qu6','qu7','qu8','qu9','qu10','qu11'],
@@ -773,6 +773,12 @@ const TREE_UPGS = {
             desc: `You can now automatically get all Fermions Tiers outside any Fermion, except during Quantum Challenge.`,
             cost: E(1e11),
         },
+        qu_qol8a: {
+            qf: true,
+            branch: ["qu_qol8"],
+            desc: `Make [qu_qol8] allowed Quantum Challenge or Big Rip inside.`,
+            cost: E(1e75),
+        },
         qu_qol9: {
             qf: true,
             branch: ["qu_qol8"],
@@ -1022,7 +1028,7 @@ function updateTreeHTML() {
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
-        <span class="sky">[${tmp.supernova.tree_choosed}] ${t_ch.desc}</span><br>
+        <span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${t_ch.desc}</span><br>
         <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':'Neutron star'}</span><br>
         <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `
