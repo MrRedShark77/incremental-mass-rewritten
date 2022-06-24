@@ -646,16 +646,16 @@ const ELEMENTS = {
             cost: E('e2.2e9'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Entropic Evaporation^2 and Condenser^2 scale 15% weaker.`,
+            cost: E('e7.25e9'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Beta Particles are twice effective.`,
+            cost: E('e1.45e10'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `All scalings from Ranks to Pent scale 10% weaker (only 2% during Big Rip).`,
+            cost: E('e1.6e10'),
         },
         {
             desc: `Placeholder.`,

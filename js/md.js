@@ -194,6 +194,7 @@ const MASS_DILATION = {
         massGain() {
             let x = player.md.break.energy.max(0).pow(2)
             x = x.mul(tmp.bd.upgs[0].eff||1)
+            if (player.md.break.upgs[7].gte(1)) x = x.mul(tmp.bd.upgs[7].eff||1)
 
             return x
         },
@@ -275,6 +276,17 @@ const MASS_DILATION = {
                         return x
                     },
                     effDesc(x) { return x[0].format()+"x to Entropies gain, "+x[1].format()+"x to Death Shards gain" },
+                },{
+                    desc: `Relativistic Mass gain is increased by 75% for every OoM^2 of dilated mass.`,
+                    maxLvl: 1,
+                    cost(x) { return uni(1e48) },
+                    bulk() { return player.md.break.mass.gte(uni(1e48))?E(1):E(0) },
+                    effect(y) {
+                        let x = E(1.75).pow(player.md.mass.add(1).log10().add(1).log10())
+
+                        return x
+                    },
+                    effDesc(x) { return format(x)+"x" },
                 },
             ],
         }

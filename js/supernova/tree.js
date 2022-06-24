@@ -776,7 +776,7 @@ const TREE_UPGS = {
         qu_qol8a: {
             qf: true,
             branch: ["qu_qol8"],
-            desc: `Make [qu_qol8] allowed Quantum Challenge or Big Rip inside.`,
+            desc: `Make [qu_qol8] worked inside Quantum Challenge or Big Rip.`,
             cost: E(1e75),
         },
         qu_qol9: {

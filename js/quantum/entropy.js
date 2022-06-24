@@ -163,7 +163,11 @@ const ENTROPY = {
         let rc = this.rewards[i]
         let r = player.qu.en.rewards[i]
 
-        if (rc.scale) r = r.scale(rc.scale.s, rc.scale.p,0)
+        if (rc.scale) {
+            let p = rc.scale.p
+            if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
+            r = r.scale(rc.scale.s, p, 0)
+        }
         let x = rc.inc.pow(r).mul(rc.start)
         return x
     },
@@ -174,7 +178,11 @@ const ENTROPY = {
         let x = E(0)
         if (en.gte(rc.start)) {
             x = en.div(rc.start).max(1).log(rc.inc)
-            if (rc.scale) x = x.scale(rc.scale.s, rc.scale.p,0, true)
+            if (rc.scale) {
+                let p = rc.scale.p
+                if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
+                x = x.scale(rc.scale.s, p, 0, true)
+            }
             x = x.add(1).floor()
         }
         return x

@@ -52,6 +52,7 @@ const PRIM = {
                 return x
             },
             p=>{
+                if (hasElement(107)) p = p.mul(2)
                 let x = p.pow(0.9).mul(2)
                 return x
             },

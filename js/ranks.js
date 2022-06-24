@@ -312,6 +312,7 @@ const PRESTIGES = {
             "15": `Tetr 2's reward is overpowered.`,
             "18": `Gain 100% more Ranks to Prestige Base.`,
             "24": `Super Cosmic Strings scale 20% weaker.`,
+            "28": `Remove all softcaps from Gluon Upgrade 4's effect.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
