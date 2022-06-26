@@ -459,7 +459,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") },
-            lens: 12,
+            lens: 14,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -551,10 +551,16 @@ const UPGS = {
                 unl() { return MASS_DILATION.unlocked() },
                 desc: "Mass from Black Hole effect is better.",
                 cost: E('e2015'),
-                effect() {
-                    let ret = E(1)
-                    return ret
-                },
+            },
+            13: {
+                unl() { return player.md.break.active && player.qu.rip.active },
+                desc: "Cosmic Ray effect softcap starts x10 later.",
+                cost: E('e3.2e11'),
+            },
+            14: {
+                unl() { return player.md.break.active && player.qu.rip.active },
+                desc: "Tickspeed, Black Hole Condenser and Cosmic Ray scalings up to Meta start x10 later.",
+                cost: E('e4.3e13'),
             },
         },
         4: {
@@ -570,7 +576,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 11,
+            lens: 14,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -618,12 +624,39 @@ const UPGS = {
                 cost: E(1e7),
             },
             10: {
+                unl() { return player.md.break.active },
                 desc: `Chromas are 10% stronger.`,
                 cost: E(2.5e8),
             },
             11: {
+                unl() { return player.md.break.active },
                 desc: `Prestige Level no longer resets anything.`,
                 cost: E(1e10),
+            },
+            12: {
+                unl() { return player.md.break.active },
+                desc: `Mass gain softcap^5 starts later based on Atom.`,
+                cost: E(1e16),
+                effect() {
+                    let x = player.atom.points.add(1).log10().add(1).log10().add(1).root(3)
+                    return x
+                },
+                effDesc(x=this.effect()) { return "^"+format(x)+" later" },
+            },
+            13: {
+                unl() { return player.md.break.active },
+                desc: `Death Shard gain is boosted based on Prestige Base.`,
+                cost: E(1e17),
+                effect() {
+                    let x = (tmp.prestiges.base||E(1)).add(1).log10().tetrate(1.5).add(1)
+                    return x
+                },
+                effDesc(x=this.effect()) { return "x"+format(x) },
+            },
+            14: {
+                unl() { return player.md.break.active },
+                desc: `Super Fermion Tier starts 10 later (after QC8 nerf).`,
+                cost: E(1e22),
             },
         },
     },

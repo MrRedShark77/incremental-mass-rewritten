@@ -105,7 +105,7 @@ const FORMS = {
     },
     massSoftPower3() {
         let p = E(player.qu.rip.active ? 0.1 : 0.2)
-        if (hasElement(77)) p = p.pow(0.825)
+        if (hasElement(77)) p = p.pow(player.qu.rip.active?0.95:0.825)
         return p
     },
     massSoftGain4() {
@@ -117,11 +117,13 @@ const FORMS = {
     },
     massSoftPower4() {
         let p = E(0.1)
+        if (hasElement(100)) p = p.pow(player.qu.rip.active?0.8:0.5)
         return p
     },
     massSoftGain5() {
-        let s = mlt(1e12)
+        let s = mlt(player.qu.rip.active?1e4:1e12)
         if (hasPrestige(0,8)) s = s.pow(prestigeEff(0,8))
+        if (hasUpgrade("br",12)) s = s.pow(upgEffect(4,12))
         return s
     },
     massSoftPower5() {

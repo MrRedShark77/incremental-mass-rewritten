@@ -222,6 +222,7 @@ function updateEntropyTemp() {
     let rbr = []
     if (hasElement(91)) rbr.push(1,4)
     if (hasElement(96)) rbr.push(3)
+    if (hasElement(109)) rbr.push(0)
     tmp.en.reward_br = rbr
 
     for (let x = 0; x < ENTROPY.rewards.length; x++) {

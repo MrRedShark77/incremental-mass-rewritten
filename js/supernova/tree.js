@@ -24,7 +24,7 @@ const TREE_IDS = [
         ['qol5','qol6','qol7','','','qu_qol7','',''],
         ['chal4','chal7a'],
         ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
-        ['prim3','prim2','prim1','qu4','qc1','qc2',''],
+        ['prim3','prim2','prim1','qu4','qc1','qc2','qc3'],
     ],[
         ['s3','m3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9','unl4'],
@@ -113,6 +113,7 @@ const TREE_UPGS = {
             cost: E(1e8),
             effect() {
                 let x = player.supernova.times.mul(0.1).softcap(1.5,0.75,0)
+                if (hasElement(112)) x = x.add(2)
                 return x
             },
             effDesc(x) { return "+"+format(x)+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"") },
@@ -394,8 +395,8 @@ const TREE_UPGS = {
             desc: `Photon, Gluon powers up each other.`,
             cost: E(1e14),
             effect() {
-                let x = expMult(player.supernova.bosons.photon,1/2,2).max(1)
-                let y = expMult(player.supernova.bosons.gluon,1/2,2).max(1)
+                let x = expMult(player.supernova.bosons.photon,hasElement(113) ? 0.95 : 1/2,2).max(1)
+                let y = expMult(player.supernova.bosons.gluon,hasElement(113) ? 0.95 : 1/2,2).max(1)
                 return [x,y]
             },
             effDesc(x) { return format(x[1])+"x to Photon, "+format(x[0])+"x to Gluon" },
@@ -774,6 +775,7 @@ const TREE_UPGS = {
             cost: E(1e11),
         },
         qu_qol8a: {
+            unl() { return player.md.break.active },
             qf: true,
             branch: ["qu_qol8"],
             desc: `Make [qu_qol8] worked inside Quantum Challenge or Big Rip.`,
@@ -826,6 +828,20 @@ const TREE_UPGS = {
             reqDesc() { return `Reach ${formatMass(uni('ee5'))} of mass with QS 70 build (before bonus).` },
             desc: `Get 1 extra shard when a nerf reach 10.`,
             cost: E(1e27),
+        },
+        qc3: {
+            unl() { return hasTree('unl4') },
+            qf: true,
+            branch: ['qc2'],
+            req() { return player.qu.qc.shard >= 88 },
+            reqDesc() { return `Get 88 Quantum Shards.` },
+            desc: `Quantum Shard's base is increased by Prestige Base.`,
+            cost: E(1e78),
+            effect() {
+                let x = (tmp.prestiges.base||E(1)).add(1).log10().div(10)
+                return x
+            },
+            effDesc(x) { return "+"+format(x) },
         },
         en1: {
             unl() { return player.qu.rip.first },

@@ -658,24 +658,29 @@ const ELEMENTS = {
             cost: E('e1.6e10'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Entropic Multiplier is effective, even in Big Rip.`,
+            cost: E('e3e10'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Mass gain softcap^4 is 50% weaker (only 20% in Big Rip).`,
+            cost: E('e6e10'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Neutron Stars raise Atom gain.`,
+            cost: E('e7.5e10'),
+            effect() {
+                let x = player.supernova.stars.add(1).log10().add(1).log10().add(1).root(3)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `[sn4] effect is increased by 2.`,
+            cost: E('e3e12'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `[bs2] uses a better formula.`,
+            cost: E('e4e12'),
         },
         {
             desc: `Placeholder.`,

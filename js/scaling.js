@@ -255,7 +255,9 @@ function getScalingStart(type, name) {
 	if (name=='supernova') {
 		start = start.add(tmp.prim.eff[7])
 	}
+	if ((name=="bh_condenser" || name=="gamma_ray" || name=="tickspeed") && hasUpgrade('atom',14)) start = start.mul(10)
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) start = start.pow(tmp.qu.qc_eff[7][0])
+	if (hasUpgrade('br',14) && name=="fTier" && type=="super") start = start.add(10)
 	if (hasElement(88) && name == "tickspeed") start = start.mul(player.qu.rip.active?100:10)
 	return start.floor()
 }

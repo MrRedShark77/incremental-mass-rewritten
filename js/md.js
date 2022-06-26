@@ -195,6 +195,7 @@ const MASS_DILATION = {
             let x = player.md.break.energy.max(0).pow(2)
             x = x.mul(tmp.bd.upgs[0].eff||1)
             if (player.md.break.upgs[7].gte(1)) x = x.mul(tmp.bd.upgs[7].eff||1)
+            if (player.md.break.upgs[8].gte(1)) x = x.mul(tmp.bd.upgs[8].eff||1)
 
             return x
         },
@@ -283,6 +284,17 @@ const MASS_DILATION = {
                     bulk() { return player.md.break.mass.gte(uni(1e48))?E(1):E(0) },
                     effect(y) {
                         let x = E(1.75).pow(player.md.mass.add(1).log10().add(1).log10())
+
+                        return x
+                    },
+                    effDesc(x) { return format(x)+"x" },
+                },{
+                    desc: `Pre-Quantum Global Speed affects Relativistic Mass gain at a severely reduced rate.`,
+                    maxLvl: 1,
+                    cost(x) { return uni(1e100) },
+                    bulk() { return player.md.break.mass.gte(uni(1e100))?E(1):E(0) },
+                    effect(y) {
+                        let x = (tmp.preQUGlobalSpeed||E(1)).add(1).root(10)
 
                         return x
                     },

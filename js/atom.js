@@ -8,6 +8,7 @@ const ATOM = {
         x = x.mul(tmp.bosons.upgs.gluon[0].effect)
         if (hasElement(17)) x = x.pow(1.1)
         x = x.pow(tmp.prim.eff[3][0])
+        if (hasElement(111)) x = x.pow(tmp.elements.effect[111])
 
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
         if (FERMIONS.onActive("10")) x = expMult(x,0.625)
@@ -62,7 +63,8 @@ const ATOM = {
         effect() {
             let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75).pow(getEnRewardEff(1))
             if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
-            return x.softcap(1e10,0.1,0).floor()
+            x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,0.1,0)
+            return x.floor()
         },
     },
     gamma_ray: {
