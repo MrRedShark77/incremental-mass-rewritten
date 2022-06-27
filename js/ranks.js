@@ -246,9 +246,10 @@ const RANKS = {
 const PRESTIGES = {
     fullNames: ["Prestige Level", "Honor"],
     baseExponent() {
-        let x = 1
-        if (hasElement(100)) x *= tmp.elements.effect[100]
-        return x
+        let x = 0
+        if (hasElement(100)) x += tmp.elements.effect[100]
+        if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
+        return x+1
     },
     base() {
         let x = E(1)
@@ -268,7 +269,7 @@ const PRESTIGES = {
                 x = Decimal.pow(1.1,y.scaleEvery('prestige0').pow(1.1)).mul(2e13)
                 break;
             case 1:
-                x = y.pow(1.25).mul(3).add(4)
+                x = y.scaleEvery('prestige1').pow(1.25).mul(3).add(4)
                 break;
             default:
                 x = EINF
@@ -283,7 +284,7 @@ const PRESTIGES = {
                 if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).add(1)
                 break;
             case 1:
-                if (y.gte(4)) x = y.sub(4).div(2).max(0).root(1.5).add(1)
+                if (y.gte(4)) x = y.sub(4).div(2).max(0).root(1.5).scaleEvery('prestige1',true).add(1)
                 break
             default:
                 x = E(0)
@@ -313,6 +314,8 @@ const PRESTIGES = {
             "18": `Gain 100% more Ranks to Prestige Base.`,
             "24": `Super Cosmic Strings scale 20% weaker.`,
             "28": `Remove all softcaps from Gluon Upgrade 4's effect.`,
+            "32": `Prestige Base’s exponent is increased based on Prestige Level.`,
+            "40": `Chromium-24 is slightly stronger.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -320,6 +323,7 @@ const PRESTIGES = {
             "3": `Bosonic resources are boosted based on Prestige Base.`,
             "4": `Gain 5 free levels of each Primordium Particle.`,
             "5": `Pent 5's reward is stronger based on Prestige Base.`,
+            "7": `Quarks are boosted based on Honor.`,
         },
     ],
     rewardEff: [
@@ -332,6 +336,10 @@ const PRESTIGES = {
                 let x = Decimal.pow(2,player.prestiges[0])
                 return x
             },x=>x.format()+"x"],
+            "32": [_=>{
+                let x = player.prestiges[0].div(1e4).toNumber()
+                return x
+            },x=>"+^"+format(x)],
             /*
             "1": [_=>{
                 let x = E(1)
@@ -350,6 +358,10 @@ const PRESTIGES = {
                 let x = tmp.prestiges.base.max(1).log10().div(10).add(1).root(3)
                 return x
             },x=>"x"+x.format()],
+            "7": [_=>{
+                let x = player.prestiges[1].add(1).root(3)
+                return x
+            },x=>"^"+x.format()],
         },
     ],
     reset(i) {

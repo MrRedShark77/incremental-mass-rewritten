@@ -17,11 +17,12 @@ const MASS_DILATION = {
         if (!player.md.active && hasTree("d1")) x = x.mul(1.25)
         if (FERMIONS.onActive("01")) x = x.div(10)
         if (QCs.active()) x = x.mul(tmp.qu.qc_eff[4])
+        if (hasElement(24) && hasPrestige(0,40)) x = x.mul(tmp.elements.effect[24])
         return x
     },
     RPmultgain() {
         let x = E(1).mul(tmp.md.upgs[2].eff)
-        if (hasElement(24)) x = x.mul(tmp.elements.effect[24])
+        if (hasElement(24) && !hasPrestige(0,40)) x = x.mul(tmp.elements.effect[24])
         if (hasElement(31)) x = x.mul(tmp.elements.effect[31])
         if (hasElement(34)) x = x.mul(tmp.elements.effect[34])
         if (hasElement(45)) x = x.mul(tmp.elements.effect[45])
@@ -43,7 +44,7 @@ const MASS_DILATION = {
         if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
         if (hasElement(32)) x = x.pow(1.05)
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-        return x.softcap(mlt(1e12),0.1,0)
+        return x.softcap(mlt(1e12),0.5,0)
     },
     mass_req() {
         let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e56)
@@ -188,6 +189,7 @@ const MASS_DILATION = {
 
             if (hasPrestige(0,10)) x = x.mul(prestigeEff(0,10))
             x = x.mul(tmp.bd.upgs[5].eff||1)
+            if (hasElement(116)) x = x.mul(tmp.elements.effect[116]||1)
 
             return x
         },
@@ -299,6 +301,11 @@ const MASS_DILATION = {
                         return x
                     },
                     effDesc(x) { return format(x)+"x" },
+                },{
+                    desc: `Super Prestige Level starts 10 later.`,
+                    maxLvl: 1,
+                    cost(x) { return uni(1e120) },
+                    bulk() { return player.md.break.mass.gte(uni(1e120))?E(1):E(0) },
                 },
             ],
         }
@@ -362,12 +369,14 @@ function updateMDTemp() {
         for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) tmp.md.upgs[x] = {}
     }
     tmp.md.bd3 = player.md.break.upgs[2].gte(1)
+    let mdub = 1
+    if (hasElement(115)) mdub *= 1.05
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) {
         let upg = MASS_DILATION.upgs.ids[x]
         tmp.md.upgs[x].cost = upg.cost(player.md.upgs[x])
         tmp.md.upgs[x].bulk = upg.bulk().min(upg.maxLvl||1/0)
         tmp.md.upgs[x].can = player.md.mass.gte(tmp.md.upgs[x].cost) && player.md.upgs[x].lt(upg.maxLvl||1/0)
-        if (upg.effect) tmp.md.upgs[x].eff = upg.effect(player.md.upgs[x])
+        if (upg.effect) tmp.md.upgs[x].eff = upg.effect(player.md.upgs[x].mul(mdub))
     }
     tmp.md.pen = MASS_DILATION.penalty()
     tmp.md.rp_exp_gain = MASS_DILATION.RPexpgain()

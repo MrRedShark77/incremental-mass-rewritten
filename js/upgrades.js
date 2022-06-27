@@ -459,7 +459,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") },
-            lens: 14,
+            lens: 15,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -562,6 +562,11 @@ const UPGS = {
                 desc: "Tickspeed, Black Hole Condenser and Cosmic Ray scalings up to Meta start x10 later.",
                 cost: E('e4.3e13'),
             },
+            15: {
+                unl() { return player.md.break.active && player.qu.rip.active },
+                desc: "Reduce Cosmic Ray scaling by 20%.",
+                cost: E('e3.4e14'),
+            },
         },
         4: {
             title: "Big Rip Upgrades",
@@ -576,7 +581,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 14,
+            lens: 15,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -657,6 +662,11 @@ const UPGS = {
                 unl() { return player.md.break.active },
                 desc: `Super Fermion Tier starts 10 later (after QC8 nerf).`,
                 cost: E(1e22),
+            },
+            15: {
+                unl() { return player.md.break.active },
+                desc: `Blueprint Particles give slightly more Pre-Quantum Global Speed.`,
+                cost: E(1e24),
             },
         },
     },

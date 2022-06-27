@@ -37,7 +37,8 @@ const POPUP_GROUPS = {
         M☉ (mass of Sun): 333,054 M⊕ = 1.989e33 g<br>
         MMWG (mass of Milky Way Galaxy): 1.5e12 M☉ = 2.9835e45 g<br>
         uni (mass of Universe): 50,276,520,864 MMWG = 1.5e56 g<br>
-        mlt (mass of Multiverse): 1e1e9 uni<br>
+        mlt (mass of Multiverse): 1e1e9 uni (logarithmic)<br>
+        mgv (mass of Megaverse): 1e15 mlt<br>
         `,
     },
     fonts: {

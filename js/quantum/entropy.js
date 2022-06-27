@@ -52,7 +52,7 @@ const ENTROPY = {
             inc: E(10),
 
             eff(i) {
-                let x = i.div(2).add(1).root(3)
+                let x = hasElement(114) ? i.add(1).root(1.5) : i.div(2).add(1).root(3)
                 return x
             },
             desc(x) { return `Meta Tickspeed, BHC & Cosmic Ray start <b>${x.format()}x</b> later.` },

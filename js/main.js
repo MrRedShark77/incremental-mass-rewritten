@@ -57,11 +57,15 @@ const FORMS = {
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
 
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
-        return x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
+        x = x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
         .softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
         .softcap(tmp.massSoftGain3,tmp.massSoftPower3,0)
         .softcap(tmp.massSoftGain4,tmp.massSoftPower4,0)
         .softcap(tmp.massSoftGain5,tmp.massSoftPower5,0)
+
+        if (hasElement(117)) x = x.pow(10)
+
+        return x
     },
     massSoftGain() {
         let s = E(1.5e156)
@@ -445,9 +449,18 @@ function format(ex, acc=4, max=12, type=player.options.notation) {
 
 function turnOffline() { player.offline.active = !player.offline.active }
 
+const ARV = ['mlt','mgv','giv','tev','pev','exv','zev','yov']
+
+function formatARV(ex,gain=false) {
+    if (gain) ex = uni("ee9").pow(ex)
+    let mlt = ex.div(1.5e56).log10().div(1e9)
+    let arv = mlt.log10().div(15).floor()
+    return format(mlt.div(Decimal.pow(1e15,arv))) + " " + (arv.gte(8)?"arv^"+format(arv.add(2),0):ARV[arv.toNumber()])
+}
+
 function formatMass(ex) {
     ex = E(ex)
-    if (ex.gte(E(1.5e56).mul('ee9'))) return format(ex.div(1.5e56).log10().div(1e9)) + ' mlt'
+    if (ex.gte(E(1.5e56).mul('ee9'))) return formatARV(ex)
     if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' uni'
     if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' MMWG'
     if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' M☉'
@@ -470,7 +483,7 @@ function formatGain(amt, gain, isMass=false) {
     ooms = next.div(amt)
     if (ooms.gte(10) && amt.gte(1e100)) {
         ooms = ooms.log10().mul(20)
-        if (isMass && amt.gte(mlt(1)) && ooms.gte(1e6)) rate = "(+"+format(ooms.div(1e9)) + " mlt/sec)"
+        if (isMass && amt.gte(mlt(1)) && ooms.gte(1e6)) rate = "(+"+formatARV(ooms.div(1e9),true) + "/sec)"
         else rate = "(+"+format(ooms) + " OoMs/sec)"
     }
     else rate = "(+"+f(gain)+"/sec)"

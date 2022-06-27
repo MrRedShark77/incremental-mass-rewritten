@@ -106,13 +106,13 @@ const QUANTUM = {
     },
     bpGain() {
         let x = E(1)
-        if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.root(2))
+        if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.root(2).softcap(1e50,0.95,2))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         x = x.mul(tmp.qu.cosmic_str_eff.eff)
         return x
     },
     bpEff() {
-        let x = hasElement(101) ? player.qu.bp.add(1).log10().add(1).tetrate(1.25) : player.qu.bp.add(1).log10().add(1).pow(1.5)
+        let x = hasElement(101) ? player.qu.bp.add(1).log10().add(1).tetrate(hasUpgrade("br",15) ? 1.35 : 1.25) : player.qu.bp.add(1).log10().add(1).pow(1.5)
         return x
     },
     cosmic_str: {

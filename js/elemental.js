@@ -34,8 +34,12 @@ const ELEMENTS = {
     canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : x <= 86) && !tmp.elements.cannot.includes(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
-            player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
-            player.atom.elements.push(x)
+            if (x == 118) {
+                alert("Coming Soon.....")
+            } else {
+                player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
+                player.atom.elements.push(x)
+            }
         }
     },
     upgs: [
@@ -183,10 +187,10 @@ const ELEMENTS = {
             desc: `Passively gain 100% of the atoms you would get from resetting each second. Atomic Power boost Relativistic particles gain at a reduced rate.`,
             cost: E(1e75),
             effect() {
-                let x = player.atom.atomic.max(1).log10().add(1).pow(0.4)
+                let x = hasPrestige(0,40) ? player.atom.atomic.max(1).log10().add(1).log10().add(1).root(2) : player.atom.atomic.max(1).log10().add(1).pow(0.4)
                 return x
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return hasPrestige(0,40) ? "^"+format(x) : format(x)+"x" },
         },
         {
             desc: `Adds 1 base of Mass Dilation upgrade 1 effect.`,
@@ -612,13 +616,13 @@ const ELEMENTS = {
             cost: E('e2.15e7'),
         },
         {
-            desc: `Prestige Base is raised based on Pent.`,
+            desc: `Prestige Base’s exponent is increased based on Pent.`,
             cost: E('e2.5e7'),
             effect() {
-                let x = player.ranks.pent.root(2).div(1e3).add(1).toNumber()
+                let x = player.ranks.pent.root(2).div(1e3).toNumber()
                 return x
             },
-            effDesc(x) { return "^"+format(x) },
+            effDesc(x) { return "+^"+format(x) },
         },
         {
             desc: `Blueprint Particles effect is overpowered.`,
@@ -683,24 +687,29 @@ const ELEMENTS = {
             cost: E('e4e12'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Entropic Multiplier uses a better formula.`,
+            cost: E('e1.2e13'),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Mass Dilation upgrades are 5% stronger.`,
+            cost: E("e7e13"),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Prestige Base boosts Relativistic Energy gain.`,
+            cost: E('e1e14'),
+            effect() {
+                let x = (tmp.prestiges.base||E(1)).add(1).root(3)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Mass gain after all softcaps is raised by 10.`,
+            cost: E("e5e16"),
         },
         {
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Enter the <span id="final_118">Portal</span>.`,
+            cost: E("e1.7e17"),
         },
     ],
     /*
@@ -752,7 +761,7 @@ function setupElementsHTML() {
         else if (m=='x') {
             num++
             table += ELEMENTS.upgs[num]===undefined?`<div style="width: 50px; height: 50px"></div>`
-            :`<button class="elements" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num}); ssf[0]('${ELEMENTS.names[num]}')" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
+            :`<button class="elements ${num == 118 ? 'final' : ''}" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num}); ssf[0]('${ELEMENTS.names[num]}')" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
             if (num==57 || num==89) num += 14
             else if (num==71) num += 18
             else if (num==118) num = 57
@@ -766,8 +775,8 @@ function updateElementsHTML() {
     let ch = tmp.elements.choosed
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
-        tmp.el.elem_desc.setTxt("["+ELEMENTS.fullNames[ch]+"] "+ELEMENTS.upgs[ch].desc)
-        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86?" in Big Rip":"")+(player.qu.rip.active&&tmp.elements.cannot.includes(ch)?" [CANNOT AFFORD]":""))
+        tmp.el.elem_desc.setHTML("<b>["+ELEMENTS.fullNames[ch]+"]</b> "+ELEMENTS.upgs[ch].desc)
+        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86?" in Big Rip":"")+(player.qu.rip.active&&tmp.elements.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tmp.elements.effect[ch]):"")
     }
     tmp.el.element_la_1.setVisible(tmp.elements.unl_length>57)
@@ -779,7 +788,7 @@ function updateElementsHTML() {
         if (upg) {
             upg.setVisible(x <= tmp.elements.unl_length)
             if (x <= tmp.elements.unl_length) {
-                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86})
+                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x < 118, final: x == 118})
             }
         }
     }

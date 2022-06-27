@@ -12,6 +12,7 @@ const SCALE_START = {
 		fTier: E(10),
 		cosmic_str: E(15),
 		prestige0: E(15),
+		prestige1: E(7),
     },
 	hyper: {
 		rank: E(120),
@@ -23,6 +24,7 @@ const SCALE_START = {
 		gamma_ray: E(300),
 		supernova: E(35),
 		fTier: E(50),
+		cosmic_str: E(90),
 	},
 	ultra: {
 		rank: E(600),
@@ -58,6 +60,7 @@ const SCALE_POWER= {
 		fTier: 2.5,
 		cosmic_str: 2,
 		prestige0: 1.5,
+		prestige1: 1.5,
     },
 	hyper: {
 		rank: 2.5,
@@ -69,6 +72,7 @@ const SCALE_POWER= {
 		gamma_ray: 4,
 		supernova: 3,
 		fTier: 4,
+		cosmic_str: 4,
 	},
 	ultra: {
 		rank: 4,
@@ -112,6 +116,7 @@ const SCALING_RES = {
 	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
 	cosmic_str(x=0) { return player.qu.cosmic_str },
 	prestige0() { return player.prestiges[0] },
+	prestige1() { return player.prestiges[1] },
 }
 
 const NAME_FROM_RES = {
@@ -127,6 +132,7 @@ const NAME_FROM_RES = {
 	fTier: "Fermion Tier",
 	cosmic_str: "Cosmic String",
 	prestige0: "Prestige Level",
+	prestige1: "Honor",
 }
 
 function updateScalingHTML() {
@@ -214,6 +220,9 @@ function getScalingStart(type, name) {
 		}
 		if (name=='tickspeed') {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
+		}
+		if (name=="prestige0") {
+			if (player.md.break.upgs[9].gte(1)) start = start.add(10)
 		}
 	}
 	if (type=="hyper") {
@@ -346,6 +355,7 @@ function getScalingPower(type, name) {
 			if (hasElement(78)) power = power.mul(0.8)
 		}
 	}
+	if (hasUpgrade("atom",15) && name == "gamma_ray") power = power.mul(0.8)
 	if (hasElement(108) && ["rank","tier","tetr","pent"].includes(name)) power = power.mul(player.qu.rip.active?0.98:0.9)
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(tmp.qu.qc_eff[7][1])
 	if (PreQ_SCALES.includes(name) && type != "meta")  power = power.mul(getEnRewardEff(5))

@@ -27,6 +27,7 @@ const ATOM = {
         if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
         x = x.mul(tmp.md.upgs[9].eff)
         if (hasElement(47)) x = x.pow(1.1)
+        if (hasPrestige(1,7)) x = x.pow(prestigeEff(1,7))
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },

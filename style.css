@@ -380,7 +380,7 @@ button {
 }
 
 .btn_tree:not(.locked):not(.bought):hover,
-.elements:not(.locked):not(.bought):hover,
+.elements:not(.locked):not(.bought):not(.final):hover,
 .btn:not(.locked):not(.md):hover,
 .img_btn:not(.locked):not(.bought):hover {
 	background-color: #555
@@ -407,6 +407,23 @@ button {
 .btn_tree.qu_tree.bought {
 	border-color: #39FF49;
 	box-shadow: 0px 0px 10px 0px #39ff4a7e;
+}
+
+.elements.final:not(.locked):not(.bought):hover {
+	transform: scale(1.3);
+}
+
+.elements.final:not(.locked) {
+	background: radial-gradient(circle, #555555 0%, #aaa 70%, #ffffff 100%);
+	box-shadow: 0 0 10px #fff;
+	color: black;
+	font-weight: bold;
+}
+
+#final_118 {
+	color: white;
+	text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
+	font-weight: bold;
 }
 
 .elements.bought.br {
