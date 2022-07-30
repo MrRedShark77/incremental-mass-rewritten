@@ -32,11 +32,9 @@ const ATOM = {
     },
     canReset() { return tmp.atom.gain.gte(1) },
     reset() {
-        if (tmp.atom.canReset) if (player.confirms.atom?confirm("Are you sure to reset?"):true) {
-            player.atom.points = player.atom.points.add(tmp.atom.gain)
-            player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain)
-            player.atom.unl = true
-            this.doReset()
+        if (tmp.atom.canReset) {
+            if (player.confirms.atom) createConfirm("Are you sure you want to reset?",CONFIRMS_FUNCTION.atom)
+            else CONFIRMS_FUNCTION.atom()
         }
     },
     doReset(chal_reset=true) {
@@ -98,6 +96,7 @@ const ATOM = {
         },
         bonus() {
             let x = tmp.fermions.effs[0][0]||E(0)
+            if (hasAntiUpgrade('am',3)) x = x.add(player.free_tickspeed)
             x = x.mul(getEnRewardEff(4))
             return x
         },

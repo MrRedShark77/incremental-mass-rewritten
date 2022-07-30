@@ -108,7 +108,7 @@ function setupHTML() {
 		for (let y = 1; y <= UPGS.main[x].lens; y++) {
 			let key = UPGS.main[x][y]
 			table += `<img onclick="UPGS.main[${x}].buy(${y})" onmouseover="UPGS.main.over(${x},${y})" onmouseleave="UPGS.main.reset()"
-			 style="margin: 3px;" class="img_btn" id="main_upg_${x}_${y}" src="images/main_upg_${id+y}.png">`
+			 style="margin: 3px;" class="img_btn" id="main_upg_${x}_${y}" src="images/upgrades/main_upg_${id+y}.png">`
 		}
 		table += `</div><br><button id="main_upg_${x}_auto" class="btn" style="width: 80px;" onclick="player.auto_mainUpg.${id} = !player.auto_mainUpg.${id}">OFF</button></div>`
 	}
@@ -136,6 +136,7 @@ function setupHTML() {
 	setupFermionsHTML()
 	setupRadiationHTML()
 	setupQuantumHTML()
+	setupAntiHTML()
 
 	/*
 	function setupTestHTML() {
@@ -166,7 +167,12 @@ function setupHTML() {
 }
 
 function updateTabsHTML() {
-	for (let x = 0; x < TABS[1].length; x++) {
+	let anti = tmp.anti_tab
+
+	tmp.el.tabs.setDisplay(!anti)
+	tmp.el.stabs.setDisplay(!anti)
+	tmp.el.tab_frames.setDisplay(!anti)
+	if (!anti) for (let x = 0; x < TABS[1].length; x++) {
 		if (x != 5 && tmp.tab == 5) continue
 		let tab = TABS[1][x]
 		tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
@@ -183,23 +189,47 @@ function updateTabsHTML() {
 			}
 		}
 	}
+
+	tmp.el.anti_tabs.setDisplay(anti)
+	tmp.el.anti_stabs.setDisplay(anti)
+	tmp.el.anti_tab_frames.setDisplay(anti)
+	if (anti) for (let x = 0; x < ANTI_TABS[1].length; x++) {
+		let tab = ANTI_TABS[1][x]
+		tmp.el["anti_tab"+x].setDisplay(tab.unl ? tab.unl() : true)
+		tmp.el["anti_tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.anti.tab})
+
+		if (tmp.el["anti_tab_frame"+x]) tmp.el["anti_tab_frame"+x].setDisplay(x == tmp.anti.tab)
+		if (ANTI_TABS[2][x]) {
+			tmp.el["anti_stabs"+x].setDisplay(x == tmp.anti.tab)
+			if (x == tmp.anti.tab) for (let y = 0; y < ANTI_TABS[2][x].length; y++)  {
+				let stab = ANTI_TABS[2][x][y]
+				tmp.el["anti_stab"+x+"_"+y].setDisplay(stab.unl ? stab.unl() : true)
+				tmp.el["anti_stab"+x+"_"+y].setClasses({btn_tab: true, [stab.style ? stab.style : "normal"]: true, choosed: y == tmp.anti.stab[x]})
+				if (tmp.el["anti_stab_frame"+x+"_"+y]) tmp.el["anti_stab_frame"+x+"_"+y].setDisplay(y == tmp.anti.stab[x])
+			}
+		}
+	}
 }
 
 function updateUpperHTML() {
 	let gs = tmp.preQUGlobalSpeed
+	let antiDim = !tmp.anti_tab
 
 	tmp.el.reset_desc.setHTML(player.reset_msg)
-	tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true))
+
+	let unl = antiDim
+	tmp.el.mass_div.setDisplay(unl)
+	if (unl) tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true))
 	
-	let unl = !quUnl()
+	unl = !quUnl() && antiDim
 	tmp.el.rp_div.setDisplay(unl)
 	if (unl) tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"))
 	
-	unl = FORMS.bh.see() && !quUnl()
+	unl = FORMS.bh.see() && !quUnl() && antiDim
 	tmp.el.dm_div.setDisplay(unl)
 	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>"+(player.mainUpg.atom.includes(6)?formatGain(player.bh.dm, tmp.bh.dm_gain.mul(gs)):"(+"+format(tmp.bh.dm_gain,0)+")"))
 	
-	unl = player.bh.unl
+	unl = player.bh.unl && antiDim
 	tmp.el.bh_div.setDisplay(unl)
 	tmp.el.atom_div.setDisplay(unl && !quUnl())
 	if (unl) {
@@ -207,7 +237,7 @@ function updateUpperHTML() {
 		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain.mul(gs)):"(+"+format(tmp.atom.gain,0)+")"))
 	}
 	
-	unl = !CHALS.inChal(0)
+	unl = !CHALS.inChal(0) && antiDim
 	tmp.el.chal_upper.setVisible(unl)
 	if (unl) {
 		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
@@ -215,17 +245,32 @@ function updateUpperHTML() {
 		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
 	}
 	
-	unl = player.atom.unl
+	unl = player.atom.unl && antiDim
 	tmp.el.quark_div.setDisplay(unl)
 	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(hasElement(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec).mul(gs):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
 	
-	unl = MASS_DILATION.unlocked()
+	unl = MASS_DILATION.unlocked() && antiDim
 	tmp.el.md_div.setDisplay(unl)
 	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(hasTree("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(gs)):"(inactive)")))
 	
-	unl = player.supernova.post_10
+	unl = player.supernova.post_10 && antiDim
 	tmp.el.sn_div.setDisplay(unl)
 	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")")
+
+	let gain2 = hasUpgrade('br',8)
+
+    unl = (quUnl() || player.chal.comps[12].gte(1)) && antiDim
+    tmp.el.qu_div.setDisplay(unl)
+    if (unl) tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>"+(gain2?player.qu.points.formatGain(tmp.qu.gain.div(10)):"(+"+format(tmp.qu.gain,0)+")"))
+
+    unl = (quUnl() || dimUnl()) && antiDim
+    tmp.el.gs1_div.setDisplay(unl)
+    if (unl) tmp.el.preQGSpeed.setHTML(formatMult(tmp.preQUGlobalSpeed))
+
+    unl = hasTree("unl4") && antiDim
+    tmp.el.br_div.setDisplay(unl)
+    if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active?gain2?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
+
 }
 
 function updateMassUpgradesHTML() {
@@ -251,7 +296,7 @@ function updateTickspeedHTML() {
 	if (unl) {
 		let teff = tmp.tickspeedEffect
 		tmp.el.tickspeed_scale.setTxt(getScalingName('tickspeed'))
-		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(teff.bonus.gte(1)?" + "+format(teff.bonus,0):""))
+		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(teff.bonus.gte(1)?" + "+format(teff.bonus,0):"")+(player.free_tickspeed.gt(0)?" + "+player.free_tickspeed.format(1):""))
 		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
 		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
 		tmp.el.tickspeed_step.setHTML((teff.step.gte(10)?format(teff.step)+"x":format(teff.step.sub(1).mul(100))+"%")
@@ -260,6 +305,21 @@ function updateTickspeedHTML() {
 
 		tmp.el.tickspeed_auto.setDisplay(FORMS.tickspeed.autoUnl())
 		tmp.el.tickspeed_auto.setTxt(player.autoTickspeed?"ON":"OFF")
+	}
+
+	unl = player.rp.unl && tmp.accelUnl
+	tmp.el.accel_div.setDisplay(unl)
+	if (unl) {
+		let eff = tmp.accelEffect
+		//tmp.el.accel_scale.setTxt(getScalingName('accel'))
+		tmp.el.accel_lvl.setTxt(format(player.accelerator,0))
+		tmp.el.accel_btn.setClasses({btn: true, locked: !FORMS.accel.can()})
+		tmp.el.accel_cost.setTxt(format(tmp.accelCost,0))
+		tmp.el.accel_step.setHTML("+^"+format(eff.step,2))
+		tmp.el.accel_eff.setHTML("^"+format(eff.eff,2)+" to Tickspeed Power,<br>+"+format(eff.ts,1)+"/s to Tickspeed")
+
+		tmp.el.accel_auto.setDisplay(FORMS.accel.autoUnl())
+		tmp.el.accel_auto.setTxt(player.autoAccelerator?"ON":"OFF")
 	}
 }
 
@@ -309,7 +369,7 @@ function updateMainUpgradesHTML() {
 		let id = UPGS.main.ids[x]
 		let upg = UPGS.main[x]
 		let unl = upg.unl()
-		tmp.el["main_upg_"+x+"_div"].changeStyle("visibility", unl?"visible":"hidden")
+		tmp.el["main_upg_"+x+"_div"].setDisplay(unl)
 		tmp.el["main_upg_"+x+"_res"].setTxt(`You have ${upg.getRes().format(0)} ${upg.res}`)
 		if (unl) {
 			for (let y = 1; y <= upg.lens; y++) {
@@ -370,14 +430,18 @@ function updateHTML() {
 	document.documentElement.style.setProperty('--font', player.options.font)
 	document.documentElement.style.setProperty('--cx', tmp.cx)
 	document.documentElement.style.setProperty('--cy', tmp.cy)
+
+	let displayMainTab = tmp.tab != 5 && tmp.dim.resetStep == 0
 	
 	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
 	tmp.el.loading.setDisplay(tmp.offlineActive)
-    tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && tmp.tab != 5))
+    tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab))
 	updateSupernovaEndingHTML()
+	updateAntiHTML()
 	updateTabsHTML()
-	if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
-		updateUpperHTML()
+	updateDimHTML()
+	updateUpperHTML()
+	if ((!tmp.supernova.reached || player.supernova.post_10) && displayMainTab && !tmp.anti_tab) {
 		updateQuantumHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {

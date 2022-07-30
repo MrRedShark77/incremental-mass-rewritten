@@ -171,15 +171,16 @@ const MASS_DILATION = {
         toggle() {
             let bd = player.md.break
 
-            bd.active = !bd.active
-
-            if (!bd.active) if (confirm("Are you sure you want to fix Dilation?")) {
+            if (bd.active) createConfirm("Are you sure you want to fix Dilation?",_=>{
+                bd.active = false
+        
                 bd.energy = E(0)
                 bd.mass = E(0)
                 for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) bd.upgs[x] = E(0)
 
                 QUANTUM.enter(false,true,false,true)
-            } else bd.active = true
+            })
+            else bd.active = true
         },
         energyGain() {
             if (!player.md.break.active || !player.qu.rip.active) return E(0)

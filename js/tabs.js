@@ -1,14 +1,24 @@
 const TABS = {
     choose(x, stab=false) {
         if (!stab) {
-            if (x==5) tmp.sn_tab = tmp.tab
-            tmp.tab = x
-            if (x!=5) {
-                tmp.sn_tab = tmp.tab
-                tree_update = true
+            if (tmp.anti_tab) {
+                tmp.anti.tab = x
+            } else {
+                if (x==5) tmp.sn_tab = tmp.tab
+                tmp.tab = x
+                if (x!=5) {
+                    tmp.sn_tab = tmp.tab
+                    tree_update = true
+                }
             }
         }
-        else tmp.stab[tmp.tab] = x
+        else {
+            if (tmp.anti_tab) {
+                tmp.anti.stab[tmp.anti.tab] = x
+            } else {
+                tmp.stab[tmp.tab] = x
+            }
+        }
     },
     1: [
         { id: "Main" },
@@ -57,5 +67,16 @@ const TABS = {
             { id: "Primordium", unl() { return PRIM.unl() } },
             { id: "Entropy", unl() { return player.qu.en.unl } },
         ],
+    },
+}
+
+const ANTI_TABS = {
+    1: [
+        { id: "Anti-Main" },
+        { id: "Dimensional Info" },
+        { id: "Anti-Upgrades" },
+    ],
+    2: {
+
     },
 }

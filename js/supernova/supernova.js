@@ -1,20 +1,17 @@
 const SUPERNOVA = {
     reset(force=false, chal=false, post=false, fermion=false) {
-        if (!chal && !post && !fermion) if ((force && player.confirms.sn)?!confirm("Are you sure to reset without being Supernova?"):false) return
-        if (tmp.supernova.reached || force || fermion) {
-            tmp.el.supernova_scene.setDisplay(false)
-            if (!force && !fermion) {
-                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
-            }
-            if (post?!hasTree("qu_qol4"):true) {
-                tmp.pass = true
-                this.doReset()
-            }
+        if (!chal && !post && !fermion) {
+            if (force && player.confirms.sn) createConfirm("Are you sure to reset without being Supernova?",_=>CONFIRMS_FUNCTION.sn(force,chal,post,fermion))
+            else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
         }
+        else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
     },
     doReset() {
         let br = player.qu.rip.active
         tmp.supernova.time = 0
+
+        player.free_tickspeed = E(0)
+        player.accelerator = E(0)
 
         player.atom.points = E(0)
         player.atom.quarks = E(0)
@@ -57,6 +54,8 @@ const SUPERNOVA = {
         player.supernova.chal.noTick = true
         player.supernova.chal.noBHC = true
 
+        updateTemp()
+
         tmp.pass = false
     },
     starGain() {
@@ -87,7 +86,7 @@ function calcSupernova(dt, dt_offline) {
     if (player.bh.condenser.gte(1)) su.chal.noBHC = false
 
     if (tmp.supernova.reached && (!tmp.offlineActive || su.times.gte(1)) && !su.post_10) {
-        if (su.times.lte(0)) tmp.supernova.time += dt
+        if (su.times.lte(0) ? !tmp.anti_tab : false) tmp.supernova.time += dt
         else {
             addNotify("You become Supernova!")
             SUPERNOVA.reset()
@@ -97,7 +96,7 @@ function calcSupernova(dt, dt_offline) {
 
     if (!su.post_10 && su.times.gte(10)) {
         su.post_10 = true
-        addPopup(POPUP_GROUPS.supernova10)
+        if (!dimUnl()) createPopup(POPUP_GROUPS.supernova10.html)
     }
 
     if (su.post_10) for (let x in BOSONS.names) {
@@ -158,7 +157,7 @@ function updateSupernovaTemp() {
 }
 
 function updateSupernovaEndingHTML() {
-    if (tmp.supernova.reached && !tmp.offlineActive && player.supernova.times.lte(0) && !player.supernova.post_10) {
+    if (tmp.supernova.reached && !tmp.offlineActive && player.supernova.times.lte(0) && !player.supernova.post_10 && !tmp.anti_tab) {
         tmp.tab = 5
         document.body.style.backgroundColor = `hsl(0, 0%, ${7-Math.min(tmp.supernova.time/4,1)*7}%)`
         tmp.el.supernova_scene.setDisplay(tmp.supernova.time>4)
@@ -169,9 +168,9 @@ function updateSupernovaEndingHTML() {
         tmp.el.sns5.setVisible(tmp.supernova.time>17)
         tmp.el.sns5.setOpacity(Math.max(Math.min(tmp.supernova.time-17,1),0))
     }
-    if ((player.supernova.times.lte(0)?!tmp.supernova.reached:true) || quUnl())document.body.style.backgroundColor = tmp.tab == 5 ? "#000" : "#111"
+    if ((player.supernova.times.lte(0)?!tmp.supernova.reached:true) || quUnl()) document.body.style.backgroundColor = tmp.tab == 5 ? "#000" : "#111"
 
-    tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) && !tmp.supernova.reached ? !tmp.supernova.reached : true) && tmp.tab == 5)
+    tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) ? !tmp.supernova.reached || quUnl() : true) && tmp.tab == 5 && tmp.dim.resetStep == 0)
 
     if (tmp.tab == 5) {
         tmp.el.supernova_scale.setTxt(getScalingName('supernova'))

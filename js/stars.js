@@ -130,6 +130,7 @@ function updateStarsScreenHTML() {
         tmp.el.star.changeStyle('width',size+"px")
         tmp.el.star.changeStyle('height',size+"px")
     }
+    tmp.el.star.setDisplay(!tmp.anti_tab)
 }
 
 function updateStarsHTML() {

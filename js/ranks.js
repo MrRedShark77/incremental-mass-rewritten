@@ -5,10 +5,11 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
             let reset = true
-            if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
-            if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
-            if (type == "tetr" && hasTree("qol5")) reset = false
-            if (type == "pent" && hasTree("qol8")) reset = false
+            if (hasAntiUpgrade('am',2)) reset = false
+            else if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
+            else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
+            else if (type == "tetr" && hasTree("qol5")) reset = false
+            else if (type == "pent" && hasTree("qol8")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -17,18 +18,19 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
             let reset = true
-            if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
-            if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
-            if (type == "tetr" && hasTree("qol5")) reset = false
-            if (type == "pent" && hasTree("qol8")) reset = false
+            if (hasAntiUpgrade('am',2)) reset = false
+            else if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
+            else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
+            else if (type == "tetr" && hasTree("qol5")) reset = false
+            else if (type == "pent" && hasTree("qol8")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
     },
     unl: {
-        tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) || tmp.radiation.unl },
-        tetr() { return player.mainUpg.atom.includes(3) || tmp.radiation.unl },
-        pent() { return tmp.radiation.unl },
+        tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) || tmp.radiation.unl || dimUnl() },
+        tetr() { return player.mainUpg.atom.includes(3) || tmp.radiation.unl || dimUnl() },
+        pent() { return tmp.radiation.unl || dimUnl() },
     },
     doReset: {
         rank() {
@@ -50,10 +52,10 @@ const RANKS = {
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
-        rank() { return player.mainUpg.rp.includes(5) },
-        tier() { return player.mainUpg.rp.includes(6) },
-        tetr() { return player.mainUpg.atom.includes(5) },
-        pent() { return hasTree("qol8") },
+        rank() { return player.mainUpg.rp.includes(5) || dimUnl() },
+        tier() { return player.mainUpg.rp.includes(6) || dimUnl() },
+        tetr() { return player.mainUpg.atom.includes(5) || dimUnl() },
+        pent() { return hasTree("qol8") || dimUnl() },
     },
     desc: {
         rank: {
@@ -390,29 +392,36 @@ function updateRanksTemp() {
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
     let fp2 = tmp.qu.chroma_eff[1]
-    let fp = RANKS.fp.rank()
+    let ffp = E(1)
+    if (hasSpecialInfusion(0,0)) ffp = ffp.mul(1/specialInfusionEff(0,0))
+
+    let fp = RANKS.fp.rank().mul(ffp)
     tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(fp2).scaleEvery('rank').div(fp).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = E(0)
     if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true).mul(fp2).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
-    fp = RANKS.fp.tier()
+    fp = RANKS.fp.tier().mul(ffp)
     tmp.ranks.tier.req = player.ranks.tier.div(fp2).scaleEvery('tier').div(fp).add(2).pow(2).floor()
     tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true).mul(fp2).add(1).floor();
 
-    fp = E(1)
+    fp = E(1).mul(ffp)
     let pow = 2
     if (hasElement(44)) pow = 1.75
     if (hasElement(9)) fp = fp.mul(1/0.85)
     if (player.ranks.pent.gte(1)) fp = fp.mul(1/0.85)
     if (hasElement(72)) fp = fp.mul(1/0.85)
-    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).scaleEvery('tetr').div(fp).pow(pow).mul(3).add(10).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).add(1).floor();
 
-    fp = E(1)
+    let tps = 0
+    if (hasTree("special2")) tps += 5
+
+    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).scaleEvery('tetr').div(fp).pow(pow).mul(3).add(10-tps).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).add(1).floor();
+
+    fp = E(1).mul(ffp)
     pow = 1.5
-    tmp.ranks.pent.req = player.ranks.pent.scaleEvery('pent').div(fp).pow(pow).add(15).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).gte(0)?player.ranks.tetr.sub(15).max(0).root(pow).mul(fp).scaleEvery('pent',true).add(1).floor():E(0);
+    tmp.ranks.pent.req = player.ranks.pent.scaleEvery('pent').div(fp).pow(pow).add(15-tps).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15-tps).gte(0)?player.ranks.tetr.sub(15-tps).max(0).root(pow).mul(fp).scaleEvery('pent',true).add(1).floor():E(0);
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

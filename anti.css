@@ -1,0 +1,39 @@
+body {
+    color: black;
+    background-color: white !important;
+}
+
+.line {
+    border-bottom-color: black;
+}
+
+button {
+    border-color: black;
+    background-color: #bbb;
+	color: black;
+}
+
+.img_btn,
+.btn {
+    background-color: #bbb;
+}
+
+.btn_tab:not(.choosed):hover,
+.btn:not(.locked):not(.md):hover,
+.img_btn:not(.locked):not(.bought):hover {
+    background-color: #ddd;
+}
+
+.btn_tab.normal.choosed {
+	background-color: black;
+	color: white;
+}
+
+.img_btn.locked,
+.btn.locked {
+    background-color: #777;
+}
+
+.img_btn.bought {
+    background-color: limegreen;
+}

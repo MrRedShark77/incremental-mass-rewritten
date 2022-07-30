@@ -70,8 +70,10 @@ function calc(dt, dt_offline) {
 
     if (tmp.pass) {
         player.mass = player.mass.add(tmp.massGain.mul(du_gs))
+        player.free_tickspeed = player.free_tickspeed.add(tmp.tickspeedGain.mul(dt))
         if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
         if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
+        if (FORMS.accel.autoUnl() && player.autoAccelerator) FORMS.accel.buyMax()
         if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
         if (hasElement(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
         if (player.mass.gte(1.5e136)) player.chal.unl = true
@@ -86,7 +88,7 @@ function calc(dt, dt_offline) {
         }
         if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(du_gs))
         if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(du_gs))
-        if (hasElement(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(du_gs.mul(tmp.atom.quarkGainSec)))
+        if (hasElement(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(du_gs*tmp.atom.quarkGainSec))
         if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
         if (hasElement(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(du_gs).div(10))
         if (hasElement(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if ((hasTree("qol3") || player.md.upgs[x].gte(1)) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
@@ -109,6 +111,7 @@ function calc(dt, dt_offline) {
         calcStars(du_gs)
         calcSupernova(dt, dt_offline)
         calcQuantum(dt, dt_offline)
+        calcAnti(dt, dt_offline)
 
         if (hasTree("qu_qol4")) SUPERNOVA.reset(false,false,true)
 
@@ -129,7 +132,7 @@ function calc(dt, dt_offline) {
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
-        addPopup(POPUP_GROUPS.fermions)
+        createPopup(POPUP_GROUPS.fermions.html)
     }
 }
 
@@ -153,6 +156,7 @@ function getPlayerData() {
         massUpg: {},
         autoMassUpg: [null,false,false,false],
         autoTickspeed: false,
+        autoAccelerator: false,
         mainUpg: {
             
         },
@@ -188,6 +192,7 @@ function getPlayerData() {
             ratio: 0,
             dRatio: [1,1,1],
             elements: [],
+            elemTier: 1,
         },
         md: {
             active: false,
@@ -242,9 +247,12 @@ function getPlayerData() {
                 bs: [],
             },
         },
+        dim_shard: 0,
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
+        free_tickspeed: E(0),
+        accelerator: E(0),
         options: {
             font: 'Verdana',
             notation: 'sc',
@@ -273,6 +281,7 @@ function getPlayerData() {
         s.supernova.radiation.bs.push(E(0),E(0))
     }
     s.qu = getQUSave()
+    s.anti = getAntiSave()
     return s
 }
 
@@ -389,39 +398,40 @@ function export_copy() {
 }
 
 function importy() {
-    let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
-    if (ssf[2](loadgame)) return
-    if (loadgame == 'monke') {
-        addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
-        return
-    }
-    if (loadgame == 'matt parker') {
-        addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
-        return
-    }
-    if (loadgame == 'SUPERNOVA.get()') {
-        addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
-        return
-    }
-    if (loadgame != null) {
-        let keep = player
-        try {
-            setTimeout(_=>{
-                if (findNaN(loadgame, true)) {
-                    addNotify("Error Importing, because it got NaNed")
-                    return
-                }
-                load(loadgame)
-                save()
-                resetTemp()
-                loadGame(false)
-                location.reload()
-            }, 200)
-        } catch (error) {
-            addNotify("Error Importing")
-            player = keep
+    createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",loadgame=>{
+        if (ssf[2](loadgame)) return
+        if (loadgame == 'monke') {
+            addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
+            return
         }
-    }
+        if (loadgame == 'matt parker') {
+            addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
+            return
+        }
+        if (loadgame == 'SUPERNOVA.get()') {
+            addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
+            return
+        }
+        if (loadgame != null) {
+            let keep = player
+            try {
+                setTimeout(_=>{
+                    if (findNaN(loadgame, true)) {
+                        addNotify("Error Importing, because it got NaNed")
+                        return
+                    }
+                    load(loadgame)
+                    save()
+                    resetTemp()
+                    loadGame(false)
+                    location.reload()
+                }, 200)
+            } catch (error) {
+                addNotify("Error Importing")
+                player = keep
+            }
+        }
+    })
 }
 
 function loadGame(start=true, gotNaN=false) {

@@ -4,40 +4,47 @@ const TREE_TAB = [
     {title: "Challenge"},
     {title: "Post-Supernova", unl() { return player.supernova.post_10 } },
     {title: "Quantum", unl() { return quUnl() } },
+    {title: "Special", unl() { return dimUnl() } },
 ]
 
 const TREE_IDS = [
     [
         ['c'],
-        ['qol1','','','','qu_qol1',''],
+        ['qol1','qola1','','','qu_qol1',''],
         ['chal1'],
         ['bs4','bs1','','qf1','','rad1'],
         ['qu0'],
+        ['special1','special2','special3'],
     ],[
         ['s1','m1','rp1','bh1','sn1'],
         ['qol2','qol3','qol4','qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6'],
         ['chal2','chal4a','chal4b','chal3'],
         ['bs5','bs2','fn1','bs3','qf2','qf3','rad2','rad3'],
         ['qu1','qu2','qu3'],
+        [],
     ],[
         ['s2','m2','t1','d1','bh2','gr1','sn2'],
         ['qol5','qol6','qol7','','','qu_qol7','',''],
         ['chal4','chal7a'],
         ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
         ['prim3','prim2','prim1','qu4','qc1','qc2','qc3'],
+        [],
     ],[
         ['s3','m3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9','unl4'],
         ['chal5','chal6','chal7','chal8'],
         ['fn12','fn11','fn6','fn10','rad6',""],
         ['en1','qu5','br1'],
+        [],
     ],[
         ['s4','sn5','sn4'],
         ['','','','qu_qol8a'],
         [],
         ['fn7','fn8'],
         ['qu6','qu7','qu8','qu9','qu10','qu11'],
+        [],
     ],[
+        [],
         [],
         [],
         [],
@@ -75,7 +82,7 @@ const TREE_UPGS = {
             desc: `Tickspeed affects Neutron Star gain at a reduced rate.`,
             cost: E(10),
             effect() {
-                let x = player.tickspeed.add(1).pow(0.25)
+                let x = hasTree('special1') ? tmp.tickspeedEffect ? tmp.tickspeedEffect.eff.add(1).log10().add(1) : E(0) : player.tickspeed.add(1).pow(0.25)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -898,6 +905,24 @@ const TREE_UPGS = {
             reqDesc: `66 Quantum Shards.`,
             desc: `Unlock Big Rip.`,
             cost: E(1e42),
+        },
+
+        special1: {
+            desc: `Tree sn1's effect is better.`,
+            cost: E(1),
+        },
+        special2: {
+            desc: `Reduce the requirement from Tetr & Pent by 5.`,
+            cost: E(1e20),
+        },
+        special3: {
+            desc: `Gain 10x more quantizes.`,
+            cost: E(1e250),
+        },
+        qola1: {
+            unl: _=>dimUnl(),
+            desc: `You can now automatically buy Accelerators, they no longer spent RP.`,
+            cost: E(1e9),
         },
         /*
         x: {

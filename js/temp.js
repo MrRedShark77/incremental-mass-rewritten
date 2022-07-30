@@ -8,6 +8,8 @@ function resetTemp() {
         cx: 0,
         cy: 0,
 
+        anti_tab: false,
+
         sn_tab: 0,
         tree_tab: 0,
         tab: 0,
@@ -41,6 +43,9 @@ function resetTemp() {
             choosed: 0,
             effect: [null],
             cannot: [],
+            ts: 0,
+            te: 118,
+            tt: 118,
         },
     
         fermions: {
@@ -101,11 +106,33 @@ function resetTemp() {
             
         },
 
+        dim: {
+            reset: false,
+            resetStep: 0,
+            boost: {},
+        },
+
+        anti: {
+            tab: 0,
+            stab: [],
+            upgs: {
+                main: {},
+            },
+            infusion: {
+                req: [],
+                eff: [],
+                sEff: [],
+            },
+        },
+
+        accelEffect: {},
+
         prevSave: "",
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x = UPGS.mass.cols; x >= 1; x--) tmp.upgs.mass[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs.main[x] = {}
+    for (let x = 1; x <= ANTI_UPGS.main.cols; x++) tmp.anti.upgs.main[x] = {}
     for (let j = 0; j < TREE_TAB.length; j++) {
         tmp.supernova.tree_had2[j] = []
         tmp.supernova.tree_afford2[j] = []
@@ -124,6 +151,7 @@ function resetTemp() {
         }
     }
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) tmp.bd.upgs[x] = {}
+    for (x in INFUSIONS) tmp.anti.infusion.sEff[x] = []
     tmp.el = keep[0]
     tmp.prevSave = keep[1]
 }
@@ -145,6 +173,15 @@ function updateMassTemp() {
 }
 
 function updateTickspeedTemp() {
+    tmp.accelUnl = dimUnl()
+
+    tmp.accelCost = FORMS.accel.cost()
+    tmp.accelBulk = E(0)
+    if (player.rp.points.gte(10)) tmp.accelBulk = player.rp.points.max(1).log10().max(1).log(1.5).add(1).floor()
+    tmp.accelEffect = FORMS.accel.effect()
+
+    tmp.tickspeedGain = tmp.accelEffect.ts
+
     tmp.tickspeedFP = tmp.fermions.effs[1][2]
     tmp.tickspeedCost = E(2).pow(player.tickspeed.scaleEvery('tickspeed')).floor()
     tmp.tickspeedBulk = E(0)
@@ -189,6 +226,9 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+
+    updateAntiTemp()
+    updateDimTemp()
 
     updateQuantumTemp()
 
