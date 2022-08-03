@@ -42,7 +42,9 @@ const ATOM = {
         player.bh.dm = E(0)
         player.bh.condenser = E(0)
         let keep = []
-        for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
+        let keep_u = [5]
+        if (player.dim_shard >= 2) keep_u.push(6)
+        for (let x = 0; x < player.mainUpg.bh.length; x++) if (keep_u.includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
         if (chal_reset && !player.mainUpg.atom.includes(4) && !hasTree("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
         FORMS.bh.doReset()
