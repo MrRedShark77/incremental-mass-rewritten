@@ -9,7 +9,7 @@ const ssf = [
         } else if (ss[0] == "secretinvasion") {
             ss[0] = ""
             createPopup(`"Secret Invasion"?<br><br>Ok, here code is ${ss[1]}<br><br>
-            <b>The code expires in next nearest hour, and is happening!</b>`)
+            <b>The code expires in next nearest hour, and is happening!</b>`,'secretinvasion')
         } else if (ss[0] == "shark") {
             ss[0] = ""
             addNotify(`Shark!!1!<br><img style="width: 100%; height: 100%;" src="https://i.guim.co.uk/img/media/67451b4b5c64652f11eca069b85013f8b31a4244/1549_893_5174_3105/master/5174.jpg?width=465&quality=45&auto=format&fit=max&dpr=2&s=df139353776471381634b995733c9ebc">`)

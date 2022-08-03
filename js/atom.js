@@ -33,7 +33,7 @@ const ATOM = {
     canReset() { return tmp.atom.gain.gte(1) },
     reset() {
         if (tmp.atom.canReset) {
-            if (player.confirms.atom) createConfirm("Are you sure you want to reset?",CONFIRMS_FUNCTION.atom)
+            if (player.confirms.atom) createConfirm("Are you sure you want to reset?",'atomReset',CONFIRMS_FUNCTION.atom)
             else CONFIRMS_FUNCTION.atom()
         }
     },

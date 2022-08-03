@@ -171,7 +171,7 @@ const MASS_DILATION = {
         toggle() {
             let bd = player.md.break
 
-            if (bd.active) createConfirm("Are you sure you want to fix Dilation?",_=>{
+            if (bd.active) createConfirm("Are you sure you want to fix Dilation?",'bd',_=>{
                 bd.active = false
         
                 bd.energy = E(0)

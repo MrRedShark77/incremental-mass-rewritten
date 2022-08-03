@@ -21,8 +21,8 @@ const QUANTUM = {
     },
     enter(auto=false,force=false,rip=false,bd=false) {
         if (tmp.qu.gain.gte(1) || force) {
-            if (player.confirms.qu&&!auto&&!force) createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",
-            _=>{createConfirm("ARE YOU SURE ABOUT IT???",_=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
+            if (player.confirms.qu&&!auto&&!force) createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
+            _=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',_=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
             else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)
         }
     },
@@ -182,7 +182,7 @@ function getQUSave() {
 function calcQuantum(dt, dt_offline) {
     if (player.mass.gte(mlt(1e4)) && !player.qu.reached && player.chal.comps[12].gte(1)) {
         player.qu.reached = true
-        createPopup(POPUP_GROUPS.qu.html())
+        createPopup(POPUP_GROUPS.qu.html(),'quReached')
     }
 
     if (quUnl()) {
@@ -210,7 +210,7 @@ function calcQuantum(dt, dt_offline) {
 
     if (player.mass.gte(mlt(7.5e6)) && !player.qu.en.unl) {
         player.qu.en.unl = true
-        createPopup(POPUP_GROUPS.en.html())
+        createPopup(POPUP_GROUPS.en.html(),'enReached')
     }
 
     if (hasUpgrade('br',9)) {

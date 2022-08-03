@@ -55,8 +55,8 @@ const CONFIRMS_FUNCTION = {
             document.body.style.animation = "implode 2s 1"
             setTimeout(_=>{
                 if (player.qu.times.lte(0) && !dimUnl()) {
-                    createPopup(POPUP_GROUPS.qus2.html());
-                    createPopup(POPUP_GROUPS.qus1.html());
+                    createPopup(POPUP_GROUPS.qus2.html(),'qus2');
+                    createPopup(POPUP_GROUPS.qus1.html(),'qus1');
                 }
                 
                 player.qu.points = player.qu.points.add(tmp.qu.gain)

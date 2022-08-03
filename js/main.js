@@ -260,7 +260,7 @@ const FORMS = {
         },
         reset() {
             if (tmp.rp.can) {
-                if (player.confirms.rp) createConfirm("Are you sure you want to reset?",CONFIRMS_FUNCTION.rage)
+                if (player.confirms.rp) createConfirm("Are you sure you want to reset?",'rpReset',CONFIRMS_FUNCTION.rage)
                 else CONFIRMS_FUNCTION.rage()
             }
         },
@@ -341,7 +341,7 @@ const FORMS = {
         },
         reset() {
             if (tmp.bh.dm_can) {
-                if (player.confirms.bh) createConfirm("Are you sure you want to reset?",CONFIRMS_FUNCTION.bh)
+                if (player.confirms.bh) createConfirm("Are you sure you want to reset?",'bhReset',CONFIRMS_FUNCTION.bh)
                 else CONFIRMS_FUNCTION.bh()
             }
         },

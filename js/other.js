@@ -1,3 +1,17 @@
+var popups = []
+var popupIndex = 0
+
+function updatePopupIndex() {
+    let i
+    for (i = 0; i < popups.length; i++) {
+        if (!popups[i]) {
+            popupIndex = i
+            return
+        }
+    }
+    popupIndex = i
+}
+
 function addNotify(text, duration=3) {
     tmp.notify.push({text: text, duration: duration});
     if (tmp.notify.length == 1) updateNotify()
@@ -143,7 +157,12 @@ const POPUP_GROUPS = {
     },
 }
 
-function createPopup(text, txtButton) {
+function createPopup(text, id, txtButton) {
+    if (popups.includes(id)) return
+
+    popups[popupIndex] = id
+    updatePopupIndex()
+
     const popup = document.createElement('div')
     popup.className = 'popup'
     popup.innerHTML = `
@@ -156,6 +175,8 @@ function createPopup(text, txtButton) {
     textButton.className = 'btn'
     textButton.innerText = txtButton||"Ok"
     textButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
         popup.remove()
     }
 
@@ -164,7 +185,12 @@ function createPopup(text, txtButton) {
     document.getElementById('popups').appendChild(popup)
 }
 
-function createConfirm(text, yesFunction, noFunction) {
+function createConfirm(text, id, yesFunction, noFunction) {
+    if (popups.includes(id)) return
+
+    popups[popupIndex] = id
+    updatePopupIndex()
+
     const popup = document.createElement('div')
     popup.className = 'popup'
     popup.innerHTML = `
@@ -177,6 +203,8 @@ function createConfirm(text, yesFunction, noFunction) {
     yesButton.className = 'btn'
     yesButton.innerText = "Yes"
     yesButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
         if (yesFunction) yesFunction()
         popup.remove()
     }
@@ -185,6 +213,8 @@ function createConfirm(text, yesFunction, noFunction) {
     noButton.className = 'btn'
     noButton.innerText = "No"
     noButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
         if (noFunction) noFunction()
         popup.remove()
     }
@@ -195,7 +225,12 @@ function createConfirm(text, yesFunction, noFunction) {
     document.getElementById('popups').appendChild(popup)
 }
 
-function createPrompt(text, func) {
+function createPrompt(text, id, func) {
+    if (popups.includes(id)) return
+
+    popups[popupIndex] = id
+    updatePopupIndex()
+
     const popup = document.createElement('div')
     popup.className = 'popup'
     popup.innerHTML = `
@@ -212,6 +247,8 @@ function createPrompt(text, func) {
     textButton.className = 'btn'
     textButton.innerText = "Ok"
     textButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
         if (func) func(input.value)
         popup.remove()
     }

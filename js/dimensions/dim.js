@@ -1,40 +1,42 @@
 const DIM = {
     reset() {
-        createConfirm("Are you sure you want to enter Portal?",
-        _=>createConfirm("ARE YOU REALLY SURE? IT RESETS EVERYTHING AS POSSIBLE, RESETS QOL!",
-        _=>createConfirm("YOU HAD LASTEST CHANCE TO ENTER PORTAL!?",_=>{
-            tmp.dim.reset = true
+        if (!tmp.dim.reset) {
+            createConfirm("Are you sure you want to enter Portal?", "pEnter",
+            _=>createConfirm("ARE YOU REALLY SURE? IT RESETS EVERYTHING AS POSSIBLE, RESETS QOL!", "pEnter",
+            _=>createConfirm("YOU HAD LASTEST CHANCE TO ENTER PORTAL!?", "pEnter",_=>{
+                tmp.dim.reset = true
 
-            tmp.el.white_background.changeStyle("opacity",1)
-
-            setTimeout(_=>{
-                tmp.dim.resetStep++
-
-                tmp.el.dim_popup.setHTML(player.dim_shard==0?`
-                    You have entered the Portal for the first time!<br><br>
-                    Check out the Dimensional Tab!
-                `:`
-                    You have entered the Portal<br><br><b>${player.dim_shard+1}</b><br><br>times!
-                `)
-
-                player.dim_shard++
-                updateTemp()
-                this.doReset()
-
-                tmp.el.dim_popup.changeStyle("opacity",1)
+                tmp.el.white_background.changeStyle("opacity",1)
 
                 setTimeout(_=>{
-                    tmp.el.dim_popup.changeStyle("opacity",0)
+                    tmp.dim.resetStep++
+
+                    tmp.el.dim_popup.setHTML(player.dim_shard==0?`
+                        You have entered the Portal for the first time!<br><br>
+                        Check out the Dimensional Tab!
+                    `:`
+                        You have entered the Portal<br><br><b>${player.dim_shard+1}</b><br><br>times!
+                    `)
+
+                    player.dim_shard++
+                    updateTemp()
+                    this.doReset()
+
+                    tmp.el.dim_popup.changeStyle("opacity",1)
 
                     setTimeout(_=>{
-                        tmp.dim.resetStep = 0
-                        tmp.dim.reset = false
+                        tmp.el.dim_popup.changeStyle("opacity",0)
 
-                        tmp.el.white_background.changeStyle("opacity",0)
-                    },2000)
+                        setTimeout(_=>{
+                            tmp.dim.resetStep = 0
+                            tmp.dim.reset = false
+
+                            tmp.el.white_background.changeStyle("opacity",0)
+                        },2000)
+                    },5000)
                 },5000)
-            },5000)
-        })))
+            })))
+        }
     },
     doReset() {
         let d = player.dim_shard
@@ -139,7 +141,7 @@ const DIM = {
             player.mainUpg.atom = [2,6]
 
             player.atom.elements = [14,18,24,30,43]
-            player.supernova.tree = ["qol1",'qol3','qola1','qu_qol1','qol4','qol6','qol7']
+            player.supernova.tree = ["qol1",'qol3','qola1','qu_qol1','qol4','qol6','qol7','qol9']
 
             player.supernova.times = E(10)
         }

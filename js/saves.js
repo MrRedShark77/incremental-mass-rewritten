@@ -132,7 +132,7 @@ function calc(dt, dt_offline) {
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
-        createPopup(POPUP_GROUPS.fermions.html)
+        createPopup(POPUP_GROUPS.fermions.html,'fermions')
     }
 }
 
@@ -398,7 +398,7 @@ function export_copy() {
 }
 
 function importy() {
-    createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",loadgame=>{
+    createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
         if (ssf[2](loadgame)) return
         if (loadgame == 'monke') {
             addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')

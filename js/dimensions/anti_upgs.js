@@ -38,18 +38,22 @@ const ANTI_UPGS = {
                 effDesc(x=this.effect()) {
                     return x.format()+"x"
                 },
+                icon: true,
             },
             2: {
                 desc: "All Ranks no longer reset anything.",
                 cost: E(1e3),
+                icon: true,
             },
             3: {
                 desc: "Accelerator applies BHC & Cosmic Ray.",
                 cost: E(1e4),
+                icon: true,
             },
             4: {
                 desc: "Anti-mass gain is increased by 10% for every supernovas you become.",
                 cost: E(5e4),
+                icon: true,
                 effect() {
                     let x = Decimal.pow(1.1,player.supernova.times.softcap(100,1/3,0))
                     return x

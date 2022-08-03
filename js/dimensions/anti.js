@@ -37,7 +37,7 @@ function setupAntiHTML() {
 		table += `<div id="anti_main_upg_${x}_div" style="width: 230px; margin: 0px 10px;"><b>${ANTI_UPGS.main[x].title}</b><br><br><div style="font-size: 13px; min-height: 50px" id="anti_main_upg_${x}_res"></div><br><div class="table_center" style="justify-content: start;">`
 		for (let y = 1; y <= ANTI_UPGS.main[x].lens; y++) {
 			let key = ANTI_UPGS.main[x][y]
-            let img = id=="am"?`images/upgrades/main_upg_am1.png`:`images/upgrades/main_upg_${id+y}.png`
+            let img = key.icon?`images/upgrades/main_upg_${id+y}.png`:`images/upgrades/main_upg_${id}.png`
 			table += `<img onclick="ANTI_UPGS.main[${x}].buy(${y})" onmouseover="ANTI_UPGS.main.over(${x},${y})" onmouseleave="ANTI_UPGS.main.reset()"
 			 style="margin: 3px;" class="img_btn" id="anti_main_upg_${x}_${y}" src="${img}">`
 		}
