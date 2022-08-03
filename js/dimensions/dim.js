@@ -141,7 +141,7 @@ const DIM = {
             player.mainUpg.atom = [2,6]
 
             player.atom.elements = [14,18,24,30,43]
-            player.supernova.tree = ["qol1",'qol3','qola1','qu_qol1','qol4','qol6','qol7','qol9']
+            player.supernova.tree = ["qol1","qol2",'qol3','qola1','qu_qol1','qol4','qol6','qol7','qol9']
 
             player.supernova.times = E(10)
         }
