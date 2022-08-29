@@ -23,14 +23,15 @@ const FORMATS = {
             return `${omegas.join("^")}^${lastLetter}`;
             } else if (omegaAmount.gt(3) && omegaAmount.lt(10)) {
             return `ω(${omegaAmount.toFixed(0)})^${lastLetter}`;
-            } else if (omegaOrder < 3) {
+            } else if (omegaOrder.lt(3)) {
             return `ω(${this.format(omegaAmount)})^${lastLetter}`;
-            } else if (omegaOrder < 6) {
+            } else if (omegaOrder.lt(6)) {
             return `ω(${this.format(omegaAmount)})`;
             }
-            const val = Decimal.pow(8000, omegaOrder % 1);
-            const orderStr = omegaOrder < 100
-            ? Math.floor(omegaOrder).toFixed(0)
+            let val = Decimal.pow(8000, omegaOrder.toNumber() % 1);
+			if(omegaOrder.gte(1e20))val = E(1)
+            const orderStr = omegaOrder.lt(100)
+            ? Math.floor(omegaOrder.toNumber()).toFixed(0)
             : this.format(Decimal.floor(omegaOrder));
             return `ω[${orderStr}](${this.format(val)})`;
         },
@@ -60,8 +61,9 @@ const FORMATS = {
             } else if (omegaAmount.gt(2) && omegaAmount.lt(10)) {
             return `ω(${omegaAmount.toFixed(0)})^${lastLetter}`;
             }
-            const val = Decimal.pow(8000, omegaOrder % 1);
-            const orderStr = omegaOrder < 100
+            let val = Decimal.pow(8000, omegaOrder.toNumber() % 1);
+			if(omegaOrder.gte(1e20))val = E(1)
+            const orderStr = omegaOrder.lt(100)
             ? Math.floor(omegaOrder).toFixed(0)
             : this.format(Decimal.floor(omegaOrder));
             return `ω[${orderStr}](${this.format(val)})`;
