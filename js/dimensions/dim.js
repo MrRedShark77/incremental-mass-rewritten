@@ -141,9 +141,15 @@ const DIM = {
             player.mainUpg.atom = [2,6]
 
             player.atom.elements = [14,18,24,30,43]
-            player.supernova.tree = ["qol1","qol2",'qol3','qola1','qu_qol1','qol4','qol6','qol7','qol9']
+
+            player.supernova.tree = ['sn1',"qol1","qol2",'qol3','qola1','qu_qol1','qol4','qol6','qol7','qol9']
 
             player.supernova.times = E(10)
+        }
+
+        if (d >= 3) {
+            player.supernova.tree.push('qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6','special1','special2','special3')
+            player.atom.elements.push(1,123)
         }
 
         updateTemp()
@@ -156,7 +162,10 @@ const DIM = {
         return {
             massExp: 0.95**(d**0.6),
             rpExp: 0.95**(d**0.6),
-            globalSpeed: Decimal.pow(10,d**1.25),
+            dmExp: 0.95**(d**0.6),
+            globalSpeed: Decimal.pow(10,d**1.25).min(1e4),
+            gsRoot: d**0.25,
+            abhRoot: 5*d**(d**0.75+1),
         }
     },
     enterPortal() {
@@ -183,6 +192,14 @@ const DIM = {
             _=>`
             <b class="red">-</b> Multiplier's exponent of Rage Power is reduced by <b>^${format(tmp.dim.boost.rpExp,3)}</b><br>
             <b class="green">+</b> Start with Quantum unlocked.
+            `,
+        ],[
+            _=>player.dim_shard>=3,
+            _=>`
+            <b class="red">-</b> Multiplier's exponent of Dark Matter is reduced by <b>^${format(tmp.dim.boost.dmExp,3)}</b><br>
+            <b class="red">-</b> Pre-Quantum Global Speed is rooted by <b>${format(tmp.dim.boost.gsRoot,3)}</b><br>
+            <b class="red">-</b> Atoms gain from mass of black hole is reduced from <b>5√</b> to <b>${format(tmp.dim.boost.abhRoot,3)}√</b><br>
+            <b class="green">+</b> Start with more Quantum features unlocked.
             `,
         ],
     ],

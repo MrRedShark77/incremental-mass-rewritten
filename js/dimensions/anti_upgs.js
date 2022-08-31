@@ -26,7 +26,7 @@ const ANTI_UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 4,
+            lens: 7,
 
             1: {
                 desc: "Anti-Mass is boosted by Mass.",
@@ -60,6 +60,28 @@ const ANTI_UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return x.format()+"x"+softcapHTML(x,1.1**100)
+                },
+            },
+            5: {
+                unl: _=>player.dim_shard>=2,
+                desc: "Keep free tickspeeds from accelerator on reset, unless entering the Portal.",
+                cost: E(1e7),
+            },
+            6: {
+                unl: _=>player.dim_shard>=2,
+                desc: "Quantum Supernova tree will be without the requirement.",
+                cost: E(1e9),
+            },
+            7: {
+                unl: _=>player.dim_shard>=3,
+                desc: "Anti-mass gain is increased by tickspeed's effect.",
+                cost: E(1e5),
+                effect() {
+                    let x = tmp.tickspeedEffect?tmp.tickspeedEffect.eff.add(1).log10().add(1).log10().add(1).pow(2.5):E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return x.format()+"x"
                 },
             },
         },

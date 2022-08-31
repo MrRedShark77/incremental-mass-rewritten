@@ -76,7 +76,39 @@ const INFUSIONS = [
                     return x
                 },
                 effDesc: x => `Above Special Influsions are <b>${formatPercent(x-1)}</b> stronger.`,
+            },{
+                req: 75,
+                unl(x) {return x >= this.req && player.dim_shard >= 2},
+                eff(i) {
+                    i = Math.max(i-this.req+1,0)
+
+                    let x = i/100
+
+                    return x
+                },
+                effDesc: x => `Add <b>${format(x,2)}</b> to Accelerator's Power.`,
             },
+        ],
+    },{
+        unl: _=>player.dim_shard>=3,
+        title: "Dark Infusion",
+        reqFirstRes: "of mass of black hole",
+        getFirstRes: _=> formatMass(player.bh.mass),
+        afford: x => player.bh.mass.gte(x[0]) && player.anti.mass.gte(x[1]),
+        req(i) {
+            let x = Decimal.pow(1e3,Decimal.pow(1.3,i**1.3))
+            let y = Decimal.pow(2,i).mul(1e3)
+
+            return [x,y]
+        },
+        effect(i) {
+            let x = player.mass.add(1).log10().add(1).log10().add(1).mul(i/5).pow(0.75).add(1)
+
+            return x
+        },
+        effDesc: x => `Making rage powers & dark matters boosted themselves by <b>^${x.format()}</b>.`,
+        special: [
+            
         ],
     },
 ]
@@ -147,7 +179,7 @@ function updateInfusionHTML() {
             tmp.el[id+"_amt"].setHTML(format(amt,0))
             tmp.el[id+"_btn"].setHTML(
                 `${IF.effDesc(it.eff[x])}<br>
-                Require:<br>${IF.getFirstRes()} / <b>${x == 0 ? formatMass(it.req[x][0]) : format(it.req[x][0],0)}</b> ${IF.reqFirstRes},<br>
+                Require:<br>${IF.getFirstRes()} / <b>${x <= 1 ? formatMass(it.req[x][0]) : format(it.req[x][0],0)}</b> ${IF.reqFirstRes},<br>
                 ${formatMass(player.anti.mass)} / <b>${formatMass(it.req[x][1])}</b> of anti-mass.
                 `
             )
@@ -166,5 +198,5 @@ function updateInfusionHTML() {
     }
 }
 
-function hasSpecialInfusion(x,y) { return player.anti.infusions[x] >= INFUSIONS[x].special[y].req }
+function hasSpecialInfusion(x,y) { return INFUSIONS[x].special[y].unl(player.anti.infusions[x]) }
 function specialInfusionEff(x,y) { return tmp.anti.infusion.sEff[x][y] }

@@ -3,6 +3,7 @@ const ANTI_MAIN = {
         let x = E(0.1)
         if (hasAntiUpgrade("am",1)) x = x.mul(antiUpgEffect(1,1))
         if (hasAntiUpgrade("am",4)) x = x.mul(antiUpgEffect(1,4))
+        if (hasAntiUpgrade("am",7)) x = x.mul(antiUpgEffect(1,7))
         return x
     },
 }

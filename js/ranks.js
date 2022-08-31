@@ -105,6 +105,7 @@ const RANKS = {
             '5': "Meta-Ranks start later based on Pent.",
             '8': "Mass gain softcap^4 starts later based on Pent.",
             '15': "remove 3rd softcap of Stronger's effect.",
+            '22': "remove 1st softcap of normal mass gain.",
         },
     },
     effect: {

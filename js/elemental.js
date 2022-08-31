@@ -156,7 +156,8 @@ const ELEMENTS = {
             desc: `You can now automatically buy Cosmic Rays. Cosmic Ray raise tickspeed effect at an extremely reduced rate.`,
             cost: E(1e44),
             effect() {
-                let x = player.atom.gamma_ray.pow(0.35).mul(0.01).add(1)
+                let e = hasElement(123)
+                let x = player.atom.gamma_ray.add(e&&tmp.atom?tmp.atom.gamma_ray_bonus:0).pow(e?0.5:0.35).mul(0.01).add(1)
                 return x
             },
             effDesc(x) { return "^"+format(x) },
@@ -726,6 +727,19 @@ const ELEMENTS = {
             desc: `Accelerators are twice effective.`,
             cost: E("e2.5e8"),
         },
+        {
+            desc: `Atomic power’s effect affects accelerators at an extremely reduced rate.`,
+            cost: E("e1e6"),
+            effect() {
+                let x = tmp.atom?tmp.atom.atomicEff.add(1).log10().add(1).pow(2).sub(1):E(0)
+                return x.floor()
+            },
+            effDesc(x) { return "+"+format(x,0) },
+        },
+        {
+            desc: `Argon-18’s effect is stronger, affected by free cosmic ray.`,
+            cost: E("e5e7"),
+        },
     ],
     /*
     {
@@ -761,6 +775,7 @@ const ELEMENTS = {
             if (player.qu.rip.first) u += 9
             if (hasUpgrade("br",9)) u += 23 // 23
         }
+        if (player.dim_shard >= 2) u += 2
 
         return u
     },
@@ -913,7 +928,7 @@ function updateElementsTemp() {
     tmp.elements.tt = tmp.elements.te - tmp.elements.ts
 
     let cannot = []
-    if (player.qu.rip.active) cannot.push(58,74)
+    if (!hasTree('special4')) if (player.qu.rip.active) cannot.push(58,74)
     tmp.elements.cannot = cannot
 
     if (!tmp.elements.upg_length) tmp.elements.upg_length = ELEMENTS.upgs.length-1

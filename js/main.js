@@ -26,8 +26,11 @@ const FORMS = {
         if (player.mainUpg.br.includes(3)) x = x.pow(tmp.upgs.main[4][3].effect)
         if (hasPrestige(0,5)) x = x.pow(2)
 
+        if (player.dim_shard >= 3) x = x.root(tmp.dim.boost.gsRoot)
+
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[1])
         x = x.div(tmp.dim.boost.globalSpeed)
+
         return x
     },
     massGain() {
@@ -73,6 +76,8 @@ const FORMS = {
         return x
     },
     massSoftGain() {
+        if (player.ranks.pent.gte(21)) return EINF
+
         let s = E(1.5e156)
         if (CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e150)
         if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e100)
@@ -221,14 +226,20 @@ const FORMS = {
             let x = player.accelerator
             if (hasElement(121)) x = x.mul(2)
 
+            let bonus = E(0)
+            if (hasElement(122)) bonus = bonus.add(tmp.elements.effect[122])
+
+            x = x.add(bonus)
+
             let step = E(0.1)
+            if (hasSpecialInfusion(0,5)) step = step.add(specialInfusionEff(0,5))
 
             let eff = step.mul(x).add(1)
 
             let ts = x
             if (hasElement(119)) ts = ts.pow(2)
 
-            return {step: step, eff: eff, ts: ts}
+            return {step: step, eff: eff, ts: ts, bonus: bonus}
         },
         autoUnl() { return hasTree('qola1') },
         autoSwitch() { player.autoAccelerator = !player.autoAccelerator },
@@ -255,6 +266,8 @@ const FORMS = {
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
             if (player.dim_shard >= 2) gain = expMult(gain,tmp.dim.boost.rpExp)
+
+            gain = gain.pow(tmp.anti.infusion.eff[1])
 
             return gain.floor()
         },
@@ -289,6 +302,11 @@ const FORMS = {
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+
+            if (player.dim_shard >= 3) gain = expMult(gain,tmp.dim.boost.dmExp)
+
+            gain = gain.pow(tmp.anti.infusion.eff[1])
+
             return gain.floor()
         },
         massPowerGain() {

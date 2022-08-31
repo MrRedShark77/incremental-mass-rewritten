@@ -312,7 +312,7 @@ function updateTickspeedHTML() {
 	if (unl) {
 		let eff = tmp.accelEffect
 		//tmp.el.accel_scale.setTxt(getScalingName('accel'))
-		tmp.el.accel_lvl.setTxt(format(player.accelerator,0))
+		tmp.el.accel_lvl.setTxt(format(player.accelerator,0)+(tmp.accelEffect.bonus.gt(0)?" + "+format(tmp.accelEffect.bonus,0):""))
 		tmp.el.accel_btn.setClasses({btn: true, locked: !FORMS.accel.can()})
 		tmp.el.accel_cost.setTxt(format(tmp.accelCost,0))
 		tmp.el.accel_step.setHTML("+^"+format(eff.step,2))

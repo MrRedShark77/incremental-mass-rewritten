@@ -10,7 +10,7 @@ const SUPERNOVA = {
         let br = player.qu.rip.active
         tmp.supernova.time = 0
 
-        player.free_tickspeed = E(0)
+        if (!hasAntiUpgrade('am',5)) player.free_tickspeed = E(0)
         player.accelerator = E(0)
 
         player.atom.points = E(0)
@@ -137,6 +137,7 @@ function updateSupernovaTemp() {
             let branch = t.branch||""
             let unl = (t.unl?t.unl():true)
             let req = t.req?t.req():true
+            if (hasAntiUpgrade('am',6) && !NO_REQ_QU.includes(id) && t.qf) req = true
             if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
             let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !hasTree(id) && req
             if (branch != "") for (let x = 0; x < branch.length; x++) if (!hasTree(branch[x])) {
