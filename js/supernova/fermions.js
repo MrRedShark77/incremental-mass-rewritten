@@ -403,7 +403,7 @@ function updateFermionsTemp() {
 function updateFermionsHTML() {
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))
-        let unls = FERMIONS.getUnlLength(i)
+        let unls = FERMIONS.getUnlLength()
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let unl = x < unls
             let f = FERMIONS.types[i][x]
