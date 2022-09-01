@@ -40,7 +40,7 @@ const FERMIONS = {
         }
         return x
     },
-    getUnlLength(x) {
+    getUnlLength() {
         let u = 2
         if (hasTree("fn2")) u++
         if (hasTree("fn6")) u++
