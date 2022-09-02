@@ -26,7 +26,7 @@ const ANTI_UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 7,
+            lens: 8,
 
             1: {
                 desc: "Anti-Mass is boosted by Mass.",
@@ -82,6 +82,18 @@ const ANTI_UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return x.format()+"x"
+                },
+            },
+            8: {
+                unl: _=>player.dim_shard>=3,
+                desc: "Gain free Massive Infusions based on Dimensional Shards (they don't affect special infusion requirements).",
+                cost: E(1e7),
+                effect() {
+                    let x = (player.dim_shard+1)**2
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "+"+format(x,0)
                 },
             },
         },

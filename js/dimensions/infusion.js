@@ -108,7 +108,20 @@ const INFUSIONS = [
         },
         effDesc: x => `Making rage powers & dark matters boosted themselves by <b>^${x.format()}</b>.`,
         special: [
-            
+            {
+                req: 10,
+                unl(x) {return x >= this.req},
+                eff(i) {
+                    i = Math.max(i-this.req+1,0)
+
+                    let x = []
+                    x[0] = i/40
+                    x[1] = tmp.accelEffect.eff?tmp.accelEffect.eff.mul(x[0]).add(1):E(1)
+
+                    return x
+                },
+                effDesc: x => `Accelerator’s effect gives <b>x${format(x[0],2)}</b> boost to BHC’s power (<b>^${format(x[1],2)}</b>).`,
+            },
         ],
     },
 ]
@@ -134,10 +147,16 @@ function updateInfusionTemp() {
         let amt = player.anti.infusions[x]
 
         it.req[x] = IF.req(amt)
-        it.eff[x] = IF.effect(amt)
+
+        let f = 0
+        if (hasAntiUpgrade('am',8) && x == 0) f += antiUpgEffect(1,8,0)
+
+        it.free[x] = f
+
+        it.eff[x] = IF.effect(amt+f)
 
         for (let y = 0; y < IF.special.length; y++) {
-            it.sEff[x][y] = IF.special[y].eff(amt)
+            it.sEff[x][y] = IF.special[y].eff(amt+f)
         }
     }
 }
@@ -176,7 +195,7 @@ function updateInfusionHTML() {
         tmp.el[id+"_div"].setDisplay(unl)
 
         if (unl) {
-            tmp.el[id+"_amt"].setHTML(format(amt,0))
+            tmp.el[id+"_amt"].setHTML(format(amt,0)+(it.free[x]>0?" + "+format(it.free[x],0):""))
             tmp.el[id+"_btn"].setHTML(
                 `${IF.effDesc(it.eff[x])}<br>
                 Require:<br>${IF.getFirstRes()} / <b>${x <= 1 ? formatMass(it.req[x][0]) : format(it.req[x][0],0)}</b> ${IF.reqFirstRes},<br>

@@ -200,7 +200,7 @@ const ENTROPY = {
 function getEnRewardEff(x,def=1) { return tmp.en.rewards_eff[x] ?? E(def) }
 
 function calcEntropy(dt, dt_offline) {
-    if(player.md.break.upgs[10].gte(1)){
+    if(player.md.break.upgs[10].gte(1) && player.qu.en.unl){
 		let s1 = Decimal.pow(4,player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));

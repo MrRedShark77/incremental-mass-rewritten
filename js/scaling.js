@@ -98,6 +98,7 @@ const SCALE_FP = {
 	tickspeed() { return [1,1,1,tmp.tickspeedFP] },
 }
 
+const PreP_SCALES = ['rank','tier','tetr','pent','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier','cosmic_str','prestige0','prestige1']
 const QCM8_SCALES = ['rank','tier','tetr','pent','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta'] // super, hyper, ultra, meta
@@ -359,5 +360,6 @@ function getScalingPower(type, name) {
 	if (hasElement(108) && ["rank","tier","tetr","pent"].includes(name)) power = power.mul(player.qu.rip.active?0.98:0.9)
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(tmp.qu.qc_eff[7][1])
 	if (PreQ_SCALES.includes(name) && type != "meta")  power = power.mul(getEnRewardEff(5))
+	if (player.dim_shard >= 4 && PreP_SCALES.includes(name)) power = power.mul(tmp.dim.boost.scale)
 	return power.max(type=="meta"?0.5:0)
 }

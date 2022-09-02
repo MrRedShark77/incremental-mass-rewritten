@@ -14,7 +14,7 @@ const TREE_IDS = [
         ['chal1'],
         ['bs4','bs1','','qf1','','rad1'],
         ['qu0'],
-        ['special1','special2','special3','special4'],
+        ['special1','special2','special3','special4','special5'],
     ],[
         ['s1','m1','rp1','bh1','sn1'],
         ['qol2','qol3','qol4','qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6'],
@@ -920,12 +920,17 @@ const TREE_UPGS = {
             cost: E(1e250),
         },
         special4: {
-            icon: 'placeholder',
-
             unl: _=>player.dim_shard>=2,
             qf: true,
             desc: `You can afford Cerium-58 & Tungsten-74 in Big Rip.`,
             cost: E(1e100),
+        },
+        special5: {
+            icon: 'placeholder',
+
+            unl: _=>player.dim_shard>=4,
+            desc: `Rank Tiers are now rebalanced.`,
+            cost: E(1e11),
         },
 
         qola1: {

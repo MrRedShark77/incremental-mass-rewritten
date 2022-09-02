@@ -218,6 +218,7 @@ function getPlayerData() {
             post_10: false,
             stars: E(0),
             tree: [],
+            dTree: [],
             chal: {
                 noTick: true,
                 noBHC: true,

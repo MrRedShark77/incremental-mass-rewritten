@@ -740,6 +740,14 @@ const ELEMENTS = {
             desc: `Argon-18’s effect is stronger, affected by free cosmic ray.`,
             cost: E("e5e7"),
         },
+        {
+            desc: `Argon-18 can apply BH Condenser’s Power.`,
+            cost: E("e4.5e4"),
+        },
+        {
+            desc: `Double challenges 1-12 maximum completions.`,
+            cost: E("1e15"),
+        },
     ],
     /*
     {
@@ -776,6 +784,8 @@ const ELEMENTS = {
             if (hasUpgrade("br",9)) u += 23 // 23
         }
         if (player.dim_shard >= 2) u += 2
+        if (player.dim_shard >= 3) u += 1
+        if (player.dim_shard >= 4) u += 1
 
         return u
     },

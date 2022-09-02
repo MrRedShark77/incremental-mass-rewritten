@@ -408,8 +408,11 @@ const FORMS = {
                     pow = pow.mul(getEnRewardEff(3)[1])
                     if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
+                    if (hasSpecialInfusion(1,0)) pow = pow.pow(specialInfusionEff(1,0)[1])
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
+                if (hasElement(18) && hasElement(124)) eff = eff.pow(tmp.elements.effect[18])
+
                 return {pow: pow, eff: eff}
             },
             bonus() {

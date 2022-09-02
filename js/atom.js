@@ -63,6 +63,8 @@ const ATOM = {
         },
         effect() {
             let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75).pow(getEnRewardEff(1))
+            if (player.dim_shard >= 4) x = x.pow(tmp.dim.boost.expAtomic)
+
             if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
             x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,0.1,0)
             return x.floor()

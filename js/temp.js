@@ -122,6 +122,7 @@ function resetTemp() {
                 req: [],
                 eff: [],
                 sEff: [],
+                free: [],
             },
         },
 

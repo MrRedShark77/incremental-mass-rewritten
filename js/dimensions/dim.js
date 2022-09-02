@@ -106,10 +106,12 @@ const DIM = {
         let qu_keep = {
             reached: player.qu.reached,
             qc_presets: player.qu.qc.presets,
+            qcMods: player.qu.qc.mods,
+            qcShard: player.qu.qc.shard,
         }
         player.qu = getQUSave()
         player.qu.reached = qu_keep.reached
-        player.qu.qc.presets = qu_keep.qc_presets
+        if (d < 4) player.qu.qc.presets = qu_keep.qc_presets
         player.supernova.post_10 = false
         player.rp.unl = false
         player.bh.unl = false
@@ -142,6 +144,7 @@ const DIM = {
 
             player.atom.elements = [14,18,24,30,43]
 
+            player.qu.chr_get = [0,1,2]
             player.supernova.tree = ['sn1',"qol1","qol2",'qol3','qola1','qu_qol1','qol4','qol6','qol7','qol9']
 
             player.supernova.times = E(10)
@@ -152,6 +155,13 @@ const DIM = {
             player.atom.elements.push(1,123)
         }
 
+        if (d >= 4) {
+            player.qu.qc.shard = qu_keep.qcShard
+            player.qu.qc.mods = qu_keep.qcMods
+            player.supernova.tree.push('qu_qol7','qu_qol8','unl2','unl3')
+            player.md.break.upgs[10] = E(1)
+        }
+
         updateTemp()
 
         tmp.pass = false
@@ -160,12 +170,14 @@ const DIM = {
         let d = player.dim_shard
 
         return {
-            massExp: 0.95**(d**0.6),
+            massExp: d >= 4 ? 0.93**(d**0.6) : 0.95**(d**0.6),
             rpExp: 0.95**(d**0.6),
             dmExp: 0.95**(d**0.6),
             globalSpeed: Decimal.pow(10,d**1.25).min(1e4),
             gsRoot: d**0.25,
             abhRoot: 5*d**(d**0.75+1),
+            scale: d/10+1,
+            expAtomic: 1/(d/15+1),
         }
     },
     enterPortal() {
@@ -200,6 +212,13 @@ const DIM = {
             <b class="red">-</b> Pre-Quantum Global Speed is rooted by <b>${format(tmp.dim.boost.gsRoot,3)}</b><br>
             <b class="red">-</b> Atoms gain from mass of black hole is reduced from <b>5√</b> to <b>${format(tmp.dim.boost.abhRoot,3)}√</b><br>
             <b class="green">+</b> Start with more Quantum features unlocked.
+            `,
+        ],[
+            _=>player.dim_shard>=4,
+            _=>`
+            <b class="red">-</b> All pre-Portal scalings are <b>${formatPercent(tmp.dim.boost.scale-1,0)}</b> stronger.<br>
+            <b class="red">-</b> Atomic Power’s effect is <b>${formatReduction(tmp.dim.boost.expAtomic)}</b> exponentially weaker.<br>
+            <b class="green">+</b> Start with another Quantum features unlocked. Unlock new portal tree that don't be wiped when purchasing Oganesson-118.
             `,
         ],
     ],

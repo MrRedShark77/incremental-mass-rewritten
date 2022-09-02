@@ -390,6 +390,8 @@ function hasPrestige(x,y) { return player.prestiges[x].gte(y) }
 function prestigeEff(x,y,def=E(1)) { return tmp.prestiges.eff[x][y] || def }
 
 function updateRanksTemp() {
+    let rb = hasTree('special5')
+
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
     let fp2 = tmp.qu.chroma_eff[1]
@@ -397,30 +399,36 @@ function updateRanksTemp() {
     if (hasSpecialInfusion(0,0)) ffp = ffp.mul(1/specialInfusionEff(0,0))
 
     let fp = RANKS.fp.rank().mul(ffp)
-    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(fp2).scaleEvery('rank').div(fp).pow(1.15)).mul(10)
+    let p = rb ? 7.5 : 10
+    tmp.ranks.rank.req = E(p).pow(player.ranks.rank.div(fp2).scaleEvery('rank').div(fp).pow(1.15)).mul(p)
     tmp.ranks.rank.bulk = E(0)
-    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true).mul(fp2).add(1).floor();
+    if (player.mass.gte(p)) tmp.ranks.rank.bulk = player.mass.div(p).max(1).log(p).root(1.15).mul(fp).scaleEvery('rank',true).mul(fp2).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
+    p = rb ? 1.75 : 2
     fp = RANKS.fp.tier().mul(ffp)
-    tmp.ranks.tier.req = player.ranks.tier.div(fp2).scaleEvery('tier').div(fp).add(2).pow(2).floor()
-    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true).mul(fp2).add(1).floor();
+    tmp.ranks.tier.req = player.ranks.tier.div(fp2).scaleEvery('tier').div(fp).add(2).pow(p).floor()
+    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(p).sub(2).mul(fp).scaleEvery('tier',true).mul(fp2).add(1).floor();
 
     fp = E(1).mul(ffp)
     let pow = 2
     if (hasElement(44)) pow = 1.75
+    if (rb) pow **= 0.8
     if (hasElement(9)) fp = fp.mul(1/0.85)
     if (player.ranks.pent.gte(1)) fp = fp.mul(1/0.85)
     if (hasElement(72)) fp = fp.mul(1/0.85)
 
     let tps = 0
+    p = rb ? 2 : 3
     if (hasTree("special2")) tps += 5
+    if (rb) tps += 2
 
-    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).scaleEvery('tetr').div(fp).pow(pow).mul(3).add(10-tps).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).add(1).floor();
+    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).scaleEvery('tetr').div(fp).pow(pow).mul(p).add(10-tps).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(p).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).add(1).floor();
 
     fp = E(1).mul(ffp)
-    pow = 1.5
+    pow = rb ? 4/3 : 1.5
+    if (rb) tps += 2
     tmp.ranks.pent.req = player.ranks.pent.scaleEvery('pent').div(fp).pow(pow).add(15-tps).floor()
     tmp.ranks.pent.bulk = player.ranks.tetr.sub(15-tps).gte(0)?player.ranks.tetr.sub(15-tps).max(0).root(pow).mul(fp).scaleEvery('pent',true).add(1).floor():E(0);
 

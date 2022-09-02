@@ -11,6 +11,12 @@
 }
 
 @font-face {
+	font-family: 'Clear Sans';
+	src: url('fonts/ClearSans-Regular.ttf');
+	size-adjust: 90%;
+}
+
+@font-face {
 	font-family: 'Cousine';
 	src: url('fonts/Cousine-Regular.ttf');
 }
@@ -54,6 +60,12 @@
 	font-family: 'Nunito';
 	src: url('fonts/Nunito-VariableFont_wght.ttf');
 	size-adjust: 90%;
+}
+
+@font-face {
+	font-family: 'Pro Font Window';
+	src: url('fonts/ProFontWindows.ttf');
+	size-adjust: 110%;
 }
 
 @font-face {
