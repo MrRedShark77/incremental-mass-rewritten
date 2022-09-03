@@ -280,10 +280,10 @@ const CHALS = {
         start: E(2.9835e49),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = x.root(1.5).mul(0.01).add(1)
-            return ret.softcap(3,0.25,0)
+            let ret = hasElement(126) ? x.root(4/3).mul(0.02).add(1) : x.root(1.5).mul(0.01).add(1).softcap(3,0.25,0)
+            return ret
         },
-        effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return "^"+format(x)+(x.gte(3)&&!hasElement(126)?" <span class='soft'>(softcapped)</span>":"") },
     },
     4: {
         unl() { return player.chal.comps[3].gte(1) || player.atom.unl },
@@ -296,10 +296,10 @@ const CHALS = {
         start: E(1.736881338559743e133),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = x.root(1.5).mul(0.01).add(1)
-            return ret.softcap(3,0.25,0)
+            let ret = hasElement(126) ? x.root(4/3).mul(0.02).add(1) : x.root(1.5).mul(0.01).add(1).softcap(3,0.25,0)
+            return ret
         },
-        effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return "^"+format(x)+(x.gte(3)&&!hasElement(126)?" <span class='soft'>(softcapped)</span>":"") },
     },
     5: {
         unl() { return player.atom.unl },
@@ -358,10 +358,10 @@ const CHALS = {
         start: E(1.989e38),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = x.root(1.75).mul(0.02).add(1)
-            return ret.softcap(2.3,0.25,0)
+            let ret = hasElement(126) ? x.root(1.5).mul(0.035).add(1) : x.root(1.75).mul(0.02).add(1).softcap(2.3,0.25,0)
+            return ret
         },
-        effDesc(x) { return "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return "^"+format(x)+(x.gte(2.3)&&!hasElement(126)?" <span class='soft'>(softcapped)</span>":"") },
     },
     9: {
         unl() { return hasTree("chal4") },

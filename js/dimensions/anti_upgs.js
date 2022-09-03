@@ -26,7 +26,7 @@ const ANTI_UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 8,
+            lens: 9,
 
             1: {
                 desc: "Anti-Mass is boosted by Mass.",
@@ -94,6 +94,18 @@ const ANTI_UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)
+                },
+            },
+            9: {
+                unl: _=>player.dim_shard>=4,
+                desc: "Dimensional Shards boost anti-mass gain.",
+                cost: E(1.619e20),
+                effect() {
+                    let x = player.dim_shard+1
+                    return x**x**0.75
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
                 },
             },
         },

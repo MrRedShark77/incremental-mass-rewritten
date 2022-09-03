@@ -34,7 +34,7 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : (x <= 86 || x > 118)) && !tmp.elements.cannot.includes(x) },
+    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
             if (x == 118 && player.qu.rip.active && !tmp.dim.reset) {
@@ -748,6 +748,28 @@ const ELEMENTS = {
             desc: `Double challenges 1-12 maximum completions.`,
             cost: E("1e15"),
         },
+        {
+            desc: `C3, C4 & C8’s effect is sightly stronger.`,
+            cost: E("e45"),
+        },
+        {
+            desc: `For every 2 accelerators add Cosmic Strings.`,
+            cost: E("e500"),
+            effect() {
+                let x = player.accelerator.div(2).floor()
+                return x
+            },
+            effDesc(x) { return "+"+format(x,0) },
+        },
+        {
+            br: true,
+            desc: `You can now automatically buy break dilation upgrades. They no longer spent relativistic mass.`,
+            cost: E("e5e15"),
+        },
+        {
+            desc: `Bosonic resources are gained by x1e10.`,
+            cost: E("e200"),
+        },
     ],
     /*
     {
@@ -785,11 +807,18 @@ const ELEMENTS = {
         }
         if (player.dim_shard >= 2) u += 2
         if (player.dim_shard >= 3) u += 1
-        if (player.dim_shard >= 4) u += 1
+        if (player.dim_shard >= 4) u += 4
+        if (player.dim_shard >= 6) u += 1
 
         return u
     },
 }
+
+const BR_ELEM = (_=>{
+    let x = []
+    for (let i in ELEMENTS.upgs) if (i>86&&i<=118 || i>0&&ELEMENTS.upgs[i].br) x.push(Number(i))
+    return x
+})()
 
 const MAX_ELEM_TIERS = 2
 
@@ -901,7 +930,7 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         tmp.el.elem_desc.setHTML("<b>["+ELEMENTS.fullNames[ch]+"]</b> "+ELEMENTS.upgs[ch].desc)
-        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86&&ch<=118?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
+        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tElem.effect[ch]):"")
     }
 
@@ -924,7 +953,7 @@ function updateElementsHTML() {
                     let unl2 = x <= tElem.unl_length
                     upg.setVisible(unl2)
                     if (unl2) {
-                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x < 118, final: x == 118})
+                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: BR_ELEM.includes(x) && x != 118, final: x == 118})
                     }
                 }
             }
@@ -933,6 +962,8 @@ function updateElementsHTML() {
 }
 
 function updateElementsTemp() {
+    ELEMENTS.upgs[118].cost = player.dim_shard >= 6 ? tmp.dim.boost.ogCost : E('e1.7e17')
+
     tmp.elements.ts = ELEMENTS.exp[player.atom.elemTier-1]
     tmp.elements.te = ELEMENTS.exp[player.atom.elemTier]
     tmp.elements.tt = tmp.elements.te - tmp.elements.ts

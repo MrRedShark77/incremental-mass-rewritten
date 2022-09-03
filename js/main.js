@@ -76,7 +76,7 @@ const FORMS = {
         return x
     },
     massSoftGain() {
-        if (player.ranks.pent.gte(21)) return EINF
+        if (player.ranks.pent.gte(22)) return EINF
 
         let s = E(1.5e156)
         if (CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e150)
@@ -202,6 +202,8 @@ const FORMS = {
             let eff = step.pow(t.add(bonus).add(player.free_tickspeed).mul(hasElement(80)?25:1))
             if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
+            if (player.dim_shard >= 6) eff = eff.root(tmp.dim.boost.tickRed)
+
             return {step: step, eff: eff, bonus: bonus, ss: ss}
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
@@ -237,6 +239,7 @@ const FORMS = {
             let eff = step.mul(x).add(1)
 
             let ts = x
+            if (hasSpecialInfusion(1,2)) ts = ts.pow(specialInfusionEff(1,2))
             if (hasElement(119)) ts = ts.pow(2)
 
             return {step: step, eff: eff, ts: ts, bonus: bonus}
@@ -314,6 +317,7 @@ const FORMS = {
             if (FERMIONS.onActive("11")) return E(-1)
             if (hasElement(59)) x = E(0.45)
             x = x.add(tmp.radiation.bs.eff[4])
+            if (hasSpecialInfusion(1,1)) x = x.add(specialInfusionEff(1,1))
             return x
         },
         massGain() {
@@ -439,7 +443,7 @@ const FORMS = {
                 return
             }
             if (id=="qu") {
-                player.reset_msg = "Require over "+formatMass(mlt(1e4))+" of mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")
+                player.reset_msg = "Require over "+formatMass(mlt(player.qu.qc.active && player.dim_shard >= 6 ? 1e4 : tmp.dim.boost.quReq))+" of mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")
                 return
             }
             player.reset_msg = this.msgs[id]

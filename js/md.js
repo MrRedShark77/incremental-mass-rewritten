@@ -4,6 +4,7 @@ const MASS_DILATION = {
         let x = 0.8
         if (FERMIONS.onActive("02")) x **= 2
         if (QCs.active() && (player.md.break.active ? !player.qu.rip.active : true)) x **= tmp.qu.qc_eff[6]
+        if (player.dim_shard >= 5) x **= tmp.dim.boost.dPen
         return x
     },
     onactive() {
@@ -206,7 +207,7 @@ const MASS_DILATION = {
         upgs: {
             buy(x) {
                 if (tmp.bd.upgs[x].can) {
-                    player.md.break.mass = player.md.break.mass.sub(this.ids[x].cost(tmp.bd.upgs[x].bulk.sub(1))).max(0)
+                    if (!hasElement(128)) player.md.break.mass = player.md.break.mass.sub(this.ids[x].cost(tmp.bd.upgs[x].bulk.sub(1))).max(0)
                     player.md.break.upgs[x] = player.md.break.upgs[x].max(tmp.bd.upgs[x].bulk)
 
                     if (x == 2) {

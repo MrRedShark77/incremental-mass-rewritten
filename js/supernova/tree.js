@@ -45,7 +45,7 @@ const TREE_IDS = [
         [],
     ],[
         [],
-        [],
+        ['qu_qol11','qu_qol10'],
         [],
         [],
         [],
@@ -67,7 +67,8 @@ const TREE_UPGS = {
         if ((tmp.supernova.tree_choosed == x || auto) && tmp.supernova.tree_afford[x]) {
             if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
             else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
-            player.supernova.tree.push(x)
+            if (P_TREE.includes(x)) player.supernova.dTree.push(x)
+            else player.supernova.tree.push(x)
         }
     },
     ids: {
@@ -933,6 +934,37 @@ const TREE_UPGS = {
             cost: E(1e11),
         },
 
+        qu_qol10: {
+            unl: _=>player.dim_shard>=4,
+            icon: 'placeholder',
+
+            req() {
+                for (let x = 9; x <= 11; x++) if (player.chal.comps[x].gte(1)) return false
+                return player.mass.gte(mlt(1e9)) && player.qu.rip.active
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(1e9))} of normal mass without completing Challenges 9-11 while Big Ripped.` },
+
+            portal: true,
+            qf: true,
+            desc: `You can now automatically complete Challenges 9-11 any Challenge. Keep Challenge 12 completions on Big Rip or start QC.`,
+            cost: E(1e110),
+        },
+        qu_qol11: {
+            icon: 'placeholder',
+            branch: ["qu_qol10"],
+
+            req() {
+                if (tmp.prim.spent_theorem.gte(1)) return false
+                return player.mass.gte(mlt(2.25e7)) && player.qu.rip.active && player.md.active
+            },
+            reqDesc() { return `Reach ${formatMass(mlt(2.25e7))} of normal mass without spent Primordium Particles while Big Ripped & Dilated.` },
+
+            portal: true,
+            qf: true,
+            desc: `You can't gain Delta, Alpha, Omega & Sigma Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e130),
+        },
+
         qola1: {
             unl: _=>dimUnl(),
             desc: `You can now automatically buy Accelerators, they no longer spent RP.`,
@@ -955,7 +987,13 @@ const TREE_UPGS = {
     },
 }
 
-function hasTree(id) { return player.supernova.tree.includes(id) }
+const P_TREE = (_=>{
+    let t = []
+    for (let x in TREE_UPGS.ids) if (TREE_UPGS.ids[x].portal) t.push(x)
+    return t
+})()
+
+function hasTree(id) { return player.supernova.tree.includes(id) || player.supernova.dTree.includes(id) }
 
 function treeEff(id,def=1) { return tmp.supernova.tree_eff[id]||E(def) }
 
@@ -1085,7 +1123,7 @@ function updateTreeHTML() {
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
-        <span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${t_ch.desc}</span><br>
+        <span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${t_ch.desc}</span>${t_ch.portal ? ' <b>[Keep on Portal]</b>' : ""}<br>
         <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':'Neutron star'}</span><br>
         <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `

@@ -4,6 +4,7 @@ const ANTI_MAIN = {
         if (hasAntiUpgrade("am",1)) x = x.mul(antiUpgEffect(1,1))
         if (hasAntiUpgrade("am",4)) x = x.mul(antiUpgEffect(1,4))
         if (hasAntiUpgrade("am",7)) x = x.mul(antiUpgEffect(1,7))
+        if (hasAntiUpgrade("am",9)) x = x.mul(antiUpgEffect(1,9))
         return x
     },
 }

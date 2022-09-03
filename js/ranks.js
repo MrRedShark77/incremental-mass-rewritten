@@ -287,7 +287,7 @@ const PRESTIGES = {
                 if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).add(1)
                 break;
             case 1:
-                if (y.gte(4)) x = y.sub(4).div(2).max(0).root(1.5).scaleEvery('prestige1',true).add(1)
+                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.5).scaleEvery('prestige1',true).add(1)
                 break
             default:
                 x = E(0)

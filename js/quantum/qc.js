@@ -1,7 +1,7 @@
 const QCs = {
     active() { return player.qu.qc.active || player.qu.rip.active },
     getMod(x) { return player.qu.rip.active ? BIG_RIP_QC[x] : player.qu.qc.mods[x] },
-    incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),10) },
+    incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),tmp.qu.qc_max) },
     enter() {
         if (!player.qu.qc.active) {
             let is_zero = true
@@ -18,7 +18,7 @@ const QCs = {
     ctn: [
         {
             eff(i) {
-                return [1-0.03*i,2/(i+2)]
+                return [Math.max(1-0.03*i,0),2/(i+2)]
             },
             effDesc(x) { return `^${format(x[0])} to exponent from All-Stars resources.<br>^${format(x[1])} to strength of star generators.` },
         },{
@@ -60,7 +60,7 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
-                let x = [1-0.05*i,i/10+1]
+                let x = [Math.max(1-0.05*i,0),i/10+1]
                 return x
             },
             effDesc(x) { return `^${format(x[0])} to starting of pre-Quantum scaling.<br>${format(x[1]*100)}% to strength of pre-Quantum scaling.` },
@@ -126,7 +126,7 @@ function setupQCHTML() {
         table += `
         <div style="margin: 5px;">
         <div style="margin: 5px" tooltip="${QCs.names[x]}"><img onclick="tmp.qc_ch = ${x}" style="cursor: pointer" src="images/qcm${x}.png"></div>
-        <div><span id="qcm_mod${x}">0</span>/10</div>
+        <div><span id="qcm_mod${x}">0</span></div>
         <div id="qcm_btns${x}"><button onclick="QCs.incMod(${x},-1); tmp.qc_ch = ${x}">-</button><button onclick="QCs.incMod(${x},1); tmp.qc_ch = ${x}">+</button></div>
         </div>
         `
@@ -163,6 +163,8 @@ function updateQCModPresets() {
 }
 
 function updateQCTemp() {
+    tmp.qu.qc_max = 10
+
     tmp.qu.qc_s_b = E(2)
     if (hasTree("qf4")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
     if (hasPrestige(0,2)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
@@ -174,11 +176,14 @@ function updateQCTemp() {
     for (let x = 0; x < QCs_len; x++) {
         let m = QCs.getMod(x)
         s += m
-        tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m)
         if (hasTree('qc2') && m >= 10) bs++
+        if (m >= 9) m = (m-9)**2+9
+        tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m)
     }
     tmp.qu.qc_s = s
     tmp.qu.qc_s_bouns = bs
+
+    if (player.dim_shard >= 4) tmp.qu.qc_max += Math.floor(Math.max(player.qu.qc.shard-bs-72)/8)
 }
 
 function updateQCHTML() {
@@ -193,13 +198,13 @@ function updateQCHTML() {
         tmp.el.qc_btn.setDisplay(!player.qu.rip.active)
         tmp.el.qc_btn.setTxt((QCs.active()?"Exit":"Enter") + " the Quantum Challenge")
         for (let x = 0; x < QCs_len; x++) {
-            tmp.el["qcm_mod"+x].setTxt(QCs.getMod(x))
+            tmp.el["qcm_mod"+x].setTxt(QCs.getMod(x)+"/"+tmp.qu.qc_max)
             tmp.el["qcm_btns"+x].setDisplay(!QCs.active())
         }
         tmp.el.qc_desc_div.setDisplay(tmp.qc_ch >= 0)
         if (tmp.qc_ch >= 0) {
             let x = tmp.qc_ch
-            tmp.el.qc_ch_title.setTxt(`[${x+1}] ${QCs.names[x]} [${QCs.getMod(x)}/10]`)
+            tmp.el.qc_ch_title.setTxt(`[${x+1}] ${QCs.names[x]} [${QCs.getMod(x)}/${tmp.qu.qc_max}]`)
             tmp.el.qc_ch_desc.setHTML(QCs.ctn[x].effDesc(tmp.qu.qc_eff[x]))
         }
     }

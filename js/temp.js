@@ -91,6 +91,8 @@ function resetTemp() {
         },
 
         prim: {
+            w: [6,6,6,6,2,2,2,1],
+            total_w: 31,
             eff: [],
         },
 

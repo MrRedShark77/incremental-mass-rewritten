@@ -7,6 +7,7 @@ const RADIATION = {
         if (hasTree('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+        x = x.pow(tmp.anti.infusion.eff[2])
         return x
     },
     hz_effect() {
@@ -25,6 +26,7 @@ const RADIATION = {
         if (hasTree('rad5')) x = x.mul(tmp.supernova.tree_eff.rad5||1)
         x = x.mul(tmp.radiation.bs.eff[3*i])
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+        x = x.pow(tmp.anti.infusion.eff[2])
         return x
     },
     ds_eff(i) {
@@ -78,6 +80,7 @@ const RADIATION = {
         let x = E(1)
         if (hasTree('rad3')) x = x.mul(1.1)
         x = x.mul(tmp.fermions.effs[0][4])
+        if (player.dim_shard >= 5) x = x.div(tmp.dim.boost.sn)
         return x
     },
     boosts: [
@@ -113,9 +116,10 @@ const RADIATION = {
             title: `BH-Exponent Boost`,
             eff(b) {
                 let x = b.root(2).div(100)
-                return x.min(.15)
+                if (!hasSpecialInfusion(1,1)) x = x.min(.15)
+                return x
             },
-            desc(x) { return `Exponent from the mass of BH formula is increased by ${format(x)} (hardcapped to 0.15)` },
+            desc(x) { return `Exponent from the mass of BH formula is increased by ${format(x)}`+(hasSpecialInfusion(1,1)?"":" (hardcapped to 0.15)") },
         },{
             title: `BH-Condenser Boost`,
             eff(b) {

@@ -790,7 +790,7 @@ h2 {
 .infusion_btn {
 	width: 350px;
 	max-width: 350px;
-	height: 100px;
+	min-height: 100px;
 }
 
 .infusion_btn * {

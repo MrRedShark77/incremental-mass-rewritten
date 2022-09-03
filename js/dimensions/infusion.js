@@ -102,7 +102,7 @@ const INFUSIONS = [
             return [x,y]
         },
         effect(i) {
-            let x = player.mass.add(1).log10().add(1).log10().add(1).mul(i/5).pow(0.75).add(1)
+            let x = player.rp.points.add(1).log10().add(1).mul(player.bh.dm.add(1).log10().add(1)).log(100).add(1).mul(i/5).pow(0.75).add(1)
 
             return x
         },
@@ -121,7 +121,50 @@ const INFUSIONS = [
                     return x
                 },
                 effDesc: x => `Accelerator’s effect gives <b>x${format(x[0],2)}</b> boost to BHC’s power (<b>^${format(x[1],2)}</b>).`,
+            },{
+                req: 20,
+                unl(x) {return x >= this.req && player.dim_shard >= 5},
+                eff(i) {
+                    i = Math.max(i-this.req+1,0)
+
+                    let x = i/20
+
+                    return x
+                },
+                effDesc: x => `Exponent from the mass of BH formula is increased by <b>${format(x,2)}</b>. Unhardcap BH-Exponent Boost's effect.`,
+            },{
+                req: 30,
+                unl(x) {return x >= this.req && player.dim_shard >= 4},
+                eff(i) {
+                    i = Math.max(i-this.req+1,0)
+
+                    let x = i/50+1
+
+                    return x
+                },
+                effDesc: x => `Accelerator’s effect is <b>^${format(x,2)}</b> stronger.`,
             },
+        ],
+    },{
+        unl: _=>player.dim_shard>=5,
+        title: "Luminous Infusion",
+        reqFirstRes: "of neutron stars",
+        getFirstRes: _=> format(player.supernova.stars),
+        afford: x => player.supernova.stars.gte(x[0]) && player.anti.mass.gte(x[1]),
+        req(i) {
+            let x = Decimal.pow(1e6,Decimal.pow(1.25,i**1.25))
+            let y = Decimal.pow(4,i).mul(1e7)
+
+            return [x,y]
+        },
+        effect(i) {
+            let x = player.supernova.times.mul(i).root(1.5).div(150).add(1)
+
+            return x
+        },
+        effDesc: x => `Making Supernova resources boosted by supernovas by <b>^${x.format()}</b>.`,
+        special: [
+            
         ],
     },
 ]

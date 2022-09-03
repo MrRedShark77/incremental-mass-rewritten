@@ -7,6 +7,7 @@ const FERMIONS = {
         if (tmp.radiation.unl) x = x.mul(tmp.radiation.hz_effect)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(base.pow(player.supernova.fermions.tiers[i][j]))
         if (hasTree("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
+        x = x.pow(tmp.anti.infusion.eff[2])
         return x
     },
     backNormal() {
@@ -28,6 +29,7 @@ const FERMIONS = {
         let x = E(1)
         if (hasTree("qu1")) x = x.mul(1.2)
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[2])
+        if (player.dim_shard >= 5) x = x.div(tmp.dim.boost.sn)
         return x
     },
     getTierScaling(t, bulk=false) {

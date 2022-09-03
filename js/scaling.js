@@ -178,8 +178,10 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent")
-	if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
+	if (player.qu.qc.mods[7] <= 10 || player.qu.rip.active) {
+		if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent")
+		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
+	}
 	tmp.scaling_qc8 = sqc8
 }
 

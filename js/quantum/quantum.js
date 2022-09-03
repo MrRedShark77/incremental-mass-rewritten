@@ -1,6 +1,7 @@
 const QUANTUM = {
     gain() {
-        let x = player.mass.max(1).log10().div(1e13)
+        let d = player.dim_shard >= 6
+        let x = d && !player.qu.qc.active ? player.mass.max(1).log10().div(1e9).div(tmp.dim.boost.quReq) : player.mass.max(1).log10().div(1e13)
         if (x.lt(1)) return E(0)
         x = x.max(0).pow(hasTree("qu11")?3:1.5)
 
@@ -27,10 +28,13 @@ const QUANTUM = {
         }
     },
     doReset(force=false) {
-        player.supernova.times = E(0)
+        player.supernova.times = E(player.dim_shard >= 2 ? 10 : 0)
         player.supernova.stars = E(0)
 
         let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11','qola1']
+        if (player.dim_shard >= 2) keep.push('sn1','d1','special1','special2','special3')
+        if (player.dim_shard >= 4) keep.push('special5')
+        if (player.dim_shard >= 5) keep.push('unl1')
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
         if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b','chal7a','chal8')
         if (tmp.qu.mil_reached[3]) {
@@ -65,7 +69,7 @@ const QUANTUM = {
             for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
         }
 
-        for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8 || force) player.chal.comps[x] = E(0)
+        for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8 || force) if (!hasTree("qu_qol10") || x != 12) player.chal.comps[x] = E(0)
 
         SUPERNOVA.doReset()
 
@@ -98,8 +102,13 @@ const QUANTUM = {
         eff() {
             let pow = E(2)
             if (hasTree('qu6')) pow = pow.mul(treeEff('qu6'))
-            let x = pow.pow(player.qu.cosmic_str)
+            let x = pow.pow(player.qu.cosmic_str.add(tmp.qu.cosmic_str_bonus))
             return {pow: pow, eff: x}
+        },
+        bonus() {
+            let x = E(0)
+            if (hasElement(127)) x = x.add(tmp.elements.effect[127]||0)
+            return x
         },
     },
     mils: [
@@ -240,6 +249,7 @@ function updateQuantumTemp() {
     tmp.qu.cosmic_str_bulk = player.qu.points.max(1).log(2).scaleEvery("cosmic_str",true).add(scalingActive('cosmic_str',player.qu.cosmic_str.max(tmp.qu.cosmic_str_bulk),'super')?1:0).floor()
 
     tmp.qu.cosmic_str_can = player.qu.points.gte(tmp.qu.cosmic_str_cost)
+    tmp.qu.cosmic_str_bonus = QUANTUM.cosmic_str.bonus()
     tmp.qu.cosmic_str_eff = QUANTUM.cosmic_str.eff()
 
     tmp.qu.bpGain = QUANTUM.bpGain()
@@ -255,7 +265,7 @@ function updateQuantumHTML() {
         tmp.el.bpAmt.setTxt(format(player.qu.bp,1)+" "+formatGain(player.qu.bp,tmp.qu.bpGain))
         tmp.el.bpEff.setTxt(format(tmp.qu.bpEff))
 
-        tmp.el.cosmic_str_lvl.setTxt(format(player.qu.cosmic_str,0))//+(tmp.qu.cosmic_str_bonus.gte(1)?" + "+format(tmp.qu.cosmic_str_bonus,0):"")
+        tmp.el.cosmic_str_lvl.setTxt(format(player.qu.cosmic_str,0)+(tmp.qu.cosmic_str_bonus.gt(0)?" + "+format(tmp.qu.cosmic_str_bonus,0):""))
         tmp.el.cosmic_str_btn.setClasses({btn: true, locked: !tmp.qu.cosmic_str_can})
         tmp.el.cosmic_str_scale.setTxt(getScalingName('cosmic_str'))
         tmp.el.cosmic_str_cost.setTxt(format(tmp.qu.cosmic_str_cost,0))

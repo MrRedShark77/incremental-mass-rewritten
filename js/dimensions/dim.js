@@ -158,8 +158,16 @@ const DIM = {
         if (d >= 4) {
             player.qu.qc.shard = qu_keep.qcShard
             player.qu.qc.mods = qu_keep.qcMods
-            player.supernova.tree.push('qu_qol7','qu_qol8','unl2','unl3')
+            player.supernova.tree.push('qu_qol7','qu_qol8','unl2','unl3','d1','special5')
             player.md.break.upgs[10] = E(1)
+        }
+
+        if (d >= 5) {
+            player
+            player.qu.en.unl = true
+            player.qu.rip.first = true
+            player.supernova.tree.push('qu_qol8a','qu_qol9','unl4','unl1')
+            player.atom.elements.push(126,128)
         }
 
         updateTemp()
@@ -169,15 +177,24 @@ const DIM = {
     boost() {
         let d = player.dim_shard
 
+        let a = 0.95**(d**0.6)
+        let b = 0.93**(d**0.6)
+
         return {
-            massExp: d >= 4 ? 0.93**(d**0.6) : 0.95**(d**0.6),
-            rpExp: 0.95**(d**0.6),
-            dmExp: 0.95**(d**0.6),
+            massExp: d >= 4 ? b : a,
+            rpExp: d >= 6 ? b : a,
+            dmExp: d >= 6 ? b : a,
             globalSpeed: Decimal.pow(10,d**1.25).min(1e4),
             gsRoot: d**0.25,
             abhRoot: 5*d**(d**0.75+1),
             scale: d/10+1,
             expAtomic: 1/(d/15+1),
+            sn: d**1.25+1,
+            dPen: d+1,
+            ogCost: Decimal.pow('e1.7e17',1.75**d),
+            quReq: Decimal.pow(10,d**1.25).mul(1e4),
+            pt: d**1.5/10+1,
+            tickRed: Decimal.pow(4/3,d**1.5),
         }
     },
     enterPortal() {
@@ -219,6 +236,21 @@ const DIM = {
             <b class="red">-</b> All pre-Portal scalings are <b>${formatPercent(tmp.dim.boost.scale-1,0)}</b> stronger.<br>
             <b class="red">-</b> Atomic Power’s effect is <b>${formatReduction(tmp.dim.boost.expAtomic)}</b> exponentially weaker.<br>
             <b class="green">+</b> Start with another Quantum features unlocked. Unlock new portal tree that don't be wiped when purchasing Oganesson-118.
+            `,
+        ],[
+            _=>player.dim_shard>=5,
+            _=>`
+            <b class="red">-</b> The Dilation penalty is increased by <b>^${format(tmp.dim.boost.dPen,2)}</b><br>
+            <b class="red">-</b> The Supernova requirement, Fermions & Radiation are <b>x${format(tmp.dim.boost.sn,2)}</b> expensive.<br>
+            <b class="green">+</b> Start with Entropy & Big Rip unlocked.
+            `,
+        ],[
+            _=>player.dim_shard>=6,
+            _=>`
+            <b class="red">-</b> The Oganesson-118's cost is increased from <b>${format('e1.7e17')}</b> to <b>${format(tmp.dim.boost.ogCost)}</b><br>
+            <b class="red">-</b> The Quantum's requirement is increased from <b>${formatMass(mlt(1e4))}</b> to <b>${formatMass(mlt(tmp.dim.boost.quReq))}</b> (except during Quantum Challenge).<br>
+            <b class="red">-</b> Primordium Theorems gain is <b>x${format(tmp.dim.boost.pt)}</b> expensive.<br>
+            <b class="red">-</b> Tickspeed's effect is rooted by <b>${format(tmp.dim.boost.tickRed)}</b>
             `,
         ],
     ],

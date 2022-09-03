@@ -67,13 +67,16 @@ const SUPERNOVA = {
         if (hasTree("sn5")) x = x.mul(tmp.supernova.tree_eff.sn5)
         if (tmp.qu.mil_reached[6]) x = x.mul(E(1.2).pow(player.qu.times).min(1e10))
         x = x.mul(tmp.radiation.bs.eff[11])
+        x = x.pow(tmp.anti.infusion.eff[2])
         return x
     },
     req(x=player.supernova.times) {
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
-        maxlimit = E(1e20).pow(x.scaleEvery('supernova').div(ml_fp).pow(1.25)).mul(1e90)
+        let fp2 = 1
+        if (player.dim_shard >= 5) fp2 /= tmp.dim.boost.sn**(1/3)
+        maxlimit = E(1e20).pow(x.div(fp2).scaleEvery('supernova').div(ml_fp).pow(1.25)).mul(1e90)
         bulk = E(0)
-        if (player.stars.points.div(1e90).gte(1)) bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).mul(ml_fp).scaleEvery('supernova',true).add(1).floor()
+        if (player.stars.points.div(1e90).gte(1)) bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).mul(ml_fp).scaleEvery('supernova',true).mul(fp2).add(1).floor()
         return {maxlimit: maxlimit, bulk: bulk}
     },
 }
@@ -137,8 +140,10 @@ function updateSupernovaTemp() {
             let branch = t.branch||""
             let unl = (t.unl?t.unl():true)
             let req = t.req?t.req():true
-            if (hasAntiUpgrade('am',6) && !NO_REQ_QU.includes(id) && t.qf) req = true
-            if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
+            if (!t.portal) {
+                if (hasAntiUpgrade('am',6) && !NO_REQ_QU.includes(id)) req = true
+                if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
+            }
             let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !hasTree(id) && req
             if (branch != "") for (let x = 0; x < branch.length; x++) if (!hasTree(branch[x])) {
                 unl = false
