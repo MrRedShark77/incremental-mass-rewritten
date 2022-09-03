@@ -163,7 +163,6 @@ const DIM = {
         }
 
         if (d >= 5) {
-            player
             player.qu.en.unl = true
             player.qu.rip.first = true
             player.supernova.tree.push('qu_qol8a','qu_qol9','unl4','unl1')
