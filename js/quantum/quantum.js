@@ -3,6 +3,8 @@ const QUANTUM = {
         let d = player.dim_shard >= 6
         let x = d && !player.qu.qc.active ? player.mass.max(1).log10().div(1e9).div(tmp.dim.boost.quReq) : player.mass.max(1).log10().div(1e13)
         if (x.lt(1)) return E(0)
+        else if (player.qu.qc.active) return E(1)
+
         x = x.max(0).pow(hasTree("qu11")?3:1.5)
 
         x = x.mul(tmp.qu.qc_s_eff)

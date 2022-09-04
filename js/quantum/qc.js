@@ -183,7 +183,7 @@ function updateQCTemp() {
     tmp.qu.qc_s = s
     tmp.qu.qc_s_bouns = bs
 
-    if (player.dim_shard >= 4) tmp.qu.qc_max += Math.floor(Math.max(player.qu.qc.shard-bs-72)/8)
+    if (player.dim_shard >= 4) tmp.qu.qc_max += Math.floor(Math.max(player.qu.qc.shard-bs-72,0)/8)
 }
 
 function updateQCHTML() {

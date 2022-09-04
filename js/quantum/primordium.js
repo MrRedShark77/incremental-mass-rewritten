@@ -7,7 +7,7 @@ const PRIM = {
     },
     getNextTheorem() {
         let b = tmp.prim.t_base
-        let x = E(b).pow(player.qu.prim.theorems.mul(player.dim_shard >= 6 ? tmp.dim.boost.pt : 1).scale(150,2).div(2).add(1))
+        let x = E(b).pow(player.qu.prim.theorems.add(1).mul(player.dim_shard >= 6 ? tmp.dim.boost.pt : 1).scale(150,2).div(2))
 
         return x
     },
