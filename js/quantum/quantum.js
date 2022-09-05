@@ -1,9 +1,10 @@
+const QC_REQ = mlt(1e4)
+
 const QUANTUM = {
     gain() {
         let d = player.dim_shard >= 6
-        let x = d && !player.qu.qc.active ? player.mass.max(1).log10().div(1e9).div(tmp.dim.boost.quReq) : player.mass.max(1).log10().div(1e13)
-        if (x.lt(1)) return E(0)
-        else if (player.qu.qc.active) return E(1)
+        let x = d ? player.mass.max(1).log10().div(1e9).div(tmp.dim.boost.quReq) : player.mass.max(1).log10().div(1e13)
+        if (x.lt(1) || player.qu.qc.active) return E(0)
 
         x = x.max(0).pow(hasTree("qu11")?3:1.5)
 
@@ -23,7 +24,7 @@ const QUANTUM = {
         return x
     },
     enter(auto=false,force=false,rip=false,bd=false) {
-        if (tmp.qu.gain.gte(1) || force) {
+        if (tmp.qu.gain.gte(1) || force || (player.qu.qc.active && player.mass.gte(QC_REQ))) {
             if (player.confirms.qu&&!auto&&!force) createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
             _=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',_=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
             else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)

@@ -261,7 +261,11 @@ function updateUpperHTML() {
 
     unl = (quUnl() || player.chal.comps[12].gte(1)) && antiDim
     tmp.el.qu_div.setDisplay(unl)
-    if (unl) tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>"+(gain2?player.qu.points.formatGain(tmp.qu.gain.div(10)):"(+"+format(tmp.qu.gain,0)+")"))
+    if (unl) tmp.el.quAmt.setHTML(
+		format(player.qu.points,0)+"<br>"+(player.qu.qc.active ?
+			player.mass.gte(QC_REQ) ? "(Complete QC)" : "(Exit)"
+			: gain2?player.qu.points.formatGain(tmp.qu.gain.div(10)):"(+"+format(tmp.qu.gain,0)+")")
+	)
 
     unl = (quUnl() || dimUnl()) && antiDim
     tmp.el.gs1_div.setDisplay(unl)

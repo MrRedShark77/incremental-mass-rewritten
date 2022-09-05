@@ -164,7 +164,18 @@ const INFUSIONS = [
         },
         effDesc: x => `Making Supernova resources boosted by supernovas by <b>^${x.format()}</b>.`,
         special: [
-            
+            {
+                req: 10,
+                unl(x) {return x >= this.req},
+                eff(i) {
+                    i = Math.max(i-this.req+1,0)
+
+                    let x = i/2
+
+                    return x
+                },
+                effDesc: x => `Add <b>${format(x,1)}</b> free Fermion tiers.`,
+            },
         ],
     },
 ]

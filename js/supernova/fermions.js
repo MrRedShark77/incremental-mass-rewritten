@@ -23,6 +23,7 @@ const FERMIONS = {
     bonus(i,j) {
         let x = E(0)
         if (hasTree("prim3")) x = x.add(tmp.prim.eff[5][1].min(j>2?4:1/0))
+        if (hasSpecialInfusion(2,0)) x = x.add(specialInfusionEff(2,0,0))
         return x
     },
     fp() {

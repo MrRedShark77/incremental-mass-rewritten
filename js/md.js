@@ -32,7 +32,7 @@ const MASS_DILATION = {
     },
     RPgain(m=player.mass) {
         if (CHALS.inChal(11)) return E(0)
-        let x = m.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
+        let x = m.div(1.50005e56).max(1).log10().div(40).sub(13).max(1).pow(tmp.md.rp_exp_gain).sub(1).mul(tmp.md.rp_mult_gain)
         return x.sub(player.md.particles).max(0).floor()
     },
     massGain() {
