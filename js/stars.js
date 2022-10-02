@@ -54,9 +54,12 @@ const STARS = {
             x = x.mul(tmp.bosons.upgs.photon[3].effect)
             x = x.mul(tmp.stars.generator_boost_eff)
             if (hasPrestige(1,1)) x = x.pow(2)
+            if (hasSpecialInfusion(1,3)) x = x.pow(specialInfusionEff(1,3))
+
+            if (player.dim_shard >= 9) x = x.pow(tmp.dim.boost.starRes)
 
             if (QCs.active()) x = expMult(x,tmp.qu.qc_eff[0][0])
-            return x
+            return x.softcap('ee27',0.95,2)
         },
     },
     colors: ["#0085FF","#BFE0FF","#FFD500","#FF5200","#990000"],

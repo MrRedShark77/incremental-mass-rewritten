@@ -38,13 +38,19 @@ const DIM = {
             })))
         }
     },
-    doReset() {
+    doReset(order) {
         let d = player.dim_shard
 
         // reset infusions and idk
 
         player.anti.mass = E(0)
-        for (let x = 0; x < INFUSIONS_LEN; x++) player.anti.infusions[x] = 0
+        let l = order == 'dp' ? 3 : INFUSIONS_LEN
+        for (let x = 0; x < l; x++) player.anti.infusions[x] = 0
+
+        if (order != 'dp') {
+            player.anti.dp = E(0)
+            player.anti.best_dp = E(0)
+        }
 
         player.accelerator = E(0)
         player.free_tickspeed = E(0)
@@ -108,6 +114,7 @@ const DIM = {
             qc_presets: player.qu.qc.presets,
             qcMods: player.qu.qc.mods,
             qcShard: player.qu.qc.shard,
+            times: player.qu.times
         }
         player.qu = getQUSave()
         player.qu.reached = qu_keep.reached
@@ -150,6 +157,8 @@ const DIM = {
             player.supernova.times = E(10)
         }
 
+        
+
         if (d >= 3) {
             player.supernova.tree.push('qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6','special1','special2','special3')
             player.atom.elements.push(1,123)
@@ -167,6 +176,14 @@ const DIM = {
             player.qu.rip.first = true
             player.supernova.tree.push('qu_qol8a','qu_qol9','unl4','unl1')
             player.atom.elements.push(126,128)
+        }
+
+        if (d >= 7) {
+            player.qu.times = qu_keep.times
+            player.md.break.active = true
+            player.mainUpg.br = [9]
+            player.supernova.tree.push('qu6','prim1','prim2','prim3')
+            player.atom.elements.push(21,130)
         }
 
         updateTemp()
@@ -191,9 +208,15 @@ const DIM = {
             sn: d**1.25+1,
             dPen: d+1,
             ogCost: Decimal.pow('e1.7e17',1.75**d),
-            quReq: Decimal.pow(10,d**1.25).mul(1e4),
+            quReq: Decimal.pow(10,(hasAntiUpgrade("dp",2)?d/2:d)**1.2).mul(1e4),
             pt: d**1.5/10+1,
             tickRed: Decimal.pow(4/3,d**1.5),
+            massSoft: d**2/30+1,
+            massSS: 1/(d/15+1),
+            bhEff: a**0.9,
+            bhcPow: Decimal.pow(1.15,d**1.5),
+            starRes: 0.75**d,
+            presBase: 0.98**d,
         }
     },
     enterPortal() {
@@ -250,6 +273,25 @@ const DIM = {
             <b class="red">-</b> The Quantum's requirement is increased from <b>${formatMass(mlt(1e4))}</b> to <b>${formatMass(mlt(tmp.dim.boost.quReq))}</b> (except during Quantum Challenge).<br>
             <b class="red">-</b> Primordium Theorems gain is <b>x${format(tmp.dim.boost.pt)}</b> expensive.<br>
             <b class="red">-</b> Tickspeed's effect is rooted by <b>${format(tmp.dim.boost.tickRed)}</b>
+            `,
+        ],[
+            _=>player.dim_shard>=7,
+            _=>`
+            <b class="red">-</b> Each mass's softcap strength is sightly increased by <b>${formatPercent(tmp.dim.boost.massSoft-1)}</b><br>
+            <b class="red">-</b> Each mass's softcap starting is sightly reduced by <b>${formatReduction(tmp.dim.boost.massSS)}</b><br>
+            <b class="green">+</b> Start with Break Dilaton unlocked. Keep quantum times on Portal.
+            `,
+        ],[
+            _=>player.dim_shard>=8,
+            _=>`
+            <b class="red">-</b> Black hole's effect is reduced by <b>^${format(tmp.dim.boost.bhEff,3)}</b>
+            `,
+        ],[
+            _=>player.dim_shard>=9,
+            _=>`
+            <b class="red">-</b> BHC's power is rooted by <b>${format(tmp.dim.boost.bhcPow,3)}</b><br>
+            <b class="red">-</b> All-star resources is reduced by <b>^${format(tmp.dim.boost.starRes,3)}</b><br>
+            <b class="red">-</b> Prestige base's exponent is reduced by <b>${formatMult(tmp.dim.boost.presBase)}</b>
             `,
         ],
     ],

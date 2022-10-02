@@ -83,4 +83,10 @@ const CONFIRMS_FUNCTION = {
         player.qu.rip.active = !player.qu.rip.active
         QUANTUM.enter(false,true,true)
     },
+    dp() {
+        player.anti.dp_unl = true
+        player.anti.dp = player.anti.dp.add(tmp.anti.dpGain)
+        player.anti.best_dp = player.anti.best_dp.max(player.anti.dp)
+        DIM.doReset('dp')
+    },
 }

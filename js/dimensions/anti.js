@@ -5,7 +5,40 @@ const ANTI_MAIN = {
         if (hasAntiUpgrade("am",4)) x = x.mul(antiUpgEffect(1,4))
         if (hasAntiUpgrade("am",7)) x = x.mul(antiUpgEffect(1,7))
         if (hasAntiUpgrade("am",9)) x = x.mul(antiUpgEffect(1,9))
+        if (hasAntiUpgrade("am",12)) x = x.mul(antiUpgEffect(1,12))
+
+        x = x.mul(tmp.anti.dpEff.am||1)
         return x
+    },
+    dp: {
+        gain() {
+            let x = player.anti.mass.div(1e15)
+            if (x.lt(1) && player.dim_shard>=7) return E(0)
+            x = x.root(3)
+
+            if (hasAntiUpgrade("dp",1)) x = x.mul(antiUpgEffect(2,1))
+
+            return x.floor()
+        },
+        reset() {
+            if (tmp.anti.dpGain.gte(1)) {
+                if (player.confirms.dp) createConfirm("Are you sure you want to reset?",'dpReset',CONFIRMS_FUNCTION.dp)
+                else CONFIRMS_FUNCTION.dp()
+            }
+        },
+        effect() {
+            let dp = player.anti.best_dp
+
+            let p = dp.add(1).log10().mul(2).add(1).root(2).sub(1)
+
+            let x = {
+                pow: p,
+                m: player.mass.add(1).log10().add(1).log10().add(1).pow(p),
+                am: player.anti.mass.add(1).log10().add(1).pow(p),
+            }
+
+            return x
+        },
     },
 }
 
@@ -60,9 +93,23 @@ function updateAntiHTML() {
     tmp.el.anti_mass_div.setDisplay(unl)
     if (unl) tmp.el.antiMassAmt.setHTML(formatMass(antiPlr.mass)+"<br>"+formatGain(antiPlr.mass, at.massGain, true))
 
+    unl = player.dim_shard>=7 && antiDim
+    tmp.el.dp_div.setDisplay(unl)
+    if (unl) tmp.el.dpAmt.setHTML(antiPlr.dp.format(0)+"<br>(+"+at.dpGain.format(0)+")")
+
     if (antiDim) {
         if (at.tab == 0) {
-            updateInfusionHTML()
+            if (at.stab[0] == 0) updateInfusionHTML()
+            else if (at.stab[0] == 1) {
+                let eff = at.dpEff
+
+                tmp.el.dp.setTxt(antiPlr.best_dp.format(0))
+                tmp.el.dp_eff.setHTML(`
+                p = <b>${eff.pow.format()}</b> (based on delight powers)<br>
+                (OoMs^2 of mass)<sup>p</sup> -> <b>^${eff.m.format()}</b> to mass gain<br>
+                (OoMs of anti-mass)<sup>p</sup> -> <b>${formatMult(eff.am)}</b> to anti-mass gain
+                `)
+            }
         }
         else if (at.tab == 1) {
             for (let x = 0; x < DIM.boostDesc.length; x++) {
@@ -106,6 +153,10 @@ function getAntiSave() {
         mainUpg: {},
         main_upg_msg: [0,0],
         infusions: [],
+
+        dp_unl: false,
+        dp: E(0),
+        best_dp: E(0),
     }
     for (let x = 1; x <= ANTI_UPGS.main.cols; x++) {
         //s.auto_mainUpg[UPGS.main.ids[x]] = false
@@ -122,6 +173,8 @@ function updateAntiTemp() {
     let at = tmp.anti
 
     at.massGain = ANTI_MAIN.massGain()
+    at.dpGain = ANTI_MAIN.dp.gain()
+    at.dpEff = ANTI_MAIN.dp.effect()
 }
 
 function calcAnti(dt, dt_offline) {

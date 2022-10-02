@@ -770,6 +770,11 @@ const ELEMENTS = {
             desc: `Bosonic resources are gained by x1e10.`,
             cost: E("e200"),
         },
+        {
+            br: true,
+            desc: `Improve tree [qol3] better as gain from mass.`,
+            cost: E("e3e4"),
+        },
     ],
     /*
     {
@@ -808,7 +813,7 @@ const ELEMENTS = {
         if (player.dim_shard >= 2) u += 2
         if (player.dim_shard >= 3) u += 1
         if (player.dim_shard >= 4) u += 4
-        if (player.dim_shard >= 6) u += 1
+        if (player.dim_shard >= 6) u += 2
 
         return u
     },

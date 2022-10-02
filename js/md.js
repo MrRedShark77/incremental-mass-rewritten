@@ -389,7 +389,7 @@ function updateMDTemp() {
     tmp.md.rp_exp_gain = MASS_DILATION.RPexpgain()
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()
     tmp.md.rp_gain = MASS_DILATION.RPgain()
-    tmp.md.passive_rp_gain = hasTree("qol3")?MASS_DILATION.RPgain(expMult(player.mass,tmp.md.pen)):E(0)
+    tmp.md.passive_rp_gain = hasTree("qol3")?MASS_DILATION.RPgain(expMult(player.mass,hasElement(130)?0.9:tmp.md.pen)):E(0)
     tmp.md.mass_gain = MASS_DILATION.massGain()
     tmp.md.mass_req = MASS_DILATION.mass_req()
     tmp.md.mass_eff = MASS_DILATION.effect()

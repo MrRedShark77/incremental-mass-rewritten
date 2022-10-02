@@ -45,7 +45,7 @@ const TREE_IDS = [
         [],
     ],[
         [],
-        ['qu_qol11','qu_qol10'],
+        ['qu_qol12','qu_qol11','qu_qol10'],
         [],
         [],
         [],
@@ -963,6 +963,21 @@ const TREE_UPGS = {
             qf: true,
             desc: `You can't gain Delta, Alpha, Omega & Sigma Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
             cost: E(1e130),
+        },
+        qu_qol12: {
+            unl: _=>player.dim_shard>=7,
+            icon: 'placeholder',
+            branch: ["qu_qol11"],
+
+            req() {
+                return player.mass.gte(uni('e6e8')) && player.qu.rip.active && player.md.active
+            },
+            reqDesc() { return `Reach ${formatMass(uni('e6e8'))} of normal mass while Big Ripped & Dilated.` },
+
+            portal: true,
+            qf: true,
+            desc: `You can't gain Phi, Epsilon & Theta Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e230),
         },
 
         qola1: {

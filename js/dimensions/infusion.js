@@ -113,6 +113,7 @@ const INFUSIONS = [
                 unl(x) {return x >= this.req},
                 eff(i) {
                     i = Math.max(i-this.req+1,0)
+                    if (hasSpecialInfusion(1,4)) i *= specialInfusionEff(1,4)
 
                     let x = []
                     x[0] = i/40
@@ -126,6 +127,7 @@ const INFUSIONS = [
                 unl(x) {return x >= this.req && player.dim_shard >= 5},
                 eff(i) {
                     i = Math.max(i-this.req+1,0)
+                    if (hasSpecialInfusion(1,4)) i *= specialInfusionEff(1,4)
 
                     let x = i/20
 
@@ -137,12 +139,35 @@ const INFUSIONS = [
                 unl(x) {return x >= this.req && player.dim_shard >= 4},
                 eff(i) {
                     i = Math.max(i-this.req+1,0)
+                    if (hasSpecialInfusion(1,4)) i *= specialInfusionEff(1,4)
 
                     let x = i/50+1
 
                     return x
                 },
                 effDesc: x => `Accelerator’s effect is <b>^${format(x,2)}</b> stronger.`,
+            },{
+                req: 40,
+                unl(x) {return x >= this.req && player.dim_shard >= 7},
+                eff(i) {
+                    i = Math.max(i-this.req+1,0)
+
+                    let x = i**0.5/2+1
+
+                    return x
+                },
+                effDesc: x => `All-star resources are raised by <b>${format(x,2)}</b>.`,
+            },{
+                req: 50,
+                unl(x) {return x >= this.req},
+                eff(i) {
+                    i = Math.max(i-this.req+1,0)
+
+                    let x = i/80+1
+
+                    return x
+                },
+                effDesc: x => `Above Special Influsions (except 4th) are <b>${formatPercent(x-1)}</b> stronger. Unsoftcap 1st phase of each particle powers.`,
             },
         ],
     },{
@@ -177,6 +202,53 @@ const INFUSIONS = [
                 effDesc: x => `Add <b>${format(x,1)}</b> free Fermion tiers.`,
             },
         ],
+    },{
+        unl: _=>player.dim_shard>=7,
+        title: "Quantum Infusion",
+        reqFirstRes: "of blueprint particle",
+        reqSecondRes: "of delight power",
+        getFirstRes: _=> format(player.qu.bp),
+        getSecondRes: _=> format(player.anti.dp,0),
+        afford: x => player.qu.bp.gte(x[0]) && player.anti.dp.gte(x[1]),
+        req(i) {
+            let x = Decimal.pow(100,i**1.75).mul(100)
+            let y = Decimal.pow(1.5,i).ceil()
+
+            return [x,y]
+        },
+        effect(i) {
+            let qu = player.qu
+            let x = qu.points.add(1).log10().add(1).mul(qu.bp.add(1).log10().add(1)).pow(i)
+
+            return x
+        },
+        effDesc: x => `Making quantum foams and blueprint particles boosted themselves by <b>${formatMult(x)}</b>.`,
+        special: [
+            
+        ],
+    },{
+        unl: _=>player.dim_shard>=9,
+        title: "Prestigious Infusion",
+        reqFirstRes: "of prestige base",
+        reqSecondRes: "of delight power",
+        getFirstRes: _=> format(tmp.prestiges.base,0),
+        getSecondRes: _=> format(player.anti.dp,0),
+        afford: x => tmp.prestiges.base.gte(x[0]) && player.anti.dp.gte(x[1]),
+        req(i) {
+            let x = Decimal.pow(10,i**1.5).mul(1000)
+            let y = Decimal.pow(2,i).mul(1e3)
+
+            return [x,y]
+        },
+        effect(i) {
+            let x = tmp.prestiges.base?tmp.prestiges.base.max(1).log10().add(1).pow(i**0.5/5):E(1)
+
+            return x
+        },
+        effDesc: x => `Making rank tiers reduced by prestige base by <b>/${format(x)}</b>.`,
+        special: [
+            
+        ],
     },
 ]
 
@@ -187,7 +259,8 @@ function buyInfusion(i) {
 
     if (INFUSIONS[i].afford(req)) {
         player.anti.infusions[i]++
-        player.anti.mass = player.anti.mass.sub(req[1]).max(0)
+        if (i < 3) player.anti.mass = player.anti.mass.sub(req[1]).max(0)
+        else player.anti.dp = player.anti.dp.sub(req[1]).max(0)
 
         updateInfusionTemp()
     }
@@ -204,6 +277,7 @@ function updateInfusionTemp() {
 
         let f = 0
         if (hasAntiUpgrade('am',8) && x == 0) f += antiUpgEffect(1,8,0)
+        if (hasAntiUpgrade('am',10) && x < INFUSIONS_LEN-1) f += Math.floor(player.anti.infusions[x+1]/2)
 
         it.free[x] = f
 
@@ -222,7 +296,7 @@ function setupInfusionHTML() {
         let IF = INFUSIONS[x]
 
         html += `
-        <div id="infusion${x}_div" style="width: 500px">
+        <div id="infusion${x}_div" style="width: 500px; margin: 3px">
             ${IF.title}: <span id="infusion${x}_amt"></span><br>
             <button onclick="buyInfusion(${x})" class="btn infusion_btn" id="infusion${x}_btn"></button><br>
         `
@@ -253,7 +327,7 @@ function updateInfusionHTML() {
             tmp.el[id+"_btn"].setHTML(
                 `${IF.effDesc(it.eff[x])}<br>
                 Require:<br>${IF.getFirstRes()} / <b>${x <= 1 ? formatMass(it.req[x][0]) : format(it.req[x][0],0)}</b> ${IF.reqFirstRes},<br>
-                ${formatMass(player.anti.mass)} / <b>${formatMass(it.req[x][1])}</b> of anti-mass.
+                ${IF.getSecondRes?IF.getSecondRes():formatMass(player.anti.mass)} / <b>${x<3?formatMass(it.req[x][1]):it.req[x][1].format(0)}</b> ${IF.reqSecondRes||"of anti-mass"}.
                 `
             )
             tmp.el[id+"_btn"].setClasses({btn: true, infusion_btn: true, locked: !IF.afford(it.req[x])})

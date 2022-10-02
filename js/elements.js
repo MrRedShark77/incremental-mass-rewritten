@@ -417,6 +417,8 @@ function updateOptionsHTML() {
 		?quUnl()
 		:CONFIRMS[x] == "br"
 		?player.qu.rip.first
+		:CONFIRMS[x] == "dp"
+		?player.anti.dp_unl
 		:player[CONFIRMS[x]].unl
 
 		tmp.el["confirm_div_"+x].setDisplay(unl)

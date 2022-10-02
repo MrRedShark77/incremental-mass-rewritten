@@ -77,6 +77,9 @@ const ANTI_TABS = {
         { id: "Anti-Upgrades" },
     ],
     2: {
-
+        0: [
+            { id: "Infusions" },
+            { id: "Delight Powers", unl() { return player.anti.dp_unl } },
+        ],
     },
 }

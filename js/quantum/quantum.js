@@ -14,6 +14,9 @@ const QUANTUM = {
         if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
         if (hasTree("qf3")) x = x.mul(treeEff("qf3"))
         if (hasPrestige(0,2)) x = x.mul(4)
+
+        x = x.mul(tmp.anti.infusion.eff[3])
+
         return x.floor()
     },
     gainTimes() {
@@ -83,6 +86,7 @@ const QUANTUM = {
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2).softcap(1e50,0.95,2))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         x = x.mul(tmp.qu.cosmic_str_eff.eff)
+        x = x.mul(tmp.anti.infusion.eff[3])
         return x
     },
     bpEff() {

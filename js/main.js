@@ -14,7 +14,7 @@ const ST_NAMES = [
 		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
 	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br','dp']
 
 const FORMS = {
     getPreQUGlobalSpeed() {
@@ -22,6 +22,7 @@ const FORMS = {
         if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)
         if (hasElement(103)) x = x.mul(tmp.elements.effect[103])
+        if (hasAntiUpgrade("dp",3)) x = x.mul(antiUpgEffect(2,3))
 
         if (player.mainUpg.br.includes(3)) x = x.pow(tmp.upgs.main[4][3].effect)
         if (hasPrestige(0,5)) x = x.pow(2)
@@ -66,12 +67,14 @@ const FORMS = {
         .softcap(tmp.massSoftGain3,tmp.massSoftPower3,0)
         .softcap(tmp.massSoftGain4,tmp.massSoftPower4,0)
         .softcap(tmp.massSoftGain5,tmp.massSoftPower5,0)
+        .softcap(tmp.massSoftGain6,tmp.massSoftPower6,0)
 
         if (hasElement(117)) x = x.pow(10)
 
         x = expMult(x,tmp.dim.boost.massExp)
 
         x = x.pow(tmp.anti.infusion.eff[0])
+        x = x.pow(tmp.anti.dpEff.m)
 
         return x
     },
@@ -84,6 +87,7 @@ const FORMS = {
         if (player.mainUpg.bh.includes(7)) s = s.mul(tmp.upgs.main?tmp.upgs.main[2][7].effect:E(1))
         if (player.mainUpg.rp.includes(13)) s = s.mul(tmp.upgs.main?tmp.upgs.main[1][13].effect:E(1))
         if (hasPrestige(0,1)) s = s.pow(10)
+        if (player.dim_shard >= 7) s = expMult(s, tmp.dim.boost.massSS)
         if (hasSpecialInfusion(0,1)) s = s.pow(specialInfusionEff(0,1))
         return s.min(tmp.massSoftGain2||1/0)
     },
@@ -93,7 +97,9 @@ const FORMS = {
         if (CHALS.inChal(7) || CHALS.inChal(10)) p = p.mul(6)
         if (player.mainUpg.bh.includes(11)) p = p.mul(0.9)
         if (player.ranks.rank.gte(800)) p = p.mul(RANKS.effect.rank[800]())
-        return E(1).div(p.add(1))
+        let q = E(1).div(p.add(1))
+        if (player.dim_shard >= 7) q = q.pow(tmp.dim.boost.massSoft)
+        return q
     },
     massSoftGain2() {
         let s = E('1.5e1000056')
@@ -104,6 +110,7 @@ const FORMS = {
         s = s.pow(tmp.bosons.effect.neg_w[0])
         if (hasPrestige(0,1)) s = s.pow(10)
 
+        if (player.dim_shard >= 7) s = expMult(s, tmp.dim.boost.massSS)
         if (hasSpecialInfusion(0,1)) s = s.pow(specialInfusionEff(0,1))
 
         return s.min(tmp.massSoftGain3||1/0)
@@ -111,6 +118,7 @@ const FORMS = {
     massSoftPower2() {
         let p = E(player.qu.rip.active ? 0.1 : 0.25)
         if (hasElement(51)) p = p.pow(0.9)
+        if (player.dim_shard >= 7) p = p.pow(tmp.dim.boost.massSoft)
         return p
     },
     massSoftGain3() {
@@ -119,12 +127,14 @@ const FORMS = {
         s = s.pow(tmp.radiation.bs.eff[2])
         if (hasPrestige(0,1)) s = s.pow(10)
 
+        if (player.dim_shard >= 7) s = expMult(s, tmp.dim.boost.massSS)
         if (hasSpecialInfusion(0,1)) s = s.pow(specialInfusionEff(0,1))
         return s
     },
     massSoftPower3() {
         let p = E(player.qu.rip.active ? 0.1 : 0.2)
         if (hasElement(77)) p = p.pow(player.qu.rip.active?0.95:0.825)
+        if (player.dim_shard >= 7) p = p.pow(tmp.dim.boost.massSoft)
         return p
     },
     massSoftGain4() {
@@ -133,24 +143,35 @@ const FORMS = {
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
         if (hasPrestige(0,1)) s = s.pow(10)
 
+        if (player.dim_shard >= 7) s = expMult(s, tmp.dim.boost.massSS)
         if (hasSpecialInfusion(0,1)) s = s.pow(specialInfusionEff(0,1))
         return s
     },
     massSoftPower4() {
         let p = E(0.1)
         if (hasElement(100)) p = p.pow(player.qu.rip.active?0.8:0.5)
+        if (player.dim_shard >= 7) p = p.pow(tmp.dim.boost.massSoft)
         return p
     },
     massSoftGain5() {
         let s = mlt(player.qu.rip.active?1e4:1e12)
         if (hasPrestige(0,8)) s = s.pow(prestigeEff(0,8))
         if (hasUpgrade("br",12)) s = s.pow(upgEffect(4,12))
-
+        if (player.dim_shard >= 7) s = expMult(s, tmp.dim.boost.massSS)
         if (hasSpecialInfusion(0,1)) s = s.pow(specialInfusionEff(0,1))
         return s
     },
     massSoftPower5() {
         let p = E(0.05)
+        if (player.dim_shard >= 7) p = p.pow(tmp.dim.boost.massSoft)
+        return p
+    },
+    massSoftGain6() {
+        let s = mlt(1e21)
+        return s
+    },
+    massSoftPower6() {
+        let p = E(0.01)
         return p
     },
     tickspeed: {
@@ -381,7 +402,8 @@ const FORMS = {
             ?player.bh.mass.add(1).pow(1.25)
             :player.bh.mass.add(1).root(4)
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
-            return x//.softcap("ee14",0.95,2)
+            if (player.dim_shard>=8) x = expMult(x,tmp.dim.boost.bhEff)
+            return x.softcap("ee35",0.95,2)
         },
         condenser: {
             autoSwitch() { player.bh.autoCondenser = !player.bh.autoCondenser },
@@ -413,7 +435,7 @@ const FORMS = {
                     if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
                     if (hasSpecialInfusion(1,0)) pow = pow.pow(specialInfusionEff(1,0)[1])
-                
+                    if (player.dim_shard >= 9) pow = pow.root(tmp.dim.boost.bhcPow)
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
                 if (hasElement(18) && hasElement(124)) eff = eff.pow(tmp.elements.effect[18])
 
@@ -442,8 +464,12 @@ const FORMS = {
                 player.reset_msg = "Reach over "+format(tmp.supernova.maxlimit)+" collapsed stars to be Supernova"
                 return
             }
-            if (id=="qu") {
+            else if (id=="qu") {
                 player.reset_msg = "Require over "+formatMass(mlt(player.qu.qc.active && player.dim_shard >= 6 ? 1e4 : tmp.dim.boost.quReq))+" of mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")
+                return
+            }
+            else if (id=="dp") {
+                player.reset_msg = "Require over "+formatMass(1e15)+" of anti-mass to reset previous features to gain Delight Powers, force to Portal reset"
                 return
             }
             player.reset_msg = this.msgs[id]

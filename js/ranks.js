@@ -252,7 +252,12 @@ const PRESTIGES = {
         let x = 0
         if (hasElement(100)) x += tmp.elements.effect[100]
         if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
-        return x+1
+
+        x += 1
+
+        if (player.dim_shard >= 9) x *= tmp.dim.boost.presBase
+
+        return x
     },
     base() {
         let x = E(1)
@@ -300,8 +305,8 @@ const PRESTIGES = {
         _=>true,
     ],
     noReset: [
-        _=>hasUpgrade('br',11),
-        _=>false,
+        _=>hasUpgrade('br',11) || hasAntiUpgrade('am',11),
+        _=>hasAntiUpgrade('am',11),
     ],
     rewards: [
         {
@@ -394,7 +399,10 @@ function updateRanksTemp() {
 
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
+    
     let fp2 = tmp.qu.chroma_eff[1]
+    fp2 = fp2.mul(tmp.anti.infusion.eff[4])
+
     let ffp = E(1)
     if (hasSpecialInfusion(0,0)) ffp = ffp.mul(1/specialInfusionEff(0,0))
 

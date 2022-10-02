@@ -8,8 +8,8 @@ const ANTI_UPGS = {
                 }
             }
         },
-        ids: [null, 'am'],
-        cols: 1,
+        ids: [null, 'am', 'dp'],
+        cols: 2,
         over(x,y) { player.anti.main_upg_msg = [x,y] },
         reset() { player.anti.main_upg_msg = [0,0] },
         1: {
@@ -26,7 +26,7 @@ const ANTI_UPGS = {
                 }
             },
             auto_unl() { return false },
-            lens: 9,
+            lens: 12,
 
             1: {
                 desc: "Anti-Mass is boosted by Mass.",
@@ -106,6 +106,70 @@ const ANTI_UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
+                },
+            },
+            10: {
+                unl: _=>player.dim_shard>=6,
+                desc: "For every 2 each non-bonus infusions adds previous infusion (it doesn't affect special infusion requirements).",
+                cost: E(2e16),
+            },
+            11: {
+                unl: _=>player.dim_shard>=6,
+                desc: "Prestiges will no longer reset anything.",
+                cost: E(1.619e21),
+            },
+            12: {
+                unl: _=>player.dim_shard>=9,
+                desc: "Anti-mass gain is affected by pre-quantum global speed at reduced rate.",
+                cost: E(1e14),
+                effect() {
+                    let x = tmp.preQUGlobalSpeed?tmp.preQUGlobalSpeed.max(1).log10().add(1).pow(3):E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return format(x)+"x"
+                },
+            },
+        },
+        2: {
+            title: "Delight Upgrades",
+            res: "delight powers",
+            getRes() { return player.anti.dp },
+            unl() { return player.anti.dp_unl },
+            can(x) { return player.anti.dp.gte(this[x].cost) && !player.anti.mainUpg.dp.includes(x) },
+            buy(x) {
+                if (this.can(x)) {
+                    player.anti.dp = player.anti.dp.sub(this[x].cost)
+                    player.anti.mainUpg.dp.push(x)
+                }
+            },
+            auto_unl() { return false },
+            lens: 3,
+
+            1: {
+                desc: "Delight powers is boosted by rage powers.",
+                cost: E(5),
+                effect() {
+                    let x = player.rp.points.add(1).log10().add(1).log10().add(1).pow(0.5)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return x.format()+"x"
+                },
+            },
+            2: {
+                desc: "Quantum requirement from dimensional nerf is 50% weaker.",
+                cost: E(100),
+            },
+            3: {
+                desc: "Anti-mass boosts pre-quantum global speed at reduced rate.",
+                cost: E(10000),
+                effect() {
+                    let x = player.anti.mass.add(1).root(2)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return x.format()+"x"
                 },
             },
         },

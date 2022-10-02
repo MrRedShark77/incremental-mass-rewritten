@@ -116,7 +116,7 @@ function resetTemp() {
 
         anti: {
             tab: 0,
-            stab: [],
+            stab: [0],
             upgs: {
                 main: {},
             },
@@ -126,6 +126,7 @@ function resetTemp() {
                 sEff: [],
                 free: [],
             },
+            dpEff: {},
         },
 
         accelEffect: {},
@@ -172,6 +173,8 @@ function updateMassTemp() {
     tmp.massSoftGain4 = FORMS.massSoftGain4()
     tmp.massSoftPower5 = FORMS.massSoftPower5()
     tmp.massSoftGain5 = FORMS.massSoftGain5()
+    tmp.massSoftPower6 = FORMS.massSoftPower6()
+    tmp.massSoftGain6 = FORMS.massSoftGain6()
     tmp.massGain = FORMS.massGain()
 }
 
