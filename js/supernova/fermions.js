@@ -17,7 +17,7 @@ const FERMIONS = {
         }
     },
     choose(i,x) {
-        if (player.confirms.sn) createConfirm("Are you sure to switch any type of any Fermion?",'switchF', _=>CONFIRMS_FUNCTION.switchF(i,x))
+        if (player.confirms.sn) createConfirm("Are you sure to switch any type of any Fermion?",'switchF', ()=>CONFIRMS_FUNCTION.switchF(i,x))
         else CONFIRMS_FUNCTION.switchF(i,x)
     },
     bonus(i,j) {
@@ -43,7 +43,7 @@ const FERMIONS = {
         }
         return x
     },
-    getUnlLength(x) {
+    getUnlLength() {
         let u = 2
         if (hasTree("fn2")) u++
         if (hasTree("fn6")) u++
@@ -406,7 +406,7 @@ function updateFermionsTemp() {
 function updateFermionsHTML() {
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))
-        let unls = FERMIONS.getUnlLength(i)
+        let unls = FERMIONS.getUnlLength()
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let unl = x < unls
             let f = FERMIONS.types[i][x]

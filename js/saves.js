@@ -1,4 +1,4 @@
-function E(x){return new Decimal(x)};
+function E(x){return new Decimal(x)}
 
 const EINF = Decimal.dInf
 
@@ -419,7 +419,7 @@ function importy() {
         if (loadgame != null) {
             let keep = player
             try {
-                setTimeout(_=>{
+                setTimeout(()=>{
                     if (findNaN(loadgame, true)) {
                         addNotify("Error Importing, because it got NaNed")
                         return
