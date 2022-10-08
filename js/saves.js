@@ -129,7 +129,7 @@ function calc(dt, dt_offline) {
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
-        addPopup(POPUP_GROUPS.fermions)
+        createPopup(POPUP_GROUPS.fermions.html,'fermions')
     }
 }
 
@@ -188,6 +188,7 @@ function getPlayerData() {
             ratio: 0,
             dRatio: [1,1,1],
             elements: [],
+            elemTier: 1,
         },
         md: {
             active: false,
@@ -343,9 +344,9 @@ function cannotSave() { return tmp.supernova.reached && player.supernova.times.l
 function save(){
     let str = btoa(JSON.stringify(player))
     if (cannotSave() || findNaN(str, true)) return
-    if (localStorage.getItem("testSave") == '') wipe()
-    localStorage.setItem("testSave",str)
-    tmp.prevSave = localStorage.getItem("testSave")
+    if (localStorage.getItem("imr_save") == '') wipe()
+    localStorage.setItem("imr_save",str)
+    tmp.prevSave = localStorage.getItem("imr_save")
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 
@@ -389,43 +390,44 @@ function export_copy() {
 }
 
 function importy() {
-    let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
-    if (ssf[2](loadgame)) return
-    if (loadgame == 'monke') {
-        addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
-        return
-    }
-    if (loadgame == 'matt parker') {
-        addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
-        return
-    }
-    if (loadgame == 'SUPERNOVA.get()') {
-        addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
-        return
-    }
-    if (loadgame != null) {
-        let keep = player
-        try {
-            setTimeout(_=>{
-                if (findNaN(loadgame, true)) {
-                    addNotify("Error Importing, because it got NaNed")
-                    return
-                }
-                load(loadgame)
-                save()
-                resetTemp()
-                loadGame(false)
-                location.reload()
-            }, 200)
-        } catch (error) {
-            addNotify("Error Importing")
-            player = keep
+    createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
+        if (ssf[2](loadgame)) return
+        if (loadgame == 'monke') {
+            addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
+            return
         }
-    }
+        if (loadgame == 'matt parker') {
+            addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
+            return
+        }
+        if (loadgame == 'SUPERNOVA.get()') {
+            addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
+            return
+        }
+        if (loadgame != null) {
+            let keep = player
+            try {
+                setTimeout(_=>{
+                    if (findNaN(loadgame, true)) {
+                        addNotify("Error Importing, because it got NaNed")
+                        return
+                    }
+                    load(loadgame)
+                    save()
+                    resetTemp()
+                    loadGame(false)
+                    location.reload()
+                }, 200)
+            } catch (error) {
+                addNotify("Error Importing")
+                player = keep
+            }
+        }
+    })
 }
 
 function loadGame(start=true, gotNaN=false) {
-    if (!gotNaN) tmp.prevSave = localStorage.getItem("testSave")
+    if (!gotNaN) tmp.prevSave = localStorage.getItem("imr_save")
     wipe()
     load(tmp.prevSave)
     setupHTML()

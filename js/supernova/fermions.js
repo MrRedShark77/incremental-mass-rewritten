@@ -16,12 +16,8 @@ const FERMIONS = {
         }
     },
     choose(i,x) {
-        if (player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
-        let id = i+""+x
-        if (player.supernova.fermions.choosed != id) {
-            player.supernova.fermions.choosed = id
-            SUPERNOVA.reset(false,false,false,true)
-        }
+        if (player.confirms.sn) createConfirm("Are you sure to switch any type of any Fermion?",'switchF', _=>CONFIRMS_FUNCTION.switchF(i,x))
+        else CONFIRMS_FUNCTION.switchF(i,x)
     },
     bonus(i,j) {
         let x = E(0)

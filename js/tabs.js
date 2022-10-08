@@ -8,7 +8,9 @@ const TABS = {
                 tree_update = true
             }
         }
-        else tmp.stab[tmp.tab] = x
+        else {
+            tmp.stab[tmp.tab] = x
+        }
     },
     1: [
         { id: "Main" },

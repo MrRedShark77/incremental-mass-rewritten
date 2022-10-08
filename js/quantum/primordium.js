@@ -93,10 +93,10 @@ function giveRandomPParticles(v, max=false) {
 }
 
 function respecPParticles() {
-    if (confirm("Are you sure you want to respec all Particles?")) {
+    createConfirm("Are you sure you want to respec all Particles?",'respectPPs',_=>{
         for (let i =0; i < 8; i++) player.qu.prim.particles[i] = E(0)
         QUANTUM.doReset()
-    }
+    })
 }
 
 function calcPartChances() {

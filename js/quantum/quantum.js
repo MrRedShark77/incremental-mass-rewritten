@@ -20,43 +20,9 @@ const QUANTUM = {
     },
     enter(auto=false,force=false,rip=false,bd=false) {
         if (tmp.qu.gain.gte(1) || force) {
-            if (player.confirms.qu&&!auto&&!force) if (confirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals")?!confirm("ARE YOU SURE ABOUT IT???"):true) return
-            if (QCs.active() && !rip && !bd && !player.qu.rip.active) {
-                player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
-                player.qu.qc.active = false
-            }
-            if (player.qu.times.gte(10) || force) {
-                if (!force) {
-                    player.qu.points = player.qu.points.add(tmp.qu.gain)
-                    player.qu.times = player.qu.times.add(tmp.qu.gainTimes)
-                }
-                ENTROPY.reset(0)
-                ENTROPY.reset(1)
-                updateQuantumTemp()
-                this.doReset(force)
-                if (rip) {
-                    if (hasUpgrade('br',4)) for (let x = 0; x < 2; x++) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(2)
-                }
-            } else {
-                document.body.style.animation = "implode 2s 1"
-                setTimeout(_=>{
-                    if (player.qu.times.lte(0)) {
-                        addPopup(POPUP_GROUPS.qus1);
-                        addPopup(POPUP_GROUPS.qus2);
-                    }
-                    
-                    player.qu.points = player.qu.points.add(tmp.qu.gain)
-                    player.qu.times = player.qu.times.add(1)
-
-                    updateQuantumTemp()
-                    
-                    this.doReset(force)
-                },1000)
-                setTimeout(_=>{
-                    document.body.style.animation = ""
-                },2000)
-            }
-            player.qu.auto.time = 0
+            if (player.confirms.qu&&!auto&&!force) createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
+            _=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',_=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
+            else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)
         }
     },
     doReset(force=false) {
@@ -106,7 +72,7 @@ const QUANTUM = {
     },
     bpGain() {
         let x = E(1)
-        if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.root(2).softcap(1e50,0.95,2))
+        if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2).softcap(1e50,0.95,2))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         x = x.mul(tmp.qu.cosmic_str_eff.eff)
         return x
@@ -215,7 +181,7 @@ function getQUSave() {
 function calcQuantum(dt, dt_offline) {
     if (player.mass.gte(mlt(1e4)) && !player.qu.reached && player.chal.comps[12].gte(1)) {
         player.qu.reached = true
-        addPopup(POPUP_GROUPS.qu)
+        createPopup(POPUP_GROUPS.qu.html(),'quReached')
     }
 
     if (quUnl()) {
@@ -243,7 +209,7 @@ function calcQuantum(dt, dt_offline) {
 
     if (player.mass.gte(mlt(7.5e6)) && !player.qu.en.unl) {
         player.qu.en.unl = true
-        addPopup(POPUP_GROUPS.en)
+        createPopup(POPUP_GROUPS.en.html(),'enReached')
     }
 
     if (hasUpgrade('br',9)) {
@@ -284,20 +250,6 @@ function updateQuantumTemp() {
 }
 
 function updateQuantumHTML() {
-    let gain2 = hasUpgrade('br',8)
-
-    let unl = quUnl() || player.chal.comps[12].gte(1)
-    tmp.el.qu_div.setDisplay(unl)
-    if (unl) tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>"+(gain2?player.qu.points.formatGain(tmp.qu.gain.div(10)):"(+"+format(tmp.qu.gain,0)+")"))
-
-    unl = quUnl()
-    tmp.el.gs1_div.setDisplay(unl)
-    if (unl) tmp.el.preQGSpeed.setHTML(formatMult(tmp.preQUGlobalSpeed))
-
-    unl = hasTree("unl4")
-    tmp.el.br_div.setDisplay(unl)
-    if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active?gain2?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
-
     if (tmp.tab == 0 && tmp.stab[0] == 4) {
         tmp.el.bpAmt.setTxt(format(player.qu.bp,1)+" "+formatGain(player.qu.bp,tmp.qu.bpGain))
         tmp.el.bpEff.setTxt(format(tmp.qu.bpEff))

@@ -1,6 +1,9 @@
 const ELEMENTS = {
-    map: `x_________________xvxx___________xxxxxxvxx___________xxxxxxvxxx_xxxxxxxxxxxxxxxvxxx_xxxxxxxxxxxxxxxvxxx1xxxxxxxxxxxxxxxvxxx2xxxxxxxxxxxxxxxv_v___3xxxxxxxxxxxxxx_v___4xxxxxxxxxxxxxx_`,
+    map: [
+        `x_________________xvxx___________xxxxxxvxx___________xxxxxxvxx_xxxxxxxxxxxxxxxxvxx_xxxxxxxxxxxxxxxxvxx1xxxxxxxxxxxxxxxxvxx2xxxxxxxxxxxxxxxxv_v__3xxxxxxxxxxxxxx__v__4xxxxxxxxxxxxxx__`,
+    ],
     la: [null,'*','**','*','**'],
+    exp: [0,118,218,362,558,814,1138],
     names: [
         null,
         'H','He','Li','Be','B','C','N','O','F','Ne',
@@ -31,15 +34,11 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : x <= 86) && !tmp.elements.cannot.includes(x) },
+    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : (x <= 86 || x > 118)) && !tmp.elements.cannot.includes(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
-            if (x == 118) {
-                alert("Coming Soon.....")
-            } else {
-                player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
-                player.atom.elements.push(x)
-            }
+            player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
+            player.atom.elements.push(x)
         }
     },
     upgs: [
@@ -708,7 +707,7 @@ const ELEMENTS = {
             cost: E("e5e16"),
         },
         {
-            desc: `Enter the <span id="final_118">Portal</span>.`,
+            desc: `Unlock <span id="final_118">Darkness</span>, you'll able to go Dark.`,
             cost: E("e1.7e17"),
         },
     ],
@@ -748,53 +747,152 @@ const ELEMENTS = {
     },
 }
 
+const MAX_ELEM_TIERS = 2
+
+function getElementId(x) {
+    let log = Math.floor(Math.log10(x))
+    let list = ["n", "u", "b", "t", "q", "p", "h", "s", "o", "e"]
+    let r = ""
+    for (var i = log; i >= 0; i--) {
+        let n = Math.floor(x / Math.pow(10, i)) % 10
+        if (r == "") r = list[n].toUpperCase()
+        else r += list[n]
+    }
+    return r
+}
+
+function getElementName(x) {
+    let log = Math.floor(Math.log10(x))
+    let listF = ["Nil", "Un", "Bi", "Tri", "Quad", "Pent", "Hex", "Sept", "Oct", "Enn"]
+    let list = ["nil", "un", "bi", "tri", "quad", "pent", "hex", "sept", "oct", "enn"]
+    let r = ""
+    for (var i = log; i >= 0; i--) {
+        let n = Math.floor(x / Math.pow(10, i)) % 10
+        if (r == "") r = listF[n]
+        else r += list[n]
+        if (i == 0) r += n != 2 && n != 3 ? "ium" : "um"
+    }
+    return r
+}
+
+function WE(a,b) { return 2*(a**2-(a-b)**2) }
+
+for (let x = 2; x <= MAX_ELEM_TIERS; x++) {
+    let [ts,te] = [ELEMENTS.exp[x-1],ELEMENTS.exp[x]]
+
+    let m = 'xx1xxxxxxxxxxxxxxxxvxx2xxxxxxxxxxxxxxxxv_v'
+
+    for (let y = x; y >= 1; y--) {
+        let k = 10 + 4 * y
+        m += "1"+'x'.repeat(k)+"v"
+        m += "2"+'x'.repeat(k)
+        if (y > 1) m += "v_v"
+    }
+
+    for (let y = ts+1; y <= te; y++) {
+        ELEMENTS.names.push(getElementId(y))
+        ELEMENTS.fullNames.push(getElementName(y))
+        if (!ELEMENTS.upgs[y]) ELEMENTS.upgs.push({
+            desc: `Placeholder.`,
+            cost: EINF,
+        })
+    }
+
+    ELEMENTS.map.push(m)
+}
+
 function hasElement(x) { return player.atom.elements.includes(x) }
 
 function setupElementsHTML() {
     let elements_table = new Element("elements_table")
-	let table = "<div class='table_center'>"
+	let table = ""
     let num = 0
-	for (let i = 0; i < ELEMENTS.map.length; i++) {
-		let m = ELEMENTS.map[i]
-        if (m=='v') table += '</div><div class="table_center">'
-        else if (m=='_' || !isNaN(Number(m))) table += `<div ${ELEMENTS.la[m]!==undefined?`id='element_la_${m}'`:""} style="width: 50px; height: 50px">${ELEMENTS.la[m]!==undefined?"<br>"+ELEMENTS.la[m]:""}</div>`
-        else if (m=='x') {
-            num++
-            table += ELEMENTS.upgs[num]===undefined?`<div style="width: 50px; height: 50px"></div>`
-            :`<button class="elements ${num == 118 ? 'final' : ''}" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num}); ssf[0]('${ELEMENTS.names[num]}')" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
-            if (num==57 || num==89) num += 14
-            else if (num==71) num += 18
-            else if (num==118) num = 57
+    for (let k = 1; k <= MAX_ELEM_TIERS; k++) {
+        let n = 0, p = (k+3)**2*2, xs = ELEMENTS.exp[k-1], xe = ELEMENTS.exp[k]
+        table += `<div id='elemTier${k}_div'><div class='table_center'>`
+        for (let i = 0; i < ELEMENTS.map[k-1].length; i++) {
+            let m = ELEMENTS.map[k-1][i]
+            if (m=='v') table += '</div><div class="table_center">'
+            else if (m=='_' || !isNaN(Number(m))) table += `<div ${ELEMENTS.la[m]!==undefined&&k==1?`id='element_la_${m}'`:""} style="width: 50px; height: 50px">${ELEMENTS.la[m]!==undefined?"<br>"+ELEMENTS.la[m]:""}</div>`
+            else if (m=='x') {
+                num++
+                table += ELEMENTS.upgs[num]===undefined?`<div style="width: 50px; height: 50px"></div>`
+                :`<button class="elements ${num == 118 ? 'final' : ''}" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num}); ssf[0]('${ELEMENTS.names[num]}')" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
+                if (k == 1) {
+                    if (num==56 || num==88) num += 14
+                    else if (num==70) num += 18
+                    else if (num==118) num = 56
+                    else if (num==102) num = 118
+                } else {
+                    //console.log(num,p)
+                    if (n == 0) {
+                        if (num == xs + 2 || num == xs + p + 2) num += p - 18
+                        else if (num == xe) {
+                            num = xs + 2
+                            n++
+                        }
+                    } else {
+                        if (num == xs + WE(k+3,n) + 2) num = xs + p + WE(k+3,n-1) + 2
+                        else if (num == xe - 16) num = xe
+                        else if (num == xs + p + WE(k+3,n) + 2) {
+                            num = xs + WE(k+3,n) + 2
+                            n++
+                        }
+                    }
+                }
+            }
         }
-	}
-    table += "</div>"
+        table += "</div></div>"
+    }
 	elements_table.setHTML(table)
 }
 
 function updateElementsHTML() {
-    let ch = tmp.elements.choosed
+    let tElem = tmp.elements
+
+    tmp.el.elemTierDiv.setDisplay(false)
+    tmp.el.elemTier.setHTML("Element Tier "+player.atom.elemTier)
+
+    let ch = tElem.choosed
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         tmp.el.elem_desc.setHTML("<b>["+ELEMENTS.fullNames[ch]+"]</b> "+ELEMENTS.upgs[ch].desc)
-        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86?" in Big Rip":"")+(player.qu.rip.active&&tmp.elements.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
-        tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tmp.elements.effect[ch]):"")
+        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86&&ch<=118?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
+        tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tElem.effect[ch]):"")
     }
-    tmp.el.element_la_1.setVisible(tmp.elements.unl_length>57)
-    tmp.el.element_la_3.setVisible(tmp.elements.unl_length>57)
-    tmp.el.element_la_2.setVisible(tmp.elements.unl_length>88)
-    tmp.el.element_la_4.setVisible(tmp.elements.unl_length>88)
-    for (let x = 1; x <= tmp.elements.upg_length; x++) {
-        let upg = tmp.el['elementID_'+x]
-        if (upg) {
-            upg.setVisible(x <= tmp.elements.unl_length)
-            if (x <= tmp.elements.unl_length) {
-                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x < 118, final: x == 118})
+
+    for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
+        let unl = player.atom.elemTier == x
+        tmp.el["elemTier"+x+"_div"].setDisplay(unl)
+        if (unl) {
+            if (x == 1) {
+                tmp.el.element_la_1.setVisible(tElem.unl_length>56)
+                tmp.el.element_la_3.setVisible(tElem.unl_length>56)
+                tmp.el.element_la_2.setVisible(tElem.unl_length>88)
+                tmp.el.element_la_4.setVisible(tElem.unl_length>88)
+            }
+
+            let len = x > 1 ? tElem.te : tElem.upg_length
+
+            for (let x = tElem.ts+1; x <= len; x++) {
+                let upg = tmp.el['elementID_'+x]
+                if (upg) {
+                    let unl2 = x <= tElem.unl_length
+                    upg.setVisible(unl2)
+                    if (unl2) {
+                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x <= 118, final: x == 118})
+                    }
+                }
             }
         }
     }
 }
 
 function updateElementsTemp() {
+    tmp.elements.ts = ELEMENTS.exp[player.atom.elemTier-1]
+    tmp.elements.te = ELEMENTS.exp[player.atom.elemTier]
+    tmp.elements.tt = tmp.elements.te - tmp.elements.ts
+
     let cannot = []
     if (player.qu.rip.active) cannot.push(58,74)
     tmp.elements.cannot = cannot

@@ -1,16 +1,10 @@
 const SUPERNOVA = {
     reset(force=false, chal=false, post=false, fermion=false) {
-        if (!chal && !post && !fermion) if ((force && player.confirms.sn)?!confirm("Are you sure to reset without being Supernova?"):false) return
-        if (tmp.supernova.reached || force || fermion) {
-            tmp.el.supernova_scene.setDisplay(false)
-            if (!force && !fermion) {
-                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
-            }
-            if (post?!hasTree("qu_qol4"):true) {
-                tmp.pass = true
-                this.doReset()
-            }
+        if (!chal && !post && !fermion) {
+            if (force && player.confirms.sn) createConfirm("Are you sure to reset without being Supernova?",'sn',_=>CONFIRMS_FUNCTION.sn(force,chal,post,fermion))
+            else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
         }
+        else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
     },
     doReset() {
         let br = player.qu.rip.active
@@ -57,6 +51,8 @@ const SUPERNOVA = {
         player.supernova.chal.noTick = true
         player.supernova.chal.noBHC = true
 
+        updateTemp()
+
         tmp.pass = false
     },
     starGain() {
@@ -97,7 +93,7 @@ function calcSupernova(dt, dt_offline) {
 
     if (!su.post_10 && su.times.gte(10)) {
         su.post_10 = true
-        addPopup(POPUP_GROUPS.supernova10)
+        createPopup(POPUP_GROUPS.supernova10.html,'post10sn')
     }
 
     if (su.post_10) for (let x in BOSONS.names) {
@@ -169,9 +165,9 @@ function updateSupernovaEndingHTML() {
         tmp.el.sns5.setVisible(tmp.supernova.time>17)
         tmp.el.sns5.setOpacity(Math.max(Math.min(tmp.supernova.time-17,1),0))
     }
-    if ((player.supernova.times.lte(0)?!tmp.supernova.reached:true) || quUnl())document.body.style.backgroundColor = tmp.tab == 5 ? "#000" : "#111"
+    if ((player.supernova.times.lte(0)?!tmp.supernova.reached:true) || quUnl()) document.body.style.backgroundColor = tmp.tab == 5 ? "#000" : "#111"
 
-    tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) && !tmp.supernova.reached ? !tmp.supernova.reached : true) && tmp.tab == 5)
+    tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) ? !tmp.supernova.reached || quUnl() : true) && tmp.tab == 5)
 
     if (tmp.tab == 5) {
         tmp.el.supernova_scale.setTxt(getScalingName('supernova'))

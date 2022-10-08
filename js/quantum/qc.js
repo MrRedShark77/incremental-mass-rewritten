@@ -11,10 +11,8 @@ const QCs = {
             }
             if (is_zero) return
         }
-        if (player.qu.qc.active ? true : confirm("Are you sure to enter the Quantum Challenge? Entering it will force reset!")) {
-            player.qu.qc.active = !player.qu.qc.active
-            QUANTUM.doReset(player.qu.qc.active)
-        }
+        if (player.qu.qc.active) CONFIRMS_FUNCTION.enterQC()
+        else createConfirm("Are you sure to enter the Quantum Challenge? Entering it will force reset!",'qc',CONFIRMS_FUNCTION.enterQC)
     },
     names: ["Black Dwarf","Time Anomaly","Hypertiered","Melted Interactions","Intense Catalyst","Ex-Challenge","Spatial Dilation","Extreme Scaling"],
     ctn: [
@@ -103,20 +101,22 @@ function loadQCPreset(x) {
 }
 
 function renameQCPreset(x) {
-    let renamed = prompt("Input the preset name")
-    player.qu.qc.presets[x].p_name = renamed
-    addNotify("Preset Renamed")
-    updateQCModPresets()
+    createPrompt("Input the preset name",'renamePreset',renamed=>{
+        player.qu.qc.presets[x].p_name = renamed
+        addNotify("Preset Renamed")
+        updateQCModPresets()
+    })
 }
 
 function deleteQCPreset(x) {
-    if (confirm("Are you sure to delete the preset?")) {
+    createConfirm("Are you sure you want to delete the preset?",'removePreset',_=>{
         let represets = []
         for (let y = 0; y < player.qu.qc.presets.length; y++) if (x != y) represets.push(player.qu.qc.presets[y])
         player.qu.qc.presets = represets
         addNotify("Preset Deleted")
-    }
-    updateQCModPresets()
+
+        updateQCModPresets()
+    })
 }
 
 function setupQCHTML() {

@@ -1,3 +1,17 @@
+var popups = []
+var popupIndex = 0
+
+function updatePopupIndex() {
+    let i
+    for (i = 0; i < popups.length; i++) {
+        if (!popups[i]) {
+            popupIndex = i
+            return
+        }
+    }
+    popupIndex = i
+}
+
 function addNotify(text, duration=3) {
     tmp.notify.push({text: text, duration: duration});
     if (tmp.notify.length == 1) updateNotify()
@@ -57,6 +71,7 @@ const POPUP_GROUPS = {
             <button class="btn" style="font-family: 'Nova Mono';" onclick="player.options.font = 'Nova Mono'">Nova Mono</button>
             <button class="btn" style="font-family: 'Nunito';" onclick="player.options.font = 'Nunito'">Nunito</button>
             <button class="btn" style="font-family: 'Retron2000';" onclick="player.options.font = 'Retron2000'">Retron 2000</button>
+            <button class="btn" style="font-family: 'Roboto';" onclick="player.options.font = 'Roboto'">Roboto</button>
             <button class="btn" style="font-family: 'Roboto Mono';" onclick="player.options.font = 'Roboto Mono'">Roboto Mono</button>
             <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="player.options.font = 'Verdana, Geneva, Tahoma, sans-serif'">Verdana</button>
         `,
@@ -142,35 +157,107 @@ const POPUP_GROUPS = {
     },
 }
 
-function addPopup(data) {
-    tmp.popup.push({
-        html: typeof data.html == "function" ? data.html() : data.html||"",
-        button: data.button||"Okay",
-        callFunctions: data.callFunction?function() {removePopup();data.callFunctions()}:removePopup,
+function createPopup(text, id, txtButton) {
+    if (popups.includes(id)) return
 
-        width: data.width||600,
-        height: data.height||400,
-        otherStyle: data.otherStyle||{},
-    })
-    updatePopup()
-}
+    popups[popupIndex] = id
+    updatePopupIndex()
 
-function updatePopup() {
-    tmp.el.popup.setDisplay(tmp.popup.length > 0)
-    if (tmp.popup.length > 0) {
-        tmp.el.popup_html.setHTML(tmp.popup[0].html)
-        tmp.el.popup_html.changeStyle("height", tmp.popup[0].height-35)
-        tmp.el.popup_button.setHTML(tmp.popup[0].button)
-        tmp.el.popup.changeStyle("width", tmp.popup[0].width)
-        tmp.el.popup.changeStyle("height", tmp.popup[0].height)
-        for (let x in tmp.popup[0].otherStyle) tmp.el.popup_html.changeStyle(x, tmp.popup[0].otherStyle[x])
+    const popup = document.createElement('div')
+    popup.className = 'popup'
+    popup.innerHTML = `
+    <div>
+        ${text}
+    </div><br>
+    `
+
+    const textButton = document.createElement('button')
+    textButton.className = 'btn'
+    textButton.innerText = txtButton||"Ok"
+    textButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
+        popup.remove()
     }
+
+    popup.appendChild(textButton)
+
+    document.getElementById('popups').appendChild(popup)
 }
 
-function removePopup() {
-    if (tmp.popup.length <= 1) tmp.popup = []
-    let x = []
-    for (let i = 1; i < tmp.popup.length; i++) x.push(tmp.popup[i])
-    tmp.popup = x
-    updatePopup()
+function createConfirm(text, id, yesFunction, noFunction) {
+    if (popups.includes(id)) return
+
+    popups[popupIndex] = id
+    updatePopupIndex()
+
+    const popup = document.createElement('div')
+    popup.className = 'popup'
+    popup.innerHTML = `
+    <div>
+        ${text}
+    </div><br>
+    `
+
+    const yesButton = document.createElement('button')
+    yesButton.className = 'btn'
+    yesButton.innerText = "Yes"
+    yesButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
+        if (yesFunction) yesFunction()
+        popup.remove()
+    }
+
+    const noButton = document.createElement('button')
+    noButton.className = 'btn'
+    noButton.innerText = "No"
+    noButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
+        if (noFunction) noFunction()
+        popup.remove()
+    }
+
+    popup.appendChild(yesButton)
+    popup.appendChild(noButton)
+
+    document.getElementById('popups').appendChild(popup)
+}
+
+function createPrompt(text, id, func) {
+    if (popups.includes(id)) return
+
+    popups[popupIndex] = id
+    updatePopupIndex()
+
+    const popup = document.createElement('div')
+    popup.className = 'popup'
+    popup.innerHTML = `
+    <div>
+        ${text}
+    </div><br>
+    `
+
+    const br = document.createElement("br")
+
+    const input = document.createElement('input')
+
+    const textButton = document.createElement('button')
+    textButton.className = 'btn'
+    textButton.innerText = "Ok"
+    textButton.onclick = _ => {
+        popups[popups.indexOf(id)] = undefined
+        updatePopupIndex()
+        if (func) func(input.value)
+        popup.remove()
+    }
+
+    popup.appendChild(input)
+
+    popup.appendChild(br)
+
+    popup.appendChild(textButton)
+
+    document.getElementById('popups').appendChild(popup)
 }

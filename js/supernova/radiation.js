@@ -305,8 +305,8 @@ function updateRadiationHTML() {
 
     let rad_id = 1
     let comp = false
-    for (let x = 1; x < RAD_LEN; x++) {
-        if (x == RAD_LEN-1) comp = true;
+    for (let x = 1; x <= RAD_LEN; x++) {
+        if (x == RAD_LEN) comp = true;
         if (player.supernova.radiation.hz.lt(RADIATION.unls[x]||1/0) || comp) break
         rad_id++
     }

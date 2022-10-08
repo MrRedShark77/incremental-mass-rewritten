@@ -206,13 +206,13 @@ const FORMS = {
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+
             return gain.floor()
         },
         reset() {
-            if (tmp.rp.can) if (player.confirms.rp?confirm("Are you sure to reset?"):true) {
-                player.rp.points = player.rp.points.add(tmp.rp.gain)
-                player.rp.unl = true
-                this.doReset()
+            if (tmp.rp.can) {
+                if (player.confirms.rp) createConfirm("Are you sure you want to reset?",'rpReset',CONFIRMS_FUNCTION.rage)
+                else CONFIRMS_FUNCTION.rage()
             }
         },
         doReset() {
@@ -261,6 +261,7 @@ const FORMS = {
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+
             return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
         },
         f() {
@@ -288,10 +289,9 @@ const FORMS = {
             return E(1).div(p.add(1))
         },
         reset() {
-            if (tmp.bh.dm_can) if (player.confirms.bh?confirm("Are you sure to reset?"):true) {
-                player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain)
-                player.bh.unl = true
-                this.doReset()
+            if (tmp.bh.dm_can) {
+                if (player.confirms.bh) createConfirm("Are you sure you want to reset?",'bhReset',CONFIRMS_FUNCTION.bh)
+                else CONFIRMS_FUNCTION.bh()
             }
         },
         doReset() {
@@ -452,7 +452,7 @@ function turnOffline() { player.offline.active = !player.offline.active }
 const ARV = ['mlt','mgv','giv','tev','pev','exv','zev','yov']
 
 function formatARV(ex,gain=false) {
-    if (gain) ex = uni("ee9").pow(ex)
+    if (gain) ex = uni('ee9').pow(ex)
     let mlt = ex.div(1.5e56).log10().div(1e9)
     let arv = mlt.log10().div(15).floor()
     return format(mlt.div(Decimal.pow(1e15,arv))) + " " + (arv.gte(8)?"arv^"+format(arv.add(2),0):ARV[arv.toNumber()])
@@ -504,7 +504,7 @@ function formatPercent(ex) { ex = E(ex); return format(ex.mul(100))+"%" }
 
 function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
 
-function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
+function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }
 
 function capitalFirst(str) {
 	if (str=="" || str==" ") return str

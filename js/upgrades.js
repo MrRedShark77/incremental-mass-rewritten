@@ -2,6 +2,7 @@ const UPGS = {
     mass: {
         cols: 3,
         temp() {
+            tmp.massFP = 1;
             for (let x = this.cols; x >= 1; x--) {
                 let d = tmp.upgs.mass
                 let data = this.getData(x)
@@ -42,6 +43,7 @@ const UPGS = {
             let start = upg.start
             let lvl = player.massUpg[i]||E(0)
             let cost, bulk
+            let fp = tmp.massFP
 
             if (i==4) {
                 cost = mlt(inc.pow(lvl).mul(start))
@@ -52,9 +54,9 @@ const UPGS = {
                 if (i == 2 && player.ranks.rank.gte(3)) inc = inc.pow(0.8)
                 if (i == 3 && player.ranks.rank.gte(4)) inc = inc.pow(0.8)
                 if (player.ranks.tier.gte(3)) inc = inc.pow(0.8)
-                cost = inc.pow(lvl.scaleEvery("massUpg")).mul(start)
+                cost = inc.pow(lvl.div(fp).scaleEvery("massUpg")).mul(start)
                 bulk = E(0)
-                if (player.mass.gte(start)) bulk = player.mass.div(start).max(1).log(inc).scaleEvery("massUpg",true).add(1).floor()
+                if (player.mass.gte(start)) bulk = player.mass.div(start).max(1).log(inc).scaleEvery("massUpg",true).mul(fp).add(1).floor()
             }
         
             return {cost: cost, bulk: bulk}
@@ -122,7 +124,8 @@ const UPGS = {
                 let ss = E(10)
                 if (player.ranks.rank.gte(34)) ss = ss.add(2)
                 if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
-                let step = E(1).add(RANKS.effect.tetr[2]())
+                let step = E(1)
+                if (player.ranks.tetr.gte(2)) step = step.add(RANKS.effect.tetr[2]())
                 if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
                 if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
