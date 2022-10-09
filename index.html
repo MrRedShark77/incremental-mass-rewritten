@@ -22,6 +22,8 @@
     <script src="js/other.js"></script>
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
+
+    <script src="js/darkness/dark.js"></script>
     
     <script src="js/quantum/big_rip.js"></script>
     <script src="js/quantum/entropy.js"></script>
@@ -181,12 +183,17 @@
                     </div><div class="resources sml light_green" id="qu_div">
                         <div tooltip="Quantum Foam" t-size="small"><img class="res_img" src="images/qu.png" onclick="QUANTUM.enter()" onmousemove="FORMS.reset_msg.set('qu')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="quAmt">X</span>
-                    </div><div class="resources sml orange" id="gs1_div">
-                        <div tooltip="Pre-Quantum Global Speed" t-size="medium"><img class="res_img" src="images/preQGSpeed.png"></div>
-                        <span style="margin-left: 5px; text-align: left;" id="preQGSpeed">X</span>
                     </div><div class="resources sml light_red" id="br_div">
                         <div tooltip="Death Shard" t-size="small"><img class="res_img" src="images/br.png" onclick="BIG_RIP.rip()" onmousemove="FORMS.reset_msg.set('br')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
                         <span style="margin-left: 5px; text-align: left;" id="brAmt">X</span>
+                    </div><div class="resources sml gray" id="dark_div">
+                        <div tooltip="Dark Ray" t-size="small"><img class="res_img" src="images/dark.png" onclick="DARK.reset()" onmousemove="FORMS.reset_msg.set('dark')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <span style="margin-left: 5px; text-align: left;" id="darkAmt">X</span>
+                    </div>
+                    
+                    <div class="resources sml orange" id="gs1_div">
+                        <div tooltip="Pre-Quantum Global Speed" t-size="medium"><img class="res_img" src="images/preQGSpeed.png"></div>
+                        <span style="margin-left: 5px; text-align: left;" id="preQGSpeed">X</span>
                     </div>
                 </div>
             </div>
@@ -429,6 +436,17 @@
                     <div id="en_table" class="table_center"></div>
                 </div>
             </div><div id="tab_frame7">
+                <div class="table_center">
+                    <div style="width: 33.3%; min-width: 300px;">
+                        You have <b id="darkRay"></b> Dark Ray
+                    </div><div style="width: 33.3%; min-width: 300px;">
+                        You have <b id="darkShadow"></b> Dark Shadow.
+                        <div id="dsEff" class="sky"></div>
+                    </div><div style="width: 33.3%; min-width: 300px;">
+                        
+                    </div>
+                </div>
+            </div><div id="tab_frame8">
                 <button class="btn" onclick="save()">Save</button>
                 <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',_=>wipe(true))">Hard Reset</button>
                 <button class="btn" onclick="exporty()">Export</button>
@@ -444,7 +462,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten pre-v0.6 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6 beta 1 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>
                 Total time played: <span id="total_time">X</span><br><br>

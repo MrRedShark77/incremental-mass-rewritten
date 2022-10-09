@@ -349,6 +349,20 @@ button {
 	background-color: lightgreen;
 }
 
+.btn_tab.dark {
+	color: #666;
+	border-color: #666;
+}
+
+.btn_tab.dark:not(.choosed):hover {
+	background-color: #222;
+}
+
+.btn_tab.dark.choosed {
+	color: black;
+	background-color: #666;
+}
+
 .btn_tab.dilation {
 	color: #25ff30;
 	border-color: #25ff30;
@@ -420,6 +434,13 @@ button {
 	box-shadow: 0 0 10px #fff;
 	color: black;
 	font-weight: bold;
+}
+
+.elements.dark.bought {
+	color: #666;
+	border-color: #666;
+	background-color: #222;
+	box-shadow: 0 0 10px #666;
 }
 
 #final_118 {

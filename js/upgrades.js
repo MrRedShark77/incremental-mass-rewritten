@@ -691,3 +691,9 @@ const UPGS = {
 
 function hasUpgrade(id,x) { return player.mainUpg[id].includes(x) }
 function upgEffect(id,x,def=E(1)) { return tmp.upgs.main[id][x]?tmp.upgs.main[id][x].effect:def }
+function resetMainUpgs(id,keep=[]) {
+    let k = []
+    let id2 = UPGS.main.ids[id]
+    for (let x = 0; x < player.mainUpg[id2].length; x++) if (keep.includes(player.mainUpg[id2][x])) k.push(x)
+    player.mainUpg[id2] = k
+}

@@ -14,7 +14,7 @@ const ST_NAMES = [
 		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
 	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark']
 
 const FORMS = {
     getPreQUGlobalSpeed() {
@@ -55,6 +55,8 @@ const FORMS = {
             if (hasElement(28)) x = x.pow(1.5)
         }
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+
+        x = x.pow(tmp.dark.shadowEff.mass)
 
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
         x = x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
@@ -358,6 +360,7 @@ const FORMS = {
             atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
             br: "Big Rip the Dimension, then go back",
+            dark: "Require Oganesson-118 to go Dark",
         },
         set(id) {
             if (id=="sn") {

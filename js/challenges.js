@@ -142,10 +142,12 @@ const CHALS = {
     getPower2(i) {
         let x = E(1)
         if (hasElement(92)) x = x.mul(0.75)
+        if (hasElement(120)) x = x.mul(0.75)
         return x
     },
     getPower3(i) {
         let x = E(1)
+        if (hasElement(120)) x = x.mul(0.75)
         return x
     },
     getChalData(x, r=E(-1)) {

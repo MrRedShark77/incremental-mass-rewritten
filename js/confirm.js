@@ -83,4 +83,10 @@ const CONFIRMS_FUNCTION = {
         player.qu.rip.active = !player.qu.rip.active
         QUANTUM.enter(false,true,true)
     },
+    dark() {
+        player.dark.unl = true
+        player.dark.rays = player.dark.rays.add(tmp.dark.gain)
+
+        DARK.doReset()
+    },
 }

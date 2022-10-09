@@ -34,10 +34,14 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Ruthefordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : (x <= 86 || x > 118)) && !tmp.elements.cannot.includes(x) },
+    canBuy(x) {
+        let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
+        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : (x <= 86 || x > 118)) && !tmp.elements.cannot.includes(x)
+    },
     buyUpg(x) {
         if (this.canBuy(x)) {
-            player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
+            if (this.upgs[x].dark) player.dark.shadow = player.dark.shadow.sub(this.upgs[x].cost)
+            else player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
             player.atom.elements.push(x)
         }
     },
@@ -710,6 +714,24 @@ const ELEMENTS = {
             desc: `Unlock <span id="final_118">Darkness</span>, you'll able to go Dark.`,
             cost: E("e1.7e17"),
         },
+        {
+            dark: true,
+            desc: `Pre-Quantum global speed affects dark shadow gain at a logarithmic reduced rate.`,
+            cost: E("500"),
+            effect() {
+                let x = tmp.preQUGlobalSpeed?tmp.preQUGlobalSpeed.max(1).log10().add(1):E(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },{
+            dark: true,
+            desc: `Insane & Impossible Challenges scale 50% weaker.`,
+            cost: E("5000"),
+        },{
+            dark: true,
+            desc: `You can afford Cerium-58 in Big Rip.`,
+            cost: E("25000"),
+        },
     ],
     /*
     {
@@ -725,23 +747,26 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (quUnl()) u = 77+3
+        if (player.dark.unl) u = 118+3
         else {
-            if (player.supernova.times.gte(1)) u = 49+5
+            if (quUnl()) u = 77+3
             else {
-                if (player.chal.comps[8].gte(1)) u += 14
-                if (hasElement(18)) u += 3
-                if (MASS_DILATION.unlocked()) u += 15
-                if (STARS.unlocked()) u += 18
+                if (player.supernova.times.gte(1)) u = 49+5
+                else {
+                    if (player.chal.comps[8].gte(1)) u += 14
+                    if (hasElement(18)) u += 3
+                    if (MASS_DILATION.unlocked()) u += 15
+                    if (STARS.unlocked()) u += 18
+                }
+                if (player.supernova.post_10) u += 3
+                if (player.supernova.fermions.unl) u += 10
+                if (tmp.radiation.unl) u += 10
             }
-            if (player.supernova.post_10) u += 3
-            if (player.supernova.fermions.unl) u += 10
-            if (tmp.radiation.unl) u += 10
+            if (PRIM.unl()) u += 3
+            if (hasTree('unl3')) u += 3
+            if (player.qu.rip.first) u += 9
+            if (hasUpgrade("br",9)) u += 23 // 23
         }
-        if (PRIM.unl()) u += 3
-        if (hasTree('unl3')) u += 3
-        if (player.qu.rip.first) u += 9
-        if (hasUpgrade("br",9)) u += 23 // 23
 
         return u
     },
@@ -803,6 +828,8 @@ for (let x = 2; x <= MAX_ELEM_TIERS; x++) {
 
 function hasElement(x) { return player.atom.elements.includes(x) }
 
+function elemEffect(x,def=1) { return tmp.elements.effect[x]||def }
+
 function setupElementsHTML() {
     let elements_table = new Element("elements_table")
 	let table = ""
@@ -850,15 +877,18 @@ function setupElementsHTML() {
 function updateElementsHTML() {
     let tElem = tmp.elements
 
-    tmp.el.elemTierDiv.setDisplay(false)
+    tmp.el.elemTierDiv.setDisplay(player.dark.unl)
     tmp.el.elemTier.setHTML("Element Tier "+player.atom.elemTier)
 
     let ch = tElem.choosed
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
-        tmp.el.elem_desc.setHTML("<b>["+ELEMENTS.fullNames[ch]+"]</b> "+ELEMENTS.upgs[ch].desc)
-        tmp.el.elem_cost.setTxt(format(ELEMENTS.upgs[ch].cost,0)+" Quarks"+(ch>86&&ch<=118?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
-        tmp.el.elem_eff.setHTML(ELEMENTS.upgs[ch].effDesc?"Currently: "+ELEMENTS.upgs[ch].effDesc(tElem.effect[ch]):"")
+        let eu = ELEMENTS.upgs[ch]
+        let res = eu.dark?" Dark Shadows":" Quarks"
+
+        tmp.el.elem_desc.setHTML("<b>["+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
+        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(ch>86&&ch<=118?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
+        tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(tElem.effect[ch]):"")
     }
 
     for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
@@ -880,7 +910,8 @@ function updateElementsHTML() {
                     let unl2 = x <= tElem.unl_length
                     upg.setVisible(unl2)
                     if (unl2) {
-                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x <= 118, final: x == 118})
+                        let eu = ELEMENTS.upgs[x]
+                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x <= 118, final: x == 118, dark: eu.dark})
                     }
                 }
             }
@@ -894,7 +925,10 @@ function updateElementsTemp() {
     tmp.elements.tt = tmp.elements.te - tmp.elements.ts
 
     let cannot = []
-    if (player.qu.rip.active) cannot.push(58,74)
+    if (player.qu.rip.active) {
+        if (!hasElement(121)) cannot.push(58)
+        cannot.push(74)
+    }
     tmp.elements.cannot = cannot
 
     if (!tmp.elements.upg_length) tmp.elements.upg_length = ELEMENTS.upgs.length-1

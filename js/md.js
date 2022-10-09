@@ -307,6 +307,12 @@ const MASS_DILATION = {
                     maxLvl: 1,
                     cost(x) { return uni(1e120) },
                     bulk() { return player.md.break.mass.gte(uni(1e120))?E(1):E(0) },
+                },{
+                    unl: _=>player.dark.unl,
+                    desc: `You can now automatically evaporate resources. (Stronger than manual).`,
+                    maxLvl: 1,
+                    cost(x) { return uni(1e240) },
+                    bulk() { return player.md.break.mass.gte(uni(1e240))?E(1):E(0) },
                 },
             ],
         }

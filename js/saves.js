@@ -95,7 +95,7 @@ function calc(dt, dt_offline) {
             player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(du_gs))
             for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(du_gs))
         }
-        if (hasTree("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length && x !== 118) ELEMENTS.buyUpg(x)
+        if (hasTree("qol1")) for (let x = 1; x <= (player.dark.unl?118:117); x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
         player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(du_gs))
         if (hasTree("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
         if (hasTree("qol4")) STARS.generators.unl(true)
@@ -109,6 +109,7 @@ function calc(dt, dt_offline) {
         calcStars(du_gs)
         calcSupernova(dt, dt_offline)
         calcQuantum(dt, dt_offline)
+        calcDark(dt, dt_offline)
 
         if (hasTree("qu_qol4")) SUPERNOVA.reset(false,false,true)
 
@@ -274,6 +275,7 @@ function getPlayerData() {
         s.supernova.radiation.bs.push(E(0),E(0))
     }
     s.qu = getQUSave()
+    s.dark = getDarkSave()
     return s
 }
 

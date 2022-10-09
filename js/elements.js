@@ -399,6 +399,7 @@ function updateHTML() {
 	updateUpperHTML()
 	if ((!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()
+		updateDarkHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
 				updateRanksHTML()
@@ -443,7 +444,7 @@ function updateHTML() {
 			if (tmp.stab[4] == 2) updateMDHTML()
 			if (tmp.stab[4] == 3) updateBDHTML()
 		}
-		if (tmp.tab == 7) {
+		if (tmp.tab == 8) {
 			updateOptionsHTML()
 		}
 	}
