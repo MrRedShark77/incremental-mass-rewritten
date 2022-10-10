@@ -25,7 +25,7 @@ const QUANTUM = {
             else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)
         }
     },
-    doReset(force=false) {
+    doReset(force=false, dark=false) {
         player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
@@ -64,7 +64,7 @@ const QUANTUM = {
             for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
         }
 
-        for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8 || force) player.chal.comps[x] = E(0)
+        for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8 || force || dark) if (!hasElement(122) || x != 12 || dark) player.chal.comps[x] = E(0)
 
         SUPERNOVA.doReset()
 
@@ -75,6 +75,7 @@ const QUANTUM = {
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2).softcap(1e50,0.95,2))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         x = x.mul(tmp.qu.cosmic_str_eff.eff)
+        x = x.mul(tmp.dark.shadowEff.bp||1)
         return x
     },
     bpEff() {

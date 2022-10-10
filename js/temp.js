@@ -90,6 +90,7 @@ function resetTemp() {
 
         prim: {
             eff: [],
+            w: [6,6,6,6,2,2,2,1],
         },
 
         en: {
@@ -106,6 +107,7 @@ function resetTemp() {
 
         dark: {
             shadowEff: {},
+            rayEff: {},
         },
 
         prevSave: "",

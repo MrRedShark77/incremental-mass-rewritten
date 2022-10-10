@@ -186,7 +186,11 @@ const MASS_DILATION = {
             if (!player.md.break.active || !player.qu.rip.active) return E(0)
 
             let x = player.md.mass.add(1).log10().sub(400).div(2).max(0)
-            x = x.add(1).pow(x.add(1).log10()).sub(1)
+            let p = x.add(1).log10()
+
+            if (hasElement(127)) p = p.mul(1.1)
+
+            x = x.add(1).pow(p).sub(1)
 
             if (hasPrestige(0,10)) x = x.mul(prestigeEff(0,10))
             x = x.mul(tmp.bd.upgs[5].eff||1)
@@ -313,6 +317,17 @@ const MASS_DILATION = {
                     maxLvl: 1,
                     cost(x) { return uni(1e240) },
                     bulk() { return player.md.break.mass.gte(uni(1e240))?E(1):E(0) },
+                },{
+                    unl: _=>player.dark.unl,
+                    desc: `Double dark shadows gain.`,
+                    cost(x) { return E(10).pow(x.pow(2)).mul(uni(1e300)) },
+                    bulk() { return player.md.break.mass.gte(uni(1e300))?player.md.break.mass.div(uni(1e300)).max(1).log(10).root(2).add(1).floor():E(0) },
+                    effect(y) {
+                        let x = Decimal.pow(2,y)
+
+                        return x
+                    },
+                    effDesc(x) { return format(x,0)+"x" },
                 },
             ],
         }

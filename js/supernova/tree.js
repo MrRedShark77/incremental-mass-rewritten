@@ -44,7 +44,7 @@ const TREE_IDS = [
         [],
     ],[
         [],
-        [],
+        ['qu_qol10'],
         [],
         [],
         [],
@@ -905,6 +905,15 @@ const TREE_UPGS = {
             desc: `Unlock Big Rip.`,
             cost: E(1e42),
         },
+
+        qu_qol10: {
+            unl: _=>player.dark.unl,
+            icon: 'placeholder',
+
+            qf: true,
+            desc: `You can't gain Delta, Alpha, Omega & Sigma Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e110),
+        },
         /*
         x: {
             unl() { return true },
@@ -942,8 +951,10 @@ function setupTreeHTML() {
             table += `<div class="tree_table_column">`
             for (let k = 0; k < TREE_IDS[i][j].length; k++) {
                 let id = TREE_IDS[i][j][k]
+                let u = TREE_UPGS.ids[id]
+
                 let option = id == "" ? `style="visibility: hidden"` : ``
-                let img = TREE_UPGS.ids[id]?`<img src="images/tree/${id}.png">`:""
+                let img = TREE_UPGS.ids[id]?`<img src="images/tree/${u.icon||id}.png">`:""
                 table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.supernova.tree_choosed = '${id}'" ${option}>${img}</button>`
             }
             table += `</div>`

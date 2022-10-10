@@ -139,9 +139,11 @@ const UPGS = {
                     sp2 **= 0.9
                     ss2 = ss2.mul(3)
                 }
+                step = step.softcap(1e43,0.5,0)
                 let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,hasPrestige(0,12)?0.525:0.5,0)
                 ret = ret.mul(tmp.prim.eff[0])
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
+                
                 return {step: step, eff: ret, ss: ss}
             },
             effDesc(eff) {
@@ -556,17 +558,17 @@ const UPGS = {
                 cost: E('e2015'),
             },
             13: {
-                unl() { return player.md.break.active && player.qu.rip.active },
+                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
                 desc: "Cosmic Ray effect softcap starts x10 later.",
                 cost: E('e3.2e11'),
             },
             14: {
-                unl() { return player.md.break.active && player.qu.rip.active },
+                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
                 desc: "Tickspeed, Black Hole Condenser and Cosmic Ray scalings up to Meta start x10 later.",
                 cost: E('e4.3e13'),
             },
             15: {
-                unl() { return player.md.break.active && player.qu.rip.active },
+                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
                 desc: "Reduce Cosmic Ray scaling by 20%.",
                 cost: E('e3.4e14'),
             },
@@ -694,6 +696,6 @@ function upgEffect(id,x,def=E(1)) { return tmp.upgs.main[id][x]?tmp.upgs.main[id
 function resetMainUpgs(id,keep=[]) {
     let k = []
     let id2 = UPGS.main.ids[id]
-    for (let x = 0; x < player.mainUpg[id2].length; x++) if (keep.includes(player.mainUpg[id2][x])) k.push(x)
+    for (let x = 0; x < player.mainUpg[id2].length; x++) if (keep.includes(player.mainUpg[id2][x])) k.push(player.mainUpg[id2][x])
     player.mainUpg[id2] = k
 }

@@ -36,7 +36,7 @@ const ELEMENTS = {
     ],
     canBuy(x) {
         let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
-        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : (x <= 86 || x > 118)) && !tmp.elements.cannot.includes(x)
+        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x)
     },
     buyUpg(x) {
         if (this.canBuy(x)) {
@@ -731,6 +731,39 @@ const ELEMENTS = {
             dark: true,
             desc: `You can afford Cerium-58 in Big Rip.`,
             cost: E("25000"),
+        },{
+            dark: true,
+            desc: `You can now automatically complete Challenges 9-11 any Challenge. Keep Challenge 12 completions on Big Rip or start QC.`,
+            cost: E("1e6"),
+        },{
+            br: true,
+            desc: `You can now automatically buy break dilation upgrades. They no longer spent relativistic mass.`,
+            cost: E("ee19"),
+        },{
+            dark: true,
+            desc: `Keep quantum tree on darkness.`,
+            cost: E("1e7"),
+        },{
+            desc: `7th challenge’s effect gives more C9-12 completions at 10% rate.`,
+            cost: E("e9e24"),
+            effect() {
+                let c = tmp.chal?tmp.chal.eff[7]:E(0)
+                let x = c.div(10).ceil()
+                return x
+            },
+            effDesc(x) { return "+"+format(x,0) },
+        },{
+            dark: true,
+            desc: `You can afford Tungsten-74 in Big Rip.`,
+            cost: E("1e8"),
+        },{
+            dark: true,
+            desc: `Start with break dilation unlocked. Relativistic energy gain is 10% stronger.`,
+            cost: E("1e9"),
+        },{
+            dark: true,
+            desc: `You can buy atom upgrades 13-15 outside Big Rip.`,
+            cost: E("1e11"),
         },
     ],
     /*
@@ -747,7 +780,7 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (player.dark.unl) u = 118+3
+        if (player.dark.unl) u = 118+10
         else {
             if (quUnl()) u = 77+3
             else {
@@ -773,6 +806,12 @@ const ELEMENTS = {
 }
 
 const MAX_ELEM_TIERS = 2
+
+const BR_ELEM = (_=>{
+    let x = []
+    for (let i in ELEMENTS.upgs) if (i>86&&i<=118 || i>0&&ELEMENTS.upgs[i].br) x.push(Number(i))
+    return x
+})()
 
 function getElementId(x) {
     let log = Math.floor(Math.log10(x))
@@ -887,7 +926,7 @@ function updateElementsHTML() {
         let res = eu.dark?" Dark Shadows":" Quarks"
 
         tmp.el.elem_desc.setHTML("<b>["+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
-        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(ch>86&&ch<=118?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
+        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(tElem.effect[ch]):"")
     }
 
@@ -911,7 +950,7 @@ function updateElementsHTML() {
                     upg.setVisible(unl2)
                     if (unl2) {
                         let eu = ELEMENTS.upgs[x]
-                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x <= 118, final: x == 118, dark: eu.dark})
+                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: BR_ELEM.includes(x), final: x == 118, dark: eu.dark})
                     }
                 }
             }
@@ -927,7 +966,7 @@ function updateElementsTemp() {
     let cannot = []
     if (player.qu.rip.active) {
         if (!hasElement(121)) cannot.push(58)
-        cannot.push(74)
+        if (!hasElement(126)) cannot.push(74)
     }
     tmp.elements.cannot = cannot
 

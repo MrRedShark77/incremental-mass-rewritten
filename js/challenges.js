@@ -125,6 +125,7 @@ const CHALS = {
         if (hasTree("chal4b") && (i==9))  x = x.add(100)
         if (hasTree("chal8") && (i>=9))  x = x.add(200)
         if (hasElement(104) && (i>=9))  x = x.add(200)
+        if (hasElement(125) && (i>=9 && i<=11))  x = x.add(elemEffect(125,0))
         return x.floor()
     },
     getScaleName(i) {

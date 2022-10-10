@@ -6,6 +6,14 @@ const DARK = {
 
         return x.floor()
     },
+    rayEffect() {
+        let a = player.dark.rays
+        let x = {}
+
+        x.shadow = a.max(1).pow(2)
+
+        return x
+    },
     reset(force=false) {
         if (hasElement(118)||force) {
             if (force) this.doReset()
@@ -34,19 +42,24 @@ const DARK = {
         qu.rip.active = false
         qu.rip.amt = E(0)
 
-        bmd.active = false
+        let k = []
+
+        if (hasElement(127)) k.push(8,9)
+        else bmd.active = false
         bmd.energy = E(0)
         bmd.mass = E(0)
         for (let x = 0; x < 10; x++) bmd.upgs[x] = E(0)
 
-        resetMainUpgs(4)
+        resetMainUpgs(4,k)
         
-        let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
-        "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9"]
+        if (!hasElement(124)) {
+            let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
+            "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9"]
 
-        let qk2 = []
-        for (let x = 0; x < player.supernova.tree.length; x++) if (qk.includes(player.supernova.tree[x])) qk2.push(player.supernova.tree[x])
-        player.supernova.tree = qk2
+            let qk2 = []
+            for (let x = 0; x < player.supernova.tree.length; x++) if (qk.includes(player.supernova.tree[x])) qk2.push(player.supernova.tree[x])
+            player.supernova.tree = qk2
+        }
 
         for (let x = 0; x < player.prestiges.length; x++) player.prestiges[x] = E(0)
 
@@ -57,23 +70,30 @@ const DARK = {
         }
         player.atom.elements = ke
 
-        QUANTUM.doReset(true)
+        QUANTUM.doReset(true,true)
+
+        tmp.rank_tab = 0
+        if (tmp.stab[4] == 3 && !hasElement(127)) tmp.stab[4] = 0
 
         tmp.pass = false
     },
     shadowGain() {
         let x = E(1)
 
+        x = x.mul(tmp.dark.rayEff.shadow)
+        x = x.mul(tmp.bd.upgs[11].eff||1)
         if (hasElement(119)) x = x.mul(elemEffect(119))
 
         return x
     },
     shadowEff() {
         let x = {}
-        let a = player.dark.shadow.add(1)
+        let a = player.dark.shadow
 
-        x.ray = a.log10().add(1)
-        x.mass = a.log10().add(1).root(2)
+        x.ray = a.add(1).log10().add(1)
+        x.mass = a.add(1).log10().add(1).root(2)
+
+        if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
 
         return x
     },
@@ -88,6 +108,7 @@ function calcDark(dt, dt_offline) {
 function updateDarkTemp() {
     let dtmp = tmp.dark
 
+    dtmp.rayEff = DARK.rayEffect()
     dtmp.shadowGain = DARK.shadowGain()
     dtmp.shadowEff = DARK.shadowEff()
     dtmp.gain = DARK.gain()
@@ -104,11 +125,21 @@ function updateDarkHTML() {
         tmp.el.darkRay.setHTML(player.dark.rays.format(0))
         tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain))
 
-        let sEff = dtmp.shadowEff
+        let eff = dtmp.shadowEff
 
-        tmp.el.dsEff.setHTML(`
-            Boosts mass gain by <b>^${sEff.mass.format(2)}</b><br>
-            Boosts dark ray gain by <b>x${sEff.ray.format(2)}</b>
+        let e = `
+            Boosts mass gain by <b>^${eff.mass.format(3)}</b><br>
+            Boosts dark ray gain by <b>x${eff.ray.format(3)}</b>
+        `
+
+        if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
+
+        tmp.el.dsEff.setHTML(e)
+
+        eff = dtmp.rayEff
+
+        tmp.el.drEff.setHTML(`
+            Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
         `)
     }
 }
