@@ -123,9 +123,9 @@ const CHALS = {
         if (hasElement(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
         if (hasTree("chal1") && (i==7||i==8))  x = x.add(100)
         if (hasTree("chal4b") && (i==9))  x = x.add(100)
-        if (hasTree("chal8") && (i>=9))  x = x.add(200)
-        if (hasElement(104) && (i>=9))  x = x.add(200)
-        if (hasElement(125) && (i>=9 && i<=11))  x = x.add(elemEffect(125,0))
+        if (hasTree("chal8") && (i>=9 && i<=12))  x = x.add(200)
+        if (hasElement(104) && (i>=9 && i<=12))  x = x.add(200)
+        if (hasElement(125) && (i>=9 && i<=12))  x = x.add(elemEffect(125,0))
         return x.floor()
     },
     getScaleName(i) {
@@ -419,9 +419,9 @@ const CHALS = {
         start: uni('e8.4e8'),
         effect(x) {
             let ret = x.root(hasTree("chal7a")?1.5:2)
-            return ret
+            return ret.softcap(50,0.5,0)
         },
-        effDesc(x) { return "+"+format(x) },
+        effDesc(x) { return "+"+format(x)+softcapHTML(x,50) },
     },
     cols: 12,
 }

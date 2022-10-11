@@ -156,7 +156,7 @@ const ELEMENTS = {
             desc: `You can now automatically buy Cosmic Rays. Cosmic Ray raise tickspeed effect at an extremely reduced rate.`,
             cost: E(1e44),
             effect() {
-                let x = player.atom.gamma_ray.pow(0.35).mul(0.01).add(1)
+                let x = hasElement(129) ? player.atom.gamma_ray.pow(0.5).mul(0.02).add(1) : player.atom.gamma_ray.pow(0.35).mul(0.01).add(1)
                 return x
             },
             effDesc(x) { return "^"+format(x) },
@@ -733,7 +733,7 @@ const ELEMENTS = {
             cost: E("25000"),
         },{
             dark: true,
-            desc: `You can now automatically complete Challenges 9-11 any Challenge. Keep Challenge 12 completions on Big Rip or start QC.`,
+            desc: `You can now automatically complete Challenges 9-11. Keep Challenge 12 completions on Big Rip or start QC.`,
             cost: E("1e6"),
         },{
             br: true,
@@ -764,6 +764,22 @@ const ELEMENTS = {
             dark: true,
             desc: `You can buy atom upgrades 13-15 outside Big Rip.`,
             cost: E("1e11"),
+        },{
+            br: true,
+            desc: `Argon-18 is overpowered, it can affect BHC & Cosmic Ray powers.`,
+            cost: E("e1.7e20"),
+        },{
+            br: true,
+            desc: `Entropic Scaling & Radiation work in Big Rip.`,
+            cost: E("e3e20"),
+        },{
+            dark: true,
+            desc: `You can now automatically complete Challenges 12.`,
+            cost: E("e12"),
+        },{
+            dark: true,
+            desc: `Unlock 13th Challenge (TBA). Automate big rip upgrades.`,
+            cost: E("e13"),
         },
     ],
     /*
@@ -780,7 +796,7 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (player.dark.unl) u = 118+10
+        if (player.dark.unl) u = 118+14
         else {
             if (quUnl()) u = 77+3
             else {

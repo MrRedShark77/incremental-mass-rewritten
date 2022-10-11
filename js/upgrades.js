@@ -139,7 +139,7 @@ const UPGS = {
                     sp2 **= 0.9
                     ss2 = ss2.mul(3)
                 }
-                step = step.softcap(1e43,0.5,0)
+                step = step.softcap(1e43,0.75,0)
                 let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,hasPrestige(0,12)?0.525:0.5,0)
                 ret = ret.mul(tmp.prim.eff[0])
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
@@ -585,7 +585,7 @@ const UPGS = {
                     player.mainUpg.br.push(x)
                 }
             },
-            auto_unl() { return false },
+            auto_unl() { return hasElement(132) },
             lens: 15,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,

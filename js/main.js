@@ -264,7 +264,7 @@ const FORMS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
 
-            return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),0.1,0)
+            return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),1/3,0)
         },
         f() {
             let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).softcap(tmp.bh.fSoftStart,tmp.bh.fSoftPower,2)
@@ -341,6 +341,7 @@ const FORMS = {
                     pow = pow.mul(getEnRewardEff(3)[1])
                     if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
+                if (hasElement(129)) pow = pow.pow(elemEffect(18))
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
                 return {pow: pow, eff: eff}

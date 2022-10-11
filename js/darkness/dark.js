@@ -44,7 +44,7 @@ const DARK = {
 
         let k = []
 
-        if (hasElement(127)) k.push(8,9)
+        if (hasElement(127)) k.push(8,9,11)
         else bmd.active = false
         bmd.energy = E(0)
         bmd.mass = E(0)
@@ -94,6 +94,7 @@ const DARK = {
         x.mass = a.add(1).log10().add(1).root(2)
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
+        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1)
 
         return x
     },
@@ -133,6 +134,7 @@ function updateDarkHTML() {
         `
 
         if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
+        if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`
 
         tmp.el.dsEff.setHTML(e)
 
