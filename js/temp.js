@@ -150,6 +150,8 @@ function updateMassTemp() {
     tmp.massSoftGain4 = FORMS.massSoftGain4()
     tmp.massSoftPower5 = FORMS.massSoftPower5()
     tmp.massSoftGain5 = FORMS.massSoftGain5()
+    tmp.massSoftPower6 = FORMS.massSoftPower6()
+    tmp.massSoftGain6 = FORMS.massSoftGain6()
     tmp.massGain = FORMS.massGain()
 }
 
@@ -198,6 +200,8 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+
+    tmp.chal13comp = player.chal.comps[13].gte(1)
 
     updateDarkTemp()
     updateQuantumTemp()

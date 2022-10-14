@@ -639,7 +639,9 @@ const ELEMENTS = {
             desc: `Pre-Quantum Global Speed is effective based on Honor.`,
             cost: E('e5e8'),
             effect() {
-                let x = E(2).pow(player.prestiges[1])
+                let b = E(2)
+                if (player.prestiges[0].gte(70)) b = b.add(player.prestiges[1])
+                let x = b.pow(player.prestiges[1])
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -707,7 +709,7 @@ const ELEMENTS = {
             effDesc(x) { return "x"+format(x) },
         },
         {
-            desc: `Mass gain after all softcaps is raised by 10.`,
+            desc: `Mass gain after all softcaps to ^5 is raised by 10.`,
             cost: E("e5e16"),
         },
         {
@@ -778,8 +780,27 @@ const ELEMENTS = {
             cost: E("e12"),
         },{
             dark: true,
-            desc: `Unlock 13th Challenge (TBA). Automate big rip upgrades.`,
+            desc: `Unlock 13th Challenge. Automate big rip upgrades.`,
             cost: E("e13"),
+        },{
+            desc: `Make 3, 4 & 8 Challenges’ effect better.`,
+            cost: E("e6.5e27"),
+        },{
+            desc: `Super Prestige Level & Honor is 5% weaker.`,
+            cost: E("e1.5e29"),
+        },{
+            br: true,
+            desc: `Dark shadow is boosted by death shard.`,
+            cost: E("e2.5e25"),
+            effect() {
+                let x = player.qu.rip.amt.add(1).log10().add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,1) },
+        },{
+            dark: true,
+            desc: `You can now gain relativistic energy outside Big Rip. Keep quantum tree non-QoL on entering any dark challenge.`,
+            cost: E("1e18"),
         },
     ],
     /*
@@ -816,6 +837,7 @@ const ELEMENTS = {
             if (player.qu.rip.first) u += 9
             if (hasUpgrade("br",9)) u += 23 // 23
         }
+        if (tmp.chal13comp) u += 4
 
         return u
     },

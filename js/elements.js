@@ -44,7 +44,7 @@ function setupHTML() {
 	table = ""
 	for (let x = 0; x < PRES_LEN; x++) {
 		table += `<div style="width: 300px" id="pres_div_${x}">
-			<button id="pres_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch(${x})">OFF</button>
+			<button id="pres_auto_${x}" class="btn" style="width: 80px;" onclick="PRESTIGES.autoSwitch(${x})">OFF</button>
 			<span id="pres_scale_${x}""></span>${PRESTIGES.fullNames[x]} <span id="pres_amt_${x}">X</span><br><br>
 			<button onclick="PRESTIGES.reset(${x})" class="btn reset" id="pres_${x}">
 				${x>0?"Reset your "+PRESTIGES.fullNames[x-1]+"s":'Force a Quantum reset'}, but ${PRESTIGES.fullNames[x]} up.<span id="pres_desc_${x}"></span><br>
@@ -416,6 +416,8 @@ function updateHTML() {
 				tmp.el.massSoftStart5.setTxt(formatMass(tmp.massSoftGain4))
 				tmp.el.massSoft6.setDisplay(tmp.massGain.gte(tmp.massSoftGain5))
 				tmp.el.massSoftStart6.setTxt(formatMass(tmp.massSoftGain5))
+				tmp.el.massSoft7.setDisplay(tmp.massGain.gte(tmp.massSoftGain6))
+				tmp.el.massSoftStart7.setTxt(formatMass(tmp.massSoftGain6))
 			}
 			if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()

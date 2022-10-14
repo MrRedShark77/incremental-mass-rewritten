@@ -25,6 +25,7 @@ const SCALE_START = {
 		supernova: E(35),
 		fTier: E(50),
 		cosmic_str: E(90),
+		prestige0: E(80),
 	},
 	ultra: {
 		rank: E(600),
@@ -73,6 +74,7 @@ const SCALE_POWER= {
 		supernova: 3,
 		fTier: 4,
 		cosmic_str: 4,
+		prestige0: 2,
 	},
 	ultra: {
 		rank: 4,
@@ -309,6 +311,9 @@ function getScalingPower(type, name) {
 		}
 		if (name=="cosmic_str") {
 			if (hasPrestige(0,24)) power = power.mul(0.8)
+		}
+		if (name=="prestige0" || name=="prestige1") {
+			if (hasElement(134)) power = power.mul(0.95)
 		}
 	}
 	if (type=="hyper") {

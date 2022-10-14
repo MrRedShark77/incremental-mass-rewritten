@@ -183,7 +183,7 @@ const MASS_DILATION = {
             else bd.active = true
         },
         energyGain() {
-            if (!player.md.break.active || !player.qu.rip.active) return E(0)
+            if (!hasElement(136)) if (!player.md.break.active || !player.qu.rip.active) return E(0)
 
             let x = player.md.mass.add(1).log10().sub(400).div(2).max(0)
             let p = x.add(1).log10()
@@ -320,8 +320,8 @@ const MASS_DILATION = {
                 },{
                     unl: _=>player.dark.unl,
                     desc: `Double dark shadows gain.`,
-                    cost(x) { return E(10).pow(x.pow(2)).mul(uni(1e300)) },
-                    bulk() { return player.md.break.mass.gte(uni(1e300))?player.md.break.mass.div(uni(1e300)).max(1).log(10).root(2).add(1).floor():E(0) },
+                    cost(x) { return E(10).pow(x.scale(17,3,0).pow(2)).mul(uni(1e300)) },
+                    bulk() { return player.md.break.mass.gte(uni(1e300))?player.md.break.mass.div(uni(1e300)).max(1).log(10).root(2).scale(17,3,0,true).add(1).floor():E(0) },
                     effect(y) {
                         let x = Decimal.pow(2,y)
 

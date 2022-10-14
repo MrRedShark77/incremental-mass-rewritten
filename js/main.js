@@ -67,6 +67,10 @@ const FORMS = {
 
         if (hasElement(117)) x = x.pow(10)
 
+        x = x.softcap(tmp.massSoftGain6,tmp.massSoftPower6,0)
+
+        if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
+
         return x
     },
     massSoftGain() {
@@ -134,6 +138,14 @@ const FORMS = {
     },
     massSoftPower5() {
         let p = E(0.05)
+        return p
+    },
+    massSoftGain6() {
+        let s = mlt(1e22)
+        return s
+    },
+    massSoftPower6() {
+        let p = E(0.01)
         return p
     },
     tickspeed: {
@@ -264,7 +276,11 @@ const FORMS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
 
-            return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),1/3,0)
+            x = x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),1/3,0)
+
+            if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
+
+            return x
         },
         f() {
             let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).softcap(tmp.bh.fSoftStart,tmp.bh.fSoftPower,2)

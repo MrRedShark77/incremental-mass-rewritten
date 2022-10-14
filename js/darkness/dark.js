@@ -3,6 +3,8 @@ const DARK = {
         let x = E(1)
 
         x = x.mul(tmp.dark.shadowEff.ray)
+        if (tmp.chal) x = x.mul(tmp.chal.eff[13])
+        if (player.ranks.hex.gte(4)) x = x.mul(RANKS.effect.hex[4]())
 
         return x.floor()
     },
@@ -21,7 +23,7 @@ const DARK = {
             else CONFIRMS_FUNCTION.dark()
         }
     },
-    doReset() {
+    doReset(force=false) {
         let qu = player.qu
         let bmd = player.md.break
         let quSave = getQUSave()
@@ -52,9 +54,9 @@ const DARK = {
 
         resetMainUpgs(4,k)
         
-        if (!hasElement(124)) {
+        if (!hasElement(124) || (force && !hasElement(136))) {
             let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
-            "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9"]
+            "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10']
 
             let qk2 = []
             for (let x = 0; x < player.supernova.tree.length; x++) if (qk.includes(player.supernova.tree[x])) qk2.push(player.supernova.tree[x])
@@ -83,6 +85,7 @@ const DARK = {
         x = x.mul(tmp.dark.rayEff.shadow)
         x = x.mul(tmp.bd.upgs[11].eff||1)
         if (hasElement(119)) x = x.mul(elemEffect(119))
+        if (hasElement(135)) x = x.mul(elemEffect(135))
 
         return x
     },

@@ -79,6 +79,7 @@ function calc(dt, dt_offline) {
             let rn = RANKS.names[x]
             if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
         }
+        for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
             let id = UPGS.main.ids[x]
             let upg = UPGS.main[x]
@@ -115,8 +116,8 @@ function calc(dt, dt_offline) {
         if (hasTree("qu_qol4")) SUPERNOVA.reset(false,false,true)
 
         if (hasTree("qol6")) CHALS.exit(true)
-        if (CHALS.inChal(0)) {
-    
+
+        if (true) {
             if (hasTree("qu_qol3")) for (let x = 1; x <= 4; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
             if (hasTree("qu_qol5")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
             if (hasElement(122)) for (let x = 9; x <= 11; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
@@ -145,11 +146,13 @@ function getPlayerData() {
             tier: E(0),
             tetr: E(0),
             pent: E(0),
+            hex: E(0),
         },
         auto_ranks: {
             rank: false,
             tier: false,
         },
+        auto_pres: [],
         prestiges: [],
         auto_mainUpg: {
             
