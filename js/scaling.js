@@ -311,6 +311,7 @@ function getScalingPower(type, name) {
 		}
 		if (name=="cosmic_str") {
 			if (hasPrestige(0,24)) power = power.mul(0.8)
+			if (hasElement(137)) power = power.mul(0.75)
 		}
 		if (name=="prestige0" || name=="prestige1") {
 			if (hasElement(134)) power = power.mul(0.95)
@@ -337,6 +338,9 @@ function getScalingPower(type, name) {
 		}
 		if (name=='gamma_ray') {
 			if (hasElement(55)) power = power.mul(0.75)
+		}
+		if (name=='cosmic_str') {
+			if (hasElement(137)) power = power.mul(0.75)
 		}
 	}
 	if (type=="ultra") {

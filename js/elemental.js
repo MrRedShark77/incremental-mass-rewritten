@@ -801,6 +801,38 @@ const ELEMENTS = {
             dark: true,
             desc: `You can now gain relativistic energy outside Big Rip. Keep quantum tree non-QoL on entering any dark challenge.`,
             cost: E("1e18"),
+        },{
+            desc: `Super & Hyper Cosmic Strings are 25% weaker.`,
+            cost: E("ee30"),
+        },{
+            br: true,
+            desc: `Supernova boosts blueprint particles earned.`,
+            cost: E("e8.6e26"),
+            effect() {
+                let x = Decimal.pow(1.1,player.supernova.times)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,1) },
+        },{
+            dark: true,
+            desc: `Gain 100% of the Quantizes you would get from resetting each second. Supernova boosts quantizes.`,
+            cost: E("2e22"),
+            effect() {
+                let x = player.supernova.times.pow(1.25).add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,1) },
+        },{
+            br: true,
+            desc: `Uncap 10th Quantize milestone’s effect.`,
+            cost: E("e2e27"),
+        },{
+            desc: `Gain 10x more dark rays.`,
+            cost: E("e1.5e30"),
+        },{
+            dark: true,
+            desc: `Uncap Strange & Neutrino.`,
+            cost: E("2e26"),
         },
     ],
     /*
@@ -837,7 +869,7 @@ const ELEMENTS = {
             if (player.qu.rip.first) u += 9
             if (hasUpgrade("br",9)) u += 23 // 23
         }
-        if (tmp.chal13comp) u += 4
+        if (tmp.chal13comp) u += 4 + 6
 
         return u
     },

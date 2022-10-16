@@ -538,6 +538,19 @@ h2 {
     font-size: 25px;
 }
 
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: #0000;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+}
+
 .table_center {
     display: flex;
     justify-content: center;
@@ -645,7 +658,7 @@ h2 {
 	width: 240px;
 	height: 240px;
 	font-size: 11px;
-	margin: 0px 5px;
+	margin: 5px;
 }
 
 .fermion_btn > b {

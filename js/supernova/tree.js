@@ -39,12 +39,12 @@ const TREE_IDS = [
         ['s4','sn5','sn4'],
         ['','','','qu_qol8a'],
         [],
-        ['fn7','fn8'],
+        ['','fn7','fn8','fn13'],
         ['qu6','qu7','qu8','qu9','qu10','qu11'],
         [],
     ],[
         [],
-        ['qu_qol10'],
+        ['qu_qol10','qu_qol11'],
         [],
         [],
         [],
@@ -913,6 +913,23 @@ const TREE_UPGS = {
             qf: true,
             desc: `You can't gain Delta, Alpha, Omega & Sigma Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
             cost: E(1e110),
+        },
+        qu_qol11: {
+            branch: ["qu_qol10"],
+            icon: 'placeholder',
+
+            qf: true,
+            desc: `You can't gain Phi & Epsilon Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e130),
+        },
+
+        fn13: {
+            unl: _=>tmp.chal13comp,
+
+            icon: 'placeholder',
+            branch: ["fn8"],
+            desc: `Unlock 2 new meta-types of U-Quark & U-Fermion.`,
+            cost: E('e1.5e10'),
         },
         /*
         x: {

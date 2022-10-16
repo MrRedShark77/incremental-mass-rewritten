@@ -241,7 +241,7 @@ function getPlayerData() {
             fermions: {
                 unl: false,
                 points: [E(0),E(0)],
-                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
+                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0),E(0)]],
                 choosed: "",
             },
             radiation: {

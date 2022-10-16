@@ -268,6 +268,7 @@ const PRESTIGES = {
         let x = 0
         if (hasElement(100)) x += tmp.elements.effect[100]
         if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
+        x += tmp.fermions.effs[1][6]||0
         return x+1
     },
     base() {

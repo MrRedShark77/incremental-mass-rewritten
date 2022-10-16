@@ -31,7 +31,8 @@ const CONFIRMS_FUNCTION = {
         let id = i+""+x
         if (player.supernova.fermions.choosed != id) {
             player.supernova.fermions.choosed = id
-            SUPERNOVA.reset(false,false,false,true)
+            if (x == 6) QUANTUM.doReset(true,false,true)
+            else SUPERNOVA.reset(false,false,false,true)
         }
     },
     qu(auto,force,rip,bd) {

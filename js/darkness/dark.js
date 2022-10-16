@@ -5,6 +5,7 @@ const DARK = {
         x = x.mul(tmp.dark.shadowEff.ray)
         if (tmp.chal) x = x.mul(tmp.chal.eff[13])
         if (player.ranks.hex.gte(4)) x = x.mul(RANKS.effect.hex[4]())
+        if (hasElement(141)) x = x.mul(10)
 
         return x.floor()
     },
@@ -12,7 +13,7 @@ const DARK = {
         let a = player.dark.rays
         let x = {}
 
-        x.shadow = a.max(1).pow(2)
+        x.shadow = a.max(1).pow(2).pow(tmp.fermions.effs[0][6]||1)
 
         return x
     },
@@ -56,7 +57,7 @@ const DARK = {
         
         if (!hasElement(124) || (force && !hasElement(136))) {
             let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
-            "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10']
+            "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11']
 
             let qk2 = []
             for (let x = 0; x < player.supernova.tree.length; x++) if (qk.includes(player.supernova.tree[x])) qk2.push(player.supernova.tree[x])
@@ -98,6 +99,7 @@ const DARK = {
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1)
+        if (a.gte(1e25)) x.en = a.div(1e25).pow(3)
 
         return x
     },
@@ -138,6 +140,7 @@ function updateDarkHTML() {
 
         if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
         if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`
+        if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
 
         tmp.el.dsEff.setHTML(e)
 

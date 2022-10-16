@@ -16,6 +16,7 @@ const QUANTUM = {
         let x = E(1)
         if (hasTree("qu7")) x = x.mul(treeEff("qu7"))
         if (hasTree("qu9")) x = x.mul(treeEff("qu9"))
+        if (hasElement(139)) x = x.mul(elemEffect(139,1))
         return x
     },
     enter(auto=false,force=false,rip=false,bd=false) {
@@ -25,11 +26,11 @@ const QUANTUM = {
             else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)
         }
     },
-    doReset(force=false, dark=false) {
+    doReset(force=false, dark=false, metaF=false) {
         player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
-        let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11']
+        let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11','fn13']
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
         if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b','chal7a','chal8')
         if (tmp.qu.mil_reached[3]) {
@@ -54,9 +55,9 @@ const QUANTUM = {
         for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
 
         player.supernova.fermions.points = [E(0),E(0)]
-        player.supernova.fermions.choosed = ""
+        if (!metaF) player.supernova.fermions.choosed = ""
 
-        for (let x = 0; x < 2; x++) if (!hasTree("qu_qol"+(2+4*x)) || force) player.supernova.fermions.tiers[x] = [E(0),E(0),E(0),E(0),E(0),E(0)]
+        for (let x = 0; x < 2; x++) if (!hasTree("qu_qol"+(2+4*x)) || force) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(0)
 
         player.supernova.radiation.hz = hasUpgrade('br',6)?E(1e50):E(0)
         for (let x = 0; x < 7; x++) {
@@ -74,6 +75,7 @@ const QUANTUM = {
         let x = E(1)
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2).softcap(1e50,0.95,2))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
+        if (hasElement(138)) x = x.mul(elemEffect(138,1))
         x = x.mul(tmp.qu.cosmic_str_eff.eff)
         x = x.mul(tmp.dark.shadowEff.bp||1)
         return x
@@ -206,6 +208,8 @@ function calcQuantum(dt, dt_offline) {
             player.qu.points = player.qu.points.add(tmp.qu.gain.mul(dt/10))
             if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain.mul(dt/10))
         }
+
+        if (hasElement(139)) player.qu.times = player.qu.times.add(tmp.qu.gainTimes.mul(dt))
     }
 
     if (player.mass.gte(mlt(7.5e6)) && !player.qu.en.unl) {

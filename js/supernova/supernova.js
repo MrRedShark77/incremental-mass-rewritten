@@ -62,7 +62,11 @@ const SUPERNOVA = {
         if (hasTree("sn3")) x = x.mul(tmp.supernova.tree_eff.sn3)
         if (hasTree("bs3")) x = x.mul(tmp.supernova.tree_eff.bs3)
         if (hasTree("sn5")) x = x.mul(tmp.supernova.tree_eff.sn5)
-        if (tmp.qu.mil_reached[6]) x = x.mul(E(1.2).pow(player.qu.times).min(1e10))
+
+        let qs = Decimal.pow(1.2,player.qu.times)
+        if (!hasElement(140)) qs = qs.min(1e10)
+
+        if (tmp.qu.mil_reached[6]) x = x.mul(qs.softcap('ee9',0.01,0).softcap('ee10',0.1,0))
         x = x.mul(tmp.radiation.bs.eff[11])
         return x
     },
@@ -107,7 +111,8 @@ function calcSupernova(dt, dt_offline) {
         if (tmp.fermions.ch[0] >= 0) {
             su.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = su.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
             .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]])
-        } else if (hasTree("qu_qol8") && !(!hasTree("qu_qol8a")&&QCs.active())) for (let i = 0; i < 2; i++) for (let j = 0; j < 6; j++) if (j < FERMIONS.getUnlLength()) {
+        }
+        if (tmp.fermions.ch[0] != 0 || tmp.fermions.ch[1] >= 6) if (hasTree("qu_qol8") && !(!hasTree("qu_qol8a")&&QCs.active())) for (let i = 0; i < 2; i++) for (let j = 0; j < 6; j++) if (j < FERMIONS.getUnlLength()) {
             su.fermions.tiers[i][j] = su.fermions.tiers[i][j]
             .max(tmp.fermions.tiers[i][j])
         }

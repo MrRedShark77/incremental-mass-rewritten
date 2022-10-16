@@ -1,8 +1,13 @@
 function setupChalHTML() {
     let chals_table = new Element("chals_table")
 	let table = ""
-	for (let x = 1; x <= CHALS.cols; x++) {
-        table += `<div id="chal_div_${x}" style="width: 120px; margin: 5px;"><img id="chal_btn_${x}" onclick="CHALS.choose(${x})" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
+	for (let x = Math.ceil(CHALS.cols/4)-1; x >= 0; x--) {
+        table += `<div class="table_center" style="min-height: 160px;">`
+        for (let y = 1; y <= Math.min(CHALS.cols-4*x,4); y++) {
+            let i = 4*x+y
+            table += `<div id="chal_div_${i}" style="width: 120px; margin: 5px;"><img id="chal_btn_${i}" onclick="CHALS.choose(${i})" class="img_chal" src="images/chal_${i}.png"><br><span id="chal_comp_${i}">X</span></div>`
+        }
+        table += "</div>"
 	}
 	chals_table.setHTML(table)
 }

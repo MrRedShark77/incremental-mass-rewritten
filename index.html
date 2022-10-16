@@ -325,17 +325,24 @@
             </div><div id="tab_frame3">
                 <div id="stab_frame3_0">
                     Note 1: Click any image to show challenge description. Click again to enter any challenge<br><br>
-                    <button class="btn" id="chal_exit" onclick="CHALS.exit()">Exit Challenge</button><br><br>
-                    <div style="min-height: 120px;" id="chals_table" class="table_center"></div><br><br>
-                    <div id="chal_desc_div">
-                        <button class="btn" id="chal_enter" onclick="CHALS.enter()">Enter Challenge</button>
-                        <p id="chal_ch_title"></p>
-                        <span class="red" id="chal_ch_desc"></span><br>
-                        <span class="red" id="chal_ch_reset"></span>
-                        <p id="chal_ch_goal"></p>
-                        <span class="green" id="chal_ch_reward"></span><br>
-                        <span class="green" id="chal_ch_eff"></span>
+                    <div class="table_center" style="width: 100%;">
+                        <div style="width: calc(50% - 36px); height: 400px; overflow-y: auto; border: solid 3px white; margin: 0 15px; border-radius: 10px; background-color: black; padding: 5px 0;">
+                            <div id="chals_table"></div>
+                        </div><div style="width: calc(50% - 36px); margin: 0 15px;">
+                            <button class="btn" id="chal_exit" onclick="CHALS.exit()">Exit Challenge</button><br><br>
+                            <div id="chal_desc_div">
+                                <button class="btn" id="chal_enter" onclick="CHALS.enter()">Enter Challenge</button>
+                                <p id="chal_ch_title"></p>
+                                <span class="red" id="chal_ch_desc"></span><br>
+                                <span class="red" id="chal_ch_reset"></span>
+                                <p id="chal_ch_goal"></p>
+                                <span class="green" id="chal_ch_reward"></span><br>
+                                <span class="green" id="chal_ch_eff"></span>
+                            </div>
+                        </div>
                     </div>
+                    
+                    
                 </div><div id="stab_frame3_1">
                     You have <span id="qc_shard">0</span> Quantum Shard, which raises to <span id="qc_shard_b">2</span><br>
                     <span class="green">Translated to <span id="qc_shard_eff">1</span>x multiplier of Quantum Foams</span><br><br>
@@ -464,7 +471,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6 beta 4 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6 pre 1 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>
                 Total time played: <span id="total_time">X</span><br><br>
