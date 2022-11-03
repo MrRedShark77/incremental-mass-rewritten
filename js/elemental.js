@@ -36,7 +36,7 @@ const ELEMENTS = {
     ],
     canBuy(x) {
         let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
-        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x)
+        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
     },
     buyUpg(x) {
         if (this.canBuy(x)) {
@@ -229,9 +229,9 @@ const ELEMENTS = {
             cost: E(1e130),
             effect() {
                 let x = player.md.mass.add(1).pow(0.0125)
-                return x
+                return x.softcap('ee27',0.95,2)
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return format(x)+"x"+x.softcapHTML('ee27') },
         },
         {
             desc: `Increase dilated mass gain exponent by 5%.`,
@@ -559,6 +559,7 @@ const ELEMENTS = {
             cost: E('e1100'),
             effect() {
                 let x = player.bh.mass.add(1).log10().add(1).log10().mul(1.25).add(1).pow(player.qu.rip.active?2:0.4)
+                //if (player.qu.rip.active) x = x.softcap(100,0.1,0)
                 return x
             },
             effDesc(x) { return "^"+x.format() },
@@ -593,7 +594,9 @@ const ELEMENTS = {
             desc: `Death Shard is increased by 10% for every supernova.`,
             cost: E("e32000"),
             effect() {
-                let x = E(1.1).pow(player.supernova.times)
+                let s = player.supernova.times
+                if (!player.qu.rip.active) s = s.root(1.5)
+                let x = E(1.1).pow(s)
                 return x
             },
             effDesc(x) { return "x"+x.format() },
@@ -833,6 +836,35 @@ const ELEMENTS = {
             dark: true,
             desc: `Uncap Strange & Neutrino.`,
             cost: E("2e26"),
+        },{
+            dark: true,
+            desc: `Dark shadow’s second effect is better. Keep pre-118 big rip elements on darkness.`,
+            cost: E("1e27"),
+        },{
+            dark: true,
+            desc: `Unlock 14th Challenge.`,
+            cost: E("1e32"),
+        },{
+            desc: `Prestige base boost dark rays earned.`,
+            cost: E("e1.7e31"),
+            effect() {
+                let x = (tmp.prestiges.base||E(1)).add(1).log10().add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },{
+            br: true,
+            desc: `Prestige base boost dark rays earned.`,
+            cost: E("ee30"),
+            effect() {
+                let x = player.atom.elements.length/100
+                return x
+            },
+            effDesc(x) { return "+"+format(x,2) },
+        },{
+            dark: true,
+            desc: `Outside Big Rip, you can now gain death shards. Automate cosmic rays.`,
+            cost: E("1e40"),
         },
     ],
     /*
@@ -869,7 +901,8 @@ const ELEMENTS = {
             if (player.qu.rip.first) u += 9
             if (hasUpgrade("br",9)) u += 23 // 23
         }
-        if (tmp.chal13comp) u += 4 + 6
+        if (tmp.chal13comp) u += 10 + 2
+        if (tmp.chal14comp) u += 3
 
         return u
     },

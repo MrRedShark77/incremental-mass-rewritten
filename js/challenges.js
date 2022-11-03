@@ -137,8 +137,8 @@ const CHALS = {
     },
     getScaleName(i) {
         if (player.chal.comps[i].gte(i==13?10:1000)) return " Impossible"
-        if (player.chal.comps[i].gte(i==13?5:i==8?200:i>8&&i<=12?50:300)) return " Insane"
-        if (player.chal.comps[i].gte(i==13?2:i>8&&i<=12?10:75)) return " Hardened"
+        if (player.chal.comps[i].gte(i==13?5:i==8?200:i>8&&i!=13?50:300)) return " Insane"
+        if (player.chal.comps[i].gte(i==13?2:i>8&&i!=13?10:75)) return " Hardened"
         return ""
     },
     getPower(i) {
@@ -163,11 +163,11 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
         let fp = 1
-        if (QCs.active()) fp /= tmp.qu.qc_eff[5]
+        if (QCs.active() && x <= 12) fp /= tmp.qu.qc_eff[5]
         let s1 = x > 8 ? 10 : 75
         let s2 = 300
         if (x == 8) s2 = 200
-        if (x > 8 && x <= 12) s2 = 50
+        if (x > 8) s2 = 50
         let s3 = 1000
         if (x == 13) {
             s1 = 2
@@ -450,7 +450,22 @@ const CHALS = {
         },
         effDesc(x) { return "x"+format(x,1) },
     },
-    cols: 13,
+    14: {
+        unl() { return hasElement(144) },
+        title: "No Dmitri Mendeleev",
+        desc: "You cannot purchase any pre-118 elements. In addtional, you are trapped in quantum challenge with modifiers [5,5,5,5,5,5,5,5].",
+        reward: `Gain more primordium theorems.<br><span class="yellow">On first completion, unlock more features!</span>`,
+        max: E(100),
+        inc: E('e2e19'),
+        pow: E(3),
+        start: uni('ee20'),
+        effect(x) {
+            let ret = x.div(25).add(1)
+            return ret
+        },
+        effDesc(x) { return "x"+format(x,2) },
+    },
+    cols: 14,
 }
 
 /*

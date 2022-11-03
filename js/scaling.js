@@ -179,8 +179,10 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent")
-	if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
+	if (!CHALS.inChal(14)) {
+		if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent")
+		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
+	}
 	tmp.scaling_qc8 = sqc8
 }
 
@@ -312,6 +314,7 @@ function getScalingPower(type, name) {
 		if (name=="cosmic_str") {
 			if (hasPrestige(0,24)) power = power.mul(0.8)
 			if (hasElement(137)) power = power.mul(0.75)
+			if (hasPrestige(1,15)) power = power.mul(prestigeEff(1,15,1))
 		}
 		if (name=="prestige0" || name=="prestige1") {
 			if (hasElement(134)) power = power.mul(0.95)
@@ -341,6 +344,7 @@ function getScalingPower(type, name) {
 		}
 		if (name=='cosmic_str') {
 			if (hasElement(137)) power = power.mul(0.75)
+			if (hasPrestige(1,15)) power = power.mul(prestigeEff(1,15,1))
 		}
 	}
 	if (type=="ultra") {

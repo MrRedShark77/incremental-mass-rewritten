@@ -9,6 +9,7 @@ const RANKS = {
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
             else if (type == "pent" && hasTree("qol8")) reset = false
+            else if (type == "hex" && tmp.chal14comp) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -21,6 +22,7 @@ const RANKS = {
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
             else if (type == "pent" && hasTree("qol8")) reset = false
+            else if (type == "hex" && tmp.chal14comp) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -113,6 +115,7 @@ const RANKS = {
         hex: {
             '1': "reduce pent reqirements by 20%.",
             '4': "increase dark ray earned by +20% per hex.",
+            '6': "remove first softcap of normal mass gain.",
         },
     },
     effect: {
@@ -263,7 +266,7 @@ const RANKS = {
 }
 
 const PRESTIGES = {
-    fullNames: ["Prestige Level", "Honor"],
+    fullNames: ["Prestige Level", "Honor", 'Glory'],
     baseExponent() {
         let x = 0
         if (hasElement(100)) x += tmp.elements.effect[100]
@@ -283,13 +286,16 @@ const PRESTIGES = {
         return x.sub(1)
     },
     req(i) {
-        let x = EINF, y = player.prestiges[i]
+        let x = EINF, fp = this.fp(i), y = player.prestiges[i].div(fp)
         switch (i) {
             case 0:
                 x = Decimal.pow(1.1,y.scaleEvery('prestige0').pow(1.1)).mul(2e13)
                 break;
             case 1:
                 x = y.scaleEvery('prestige1').pow(1.25).mul(3).add(4)
+                break;
+            case 2:
+                x = y.pow(1.3).mul(4).add(6)
                 break;
             default:
                 x = EINF
@@ -298,13 +304,16 @@ const PRESTIGES = {
         return x.ceil()
     },
     bulk(i) {
-        let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1]
+        let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
         switch (i) {
             case 0:
-                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).add(1)
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).mul(fp).add(1)
                 break;
             case 1:
-                if (y.gte(4)) x = y.sub(4).div(2).max(0).root(1.5).scaleEvery('prestige1',true).add(1)
+                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1)
+                break
+            case 2:
+                if (y.gte(6)) x = y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
                 break
             default:
                 x = E(0)
@@ -312,16 +321,24 @@ const PRESTIGES = {
         }
         return x.floor()
     },
+    fp(i) {
+        let fp = 1
+        if (player.prestiges[2].gte(1) && i < 2) fp *= 1.15
+        return fp
+    },
     unl: [
         _=>true,
         _=>true,
+        _=>tmp.chal14comp,
     ],
     noReset: [
         _=>hasUpgrade('br',11),
         _=>tmp.chal13comp,
+        _=>false,
     ],
     autoUnl: [
         _=>tmp.chal13comp,
+        _=>tmp.chal14comp,
         _=>false,
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
@@ -350,6 +367,10 @@ const PRESTIGES = {
             "4": `Gain 5 free levels of each Primordium Particle.`,
             "5": `Pent 5's reward is stronger based on Prestige Base.`,
             "7": `Quarks are boosted based on Honor.`,
+            "15": `Super & Hyper cosmic strings scale weaker based on Honors.`,
+        },
+        {
+            "1": `The requirements from prestige level & honor are 15% weaker.`,
         },
     ],
     rewardEff: [
@@ -388,6 +409,13 @@ const PRESTIGES = {
                 let x = player.prestiges[1].add(1).root(3)
                 return x
             },x=>"^"+x.format()],
+            "15": [_=>{
+                let x = player.prestiges[1].root(1.5).div(10).add(1).pow(-1)
+                return x
+            },x=>formatReduction(x)+" weaker"],
+        },
+        {
+
         },
     ],
     reset(i, bulk = false) {
@@ -517,7 +545,7 @@ function updateRanksHTML() {
                 let keys = Object.keys(PRESTIGES.rewards[x])
                 let desc = ""
                 for (let i = 0; i < keys.length; i++) {
-                    if (p.lt(keys[i]) && (tmp.chal13comp || p.lte(PRES_BEFOREC13[x]))) {
+                    if (p.lt(keys[i]) && (tmp.chal13comp || p.lte(PRES_BEFOREC13[x]||Infinity))) {
                         desc = ` At ${PRESTIGES.fullNames[x]} ${format(keys[i],0)}, ${PRESTIGES.rewards[x][keys[i]]}`
                         break
                     }

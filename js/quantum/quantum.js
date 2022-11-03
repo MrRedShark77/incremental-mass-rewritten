@@ -191,6 +191,8 @@ function calcQuantum(dt, dt_offline) {
         player.qu.bp = player.qu.bp.add(tmp.qu.bpGain.mul(dt))
         for (let x = 0; x < CHROMA_LEN; x++) player.qu.chroma[x] = player.qu.chroma[x].add(tmp.qu.chroma_gain[x].mul(dt))
 
+        if (player.qu.auto_cr) QUANTUM.cosmic_str.buyMax()
+
         if (PRIM.unl()) {
             player.qu.prim.theorems = player.qu.prim.theorems.max(tmp.prim.theorems)
         }
@@ -206,7 +208,7 @@ function calcQuantum(dt, dt_offline) {
 
         if (hasUpgrade('br',8)) {
             player.qu.points = player.qu.points.add(tmp.qu.gain.mul(dt/10))
-            if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain.mul(dt/10))
+            if (player.qu.rip.active || hasElement(147)) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain.mul(dt/10))
         }
 
         if (hasElement(139)) player.qu.times = player.qu.times.add(tmp.qu.gainTimes.mul(dt))
@@ -265,6 +267,9 @@ function updateQuantumHTML() {
         tmp.el.cosmic_str_cost.setTxt(format(tmp.qu.cosmic_str_cost,0))
         tmp.el.cosmic_str_pow.setTxt(format(tmp.qu.cosmic_str_eff.pow))
         tmp.el.cosmic_str_eff.setHTML(format(tmp.qu.cosmic_str_eff.eff))
+
+        tmp.el.cosmic_str_auto.setDisplay(hasElement(147))
+        tmp.el.cosmic_str_auto.setHTML(player.qu.auto_cr?"ON":"OFF")
     }
 
     if (tmp.tab == 6) {

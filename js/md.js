@@ -44,7 +44,12 @@ const MASS_DILATION = {
         if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
         if (hasElement(32)) x = x.pow(1.05)
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-        return x.softcap(mlt(1e12),0.5,0)
+        return x.softcap(tmp.md.massSoftcap1,0.5,0)
+    },
+    gainSoftcap1() {
+        let s = mlt(1e12)
+        
+        return s
     },
     mass_req() {
         let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e56)
@@ -87,7 +92,7 @@ const MASS_DILATION = {
                 desc: `Double relativistic particles gain.`,
                 cost(x) { return E(10).pow(x.pow(E(1.25).pow(tmp.md.upgs[4].eff||1))).mul(1000) },
                 bulk() { return player.md.mass.gte(1000)?player.md.mass.div(1000).max(1).log10().root(E(1.25).pow(tmp.md.upgs[4].eff||1)).add(1).floor():E(0) },
-                effect(x) { return E(2).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap(1e25,0.75,0) },
+                effect(x) { return E(2).pow(x.softcap(2.5e26,0.1,0).mul(tmp.md.upgs[11].eff||1)).softcap(1e25,0.75,0) },
                 effDesc(x) { return format(x,0)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: `Dilated mass also boost Stronger's power.`,
@@ -111,7 +116,7 @@ const MASS_DILATION = {
                     let s = E(0.25).add(tmp.md.upgs[10].eff||1)
                     let x = i.mul(s)
                     if (hasElement(53)) x = x.mul(1.75)
-                    return x.softcap(1e3,0.6,0)//.softcap(3e4,0.5,0)
+                    return x.softcap(1e3,0.6,0)//.softcap(1e23,0.1,0)
                 },
                 effDesc(x) { return "+^"+format(x)+(x.gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
             },{
@@ -405,6 +410,7 @@ function updateMDTemp() {
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()
     tmp.md.rp_gain = MASS_DILATION.RPgain()
     tmp.md.passive_rp_gain = hasTree("qol3")?MASS_DILATION.RPgain(expMult(player.mass,tmp.md.pen)):E(0)
+    tmp.md.massSoftcap1 = MASS_DILATION.gainSoftcap1()
     tmp.md.mass_gain = MASS_DILATION.massGain()
     tmp.md.mass_req = MASS_DILATION.mass_req()
     tmp.md.mass_eff = MASS_DILATION.effect()
@@ -447,8 +453,8 @@ function updateMDHTML() {
         }
     }
 
-    tmp.el.dmSoft1.setDisplay(player.md.mass.gte(mlt(1e12)))
-    tmp.el.dmSoftStart1.setTxt(formatMass(mlt(1e12)))
+    tmp.el.dmSoft1.setDisplay(player.md.mass.gte(tmp.md.massSoftcap1))
+    tmp.el.dmSoftStart1.setTxt(formatMass(tmp.md.massSoftcap1))
 }
 
 function updateBDHTML() {

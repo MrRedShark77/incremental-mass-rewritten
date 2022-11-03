@@ -74,6 +74,7 @@ const FORMS = {
         return x
     },
     massSoftGain() {
+        if (player.ranks.hex.gte(6)) return EINF
         let s = E(1.5e156)
         if (CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e150)
         if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e100)
@@ -123,6 +124,7 @@ const FORMS = {
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
         if (hasPrestige(0,1)) s = s.pow(10)
+        s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s
     },
     massSoftPower4() {
@@ -134,6 +136,7 @@ const FORMS = {
         let s = mlt(player.qu.rip.active?1e4:1e12)
         if (hasPrestige(0,8)) s = s.pow(prestigeEff(0,8))
         if (hasUpgrade("br",12)) s = s.pow(upgEffect(4,12))
+        s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s
     },
     massSoftPower5() {
@@ -142,6 +145,7 @@ const FORMS = {
     },
     massSoftGain6() {
         let s = mlt(1e22)
+        s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s
     },
     massSoftPower6() {
@@ -322,9 +326,7 @@ const FORMS = {
             FORMS.rp.doReset()
         },
         effect() {
-            let x = player.mainUpg.atom.includes(12)
-            ?player.bh.mass.add(1).pow(1.25)
-            :player.bh.mass.add(1).root(4)
+            let x = (player.mainUpg.atom.includes(12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
             return x//.softcap("ee14",0.95,2)
         },
@@ -358,6 +360,7 @@ const FORMS = {
                     if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
                 if (hasElement(129)) pow = pow.pow(elemEffect(18))
+                pow = pow//.softcap('e3e10',0.9,2)
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
                 return {pow: pow, eff: eff}

@@ -202,6 +202,7 @@ function updateTemp() {
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
 
     tmp.chal13comp = player.chal.comps[13].gte(1)
+    tmp.chal14comp = player.chal.comps[14].gte(1)
 
     updateDarkTemp()
     updateQuantumTemp()
