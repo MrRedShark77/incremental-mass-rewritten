@@ -863,7 +863,7 @@ const ELEMENTS = {
             effDesc(x) { return "+"+format(x,2) },
         },{
             dark: true,
-            desc: `Outside Big Rip, you can now gain death shards. Automate cosmic rays.`,
+            desc: `Outside Big Rip, you can now gain death shards. Automate cosmic strings.`,
             cost: E("1e40"),
         },
     ],
