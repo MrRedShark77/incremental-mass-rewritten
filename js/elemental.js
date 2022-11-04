@@ -854,7 +854,7 @@ const ELEMENTS = {
             effDesc(x) { return "x"+format(x) },
         },{
             br: true,
-            desc: `Prestige base boost dark rays earned.`,
+            desc: `Quantum shard’s base is increased by the number of elements bought.`,
             cost: E("ee30"),
             effect() {
                 let x = player.atom.elements.length/100
