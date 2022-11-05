@@ -74,7 +74,7 @@ const BOSONS = {
         hb(x) {
             let a = x.add(1).log10().max(0).root(2).mul(tmp.prim.eff[4])
             if (hasTree("qu10") && !player.qu.rip.active) a = a.mul(treeEff('qu10'))
-            return [a.softcap(4e6,0.5,0)]
+            return [a]
         },
     },
     upgs: {

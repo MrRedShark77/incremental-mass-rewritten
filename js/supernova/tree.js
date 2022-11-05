@@ -44,7 +44,7 @@ const TREE_IDS = [
         [],
     ],[
         [],
-        ['qu_qol10','qu_qol11'],
+        ['qu_qol10','qu_qol11','qu_qol12'],
         [],
         [],
         [],
@@ -921,6 +921,14 @@ const TREE_UPGS = {
             qf: true,
             desc: `You can't gain Phi & Epsilon Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
             cost: E(1e130),
+        },
+        qu_qol12: {
+            branch: ["qu_qol11"],
+            icon: 'placeholder',
+
+            qf: true,
+            desc: `You can't gain Theta & Beta Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e190),
         },
 
         fn13: {

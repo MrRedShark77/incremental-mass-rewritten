@@ -116,6 +116,7 @@ const RANKS = {
             '1': "reduce pent reqirements by 20%.",
             '4': "increase dark ray earned by +20% per hex.",
             '6': "remove first softcap of normal mass gain.",
+            '10': "remove second softcap of normal mass gain.",
         },
     },
     effect: {
@@ -359,6 +360,7 @@ const PRESTIGES = {
             "32": `Prestige Base’s exponent is increased based on Prestige Level.`,
             "40": `Chromium-24 is slightly stronger.`,
             "70": `Lawrencium-103 is slightly stronger.`,
+            "110": `Ununennium-119 is slightly stronger.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -371,6 +373,7 @@ const PRESTIGES = {
         },
         {
             "1": `The requirements from prestige level & honor are 15% weaker.`,
+            "3": `Break dilation upgrade 12 is cheaper.`,
         },
     ],
     rewardEff: [
@@ -455,8 +458,8 @@ function updateRanksTemp() {
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier().mul(ffp)
-    tmp.ranks.tier.req = player.ranks.tier.div(fp2).scaleEvery('tier').div(fp).add(2).pow(2).floor()
-    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true).mul(fp2).add(1).floor();
+    tmp.ranks.tier.req = player.ranks.tier.scaleEvery('tier',false,[1,1,1,fp2]).div(fp).add(2).pow(2).floor()
+    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,fp2]).add(1).floor();
 
     fp = E(1).mul(ffp)
     let pow = 2

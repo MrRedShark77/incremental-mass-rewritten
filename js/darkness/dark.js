@@ -120,6 +120,7 @@ const DARK = {
 
         x.shadow = a.add(1).log10().add(1).pow(2)
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
+        if (a.gte(1e120)) x.hr = a.div(1e120).log10().add(1).pow(2)
 
         return x
     },
@@ -165,7 +166,7 @@ function updateDarkHTML() {
 
         if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
         if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`
-        if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
+        if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
         if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
 
         tmp.el.dsEff.setHTML(e)
@@ -180,6 +181,8 @@ function updateDarkHTML() {
                 Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
                 <br>Makes mass gain's softcap^4-6, starting <b>^${eff.msoftcap.format(3)}</b> later
             `
+
+            if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
 
             tmp.el.abEff.setHTML(e)
         }

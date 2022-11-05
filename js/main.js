@@ -68,6 +68,7 @@ const FORMS = {
         if (hasElement(117)) x = x.pow(10)
 
         x = x.softcap(tmp.massSoftGain6,tmp.massSoftPower6,0)
+        .softcap(tmp.massSoftGain7,tmp.massSoftPower7,0)
 
         if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
 
@@ -92,6 +93,7 @@ const FORMS = {
         return E(1).div(p.add(1))
     },
     massSoftGain2() {
+        if (player.ranks.hex.gte(10)) return EINF
         let s = E('1.5e1000056')
         if (hasTree("m2")) s = s.pow(1.5)
         if (hasTree("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
@@ -152,6 +154,14 @@ const FORMS = {
         let p = E(0.01)
         return p
     },
+    massSoftGain7() {
+        let s = mlt(1e36)
+        return s
+    },
+    massSoftPower7() {
+        let p = E(0.005)
+        return p
+    },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
         can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(10) },
@@ -199,6 +209,9 @@ const FORMS = {
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
             if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
+
+            if (hasElement(150)) eff = expMult(eff,1.6)
+
             return {step: step, eff: eff, bonus: bonus, ss: ss}
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
@@ -528,6 +541,8 @@ function formatPercent(ex) { ex = E(ex); return format(ex.mul(100))+"%" }
 function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
 
 function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }
+
+function overflowFormat(x,inv=false) { return (inv?"raised":"rooted")+" by <b>"+format(x)+"</b>" }
 
 function capitalFirst(str) {
 	if (str=="" || str==" ") return str

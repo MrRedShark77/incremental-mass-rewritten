@@ -4,7 +4,10 @@ const STARS = {
         let x = player.stars.generators[0]
         if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
         if (hasPrestige(1,1)) x = x.pow(2)
-        return x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
+
+        x = x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
+
+        return x
     },
     softGain() {
         let s = E("e1000").pow(tmp.fermions.effs[1][0]||1)
@@ -81,8 +84,8 @@ function updateStarsTemp() {
         s = s.root(10)
         inc = inc.root(10)
     }
-    tmp.stars.generator_boost_req = inc.pow(player.stars.boost.pow(1.25)).mul(s)//.scale(4e24,2,0)
-    tmp.stars.generator_boost_bulk = player.atom.quarks.gte(s)?player.atom.quarks.div(s).max(1).log(inc).root(1.25).add(1).floor():E(0)//.scale(4e24,2,0,true)
+    tmp.stars.generator_boost_req = inc.pow(player.stars.boost.pow(1.25)).mul(s)//.scale(1e35,2,0)
+    tmp.stars.generator_boost_bulk = player.atom.quarks.gte(s)?player.atom.quarks.div(s).max(1).log(inc).root(1.25).add(1).floor():E(0)//.scale(1e35,2,0,true)
 
     tmp.stars.generator_boost_base = E(2)
     if (hasElement(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])

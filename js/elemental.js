@@ -724,7 +724,8 @@ const ELEMENTS = {
             desc: `Pre-Quantum global speed affects dark shadow gain at a logarithmic reduced rate.`,
             cost: E("500"),
             effect() {
-                let x = tmp.preQUGlobalSpeed?tmp.preQUGlobalSpeed.max(1).log10().add(1):E(1)
+                let s = tmp.preQUGlobalSpeed||E(1)
+                let x = hasPrestige(0,110) ? expMult(s,0.4) : s.max(1).log10().add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -865,6 +866,16 @@ const ELEMENTS = {
             dark: true,
             desc: `Outside Big Rip, you can now gain death shards. Automate cosmic strings.`,
             cost: E("1e40"),
+        },{
+            br: true,
+            desc: `Big Rip upgrade 7 is allowed outside Big Rip.`,
+            cost: E("e2.6e30"),
+        },{
+            desc: `Stronger’s effect softcap is slightly weaker.`,
+            cost: E("e4e45"),
+        },{
+            desc: `Stronger’s effect softcap is slightly weaker again. Tickspeed’s effect is overpowered.`,
+            cost: E("ee54"),
         },
     ],
     /*
@@ -902,7 +913,7 @@ const ELEMENTS = {
             if (hasUpgrade("br",9)) u += 23 // 23
         }
         if (tmp.chal13comp) u += 10 + 2
-        if (tmp.chal14comp) u += 3
+        if (tmp.chal14comp) u += 3 + 5
 
         return u
     },

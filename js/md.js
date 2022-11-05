@@ -44,7 +44,16 @@ const MASS_DILATION = {
         if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
         if (hasElement(32)) x = x.pow(1.05)
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-        return x.softcap(tmp.md.massSoftcap1,0.5,0)
+
+        x = x.softcap(tmp.md.massSoftcap1,0.5,0)
+
+        let o = x
+
+        x = overflow(x,'ee30',0.5)
+
+        tmp.overflow.dm = calcOverflow(o,x,'ee30')
+
+        return x
     },
     gainSoftcap1() {
         let s = mlt(1e12)
@@ -325,8 +334,16 @@ const MASS_DILATION = {
                 },{
                     unl: _=>player.dark.unl,
                     desc: `Double dark shadows gain.`,
-                    cost(x) { return E(10).pow(x.scale(17,3,0).pow(2)).mul(uni(1e300)) },
-                    bulk() { return player.md.break.mass.gte(uni(1e300))?player.md.break.mass.div(uni(1e300)).max(1).log(10).root(2).scale(17,3,0,true).add(1).floor():E(0) },
+                    cost(x) {
+                        x = x.scale(17,hasPrestige(2,3)?1.5:3,0)
+                        return E(10).pow(x.pow(2)).mul(uni(1e300))
+                    },
+                    bulk() {
+                        if (player.md.break.mass.lt(uni(1e300))) return E(0)
+                        let y = player.md.break.mass.div(uni(1e300)).max(1).log(10).root(2)
+                        y = y.scale(17,hasPrestige(2,3)?1.5:3,0,true)
+                        return y.add(1).floor()
+                    },
                     effect(y) {
                         let x = Decimal.pow(2,y)
 
@@ -455,6 +472,9 @@ function updateMDHTML() {
 
     tmp.el.dmSoft1.setDisplay(player.md.mass.gte(tmp.md.massSoftcap1))
     tmp.el.dmSoftStart1.setTxt(formatMass(tmp.md.massSoftcap1))
+
+    tmp.el.dmOverflow.setDisplay(player.md.mass.gte('ee30'))
+    tmp.el.dmOverflow.setHTML(`Because of dilated mass overflow at <b>${formatMass('ee30')}</b>, your dilated mass is ${overflowFormat(tmp.overflow.dm||1)}!`)
 }
 
 function updateBDHTML() {

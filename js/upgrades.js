@@ -135,12 +135,21 @@ const UPGS = {
                 if (player.ranks.tier.gte(30)) sp *= 1.1
                 let sp2 = 0.1
                 let ss2 = E(5e15)
+                let sp3 = hasPrestige(0,12)?0.525:0.5
                 if (hasElement(85)) {
                     sp2 **= 0.9
                     ss2 = ss2.mul(3)
                 }
+                if (hasElement(149)) {
+                    sp **= 0.5
+                    sp3 **= 0.9
+                }
+                if (hasElement(150)) {
+                    sp **= 0.9
+                    sp3 **= 0.925
+                }
                 step = step.softcap(1e43,0.75,0)
-                let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,hasPrestige(0,12)?0.525:0.5,0)
+                let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
                 ret = ret.mul(tmp.prim.eff[0])
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
                 

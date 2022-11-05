@@ -65,6 +65,8 @@ function softcapHTML(x, start) { return E(x).gte(start)?` <span class='soft'>(so
 
 Decimal.prototype.softcapHTML = function (start) { return softcapHTML(this.clone(), start) }
 
+function calcOverflow(x,y,s,inv=false) { return x.gte(s) ? x.max(1).log10().div(y.max(1).log10()).pow(inv?-1:1) : E(1) }
+
 function calc(dt, dt_offline) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
 
@@ -497,4 +499,14 @@ function findNaN(obj, str=false, data=getPlayerData()) {
         if (typeof obj[k] == "object") return findNaN(obj[k], str, data[k])
     }
     return false
+}
+
+function overflow(number, start, power){
+	if(isNaN(number.mag))return new Decimal(0);
+	start=E(start);
+	if(number.gte(start)){
+		number=number.log10().div(start.log10()).pow(power).mul(start.log10());
+		number=Decimal.pow(10,number);
+	}
+	return number;
 }

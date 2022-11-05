@@ -14,7 +14,7 @@ const PRIM = {
     spentTheorems() {
         let x = E(0)
         for (let i = 0; i < player.qu.prim.particles.length; i++) {
-            if (!hasTree('qu_qol10') || i >= 4) if (!hasTree('qu_qol11') || i >= 6) x = x.add(player.qu.prim.particles[i])
+            if (!hasTree('qu_qol10') || i >= 4) if (!hasTree('qu_qol11') || i >= 6) if (!hasTree('qu_qol12')) x = x.add(player.qu.prim.particles[i])
         }
         return x
     },
@@ -126,6 +126,11 @@ function updatePrimordiumTemp() {
         if (hasTree('qu_qol11')) {
             tp.w = [0,0,0,0,0,0,2,1]
             tp.total_w -= 4
+
+            if (hasTree('qu_qol12')) {
+                tp.w = [0,0,0,0,0,0,0,0]
+                tp.total_w -= 3
+            }
         }
     }
 
@@ -139,6 +144,7 @@ function updatePrimordiumTemp() {
         let pp = player.qu.prim.particles[i]
         if (hasTree('qu_qol10') && i < 4) pp = pt
         else if (hasTree('qu_qol11') && i < 6) pp = pt
+        else if (hasTree('qu_qol12') && i < 8) pp = pt
 
         tp.parts[i] = pp
         if (hasPrestige(1,4)) pp = pp.add(5)
