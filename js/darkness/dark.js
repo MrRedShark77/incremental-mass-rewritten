@@ -166,7 +166,7 @@ function updateDarkHTML() {
 
         if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
         if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`
-        if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
+        if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
         if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
 
         tmp.el.dsEff.setHTML(e)
