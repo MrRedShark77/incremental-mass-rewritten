@@ -913,7 +913,7 @@ const ELEMENTS = {
             if (hasUpgrade("br",9)) u += 23 // 23
         }
         if (tmp.chal13comp) u += 10 + 2
-        if (tmp.chal14comp) u += 3 + 5
+        if (tmp.chal14comp) u += 6
 
         return u
     },

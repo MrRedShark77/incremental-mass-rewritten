@@ -1,4 +1,9 @@
 const DARK = {
+    nextEffectAt: [
+        [0],
+        [1e6,1e11,1e25],
+        [1e120],
+    ],
     gain() {
         let x = E(1)
 
@@ -159,7 +164,7 @@ function updateDarkHTML() {
 
         let eff = dtmp.shadowEff
 
-        let e = `
+        let e = getNextDarkEffectFromID(1) +`
             Boosts mass gain by <b>^${eff.mass.format(3)}</b><br>
             Boosts dark ray gain by <b>x${eff.ray.format(3)}</b>
         `
@@ -177,7 +182,7 @@ function updateDarkHTML() {
 
             eff = dtmp.abEff
 
-            e = `
+            e = getNextDarkEffectFromID(2) + `
                 Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
                 <br>Makes mass gain's softcap^4-6, starting <b>^${eff.msoftcap.format(3)}</b> later
             `
@@ -189,9 +194,19 @@ function updateDarkHTML() {
 
         eff = dtmp.rayEff
 
-        tmp.el.drEff.setHTML(`
+        tmp.el.drEff.setHTML( getNextDarkEffectFromID(0) + `
             Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
         `)
+    }
+}
+
+function getNextDarkEffectFromID(i) {
+    var p = player.dark[['rays','shadow','abyssalBlot'][i]], q = DARK.nextEffectAt[i], s = 0
+
+    if (p.gte(q[q.length-1])) return ""
+    else while (s <= q.length-1) {
+        if (p.lt(q[s])) return "Next "+['Ray','Shadow','Abyssal Bolt'][i]+"'s effect at <b>" + format(q[s]) + "</b><br><br>"
+        s++
     }
 }
 
