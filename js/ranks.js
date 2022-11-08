@@ -1,14 +1,15 @@
 const RANKS = {
-    names: ['rank', 'tier', 'tetr', 'pent'],
-    fullNames: ['Rank', 'Tier', 'Tetr', 'Pent'],
+    names: ['rank', 'tier', 'tetr', 'pent', 'hex'],
+    fullNames: ['Rank', 'Tier', 'Tetr', 'Pent', 'Hex'],
     reset(type) {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
-            if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
-            if (type == "tetr" && hasTree("qol5")) reset = false
-            if (type == "pent" && hasTree("qol8")) reset = false
+            else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
+            else if (type == "tetr" && hasTree("qol5")) reset = false
+            else if (type == "pent" && hasTree("qol8")) reset = false
+            else if (type == "hex" && tmp.chal14comp) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -18,9 +19,10 @@ const RANKS = {
             player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
             let reset = true
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
-            if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
-            if (type == "tetr" && hasTree("qol5")) reset = false
-            if (type == "pent" && hasTree("qol8")) reset = false
+            else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
+            else if (type == "tetr" && hasTree("qol5")) reset = false
+            else if (type == "pent" && hasTree("qol8")) reset = false
+            else if (type == "hex" && tmp.chal14comp) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -29,6 +31,7 @@ const RANKS = {
         tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) || tmp.radiation.unl },
         tetr() { return player.mainUpg.atom.includes(3) || tmp.radiation.unl },
         pent() { return tmp.radiation.unl },
+        hex() { return tmp.chal13comp },
     },
     doReset: {
         rank() {
@@ -47,6 +50,10 @@ const RANKS = {
             player.ranks.tetr = E(0)
             this.tetr()
         },
+        hex() {
+            player.ranks.pent = E(0)
+            this.pent()
+        },
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
@@ -54,6 +61,7 @@ const RANKS = {
         tier() { return player.mainUpg.rp.includes(6) },
         tetr() { return player.mainUpg.atom.includes(5) },
         pent() { return hasTree("qol8") },
+        hex() { return true },
     },
     desc: {
         rank: {
@@ -103,6 +111,12 @@ const RANKS = {
             '5': "Meta-Ranks start later based on Pent.",
             '8': "Mass gain softcap^4 starts later based on Pent.",
             '15': "remove 3rd softcap of Stronger's effect.",
+        },
+        hex: {
+            '1': "reduce pent reqirements by 20%.",
+            '4': "increase dark ray earned by +20% per hex.",
+            '6': "remove first softcap of normal mass gain.",
+            '10': "remove second softcap of normal mass gain.",
         },
     },
     effect: {
@@ -196,6 +210,12 @@ const RANKS = {
                 return ret
             },
         },
+        hex: {
+            '4'() {
+                let ret = player.ranks.hex.mul(.2).add(1)
+                return ret
+            },
+        },
     },
     effDesc: {
         rank: {
@@ -225,6 +245,9 @@ const RANKS = {
             5(x) { return format(x)+"x later" },
             8(x) { return "^"+format(x)+" later" },
         },
+        hex: {
+            4(x) { return format(x,1)+"x" },
+        },
     },
     fp: {
         rank() {
@@ -244,11 +267,12 @@ const RANKS = {
 }
 
 const PRESTIGES = {
-    fullNames: ["Prestige Level", "Honor"],
+    fullNames: ["Prestige Level", "Honor", 'Glory'],
     baseExponent() {
         let x = 0
         if (hasElement(100)) x += tmp.elements.effect[100]
         if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
+        x += tmp.fermions.effs[1][6]||0
         return x+1
     },
     base() {
@@ -263,13 +287,16 @@ const PRESTIGES = {
         return x.sub(1)
     },
     req(i) {
-        let x = EINF, y = player.prestiges[i]
+        let x = EINF, fp = this.fp(i), y = player.prestiges[i].div(fp)
         switch (i) {
             case 0:
                 x = Decimal.pow(1.1,y.scaleEvery('prestige0').pow(1.1)).mul(2e13)
                 break;
             case 1:
                 x = y.scaleEvery('prestige1').pow(1.25).mul(3).add(4)
+                break;
+            case 2:
+                x = y.pow(1.3).mul(4).add(6)
                 break;
             default:
                 x = EINF
@@ -278,13 +305,16 @@ const PRESTIGES = {
         return x.ceil()
     },
     bulk(i) {
-        let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1]
+        let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
         switch (i) {
             case 0:
-                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).add(1)
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).mul(fp).add(1)
                 break;
             case 1:
-                if (y.gte(4)) x = y.sub(4).div(2).max(0).root(1.5).scaleEvery('prestige1',true).add(1)
+                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1)
+                break
+            case 2:
+                if (y.gte(6)) x = y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
                 break
             default:
                 x = E(0)
@@ -292,14 +322,27 @@ const PRESTIGES = {
         }
         return x.floor()
     },
+    fp(i) {
+        let fp = 1
+        if (player.prestiges[2].gte(1) && i < 2) fp *= 1.15
+        return fp
+    },
     unl: [
         _=>true,
         _=>true,
+        _=>tmp.chal14comp,
     ],
     noReset: [
         _=>hasUpgrade('br',11),
+        _=>tmp.chal13comp,
         _=>false,
     ],
+    autoUnl: [
+        _=>tmp.chal13comp,
+        _=>tmp.chal14comp,
+        _=>false,
+    ],
+    autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
         {
             "1": `All Mass softcaps up to ^5 start ^10 later.`,
@@ -316,6 +359,8 @@ const PRESTIGES = {
             "28": `Remove all softcaps from Gluon Upgrade 4's effect.`,
             "32": `Prestige Base’s exponent is increased based on Prestige Level.`,
             "40": `Chromium-24 is slightly stronger.`,
+            "70": `Lawrencium-103 is slightly stronger.`,
+            "110": `Ununennium-119 is slightly stronger.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -324,6 +369,11 @@ const PRESTIGES = {
             "4": `Gain 5 free levels of each Primordium Particle.`,
             "5": `Pent 5's reward is stronger based on Prestige Base.`,
             "7": `Quarks are boosted based on Honor.`,
+            "15": `Super & Hyper cosmic strings scale weaker based on Honors.`,
+        },
+        {
+            "1": `The requirements from prestige level & honor are 15% weaker.`,
+            "3": `Break dilation upgrade 12 is cheaper.`,
         },
     ],
     rewardEff: [
@@ -362,11 +412,20 @@ const PRESTIGES = {
                 let x = player.prestiges[1].add(1).root(3)
                 return x
             },x=>"^"+x.format()],
+            "15": [_=>{
+                let x = player.prestiges[1].root(1.5).div(10).add(1).pow(-1)
+                return x
+            },x=>formatReduction(x)+" weaker"],
+        },
+        {
+
         },
     ],
-    reset(i) {
-        if (i==0?tmp.prestiges.base.gte(tmp.prestiges.req[i]):player.prestiges[i-1].gte(tmp.prestiges.req[i])) {
-            player.prestiges[i] = player.prestiges[i].add(1)
+    reset(i, bulk = false) {
+        let b = this.bulk(i)
+        if (i==0?tmp.prestiges.base.gte(tmp.prestiges.req[i]):player.prestiges[i-1].gte(tmp.prestiges.req[i])) if (!bulk || b.gt(player.prestiges[i]) ) {
+            if (bulk) player.prestiges[i] = b
+            else player.prestiges[i] = player.prestiges[i].add(1)
 
             if (!this.noReset[i]()) {
                 for (let j = i-1; j >= 0; j--) {
@@ -390,29 +449,40 @@ function updateRanksTemp() {
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
     let fp2 = tmp.qu.chroma_eff[1]
-    let fp = RANKS.fp.rank()
+    let ffp = E(1)
+
+    let fp = RANKS.fp.rank().mul(ffp)
     tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(fp2).scaleEvery('rank').div(fp).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = E(0)
     if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true).mul(fp2).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
-    fp = RANKS.fp.tier()
-    tmp.ranks.tier.req = player.ranks.tier.div(fp2).scaleEvery('tier').div(fp).add(2).pow(2).floor()
-    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true).mul(fp2).add(1).floor();
+    fp = RANKS.fp.tier().mul(ffp)
+    tmp.ranks.tier.req = player.ranks.tier.scaleEvery('tier',false,[1,1,1,fp2]).div(fp).add(2).pow(2).floor()
+    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,fp2]).add(1).floor();
 
-    fp = E(1)
+    fp = E(1).mul(ffp)
     let pow = 2
     if (hasElement(44)) pow = 1.75
     if (hasElement(9)) fp = fp.mul(1/0.85)
     if (player.ranks.pent.gte(1)) fp = fp.mul(1/0.85)
     if (hasElement(72)) fp = fp.mul(1/0.85)
-    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).scaleEvery('tetr').div(fp).pow(pow).mul(3).add(10).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).add(1).floor();
+
+    let tps = 0
+
+    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).scaleEvery('tetr').div(fp).pow(pow).mul(3).add(10-tps).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).add(1).floor();
+
+    fp = E(1).mul(ffp)
+    if (player.ranks.hex.gte(1)) fp = fp.div(0.8)
+    pow = 1.5
+    tmp.ranks.pent.req = player.ranks.pent.scaleEvery('pent').div(fp).pow(pow).add(15-tps).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15-tps).gte(0)?player.ranks.tetr.sub(15-tps).max(0).root(pow).mul(fp).scaleEvery('pent',true).add(1).floor():E(0);
 
     fp = E(1)
-    pow = 1.5
-    tmp.ranks.pent.req = player.ranks.pent.scaleEvery('pent').div(fp).pow(pow).add(15).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15).gte(0)?player.ranks.tetr.sub(15).max(0).root(pow).mul(fp).scaleEvery('pent',true).add(1).floor():E(0);
+    pow = 1.8
+    tmp.ranks.hex.req = player.ranks.hex.div(fp).scaleEvery('hex').pow(pow).add(20-tps).floor()
+    tmp.ranks.hex.bulk = player.ranks.pent.sub(20-tps).gte(0)?player.ranks.pent.sub(20-tps).max(0).root(pow).scaleEvery('hex',true).mul(fp).add(1).floor():E(0);
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
@@ -478,7 +548,7 @@ function updateRanksHTML() {
                 let keys = Object.keys(PRESTIGES.rewards[x])
                 let desc = ""
                 for (let i = 0; i < keys.length; i++) {
-                    if (p.lt(keys[i])) {
+                    if (p.lt(keys[i]) && (tmp.chal13comp || p.lte(PRES_BEFOREC13[x]||Infinity))) {
                         desc = ` At ${PRESTIGES.fullNames[x]} ${format(keys[i],0)}, ${PRESTIGES.rewards[x][keys[i]]}`
                         break
                     }
@@ -489,9 +559,11 @@ function updateRanksHTML() {
                 tmp.el["pres_"+x].setClasses({btn: true, reset: true, locked: x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
                 tmp.el["pres_desc_"+x].setTxt(desc)
                 tmp.el["pres_req_"+x].setTxt(x==0?format(tmp.prestiges.req[x],0)+" of Prestige Base":PRESTIGES.fullNames[x-1]+" "+format(tmp.prestiges.req[x],0))
-                tmp.el["pres_auto_"+x].setDisplay(false)
-                tmp.el["pres_auto_"+x].setTxt(false?"ON":"OFF")
+                tmp.el["pres_auto_"+x].setDisplay(PRESTIGES.autoUnl[x]())
+                tmp.el["pres_auto_"+x].setTxt(player.auto_pres[x]?"ON":"OFF")
             }
         }
     }
 }
+
+const PRES_BEFOREC13 = [40,7]

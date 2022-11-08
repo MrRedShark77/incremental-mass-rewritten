@@ -13,32 +13,38 @@ const TREE_IDS = [
         ['chal1'],
         ['bs4','bs1','','qf1','','rad1'],
         ['qu0'],
+        [],
     ],[
         ['s1','m1','rp1','bh1','sn1'],
         ['qol2','qol3','qol4','qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6'],
         ['chal2','chal4a','chal4b','chal3'],
         ['bs5','bs2','fn1','bs3','qf2','qf3','rad2','rad3'],
         ['qu1','qu2','qu3'],
+        [],
     ],[
         ['s2','m2','t1','d1','bh2','gr1','sn2'],
         ['qol5','qol6','qol7','','','qu_qol7','',''],
         ['chal4','chal7a'],
         ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
         ['prim3','prim2','prim1','qu4','qc1','qc2','qc3'],
+        [],
     ],[
         ['s3','m3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9','unl4'],
         ['chal5','chal6','chal7','chal8'],
         ['fn12','fn11','fn6','fn10','rad6',""],
         ['en1','qu5','br1'],
+        [],
     ],[
         ['s4','sn5','sn4'],
         ['','','','qu_qol8a'],
         [],
-        ['fn7','fn8'],
+        ['','fn7','fn8','fn13'],
         ['qu6','qu7','qu8','qu9','qu10','qu11'],
+        [],
     ],[
         [],
+        ['qu_qol10','qu_qol11','qu_qol12'],
         [],
         [],
         [],
@@ -899,6 +905,40 @@ const TREE_UPGS = {
             desc: `Unlock Big Rip.`,
             cost: E(1e42),
         },
+
+        qu_qol10: {
+            unl: _=>player.dark.unl,
+            icon: 'placeholder',
+
+            qf: true,
+            desc: `You can't gain Delta, Alpha, Omega & Sigma Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e110),
+        },
+        qu_qol11: {
+            branch: ["qu_qol10"],
+            icon: 'placeholder',
+
+            qf: true,
+            desc: `You can't gain Phi & Epsilon Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e130),
+        },
+        qu_qol12: {
+            branch: ["qu_qol11"],
+            icon: 'placeholder',
+
+            qf: true,
+            desc: `You can't gain Theta & Beta Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
+            cost: E(1e190),
+        },
+
+        fn13: {
+            unl: _=>tmp.chal13comp,
+
+            icon: 'placeholder',
+            branch: ["fn8"],
+            desc: `Unlock 2 new meta-types of U-Quark & U-Fermion.`,
+            cost: E('e1.5e10'),
+        },
         /*
         x: {
             unl() { return true },
@@ -936,8 +976,10 @@ function setupTreeHTML() {
             table += `<div class="tree_table_column">`
             for (let k = 0; k < TREE_IDS[i][j].length; k++) {
                 let id = TREE_IDS[i][j][k]
+                let u = TREE_UPGS.ids[id]
+
                 let option = id == "" ? `style="visibility: hidden"` : ``
-                let img = TREE_UPGS.ids[id]?`<img src="images/tree/${id}.png">`:""
+                let img = TREE_UPGS.ids[id]?`<img src="images/tree/${u.icon||id}.png">`:""
                 table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.supernova.tree_choosed = '${id}'" ${option}>${img}</button>`
             }
             table += `</div>`

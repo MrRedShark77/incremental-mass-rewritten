@@ -41,6 +41,9 @@ function resetTemp() {
             choosed: 0,
             effect: [null],
             cannot: [],
+            ts: 0,
+            te: 118,
+            tt: 118,
         },
     
         fermions: {
@@ -87,6 +90,7 @@ function resetTemp() {
 
         prim: {
             eff: [],
+            w: [6,6,6,6,2,2,2,1],
         },
 
         en: {
@@ -99,6 +103,15 @@ function resetTemp() {
 
         rip: {
             
+        },
+
+        dark: {
+            shadowEff: {},
+            rayEff: {},
+        },
+
+        overflow: {
+            dm: E(1),
         },
 
         prevSave: "",
@@ -141,6 +154,10 @@ function updateMassTemp() {
     tmp.massSoftGain4 = FORMS.massSoftGain4()
     tmp.massSoftPower5 = FORMS.massSoftPower5()
     tmp.massSoftGain5 = FORMS.massSoftGain5()
+    tmp.massSoftPower6 = FORMS.massSoftPower6()
+    tmp.massSoftGain6 = FORMS.massSoftGain6()
+    tmp.massSoftPower7 = FORMS.massSoftPower7()
+    tmp.massSoftGain7 = FORMS.massSoftGain7()
     tmp.massGain = FORMS.massGain()
 }
 
@@ -190,6 +207,10 @@ function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
 
+    tmp.chal13comp = player.chal.comps[13].gte(1)
+    tmp.chal14comp = player.chal.comps[14].gte(1)
+
+    updateDarkTemp()
     updateQuantumTemp()
 
     updateRadiationTemp()

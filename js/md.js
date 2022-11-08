@@ -44,7 +44,21 @@ const MASS_DILATION = {
         if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
         if (hasElement(32)) x = x.pow(1.05)
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-        return x.softcap(mlt(1e12),0.5,0)
+
+        x = x.softcap(tmp.md.massSoftcap1,0.5,0)
+
+        let o = x
+
+        x = overflow(x,'ee30',0.5)
+
+        tmp.overflow.dm = calcOverflow(o,x,'ee30')
+
+        return x
+    },
+    gainSoftcap1() {
+        let s = mlt(1e12)
+        
+        return s
     },
     mass_req() {
         let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e56)
@@ -87,7 +101,7 @@ const MASS_DILATION = {
                 desc: `Double relativistic particles gain.`,
                 cost(x) { return E(10).pow(x.pow(E(1.25).pow(tmp.md.upgs[4].eff||1))).mul(1000) },
                 bulk() { return player.md.mass.gte(1000)?player.md.mass.div(1000).max(1).log10().root(E(1.25).pow(tmp.md.upgs[4].eff||1)).add(1).floor():E(0) },
-                effect(x) { return E(2).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap(1e25,0.75,0) },
+                effect(x) { return E(2).pow(x.softcap(2.5e26,0.1,0).mul(tmp.md.upgs[11].eff||1)).softcap(1e25,0.75,0) },
                 effDesc(x) { return format(x,0)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: `Dilated mass also boost Stronger's power.`,
@@ -111,7 +125,7 @@ const MASS_DILATION = {
                     let s = E(0.25).add(tmp.md.upgs[10].eff||1)
                     let x = i.mul(s)
                     if (hasElement(53)) x = x.mul(1.75)
-                    return x.softcap(1e3,0.6,0)//.softcap(3e4,0.5,0)
+                    return x.softcap(1e3,0.6,0)//.softcap(1e23,0.1,0)
                 },
                 effDesc(x) { return "+^"+format(x)+(x.gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
             },{
@@ -171,21 +185,26 @@ const MASS_DILATION = {
         toggle() {
             let bd = player.md.break
 
-            bd.active = !bd.active
-
-            if (!bd.active) if (confirm("Are you sure you want to fix Dilation?")) {
+            if (bd.active) createConfirm("Are you sure you want to fix Dilation?",'bd',_=>{
+                bd.active = false
+        
                 bd.energy = E(0)
                 bd.mass = E(0)
                 for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) bd.upgs[x] = E(0)
 
                 QUANTUM.enter(false,true,false,true)
-            } else bd.active = true
+            })
+            else bd.active = true
         },
         energyGain() {
-            if (!player.md.break.active || !player.qu.rip.active) return E(0)
+            if (!hasElement(136)) if (!player.md.break.active || !player.qu.rip.active) return E(0)
 
             let x = player.md.mass.add(1).log10().sub(400).div(2).max(0)
-            x = x.add(1).pow(x.add(1).log10()).sub(1)
+            let p = x.add(1).log10()
+
+            if (hasElement(127)) p = p.mul(1.1)
+
+            x = x.add(1).pow(p).sub(1)
 
             if (hasPrestige(0,10)) x = x.mul(prestigeEff(0,10))
             x = x.mul(tmp.bd.upgs[5].eff||1)
@@ -205,7 +224,7 @@ const MASS_DILATION = {
         upgs: {
             buy(x) {
                 if (tmp.bd.upgs[x].can) {
-                    player.md.break.mass = player.md.break.mass.sub(this.ids[x].cost(tmp.bd.upgs[x].bulk.sub(1))).max(0)
+                    if (!hasElement(123)) player.md.break.mass = player.md.break.mass.sub(this.ids[x].cost(tmp.bd.upgs[x].bulk.sub(1))).max(0)
                     player.md.break.upgs[x] = player.md.break.upgs[x].max(tmp.bd.upgs[x].bulk)
 
                     if (x == 2) {
@@ -306,6 +325,31 @@ const MASS_DILATION = {
                     maxLvl: 1,
                     cost(x) { return uni(1e120) },
                     bulk() { return player.md.break.mass.gte(uni(1e120))?E(1):E(0) },
+                },{
+                    unl: _=>player.dark.unl,
+                    desc: `You can now automatically evaporate resources. (Stronger than manual).`,
+                    maxLvl: 1,
+                    cost(x) { return uni(1e240) },
+                    bulk() { return player.md.break.mass.gte(uni(1e240))?E(1):E(0) },
+                },{
+                    unl: _=>player.dark.unl,
+                    desc: `Double dark shadows gain.`,
+                    cost(x) {
+                        x = x.scale(17,hasPrestige(2,3)?1.5:3,0)
+                        return E(10).pow(x.pow(2)).mul(uni(1e300))
+                    },
+                    bulk() {
+                        if (player.md.break.mass.lt(uni(1e300))) return E(0)
+                        let y = player.md.break.mass.div(uni(1e300)).max(1).log(10).root(2)
+                        y = y.scale(17,hasPrestige(2,3)?1.5:3,0,true)
+                        return y.add(1).floor()
+                    },
+                    effect(y) {
+                        let x = Decimal.pow(2,y)
+
+                        return x
+                    },
+                    effDesc(x) { return format(x,0)+"x" },
                 },
             ],
         }
@@ -383,6 +427,7 @@ function updateMDTemp() {
     tmp.md.rp_mult_gain = MASS_DILATION.RPmultgain()
     tmp.md.rp_gain = MASS_DILATION.RPgain()
     tmp.md.passive_rp_gain = hasTree("qol3")?MASS_DILATION.RPgain(expMult(player.mass,tmp.md.pen)):E(0)
+    tmp.md.massSoftcap1 = MASS_DILATION.gainSoftcap1()
     tmp.md.mass_gain = MASS_DILATION.massGain()
     tmp.md.mass_req = MASS_DILATION.mass_req()
     tmp.md.mass_eff = MASS_DILATION.effect()
@@ -425,8 +470,11 @@ function updateMDHTML() {
         }
     }
 
-    tmp.el.dmSoft1.setDisplay(player.md.mass.gte(mlt(1e12)))
-    tmp.el.dmSoftStart1.setTxt(formatMass(mlt(1e12)))
+    tmp.el.dmSoft1.setDisplay(player.md.mass.gte(tmp.md.massSoftcap1))
+    tmp.el.dmSoftStart1.setTxt(formatMass(tmp.md.massSoftcap1))
+
+    tmp.el.dmOverflow.setDisplay(player.md.mass.gte('ee30'))
+    tmp.el.dmOverflow.setHTML(`Because of dilated mass overflow at <b>${formatMass('ee30')}</b>, your dilated mass is ${overflowFormat(tmp.overflow.dm||1)}!`)
 }
 
 function updateBDHTML() {

@@ -8,7 +8,9 @@ const TABS = {
                 tree_update = true
             }
         }
-        else tmp.stab[tmp.tab] = x
+        else {
+            tmp.stab[tmp.tab] = x
+        }
     },
     1: [
         { id: "Main" },
@@ -18,6 +20,7 @@ const TABS = {
         { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
         { id: "Supernova", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn" },
         { id: "Quantum", unl() { return quUnl() }, style: "qu" },
+        { id: "Darkness", unl() { return player.dark.unl }, style: "dark" },
         { id: "Options" },
     ],
     2: {

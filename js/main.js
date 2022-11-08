@@ -14,7 +14,7 @@ const ST_NAMES = [
 		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
 	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark']
 
 const FORMS = {
     getPreQUGlobalSpeed() {
@@ -56,6 +56,8 @@ const FORMS = {
         }
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
 
+        x = x.pow(tmp.dark.shadowEff.mass)
+
         if (CHALS.inChal(9) || FERMIONS.onActive("12")) x = expMult(x,0.9)
         x = x.softcap(tmp.massSoftGain,tmp.massSoftPower,0)
         .softcap(tmp.massSoftGain2,tmp.massSoftPower2,0)
@@ -65,9 +67,15 @@ const FORMS = {
 
         if (hasElement(117)) x = x.pow(10)
 
+        x = x.softcap(tmp.massSoftGain6,tmp.massSoftPower6,0)
+        .softcap(tmp.massSoftGain7,tmp.massSoftPower7,0)
+
+        if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
+
         return x
     },
     massSoftGain() {
+        if (player.ranks.hex.gte(6)) return EINF
         let s = E(1.5e156)
         if (CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e150)
         if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e100)
@@ -85,6 +93,7 @@ const FORMS = {
         return E(1).div(p.add(1))
     },
     massSoftGain2() {
+        if (player.ranks.hex.gte(10)) return EINF
         let s = E('1.5e1000056')
         if (hasTree("m2")) s = s.pow(1.5)
         if (hasTree("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
@@ -117,6 +126,7 @@ const FORMS = {
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
         if (hasPrestige(0,1)) s = s.pow(10)
+        s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s
     },
     massSoftPower4() {
@@ -128,10 +138,28 @@ const FORMS = {
         let s = mlt(player.qu.rip.active?1e4:1e12)
         if (hasPrestige(0,8)) s = s.pow(prestigeEff(0,8))
         if (hasUpgrade("br",12)) s = s.pow(upgEffect(4,12))
+        s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s
     },
     massSoftPower5() {
         let p = E(0.05)
+        return p
+    },
+    massSoftGain6() {
+        let s = mlt(1e22)
+        s = s.pow(tmp.dark.abEff.msoftcap||1)
+        return s
+    },
+    massSoftPower6() {
+        let p = E(0.01)
+        return p
+    },
+    massSoftGain7() {
+        let s = mlt(1e36)
+        return s
+    },
+    massSoftPower7() {
+        let p = E(0.005)
         return p
     },
     tickspeed: {
@@ -181,6 +209,9 @@ const FORMS = {
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
             if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
             if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
+
+            if (hasElement(150)) eff = expMult(eff,1.6)
+
             return {step: step, eff: eff, bonus: bonus, ss: ss}
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
@@ -206,13 +237,13 @@ const FORMS = {
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+
             return gain.floor()
         },
         reset() {
-            if (tmp.rp.can) if (player.confirms.rp?confirm("Are you sure to reset?"):true) {
-                player.rp.points = player.rp.points.add(tmp.rp.gain)
-                player.rp.unl = true
-                this.doReset()
+            if (tmp.rp.can) {
+                if (player.confirms.rp) createConfirm("Are you sure you want to reset?",'rpReset',CONFIRMS_FUNCTION.rage)
+                else CONFIRMS_FUNCTION.rage()
             }
         },
         doReset() {
@@ -261,7 +292,12 @@ const FORMS = {
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
-            return x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0)
+
+            x = x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),1/3,0)
+
+            if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
+
+            return x
         },
         f() {
             let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).softcap(tmp.bh.fSoftStart,tmp.bh.fSoftPower,2)
@@ -288,10 +324,9 @@ const FORMS = {
             return E(1).div(p.add(1))
         },
         reset() {
-            if (tmp.bh.dm_can) if (player.confirms.bh?confirm("Are you sure to reset?"):true) {
-                player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain)
-                player.bh.unl = true
-                this.doReset()
+            if (tmp.bh.dm_can) {
+                if (player.confirms.bh) createConfirm("Are you sure you want to reset?",'bhReset',CONFIRMS_FUNCTION.bh)
+                else CONFIRMS_FUNCTION.bh()
             }
         },
         doReset() {
@@ -304,9 +339,7 @@ const FORMS = {
             FORMS.rp.doReset()
         },
         effect() {
-            let x = player.mainUpg.atom.includes(12)
-            ?player.bh.mass.add(1).pow(1.25)
-            :player.bh.mass.add(1).root(4)
+            let x = (player.mainUpg.atom.includes(12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
             return x//.softcap("ee14",0.95,2)
         },
@@ -339,6 +372,8 @@ const FORMS = {
                     pow = pow.mul(getEnRewardEff(3)[1])
                     if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
+                if (hasElement(129)) pow = pow.pow(elemEffect(18))
+                pow = pow//.softcap('e3e10',0.9,2)
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
                 return {pow: pow, eff: eff}
@@ -358,6 +393,7 @@ const FORMS = {
             atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
             br: "Big Rip the Dimension, then go back",
+            dark: "Require Oganesson-118 to go Dark",
         },
         set(id) {
             if (id=="sn") {
@@ -452,7 +488,7 @@ function turnOffline() { player.offline.active = !player.offline.active }
 const ARV = ['mlt','mgv','giv','tev','pev','exv','zev','yov']
 
 function formatARV(ex,gain=false) {
-    if (gain) ex = uni("ee9").pow(ex)
+    if (gain) ex = uni('ee9').pow(ex)
     let mlt = ex.div(1.5e56).log10().div(1e9)
     let arv = mlt.log10().div(15).floor()
     return format(mlt.div(Decimal.pow(1e15,arv))) + " " + (arv.gte(8)?"arv^"+format(arv.add(2),0):ARV[arv.toNumber()])
@@ -504,7 +540,9 @@ function formatPercent(ex) { ex = E(ex); return format(ex.mul(100))+"%" }
 
 function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
 
-function expMult(a,b,base=10) { return E(a).gte(1) ? E(base).pow(E(a).log(base).pow(b)) : E(0) }
+function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }
+
+function overflowFormat(x,inv=false) { return (inv?"raised":"rooted")+" by <b>"+format(x)+"</b>" }
 
 function capitalFirst(str) {
 	if (str=="" || str==" ") return str

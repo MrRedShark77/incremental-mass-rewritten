@@ -65,6 +65,8 @@ function softcapHTML(x, start) { return E(x).gte(start)?` <span class='soft'>(so
 
 Decimal.prototype.softcapHTML = function (start) { return softcapHTML(this.clone(), start) }
 
+function calcOverflow(x,y,s,inv=false) { return x.gte(s) ? x.max(1).log10().div(y.max(1).log10()).pow(inv?-1:1) : E(1) }
+
 function calc(dt, dt_offline) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
 
@@ -79,6 +81,7 @@ function calc(dt, dt_offline) {
             let rn = RANKS.names[x]
             if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
         }
+        for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
             let id = UPGS.main.ids[x]
             let upg = UPGS.main[x]
@@ -90,12 +93,13 @@ function calc(dt, dt_offline) {
         if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
         if (hasElement(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(du_gs).div(10))
         if (hasElement(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if ((hasTree("qol3") || player.md.upgs[x].gte(1)) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
+        if (hasElement(123)) for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) if (MASS_DILATION.break.upgs.ids[x].unl?MASS_DILATION.break.upgs.ids[x].unl():true) MASS_DILATION.break.upgs.buy(x)
         if (player.bh.unl && !player.qu.en.hr[0]) player.bh.mass = player.bh.mass.add(tmp.bh.mass_gain.mul(du_gs))
         if (player.atom.unl) {
             player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(du_gs))
             for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(du_gs))
         }
-        if (hasTree("qol1")) for (let x = 1; x <= tmp.elements.unl_length; x++) if (x<=tmp.elements.upg_length && x !== 118) ELEMENTS.buyUpg(x)
+        if (hasTree("qol1")) for (let x = 1; x <= (player.dark.unl?118:117); x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
         player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(du_gs))
         if (hasTree("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
         if (hasTree("qol4")) STARS.generators.unl(true)
@@ -109,14 +113,17 @@ function calc(dt, dt_offline) {
         calcStars(du_gs)
         calcSupernova(dt, dt_offline)
         calcQuantum(dt, dt_offline)
+        calcDark(dt, dt_offline)
 
         if (hasTree("qu_qol4")) SUPERNOVA.reset(false,false,true)
 
         if (hasTree("qol6")) CHALS.exit(true)
-        if (CHALS.inChal(0)) {
-    
+
+        if (true) {
             if (hasTree("qu_qol3")) for (let x = 1; x <= 4; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
             if (hasTree("qu_qol5")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
+            if (hasElement(122)) for (let x = 9; x <= 11; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
+            if (hasElement(131)) player.chal.comps[12] = player.chal.comps[12].max(tmp.chal.bulk[12].min(tmp.chal.max[12]))
         }
     }
 
@@ -129,7 +136,7 @@ function calc(dt, dt_offline) {
 
     if (player.chal.comps[10].gte(1) && !player.supernova.fermions.unl) {
         player.supernova.fermions.unl = true
-        addPopup(POPUP_GROUPS.fermions)
+        createPopup(POPUP_GROUPS.fermions.html,'fermions')
     }
 }
 
@@ -141,11 +148,13 @@ function getPlayerData() {
             tier: E(0),
             tetr: E(0),
             pent: E(0),
+            hex: E(0),
         },
         auto_ranks: {
             rank: false,
             tier: false,
         },
+        auto_pres: [],
         prestiges: [],
         auto_mainUpg: {
             
@@ -188,6 +197,7 @@ function getPlayerData() {
             ratio: 0,
             dRatio: [1,1,1],
             elements: [],
+            elemTier: 1,
         },
         md: {
             active: false,
@@ -233,7 +243,7 @@ function getPlayerData() {
             fermions: {
                 unl: false,
                 points: [E(0),E(0)],
-                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0)]],
+                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0),E(0)]],
                 choosed: "",
             },
             radiation: {
@@ -273,6 +283,7 @@ function getPlayerData() {
         s.supernova.radiation.bs.push(E(0),E(0))
     }
     s.qu = getQUSave()
+    s.dark = getDarkSave()
     return s
 }
 
@@ -343,9 +354,9 @@ function cannotSave() { return tmp.supernova.reached && player.supernova.times.l
 function save(){
     let str = btoa(JSON.stringify(player))
     if (cannotSave() || findNaN(str, true)) return
-    if (localStorage.getItem("testSave") == '') wipe()
-    localStorage.setItem("testSave",str)
-    tmp.prevSave = localStorage.getItem("testSave")
+    if (localStorage.getItem("imr_save") == '') wipe()
+    localStorage.setItem("imr_save",str)
+    tmp.prevSave = localStorage.getItem("imr_save")
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 
@@ -389,43 +400,44 @@ function export_copy() {
 }
 
 function importy() {
-    let loadgame = prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")
-    if (ssf[2](loadgame)) return
-    if (loadgame == 'monke') {
-        addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
-        return
-    }
-    if (loadgame == 'matt parker') {
-        addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
-        return
-    }
-    if (loadgame == 'SUPERNOVA.get()') {
-        addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
-        return
-    }
-    if (loadgame != null) {
-        let keep = player
-        try {
-            setTimeout(_=>{
-                if (findNaN(loadgame, true)) {
-                    addNotify("Error Importing, because it got NaNed")
-                    return
-                }
-                load(loadgame)
-                save()
-                resetTemp()
-                loadGame(false)
-                location.reload()
-            }, 200)
-        } catch (error) {
-            addNotify("Error Importing")
-            player = keep
+    createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
+        if (ssf[2](loadgame)) return
+        if (loadgame == 'monke') {
+            addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
+            return
         }
-    }
+        if (loadgame == 'matt parker') {
+            addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
+            return
+        }
+        if (loadgame == 'SUPERNOVA.get()') {
+            addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
+            return
+        }
+        if (loadgame != null) {
+            let keep = player
+            try {
+                setTimeout(_=>{
+                    if (findNaN(loadgame, true)) {
+                        addNotify("Error Importing, because it got NaNed")
+                        return
+                    }
+                    load(loadgame)
+                    save()
+                    resetTemp()
+                    loadGame(false)
+                    location.reload()
+                }, 200)
+            } catch (error) {
+                addNotify("Error Importing")
+                player = keep
+            }
+        }
+    })
 }
 
 function loadGame(start=true, gotNaN=false) {
-    if (!gotNaN) tmp.prevSave = localStorage.getItem("testSave")
+    if (!gotNaN) tmp.prevSave = localStorage.getItem("imr_save")
     wipe()
     load(tmp.prevSave)
     setupHTML()
@@ -487,4 +499,14 @@ function findNaN(obj, str=false, data=getPlayerData()) {
         if (typeof obj[k] == "object") return findNaN(obj[k], str, data[k])
     }
     return false
+}
+
+function overflow(number, start, power){
+	if(isNaN(number.mag))return new Decimal(0);
+	start=E(start);
+	if(number.gte(start)){
+		number=number.log10().div(start.log10()).pow(power).mul(start.log10());
+		number=Decimal.pow(10,number);
+	}
+	return number;
 }

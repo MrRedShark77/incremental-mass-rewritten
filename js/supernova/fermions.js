@@ -1,5 +1,8 @@
 const FERMIONS = {
-    onActive(id) { return player.supernova.fermions.choosed == id },
+    onActive(id) {
+        let i = player.supernova.fermions.choosed
+        return i == id || (i[1] == '6' && i[0] == id[0])
+    },
     gain(i) {
         if (!player.supernova.fermions.unl) return E(0)
         let x = E(1)
@@ -16,16 +19,12 @@ const FERMIONS = {
         }
     },
     choose(i,x) {
-        if (player.confirms.sn) if (!confirm("Are you sure to switch any type of any Fermion?")) return
-        let id = i+""+x
-        if (player.supernova.fermions.choosed != id) {
-            player.supernova.fermions.choosed = id
-            SUPERNOVA.reset(false,false,false,true)
-        }
+        if (player.confirms.sn) createConfirm("Are you sure to switch any type of any Fermion?",'switchF', _=>CONFIRMS_FUNCTION.switchF(i,x))
+        else CONFIRMS_FUNCTION.switchF(i,x)
     },
     bonus(i,j) {
         let x = E(0)
-        if (hasTree("prim3")) x = x.add(tmp.prim.eff[5][1].min(j>2?4:1/0))
+        if (hasTree("prim3") && j < 6) x = x.add(tmp.prim.eff[5][1].min(j>2?4:1/0))
         return x
     },
     fp() {
@@ -34,9 +33,9 @@ const FERMIONS = {
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[2])
         return x
     },
-    getTierScaling(t, bulk=false) {
+    getTierScaling(t, bulk=false, meta=false) {
         let x = t
-        let fp = tmp.fermions.fp
+        let fp = meta?E(1):tmp.fermions.fp
         if (bulk) {
             x = t.scaleEvery('fTier',true).mul(fp).add(1).floor()
         } else {
@@ -50,10 +49,11 @@ const FERMIONS = {
         if (hasTree("fn6")) u++
         if (hasTree("fn7")) u++
         if (hasTree("fn8")) u++
+        if (hasTree("fn13")) u++
         return u
     },
     names: ['quark', 'lepton'],
-    sub_names: [["Up","Down","Charm","Strange","Top","Bottom"],["Electron","Muon","Tau","Neutrino","Neut-Muon","Neut-Tau"]],
+    sub_names: [["Up","Down","Charm","Strange","Top","Bottom",'Meta-Quark'],["Electron","Muon","Tau","Neutrino","Neut-Muon","Neut-Tau",'Meta-Lepton']],
     types: [
         [
             {
@@ -119,6 +119,7 @@ const FERMIONS = {
                 isMass: true,
             },{
                 maxTier() {
+                    if (hasElement(142)) return Infinity
                     let x = 15
                     if (hasTree("fn9")) x += 2
                     if (hasTree("fn11")) x += 5
@@ -161,7 +162,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().div(500).mul(t.root(2)).add(1)
-                    return x.softcap(1.15,0.5,0).softcap(1.8,1/3,0).min(2)
+                    return x.softcap(1.15,0.5,0).softcap(1.8,1/3,0).min(2)//.softcap(2,0.1,0)
                 },
                 desc(x) {
                     return `Radiation Boosters are ${format(x)}x cheaper`+(x.gte(1.15)?" <span class='soft'>(softcapped)</span>":"")
@@ -194,6 +195,26 @@ const FERMIONS = {
                 },
                 inc: "Tickspeed Effect",
                 cons: "Challenges are disabled",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x, false, true)
+                    return Decimal.pow(1.5,t).mul(1e10)
+                },
+                calcTier() {
+                    let res = tmp.fermions.prod[0]
+                    if (res.lt(1e10)) return E(0)
+                    let x = res.div(1e10).max(1).log(1.5).max(0)
+                    return FERMIONS.getTierScaling(x, true, true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().add(1).log10().div(200).mul(t.softcap(8,0.5,0)).add(1)
+                    return x
+                },
+                desc(x) {
+                    return `Dark ray's effect is ^${x.format()} stronger`
+                },
+                inc: "product of above u-quarks",
+                cons: "Active all above u-quarks at once, but force to quantum reset",
             },
 
         ],[
@@ -217,7 +238,7 @@ const FERMIONS = {
                 eff(i, t) {
                     let x = i.add(1).log10().mul(t).div(100).add(1).softcap(1.5,hasTree("fn5")?0.75:0.25,0)
                     if (hasTree("fn10")) x = x.pow(4.5)
-                    return x
+                    return x//.softcap(1e18,0.1,0)
                 },
                 desc(x) {
                     return `Collapse Stars gain softcap starts ^${format(x)} later`+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"")
@@ -267,6 +288,7 @@ const FERMIONS = {
                 cons: "You are trapped in Challenges 8-9",
             },{
                 maxTier() {
+                    if (hasElement(142)) return Infinity
                     let x = 15
                     if (hasTree("fn9")) x += 2
                     if (hasTree("fn11")) x += 5
@@ -336,6 +358,26 @@ const FERMIONS = {
                 },
                 inc: "Tickspeed Power",
                 cons: "Radiation Boosts are disabled",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x, false, true)
+                    return Decimal.pow(1.5,t).mul(1e11)
+                },
+                calcTier() {
+                    let res = tmp.fermions.prod[1]
+                    if (res.lt(1e11)) return E(0)
+                    let x = res.div(1e11).max(1).log(1.5).max(0)
+                    return FERMIONS.getTierScaling(x, true, true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().add(1).log10().div(2000).mul(t.softcap(8,0.5,0))
+                    return x.toNumber()
+                },
+                desc(x) {
+                    return `Increase prestige base's exponent by ${format(x)}`
+                },
+                inc: "product of above u-leptons",
+                cons: "Active all above u-leptons at once, but force to quantum reset",
             },
 
             /*
@@ -361,6 +403,11 @@ const FERMIONS = {
             */
         ],
     ],
+    productF(i) {
+        let s = E(1)
+        for (let x = 0; x < 6; x++) s = s.mul(player.supernova.fermions.tiers[i][x].add(1))
+        return s
+    },
 }
 
 function setupFermionsHTML() {
@@ -388,6 +435,7 @@ function setupFermionsHTML() {
 function updateFermionsTemp() {
     let tf = tmp.fermions
 
+    tf.prod = [FERMIONS.productF(0),FERMIONS.productF(1)]
     tf.ch = player.supernova.fermions.choosed == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed[0]),Number(player.supernova.fermions.choosed[1])]
     tf.fp = FERMIONS.fp()
     for (i = 0; i < 2; i++) {
@@ -405,6 +453,10 @@ function updateFermionsTemp() {
 }
 
 function updateFermionsHTML() {
+    let r = [
+        [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff, tmp.fermions.prod[0]],
+        [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, tmp.tickspeedEffect.step, tmp.fermions.prod[1]]
+    ]
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))
         let unls = FERMIONS.getUnlLength(i)
@@ -417,7 +469,7 @@ function updateFermionsHTML() {
             tmp.el[id+"_div"].setDisplay(unl)
 
             if (unl) {
-                let active = tmp.fermions.ch[0] == i && tmp.fermions.ch[1] == x
+                let active = FERMIONS.onActive(i+""+x)
                 tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: active})
                 tmp.el[id+"_nextTier"].setTxt(fm(f.nextTierAt(player.supernova.fermions.tiers[i][x])))
                 tmp.el[id+"_tier_scale"].setTxt(getScalingName('fTier', i, x))
@@ -427,10 +479,7 @@ function updateFermionsHTML() {
                 tmp.el[id+"_cur"].setDisplay(active)
                 if (active) {
                     tmp.el[id+"_cur"].setTxt(`Currently: ${fm(
-                        [
-                            [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff],
-                            [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, tmp.tickspeedEffect.step]
-                        ][i][x]
+                        r[i][x]
                     )}`)
                 }
             }

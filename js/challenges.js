@@ -1,8 +1,13 @@
 function setupChalHTML() {
     let chals_table = new Element("chals_table")
 	let table = ""
-	for (let x = 1; x <= CHALS.cols; x++) {
-        table += `<div id="chal_div_${x}" style="width: 120px; margin: 5px;"><img id="chal_btn_${x}" onclick="CHALS.choose(${x})" class="img_chal" src="images/chal_${x}.png"><br><span id="chal_comp_${x}">X</span></div>`
+	for (let x = Math.ceil(CHALS.cols/4)-1; x >= 0; x--) {
+        table += `<div class="table_center" style="min-height: 160px;">`
+        for (let y = 1; y <= Math.min(CHALS.cols-4*x,4); y++) {
+            let i = 4*x+y
+            table += `<div id="chal_div_${i}" style="width: 120px; margin: 5px;"><img id="chal_btn_${i}" onclick="CHALS.choose(${i})" class="img_chal" src="images/chal_${i}.png"><br><span id="chal_comp_${i}">X</span></div>`
+        }
+        table += "</div>"
 	}
 	chals_table.setHTML(table)
 }
@@ -70,7 +75,8 @@ const CHALS = {
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
         else if (x < 9) ATOM.doReset(chal_reset)
-        else SUPERNOVA.reset(true, true)
+        else if (x < 13) SUPERNOVA.reset(true, true)
+        else DARK.doReset(true)
     },
     exit(auto=false) {
         if (!player.chal.active == 0) {
@@ -107,7 +113,8 @@ const CHALS = {
     getReset(x) {
         if (x < 5) return "Entering challenge will reset with Dark Matters!"
         if (x < 9) return "Entering challenge will reset with Atoms except previous challenges!"
-        return "Entering challenge will reset without being Supernova!"
+        if (x < 13) return "Entering challenge will reset without being Supernova!"
+        return "Entering challenge will force a Darkness reset!"
     },
     getMax(i) {
         let x = this[i].max
@@ -123,14 +130,15 @@ const CHALS = {
         if (hasElement(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
         if (hasTree("chal1") && (i==7||i==8))  x = x.add(100)
         if (hasTree("chal4b") && (i==9))  x = x.add(100)
-        if (hasTree("chal8") && (i>=9))  x = x.add(200)
-        if (hasElement(104) && (i>=9))  x = x.add(200)
+        if (hasTree("chal8") && (i>=9 && i<=12))  x = x.add(200)
+        if (hasElement(104) && (i>=9 && i<=12))  x = x.add(200)
+        if (hasElement(125) && (i>=9 && i<=12))  x = x.add(elemEffect(125,0))
         return x.floor()
     },
     getScaleName(i) {
-        if (player.chal.comps[i].gte(1000)) return " Impossible"
-        if (player.chal.comps[i].gte(i==8?200:i>8?50:300)) return " Insane"
-        if (player.chal.comps[i].gte(i>8?10:75)) return " Hardened"
+        if (player.chal.comps[i].gte(i==13?10:1000)) return " Impossible"
+        if (player.chal.comps[i].gte(i==13?5:i==8?200:i>8&&i!=13?50:300)) return " Insane"
+        if (player.chal.comps[i].gte(i==13?2:i>8&&i!=13?10:75)) return " Hardened"
         return ""
     },
     getPower(i) {
@@ -142,10 +150,12 @@ const CHALS = {
     getPower2(i) {
         let x = E(1)
         if (hasElement(92)) x = x.mul(0.75)
+        if (hasElement(120)) x = x.mul(0.75)
         return x
     },
     getPower3(i) {
         let x = E(1)
+        if (hasElement(120)) x = x.mul(0.75)
         return x
     },
     getChalData(x, r=E(-1)) {
@@ -153,12 +163,17 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x]
         let fp = 1
-        if (QCs.active()) fp /= tmp.qu.qc_eff[5]
+        if (QCs.active() && x <= 12) fp /= tmp.qu.qc_eff[5]
         let s1 = x > 8 ? 10 : 75
         let s2 = 300
         if (x == 8) s2 = 200
         if (x > 8) s2 = 50
         let s3 = 1000
+        if (x == 13) {
+            s1 = 2
+            s2 = 5
+            s3 = 10
+        }
         let pow = chal.pow
         if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)
@@ -167,7 +182,7 @@ const CHALS = {
         if (res.lt(chal.start)) bulk = E(0)
         if (lvl.max(bulk).gte(s1)) {
             let start = E(s1);
-            let exp = E(3).pow(this.getPower());
+            let exp = E(3).pow(this.getPower(x));
             goal =
             chal.inc.pow(
                     lvl.div(fp).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
@@ -184,9 +199,9 @@ const CHALS = {
         }
         if (lvl.max(bulk).gte(s2)) {
             let start = E(s1);
-            let exp = E(3).pow(this.getPower());
+            let exp = E(3).pow(this.getPower(x));
             let start2 = E(s2);
-            let exp2 = E(4.5).pow(this.getPower2())
+            let exp2 = E(4.5).pow(this.getPower2(x))
             goal =
             chal.inc.pow(
                     lvl.div(fp).pow(exp2).div(start2.pow(exp2.sub(1))).pow(exp).div(start.pow(exp.sub(1))).pow(pow)
@@ -205,11 +220,11 @@ const CHALS = {
         }
         if (lvl.max(bulk).gte(s3)) {
             let start = E(s1);
-            let exp = E(3).pow(this.getPower());
+            let exp = E(3).pow(this.getPower(x));
             let start2 = E(s2);
-            let exp2 = E(4.5).pow(this.getPower2())
+            let exp2 = E(4.5).pow(this.getPower2(x))
             let start3 = E(s3);
-            let exp3 = E(1.001).pow(this.getPower3())
+            let exp3 = E(1.001).pow(this.getPower3(x))
             goal =
             chal.inc.pow(
                     exp3.pow(lvl.div(fp).sub(start3)).mul(start3)
@@ -277,7 +292,7 @@ const CHALS = {
         start: E(2.9835e49),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = x.root(1.5).mul(0.01).add(1)
+            let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
             return ret.softcap(3,0.25,0)
         },
         effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
@@ -293,7 +308,7 @@ const CHALS = {
         start: E(1.736881338559743e133),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = x.root(1.5).mul(0.01).add(1)
+            let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
             return ret.softcap(3,0.25,0)
         },
         effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
@@ -355,7 +370,7 @@ const CHALS = {
         start: E(1.989e38),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = x.root(1.75).mul(0.02).add(1)
+            let ret = hasElement(133) ? x.root(1.5).mul(0.025).add(1) : x.root(1.75).mul(0.02).add(1)
             return ret.softcap(2.3,0.25,0)
         },
         effDesc(x) { return "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
@@ -416,11 +431,41 @@ const CHALS = {
         start: uni('e8.4e8'),
         effect(x) {
             let ret = x.root(hasTree("chal7a")?1.5:2)
+            return ret.softcap(50,0.5,0)
+        },
+        effDesc(x) { return "+"+format(x)+softcapHTML(x,50) },
+    },
+    13: {
+        unl() { return hasElement(132) },
+        title: "Absolutely Black Mass",
+        desc: "Normal mass and mass of black hole gains are setting to lg(x)^^1.5.",
+        reward: `Increase dark ray earned based on completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
+        max: E(25),
+        inc: E('e2e4'),
+        pow: E(8),
+        start: uni('e2e5'),
+        effect(x) {
+            let ret = x.add(1).pow(1.5)
             return ret
         },
-        effDesc(x) { return "+"+format(x) },
+        effDesc(x) { return "x"+format(x,1) },
     },
-    cols: 12,
+    14: {
+        unl() { return hasElement(144) },
+        title: "No Dmitri Mendeleev",
+        desc: "You cannot purchase any pre-118 elements. In addtional, you are trapped in quantum challenge with modifiers [5,5,5,5,5,5,5,5].",
+        reward: `Gain more primordium theorems.<br><span class="yellow">On first completion, unlock more features!</span>`,
+        max: E(100),
+        inc: E('e2e19'),
+        pow: E(3),
+        start: uni('ee20'),
+        effect(x) {
+            let ret = x.div(25).add(1)
+            return ret
+        },
+        effDesc(x) { return "x"+format(x,2) },
+    },
+    cols: 14,
 }
 
 /*

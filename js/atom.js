@@ -32,11 +32,9 @@ const ATOM = {
     },
     canReset() { return tmp.atom.gain.gte(1) },
     reset() {
-        if (tmp.atom.canReset) if (player.confirms.atom?confirm("Are you sure to reset?"):true) {
-            player.atom.points = player.atom.points.add(tmp.atom.gain)
-            player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain)
-            player.atom.unl = true
-            this.doReset()
+        if (tmp.atom.canReset) {
+            if (player.confirms.atom) createConfirm("Are you sure you want to reset?",'atomReset',CONFIRMS_FUNCTION.atom)
+            else CONFIRMS_FUNCTION.atom()
         }
     },
     doReset(chal_reset=true) {
@@ -93,6 +91,9 @@ const ATOM = {
             pow = pow.mul(getEnRewardEff(3)[1])
             if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
             if (hasTree("gr2")) pow = pow.pow(1.25)
+            if (hasElement(129)) pow = pow.pow(elemEffect(18))
+            pow = pow//.softcap('e3e12',0.9,2)
+
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
             return {pow: pow, eff: eff}
         },

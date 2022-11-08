@@ -63,6 +63,12 @@
 }
 
 @font-face {
+	font-family: 'Roboto';
+	src: url('fonts/Roboto-Regular.ttf');
+	/*size-adjust: 90%;*/
+}
+
+@font-face {
 	font-family: 'Roboto Mono';
 	src: url('fonts/RobotoMono-VariableFont_wght.ttf');
 	size-adjust: 90%;
@@ -101,6 +107,13 @@ button {
 	transition-duration: 0.15s;
 }
 
+.line {
+	width: 100%;
+	border-bottom: solid 2px white;
+	height: 5px;
+	margin-bottom: 13px;
+}
+
 #star {
 	position: fixed;
     left: 50%;
@@ -120,6 +133,7 @@ button {
 	transform: translate(-50%, 0);
 	width: 400px;
 	min-height: 10px;
+	color: white;
 	border: solid 2px white;
 	background-color: #171717;
 	padding: 7px 25px;
@@ -129,22 +143,6 @@ button {
 #notify.hide {
 	opacity: 0;
 	top: -130px;
-}
-
-#popup {
-	z-index: 3;
-	position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-	width: 600px; height: 400px;
-	border: solid 2px white;
-	background-color: #171717;
-	padding: 7px 25px;
-}
-
-#popup > .btn {
-	max-width: 90%;
 }
 
 .tree_table_column {
@@ -214,6 +212,10 @@ button {
 
 .sky {
 	color: skyblue;
+}
+
+.cyan {
+	color: #07f;
 }
 
 .magenta {
@@ -347,6 +349,20 @@ button {
 	background-color: lightgreen;
 }
 
+.btn_tab.dark {
+	color: #666;
+	border-color: #666;
+}
+
+.btn_tab.dark:not(.choosed):hover {
+	background-color: #222;
+}
+
+.btn_tab.dark.choosed {
+	color: black;
+	background-color: #666;
+}
+
 .btn_tab.dilation {
 	color: #25ff30;
 	border-color: #25ff30;
@@ -363,7 +379,7 @@ button {
 
 .btn_tab.break_dilation {
 	color: #00cea1;
-	border-color: #00cea1;
+	border-color: #00cea1; 
 }
 
 .btn_tab.break_dilation:not(.choosed):hover {
@@ -418,6 +434,13 @@ button {
 	box-shadow: 0 0 10px #fff;
 	color: black;
 	font-weight: bold;
+}
+
+.elements.dark.bought {
+	color: #666;
+	border-color: #666;
+	background-color: #222;
+	box-shadow: 0 0 10px #666;
 }
 
 #final_118 {
@@ -513,6 +536,19 @@ h2 {
 	display: inline;
 	font-weight: normal;
     font-size: 25px;
+}
+
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: #0000;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
 }
 
 .table_center {
@@ -622,7 +658,7 @@ h2 {
 	width: 240px;
 	height: 240px;
 	font-size: 11px;
-	margin: 0px 5px;
+	margin: 5px;
 }
 
 .fermion_btn > b {
@@ -717,6 +753,54 @@ h2 {
 .en_sub_reward {
 	font-size: 12px;
 }
+
+#popups {
+	z-index: 3;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	pointer-events: none;
+}
+
+.popup {
+	position: absolute;
+	left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+	color: white;
+	border: solid 2px white;
+	background-color: #171717;
+	padding: 7px 25px;
+	pointer-events: auto;
+	max-width: 600px; max-height: 400px;
+}
+
+.popup > input {
+	width: 300px;
+	margin-bottom: 10px;
+}
+
+.pos_center {
+	position: absolute;
+	left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/*
+#popup {
+	z-index: 3;
+	position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+	width: 600px; height: 400px;
+	border: solid 2px white;
+	background-color: #171717;
+	padding: 7px 25px;
+}
+*/
+
 
 @keyframes f_spin {
 	0% {

@@ -53,7 +53,7 @@ const BOSONS = {
     effect: {
         pos_w(x) {
             let a = x.add(1).pow(2e4)
-            if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3))
+            if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3).softcap(1e15,0.1,0))
             let b = expMult(x.add(1),2/3,2)
             return [a,b]
         },

@@ -183,7 +183,7 @@ const RADIATION = {
         },{
             title: `Meta-Rank Boost`,
             eff(b) {
-                let x = E(1.025).pow(b)
+                let x = E(1.025).pow(b.softcap(400,0.5,0))
                 return x
             },
             desc(x) { return `Meta-Rank starts ${format(x)}x later` },
@@ -197,7 +197,7 @@ const RADIATION = {
         },{
             title: `U-Lepton Boost`,
             eff(b) {
-                let x = b.add(1).root(4)
+                let x = b.add(1).root(4).softcap(5,0.5,0)
                 return x
             },
             desc(x) { return `U-Leptons are ${format(x)}x stronger` },
@@ -219,7 +219,7 @@ const RADIATION = {
         },{
             title: `U-Quark Boost`,
             eff(b) {
-                let x = b.add(1).root(5)
+                let x = b.add(1).root(5).softcap(3,0.5,0)
                 return x
             },
             desc(x) { return `U-Quarks are ${format(x)}x stronger` },
@@ -305,8 +305,8 @@ function updateRadiationHTML() {
 
     let rad_id = 1
     let comp = false
-    for (let x = 1; x < RAD_LEN; x++) {
-        if (x == RAD_LEN-1) comp = true;
+    for (let x = 1; x <= RAD_LEN; x++) {
+        if (x == RAD_LEN) comp = true;
         if (player.supernova.radiation.hz.lt(RADIATION.unls[x]||1/0) || comp) break
         rad_id++
     }
