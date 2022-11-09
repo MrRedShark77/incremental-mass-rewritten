@@ -205,7 +205,7 @@ function getNextDarkEffectFromID(i) {
 
     if (p.gte(q[q.length-1])) return ""
     else while (s <= q.length-1) {
-        if (p.lt(q[s])) return "Next "+['Ray','Shadow','Abyssal Bolt'][i]+"'s effect at <b>" + format(q[s]) + "</b><br><br>"
+        if (p.lt(q[s])) return "Next "+['Ray','Shadow','Abyssal Blot'][i]+"'s effect at <b>" + format(q[s]) + "</b><br><br>"
         s++
     }
 }
