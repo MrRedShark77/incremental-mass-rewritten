@@ -220,41 +220,41 @@ function getScalingStart(type, name) {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
 			start = start.add(tmp.chal?tmp.chal.eff[1].rank:0)
 		}
-		if (name=="tier") {
+		else if (name=="tier") {
 			if (player.mainUpg.atom.includes(5)) start = start.add(10)
 		}
-		if (name=="tetr") {
+		else if (name=="tetr") {
 			if (player.ranks.tier.gte(100)) start = start.add(5)
 		}
-		if (name=="massUpg") {
+		else if (name=="massUpg") {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
 			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:0:0)
 		}
-		if (name=='tickspeed') {
+		else if (name=='tickspeed') {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
 		}
-		if (name=="prestige0") {
+		else if (name=="prestige0") {
 			if (player.md.break.upgs[9].gte(1)) start = start.add(10)
 		}
 	}
-	if (type=="hyper") {
+	else if (type=="hyper") {
 		if (name=="tickspeed") {
 			if (player.mainUpg.rp.includes(14)) start = start.add(50)
 			if (player.ranks.tetr.gte(5)) start = start.add(RANKS.effect.tetr[5]())
 		}
-		if (name=="rank") {
+		else if (name=="rank") {
 			if (player.mainUpg.atom.includes(10)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[3][10].effect:0:0)
 		}
 	}
-	if (type=="ultra") {
+	else if (type=="ultra") {
 		if (name=="rank") {
 			if (hasElement(62)) start = start.add(tmp.elements.effect[62])
 		}
-		if (name=="tickspeed") {
+		else if (name=="tickspeed") {
 			if (player.ranks.tetr.gte(5)) start = start.add(RANKS.effect.tetr[5]())
 		}
 	}
-	if (type=="meta") {
+	else if (type=="meta") {
 		if (name=="rank") {
 			if (player.ranks.pent.gte(1)) start = start.mul(1.1)
 			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
@@ -262,16 +262,19 @@ function getScalingStart(type, name) {
 			start = start.mul(tmp.radiation.bs.eff[14])
 			start = start.mul(tmp.bd.upgs[4].eff)
 		}
-		if (name=="tickspeed") {
+		else if (name=="tickspeed") {
 			if (hasElement(68)) start = start.mul(2)
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
 			start = start.mul(tmp.fermions.effs[0][5])
 			start = start.mul(getEnRewardEff(0))
 		}
-		if (name=="bh_condenser" || name=="gamma_ray") {
+		else if (name=="bh_condenser" || name=="gamma_ray") {
 			start = start.mul(getEnRewardEff(0))
 		}
-		if (name == "supernova") if (hasPrestige(1,2)) start = start.add(100)
+		else if (name == "supernova") {if (hasPrestige(1,2)) start = start.add(100)}
+		else if (name=='tier') {
+			if (hasElement(155)) start = start.mul(elemEffect(155))
+		}
 	}
 	if (name=='supernova') {
 		start = start.add(tmp.prim.eff[7])
@@ -297,81 +300,90 @@ function getScalingPower(type, name) {
 			if (player.mainUpg.rp.includes(10)) power = power.mul(0.8)
 			if (player.ranks.tetr.gte(4)) power = power.mul(RANKS.effect.tetr[4]())
 		}
-		if (name=="tier") {
+		else if (name=="tier") {
 			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
 			if (hasElement(37)) power = power.mul(tmp.elements.effect[37])
 		}
-		if (name=="tetr") {
+		else if (name=="tetr") {
 			if (hasElement(74)) power = power.mul(0.75)
 		}
-		if (name=="massUpg") {
+		else if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)
 		}
-		if (name=='tickspeed') {
+		else if (name=='tickspeed') {
 			power = power.mul(tmp.chal?tmp.chal.eff[1].tick:1)
 		}
-		if (name=='bh_condenser') {
+		else if (name=='bh_condenser') {
 			if (hasElement(15)) power = power.mul(0.8)
 		}
-		if (name=='gamma_ray') {
+		else if (name=='gamma_ray') {
 			if (hasElement(15)) power = power.mul(0.8)
 		}
-		if (name=="fTier") {
+		else if (name=="fTier") {
 			if (hasTree("fn3")) power = power.mul(0.925)
 		}
-		if (name=="cosmic_str") {
+		else if (name=="cosmic_str") {
 			if (hasPrestige(0,24)) power = power.mul(0.8)
 			if (hasElement(137)) power = power.mul(0.75)
 			if (hasPrestige(1,15)) power = power.mul(prestigeEff(1,15,1))
 		}
-		if (name=="prestige0" || name=="prestige1") {
+		else if (name=="prestige0" || name=="prestige1") {
 			if (hasElement(134)) power = power.mul(0.95)
 		}
 	}
-	if (type=="hyper") {
+	else if (type=="hyper") {
 		if (name=="rank") {
 			if (player.ranks.tetr.gte(1)) power = power.mul(0.85)
 			if (hasElement(27)) power = power.mul(0.75)
 		}
-		if (name=="tier") {
+		else if (name=="tier") {
 			if (player.ranks.tetr.gte(4)) power = power.mul(0.8)
 			if (hasElement(37)) power = power.mul(tmp.elements.effect[37])
 		}
-		if (name=="massUpg") {
+		else if (name=="massUpg") {
 			if (player.mainUpg.rp.includes(8)) power = power.mul(tmp.upgs.main?tmp.upgs.main[1][8].effect:1)
 		}
-		if (name=='tickspeed') {
+		else if (name=='tickspeed') {
 			if (player.mainUpg.bh.includes(12)) power = power.mul(0.85)
 			if (hasElement(27)) power = power.mul(0.75)
 		}
-		if (name=='bh_condenser') {
+		else if (name=='bh_condenser') {
 			if (hasElement(55)) power = power.mul(0.75)
 		}
-		if (name=='gamma_ray') {
+		else if (name=='gamma_ray') {
 			if (hasElement(55)) power = power.mul(0.75)
 		}
-		if (name=='cosmic_str') {
+		else if (name=='cosmic_str') {
 			if (hasElement(137)) power = power.mul(0.75)
 			if (hasPrestige(1,15)) power = power.mul(prestigeEff(1,15,1))
 		}
+		else if (name=="prestige0") {
+			if (hasElement(154)) power = power.mul(0.9)
+		}
+		else if (name=="tetr") {
+			if (hasElement(154)) power = power.mul(0.9)
+		}
+		else if (name=="pent") {
+			if (hasElement(154)) power = power.mul(0.9)
+		}
 	}
-	if (type=="ultra") {
+	else if (type=="ultra") {
 		if (name=="rank") {
 			if (hasElement(27)) power = power.mul(0.75)
 			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
 		}
-		if (name=='tickspeed') {
+		else if (name=='tickspeed') {
 			if (hasElement(27)) power = power.mul(0.75)
 			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
 		}
-		if (name=='bh_condenser') {
+		else if (name=='bh_condenser') {
 			if (hasElement(55)) power = power.mul(0.75)
 		}
-		if (name=='gamma_ray') {
+		else if (name=='gamma_ray') {
 			if (hasElement(55)) power = power.mul(0.75)
 		}
 	}
-	if (type=="meta") {
+	else if (type=="meta") {
 		if (name=='supernova') {
 			if (hasElement(78)) power = power.mul(0.8)
 		}

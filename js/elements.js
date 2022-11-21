@@ -360,6 +360,9 @@ function updateBlackHoleHTML() {
 	tmp.el.bhCondenserEffect.setHTML(format(tmp.bh.condenser_eff.eff))
 	tmp.el.bhCondenser_auto.setDisplay(FORMS.bh.condenser.autoUnl())
 	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
+
+	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte('ee69'))
+    tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass('ee69')}</b>, your mass of black hole is ${overflowFormat(tmp.overflow.bh||1)}!`)
 }
 
 function updateOptionsHTML() {
@@ -420,6 +423,8 @@ function updateHTML() {
 				tmp.el.massSoftStart7.setTxt(formatMass(tmp.massSoftGain6))
 				tmp.el.massSoft8.setDisplay(tmp.massGain.gte(tmp.massSoftGain7))
 				tmp.el.massSoftStart8.setTxt(formatMass(tmp.massSoftGain7))
+				tmp.el.massSoft9.setDisplay(tmp.massGain.gte(tmp.massSoftGain8))
+				tmp.el.massSoftStart9.setTxt(formatMass(tmp.massSoftGain8))
 			}
 			if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()

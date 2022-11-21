@@ -7,6 +7,14 @@ const STARS = {
 
         x = x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
 
+        /*
+        let o = x
+
+        x = overflow(x,'ee55',0.5)
+
+        tmp.overflow.star = calcOverflow(o,x,'ee55')
+        */
+
         return x
     },
     softGain() {
@@ -30,7 +38,7 @@ const STARS = {
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1))))
         x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
         if (player.qu.rip.active) x = x.softcap('ee33',0.9,2)
-        return x
+        return x.softcap('ee70',0.91,2)
     },
     generators: {
         req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],

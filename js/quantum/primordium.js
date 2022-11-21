@@ -156,6 +156,7 @@ function updatePrimordiumTemp() {
 }
 
 function updatePrimordiumHTML() {
+    tmp.el.prim_btns.setDisplay(!hasTree('qu_qol12'))
     tmp.el.prim_theorem.setTxt(format(tmp.prim.unspent,0)+" / "+format(player.qu.prim.theorems,0))
     tmp.el.prim_next_theorem.setTxt(format(player.qu.bp,1)+" / "+format(tmp.prim.next_theorem,1))
     for (let i = 0; i < player.qu.prim.particles.length; i++) {

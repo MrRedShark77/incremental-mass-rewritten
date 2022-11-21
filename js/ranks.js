@@ -284,6 +284,8 @@ const PRESTIGES = {
             x = x.mul(r.add(1))
         }
 
+        if (tmp.dark.abEff.pb) x = x.mul(tmp.dark.abEff.pb)
+
         return x.sub(1)
     },
     req(i) {

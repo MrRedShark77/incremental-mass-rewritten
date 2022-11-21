@@ -244,7 +244,8 @@
                         <span id="massSoft5" style="color: rgb(255, 94, 0)">After <b id="massSoftStart5">X</b> of mass gain will softcap^4 mass gain!</span><br>
                         <span id="massSoft6" style="color: rgb(255, 238, 0)">After <b id="massSoftStart6">X</b> of mass gain will softcap^5 mass gain!</span><br>
                         <span id="massSoft7" style="color: rgb(166, 255, 0)">After <b id="massSoftStart7">X</b> of mass gain will softcap^6 mass gain!</span><br>
-                        <span id="massSoft8" style="color: rgb(0, 255, 149)">After <b id="massSoftStart8">X</b> of mass gain will softcap^7 mass gain!</span>
+                        <span id="massSoft8" style="color: rgb(0, 255, 149)">After <b id="massSoftStart8">X</b> of mass gain will softcap^7 mass gain!</span><br>
+                        <span id="massSoft9" style="color: rgb(0, 225, 255)">After <b id="massSoftStart9">X</b> of mass gain will softcap^8 mass gain!</span>
                     </div>
                 </div><div id="stab_frame0_1">
                     You have <span id="bhMass2">X</span> of Black Hole<br>
@@ -266,7 +267,8 @@
                         <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> worth of mass gain from Black Hole, mass gain will be softcapped!</span><br>
                         <span id="bhFSoft1" class="red">
                             The formula (x + 1)<sup id="bhMassPower2">0.33</sup> softcaps at <b id="bhFSoftStart1">X</b>
-                        </span>
+                        </span><br>
+                        <span id="bhOverflow"></span>
                     </div>
                 </div><div id="stab_frame0_2">
                     You have <span id="atomicAmt">X</span> Atomic Power<br>
@@ -424,10 +426,13 @@
                 </div><div id="stab_frame6_3">
                     You have <span id="prim_theorem">0</span> Primordium Theorem (based on Blueprint Particles)<br>
                     (+1 at <span id="prim_next_theorem">X</span>)<br><br>
-                    <button class="btn" onclick="giveRandomPParticles(1)">Give 1 random Particle</button>
-                    <button class="btn" onclick="giveRandomPParticles(10)">Give 10 random Particles</button>
-                    <button class="btn" onclick="giveRandomPParticles(1,true)">Give all random Particles</button>
-                    <button class="btn" onclick="respecPParticles()">Respec all Particles</button><br><br>
+                    <div id="prim_btns">
+                        <button class="btn" onclick="giveRandomPParticles(1)">Give 1 random Particle</button>
+                        <button class="btn" onclick="giveRandomPParticles(10)">Give 10 random Particles</button>
+                        <button class="btn" onclick="giveRandomPParticles(1,true)">Give all random Particles</button>
+                        <button class="btn" onclick="respecPParticles()">Respec all Particles</button>
+                        <br><br>
+                    </div>
                     <div id="primordium_table"></div>
                 </div><div id="stab_frame6_4">
                     <div class="table_center" style="min-height: 250px">
@@ -476,7 +481,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6 - Darkness update - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.0.1 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>
                 Total time played: <span id="total_time">X</span><br><br>

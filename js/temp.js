@@ -26,6 +26,7 @@ function resetTemp() {
             req: [],
             bulk: [],
             eff: [],
+            baseExp: 1,
         },
 
         bd: {
@@ -112,6 +113,8 @@ function resetTemp() {
 
         overflow: {
             dm: E(1),
+            bh: E(1),
+            star: E(1),
         },
 
         prevSave: "",
@@ -158,6 +161,8 @@ function updateMassTemp() {
     tmp.massSoftGain6 = FORMS.massSoftGain6()
     tmp.massSoftPower7 = FORMS.massSoftPower7()
     tmp.massSoftGain7 = FORMS.massSoftGain7()
+    tmp.massSoftPower8 = FORMS.massSoftPower8()
+    tmp.massSoftGain8 = FORMS.massSoftGain8()
     tmp.massGain = FORMS.massGain()
 }
 

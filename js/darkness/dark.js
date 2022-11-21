@@ -1,8 +1,8 @@
 const DARK = {
     nextEffectAt: [
-        [0],
+        [0,1e12],
         [1e6,1e11,1e25],
-        [1e120],
+        [1e120,1e180],
     ],
     gain() {
         let x = E(1)
@@ -12,6 +12,7 @@ const DARK = {
         if (player.ranks.hex.gte(4)) x = x.mul(RANKS.effect.hex[4]())
         if (hasElement(141)) x = x.mul(10)
         if (hasElement(145)) x = x.mul(elemEffect(145))
+        if (hasElement(152)) x = x.mul(elemEffect(152))
 
         return x.floor()
     },
@@ -20,6 +21,8 @@ const DARK = {
         let x = {}
 
         x.shadow = a.max(1).pow(2).pow(tmp.fermions.effs[0][6]||1)
+
+        if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
 
         return x
     },
@@ -106,7 +109,7 @@ const DARK = {
         x.mass = a.add(1).log10().add(1).root(2)
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
-        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1)
+        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0)
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
 
@@ -116,6 +119,7 @@ const DARK = {
         let x = E(1)
 
         x = x.mul(tmp.dark.shadowEff.ab||1)
+        if (hasElement(153)) x = x.pow(elemEffect(153))
 
         return x
     },
@@ -126,6 +130,7 @@ const DARK = {
         x.shadow = a.add(1).log10().add(1).pow(2)
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
         if (a.gte(1e120)) x.hr = a.div(1e120).log10().add(1).pow(2)
+        if (a.gte(1e180)) x.pb = a.div(1e180).log10().add(1)
 
         return x
     },
@@ -136,6 +141,8 @@ function calcDark(dt, dt_offline) {
         player.dark.shadow = player.dark.shadow.add(tmp.dark.shadowGain.mul(dt))
 
         if (tmp.chal14comp) player.dark.abyssalBlot = player.dark.abyssalBlot.add(tmp.dark.abGain.mul(dt))
+
+        if (tmp.dark.rayEff.passive) player.dark.rays = player.dark.rays.add(tmp.dark.gain.mul(dt).mul(tmp.dark.rayEff.passive))
     }
 }
 
@@ -156,7 +163,7 @@ function updateDarkHTML() {
     let unl = og || player.dark.unl
     let dtmp = tmp.dark
 	tmp.el.dark_div.setDisplay(unl)
-	if (unl) tmp.el.darkAmt.setHTML(player.dark.rays.format(0)+"<br>("+(og?"+"+dtmp.gain.format(0):"require Og-118")+")")
+	if (unl) tmp.el.darkAmt.setHTML(player.dark.rays.format(0)+"<br>"+(og?dtmp.rayEff.passive?player.dark.rays.formatGain(dtmp.gain.mul(dtmp.rayEff.passive)):"(+"+dtmp.gain.format(0)+")":"(require Og-118)"))
 
     if (tmp.tab == 7) {
         tmp.el.darkRay.setHTML(player.dark.rays.format(0))
@@ -170,7 +177,7 @@ function updateDarkHTML() {
         `
 
         if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
-        if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`
+        if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5)
         if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
         if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
 
@@ -188,15 +195,20 @@ function updateDarkHTML() {
             `
 
             if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
+            if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
 
             tmp.el.abEff.setHTML(e)
         }
 
         eff = dtmp.rayEff
 
-        tmp.el.drEff.setHTML( getNextDarkEffectFromID(0) + `
+        e = getNextDarkEffectFromID(0) + `
             Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
-        `)
+        `
+
+        if (eff.passive) e += `<br>Passively gain <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset`
+
+        tmp.el.drEff.setHTML(e)
     }
 }
 
