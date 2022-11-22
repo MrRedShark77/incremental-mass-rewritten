@@ -148,7 +148,7 @@ const UPGS = {
                     sp **= 0.9
                     sp3 **= 0.925
                 }
-                step = step.softcap(1e43,0.75,0)
+                step = step.softcap(1e43,hasElement(160)?0.85:0.75,0)
                 let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
                 ret = ret.mul(tmp.prim.eff[0])
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)

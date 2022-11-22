@@ -146,6 +146,7 @@ const FERMIONS = {
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },{
                 maxTier() {
+                    if (hasElement(156)) return Infinity
                     let x = 30
                     if (hasTree("fn11")) x += 5
                     return x
@@ -315,6 +316,7 @@ const FERMIONS = {
                 cons: "Star generators are decreased to ^0.5",
             },{
                 maxTier() {
+                    if (hasElement(156)) return Infinity
                     let x = 25
                     if (hasTree("fn11")) x += 5
                     return x
@@ -330,7 +332,8 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = E(0.95).pow(i.add(1).log10().mul(t).root(4).softcap(27,0.5,0)).max(2/3).toNumber()
+                    let m = i.add(1).log10().mul(t).root(4)
+                    let x = Math.min(hasElement(157)?m.div(150).add(1).softcap(5,0.5,0).pow(-1).toNumber():1,E(0.95).pow(m.softcap(27,0.5,0)).max(2/3).toNumber())
                     return x
                 },
                 desc(x) {

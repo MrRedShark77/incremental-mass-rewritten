@@ -116,7 +116,7 @@ const ENTROPY = {
                 let x = i.root(2).div(10).add(1).pow(-1)
                 return x
             },
-            desc(x) { return `All pre-Supernova scaling is <b>${formatReduction(x)}</b> weaker before Meta scaling (not including Pent).` },
+            desc(x) { return `All pre-Supernova scaling is <b>${formatReduction(x)}</b> weaker before Meta scaling (not including Pent or further).` },
         },{
             title: "Entropic Condenser",
 

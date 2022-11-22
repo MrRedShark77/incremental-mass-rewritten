@@ -71,8 +71,13 @@ const FORMS = {
         .softcap(tmp.massSoftGain7,tmp.massSoftPower7,0)
         .softcap(tmp.massSoftGain8,tmp.massSoftPower8,0)
 
-        if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
+        let o = x
 
+        x = overflow(x,'ee69',0.5)
+
+        tmp.overflow.mass = calcOverflow(o,x,'ee69')
+
+        if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
         return x
     },
     massSoftGain() {
@@ -157,18 +162,22 @@ const FORMS = {
     },
     massSoftGain7() {
         let s = mlt(1e36)
+        if (hasElement(159)) s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s
     },
     massSoftPower7() {
         let p = E(0.005)
+        if (hasElement(159)) p = p.pow(0.8)
         return p
     },
     massSoftGain8() {
         let s = E('ee63')
+        if (hasElement(159)) s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s
     },
     massSoftPower8() {
         let p = E(0.001)
+        if (hasElement(159)) p = p.pow(0.8)
         return p
     },
     tickspeed: {

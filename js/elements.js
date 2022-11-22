@@ -425,6 +425,9 @@ function updateHTML() {
 				tmp.el.massSoftStart8.setTxt(formatMass(tmp.massSoftGain7))
 				tmp.el.massSoft9.setDisplay(tmp.massGain.gte(tmp.massSoftGain8))
 				tmp.el.massSoftStart9.setTxt(formatMass(tmp.massSoftGain8))
+
+				tmp.el.massOverflow.setDisplay(player.mass.gte('ee69'))
+    			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass('ee69')}</b>, your mass is ${overflowFormat(tmp.overflow.mass||1)}!`)
 			}
 			if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()

@@ -191,7 +191,7 @@ function updateDarkHTML() {
 
             e = getNextDarkEffectFromID(2) + `
                 Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
-                <br>Makes mass gain's softcap^4-6, starting <b>^${eff.msoftcap.format(3)}</b> later
+                <br>Makes mass gain's softcap^4-${hasElement(159)?8:6}, starting <b>^${eff.msoftcap.format(3)}</b> later
             `
 
             if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`

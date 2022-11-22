@@ -40,7 +40,7 @@ const CHROMA = {
             return `Tickspeed power is ^${format(x)} better`
         },
         x => {
-            return `Pre-Pents requirement is reduced by ${format(x)}x`
+            return `${player.dark.unl ? "Pre-Exotic" : ""} Pre-Pents requirement is reduced by ${format(x)}x`
         },
         x => {
             return `Rewards from Challenges 1-8 are ${format(x)}x stronger`

@@ -112,6 +112,7 @@ function resetTemp() {
         },
 
         overflow: {
+            mass: E(1),
             dm: E(1),
             bh: E(1),
             star: E(1),

@@ -32,13 +32,13 @@ const STARS = {
         let [s,r,t1,t2,t3] = [player.stars.points.mul(p)
             ,player.ranks.rank.softcap(2.5e6,0.25,0).mul(p)
             ,player.ranks.tier.softcap(1.5e5,0.25,0).mul(p)
-            ,player.ranks.tetr.mul(p).softcap(5,hasTree("s2")?1.5:5,1).softcap(9,0.3,0)
+            ,player.ranks.tetr.softcap(30000,0.15,0).mul(p).softcap(5,hasTree("s2")?1.5:5,1).softcap(9,0.3,0)
             ,(hasElement(69)?player.ranks.pent.mul(pp):E(0)).softcap(9,0.5,0)]
         let x =
         s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1))))
         x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
         if (player.qu.rip.active) x = x.softcap('ee33',0.9,2)
-        return x.softcap('ee70',0.91,2)
+        return x.softcap('ee70',0.91,2)//.min('ee70')
     },
     generators: {
         req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],

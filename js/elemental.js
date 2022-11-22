@@ -909,6 +909,25 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return "x"+format(x)+" later" },
+        },{
+            dark: true,
+            desc: `Uncap Top & Neut-Muon.`,
+            cost: E("1e80"),
+        },{
+            dark: true,
+            desc: `Uncap [Neut-Muon]’s effect, and it’s better if effect is greater than 33%.`,
+            cost: E("1e84"),
+        },{
+            br: true,
+            desc: `Meta-Tickspeed scaling starts ^2 later.`,
+            cost: E("e2.5e53"),
+        },{
+            desc: `Abyssal Blot’s second effect applies to mass gain’s softcap^7-8, they are 20% weaker.`,
+            cost: E("e2.2e69"),
+        },{
+            br: true,
+            desc: `Stronger Power’s softcap is weaker.`,
+            cost: E("e2.9e61"),
         },
     ],
     /*
@@ -946,7 +965,7 @@ const ELEMENTS = {
             if (hasUpgrade("br",9)) u += 23 // 23
         }
         if (tmp.chal13comp) u += 10 + 2
-        if (tmp.chal14comp) u += 6 + 5
+        if (tmp.chal14comp) u += 6 + 10
 
         return u
     },
