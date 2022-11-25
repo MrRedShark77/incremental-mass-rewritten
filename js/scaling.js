@@ -193,7 +193,7 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (!CHALS.inChal(14)) {
+	if (!CHALS.inChal(14) && !player.dark.run.active) {
 		if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent",'hex')
 		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
 	}
@@ -281,6 +281,10 @@ function getScalingStart(type, name) {
 		else if (name == "supernova") {if (hasPrestige(1,2)) start = start.add(100)}
 		else if (name=='tier') {
 			if (hasElement(155)) start = start.mul(elemEffect(155))
+		}
+	} else if (type=="exotic") {
+		if (name=="rank") {
+			start = start.mul(glyphUpgEff(3))
 		}
 	}
 	if (name=='supernova') {

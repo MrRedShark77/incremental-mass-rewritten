@@ -78,7 +78,7 @@ const DARK = {
         let ke = []
         for (let x = 0; x < player.atom.elements.length; x++) {
             let e = player.atom.elements[x]
-            if (hasElement(143) ? e != 118 : (e < 87 || e > 118)) ke.push(e)
+            if (hasElement(161) || (hasElement(143) ? e != 118 : (e < 87 || e > 118))) ke.push(e)
         }
         player.atom.elements = ke
 
@@ -149,6 +149,8 @@ function calcDark(dt, dt_offline) {
 function updateDarkTemp() {
     let dtmp = tmp.dark
 
+    updateDarkRunTemp()
+
     dtmp.rayEff = DARK.rayEffect()
     dtmp.abGain = DARK.abGain()
     dtmp.abEff = DARK.abEff()
@@ -156,6 +158,10 @@ function updateDarkTemp() {
     dtmp.shadowEff = DARK.shadowEff()
 
     dtmp.gain = DARK.gain()
+}
+
+function setupDarkHTML() {
+    setupDarkRunHTML()
 }
 
 function updateDarkHTML() {
@@ -166,49 +172,53 @@ function updateDarkHTML() {
 	if (unl) tmp.el.darkAmt.setHTML(player.dark.rays.format(0)+"<br>"+(og?dtmp.rayEff.passive?player.dark.rays.formatGain(dtmp.gain.mul(dtmp.rayEff.passive)):"(+"+dtmp.gain.format(0)+")":"(require Og-118)"))
 
     if (tmp.tab == 7) {
-        tmp.el.darkRay.setHTML(player.dark.rays.format(0))
-        tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain))
+        if (tmp.stab[7] == 0) {
+            tmp.el.darkRay.setHTML(player.dark.rays.format(0))
+            tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain))
 
-        let eff = dtmp.shadowEff
+            let eff = dtmp.shadowEff
 
-        let e = getNextDarkEffectFromID(1) +`
-            Boosts mass gain by <b>^${eff.mass.format(3)}</b><br>
-            Boosts dark ray gain by <b>x${eff.ray.format(3)}</b>
-        `
-
-        if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
-        if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5)
-        if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
-        if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
-
-        tmp.el.dsEff.setHTML(e)
-
-        tmp.el.ab_div.setDisplay(tmp.chal14comp)
-        if (tmp.chal14comp) {
-            tmp.el.abyssalBlot.setHTML(player.dark.abyssalBlot.format(0)+" "+player.dark.abyssalBlot.formatGain(tmp.dark.abGain))
-
-            eff = dtmp.abEff
-
-            e = getNextDarkEffectFromID(2) + `
-                Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
-                <br>Makes mass gain's softcap^4-${hasElement(159)?8:6}, starting <b>^${eff.msoftcap.format(3)}</b> later
+            let e = getNextDarkEffectFromID(1) +`
+                Boosts mass gain by <b>^${eff.mass.format(3)}</b><br>
+                Boosts dark ray gain by <b>x${eff.ray.format(3)}</b>
             `
 
-            if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
-            if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
+            if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
+            if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5)
+            if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
+            if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
 
-            tmp.el.abEff.setHTML(e)
+            tmp.el.dsEff.setHTML(e)
+
+            tmp.el.ab_div.setDisplay(tmp.chal14comp)
+            if (tmp.chal14comp) {
+                tmp.el.abyssalBlot.setHTML(player.dark.abyssalBlot.format(0)+" "+player.dark.abyssalBlot.formatGain(tmp.dark.abGain))
+
+                eff = dtmp.abEff
+
+                e = getNextDarkEffectFromID(2) + `
+                    Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
+                    <br>Makes mass gain's softcap^4-${hasElement(159)?8:6}, starting <b>^${eff.msoftcap.format(3)}</b> later
+                `
+
+                if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
+                if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
+
+                tmp.el.abEff.setHTML(e)
+            }
+
+            eff = dtmp.rayEff
+
+            e = getNextDarkEffectFromID(0) + `
+                Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
+            `
+
+            if (eff.passive) e += `<br>Passively gain <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset`
+
+            tmp.el.drEff.setHTML(e)
+        } else if (tmp.stab[7] == 1) {
+            updateDarkRunHTML()
         }
-
-        eff = dtmp.rayEff
-
-        e = getNextDarkEffectFromID(0) + `
-            Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
-        `
-
-        if (eff.passive) e += `<br>Passively gain <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset`
-
-        tmp.el.drEff.setHTML(e)
     }
 }
 
@@ -228,6 +238,14 @@ function getDarkSave() {
         rays: E(0),
         shadow: E(0),
         abyssalBlot: E(0),
+
+        run: {
+            active: false,
+            glyphs: [0,0,0,0,0,0],
+            gmode: 0,
+            gamount: 1,
+            upg: [],
+        },
     }
     return s
 }

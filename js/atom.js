@@ -12,6 +12,9 @@ const ATOM = {
 
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
         if (FERMIONS.onActive("10")) x = expMult(x,0.625)
+
+        if (player.dark.run.active) x = expMult(x,mgEff(2))
+
         return x.floor()
     },
     quarkGain() {
@@ -28,6 +31,9 @@ const ATOM = {
         x = x.mul(tmp.md.upgs[9].eff)
         if (hasElement(47)) x = x.pow(1.1)
         if (hasPrestige(1,7)) x = x.pow(prestigeEff(1,7))
+
+        if (player.dark.run.active) x = expMult(x,mgEff(2))
+
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },
@@ -57,6 +63,9 @@ const ATOM = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+
+            if (player.dark.run.active) x = expMult(x,mgEff(2))
+
             return x
         },
         effect() {

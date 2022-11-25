@@ -7,7 +7,7 @@ const SUPERNOVA = {
         else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
     },
     doReset() {
-        let br = player.qu.rip.active
+        let br = player.qu.rip.active || player.dark.run.active
         tmp.supernova.time = 0
 
         player.atom.points = E(0)

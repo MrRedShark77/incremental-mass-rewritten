@@ -148,7 +148,7 @@ function updatePrimordiumTemp() {
 
         tp.parts[i] = pp
         if (hasPrestige(1,4)) pp = pp.add(5)
-        if (player.qu.rip.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
+        if (player.qu.rip.active || player.dark.run.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
         tp.eff[i] = PRIM.particle.eff[i](pp.softcap(100,0.75,0))
     }
 

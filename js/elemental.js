@@ -928,6 +928,13 @@ const ELEMENTS = {
             br: true,
             desc: `Stronger Power’s softcap is weaker.`,
             cost: E("e2.9e61"),
+        },{
+            dark: true,
+            desc: `Unlock Dark Run. Keep Oganesson-118 on darkness.`,
+            cost: E("1e96"),
+        },{
+            desc: `Collapsed star’s effect is now upgraded as exponent at reduced rate. It can apply to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
+            cost: E("e4.20e69"), // nice
         },
     ],
     /*
@@ -965,7 +972,8 @@ const ELEMENTS = {
             if (hasUpgrade("br",9)) u += 23 // 23
         }
         if (tmp.chal13comp) u += 10 + 2
-        if (tmp.chal14comp) u += 6 + 10
+        if (tmp.chal14comp) u += 6 + 11
+        if (tmp.darkRunUnlocked) u += 1
 
         return u
     },

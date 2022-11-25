@@ -136,6 +136,7 @@ function setupHTML() {
 	setupFermionsHTML()
 	setupRadiationHTML()
 	setupQuantumHTML()
+	setupDarkHTML()
 
 	/*
 	function setupTestHTML() {

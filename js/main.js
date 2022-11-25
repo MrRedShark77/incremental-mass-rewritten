@@ -39,7 +39,7 @@ const FORMS = {
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
-        x = x.mul(tmp.stars.effect)
+        if (!hasElement(162)) x = x.mul(tmp.stars.effect)
         if (hasTree("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
@@ -70,6 +70,12 @@ const FORMS = {
         x = x.softcap(tmp.massSoftGain6,tmp.massSoftPower6,0)
         .softcap(tmp.massSoftGain7,tmp.massSoftPower7,0)
         .softcap(tmp.massSoftGain8,tmp.massSoftPower8,0)
+
+        if (hasElement(162)) x = x.pow(tmp.stars.effect)
+
+        x = x.pow(glyphUpgEff(1))
+
+        if (player.dark.run.active) x = expMult(x,mgEff(0))
 
         let o = x
 
@@ -111,24 +117,24 @@ const FORMS = {
         return s.min(tmp.massSoftGain3||1/0)
     },
     massSoftPower2() {
-        let p = E(player.qu.rip.active ? 0.1 : 0.25)
+        let p = E(player.qu.rip.active || player.dark.run.active ? 0.1 : 0.25)
         if (hasElement(51)) p = p.pow(0.9)
         return p
     },
     massSoftGain3() {
-        let s = player.qu.rip.active ? uni("ee7") : uni("ee8")
+        let s = player.qu.rip.active || player.dark.run.active ? uni("ee7") : uni("ee8")
         if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         s = s.pow(tmp.radiation.bs.eff[2])
         if (hasPrestige(0,1)) s = s.pow(10)
         return s
     },
     massSoftPower3() {
-        let p = E(player.qu.rip.active ? 0.1 : 0.2)
-        if (hasElement(77)) p = p.pow(player.qu.rip.active?0.95:0.825)
+        let p = E(player.qu.rip.active || player.dark.run.active ? 0.1 : 0.2)
+        if (hasElement(77)) p = p.pow(player.qu.rip.active || player.dark.run.active?0.95:0.825)
         return p
     },
     massSoftGain4() {
-        let s = mlt(player.qu.rip.active ? 0.1 : 1e4)
+        let s = mlt(player.qu.rip.active || player.dark.run.active ? 0.1 : 1e4)
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
         if (hasPrestige(0,1)) s = s.pow(10)
@@ -137,11 +143,11 @@ const FORMS = {
     },
     massSoftPower4() {
         let p = E(0.1)
-        if (hasElement(100)) p = p.pow(player.qu.rip.active?0.8:0.5)
+        if (hasElement(100)) p = p.pow(player.qu.rip.active || player.dark.run.active?0.8:0.5)
         return p
     },
     massSoftGain5() {
-        let s = mlt(player.qu.rip.active?1e4:1e12)
+        let s = mlt(player.qu.rip.active || player.dark.run.active?1e4:1e12)
         if (hasPrestige(0,8)) s = s.pow(prestigeEff(0,8))
         if (hasUpgrade("br",12)) s = s.pow(upgEffect(4,12))
         s = s.pow(tmp.dark.abEff.msoftcap||1)
@@ -256,6 +262,8 @@ const FORMS = {
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
+            if (player.dark.run.active) gain = expMult(gain,mgEff(1))
+
             return gain.floor()
         },
         reset() {
@@ -289,6 +297,9 @@ const FORMS = {
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+
+            if (player.dark.run.active) gain = expMult(gain,mgEff(1))
+
             return gain.floor()
         },
         massPowerGain() {
@@ -303,7 +314,7 @@ const FORMS = {
             .mul(this.condenser.effect().eff)
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
-            if (hasElement(46)) x = x.mul(tmp.elements.effect[46])
+            if (hasElement(46) && !hasElement(162)) x = x.mul(tmp.elements.effect[46])
             x = x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
@@ -312,6 +323,12 @@ const FORMS = {
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
 
             x = x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),1/3,0)
+
+            x = x.pow(glyphUpgEff(2))
+
+            if (player.dark.run.active) x = expMult(x,mgEff(0))
+
+            if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(player.dark.run.active ? 5 : 100)
 
             let o = x
 

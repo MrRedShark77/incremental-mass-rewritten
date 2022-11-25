@@ -74,6 +74,12 @@
 	size-adjust: 90%;
 }
 
+@font-face {
+	font-family: 'Source Serif Pro';
+	src: url('fonts/SourceSerifPro-Regular.ttf');
+	size-adjust: 97%;
+}
+
 * {
 	font-family: var(--font);
     table-align: center;

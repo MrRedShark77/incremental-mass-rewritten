@@ -36,7 +36,7 @@ const CONFIRMS_FUNCTION = {
         }
     },
     qu(auto,force,rip,bd) {
-        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !CHALS.inChal(14)) {
+        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !CHALS.inChal(14) && !player.dark.run.active) {
             player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
             player.qu.qc.active = false
         }
@@ -78,6 +78,7 @@ const CONFIRMS_FUNCTION = {
         QUANTUM.doReset(player.qu.qc.active)
     },
     bigRip() {
+        if (player.dark.run.active) return
         if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain)
         player.qu.qc.active = false
         player.qu.rip.first = true
