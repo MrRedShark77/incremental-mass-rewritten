@@ -28,7 +28,10 @@ const STARS = {
     effect() {
         if (hasElement(162)) {
             let pp = E(1)
-            for (let x in player.ranks) pp = pp.mul(player.ranks[x].add(1))
+            for (let i = 0; i < RANKS.names.length; i++) {
+                let r = player.ranks[RANKS.names[i]]
+                pp = pp.mul(r.add(1))
+            }
 
             let x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1).root(2).div(50).add(1)
 
