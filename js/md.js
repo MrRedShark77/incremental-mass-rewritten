@@ -7,6 +7,7 @@ const MASS_DILATION = {
         return x
     },
     onactive() {
+        if (player.dark.run.active) return
         if (player.md.active) player.md.particles = player.md.particles.add(tmp.md.rp_gain)
         player.md.active = !player.md.active
         ATOM.doReset()
