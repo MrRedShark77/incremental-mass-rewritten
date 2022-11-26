@@ -53,6 +53,7 @@ const QCs = {
             effDesc(x) { return `x${format(x)} to requirements of any pre-Quantum Challenges.` },
         },{
             eff(i) {
+                if (hasElement(163)) i /= 2
                 let x = i**1.5/2+1
                 return x
             },

@@ -40,7 +40,7 @@ const FORMS = {
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         if (!hasElement(162)) x = x.mul(tmp.stars.effect)
-        if (hasTree("m1")) x = x.mul(tmp.supernova.tree_eff.m1)
+        if (hasTree("m1") && !hasElement(164)) x = x.mul(tmp.supernova.tree_eff.m1)
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
 
@@ -72,6 +72,7 @@ const FORMS = {
         .softcap(tmp.massSoftGain8,tmp.massSoftPower8,0)
 
         if (hasElement(162)) x = x.pow(tmp.stars.effect)
+        if (hasElement(164)) x = x.pow(tmp.supernova.tree_eff.m1)
 
         x = x.pow(glyphUpgEff(1))
 
@@ -122,6 +123,7 @@ const FORMS = {
         return p
     },
     massSoftGain3() {
+        if (player.ranks.hex.gte(13)) return EINF
         let s = player.qu.rip.active || player.dark.run.active ? uni("ee7") : uni("ee8")
         if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         s = s.pow(tmp.radiation.bs.eff[2])
@@ -251,7 +253,7 @@ const FORMS = {
             if (player.mainUpg.bh.includes(6)) gain = gain.mul(tmp.upgs.main?tmp.upgs.main[2][6].effect:E(1))
             if (hasTree("rp1")) gain = gain.mul(tmp.supernova.tree_eff.rp1)
 
-            if (!hasElement(105)) gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
+            if (!hasElement(105) && !hasElement(165)) gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
             else gain = gain.pow(tmp.atom.particles[1].powerEffect.eff1)
 
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
@@ -262,6 +264,7 @@ const FORMS = {
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
+            if (hasElement(165)) gain = gain.pow(tmp.supernova.tree_eff.rp1)
             if (player.dark.run.active) gain = expMult(gain,mgEff(1))
 
             return gain.floor()
@@ -285,7 +288,7 @@ const FORMS = {
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
 
-            if (hasTree("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
+            if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(tmp.supernova.tree_eff.bh1)
             gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
 
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = gain.root(6)
@@ -298,6 +301,7 @@ const FORMS = {
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
+            if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
             if (player.dark.run.active) gain = expMult(gain,mgEff(1))
 
             return gain.floor()

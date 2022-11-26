@@ -5,8 +5,8 @@ const DARK_RUN = {
         let x, g = player.dark.run.glyphs[i]
 
         if (i < 4) x = 1/(g**0.5/100+1)
-        else if (i == 4) x = [1/(g**0.5/100+1),1.1**g]
-        else x = 1.1**g
+        else if (i == 4) x = [1/(g**0.5/100+1),1.1**(g**0.75)]
+        else x = 1.1**(g**0.75)
 
         return x
     },
@@ -21,12 +21,12 @@ const DARK_RUN = {
     ],
 
     mass_glyph_gain: [
-        _=>player.mass.gte('ee39')?player.mass.log10().div(1e39).log(1.1).add(1).floor().toNumber():0,
-        _=>player.bh.mass.gte('e1.5e34')?player.bh.mass.log10().div(1.5e34).log(1.1).add(1).floor().toNumber():0,
-        _=>player.atom.quarks.gte('e3e32')?player.atom.quarks.log10().div(3e32).log(1.1).add(1).floor().toNumber():0,
-        _=>0,
-        _=>0,
-        _=>0,
+        _=>player.mass.gte('ee39')?player.mass.log10().div(1e39).log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).floor().toNumber():0,
+        _=>player.bh.mass.gte('e1.5e34')?player.bh.mass.log10().div(1.5e34).log(1.1).add(1).softcap(50,0.5,0).floor().toNumber():0,
+        _=>player.atom.quarks.gte('e3e32')?player.atom.quarks.log10().div(3e32).log(1.1).add(1).softcap(50,0.5,0).floor().toNumber():0,
+        _=>player.md.mass.gte('e1e21')?player.md.mass.log10().div(1e21).log(1.1).add(1).floor().softcap(50,0.5,0).toNumber():0,
+        _=>player.stars.points.gte('e1.5e24')?player.stars.points.log10().div(1.5e24).log(1.1).add(1).floor().softcap(50,0.5,0).toNumber():0,
+        _=>tmp.prestiges.base.gte(1e13)?tmp.prestiges.base.div(1e13).log(1.1).add(1).softcap(10,0.5,0).floor().toNumber():0,
     ],
 
     upg: [
@@ -34,21 +34,61 @@ const DARK_RUN = {
         {
             max: 10,
             desc: `Raise mass gain by 1.5 every level.`,
-            cost(i) { return {0: 6*i+5} },
+            cost(i) {
+                i *= Math.max(1,i-4)**0.5
+                return {0: Math.floor(6*i+5)}
+            },
             eff(i) { return 1.5**i },
             effDesc: x=>"^"+format(x,2),
         },{
             max: 10,
             desc: `Raise mass of black hole gain by 1.5 every level.`,
-            cost(i) { return {0: 6*i+10, 1: 6*i+5} },
+            cost(i) {
+                i *= Math.max(1,i-4)**0.5
+                return {0: Math.floor(6*i+10), 1: Math.floor(6*i+5)}
+            },
             eff(i) { return 1.5**i },
             effDesc: x=>"^"+format(x,2),
         },{
             max: 5,
             desc: `Exotic rank starts x1.25 later every level.`,
-            cost(i) { return {1: 6*i+10, 2: 6*i+5} },
+            cost(i) {
+                return {1: 6*i+10, 2: 6*i+5}
+            },
             eff(i) { return 1.25**i },
             effDesc: x=>"x"+format(x,2)+" later",
+        },{
+            max: 1,
+            desc: `Rank tiers' nerf power from 8th QC modifier is weaker while dark running.`,
+            cost() { return {2: 15, 5: 5} },
+        },{
+            max: 10,
+            desc: `Raise atom gain by 1.5 every level.`,
+            cost(i) {
+                return {2: 75+5*i, 3: 5*i+5}
+            },
+            eff(i) { return 1.5**i },
+            effDesc: x=>"^"+format(x,2),
+        },{
+            desc: `Increase dark ray gain by 200% every level.`,
+            cost(i) {
+                return {0: 20+20*i, 1: 20+20*i, 2: 20+20*i}
+            },
+            eff(i) { return 3**i },
+            effDesc: x=>"x"+format(x,0),
+        },{
+            max: 1,
+            desc: `Gain x1.5 more Cyrillic Glyphs.`,
+            cost() { return {5: 25} },
+            eff(i) { return 1.5**i },
+        },{
+            max: 10,
+            desc: `Dilated mass's overflow starts ^10 later every level.`,
+            cost(i) {
+                return {3: 35+5*i, 4: 5*i+5}
+            },
+            eff(i) { return 10**i },
+            effDesc: x=>"^"+format(x,0),
         },
     ],
 }

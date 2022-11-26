@@ -10,6 +10,9 @@ const FERMIONS = {
         if (tmp.radiation.unl) x = x.mul(tmp.radiation.hz_effect)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(base.pow(player.supernova.fermions.tiers[i][j]))
         if (hasTree("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
+
+        if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+
         return x
     },
     backNormal() {

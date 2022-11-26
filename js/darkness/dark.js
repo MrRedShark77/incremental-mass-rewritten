@@ -13,6 +13,7 @@ const DARK = {
         if (hasElement(141)) x = x.mul(10)
         if (hasElement(145)) x = x.mul(elemEffect(145))
         if (hasElement(152)) x = x.mul(elemEffect(152))
+        x = x.mul(glyphUpgEff(6))
 
         return x.floor()
     },

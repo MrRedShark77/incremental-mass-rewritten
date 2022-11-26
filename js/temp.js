@@ -27,6 +27,7 @@ function resetTemp() {
             bulk: [],
             eff: [],
             baseExp: 1,
+            base: E(1),
         },
 
         bd: {
@@ -118,6 +119,10 @@ function resetTemp() {
             dm: E(1),
             bh: E(1),
             star: E(1),
+        },
+
+        overflow_start: {
+            dm: E('ee30'),
         },
 
         mass_glyph_msg: 0,

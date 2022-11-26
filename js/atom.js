@@ -13,6 +13,8 @@ const ATOM = {
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
         if (FERMIONS.onActive("10")) x = expMult(x,0.625)
 
+        x = x.pow(glyphUpgEff(5))
+
         if (player.dark.run.active) x = expMult(x,mgEff(2))
 
         return x.floor()

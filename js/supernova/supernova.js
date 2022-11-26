@@ -72,6 +72,7 @@ const SUPERNOVA = {
     },
     req(x=player.supernova.times) {
         ff = tmp.dark.shadowEff.sn||1
+        if (player.dark.run.active) ff /= mgEff(4)[1]
 
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
         maxlimit = E(1e20).pow(x.div(ff).scaleEvery('supernova').div(ml_fp).pow(1.25)).mul(1e90)
