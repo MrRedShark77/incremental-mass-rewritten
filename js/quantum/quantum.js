@@ -100,6 +100,8 @@ const QUANTUM = {
         eff() {
             let pow = E(2)
             if (hasTree('qu6')) pow = pow.mul(treeEff('qu6'))
+            pow = pow.mul(tmp.dark.abEff.csp||1)
+
             let x = pow.pow(player.qu.cosmic_str)
             return {pow: pow, eff: x}
         },

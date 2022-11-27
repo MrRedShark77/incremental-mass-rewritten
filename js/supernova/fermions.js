@@ -27,7 +27,7 @@ const FERMIONS = {
     },
     bonus(i,j) {
         let x = E(0)
-        if (hasTree("prim3") && j < 6) x = x.add(tmp.prim.eff[5][1].min(j>2?4:1/0))
+        if (hasTree("prim3") && j < 6) x = x.add(tmp.prim.eff[5][1].min(j>2&&!hasElement(172)?4:1/0))
         return x
     },
     fp() {
@@ -176,6 +176,7 @@ const FERMIONS = {
                 isMass: true,
             },{
                 maxTier() {
+                    if (hasElement(173)) return Infinity
                     let x = 10
                     if (hasTree("fn11")) x += 5
                     return x

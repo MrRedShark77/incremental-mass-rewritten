@@ -57,7 +57,7 @@ function updateChalTemp() {
         tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
-        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(x<=8?s:1))
+        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(x<=8?s:hasElement(174)&&x<=12?s.root(5):1))
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
@@ -71,7 +71,7 @@ const CHALS = {
         }
         player.chal.choosed = x
     },
-    inChal(x) { return player.chal.active == x },
+    inChal(x) { return player.chal.active == x || (player.chal.active == 15 && x <= 12) },
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
         else if (x < 9) ATOM.doReset(chal_reset)
@@ -134,6 +134,7 @@ const CHALS = {
         if (hasElement(104) && (i>=9 && i<=12))  x = x.add(200)
         if (hasElement(125) && (i>=9 && i<=12))  x = x.add(elemEffect(125,0))
         if (hasElement(151) && (i==13))  x = x.add(75)
+        if (hasElement(171) && (i==13||i==14))  x = x.add(100)
         return x.floor()
     },
     getScaleName(i) {
@@ -466,7 +467,22 @@ const CHALS = {
         },
         effDesc(x) { return "x"+format(x,2) },
     },
-    cols: 14,
+    15: {
+        unl() { return hasElement(168) },
+        title: "The Reality II",
+        desc: "All challenges 1-12 are applied at once. In addtional, you are trapped in quantum challenge with modifiers [10,5,10,10,10,10,10,10].",
+        reward: `Normal mass's overflow starts later by completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
+        max: E(100),
+        inc: E('e1e6'),
+        pow: E(2),
+        start: uni('e2e7'),
+        effect(x) {
+            let ret = x.add(1).pow(2)
+            return ret
+        },
+        effDesc(x) { return "^"+format(x,2)+" later" },
+    },
+    cols: 15,
 }
 
 /*

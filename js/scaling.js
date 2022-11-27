@@ -193,7 +193,7 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (!CHALS.inChal(14) && !player.dark.run.active) {
+	if (!CHALS.inChal(14) && !player.dark.run.active && !CHALS.inChal(15)) {
 		if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent",'hex')
 		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
 	}
@@ -241,6 +241,7 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="prestige0") {
 			if (player.md.break.upgs[9].gte(1)) start = start.add(10)
+			if (hasElement(175)) start = start.add(30)
 		}
 	}
 	else if (type=="hyper") {
@@ -250,6 +251,9 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="rank") {
 			if (player.mainUpg.atom.includes(10)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[3][10].effect:0:0)
+		}
+		else if (name=="prestige0") {
+			if (hasElement(175)) start = start.add(30)
 		}
 	}
 	else if (type=="ultra") {
@@ -401,6 +405,7 @@ function getScalingPower(type, name) {
 	}
 	if (hasUpgrade("atom",15) && name == "gamma_ray") power = power.mul(0.8)
 	if (hasElement(108) && ["rank","tier","tetr","pent"].includes(name) && type != "exotic") power = power.mul(player.qu.rip.active?0.98:0.9)
+	if (hasPrestige(2,4) && ['rank','tier','tetr','pent'].includes(name) && type != 'exotic') power = power.mul(tmp.qu.chroma_eff[1][1])
 	let qf = tmp.qu.qc_eff[7][1]
 	if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)

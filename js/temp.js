@@ -123,6 +123,7 @@ function resetTemp() {
 
         overflow_start: {
             dm: E('ee30'),
+            mass: E('ee69'),
         },
 
         mass_glyph_msg: 0,
@@ -226,6 +227,7 @@ function updateTemp() {
 
     tmp.chal13comp = player.chal.comps[13].gte(1)
     tmp.chal14comp = player.chal.comps[14].gte(1)
+    tmp.chal15comp = player.chal.comps[15].gte(1)
     tmp.darkRunUnlocked = hasElement(161)
 
     updateDarkTemp()

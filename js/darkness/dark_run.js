@@ -72,7 +72,8 @@ const DARK_RUN = {
         },{
             desc: `Increase dark ray gain by 200% every level.`,
             cost(i) {
-                return {0: 20+20*i, 1: 20+20*i, 2: 20+20*i}
+                i *= Math.max(1,i-4)**0.5
+                return {0: Math.floor(20+20*i), 1: Math.floor(20+20*i), 2: Math.floor(20+20*i)}
             },
             eff(i) { return 3**i },
             effDesc: x=>"x"+format(x,0),
@@ -85,10 +86,26 @@ const DARK_RUN = {
             max: 10,
             desc: `Dilated mass's overflow starts ^10 later every level.`,
             cost(i) {
-                return {3: 35+5*i, 4: 5*i+5}
+                i *= Math.max(1,i-4)**0.5
+                return {3: Math.floor(35+5*i), 4: Math.floor(5*i+5)}
             },
             eff(i) { return 10**i },
             effDesc: x=>"^"+format(x,0),
+        },{
+            max: 5,
+            desc: `Star generators are ^1.5 stronger every level.`,
+            cost(i) { return {1: 200+10*i, 2: 200+10*i, 5: 40+5*i} },
+            eff(i) { return 1.5**i },
+            effDesc: x=>"^"+format(x,2),
+        },{
+            max: 10,
+            desc: `Prestige base's exponent is increased by 0.02 per level.`,
+            cost(i) {
+                i *= Math.max(1,i-4)**0.5
+                return {0: Math.floor(270+10*i), 3: Math.floor(150+10*i), 4: Math.floor(140+10*i)} 
+            },
+            eff(i) { return i/50 },
+            effDesc: x=>"+"+format(x,2),
         },
     ],
 }

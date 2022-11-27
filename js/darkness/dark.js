@@ -1,8 +1,8 @@
 const DARK = {
     nextEffectAt: [
         [0,1e12],
-        [1e6,1e11,1e25],
-        [1e120,1e180],
+        [1e6,1e11,1e25,1e130],
+        [1e120,1e180,'e345'],
     ],
     gain() {
         let x = E(1)
@@ -13,6 +13,7 @@ const DARK = {
         if (hasElement(141)) x = x.mul(10)
         if (hasElement(145)) x = x.mul(elemEffect(145))
         if (hasElement(152)) x = x.mul(elemEffect(152))
+        if (hasElement(176)) x = x.mul(elemEffect(176))
         x = x.mul(glyphUpgEff(6))
 
         return x.floor()
@@ -113,6 +114,7 @@ const DARK = {
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0)
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
+        if (a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
 
         return x
     },
@@ -132,6 +134,7 @@ const DARK = {
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
         if (a.gte(1e120)) x.hr = a.div(1e120).log10().add(1).pow(2)
         if (a.gte(1e180)) x.pb = a.div(1e180).log10().add(1)
+        if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
 
         return x
     },
@@ -188,6 +191,7 @@ function updateDarkHTML() {
             if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5)
             if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
             if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
+            if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncap BH-Exponent Boost's effect`
 
             tmp.el.dsEff.setHTML(e)
 
@@ -204,6 +208,7 @@ function updateDarkHTML() {
 
                 if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
                 if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
+                if (eff.csp) e += `<br>Boosts cosmic string's power by <b>x${eff.csp.format(3)}</b>`
 
                 tmp.el.abEff.setHTML(e)
             }

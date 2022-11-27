@@ -274,9 +274,9 @@ const PRESTIGES = {
         if (hasElement(100)) x += tmp.elements.effect[100]
         if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
         x += tmp.fermions.effs[1][6]||0
+        x += glyphUpgEff(10,0)
 
         x += 1
-
         if (player.dark.run.active) x /= mgEff(5)
 
         return x
@@ -343,12 +343,12 @@ const PRESTIGES = {
     noReset: [
         _=>hasUpgrade('br',11),
         _=>tmp.chal13comp,
-        _=>false,
+        _=>tmp.chal15comp,
     ],
     autoUnl: [
         _=>tmp.chal13comp,
         _=>tmp.chal14comp,
-        _=>false,
+        _=>tmp.chal15comp,
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -382,6 +382,7 @@ const PRESTIGES = {
         {
             "1": `The requirements from prestige level & honor are 15% weaker.`,
             "3": `Break dilation upgrade 12 is cheaper.`,
+            "4": `Unlock new effect from Hybridized Uran-Astatine.`,
         },
     ],
     rewardEff: [
@@ -456,7 +457,7 @@ function prestigeEff(x,y,def=E(1)) { return tmp.prestiges.eff[x][y] || def }
 function updateRanksTemp() {
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
-    let fp2 = tmp.qu.chroma_eff[1]
+    let fp2 = tmp.qu.chroma_eff[1][0]
     let ffp = E(1)
     let ffp2 = 1
     if (player.dark.run.active) ffp2 /= mgEff(5)

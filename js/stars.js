@@ -33,9 +33,11 @@ const STARS = {
                 pp = pp.mul(r.add(1))
             }
 
-            let x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1).root(2).div(50).add(1)
+            let x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1)
+            
+            x = hasElement(170)?x.root(1.5).div(40):x.root(2).div(50)
 
-            return x
+            return x.add(1)
         } else {
             let [p, pp] = [E(1), E(1)]
             if (hasElement(48)) p = p.mul(1.1)
@@ -66,6 +68,7 @@ const STARS = {
             else {
                 if (hasElement(50)) pow = pow.mul(1.05)
                 if (hasTree("s3")) pow = pow.mul(tmp.supernova.tree_eff.s3)
+                pow = pow.mul(glyphUpgEff(9))
             }
             if (QCs.active() && pow.gte(1)) pow = pow.pow(tmp.qu.qc_eff[0][1])
 

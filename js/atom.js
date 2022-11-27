@@ -139,7 +139,8 @@ const ATOM = {
             if (hasElement(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]).softcap(40000,0.1,0))
             x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
             if (hasElement(61)) x = x.mul(p.add(1).root(2))
-            return x.softcap('ee11',0.9,2).softcap('ee13',0.9,2)
+            if (!hasElement(169)) x = x.softcap('ee11',0.9,2).softcap('ee13',0.9,2)
+            return x
         },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)

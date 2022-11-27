@@ -27,7 +27,10 @@ const CHROMA = {
             let x = E(1.01).pow(i.add(1).log10().max(0).pow(0.8))
             if (hasUpgrade('br',7) && (player.qu.rip.active || hasElement(148))) x = x.pow(2)
             if (hasUpgrade('br',10)) x = x.pow(1.1)
-            return x
+            
+            let y = hasPrestige(2,4)?i.add(1).log10().root(2).div(250).add(1).pow(-1):E(1)
+
+            return [x,y]
         },
         i => {
             let x = E(1.1).pow(i.add(1).log10().max(0).pow(0.75))
@@ -40,7 +43,8 @@ const CHROMA = {
             return `Tickspeed power is ^${format(x)} better`
         },
         x => {
-            return `${player.dark.unl ? "Pre-Exotic" : ""} Pre-Pents requirement is reduced by ${format(x)}x`
+            return `${player.dark.unl ? "Pre-Exotic p" : "P"}re-Pents requirement is reduced by ${format(x[0])}x`
+            +(hasPrestige(2,4)?`<br>All pre-Exotic pre-Hexs scalings are ${formatReduction(x[1])} weaker`:"")
         },
         x => {
             return `Rewards from Challenges 1-8 are ${format(x)}x stronger`

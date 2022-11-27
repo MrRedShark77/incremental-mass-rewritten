@@ -953,6 +953,43 @@ const ELEMENTS = {
         },{
             desc: `Hex’s requirement and Glory’s requirement are slightly weaker.`,
             cost: E("e1.08e72"),
+        },{
+            dark: true,
+            desc: `Unlock 15th Challenge.`,
+            cost: E("1e106"),
+        },{
+            desc: `Remove two softcaps of particle powers earned.`,
+            cost: E("e2.35e72"),
+        },{
+            br: true,
+            desc: `Collapsed star’s effect is even better.`,
+            cost: E("e1.7e72"),
+        },{
+            dark: true,
+            desc: `Add 100 more C13-C14 maximum completions.`,
+            cost: E("1e109"),
+        },{
+            br: true,
+            desc: `Uncap bonus fermions from Epsilon Particles.`,
+            cost: E("e1.24e73"),
+        },{
+            desc: `Uncap Bottom.`,
+            cost: E("e1.45e78"),
+        },{
+            desc: `Neutronium-0 can affect supernova challenges at a reduced rate.`,
+            cost: E("e1.51e78"),
+        },{
+            br: true,
+            desc: `Super & Hyper prestige levels start +30 later.`,
+            cost: E("e1.39e75"),
+        },{
+            desc: `Supernova boosts dark rays earned.`,
+            cost: E("e4.8e78"),
+            effect() {
+                let x = player.supernova.times.add(1).root(2)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
         },
     ],
     /*
@@ -991,7 +1028,8 @@ const ELEMENTS = {
         }
         if (tmp.chal13comp) u += 10 + 2
         if (tmp.chal14comp) u += 6 + 11
-        if (tmp.darkRunUnlocked) u += 6
+        if (tmp.chal15comp) u += 10
+        if (tmp.darkRunUnlocked) u += 7
 
         return u
     },
