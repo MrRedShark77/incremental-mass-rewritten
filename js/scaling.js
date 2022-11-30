@@ -163,8 +163,8 @@ function updateScalingHTML() {
 				let have = tmp.scaling[SCALE_TYPE[x]].includes(key[y])
 				tmp.el['scaling_'+x+'_'+key[y]+'_div'].setDisplay(have)
 				if (have) {
-					tmp.el['scaling_'+x+'_'+key[y]+'_power'].setTxt(format(getScalingPower(SCALE_TYPE[x], key[y]).mul(100))+"%")
-					tmp.el['scaling_'+x+'_'+key[y]+'_start'].setTxt(format(getScalingStart(SCALE_TYPE[x], key[y]),0))
+					tmp.el['scaling_'+x+'_'+key[y]+'_power'].setTxt(format(tmp.scaling_power[SCALE_TYPE[x]][key[y]].mul(100))+"%")
+					tmp.el['scaling_'+x+'_'+key[y]+'_start'].setTxt(format(tmp.scaling_start[SCALE_TYPE[x]][key[y]],0))
 				}
 			}
 		}
@@ -172,24 +172,31 @@ function updateScalingHTML() {
 }
 
 function updateScalingTemp() {
-	if (!tmp.scaling) tmp.scaling = {}
 	for (let x = 0; x < SCALE_TYPE.length; x++) {
-		tmp.scaling[SCALE_TYPE[x]] = []
-		let key = Object.keys(SCALE_START[SCALE_TYPE[x]])
+		let st = SCALE_TYPE[x]
+		let sp = tmp.scaling_power[st], ss = tmp.scaling_start[st]
+
+		tmp.scaling[st] = []
+		let key = Object.keys(SCALE_START[st])
 		for (let y = 0; y < key.length; y++) {
-			if (key[y] == "massUpg") for (let i = 0; i < UPGS.mass.cols; i++) {
-				if (scalingActive(key[y], SCALING_RES[key[y]](i), SCALE_TYPE[x])) {
-					tmp.scaling[SCALE_TYPE[x]].push(key[y])
+			let sn = key[y]
+
+			sp[sn] = getScalingPower(st,sn)
+			ss[sn] = getScalingStart(st,sn)
+
+			if (sn == "massUpg") for (let i = 0; i < UPGS.mass.cols; i++) {
+				if (scalingActive(sn, SCALING_RES[sn](i), st)) {
+					tmp.scaling[st].push(sn)
 					break
 				}
 			}
-			else if (key[y] == "fTier") for (let i = 0; i < 2; i++) for (let j = 0; j < 6; j++) {
-				if (scalingActive(key[y], SCALING_RES[key[y]](i,j), SCALE_TYPE[x])) {
-					tmp.scaling[SCALE_TYPE[x]].push(key[y])
+			else if (sn == "fTier") for (let i = 0; i < 2; i++) for (let j = 0; j < 6; j++) {
+				if (scalingActive(sn, SCALING_RES[sn](i,j), st)) {
+					tmp.scaling[st].push(sn)
 					break
 				}
 			}
-			else if (scalingActive(key[y], SCALING_RES[key[y]](), SCALE_TYPE[x])) tmp.scaling[SCALE_TYPE[x]].push(key[y])
+			else if (scalingActive(sn, SCALING_RES[sn](), st)) tmp.scaling[st].push(sn)
 		}
 	}
 	let sqc8 = []
@@ -202,9 +209,10 @@ function updateScalingTemp() {
 
 function scalingActive(name, amt, type) {
 	if (SCALE_START[type][name] === undefined) return false
-	amt = E(amt);
-	return amt.gte(getScalingStart(type, name));
+	return Decimal.gte(amt, tmp.scaling_start[type][name]);
 }
+
+function scaleStart(type,name) { return tmp.scaling_start[type][name]||SCALE_START[type][name] }
 
 function getScalingName(name, x=0, y=0) {
 	if (!NAME_FROM_RES[name]) return
@@ -220,7 +228,7 @@ function getScalingName(name, x=0, y=0) {
 }
 
 function getScalingStart(type, name) {
-	let start = E(SCALE_START[type][name])
+	let start = SCALE_START[type][name]
 	if (type=="super") {
 		if (name=="rank") {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
@@ -289,6 +297,7 @@ function getScalingStart(type, name) {
 	} else if (type=="exotic") {
 		if (name=="rank") {
 			start = start.mul(glyphUpgEff(3))
+			if (hasElement(178)) start = start.mul(elemEffect(178))
 		}
 	}
 	if (name=='supernova') {

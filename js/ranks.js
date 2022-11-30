@@ -118,6 +118,7 @@ const RANKS = {
             '6': "remove first softcap of normal mass gain.",
             '10': "remove second softcap of normal mass gain.",
             '13': "remove third softcap of normal mass gain.",
+            '17': "remove fourth softcap of normal mass gain.",
         },
     },
     effect: {
@@ -369,6 +370,7 @@ const PRESTIGES = {
             "40": `Chromium-24 is slightly stronger.`,
             "70": `Lawrencium-103 is slightly stronger.`,
             "110": `Ununennium-119 is slightly stronger.`,
+            "190": `Zirconium-40 is slightly stronger.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,

@@ -21,12 +21,12 @@ const DARK_RUN = {
     ],
 
     mass_glyph_gain: [
-        _=>player.mass.gte('ee39')?player.mass.log10().div(1e39).log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).floor().toNumber():0,
-        _=>player.bh.mass.gte('e1.5e34')?player.bh.mass.log10().div(1.5e34).log(1.1).add(1).softcap(50,0.5,0).floor().toNumber():0,
-        _=>player.atom.quarks.gte('e3e32')?player.atom.quarks.log10().div(3e32).log(1.1).add(1).softcap(50,0.5,0).floor().toNumber():0,
-        _=>player.md.mass.gte('e1e21')?player.md.mass.log10().div(1e21).log(1.1).add(1).softcap(50,0.5,0).floor().toNumber():0,
-        _=>player.stars.points.gte('e1.5e24')?player.stars.points.log10().div(1.5e24).log(1.1).add(1).softcap(50,0.5,0).floor().toNumber():0,
-        _=>tmp.prestiges.base.gte(1e13)?tmp.prestiges.base.div(1e13).log(1.1).add(1).softcap(10,0.5,0).floor().toNumber():0,
+        _=>player.mass.gte('ee39')?player.mass.log10().div(1e39).log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).mul(tmp.dark.glyph_mult).floor().toNumber():0,
+        _=>player.bh.mass.gte('e1.5e34')?player.bh.mass.log10().div(1.5e34).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor().toNumber():0,
+        _=>player.atom.quarks.gte('e3e32')?player.atom.quarks.log10().div(3e32).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor().toNumber():0,
+        _=>player.md.mass.gte('e1e21')?player.md.mass.log10().div(1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor().toNumber():0,
+        _=>player.stars.points.gte('e1.5e24')?player.stars.points.log10().div(1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor().toNumber():0,
+        _=>tmp.prestiges.base.gte(1e13)?tmp.prestiges.base.div(1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor().toNumber():0,
     ],
 
     upg: [
@@ -198,13 +198,16 @@ function updateDarkRunHTML() {
 }
 
 function updateDarkRunTemp() {
+    let dtmp = tmp.dark
     let dra = player.dark.run.active
 
+    dtmp.glyph_mult = dtmp.rayEff.glyph||1
+
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
-        tmp.dark.mass_glyph_eff[x] = DARK_RUN.mass_glyph_eff(x)
+        dtmp.mass_glyph_eff[x] = DARK_RUN.mass_glyph_eff(x)
         let mg = Math.max(0,(dra ? DARK_RUN.mass_glyph_gain[x]() : 0)-player.dark.run.glyphs[x])
         if (player.dark.run.gmode == 1) mg = Math.min(player.dark.run.gamount,mg)
-        tmp.dark.mass_glyph_gain[x] = mg
+        dtmp.mass_glyph_gain[x] = mg
     }
 
     for (let x = 1; x < GLYPH_UPG_LEN; x++) {

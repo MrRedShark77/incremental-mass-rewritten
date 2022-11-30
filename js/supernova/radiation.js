@@ -189,7 +189,7 @@ const RADIATION = {
         },{
             title: `Meta-Rank Boost`,
             eff(b) {
-                let x = E(1.025).pow(b.softcap(400,0.5,0))//.softcap(1e8,0.5,2)
+                let x = E(1.025).pow(b.softcap(400,0.5,0)).softcap(1e24,0.5,2)
                 return x
             },
             desc(x) { return `Meta-Rank starts ${format(x)}x later` },

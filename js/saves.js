@@ -37,8 +37,8 @@ Decimal.prototype.scale = function (s, p, mode, rev=false) {
 Decimal.prototype.scaleName = function (type, id, rev=false) {
     var x = this.clone()
     if (SCALE_START[type][id] && SCALE_POWER[type][id]) {
-        let s = getScalingStart(type,id)
-        let p = getScalingPower(type,id)
+        let s = tmp.scaling_start[type][id]
+        let p = tmp.scaling_power[type][id]
         let e = Decimal.pow(SCALE_POWER[type][id],p)
         
         x = x.scale(s,e,type=="meta"?1:0,rev)

@@ -43,11 +43,13 @@ const MASS_DILATION = {
         x = x.mul(tmp.md.upgs[0].eff)
         if (hasElement(22)) x = x.mul(tmp.elements.effect[22])
         if (hasElement(35)) x = x.mul(tmp.elements.effect[35])
-        if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
+        if (hasElement(40)) x = x.mul(tmp.elements.effect[40][0])
         if (hasElement(32)) x = x.pow(1.05)
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
 
         x = x.softcap(tmp.md.massSoftcap1,0.5,0)
+
+        if (hasElement(40)) x = x.pow(tmp.elements.effect[40][1])
 
         if (player.dark.run.active) x = expMult(x,mgEff(3))
 

@@ -142,6 +142,7 @@ const FORMS = {
         return p
     },
     massSoftGain4() {
+        if (player.ranks.hex.gte(17)) return EINF
         let s = mlt(player.qu.rip.active || player.dark.run.active ? 0.1 : 1e4)
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))

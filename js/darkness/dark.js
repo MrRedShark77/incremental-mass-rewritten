@@ -1,6 +1,6 @@
 const DARK = {
     nextEffectAt: [
-        [0,1e12],
+        [0,1e12,1e22],
         [1e6,1e11,1e25,1e130],
         [1e120,1e180,'e345'],
     ],
@@ -25,6 +25,7 @@ const DARK = {
         x.shadow = a.max(1).pow(2).pow(tmp.fermions.effs[0][6]||1)
 
         if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
+        if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1).toNumber()
 
         return x
     },
@@ -191,7 +192,7 @@ function updateDarkHTML() {
             if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5)
             if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
             if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
-            if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncap BH-Exponent Boost's effect`
+            if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncaps BH-Exponent Boost's effect`
 
             tmp.el.dsEff.setHTML(e)
 
@@ -219,7 +220,8 @@ function updateDarkHTML() {
                 Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
             `
 
-            if (eff.passive) e += `<br>Passively gain <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset`
+            if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset`
+            if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`
 
             tmp.el.drEff.setHTML(e)
         } else if (tmp.stab[7] == 1) {

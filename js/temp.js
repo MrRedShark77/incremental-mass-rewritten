@@ -130,6 +130,11 @@ function resetTemp() {
 
         glyph_upg_eff: [],
 
+        scaling: {},
+
+        scaling_power: {},
+        scaling_start: {},
+
         prevSave: "",
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
@@ -153,6 +158,12 @@ function resetTemp() {
         }
     }
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) tmp.bd.upgs[x] = {}
+    for (let x = 0; x < SCALE_TYPE.length; x++) {
+        let st = SCALE_TYPE[x]
+
+        tmp.scaling_power[st] = {}
+        tmp.scaling_start[st] = {}
+    }
     tmp.el = keep[0]
     tmp.prevSave = keep[1]
 }

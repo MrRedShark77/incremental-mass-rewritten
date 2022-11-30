@@ -24,6 +24,8 @@ const ENTROPY = {
     },
     cap() {
         let x = tmp.en.eff.hr
+        if (hasElement(177)) x = x.mul(elemEffect(177))
+        if (hasElement(179)) x = x.mul(elemEffect(179))
         return x
     },
     evaPow(i) {
@@ -167,6 +169,7 @@ const ENTROPY = {
         if (rc.scale) {
             let p = rc.scale.p
             if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
+            if ((i == 2) && hasElement(179)) p **= 0.75
             r = r.scale(rc.scale.s, p, 0)
         }
         let x = rc.inc.pow(r).mul(rc.start)
@@ -182,6 +185,7 @@ const ENTROPY = {
             if (rc.scale) {
                 let p = rc.scale.p
                 if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
+                if ((i == 2) && hasElement(179)) p **= 0.75
                 x = x.scale(rc.scale.s, p, 0, true)
             }
             x = x.add(1).floor()
