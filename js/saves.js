@@ -260,6 +260,7 @@ function getPlayerData() {
             font: 'Verdana',
             notation: 'sc',
             tree_animation: 0,
+            massDis: 0,
         },
         confirms: {},
         offline: {

@@ -1018,6 +1018,33 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return "x"+format(x) },
+        },{
+            br: true,
+            desc: `Reduce first 12 challenges’ scaling’s strength by 30%.`,
+            cost: E("e2e77"),
+        },{
+            desc: `Meta-Tier starts x10 later.`,
+            cost: E("e1.2e84"),
+        },{
+            desc: `Raise collapsed stars gain after softcap by 10.`,
+            cost: E("e3.2e84"),
+        },{
+            br: true,
+            desc: `Entropy boosts dark ray gain.`,
+            cost: E("e9.5e80"),
+            effect() {
+                let x = Decimal.pow(1.1,player.qu.en.amt.add(1).log10().pow(.9))
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },{
+            desc: `Super Pent & Hex start later based on Hybridized Uran-Astatine's first effect.`,
+            cost: E("e3e85"),
+            effect() {
+                let x = tmp.qu.chroma_eff[1][0].max(1).log10().div(2).add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
         },
     ],
     /*
@@ -1056,7 +1083,7 @@ const ELEMENTS = {
         }
         if (tmp.chal13comp) u += 10 + 2
         if (tmp.chal14comp) u += 6 + 11
-        if (tmp.chal15comp) u += 10 + 2
+        if (tmp.chal15comp) u += 12 + 4
         if (tmp.darkRunUnlocked) u += 7
 
         return u

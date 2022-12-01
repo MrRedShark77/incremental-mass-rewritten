@@ -68,12 +68,18 @@ const ATOM = {
 
             if (player.dark.run.active) x = expMult(x,mgEff(2))
 
+            let o = x
+
+            x = overflow(x,'ee82',0.25)
+
+            tmp.overflow.atomic = calcOverflow(o,x,'ee82')
+
             return x
         },
         effect() {
             let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75).pow(getEnRewardEff(1))
             if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
-            x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,0.1,0)
+            x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,0.1,0).softcap(2.5e35,0.1,0)
             return x.floor()
         },
     },
@@ -246,6 +252,9 @@ function updateAtomicHTML() {
 	tmp.el.gamma_ray_eff.setHTML(format(tmp.atom.gamma_ray_eff.eff))
     tmp.el.gamma_ray_auto.setDisplay(hasElement(18))
 	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
+
+    tmp.el.atomicOverflow.setDisplay(player.atom.atomic.gte('ee82'))
+    tmp.el.atomicOverflow.setHTML(`Because of atomic power overflow at <b>${format('ee82')}</b>, your atomic power is ${overflowFormat(tmp.overflow.atomic||1)}!`)
 }
 
 function updateAtomHTML() {

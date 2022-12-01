@@ -119,6 +119,7 @@ function resetTemp() {
             dm: E(1),
             bh: E(1),
             star: E(1),
+            atomic: E(1),
         },
 
         overflow_start: {

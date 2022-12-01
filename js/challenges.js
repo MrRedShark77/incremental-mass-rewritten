@@ -147,17 +147,20 @@ const CHALS = {
         let x = E(1)
         if (hasElement(2)) x = x.mul(0.75)
         if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
+        if (hasElement(180) && i <= 12) x = x.mul(.7)
         return x
     },
     getPower2(i) {
         let x = E(1)
         if (hasElement(92)) x = x.mul(0.75)
         if (hasElement(120)) x = x.mul(0.75)
+        if (hasElement(180) && i <= 12) x = x.mul(.7)
         return x
     },
     getPower3(i) {
         let x = E(1)
         if (hasElement(120)) x = x.mul(0.75)
+        if (hasElement(180) && i <= 12) x = x.mul(.7)
         return x
     },
     getChalData(x, r=E(-1)) {

@@ -14,6 +14,7 @@ const DARK = {
         if (hasElement(145)) x = x.mul(elemEffect(145))
         if (hasElement(152)) x = x.mul(elemEffect(152))
         if (hasElement(176)) x = x.mul(elemEffect(176))
+        if (hasElement(183)) x = x.mul(elemEffect(183))
         x = x.mul(glyphUpgEff(6))
 
         return x.floor()

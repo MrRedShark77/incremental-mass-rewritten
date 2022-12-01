@@ -384,6 +384,7 @@ function updateOptionsHTML() {
 	tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
 	tmp.el.tree_anim_btn.setDisplay(player.supernova.times.gte(1) || quUnl())
 	tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
+	tmp.el.mass_dis.setTxt(["Default",'Always show g','Always show mlt','Important units only'][player.options.massDis])
 
 	tmp.el.omega_badge.setDisplay(localStorage.getItem("imr_secret_badge1") == "1")
 }

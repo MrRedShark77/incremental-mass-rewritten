@@ -7,6 +7,8 @@ const STARS = {
 
         x = x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
 
+        if (hasElement(182)) x = x.pow(10)
+
         /*
         let o = x
 
@@ -139,7 +141,10 @@ function setupStarsHTML() {
 }
 
 function updateStarsScreenHTML() {
-    if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5) {
+    let show = player.supernova.times.lt(1e5)
+
+    tmp.el.star.setDisplay(show)
+    if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5 && show) {
         let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
         let percent = 0
         if (g.gte(1) && player.supernova.post_10) {

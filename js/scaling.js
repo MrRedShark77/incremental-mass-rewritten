@@ -240,6 +240,12 @@ function getScalingStart(type, name) {
 		else if (name=="tetr") {
 			if (player.ranks.tier.gte(100)) start = start.add(5)
 		}
+		else if (name=="pent") {
+			if (hasElement(184)) start = start.mul(elemEffect(184))
+		}
+		else if (name=="hex") {
+			if (hasElement(184)) start = start.mul(elemEffect(184))
+		}
 		else if (name=="massUpg") {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
 			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:0:0)
@@ -293,6 +299,7 @@ function getScalingStart(type, name) {
 		else if (name == "supernova") {if (hasPrestige(1,2)) start = start.add(100)}
 		else if (name=='tier') {
 			if (hasElement(155)) start = start.mul(elemEffect(155))
+			if (hasElement(181)) start = start.mul(10)
 		}
 	} else if (type=="exotic") {
 		if (name=="rank") {
