@@ -36,6 +36,12 @@ const ATOM = {
 
         if (player.dark.run.active) x = expMult(x,mgEff(2))
 
+        let o = x
+
+        x = overflow(x,'ee90',0.5)
+
+        tmp.overflow.quark = calcOverflow(o,x,'ee90')
+
         return x.floor()
     },
     canReset() { return tmp.atom.gain.gte(1) },
@@ -266,4 +272,7 @@ function updateAtomHTML() {
         tmp.el["particle_"+x+"_power"].setTxt(format(player.atom.powers[x])+" "+formatGain(player.atom.powers[x],tmp.atom.particles[x].powerGain.mul(tmp.preQUGlobalSpeed)))
         tmp.el["particle_"+x+"_powerEff"].setHTML(ATOM.particles.desc[x](tmp.atom.particles[x].powerEffect))
     }
+
+    tmp.el.quarkOverflow.setDisplay(player.atom.quarks.gte('ee90'))
+    tmp.el.quarkOverflow.setHTML(`Because of quark overflow at <b>${format('ee90')}</b>, your quark is ${overflowFormat(tmp.overflow.quark||1)}!`)
 }

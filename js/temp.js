@@ -120,11 +120,13 @@ function resetTemp() {
             bh: E(1),
             star: E(1),
             atomic: E(1),
+            quark: E(1)
         },
 
         overflow_start: {
             dm: E('ee30'),
             mass: E('ee69'),
+            bh: E('ee69'),
         },
 
         mass_glyph_msg: 0,

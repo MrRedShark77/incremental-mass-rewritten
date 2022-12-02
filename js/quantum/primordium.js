@@ -67,7 +67,7 @@ const PRIM = {
             x=>{ return `Boost Higgs Boson's effect by ${format(x)}x` },
             x=>{ return `Add ${format(x[0])} to base from Fermions gain ` + (hasTree("prim3") ? ` /<br> Add ${format(x[1])} free tiers to Fermions` : "") },
             x=>{ return `Boost all Radiations gains by ${format(x[0])}x` + (hasTree("prim2") ? ` /<br> Make all Radiations effects ${format(x[1])}x stronger` : "") },
-            x=>{ return `Make all Supernova's scalings start ${format(x)} later` + x.softcapHTML(1500) },
+            x=>{ return `Make ${player.dark.unl ? "pre-exotic" : "all"} Supernova's scalings start ${format(x)} later` + x.softcapHTML(1500) },
         ],
     },
 }

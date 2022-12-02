@@ -387,7 +387,9 @@
                     <br><br>
                     Ratio Mode: <span id="atom_ratio">X</span><br>
                     <button class="btn" onclick="player.atom.ratio = 0">+1</button><button class="btn"onclick="player.atom.ratio = 1">25%</button><button class="btn"onclick="player.atom.ratio = 2">100%</button><br><br>
-                    <div id="particles_table" class="table_center" style="justify-content: space-evenly;"></div>
+                    <div id="particles_table" class="table_center" style="justify-content: space-evenly;"></div><br><div>
+                        <span id="quarkOverflow"></span>
+                    </div>
                 </div><div id="stab_frame4_1">
                     <div id="elemTierDiv">
                         <button onclick="player.atom.elemTier = Math.max(1,player.atom.elemTier-1)" class="btn"><--</button><span id="elemTier" style="margin: 0px 10px">Element Tier 1</span><button onclick="player.atom.elemTier = Math.min(MAX_ELEM_TIERS,player.atom.elemTier+1)" class="btn">--></button><br><br>
@@ -500,7 +502,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6.1.4 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.1.5 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>
                 Total time played: <span id="total_time">X</span><br><br>

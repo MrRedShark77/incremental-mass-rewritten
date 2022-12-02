@@ -362,8 +362,8 @@ function updateBlackHoleHTML() {
 	tmp.el.bhCondenser_auto.setDisplay(FORMS.bh.condenser.autoUnl())
 	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
 
-	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte('ee69'))
-    tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass('ee69')}</b>, your mass of black hole is ${overflowFormat(tmp.overflow.bh||1)}!`)
+	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh))
+    tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh)}</b>, your mass of black hole is ${overflowFormat(tmp.overflow.bh||1)}!`)
 }
 
 function updateOptionsHTML() {

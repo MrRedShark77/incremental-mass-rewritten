@@ -103,6 +103,8 @@ const DARK = {
 
         x = x.mul(tmp.dark.abEff.shadow||1)
 
+        if (hasPrestige(1,22)) x = x.pow(1.1)
+
         return x
     },
     shadowEff() {

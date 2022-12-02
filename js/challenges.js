@@ -135,6 +135,7 @@ const CHALS = {
         if (hasElement(125) && (i>=9 && i<=12))  x = x.add(elemEffect(125,0))
         if (hasElement(151) && (i==13))  x = x.add(75)
         if (hasElement(171) && (i==13||i==14))  x = x.add(100)
+        if (hasElement(186) && (i==13||i==14||i==15))  x = x.add(100)
         return x.floor()
     },
     getScaleName(i) {

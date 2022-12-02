@@ -50,6 +50,7 @@ const SCALE_START = {
 	},
 	exotic: {
 		rank: E(1e16),
+		supernova: E(2e5),
 	},
 }
 
@@ -105,6 +106,7 @@ const SCALE_POWER= {
 	},
 	exotic: {
 		rank: 15,
+		supernova: 20,
 	}
 }
 
@@ -307,7 +309,7 @@ function getScalingStart(type, name) {
 			if (hasElement(178)) start = start.mul(elemEffect(178))
 		}
 	}
-	if (name=='supernova') {
+	if (name=='supernova' && type != 'exotic') {
 		start = start.add(tmp.prim.eff[7])
 	}
 	if ((name=="bh_condenser" || name=="gamma_ray" || name=="tickspeed") && hasUpgrade('atom',14)) start = start.mul(10)

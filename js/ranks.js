@@ -119,6 +119,7 @@ const RANKS = {
             '10': "remove second softcap of normal mass gain.",
             '13': "remove third softcap of normal mass gain.",
             '17': "remove fourth softcap of normal mass gain.",
+            '36': "remove fifth softcap of normal mass gain.",
         },
     },
     effect: {
@@ -380,6 +381,7 @@ const PRESTIGES = {
             "5": `Pent 5's reward is stronger based on Prestige Base.`,
             "7": `Quarks are boosted based on Honor.`,
             "15": `Super & Hyper cosmic strings scale weaker based on Honors.`,
+            "22": `Raise dark shadow gain by 10%.`,
         },
         {
             "1": `The requirements from prestige level & honor are 15% weaker.`,

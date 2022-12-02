@@ -814,7 +814,7 @@ const ELEMENTS = {
             desc: `Supernova boosts blueprint particles earned.`,
             cost: E("e8.6e26"),
             effect() {
-                let x = Decimal.pow(1.1,player.supernova.times)
+                let x = Decimal.pow(1.1,player.supernova.times.softcap(2e5,0.25,0))
                 return x
             },
             effDesc(x) { return "x"+format(x,1) },
@@ -1045,6 +1045,25 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return "x"+format(x) },
+        },{
+            dark: true,
+            desc: `Entropy’s cap is now instead an overflow softcap.`,
+            cost: E("e200"),
+        },{
+            br: true,
+            desc: `Add 100 more C13-C15 maximum completions.`,
+            cost: E("e7.3e86"),
+        },{
+            desc: `Black hole overflow starts later based on prestige base.`,
+            cost: E("e2e90"),
+            effect() {
+                let x = Decimal.pow(2,tmp.prestiges.base.max(1).log10().root(2))
+                return x
+            },
+            effDesc(x) { return "^"+format(x)+" later" },
+        },{
+            desc: `Unlock ???.`,
+            cost: EINF,
         },
     ],
     /*
@@ -1083,7 +1102,7 @@ const ELEMENTS = {
         }
         if (tmp.chal13comp) u += 10 + 2
         if (tmp.chal14comp) u += 6 + 11
-        if (tmp.chal15comp) u += 12 + 4
+        if (tmp.chal15comp) u += 16 + 4
         if (tmp.darkRunUnlocked) u += 7
 
         return u

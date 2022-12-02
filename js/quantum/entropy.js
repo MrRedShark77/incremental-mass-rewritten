@@ -20,6 +20,9 @@ const ENTROPY = {
         if (hasElement(93)) x = x.mul(tmp.elements.effect[93]||1)
         if (player.md.break.upgs[6].gte(1)) x = x.mul(tmp.bd.upgs[6].eff?tmp.bd.upgs[6].eff[0]:1)
         x = x.mul(tmp.dark.shadowEff.en||1)
+
+        x = overflow(x,tmp.en.cap.max(1),0.25)
+
         return x
     },
     cap() {
@@ -231,7 +234,11 @@ function calcEntropy(dt, dt_offline) {
         if (s.lt(1)) ENTROPY.switch(1)
         else player.bh.mass = s
     }
-    player.qu.en.amt = player.qu.en.amt.add(tmp.en.gain.amt.mul(dt)).min(tmp.en.cap)
+
+    let a = player.qu.en.amt.add(tmp.en.gain.amt.mul(dt))
+    if (!hasElement(185)) a = a.min(tmp.en.cap)
+    player.qu.en.amt = a
+
     for (let x = 0; x < ENTROPY.rewards.length; x++) player.qu.en.rewards[x] = player.qu.en.rewards[x].max(tmp.en.rewards[x])
 }
 
@@ -253,8 +260,8 @@ function updateEntropyTemp() {
         tmp.en.gain[id] = ENTROPY.evaGain(x)
         tmp.en.eff[id] = ENTROPY.evaEff(x)
     }
-    tmp.en.gain.amt = ENTROPY.gain()
     tmp.en.cap = ENTROPY.cap()
+    tmp.en.gain.amt = ENTROPY.gain()
 }
 
 function updateEntropyHTML() {
