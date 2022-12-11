@@ -79,6 +79,8 @@ const FORMS = {
 
         x = x.pow(glyphUpgEff(1))
 
+        if (hasUpgrade('bh',16)) x = x.pow(upgEffect(2,16))
+
         if (player.dark.run.active) x = expMult(x,mgEff(0))
 
         let o = x
@@ -168,6 +170,7 @@ const FORMS = {
         return p
     },
     massSoftGain6() {
+        if (player.ranks.hex.gte(48)) return EINF
         let s = mlt(1e22)
         s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s.max(1)
@@ -227,6 +230,7 @@ const FORMS = {
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
             step = step.mul(tmp.bosons.effect.z_boson[0])
             step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
+            if (hasElement(191)) step = step.pow(elemEffect(191))
             step = step.pow(tmp.qu.chroma_eff[0])
             if (hasTree("t1")) step = step.pow(1.15)
 
@@ -238,7 +242,7 @@ const FORMS = {
             }
             if (hasPrestige(0,6)) ss = ss.pow(100)
             if (hasElement(102)) ss = ss.pow(100)
-            step = step.softcap(ss,p,0)
+            step = step.softcap(ss,p,0,hasUpgrade('rp',16))
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
             if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
@@ -310,6 +314,7 @@ const FORMS = {
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
             if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
+            gain = gain.pow(tmp.matters.upg[0].eff)
             if (player.dark.run.active) gain = expMult(gain,mgEff(1))
 
             return gain.floor()

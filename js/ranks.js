@@ -120,6 +120,8 @@ const RANKS = {
             '13': "remove third softcap of normal mass gain.",
             '17': "remove fourth softcap of normal mass gain.",
             '36': "remove fifth softcap of normal mass gain.",
+            '43': "hex 6's effect is overpowered.",
+            '48': "remove sixth softcap of normal mass gain.",
         },
     },
     effect: {
@@ -215,7 +217,9 @@ const RANKS = {
         },
         hex: {
             '4'() {
-                let ret = player.ranks.hex.mul(.2).add(1)
+                let hex = player.ranks.hex
+                let ret = hex.mul(.2).add(1)
+                if (hex.gte(43)) ret = ret.pow(hex.div(10).add(1).root(2))
                 return ret
             },
         },
@@ -372,6 +376,8 @@ const PRESTIGES = {
             "70": `Lawrencium-103 is slightly stronger.`,
             "110": `Ununennium-119 is slightly stronger.`,
             "190": `Zirconium-40 is slightly stronger.`,
+            "218": `Unquadpentium-145 is slightly stronger.`,
+            "233": `Red Matter boosts Dark Ray.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -387,6 +393,7 @@ const PRESTIGES = {
             "1": `The requirements from prestige level & honor are 15% weaker.`,
             "3": `Break dilation upgrade 12 is cheaper.`,
             "4": `Unlock new effect from Hybridized Uran-Astatine.`,
+            "5": `Glory boosts glyphic mass.`,
         },
     ],
     rewardEff: [
@@ -403,6 +410,10 @@ const PRESTIGES = {
                 let x = player.prestiges[0].div(1e4).toNumber()
                 return x
             },x=>"+^"+format(x)],
+            "233": [_=>{
+                let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).pow(2)
+                return x
+            },x=>"x"+format(x)],
             /*
             "1": [_=>{
                 let x = E(1)
@@ -431,7 +442,10 @@ const PRESTIGES = {
             },x=>formatReduction(x)+" weaker"],
         },
         {
-
+            "5": [_=>{
+                let x = player.prestiges[2].root(2).div(10).add(1)
+                return x.toNumber()
+            },x=>"x"+format(x,2)],
         },
     ],
     reset(i, bulk = false) {

@@ -30,15 +30,21 @@ const PRIM = {
                 return x
             },
             p=>{
-                let x = [p.root(3).div(5).add(1).softcap(3,0.4,0),p.pow(1.25).add(1)]
+                let br16 = hasUpgrade('br',16)
+                let x = [p.root(3).div(5).add(1).softcap(3,0.4,0,br16),p.pow(1.25).add(1)]
+                if (br16) x[0] = x[0].pow(1.5)
                 return x
             },
             p=>{
-                let x = [p.root(3).div(5).add(1).softcap(3,0.4,0),E(3).pow(p.pow(0.75))]
+                let br16 = hasUpgrade('br',16)
+                let x = [p.root(3).div(5).add(1).softcap(3,0.4,0,br16),E(3).pow(p.pow(0.75))]
+                if (br16) x[0] = x[0].pow(1.5)
                 return x
             },
             p=>{
-                let x = [p.root(3).div(5).add(1).softcap(3,0.4,0),E(2).pow(p.pow(0.75))]
+                let br16 = hasUpgrade('br',16)
+                let x = [p.root(3).div(5).add(1).softcap(3,0.4,0,br16),E(2).pow(p.pow(0.75))]
+                if (br16) x[0] = x[0].pow(1.5)
                 return x
             },
             p=>{
@@ -61,9 +67,9 @@ const PRIM = {
         ],
         effDesc: [
             x=>{ return `Boost Stronger Power by ${format(x)}x` },
-            x=>{ return `Boost Rage Powers gain by ^${format(x[0]) + x[0].softcapHTML(3)} /<br> Boost Non-Bonus Tickspeed by ${format(x[1])}x` },
-            x=>{ return `Boost Dark Matters gain by ^${format(x[0]) + x[0].softcapHTML(3)} /<br> Boost BH Condenser Power by ${format(x[1])}x` },
-            x=>{ return `Boost Atoms gain by ^${format(x[0]) + x[0].softcapHTML(3)} /<br> Boost Cosmic Ray Power by ${format(x[1])}x` },
+            x=>{ return `Boost Rage Powers gain by ^${format(x[0]) + x[0].softcapHTML(3,hasUpgrade('br',16))} /<br> Boost Non-Bonus Tickspeed by ${format(x[1])}x` },
+            x=>{ return `Boost Dark Matters gain by ^${format(x[0]) + x[0].softcapHTML(3,hasUpgrade('br',16))} /<br> Boost BH Condenser Power by ${format(x[1])}x` },
+            x=>{ return `Boost Atoms gain by ^${format(x[0]) + x[0].softcapHTML(3,hasUpgrade('br',16))} /<br> Boost Cosmic Ray Power by ${format(x[1])}x` },
             x=>{ return `Boost Higgs Boson's effect by ${format(x)}x` },
             x=>{ return `Add ${format(x[0])} to base from Fermions gain ` + (hasTree("prim3") ? ` /<br> Add ${format(x[1])} free tiers to Fermions` : "") },
             x=>{ return `Boost all Radiations gains by ${format(x[0])}x` + (hasTree("prim2") ? ` /<br> Make all Radiations effects ${format(x[1])}x stronger` : "") },

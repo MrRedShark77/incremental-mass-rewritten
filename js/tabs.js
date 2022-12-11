@@ -63,6 +63,7 @@ const TABS = {
         7: [
             { id: "Dark Effects" },
             { id: "Dark Run", unl() { return tmp.darkRunUnlocked } },
+            { id: "The Matters", unl() { return tmp.matterUnl } },
         ]
     },
 }

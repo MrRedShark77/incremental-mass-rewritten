@@ -37,10 +37,14 @@ const ATOM = {
         if (player.dark.run.active) x = expMult(x,mgEff(2))
 
         let o = x
+        let os = E('ee90')
 
-        x = overflow(x,'ee90',0.5)
+        if (hasUpgrade('atom',16)) os = os.pow(10)
 
-        tmp.overflow.quark = calcOverflow(o,x,'ee90')
+        x = overflow(x,os,0.5)
+
+        tmp.overflow.quark = calcOverflow(o,x,os)
+        tmp.overflow_start.quark = os
 
         return x.floor()
     },
@@ -63,7 +67,9 @@ const ATOM = {
     },
     atomic: {
         gain() {
-            let x = tmp.atom.gamma_ray_eff?tmp.atom.gamma_ray_eff.eff:E(0)
+            let greff = tmp.atom.gamma_ray_eff||{eff: E(1),exp: E(1)}
+
+            let x = greff.eff
             if (hasElement(3)) x = x.mul(tmp.elements.effect[3])
             if (hasElement(52)) x = x.mul(tmp.elements.effect[52])
             x = x.mul(tmp.bosons.upgs.gluon[0].effect)
@@ -71,6 +77,8 @@ const ATOM = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+
+            if (hasGlyphUpg(12)) x = x.pow(greff.exp)
 
             if (player.dark.run.active) x = expMult(x,mgEff(2))
 
@@ -118,7 +126,11 @@ const ATOM = {
             pow = pow//.softcap('e3e12',0.9,2)
 
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
-            return {pow: pow, eff: eff}
+
+            let exp = E(1)
+            if (hasGlyphUpg(12)) exp = Decimal.pow(1.1,eff.max(1).log10().add(1).log10())
+
+            return {pow: pow, eff: eff, exp: exp}
         },
         bonus() {
             let x = tmp.fermions.effs[0][0]||E(0)
@@ -255,7 +267,7 @@ function updateAtomicHTML() {
 	tmp.el.gamma_ray_scale.setTxt(getScalingName('gamma_ray'))
 	tmp.el.gamma_ray_cost.setTxt(format(tmp.atom.gamma_ray_cost,0))
 	tmp.el.gamma_ray_pow.setTxt(format(tmp.atom.gamma_ray_eff.pow))
-	tmp.el.gamma_ray_eff.setHTML(format(tmp.atom.gamma_ray_eff.eff))
+	tmp.el.gamma_ray_eff.setHTML(format(tmp.atom.gamma_ray_eff.eff)+"x"+(hasGlyphUpg(12)?", ^"+format(tmp.atom.gamma_ray_eff.exp):""))
     tmp.el.gamma_ray_auto.setDisplay(hasElement(18))
 	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
 
@@ -273,6 +285,6 @@ function updateAtomHTML() {
         tmp.el["particle_"+x+"_powerEff"].setHTML(ATOM.particles.desc[x](tmp.atom.particles[x].powerEffect))
     }
 
-    tmp.el.quarkOverflow.setDisplay(player.atom.quarks.gte('ee90'))
-    tmp.el.quarkOverflow.setHTML(`Because of quark overflow at <b>${format('ee90')}</b>, your quark is ${overflowFormat(tmp.overflow.quark||1)}!`)
+    tmp.el.quarkOverflow.setDisplay(player.atom.quarks.gte(tmp.overflow_start.quark))
+    tmp.el.quarkOverflow.setHTML(`Because of quark overflow at <b>${format(tmp.overflow_start.quark)}</b>, your quark is ${overflowFormat(tmp.overflow.quark||1)}!`)
 }

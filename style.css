@@ -544,6 +544,12 @@ h2 {
     font-size: 25px;
 }
 
+h3 {
+	display: inline;
+	font-weight: bold;
+    font-size: 20px;
+}
+
 *::-webkit-scrollbar {
     width: 10px;
 }
@@ -566,6 +572,12 @@ h2 {
 .table_left {
     display: flex;
     justify-content: start;
+    flex-flow: row wrap;
+}
+
+.table_space_evenly {
+    display: flex;
+    justify-content: space-evenly;
     flex-flow: row wrap;
 }
 
@@ -758,6 +770,17 @@ h2 {
 
 .en_sub_reward {
 	font-size: 12px;
+}
+
+.matter_div {
+	width: calc(33.3% - 10px);
+	min-width: 500px;
+	height: 200px;
+	padding: 10px 5px;
+}
+
+.matter_title {
+	font-size: 20px;
 }
 
 #popups {

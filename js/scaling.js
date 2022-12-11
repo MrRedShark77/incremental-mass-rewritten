@@ -20,6 +20,7 @@ const SCALE_START = {
 		tier: E(200),
 		tetr: E(60),
 		pent: E(60),
+		hex: E(60),
 		massUpg: E(500),
 		tickspeed: E(250),
 		bh_condenser: E(300),
@@ -33,12 +34,14 @@ const SCALE_START = {
 		rank: E(600),
 		tier: E(1e5),
 		tetr: E(150),
+		pent: E(1200),
 		massUpg: E(1e11),
 		tickspeed: E(700),
 		bh_condenser: E(750),
 		gamma_ray: E(800),
 		supernova: E(60),
 		fTier: E(100),
+		prestige0: E(320),
 	},
 	meta: {
 		rank: E(1e4),
@@ -47,6 +50,7 @@ const SCALE_START = {
 		bh_condenser: E(1e7),
 		gamma_ray: E(1e6),
 		supernova: E(100),
+		fTier: E(1e4),
 	},
 	exotic: {
 		rank: E(1e16),
@@ -76,6 +80,7 @@ const SCALE_POWER= {
 		tier: 2.5,
 		tetr: 3,
 		pent: 3,
+		hex: 3.5,
 		massUpg: 5,
 		tickspeed: 4,
 		bh_condenser: 2,
@@ -89,12 +94,14 @@ const SCALE_POWER= {
 		rank: 4,
 		tier: 4,
 		tetr: 6,
+		pent: 6,
 		massUpg: 10,
 		tickspeed: 7,
 		bh_condenser: 4,
 		gamma_ray: 6,
 		supernova: 5,
 		fTier: 6,
+		prestige0: 3,
 	},
 	meta: {
 		rank: 1.0025,
@@ -103,6 +110,7 @@ const SCALE_POWER= {
 		bh_condenser: 1.001,
 		gamma_ray: 1.001,
 		supernova: 1.025,
+		fTier: 1.001,
 	},
 	exotic: {
 		rank: 15,
@@ -258,6 +266,7 @@ function getScalingStart(type, name) {
 		else if (name=="prestige0") {
 			if (player.md.break.upgs[9].gte(1)) start = start.add(10)
 			if (hasElement(175)) start = start.add(30)
+			if (hasElement(194)) start = start.mul(2)
 		}
 	}
 	else if (type=="hyper") {
@@ -270,6 +279,7 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="prestige0") {
 			if (hasElement(175)) start = start.add(30)
+			if (hasElement(194)) start = start.mul(2)
 		}
 	}
 	else if (type=="ultra") {
@@ -278,6 +288,9 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="tickspeed") {
 			if (player.ranks.tetr.gte(5)) start = start.add(RANKS.effect.tetr[5]())
+		}
+		else if (name=="massUpg") {
+			if (hasElement(189)) start = start.pow(1.5)
 		}
 	}
 	else if (type=="meta") {
@@ -302,11 +315,13 @@ function getScalingStart(type, name) {
 		else if (name=='tier') {
 			if (hasElement(155)) start = start.mul(elemEffect(155))
 			if (hasElement(181)) start = start.mul(10)
+			if (hasElement(193)) start = start.mul(elemEffect(193))
 		}
 	} else if (type=="exotic") {
 		if (name=="rank") {
 			start = start.mul(glyphUpgEff(3))
 			if (hasElement(178)) start = start.mul(elemEffect(178))
+			if (hasElement(193)) start = start.mul(elemEffect(193))
 		}
 	}
 	if (name=='supernova' && type != 'exotic') {

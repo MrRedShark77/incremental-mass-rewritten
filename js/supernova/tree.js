@@ -419,7 +419,7 @@ const TREE_UPGS = {
             cost: E(1e14),
             effect() {
                 let x = tmp.bosons.effect.graviton[0].add(1).root(2)
-                return x.softcap('e1000',1/3,0)
+                return x.softcap('e1000',1/3,0).softcap('ee38',0.95,2)
             },
             effDesc(x) { return format(x)+"x"+x.softcapHTML('e1000') },
         },

@@ -29,6 +29,14 @@ const DARK_RUN = {
         _=>tmp.prestiges.base.gte(1e13)?tmp.prestiges.base.div(1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor().toNumber():0,
     ],
 
+    upg_unl_length() {
+        let x = 10
+
+        if (tmp.matterUnl) x += 2
+
+        return x
+    },
+
     upg: [
         null,
         {
@@ -106,6 +114,15 @@ const DARK_RUN = {
             },
             eff(i) { return i/50 },
             effDesc: x=>"+"+format(x,2),
+        },{
+            max: 1,
+            desc: `Add 0.1 to matter exponent.`,
+            cost(i) { return {5: 80+40*i} },
+            eff(i) { return i/10 },
+        },{
+            max: 1,
+            desc: `Cosmic ray effect is now exponent at super reduced rate.`,
+            cost(i) { return {0: 487, 4: 271, 5: 121} },
         },
     ],
 }
@@ -136,6 +153,8 @@ function isAffordGlyphCost(cost) {
     return true
 }
 
+function hasGlyphUpg(i) { return player.dark.run.upg[i]>0 }
+
 function glyphUpgEff(i,def=1) { return tmp.glyph_upg_eff[i]||def; }
 
 function buyGlyphUpgrade(i) {
@@ -150,6 +169,7 @@ function buyGlyphUpgrade(i) {
 
         for (let c in cost) player.dark.run.glyphs[c] -= cost[c]
 
+        if (i==12) updateAtomTemp()
         updateDarkRunTemp()
     }
 }
@@ -189,6 +209,12 @@ function updateDarkRunHTML() {
     tmp.el.glyph_upg_msg.setHTML(msg)
 
     for (let x = 1; x < GLYPH_UPG_LEN; x++) {
+        let unl = x <= tmp.dark.glyph_upg_unls
+
+        tmp.el['glyph_upg'+x].setDisplay(unl)
+
+        if (!unl) continue
+
 		let u = DARK_RUN.upg[x]
         let ua = player.dark.run.upg[x]||0
         let max = u.max||Infinity
@@ -201,7 +227,10 @@ function updateDarkRunTemp() {
     let dtmp = tmp.dark
     let dra = player.dark.run.active
 
+    dtmp.glyph_upg_unls = DARK_RUN.upg_unl_length()
+
     dtmp.glyph_mult = dtmp.rayEff.glyph||1
+    if (hasPrestige(2,5)) dtmp.glyph_mult *= prestigeEff(2,5,1)
 
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         dtmp.mass_glyph_eff[x] = DARK_RUN.mass_glyph_eff(x)

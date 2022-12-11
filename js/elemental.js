@@ -61,7 +61,7 @@ const ELEMENTS = {
             effect() {
                 let x = player.atom?player.atom.powers[2].add(1).root(2):E(1)
                 if (x.gte('e1e4')) x = expMult(x.div('e1e4'),0.9).mul('e1e4')
-                return x
+                return overflow(x,'ee100',0.25).min('ee101')
             },
             effDesc(x) { return format(x)+"x"+(x.gte('e1e4')?" <span class='soft'>(softcapped)</span>":"") },
         },
@@ -626,8 +626,8 @@ const ELEMENTS = {
             desc: `Prestige Base’s exponent is increased based on Pent.`,
             cost: E('e2.5e7'),
             effect() {
-                let x = player.ranks.pent.root(2).div(1e3).toNumber()
-                return x
+                let x = hasElement(195) ? player.ranks.pent.root(1.5).div(400) : player.ranks.pent.root(2).div(1e3)
+                return x.toNumber()
             },
             effDesc(x) { return "+^"+format(x) },
         },
@@ -850,7 +850,8 @@ const ELEMENTS = {
             desc: `Prestige base boost dark rays earned.`,
             cost: E("e1.7e31"),
             effect() {
-                let x = (tmp.prestiges.base||E(1)).add(1).log10().add(1)
+                let pb = tmp.prestiges.base||E(1)
+                let x = hasPrestige(0,218) ? Decimal.pow(10,pb.add(1).log10().root(2)) : pb.add(1).log10().add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -1062,8 +1063,57 @@ const ELEMENTS = {
             },
             effDesc(x) { return "^"+format(x)+" later" },
         },{
-            desc: `Unlock ???.`,
-            cost: EINF,
+            dark: true,
+            desc: `Unlock The Matters.`,
+            cost: E(1e250),
+        },{
+            br: true,
+            desc: `Dark matter boosts abyssal blots gain. Ultra mass upgrades start ^1.5 later.`,
+            cost: E("e8.8e89"),
+            effect() {
+                let x = player.bh.dm.add(1).log10().add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },{
+            desc: `Chromas gain is raised to 1.1th power.`,
+            cost: E("e1.8e91"),
+        },{
+            desc: `Z0 Boson’s first effect raises tickspeed power at a reduced rate.`,
+            cost: E("e3.5e92"),
+            effect() {
+                let x = tmp.bosons.effect.z_boson[0].add(1).log10().add(1).log10().add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
+        },{
+            dark: true,
+            desc: `Each matter’s gain is increased by 10% every OoM^2 of dark matter. Unlock more main upgrades.`,
+            cost: E(1e303),
+            effect() {
+                let x = Decimal.pow(1.1,player.bh.dm.add(1).log10().add(1).log10())
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },{
+            desc: `Hybridized Uran-Astatine’s first effect makes exotic rank and meta-tier starting later at ^0.5 rate.`,
+            cost: E("e3.3e93"),
+            effect() {
+                let x = tmp.qu.chroma_eff[1][0].max(1).root(2)
+                return x
+            },
+            effDesc(x) { return "x"+format(x)+" later" },
+        },{
+            dark: true,
+            desc: `Keep prestige tiers on darkness. Super and Hyper Prestige Levels start x2 later.`,
+            cost: E('e360'),
+        },{
+            desc: `Fermium-100 is slightly stronger. Automate each matter’s upgrade.`,
+            cost: E("e1.2e94"),
+        },{
+            br: true,
+            desc: `Add 200 more C13-C15 maximum completions.`,
+            cost: E("e7.7e92"),
         },
     ],
     /*
@@ -1104,6 +1154,7 @@ const ELEMENTS = {
         if (tmp.chal14comp) u += 6 + 11
         if (tmp.chal15comp) u += 16 + 4
         if (tmp.darkRunUnlocked) u += 7
+        if (tmp.matterUnl) u += 8
 
         return u
     },

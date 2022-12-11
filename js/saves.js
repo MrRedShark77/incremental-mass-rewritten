@@ -13,9 +13,9 @@ Decimal.prototype.modular=Decimal.prototype.mod=function (other){
     return this.sub(this.div(other).floor().mul(other));
 };
 
-Decimal.prototype.softcap = function (start, power, mode) {
+Decimal.prototype.softcap = function (start, power, mode, dis=false) {
     var x = this.clone()
-    if (x.gte(start)) {
+    if (!dis&&x.gte(start)) {
         if ([0, "pow"].includes(mode)) x = x.div(start).max(1).pow(power).mul(start)
         if ([1, "mul"].includes(mode)) x = x.sub(start).div(power).add(start)
         if ([2, "exp"].includes(mode)) x = expMult(x.div(start), power).mul(start)
@@ -62,9 +62,9 @@ Decimal.prototype.format = function (acc=4, max=12) { return format(this.clone()
 
 Decimal.prototype.formatGain = function (gain, mass=false) { return formatGain(this.clone(), gain, mass) }
 
-function softcapHTML(x, start) { return E(x).gte(start)?` <span class='soft'>(softcapped)</span>`:"" }
+function softcapHTML(x, start, invisible=false) { return !invisible&&E(x).gte(start)?` <span class='soft'>(softcapped)</span>`:"" }
 
-Decimal.prototype.softcapHTML = function (start) { return softcapHTML(this.clone(), start) }
+Decimal.prototype.softcapHTML = function (start, invisible) { return softcapHTML(this.clone(), start, invisible) }
 
 function calcOverflow(x,y,s,inv=false) { return x.gte(s) ? x.max(1).log10().div(y.max(1).log10()).pow(inv?-1:1) : E(1) }
 
@@ -447,7 +447,7 @@ function loadGame(start=true, gotNaN=false) {
     
     if (start) {
         setInterval(save,60000)
-        for (let x = 0; x < 50; x++) updateTemp()
+        updateTemp()
         updateHTML()
         for (let x = 0; x < 3; x++) {
             let r = document.getElementById('ratio_d'+x)

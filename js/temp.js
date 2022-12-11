@@ -110,8 +110,15 @@ function resetTemp() {
         dark: {
             shadowEff: {},
             rayEff: {},
+            abEff: {},
             mass_glyph_eff: [],
             mass_glyph_gain: [],
+        },
+
+        matters: {
+            gain: [],
+            upg: [],
+            exponent: 2,
         },
 
         overflow: {
@@ -127,6 +134,7 @@ function resetTemp() {
             dm: E('ee30'),
             mass: E('ee69'),
             bh: E('ee69'),
+            quark: E('ee90'),
         },
 
         mass_glyph_msg: 0,
@@ -167,6 +175,7 @@ function resetTemp() {
         tmp.scaling_power[st] = {}
         tmp.scaling_start[st] = {}
     }
+    for (let x = 0; x < MATTERS_LEN; x++) tmp.matters.upg[x] = {} 
     tmp.el = keep[0]
     tmp.prevSave = keep[1]
 }
@@ -243,6 +252,8 @@ function updateTemp() {
     tmp.chal14comp = player.chal.comps[14].gte(1)
     tmp.chal15comp = player.chal.comps[15].gte(1)
     tmp.darkRunUnlocked = hasElement(161)
+    tmp.matterUnl = hasElement(188)
+    tmp.moreUpgs = hasElement(192)
 
     updateDarkTemp()
     updateQuantumTemp()

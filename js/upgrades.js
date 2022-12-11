@@ -195,7 +195,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) },
-            lens: 15,
+            lens: 16,
             1: {
                 desc: "Boosters adds Musclers.",
                 cost: E(1),
@@ -319,6 +319,11 @@ const UPGS = {
                     return "x"+format(x)
                 },
             },
+            16: {
+                unl() { return tmp.moreUpgs },
+                desc: `Remove tickspeed power's softcap.`,
+                cost: E('e1.8e91'),
+            },
         },
         2: {
             title: "Black Hole Upgrades",
@@ -333,7 +338,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 15,
+            lens: 16,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -441,7 +446,7 @@ const UPGS = {
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
-                    return ret//.softcap("ee13",0.9,2)
+                    return overflow(ret,'ee108',0.25).min('ee110')
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
@@ -459,6 +464,18 @@ const UPGS = {
                     return "+"+format(x,0)
                 },
             },
+            16: {
+                unl() { return tmp.moreUpgs },
+                desc: `Red matter's upgrade applies mass gain at reduced rate.`,
+                cost: E('e5e101'),
+                effect() {
+                    let x = tmp.matters.upg[0].eff.max(1).pow(0.75)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "^"+format(x)
+                },
+            },
         },
         3: {
             title: "Atom Upgrades",
@@ -473,7 +490,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") },
-            lens: 15,
+            lens: 16,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -581,6 +598,11 @@ const UPGS = {
                 desc: "Reduce Cosmic Ray scaling by 20%.",
                 cost: E('e3.4e14'),
             },
+            16: {
+                unl() { return tmp.moreUpgs },
+                desc: `Quark Overflow starts ^10 later.`,
+                cost: E('e3e96'),
+            },
         },
         4: {
             title: "Big Rip Upgrades",
@@ -595,7 +617,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasElement(132) },
-            lens: 15,
+            lens: 16,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -681,6 +703,11 @@ const UPGS = {
                 unl() { return player.md.break.active },
                 desc: `Blueprint Particles give slightly more Pre-Quantum Global Speed.`,
                 cost: E(1e24),
+            },
+            16: {
+                unl() { return tmp.moreUpgs },
+                desc: `Unsoftcap the first effect from Alpha, Omega & Sigma particles. They're stronger.`,
+                cost: E(1e273),
             },
         },
     },
