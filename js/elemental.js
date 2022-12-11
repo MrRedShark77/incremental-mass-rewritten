@@ -1112,7 +1112,7 @@ const ELEMENTS = {
             cost: E("e1.2e94"),
         },{
             br: true,
-            desc: `Add 200 more C13-C15 maximum completions.`,
+            desc: `Add 200 more C13-C14 maximum completions.`,
             cost: E("e7.7e92"),
         },
     ],
