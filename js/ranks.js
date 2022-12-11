@@ -120,7 +120,7 @@ const RANKS = {
             '13': "remove third softcap of normal mass gain.",
             '17': "remove fourth softcap of normal mass gain.",
             '36': "remove fifth softcap of normal mass gain.",
-            '43': "hex 6's effect is overpowered.",
+            '43': "hex 4's effect is overpowered.",
             '48': "remove sixth softcap of normal mass gain.",
         },
     },
