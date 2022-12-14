@@ -1114,6 +1114,16 @@ const ELEMENTS = {
             br: true,
             desc: `Add 200 more C13-C14 maximum completions.`,
             cost: E("e7.7e92"),
+        },{
+            dark: true,
+            desc: `Exotic rank and ultra prestige level scaling is 10% weaker.`,
+            cost: E('e435'),
+        },{
+            desc: `Particle powers’ first effect is better.`,
+            cost: E("e1.6e94"),
+        },{
+            desc: `Unlock Accelerators, tickspeed now provides exponential boost, but nullify Argon-18 and Unpentnilium-150 (except in 15th Challenge).`,
+            cost: E("e8.6e95"),
         },
     ],
     /*
@@ -1154,7 +1164,7 @@ const ELEMENTS = {
         if (tmp.chal14comp) u += 6 + 11
         if (tmp.chal15comp) u += 16 + 4
         if (tmp.darkRunUnlocked) u += 7
-        if (tmp.matterUnl) u += 8
+        if (tmp.matterUnl) u += 8 + 3
 
         return u
     },

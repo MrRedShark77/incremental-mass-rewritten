@@ -210,6 +210,13 @@ function updateTickspeedTemp() {
     tmp.tickspeedEffect = FORMS.tickspeed.effect()
 }
 
+function updateAcceleratorTemp() {
+    tmp.accelCost = Decimal.pow(10,Decimal.pow(1.5,player.accelerator)).floor()
+    tmp.accelBulk = E(0)
+    if (player.rp.points.gte(10)) tmp.accelBulk = player.rp.points.max(1).log10().max(1).log(1.5).add(1).floor()
+    tmp.accelEffect = FORMS.accel.effect()
+}
+
 function updateUpgradesTemp() {
     UPGS.main.temp()
     UPGS.mass.temp()
@@ -272,6 +279,7 @@ function updateTemp() {
     updateAtomTemp()
     updateRagePowerTemp()
     updateBlackHoleTemp()
+    updateAcceleratorTemp()
     updateTickspeedTemp()
     updateRanksTemp()
     updateMassTemp()

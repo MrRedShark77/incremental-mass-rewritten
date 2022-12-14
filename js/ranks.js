@@ -122,6 +122,7 @@ const RANKS = {
             '36': "remove fifth softcap of normal mass gain.",
             '43': "hex 4's effect is overpowered.",
             '48': "remove sixth softcap of normal mass gain.",
+            '62': "remove seventh softcap of normal mass gain.",
         },
     },
     effect: {
@@ -378,6 +379,8 @@ const PRESTIGES = {
             "190": `Zirconium-40 is slightly stronger.`,
             "218": `Unquadpentium-145 is slightly stronger.`,
             "233": `Red Matter boosts Dark Ray.`,
+            "382": `Matter exponent is increased by prestige level. Collapsed star's effect is overpowered.`,
+            "388": `Hybridized Uran-Astatine also applies pre-Meta pre-Glory at a reduced rate.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -414,6 +417,14 @@ const PRESTIGES = {
                 let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).pow(2)
                 return x
             },x=>"x"+format(x)],
+            "382": [_=>{
+                let x = player.prestiges[0].max(0).root(2).div(1e3).toNumber()
+                return x
+            },x=>"+"+format(x)],
+            "388": [_=>{
+                let x = tmp.qu.chroma_eff[1][1].root(2)
+                return x
+            },x=>formatReduction(x)+" weaker"],
             /*
             "1": [_=>{
                 let x = E(1)
@@ -499,8 +510,8 @@ function updateRanksTemp() {
 
     let tps = 0
 
-    tmp.ranks.tetr.req = player.ranks.tetr.div(fp2).div(ffp2).scaleEvery('tetr').div(fp).pow(pow).mul(3).add(10-tps).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true).mul(fp2).mul(ffp2).add(1).floor();
+    tmp.ranks.tetr.req = player.ranks.tetr.div(ffp2).scaleEvery('tetr',[1,1,1,fp2]).div(fp).pow(pow).mul(3).add(10-tps).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true,[1,1,1,fp2]).mul(ffp2).add(1).floor();
 
     fp = E(1).mul(ffp)
     if (player.ranks.hex.gte(1)) fp = fp.div(0.8)

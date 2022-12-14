@@ -34,7 +34,6 @@ const FORMS = {
         x = x.add(tmp.upgs.mass[1]?tmp.upgs.mass[1].eff.eff:1)
         if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
-        x = x.mul(tmp.tickspeedEffect.eff||E(1))
         if (player.bh.unl) x = x.mul(tmp.bh.effect)
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
@@ -46,6 +45,9 @@ const FORMS = {
 
         if (!hasElement(105)) x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
         else x = x.pow(tmp.atom.particles[0].powerEffect.eff1)
+
+        if (!hasElement(199) || CHALS.inChal(15)) x = x.mul(tmp.tickspeedEffect.eff||E(1))
+        else x = x.pow(tmp.tickspeedEffect.eff||E(1))
 
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
@@ -180,6 +182,7 @@ const FORMS = {
         return p
     },
     massSoftGain7() {
+        if (player.ranks.hex.gte(62)) return EINF
         let s = mlt(1e36)
         if (hasElement(159)) s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s.max(1)
@@ -245,15 +248,48 @@ const FORMS = {
             step = step.softcap(ss,p,0,hasUpgrade('rp',16))
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
-            if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
-            if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
 
-            if (hasElement(150)) eff = expMult(eff,1.6)
+            if (!hasElement(199) || CHALS.inChal(15)) {
+                if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
+                if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
 
-            return {step: step, eff: eff, bonus: bonus, ss: ss}
+                if (hasElement(150)) eff = expMult(eff,1.6)
+            }
+
+            let eff_bottom = eff
+			if (hasElement(199) && !CHALS.inChal(15)){
+				eff = eff.add(9).log10().add(9).log10().pow(tmp.accelEffect.eff.mul(0.1));
+				eff_bottom = eff_bottom.pow(tmp.accelEffect.eff);
+				if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05),eff_bottom = eff_bottom.pow(1.05);
+			}
+
+            return {step: step, eff: eff, bonus: bonus, ss: ss, eff_bottom: eff_bottom}
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
         autoSwitch() { player.autoTickspeed = !player.autoTickspeed },
+    },
+    accel: {
+        cost(x=player.accelerator) { return Decimal.pow(10,Decimal.pow(1.5,x)).floor() },
+        can() { return player.rp.points.gte(tmp.accelCost) },
+        buy() {
+            if (this.can()) {
+                player.accelerator = player.accelerator.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.accelerator = tmp.accelBulk
+            }
+        },
+        effect() {
+            let step = E(0.0004)
+            step = step.mul(tmp.dark.abEff.accelPow||1)
+
+            let x = player.accelerator.mul(step).add(1)
+            return {step: step, eff: x}
+        },
+        autoUnl() { return true },
+        autoSwitch() { player.autoAccel = !player.autoAccel },
     },
     rp: {
         gain() {
@@ -397,6 +433,7 @@ const FORMS = {
             player.mainUpg.rp = keep
             player.rp.points = E(0)
             player.tickspeed = E(0)
+            player.accelerator = E(0)
             player.bh.mass = E(0)
             FORMS.rp.doReset()
         },

@@ -186,14 +186,14 @@ const FERMIONS = {
                     return E('e5e8').pow(t.pow(2)).mul('e6e9')
                 },
                 calcTier() {
-                    let res = tmp.tickspeedEffect && tmp.pass?tmp.tickspeedEffect.eff:E(1)
+                    let res = tmp.tickspeedEffect && tmp.pass?tmp.tickspeedEffect.eff_bottom:E(1)
                     if (res.lt('e6e9')) return E(0)
                     let x = res.div('e6e9').max(1).log('e5e8').max(0).root(2)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().pow(0.5).div(150).add(1).pow(t)
-                    return x.min(500)
+                    return x.min(500)//.softcap(500,0.1,2)
                 },
                 desc(x) {
                     return `Meta-Tickspeed starts ${format(x)}x later`
@@ -461,7 +461,7 @@ function updateFermionsTemp() {
 
 function updateFermionsHTML() {
     let r = [
-        [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff, tmp.fermions.prod[0]],
+        [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff_bottom, tmp.fermions.prod[0]],
         [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, tmp.tickspeedEffect.step, tmp.fermions.prod[1]]
     ]
     for (i = 0; i < 2; i++) {

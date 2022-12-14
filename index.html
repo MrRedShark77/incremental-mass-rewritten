@@ -237,7 +237,20 @@
                         <button id="tickspeed_auto" class="btn" style="width: 80px;" onclick="FORMS.tickspeed.autoSwitch()">OFF</button>
                         <div style="margin-left: 5px; text-align: left; width: 400px">
                             Tickspeed Power: <span id="tickspeed_step">X</span><br>
-                            Tickspeed Effect: <span id="tickspeed_eff">X</span>x to mass gain
+                            Tickspeed Effect: <span id="tickspeed_eff">X</span> to mass gain
+                        </div>
+                    </div><div style="width: 100%; margin-bottom: 5px;" class="table_center" id="accel_div">
+                        <div style="width: 400px">
+                            <div class="resources">
+                                <img src="images/accelerator.png">
+                                <span style="margin-left: 5px; text-align: left;"><span id="accel_scale"></span>Accelerators [<span id="accel_lvl">X</span>]</span>
+                            </div>
+                        </div><button id="accel_btn" class="btn" style="width: 200px;" onclick="FORMS.accel.buy()">Cost: <span id="accel_cost">X</span> Rage Points</button>
+                        <button class="btn" style="width: 120px;" onclick="FORMS.accel.buyMax()">Buy Max</button>
+                        <button id="accel_auto" class="btn" style="width: 80px;" onclick="FORMS.accel.autoSwitch()">OFF</button>
+                        <div style="margin-left: 5px; text-align: left; width: 400px">
+                            Accelerator Power: <span id="accel_step">X</span><br>
+                            Accelerator Effect: <span id="accel_eff">X</span>
                         </div>
                     </div><br><div>
                         <span id="massSoft1" class="red">After <b id="massSoftStart1">X</b> of mass gain will softcap mass gain!</span><br>
@@ -509,7 +522,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6.2 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.2.1 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br>
                 Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>

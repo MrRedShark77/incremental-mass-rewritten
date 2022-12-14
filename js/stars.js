@@ -9,6 +9,8 @@ const STARS = {
 
         if (hasElement(182)) x = x.pow(10)
 
+        if (hasUpgrade('bh',17)) x = x.pow(upgEffect(2,17))
+
         /*
         let o = x
 
@@ -35,11 +37,18 @@ const STARS = {
                 pp = pp.mul(r.add(1))
             }
 
-            let x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1)
+            let x
+            if (hasPrestige(0,382)) {
+                x = Decimal.pow(1.1,pp.log10().add(1).mul(player.stars.points.add(1).log10().add(1).log10().add(1)).root(2).sub(1))
+            } else {
+                x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1)
             
-            x = hasElement(170)?x.root(1.5).div(40):x.root(2).div(50)
+                x = hasElement(170)?x.root(1.5).div(40):x.root(2).div(50)
 
-            return x.add(1)
+                x = x.add(1)
+            }
+
+            return x
         } else {
             let [p, pp] = [E(1), E(1)]
             if (hasElement(48)) p = p.mul(1.1)

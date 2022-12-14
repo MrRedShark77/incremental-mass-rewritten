@@ -338,7 +338,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 16,
+            lens: 17,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -476,6 +476,18 @@ const UPGS = {
                     return "^"+format(x)
                 },
             },
+            17: {
+                unl() { return tmp.moreUpgs },
+                desc: `Violet matter's upgrade applies collapsed stars gain at reduced rate.`,
+                cost: E('e4e113'),
+                effect() {
+                    let x = tmp.matters.upg[4].eff.max(1).log10().add(1).pow(2)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "^"+format(x)
+                },
+            },
         },
         3: {
             title: "Atom Upgrades",
@@ -490,7 +502,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") },
-            lens: 16,
+            lens: 17,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -602,6 +614,18 @@ const UPGS = {
                 unl() { return tmp.moreUpgs },
                 desc: `Quark Overflow starts ^10 later.`,
                 cost: E('e3e96'),
+            },
+            17: {
+                unl() { return tmp.moreUpgs },
+                desc: `Pink matter's upgrade applies quark gain at reduced rate.`,
+                cost: E('e7.45e98'),
+                effect() {
+                    let x = tmp.matters.upg[2].eff.max(1).log10().add(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "^"+format(x)
+                },
             },
         },
         4: {

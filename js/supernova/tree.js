@@ -640,7 +640,7 @@ const TREE_UPGS = {
             desc: `Blueprint Particles & Chromas are affected by Tickspeed Effect at a reduced rate.`,
             cost: E(100),
             effect() {
-                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.eff.add(1).log10().add(1).log10().add(1).pow(3):E(1)
+                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.eff_bottom.add(1).log10().add(1).log10().add(1).pow(3):E(1)
                 return x
             },
             effDesc(x) { return format(x)+"x" },

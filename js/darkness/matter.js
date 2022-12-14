@@ -65,6 +65,8 @@ function updateMattersHTML() {
 
 function updateMattersTemp() {
     tmp.matters.exponent = 2 + glyphUpgEff(11,0)
+    if (hasPrestige(0,382)) tmp.matters.exponent += prestigeEff(0,382,0)
+    
     tmp.matters.req_unl = Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))
 
     for (let i = 0; i < MATTERS_LEN; i++) {

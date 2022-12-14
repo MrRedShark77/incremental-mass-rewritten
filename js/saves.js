@@ -75,6 +75,7 @@ function calc(dt, dt_offline) {
         player.mass = player.mass.add(tmp.massGain.mul(du_gs))
         if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
         if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
+        if (FORMS.accel.autoUnl() && player.autoAccel) FORMS.accel.buyMax()
         if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
         if (hasElement(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
         if (player.mass.gte(1.5e136)) player.chal.unl = true
@@ -163,6 +164,7 @@ function getPlayerData() {
         massUpg: {},
         autoMassUpg: [null,false,false,false],
         autoTickspeed: false,
+        autoAccel: false,
         mainUpg: {
             
         },
@@ -256,6 +258,7 @@ function getPlayerData() {
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
+        accelerator: E(0),
         options: {
             font: 'Verdana',
             notation: 'sc',

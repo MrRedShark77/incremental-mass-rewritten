@@ -32,7 +32,7 @@ const DARK_RUN = {
     upg_unl_length() {
         let x = 10
 
-        if (tmp.matterUnl) x += 2
+        if (tmp.matterUnl) x += 3
 
         return x
     },
@@ -115,14 +115,19 @@ const DARK_RUN = {
             eff(i) { return i/50 },
             effDesc: x=>"+"+format(x,2),
         },{
-            max: 1,
+            max: 2,
             desc: `Add 0.1 to matter exponent.`,
-            cost(i) { return {5: 80+40*i} },
+            cost(i) { return {5: 80+46*i} },
             eff(i) { return i/10 },
+            effDesc: x=>"+"+format(x,1),
         },{
             max: 1,
             desc: `Cosmic ray effect is now exponent at super reduced rate.`,
             cost(i) { return {0: 487, 4: 271, 5: 121} },
+        },{
+            max: 1,
+            desc: `Green Chromas gain is squared.`,
+            cost(i) { return {0: 542, 2: 404} },
         },
     ],
 }

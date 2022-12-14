@@ -2,7 +2,7 @@ const DARK = {
     nextEffectAt: [
         [0,1e12,1e22],
         [1e6,1e11,1e25,1e130],
-        [1e120,1e180,'e345','e800'],
+        [1e120,1e180,'e345','e800','e2500'],
     ],
     gain() {
         let x = E(1)
@@ -143,6 +143,7 @@ const DARK = {
         if (a.gte(1e180)) x.pb = a.div(1e180).log10().add(1)
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
+        if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0)
 
         return x
     },
@@ -230,6 +231,7 @@ function updateDarkHTML() {
                 if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
                 if (eff.csp) e += `<br>Boosts cosmic string's power by <b>x${eff.csp.format(3)}</b>`
                 if (eff.mexp) e += `<br>Boosts each matters gain by <b>^${eff.mexp.format(3)}</b>`
+                if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5)
 
                 tmp.el.abEff.setHTML(e)
             }
