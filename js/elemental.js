@@ -1137,7 +1137,7 @@ const ELEMENTS = {
         },{
             br: true,
             desc: `Unlock the fourth mass upgrade which raises Stronger.`,
-            cost: E("1e8e98"),
+            cost: E("1e4.9e98"),
         },{
             desc: `Booster boosts its effect.`,
             cost: E("e6.5e99"),
