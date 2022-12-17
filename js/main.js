@@ -34,7 +34,6 @@ const FORMS = {
         x = x.add(tmp.upgs.mass[1]?tmp.upgs.mass[1].eff.eff:1)
         if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
-        if (player.bh.unl) x = x.mul(tmp.bh.effect)
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
         x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
@@ -42,6 +41,8 @@ const FORMS = {
         if (hasTree("m1") && !hasElement(164)) x = x.mul(tmp.supernova.tree_eff.m1)
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
+
+        if (player.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
 
         if (!hasElement(105)) x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
         else x = x.pow(tmp.atom.particles[0].powerEffect.eff1)
@@ -337,7 +338,7 @@ const FORMS = {
             gain = gain.root(4)
 
             if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(tmp.supernova.tree_eff.bh1)
-            gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
+            if (!hasElement(204)) gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
 
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = gain.root(6)
             if (!hasElement(105)) gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
@@ -349,6 +350,7 @@ const FORMS = {
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
+            if (hasElement(204)) gain = gain.pow(tmp.bosons.upgs.photon[0].effect)
             if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
             gain = gain.pow(tmp.matters.upg[0].eff)
             if (player.dark.run.active) gain = expMult(gain,mgEff(1))
@@ -369,7 +371,7 @@ const FORMS = {
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
             if (hasElement(46) && !hasElement(162)) x = x.mul(tmp.elements.effect[46])
-            x = x.mul(tmp.bosons.upgs.photon[0].effect)
+            x = hasElement(204) ? x.pow(tmp.bosons.upgs.photon[0].effect) : x.mul(tmp.bosons.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
 
@@ -388,6 +390,7 @@ const FORMS = {
             let os = E('ee69')
 
             if (hasElement(187)) os = os.pow(elemEffect(187))
+            if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
 
             x = overflow(x,os,0.5)
 
@@ -440,6 +443,9 @@ const FORMS = {
         effect() {
             let x = (player.mainUpg.atom.includes(12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
+
+            if (hasElement(201)) x = Decimal.pow(1.1,x.max(1).log10().add(1).log10().pow(.8))
+
             return x//.softcap("ee14",0.95,2)
         },
         condenser: {

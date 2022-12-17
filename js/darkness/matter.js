@@ -10,6 +10,7 @@ const MATTERS = {
         if (hasElement(192)) x = x.mul(elemEffect(192))
 
         x = x.pow(tmp.dark.abEff.mexp||1)
+        x = x.pow(glyphUpgEff(14,1))
         if (i < MATTERS_LEN-1) x = x.pow(tmp.matters.upg[i+1].eff)
 
         return x
@@ -66,6 +67,7 @@ function updateMattersHTML() {
 function updateMattersTemp() {
     tmp.matters.exponent = 2 + glyphUpgEff(11,0)
     if (hasPrestige(0,382)) tmp.matters.exponent += prestigeEff(0,382,0)
+    if (player.ranks.hex.gte(91)) tmp.matters.exponent += .15
     
     tmp.matters.req_unl = Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))
 

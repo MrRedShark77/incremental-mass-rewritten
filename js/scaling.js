@@ -325,6 +325,9 @@ function getScalingStart(type, name) {
 			if (hasElement(178)) start = start.mul(elemEffect(178))
 			if (hasElement(193)) start = start.mul(elemEffect(193))
 		}
+		else if (name=="supernova") {
+			if (hasPrestige(0,552)) start = start.mul(1.25)
+		}
 	}
 	if (name=='supernova' && type != 'exotic') {
 		start = start.add(tmp.prim.eff[7])

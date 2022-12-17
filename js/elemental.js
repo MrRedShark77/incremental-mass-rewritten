@@ -43,6 +43,8 @@ const ELEMENTS = {
             if (this.upgs[x].dark) player.dark.shadow = player.dark.shadow.sub(this.upgs[x].cost)
             else player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
             player.atom.elements.push(x)
+
+            tmp.pass = false
         }
     },
     upgs: [
@@ -559,7 +561,7 @@ const ELEMENTS = {
             desc: `Mass of Black Hole effect raises itself at a reduced logarithm rate.`,
             cost: E('e1100'),
             effect() {
-                let x = player.bh.mass.add(1).log10().add(1).log10().mul(1.25).add(1).pow(player.qu.rip.active?2:0.4)
+                let x = player.bh.mass.add(1).log10().add(1).log10().mul(1.25).add(1).pow(hasElement(201)||player.qu.rip.active?2:0.4)
                 //if (player.qu.rip.active) x = x.softcap(100,0.1,0)
                 return x
             },
@@ -626,7 +628,8 @@ const ELEMENTS = {
             desc: `Prestige Base’s exponent is increased based on Pent.`,
             cost: E('e2.5e7'),
             effect() {
-                let x = hasElement(195) ? player.ranks.pent.root(1.5).div(400) : player.ranks.pent.root(2).div(1e3)
+                let pent = player.ranks.pent
+                let x = hasElement(195) ? pent.softcap(2e5,0.25,0).root(1.5).div(400) : pent.root(2).div(1e3)
                 return x.toNumber()
             },
             effDesc(x) { return "+^"+format(x) },
@@ -852,9 +855,9 @@ const ELEMENTS = {
             effect() {
                 let pb = tmp.prestiges.base||E(1)
                 let x = hasPrestige(0,218) ? Decimal.pow(10,pb.add(1).log10().root(2)) : pb.add(1).log10().add(1)
-                return x
+                return x.softcap(1e12,0.25,0)
             },
-            effDesc(x) { return "x"+format(x) },
+            effDesc(x) { return "x"+format(x)+softcapHTML(x,1e12) },
         },{
             br: true,
             desc: `Quantum shard’s base is increased by the number of elements bought.`,
@@ -1124,6 +1127,30 @@ const ELEMENTS = {
         },{
             desc: `Unlock Accelerators, tickspeed now provides exponential boost, but nullify Argon-18 and Unpentnilium-150 (except in 15th Challenge).`,
             cost: E("e8.6e95"),
+        },{
+            br: true,
+            desc: `15th Challenge’s effect applies black hole overflow starting.`,
+            cost: E("1e2.6e97"),
+        },{
+            desc: `Black hole’s effect provides an exponential boost to mass. Actinium-89 is now stronger outside big rip.`,
+            cost: E("e3.65e99"),
+        },{
+            br: true,
+            desc: `Unlock the fourth mass upgrade which raises Stronger.`,
+            cost: E("1e8e98"),
+        },{
+            desc: `Booster boosts its effect.`,
+            cost: E("e6.5e99"),
+            effect() {
+                let x = (player.massUpg[2]||E(0)).add(10).log10().pow(0.8);
+                
+				return x
+            },
+            effDesc(x) { return "^"+format(x) },
+        },{
+            dark: true,
+            desc: `1st and 3rd Photon & Gluon upgrades provides an exponential boost. Keep big rip upgrades on darkness.`,
+            cost: E('e605'),
         },
     ],
     /*
@@ -1164,7 +1191,8 @@ const ELEMENTS = {
         if (tmp.chal14comp) u += 6 + 11
         if (tmp.chal15comp) u += 16 + 4
         if (tmp.darkRunUnlocked) u += 7
-        if (tmp.matterUnl) u += 8 + 3
+        if (tmp.matterUnl) u += 14
+        if (tmp.mass4Unl) u += 2
 
         return u
     },
@@ -1191,6 +1219,7 @@ function getElementId(x) {
 }
 
 function getElementName(x) {
+    if (x <= 118) return ELEMENTS.fullNames[x]
     let log = Math.floor(Math.log10(x))
     let listF = ["Nil", "Un", "Bi", "Tri", "Quad", "Pent", "Hex", "Sept", "Oct", "Enn"]
     let list = ["nil", "un", "bi", "tri", "quad", "pent", "hex", "sept", "oct", "enn"]

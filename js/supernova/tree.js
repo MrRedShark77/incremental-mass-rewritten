@@ -407,8 +407,8 @@ const TREE_UPGS = {
             desc: `Photon, Gluon powers up each other.`,
             cost: E(1e14),
             effect() {
-                let x = expMult(player.supernova.bosons.photon,hasElement(113) ? 0.95 : 1/2,2).max(1)
-                let y = expMult(player.supernova.bosons.gluon,hasElement(113) ? 0.95 : 1/2,2).max(1)
+                let x = overflow(expMult(player.supernova.bosons.photon,hasElement(113) ? 0.95 : 1/2,2).max(1),'ee60',0.5)
+                let y = overflow(expMult(player.supernova.bosons.gluon,hasElement(113) ? 0.95 : 1/2,2).max(1),'ee60',0.5)
                 return [x,y]
             },
             effDesc(x) { return format(x[1])+"x to Photon, "+format(x[0])+"x to Gluon" },
@@ -441,7 +441,7 @@ const TREE_UPGS = {
             desc: `Tickspeed affect each Fermions gain at a reduced rate.`,
             cost: E(1e27),
             effect() {
-                let x = E(1.25).pow(player.tickspeed.pow(0.4))
+                let x = E(1.25).pow(player.tickspeed.softcap(1e24,0.5,2).pow(0.4))
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -914,7 +914,6 @@ const TREE_UPGS = {
 
         qu_qol10: {
             unl: _=>player.dark.unl,
-            icon: 'placeholder',
 
             qf: true,
             desc: `You can't gain Delta, Alpha, Omega & Sigma Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
@@ -922,7 +921,6 @@ const TREE_UPGS = {
         },
         qu_qol11: {
             branch: ["qu_qol10"],
-            icon: 'placeholder',
 
             qf: true,
             desc: `You can't gain Phi & Epsilon Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
@@ -930,7 +928,6 @@ const TREE_UPGS = {
         },
         qu_qol12: {
             branch: ["qu_qol11"],
-            icon: 'placeholder',
 
             qf: true,
             desc: `You can't gain Theta & Beta Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,

@@ -127,7 +127,8 @@ function resetTemp() {
             bh: E(1),
             star: E(1),
             atomic: E(1),
-            quark: E(1)
+            quark: E(1),
+            stronger: E(1),
         },
 
         overflow_start: {
@@ -135,6 +136,7 @@ function resetTemp() {
             mass: E('ee69'),
             bh: E('ee69'),
             quark: E('ee90'),
+            stronger: E('e115')
         },
 
         mass_glyph_msg: 0,
@@ -261,6 +263,7 @@ function updateTemp() {
     tmp.darkRunUnlocked = hasElement(161)
     tmp.matterUnl = hasElement(188)
     tmp.moreUpgs = hasElement(192)
+    tmp.mass4Unl = hasElement(202)
 
     updateDarkTemp()
     updateQuantumTemp()

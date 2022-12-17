@@ -32,7 +32,7 @@ const DARK_RUN = {
     upg_unl_length() {
         let x = 10
 
-        if (tmp.matterUnl) x += 3
+        if (tmp.matterUnl) x += 4
 
         return x
     },
@@ -128,6 +128,15 @@ const DARK_RUN = {
             max: 1,
             desc: `Green Chromas gain is squared.`,
             cost(i) { return {0: 542, 2: 404} },
+        },{
+            max: 10,
+            desc: `Each matter's the exponent is increased by 12.5% per level.`,
+            cost(i) {
+                let j = Math.ceil(10*i**1.1)
+                return {0: 615+j, 1: 447+j, 2: 461+j, 3: 329+j, 4: 334+j, 5: 223+j}
+            },
+            eff(i) { return 1+i/8 },
+            effDesc: x=>"^"+format(x,3),
         },
     ],
 }

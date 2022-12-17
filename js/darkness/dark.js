@@ -68,7 +68,7 @@ const DARK = {
         bmd.mass = E(0)
         for (let x = 0; x < 10; x++) bmd.upgs[x] = E(0)
 
-        resetMainUpgs(4,k)
+        if (!hasElement(204)) resetMainUpgs(4,k)
         
         if (!hasElement(124) || (force && !hasElement(136))) {
             let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",

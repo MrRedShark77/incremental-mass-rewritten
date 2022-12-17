@@ -5,7 +5,7 @@ const ATOM = {
         if (x.lt(1)) return E(0)
         x = x.root(5)
         if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))
-        x = x.mul(tmp.bosons.upgs.gluon[0].effect)
+        x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[0].effect) : x.mul(tmp.bosons.upgs.gluon[0].effect)
         if (hasElement(17)) x = x.pow(1.1)
         x = x.pow(tmp.prim.eff[3][0])
         if (hasElement(111)) x = x.pow(tmp.elements.effect[111])
@@ -74,7 +74,7 @@ const ATOM = {
             let x = greff.eff
             if (hasElement(3)) x = x.mul(tmp.elements.effect[3])
             if (hasElement(52)) x = x.mul(tmp.elements.effect[52])
-            x = x.mul(tmp.bosons.upgs.gluon[0].effect)
+            x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[0].effect) : x.mul(tmp.bosons.upgs.gluon[0].effect)
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)

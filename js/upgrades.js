@@ -1,6 +1,6 @@
 const UPGS = {
     mass: {
-        cols: 3,
+        cols: 4,
         temp() {
             tmp.massFP = 1;
             for (let x = this.cols; x >= 1; x--) {
@@ -42,14 +42,15 @@ const UPGS = {
             let inc = upg.inc
             let start = upg.start
             let lvl = player.massUpg[i]||E(0)
-            let cost, bulk
-            let fp = tmp.massFP
+            let cost, bulk = E(0), fp
 
             if (i==4) {
-                cost = mlt(inc.pow(lvl).mul(start))
-                bulk = player.mass.div(1.5e56).max(1).log10().div(start.mul(1e9)).max(1).log(inc).add(1).floor()
-                if (player.mass.lt(start)) bulk = E(0)
+                let pow = 1.5
+                cost = Decimal.pow(10,Decimal.pow(inc,lvl.pow(pow)).mul(start))
+                if (player.mass.gte('ee100')) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).add(1).floor()
             } else {
+                fp = tmp.massFP
+                
                 if (i == 1 && player.ranks.rank.gte(2)) inc = inc.pow(0.8)
                 if (i == 2 && player.ranks.rank.gte(3)) inc = inc.pow(0.8)
                 if (i == 3 && player.ranks.rank.gte(4)) inc = inc.pow(0.8)
@@ -97,6 +98,7 @@ const UPGS = {
                 if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
                 step = step.pow(tmp.upgs.mass[3]?tmp.upgs.mass[3].eff.eff:1)
                 let ret = step.mul(x.add(tmp.upgs.mass[2].bonus)).add(1)//.softcap("ee14",0.95,2)
+                if (hasElement(203)) ret = ret.pow(elemEffect(203))
                 return {step: step, eff: ret}
             },
             effDesc(eff) {
@@ -130,6 +132,8 @@ const UPGS = {
                 if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
                 if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
                 if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
+                step = step.pow(tmp.upgs.mass[4]?tmp.upgs.mass[4].eff.eff:1)
+
                 let sp = 0.5
                 if (player.mainUpg.atom.includes(9)) sp *= 1.15
                 if (player.ranks.tier.gte(30)) sp *= 1.1
@@ -152,6 +156,14 @@ const UPGS = {
                 let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
                 ret = ret.mul(tmp.prim.eff[0])
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
+
+                let o = ret
+                let os = E('e115')
+
+                ret = overflow(ret,os,0.5)
+
+                tmp.overflow.stronger = calcOverflow(o,ret,os)
+                tmp.overflow_start.stronger = os
                 
                 return {step: step, eff: ret, ss: ss}
             },
@@ -165,6 +177,31 @@ const UPGS = {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:0)
                 x = x.mul(getEnRewardEff(4))
+                return x
+            },
+        },
+        4: {
+            unl() { return hasElement(202) },
+            title: "Overpower",
+            start: E(1e100),
+            inc: E(1.5),
+            effect(i) {
+                let xx = i.add(tmp.upgs.mass[4].bonus)
+                
+                let step = E(.005)
+
+                let x = step.mul(xx).add(1)
+                
+                return {step: step, eff: x, ss: EINF}
+            },
+            effDesc(eff) {
+                return {
+                    step: "+^"+format(eff.step),
+                    eff: "^"+format(eff.eff)+" to Stronger Power"+eff.eff.softcapHTML(eff.ss)
+                }
+            },
+            bonus() {
+                let x = E(0)
                 return x
             },
         },

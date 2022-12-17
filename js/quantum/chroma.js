@@ -32,7 +32,7 @@ const CHROMA = {
             
             let y = hasPrestige(2,4)?i.add(1).log10().root(2).div(250).add(1).pow(-1):E(1)
 
-            return [x.softcap(1e10,0.5,0),y]
+            return [x.softcap(1e10,1/3,0),y]
         },
         i => {
             let x = E(1.1).pow(i.add(1).log10().max(0).pow(0.75))

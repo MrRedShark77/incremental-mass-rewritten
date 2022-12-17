@@ -193,7 +193,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().pow(0.5).div(150).add(1).pow(t)
-                    return x.min(500)//.softcap(500,0.1,2)
+                    return x.min(500)//overflow(x,500,0.25)
                 },
                 desc(x) {
                     return `Meta-Tickspeed starts ${format(x)}x later`
