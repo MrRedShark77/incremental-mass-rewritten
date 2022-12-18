@@ -40,9 +40,9 @@ const FERMIONS = {
         let x = t
         let fp = meta?E(1):tmp.fermions.fp
         if (bulk) {
-            x = t.scaleEvery('fTier',true).mul(fp).add(1).floor()
+            x = t.scaleEvery('fTier',true,[1,1,1,fp]).add(1).floor()
         } else {
-            x = t.div(fp).scaleEvery('fTier')
+            x = t.scaleEvery('fTier',false,[1,1,1,fp])
         }
         return x
     },

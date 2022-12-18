@@ -133,7 +133,7 @@ button {
 
 #notify {
 	z-index: 3;
-	position: absolute;
+	position: fixed;
     left: 50%;
     top: 20px;
 	transform: translate(-50%, 0);

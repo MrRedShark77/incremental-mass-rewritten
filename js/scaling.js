@@ -51,7 +51,7 @@ const SCALE_START = {
 		bh_condenser: E(1e7),
 		gamma_ray: E(1e6),
 		supernova: E(100),
-		fTier: E(1e4),
+		fTier: E(1.25e4),
 	},
 	exotic: {
 		rank: E(1e16),
