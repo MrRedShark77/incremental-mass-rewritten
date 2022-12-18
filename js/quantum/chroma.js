@@ -10,6 +10,7 @@ const CHROMA = {
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         if (hasTree('qu8')) x = x.mul(tmp.supernova.tree_eff.qu8)
+        if (hasPrestige(0,607)) x = x.mul(prestigeEff(0,607))
         if (hasElement(190)) x = x.pow(1.1)
         if (hasGlyphUpg(13) && i == 1) x = x.pow(2)
         return x
@@ -31,6 +32,7 @@ const CHROMA = {
             if (hasUpgrade('br',10)) x = x.pow(1.1)
             
             let y = hasPrestige(2,4)?i.add(1).log10().root(2).div(250).add(1).pow(-1):E(1)
+            if (hasElement(207)) y = y.pow(1.5)
 
             return [x.softcap(1e10,1/3,0),y]
         },
@@ -46,7 +48,7 @@ const CHROMA = {
         },
         x => {
             return `${player.dark.unl ? "Pre-Exotic p" : "P"}re-Pents requirement is reduced by ${format(x[0])}x`+x[0].softcapHTML(1e10)
-            +(hasPrestige(2,4)?`<br>All pre-Exotic pre-Hexs scalings are ${formatReduction(x[1])} weaker`:"")
+            +(hasPrestige(2,4)?`<br>All pre-Exotic ${hasElement(207) ? "Rank-Hex" : "pre-Hexs"} scalings are ${formatReduction(x[1])} weaker`:"")
         },
         x => {
             return `Rewards from Challenges 1-8 are ${format(x)}x stronger`

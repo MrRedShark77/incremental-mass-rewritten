@@ -1151,6 +1151,32 @@ const ELEMENTS = {
             dark: true,
             desc: `1st and 3rd Photon & Gluon upgrades provides an exponential boost. Keep big rip upgrades on darkness.`,
             cost: E('e605'),
+        },{
+            desc: `Overpower boosts accelerator power at reduced rate.`,
+            cost: E("e4.2e101"),
+            effect() {
+                let x = (player.massUpg[4]||E(1)).pow(1.5).add(10).log10()
+                
+				return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },{
+            br: true,
+            desc: `Dark matter boosts matter exponent.`,
+            cost: E("1e1.69e100"),
+            effect() {
+                let x = player.bh.dm.add(1).log10().add(1).log10().add(1).log10().div(10)
+                
+				return x.toNumber()
+            },
+            effDesc(x) { return "+^"+format(x) },
+        },{
+            br: true,
+            desc: `Hybridized Uran-Astatine’s second effect applies Hex scaling. It is stronger.`,
+            cost: E("1e1.67e103"),
+        },{
+            desc: `Unlock Beyond-Ranks. (not implemented)`,
+            cost: EINF,
         },
     ],
     /*
@@ -1192,7 +1218,7 @@ const ELEMENTS = {
         if (tmp.chal15comp) u += 16 + 4
         if (tmp.darkRunUnlocked) u += 7
         if (tmp.matterUnl) u += 14
-        if (tmp.mass4Unl) u += 2
+        if (tmp.mass4Unl) u += 6
 
         return u
     },

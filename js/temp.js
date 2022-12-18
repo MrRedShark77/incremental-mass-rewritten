@@ -136,7 +136,12 @@ function resetTemp() {
             mass: E('ee69'),
             bh: E('ee69'),
             quark: E('ee90'),
+            atomic: E('ee82'),
             stronger: E('e115')
+        },
+
+        overflow_power: {
+            bh: E(0.5),
         },
 
         mass_glyph_msg: 0,

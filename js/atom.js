@@ -14,6 +14,7 @@ const ATOM = {
         if (FERMIONS.onActive("10")) x = expMult(x,0.625)
 
         x = x.pow(glyphUpgEff(5))
+        if (hasUpgrade('br',17)) x = x.pow(upgEffect(4,17))
 
         if (player.dark.run.active) x = expMult(x,mgEff(2))
 
@@ -39,7 +40,7 @@ const ATOM = {
         if (player.dark.run.active) x = expMult(x,mgEff(2))
 
         let o = x
-        let os = E('ee90')
+        let os = E('ee90').pow(tmp.dark.abEff.ApQ_Overflow||1)
 
         if (hasUpgrade('atom',16)) os = os.pow(10)
 
@@ -85,10 +86,12 @@ const ATOM = {
             if (player.dark.run.active) x = expMult(x,mgEff(2))
 
             let o = x
+            let os = E('ee82').pow(tmp.dark.abEff.ApQ_Overflow||1)
 
-            x = overflow(x,'ee82',0.25)
+            x = overflow(x,os,0.25)
 
-            tmp.overflow.atomic = calcOverflow(o,x,'ee82')
+            tmp.overflow.atomic = calcOverflow(o,x,os)
+            tmp.overflow_start.atomic = os
 
             return x
         },
@@ -182,7 +185,12 @@ const ATOM = {
             },
             x=>{
                 let a = hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(2)
-                let b = hasElement(19)
+                let b = hasUpgrade('atom',18)
+                ?Decimal.pow(1.1,
+                    player.rp.points.add(1).log10().add(10).log10().mul(x.add(1).log10().add(10).log10()).root(3).sub(1)
+                )
+                .mul(player.mass.add(1).log10().add(10).log10())
+                :hasElement(19)
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
                 return {eff1: a, eff2: b}
@@ -200,7 +208,7 @@ const ATOM = {
             ` },
             x=>{ return `
                 Boosts Rage Power gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
-                Makes Mass gain boosted by Rage Powers - ${format(x.eff2)}x<br><br>
+                Makes Mass gain boosted by Rage Powers - ${hasUpgrade('atom',18)?"^"+format(x.eff2):format(x.eff2)+"x"}<br><br>
             ` },
             x=>{ return `
                 Boosts Dark Matter gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
@@ -273,8 +281,8 @@ function updateAtomicHTML() {
     tmp.el.gamma_ray_auto.setDisplay(hasElement(18))
 	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
 
-    tmp.el.atomicOverflow.setDisplay(player.atom.atomic.gte('ee82'))
-    tmp.el.atomicOverflow.setHTML(`Because of atomic power overflow at <b>${format('ee82')}</b>, your atomic power is ${overflowFormat(tmp.overflow.atomic||1)}!`)
+    tmp.el.atomicOverflow.setDisplay(player.atom.atomic.gte(tmp.overflow_start.atomic))
+    tmp.el.atomicOverflow.setHTML(`Because of atomic power overflow at <b>${format(tmp.overflow_start.atomic)}</b>, your atomic power is ${overflowFormat(tmp.overflow.atomic||1)}!`)
 }
 
 function updateAtomHTML() {

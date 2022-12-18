@@ -124,6 +124,7 @@ const RANKS = {
             '48': "remove sixth softcap of normal mass gain.",
             '62': "remove seventh softcap of normal mass gain.",
             '91': "+0.15 to matter exponent.",
+            '157': "remove eighth softcap of normal mass gain.",
         },
     },
     effect: {
@@ -383,6 +384,7 @@ const PRESTIGES = {
             "382": `Matter exponent is increased by prestige level. Collapsed star's effect is overpowered.`,
             "388": `Hybridized Uran-Astatine also applies pre-Meta pre-Glory at a reduced rate.`,
             "552": `Exotic supernova starts x1.25 later.`,
+            "607": `Chromas gain is increased by prestige base.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -400,6 +402,7 @@ const PRESTIGES = {
             "3": `Break dilation upgrade 12 is cheaper.`,
             "4": `Unlock new effect from Hybridized Uran-Astatine.`,
             "5": `Glory boosts glyphic mass.`,
+            "8": `Glory reduces Black Hole Overflow nerf.`,
         },
     ],
     rewardEff: [
@@ -428,6 +431,10 @@ const PRESTIGES = {
                 let x = tmp.qu.chroma_eff[1][1].root(2)
                 return x
             },x=>formatReduction(x)+" weaker"],
+            "607": [_=>{
+                let x = tmp.prestiges.base.max(1).pow(1.5)
+                return x
+            },x=>"x"+format(x)],
             /*
             "1": [_=>{
                 let x = E(1)
@@ -464,6 +471,10 @@ const PRESTIGES = {
                 let x = player.prestiges[2].root(2).div(10).add(1)
                 return x.toNumber()
             },x=>"x"+format(x,2)],
+            "8": [_=>{
+                let x = player.prestiges[2].root(3).div(10).add(1).pow(-1)
+                return x.toNumber()
+            },x=>formatReduction(x)+" weaker"],
         },
     ],
     reset(i, bulk = false) {

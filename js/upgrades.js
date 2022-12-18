@@ -189,6 +189,7 @@ const UPGS = {
                 let xx = i.add(tmp.upgs.mass[4].bonus)
                 
                 let step = E(.005)
+                if (hasUpgrade('rp',17)) step = step.add(.005)
 
                 let x = step.mul(xx).add(1)
                 
@@ -232,7 +233,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) },
-            lens: 16,
+            lens: 17,
             1: {
                 desc: "Boosters adds Musclers.",
                 cost: E(1),
@@ -360,6 +361,11 @@ const UPGS = {
                 unl() { return tmp.moreUpgs },
                 desc: `Remove tickspeed power's softcap.`,
                 cost: E('e1.8e91'),
+            },
+            17: {
+                unl() { return tmp.mass4Unl },
+                desc: `Overpower power is increased by 0.005.`,
+                cost: E('e7.75e116'),
             },
         },
         2: {
@@ -539,7 +545,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") },
-            lens: 17,
+            lens: 18,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -664,6 +670,11 @@ const UPGS = {
                     return "^"+format(x)
                 },
             },
+            18: {
+                unl() { return tmp.mass4Unl },
+                desc: `Neutron Power's second effect now provides provides an exponential boost, applies mass of black hole.`,
+                cost: E('e4.2e120'),
+            },
         },
         4: {
             title: "Big Rip Upgrades",
@@ -678,7 +689,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasElement(132) },
-            lens: 16,
+            lens: 17,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -769,6 +780,16 @@ const UPGS = {
                 unl() { return tmp.moreUpgs },
                 desc: `Unsoftcap the first effect from Alpha, Omega & Sigma particles. They're stronger.`,
                 cost: E(1e273),
+            },
+            17: {
+                unl() { return tmp.mass4Unl },
+                desc: `Dark matter raises atoms gain at a reduced rate.`,
+                cost: E('e386'),
+                effect() {
+                    let x = Decimal.pow(1.1,player.bh.dm.add(1).log10().add(1).log10())
+                    return x
+                },
+                effDesc(x=this.effect()) { return "^"+format(x) },
             },
         },
     },

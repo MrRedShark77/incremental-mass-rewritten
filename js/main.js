@@ -35,12 +35,13 @@ const FORMS = {
         if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
-        x = x.mul(tmp.atom.particles[1].powerEffect.eff2)
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         if (!hasElement(162)) x = x.mul(tmp.stars.effect)
         if (hasTree("m1") && !hasElement(164)) x = x.mul(tmp.supernova.tree_eff.m1)
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
+
+        x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
 
         if (player.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
 
@@ -194,6 +195,7 @@ const FORMS = {
         return p
     },
     massSoftGain8() {
+        if (player.ranks.hex.gte(157)) return EINF
         let s = E('ee63')
         if (hasElement(159)) s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s.max(1)
@@ -285,6 +287,7 @@ const FORMS = {
         effect() {
             let step = E(0.0004)
             step = step.mul(tmp.dark.abEff.accelPow||1)
+            if (hasElement(205)) step = step.mul(elemEffect(205))
 
             let x = player.accelerator.mul(step).add(1)
             return {step: step, eff: x}
@@ -382,20 +385,26 @@ const FORMS = {
 
             x = x.pow(glyphUpgEff(2))
 
+            if (hasUpgrade('atom',18)) x = x.pow(tmp.atom.particles[1].powerEffect.eff2)
+
             if (player.dark.run.active) x = expMult(x,mgEff(0))
 
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(player.dark.run.active ? 5 : 100)
 
             let o = x
             let os = E('ee69')
+            let op = E(0.5)
 
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
 
-            x = overflow(x,os,0.5)
+            if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
+
+            x = overflow(x,os,op)
 
             tmp.overflow.bh = calcOverflow(o,x,os)
             tmp.overflow_start.bh = os
+            tmp.overflow_power.bh = op
 
             if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
             return x
@@ -528,7 +537,7 @@ function loop() {
 function format(ex, acc=4, max=12, type=player.options.notation) {
     ex = E(ex)
     neg = ex.lt(0)?"-":""
-    if (ex.mag == Infinity) return neg + 'Infinity'
+    if (ex.mag == Infinity) return neg + 'Infinite'
     if (Number.isNaN(ex.mag)) return neg + 'NaN'
     if (ex.lt(0)) ex = ex.mul(-1)
     if (ex.eq(0)) return ex.toFixed(acc)

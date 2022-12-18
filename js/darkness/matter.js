@@ -68,6 +68,7 @@ function updateMattersTemp() {
     tmp.matters.exponent = 2 + glyphUpgEff(11,0)
     if (hasPrestige(0,382)) tmp.matters.exponent += prestigeEff(0,382,0)
     if (player.ranks.hex.gte(91)) tmp.matters.exponent += .15
+    if (hasElement(206)) tmp.matters.exponent += elemEffect(206,0)
     
     tmp.matters.req_unl = Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))
 

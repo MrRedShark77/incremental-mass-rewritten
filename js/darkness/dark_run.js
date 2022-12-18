@@ -132,8 +132,8 @@ const DARK_RUN = {
             max: 10,
             desc: `Each matter's the exponent is increased by 12.5% per level.`,
             cost(i) {
-                let j = Math.ceil(10*i**1.1)
-                return {0: 615+j, 1: 447+j, 2: 461+j, 3: 329+j, 4: 334+j, 5: 223+j}
+                let j = Math.ceil(10*i**1.2)
+                return {0: 160+j, 1: 446+j, 2: 460+j, 3: 328+j, 4: 333+j, 5: 222+j}
             },
             eff(i) { return 1+i/8 },
             effDesc: x=>"^"+format(x,3),

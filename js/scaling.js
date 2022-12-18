@@ -29,6 +29,7 @@ const SCALE_START = {
 		fTier: E(50),
 		cosmic_str: E(90),
 		prestige0: E(80),
+		prestige1: E(60),
 	},
 	ultra: {
 		rank: E(600),
@@ -90,6 +91,7 @@ const SCALE_POWER= {
 		fTier: 4,
 		cosmic_str: 4,
 		prestige0: 2,
+		prestige1: 2,
 	},
 	ultra: {
 		rank: 4,
@@ -451,7 +453,11 @@ function getScalingPower(type, name) {
 	}
 	if (hasUpgrade("atom",15) && name == "gamma_ray") power = power.mul(0.8)
 	if (hasElement(108) && ["rank","tier","tetr","pent"].includes(name) && type != "exotic") power = power.mul(player.qu.rip.active?0.98:0.9)
-	if (hasPrestige(2,4) && ['rank','tier','tetr','pent'].includes(name) && type != 'exotic') power = power.mul(tmp.qu.chroma_eff[1][1])
+
+	let rps = ['rank','tier','tetr','pent']
+	if (hasElement(207)) rps.push('hex')
+	if (hasPrestige(2,4) && rps.includes(name) && type != 'exotic') power = power.mul(tmp.qu.chroma_eff[1][1])
+
 	let qf = tmp.qu.qc_eff[7][1]
 	if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
