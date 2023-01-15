@@ -54,7 +54,7 @@ const CONFIRMS_FUNCTION = {
             }
         } else {
             document.body.style.animation = "implode 2s 1"
-            setTimeout(_=>{
+            setTimeout(()=>{
                 if (player.qu.times.lte(0)) {
                     createPopup(POPUP_GROUPS.qus2.html(),'qus2');
                     createPopup(POPUP_GROUPS.qus1.html(),'qus1');
@@ -67,7 +67,7 @@ const CONFIRMS_FUNCTION = {
                 
                 QUANTUM.doReset(force)
             },1000)
-            setTimeout(_=>{
+            setTimeout(()=>{
                 document.body.style.animation = ""
             },2000)
         }

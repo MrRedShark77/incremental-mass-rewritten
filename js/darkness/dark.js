@@ -285,6 +285,7 @@ function getDarkSave() {
             amt: [],
             upg: [],
             unls: 3,
+            final: 0,
         },
     }
     for (let x = 0; x < MATTERS_LEN; x++) {

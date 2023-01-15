@@ -285,6 +285,9 @@ function getScalingStart(type, name) {
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
 		}
+		else if (name=="hex") {
+			if (hasPrestige(0,651)) start = start.mul(4/3)
+		}
 	}
 	else if (type=="ultra") {
 		if (name=="rank") {

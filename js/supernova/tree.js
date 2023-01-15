@@ -913,7 +913,7 @@ const TREE_UPGS = {
         },
 
         qu_qol10: {
-            unl: _=>player.dark.unl,
+            unl: ()=>player.dark.unl,
 
             qf: true,
             desc: `You can't gain Delta, Alpha, Omega & Sigma Particles from Primordium Theorem now. Instead, add free their Particles equals to your total Primordium Theorems.`,
@@ -935,7 +935,7 @@ const TREE_UPGS = {
         },
 
         fn13: {
-            unl: _=>tmp.chal13comp,
+            unl: ()=>tmp.chal13comp,
 
             icon: 'placeholder',
             branch: ["fn8"],

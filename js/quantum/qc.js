@@ -110,7 +110,7 @@ function renameQCPreset(x) {
 }
 
 function deleteQCPreset(x) {
-    createConfirm("Are you sure you want to delete the preset?",'removePreset',_=>{
+    createConfirm("Are you sure you want to delete the preset?",'removePreset',()=>{
         let represets = []
         for (let y = 0; y < player.qu.qc.presets.length; y++) if (x != y) represets.push(player.qu.qc.presets[y])
         player.qu.qc.presets = represets

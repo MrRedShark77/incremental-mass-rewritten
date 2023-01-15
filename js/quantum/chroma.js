@@ -11,6 +11,7 @@ const CHROMA = {
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         if (hasTree('qu8')) x = x.mul(tmp.supernova.tree_eff.qu8)
         if (hasPrestige(0,607)) x = x.mul(prestigeEff(0,607))
+        if (hasUpgrade('br',18)) x = x.mul(upgEffect(4,18))
         if (hasElement(190)) x = x.pow(1.1)
         if (hasGlyphUpg(13) && i == 1) x = x.pow(2)
         return x
@@ -33,6 +34,7 @@ const CHROMA = {
             
             let y = hasPrestige(2,4)?i.add(1).log10().root(2).div(250).add(1).pow(-1):E(1)
             if (hasElement(207)) y = y.pow(1.5)
+            if (hasBeyondRank(1,4)) y = y.pow(beyondRankEffect(1,4))
 
             return [x.softcap(1e10,1/3,0),y]
         },

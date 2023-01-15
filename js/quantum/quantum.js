@@ -22,7 +22,7 @@ const QUANTUM = {
     enter(auto=false,force=false,rip=false,bd=false) {
         if (tmp.qu.gain.gte(1) || force) {
             if (player.confirms.qu&&!auto&&!force) createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
-            _=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',_=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
+            ()=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',()=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
             else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)
         }
     },

@@ -72,6 +72,7 @@ const UPGS = {
                 if (player.ranks.rank.gte(3)) step = step.add(RANKS.effect.rank[3]())
                 step = step.mul(tmp.upgs.mass[2]?tmp.upgs.mass[2].eff.eff:1)
                 let ret = step.mul(x.add(tmp.upgs.mass[1].bonus))
+                if (hasElement(209)) ret = ret.pow(elemEffect(209))
                 return {step: step, eff: ret}
             },
             effDesc(eff) {
@@ -160,6 +161,8 @@ const UPGS = {
                 let o = ret
                 let os = E('e115')
 
+                if (hasElement(210)) os = os.mul(elemEffect(210))
+
                 ret = overflow(ret,os,0.5)
 
                 tmp.overflow.stronger = calcOverflow(o,ret,os)
@@ -233,7 +236,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) },
-            lens: 17,
+            lens: 18,
             1: {
                 desc: "Boosters adds Musclers.",
                 cost: E(1),
@@ -367,6 +370,18 @@ const UPGS = {
                 desc: `Overpower power is increased by 0.005.`,
                 cost: E('e7.75e116'),
             },
+            18: {
+                unl() { return tmp.brUnl },
+                desc: `Fading matter's upgrade applies collapsed stars gain at reduced rate.`,
+                cost: E('e1.5e128'),
+                effect() {
+                    let x = Decimal.pow(10,tmp.matters.upg[12].eff.max(1).log10().pow(.8))
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "^"+format(x)
+                },
+            },
         },
         2: {
             title: "Black Hole Upgrades",
@@ -381,7 +396,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 17,
+            lens: 18,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -530,6 +545,11 @@ const UPGS = {
                 effDesc(x=this.effect()) {
                     return "^"+format(x)
                 },
+            },
+            18: {
+                unl() { return tmp.brUnl },
+                desc: `Make black hole's effect stronger.`,
+                cost: E('e1.5e156'),
             },
         },
         3: {
@@ -689,7 +709,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasElement(132) },
-            lens: 17,
+            lens: 18,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -790,6 +810,16 @@ const UPGS = {
                     return x
                 },
                 effDesc(x=this.effect()) { return "^"+format(x) },
+            },
+            18: {
+                unl() { return tmp.brUnl },
+                desc: `Chromas gain is boosted by mass.`,
+                cost: E('e408'),
+                effect() {
+                    let x = Decimal.pow(2,player.mass.add(1).log10().add(1).log10().pow(1.5))
+                    return x
+                },
+                effDesc(x=this.effect()) { return "x"+format(x) },
             },
         },
     },

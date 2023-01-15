@@ -22,7 +22,7 @@ const FERMIONS = {
         }
     },
     choose(i,x) {
-        if (player.confirms.sn) createConfirm("Are you sure to switch any type of any Fermion?",'switchF', _=>CONFIRMS_FUNCTION.switchF(i,x))
+        if (player.confirms.sn) createConfirm("Are you sure to switch any type of any Fermion?",'switchF', ()=>CONFIRMS_FUNCTION.switchF(i,x))
         else CONFIRMS_FUNCTION.switchF(i,x)
     },
     bonus(i,j) {

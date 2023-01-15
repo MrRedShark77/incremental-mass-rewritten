@@ -100,6 +100,18 @@ function setupHTML() {
 	}
 	pres_rewards_table.setHTML(table)
 
+	let br_rewards_table = new Element("br_rewards_table")
+	table = ""
+	for (let x in BEYOND_RANKS.rewards) {
+		x = Number(x)
+		let ee = BEYOND_RANKS.rewardEff[x]
+		for (let y in BEYOND_RANKS.rewards[x]) {
+			table += `<span id="br_reward_${x}_${y}"><b>${getRankTierName(x+5)} ${format(y,0)}:</b> ${BEYOND_RANKS.rewards[x][y]}${ee&&BEYOND_RANKS.rewardEff[x][y]?` Currently: <span id='br_eff_${x}_${y}'></span>`:""}</span><br>`
+		}
+		table += '<br>'
+	}
+	br_rewards_table.setHTML(table)
+
 	let main_upgs_table = new Element("main_upgs_table")
 	table = ""
 	for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -331,6 +343,21 @@ function updatePrestigesRewardHTML() {
 	}
 }
 
+function updateBeyondRanksRewardHTML() {
+	let t = tmp.beyond_ranks.max_tier, lt = tmp.beyond_ranks.latestRank
+	for (let x in BEYOND_RANKS.rewards) {
+		x = Number(x)
+		for (let y in BEYOND_RANKS.rewards[x]) {
+			let unl = t > x || t == x && lt.gte(y)
+			tmp.el["br_reward_"+x+"_"+y].setDisplay(unl)
+			if (unl) if (tmp.el["br_eff_"+x+"_"+y]) {
+				let eff = BEYOND_RANKS.rewardEff[x][y]
+				tmp.el["br_eff_"+x+"_"+y].setHTML(eff[1](tmp.beyond_ranks.eff[x][y]))
+			}
+		}
+	}
+}
+
 function updateMainUpgradesHTML() {
 	if (player.main_upg_msg[0] != 0) {
 		let upg1 = UPGS.main[player.main_upg_msg[0]]
@@ -463,6 +490,7 @@ function updateHTML() {
 			if (tmp.stab[1] == 0) updateRanksRewardHTML()
 			if (tmp.stab[1] == 1) updateScalingHTML()
 			if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
+			if (tmp.stab[1] == 3) updateBeyondRanksRewardHTML()
 		}
 		if (tmp.tab == 2) {
 			updateMainUpgradesHTML()

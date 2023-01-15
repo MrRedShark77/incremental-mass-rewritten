@@ -317,6 +317,8 @@ const FORMS = {
             if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
             if (hasElement(165)) gain = gain.pow(tmp.supernova.tree_eff.rp1)
+            if (hasUpgrade('rp',18)) gain = gain.pow(upgEffect(1,18))
+
             if (player.dark.run.active) gain = expMult(gain,mgEff(1))
 
             return gain.floor()
@@ -454,6 +456,8 @@ const FORMS = {
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
 
             if (hasElement(201)) x = Decimal.pow(1.1,x.max(1).log10().add(1).log10().pow(.8))
+
+            if (hasUpgrade('bh',18)) x = x.pow(2.5)
 
             return x//.softcap("ee14",0.95,2)
         },
@@ -634,18 +638,19 @@ function formatGain(amt, gain, isMass=false) {
     let next = amt.add(gain)
     let rate
     let ooms = next.max(1).log10().div(amt.max(1).log10())
-    if (ooms.gte(10) && amt.gte('ee10') && !isMass) {
+    if (ooms.gte(10) && amt.gte('ee100') && !isMass) {
         ooms = ooms.log10().mul(20)
         rate = "(+"+format(ooms) + " OoMs^2/sec)"
+    } else {
+        ooms = next.div(amt)
+        if (ooms.gte(10) && amt.gte(1e100)) {
+            let md = player.options.massDis
+            ooms = ooms.log10().mul(20)
+            if (isMass && amt.gte(mlt(1)) && ooms.gte(1e6) && md!=1) rate = "(+"+formatARV(ooms.div(1e9),true,md>1) + "/sec)"
+            else rate = "(+"+format(ooms) + " OoMs/sec)"
+        }
+        else rate = "(+"+f(gain)+"/sec)"
     }
-    ooms = next.div(amt)
-    if (ooms.gte(10) && amt.gte(1e100)) {
-        let md = player.options.massDis
-        ooms = ooms.log10().mul(20)
-        if (isMass && amt.gte(mlt(1)) && ooms.gte(1e6) && md!=1) rate = "(+"+formatARV(ooms.div(1e9),true,md>1) + "/sec)"
-        else rate = "(+"+format(ooms) + " OoMs/sec)"
-    }
-    else rate = "(+"+f(gain)+"/sec)"
     return rate
 }
 

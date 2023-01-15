@@ -219,7 +219,24 @@
                         </div>
                     </div>
                     <div id="rank_tab0">
-                        <div id="ranks_table" class="table_center" style="min-height: 180px;"></div>
+                        <div class="table_center" style="min-height: 180px;">
+                            <div style="width: 400px; display: none;" id="pre_beyond_ranks"></div>
+                            <div id="ranks_table" class="table_center"></div>
+                            <div style="width: 400px; display: none;" id="beyond_ranks">
+                                <div class="table_center" style="align-items: center;">
+                                    <button id="br_auto" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('beyond')">OFF</button>
+                                    <div style="margin-left: 5px; text-align: left;" id="br_amt">
+                                        Hept 0
+                                    </div>
+                                </div>
+                                <br>
+                                <button onclick="BEYOND_RANKS.reset()" class="btn reset" style="max-width: 380px;" id="br_desc">
+                                    Reset your Hexs, but current rank up.<br>
+                                    To Hept up, require Hex ???<br>
+                                    To Oct up, require Hept ???
+                                </button>
+                            </div>
+                        </div>
                     </div><div id="rank_tab1">
                         Your Prestige base is <span id="pres_base"></span> (based on products of Rank tiers)<br><br>
                         <div id="pres_table" class="table_center" style="min-height: 180px;"></div>
@@ -340,6 +357,8 @@
                 </div><div id="stab_frame1_2">
                     <button onclick="player.pres_reward = Math.max(player.pres_reward-1,0)" class="btn"><--</button><span id="pres_reward_name" style="margin: 0px 10px">aaa</span><button onclick="player.pres_reward = Math.min(player.pres_reward+1,Math.max(...PRESTIGES.fullNames.map((v, i) => i==0 ? i : (PRESTIGES.unl[i]() && i))))" class="btn">--></button><br><br>
                     <div id="pres_rewards_table"></div>
+                </div><div id="stab_frame1_3">
+                    <div id="br_rewards_table"></div>
                 </div>
             </div><div id="tab_frame2">
                 <div id="main_upg_msg" style="min-height: 100px;"></div>
@@ -488,6 +507,7 @@
                         </div>
                     </div>
                 </div><div id="stab_frame7_1">
+                    <div id="FSS_eff2"></div><br>
                     <button onclick="darkRun()" class="btn half_full" id="dark_run_btn" tooltip="Dark Running will force a Dark reset, and will trap you into Big Rip with semi-maximum QC modifiers. You will produce Glyphic Mass based on resources which nerf things, and choosing a glyph to earn will exit a Dark Run."></button>
                     <button class="btn half_full" onclick="player.dark.run.gmode = (player.dark.run.gmode+1)%3">Glyph Button Mode: <span id="mg_btn_mode">X</span></button>
                     <button class="btn half_full" onclick="player.dark.run.glyphs = [0,0,0,0,0,0]">Clear all glyphs</button>
@@ -505,14 +525,15 @@
                     <div id="glyph_upg_msg"></div>
                 </div><div id="stab_frame7_2">
                     <div>
-                        10<sup>lg(lg(x))<sup id="matter_exponent">2</sup></sup> to each matter gain by previous matter.<br>
-                        Tip: Reach <span id="matter_req">???</span> of current matter to unlock next matter!
+                        10<sup>lg(lg(x))<sup id="matter_exponent">2</sup></sup> to each matter gain by previous matter.
+                        <div id="matter_req_div">Tip: Reach <span id="matter_req">???</span> of current matter to unlock next matter!</div>
+                        <div id="FSS_eff1"></div>
                     </div><br>
                     <div class="table_center" id="matters_table"></div>
                 </div>
             </div><div id="tab_frame8">
                 <button class="btn" onclick="save()">Save</button>
-                <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',_=>wipe(true))">Hard Reset</button>
+                <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',()=>wipe(true))">Hard Reset</button>
                 <button class="btn" onclick="exporty()">Export</button>
                 <button class="btn" onclick="export_copy()">Export to clipboard</button>
                 <button class="btn" onclick="importy()">Import</button>
@@ -528,7 +549,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6.2.3 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.3 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br>
                 Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>

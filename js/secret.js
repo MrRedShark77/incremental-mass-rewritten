@@ -15,7 +15,7 @@ const ssf = [
             addNotify(`Shark!!1!<br><img style="width: 100%; height: 100%;" src="https://i.guim.co.uk/img/media/67451b4b5c64652f11eca069b85013f8b31a4244/1549_893_5174_3105/master/5174.jpg?width=465&quality=45&auto=format&fit=max&dpr=2&s=df139353776471381634b995733c9ebc">`)
         }
     },
-    _=>{
+    ()=>{
         let t = Math.floor(date/3600000)
         ss[1] = Math.floor(t**(2*(Math.sin(t**3/Math.PI)+1))).toString(36)
     },

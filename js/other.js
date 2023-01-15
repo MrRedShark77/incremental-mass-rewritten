@@ -32,7 +32,7 @@ function updateNotify() {
         tmp.el.notify.setHTML(tmp.notify[0].text)
         tmp.el.notify.setVisible(true)
         tmp.el.notify.setClasses({hide: false})
-        setTimeout(_=>{
+        setTimeout(()=>{
             tmp.el.notify.setClasses({hide: true})
             setTimeout(removeNotify, 750)
         }, tmp.notify[0].duration*1000)
@@ -175,7 +175,7 @@ function createPopup(text, id, txtButton) {
     const textButton = document.createElement('button')
     textButton.className = 'btn'
     textButton.innerText = txtButton||"Ok"
-    textButton.onclick = _ => {
+    textButton.onclick = () => {
         popups[popups.indexOf(id)] = undefined
         updatePopupIndex()
         popup.remove()
@@ -203,7 +203,7 @@ function createConfirm(text, id, yesFunction, noFunction) {
     const yesButton = document.createElement('button')
     yesButton.className = 'btn'
     yesButton.innerText = "Yes"
-    yesButton.onclick = _ => {
+    yesButton.onclick = () => {
         popups[popups.indexOf(id)] = undefined
         updatePopupIndex()
         if (yesFunction) yesFunction()
@@ -213,7 +213,7 @@ function createConfirm(text, id, yesFunction, noFunction) {
     const noButton = document.createElement('button')
     noButton.className = 'btn'
     noButton.innerText = "No"
-    noButton.onclick = _ => {
+    noButton.onclick = () => {
         popups[popups.indexOf(id)] = undefined
         updatePopupIndex()
         if (noFunction) noFunction()
@@ -247,7 +247,7 @@ function createPrompt(text, id, func) {
     const textButton = document.createElement('button')
     textButton.className = 'btn'
     textButton.innerText = "Ok"
-    textButton.onclick = _ => {
+    textButton.onclick = () => {
         popups[popups.indexOf(id)] = undefined
         updatePopupIndex()
         if (func) func(input.value)

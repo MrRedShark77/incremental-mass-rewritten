@@ -83,6 +83,7 @@ function calc(dt, dt_offline) {
             let rn = RANKS.names[x]
             if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
         }
+        if (player.auto_ranks.beyond) BEYOND_RANKS.reset(true)
         for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
             let id = UPGS.main.ids[x]
@@ -151,6 +152,7 @@ function getPlayerData() {
             tetr: E(0),
             pent: E(0),
             hex: E(0),
+            beyond: E(0),
         },
         auto_ranks: {
             rank: false,
@@ -422,7 +424,7 @@ function importy() {
         if (loadgame != null) {
             let keep = player
             try {
-                setTimeout(_=>{
+                setTimeout(()=>{
                     if (findNaN(loadgame, true)) {
                         addNotify("Error Importing, because it got NaNed")
                         return

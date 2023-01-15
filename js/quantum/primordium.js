@@ -101,7 +101,7 @@ function giveRandomPParticles(v, max=false) {
 }
 
 function respecPParticles() {
-    createConfirm("Are you sure you want to respec all Particles?",'respectPPs',_=>{
+    createConfirm("Are you sure you want to respec all Particles?",'respectPPs',()=>{
         for (let i =0; i < 8; i++) player.qu.prim.particles[i] = E(0)
         QUANTUM.doReset()
     })

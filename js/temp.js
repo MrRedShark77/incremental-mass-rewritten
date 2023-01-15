@@ -30,6 +30,11 @@ function resetTemp() {
             base: E(1),
         },
 
+        beyond_ranks: {
+            max_tier: 1,
+            eff: {},
+        },
+
         bd: {
             upgs: [],
         },
@@ -119,6 +124,7 @@ function resetTemp() {
             gain: [],
             upg: [],
             exponent: 2,
+            FSS_eff: [1,1],
         },
 
         overflow: {
@@ -156,6 +162,7 @@ function resetTemp() {
         prevSave: "",
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
+    for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
     for (let x = UPGS.mass.cols; x >= 1; x--) tmp.upgs.mass[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs.main[x] = {}
     for (let j = 0; j < TREE_TAB.length; j++) {
@@ -269,6 +276,7 @@ function updateTemp() {
     tmp.matterUnl = hasElement(188)
     tmp.moreUpgs = hasElement(192)
     tmp.mass4Unl = hasElement(202)
+    tmp.brUnl = hasElement(208)
 
     updateDarkTemp()
     updateQuantumTemp()

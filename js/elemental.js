@@ -307,6 +307,9 @@ const ELEMENTS = {
             cost: E('e325'),
             effect() {
                 let x = player.stars.points.add(1).pow(1/3)
+
+                x = overflow(x,'ee112',0.5)
+
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -972,7 +975,7 @@ const ELEMENTS = {
         },{
             dark: true,
             desc: `Add 100 more C13-C14 maximum completions.`,
-            cost: E("1e109"),
+            cost: E("1e108"),
         },{
             br: true,
             desc: `Uncap bonus fermions from Epsilon Particles.`,
@@ -1140,7 +1143,7 @@ const ELEMENTS = {
             cost: E("1e4.9e98"),
         },{
             desc: `Booster boosts its effect.`,
-            cost: E("e6.5e99"),
+            cost: E("e4e99"),
             effect() {
                 let x = (player.massUpg[2]||E(0)).add(10).log10().pow(0.8);
                 
@@ -1175,8 +1178,27 @@ const ELEMENTS = {
             desc: `Hybridized Uran-Astatine’s second effect applies Hex scaling. It is stronger.`,
             cost: E("1e1.67e103"),
         },{
-            desc: `Unlock Beyond-Ranks. (not implemented)`,
-            cost: EINF,
+            desc: `Unlock Beyond-Ranks.`,
+            cost: E('e2e111'),
+        },{
+            desc: `Muscler boosts its effect.`,
+            cost: E('e1.4e112'),
+            effect() {
+                let x = (player.massUpg[1]||E(0)).add(10).log10().pow(0.8);
+                
+				return x
+            },
+            effDesc(x) { return "^"+format(x) },
+        },{
+            dark: true,
+            desc: `Stronger overflow starts later based on FSS.`,
+            cost: E('e710'),
+            effect() {
+                let x = E(2+player.dark.matters.final**.8).pow(player.dark.matters.final)
+                
+				return x
+            },
+            effDesc(x) { return "x"+format(x)+" later" },
         },
     ],
     /*
@@ -1219,6 +1241,7 @@ const ELEMENTS = {
         if (tmp.darkRunUnlocked) u += 7
         if (tmp.matterUnl) u += 14
         if (tmp.mass4Unl) u += 6
+        if (tmp.brUnl) u += 10
 
         return u
     },
@@ -1226,7 +1249,7 @@ const ELEMENTS = {
 
 const MAX_ELEM_TIERS = 2
 
-const BR_ELEM = (_=>{
+const BR_ELEM = (()=>{
     let x = []
     for (let i in ELEMENTS.upgs) if (i>86&&i<=118 || i>0&&ELEMENTS.upgs[i].br) x.push(Number(i))
     return x
