@@ -474,7 +474,7 @@ function updateHTML() {
     			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass)}</b>, your mass is ${overflowFormat(tmp.overflow.mass||1)}!`)
 
 				tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger))
-    			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${formatMass(tmp.overflow_start.stronger)}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
+    			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger)}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
 			}
 			if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()

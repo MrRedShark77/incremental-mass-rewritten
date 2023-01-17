@@ -193,6 +193,7 @@ const UPGS = {
                 
                 let step = E(.005)
                 if (hasUpgrade('rp',17)) step = step.add(.005)
+                if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
 
                 let x = step.mul(xx).add(1)
                 
@@ -236,7 +237,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) },
-            lens: 18,
+            lens: 19,
             1: {
                 desc: "Boosters adds Musclers.",
                 cost: E(1),
@@ -380,6 +381,18 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return "^"+format(x)
+                },
+            },
+            19: {
+                unl() { return tmp.brUnl },
+                desc: `Supernovas boost overpower's power.`,
+                cost: E('e6e144'),
+                effect() {
+                    let x = player.supernova.times.add(1).log10().div(10).add(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "x"+format(x)
                 },
             },
         },
@@ -565,7 +578,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") },
-            lens: 18,
+            lens: 19,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -694,6 +707,18 @@ const UPGS = {
                 unl() { return tmp.mass4Unl },
                 desc: `Neutron Power's second effect now provides provides an exponential boost, applies mass of black hole.`,
                 cost: E('e4.2e120'),
+            },
+            19: {
+                unl() { return tmp.brUnl },
+                desc: `Yellow matter's upgrade applies dilated mass's overflow starting at reduced rate.`,
+                cost: E('e8e139'),
+                effect() {
+                    let x = expMult(tmp.matters.upg[9].eff,1/3)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "^"+format(x)+" later"
+                },
             },
         },
         4: {

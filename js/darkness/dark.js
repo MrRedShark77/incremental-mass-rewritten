@@ -90,7 +90,7 @@ const DARK = {
 
         QUANTUM.doReset(true,true)
 
-        tmp.rank_tab = 0
+        if (!hasElement(127)) tmp.rank_tab = 0
         if (tmp.stab[4] == 3 && !hasElement(127)) tmp.stab[4] = 0
 
         tmp.pass = false

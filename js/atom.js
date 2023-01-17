@@ -135,6 +135,8 @@ const ATOM = {
             let exp = E(1)
             if (hasGlyphUpg(12)) exp = Decimal.pow(1.1,eff.max(1).log10().add(1).log10())
 
+            //exp = overflow(exp,1000,0.5)
+
             return {pow: pow, eff: eff, exp: exp}
         },
         bonus() {

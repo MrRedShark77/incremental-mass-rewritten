@@ -174,7 +174,7 @@ const RANKS = {
             '6'() {
                 let ret = E(2).pow(player.ranks.tier)
                 if (player.ranks.tier.gte(8)) ret = ret.pow(RANKS.effect.tier[8]())
-                return ret
+                return overflow(ret,'ee100',0.5)
             },
             '8'() {
                 let ret = player.bh.dm.max(1).log10().add(1).root(2)
@@ -223,7 +223,7 @@ const RANKS = {
                 let hex = player.ranks.hex
                 let ret = hex.mul(.2).add(1)
                 if (hex.gte(43)) ret = ret.pow(hex.div(10).add(1).root(2))
-                return ret
+                return overflow(ret,1e11,0.5)
             },
         },
     },
@@ -277,7 +277,7 @@ const RANKS = {
 }
 
 const PRESTIGES = {
-    fullNames: ["Prestige Level", "Honor", 'Glory'],
+    fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown'],
     baseExponent() {
         let x = 0
         if (hasElement(100)) x += tmp.elements.effect[100]
@@ -301,6 +301,8 @@ const PRESTIGES = {
 
         if (tmp.dark.abEff.pb) x = x.mul(tmp.dark.abEff.pb)
 
+        if (hasBeyondRank(2,1)) x = x.mul(beyondRankEffect(2,1))
+
         return x.sub(1)
     },
     req(i) {
@@ -314,6 +316,9 @@ const PRESTIGES = {
                 break;
             case 2:
                 x = hasElement(167)?y.pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
+                break;
+            case 3:
+                x = y.pow(1.25).mul(3).add(9)
                 break;
             default:
                 x = EINF
@@ -333,6 +338,9 @@ const PRESTIGES = {
             case 2:
                 if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
                 break
+            case 3:
+                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).mul(fp).add(1)
+                break 
             default:
                 x = E(0)
                 break;
@@ -342,22 +350,26 @@ const PRESTIGES = {
     fp(i) {
         let fp = 1
         if (player.prestiges[2].gte(1) && i < 2) fp *= 1.15
+        if (player.prestiges[3].gte(1) && i < 3) fp *= 1.1
         return fp
     },
     unl: [
         ()=>true,
         ()=>true,
         ()=>tmp.chal14comp,
+        ()=>tmp.brUnl,
     ],
     noReset: [
         ()=>hasUpgrade('br',11),
         ()=>tmp.chal13comp,
         ()=>tmp.chal15comp,
+        ()=>false,
     ],
     autoUnl: [
         ()=>tmp.chal13comp,
         ()=>tmp.chal14comp,
         ()=>tmp.chal15comp,
+        ()=>false,
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -386,6 +398,7 @@ const PRESTIGES = {
             "552": `Exotic supernova starts x1.25 later.`,
             "607": `Chromas gain is increased by prestige base.`,
             "651": `Hyper Hex starts x1.33 later.`,
+            "867": `Lithium-3 now provides an exponential boost. Meta-Cosmic Ray scaling starts ^8 later.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -398,6 +411,7 @@ const PRESTIGES = {
             "22": `Raise dark shadow gain by 10%.`,
             "33": `Hybridized Uran-Astatine applies pre-Meta Pent requirement at a reduced rate.`,
             "46": `Add 500 more C13-15 max completions.`,
+            "66": `All Fermions' scaling is 20% weaker.`,
         },
         {
             "1": `The requirements from prestige level & honor are 15% weaker.`,
@@ -405,6 +419,9 @@ const PRESTIGES = {
             "4": `Unlock new effect from Hybridized Uran-Astatine.`,
             "5": `Glory boosts glyphic mass.`,
             "8": `Glory reduces Black Hole Overflow nerf.`,
+        },
+        {
+            "1": `The requirements from previous prestiges are 10% weaker.`,
         },
     ],
     rewardEff: [
@@ -477,6 +494,9 @@ const PRESTIGES = {
                 let x = player.prestiges[2].root(3).div(10).add(1).pow(-1)
                 return x.toNumber()
             },x=>formatReduction(x)+" weaker"],
+        },
+        {
+            
         },
     ],
     reset(i, bulk = false) {
@@ -608,7 +628,7 @@ const BEYOND_RANKS = {
 
     reset(auto=false) {
         if (player.ranks.hex.gte(tmp.beyond_ranks.req) && (!auto || tmp.beyond_ranks.bulk.gt(player.ranks.beyond))) {
-            player.ranks.beyond = player.ranks.beyond.add(auto?tmp.beyond_ranks.bulk:1)
+            player.ranks.beyond = auto ? player.ranks.beyond.max(tmp.beyond_ranks.bulk) : player.ranks.beyond.add(1)
 
             player.ranks.hex = E(0)
             DARK.doReset()
@@ -623,7 +643,7 @@ const BEYOND_RANKS = {
             7: `Matters gain is boosted by Hept (Beyond-Ranks base).`,
         },
         2: {
-            1: `Automate Beyond-Ranks.`,
+            1: `Automate Beyond-Ranks. Beyond-Ranks now affect prestige base, using the formula.`,
         },
     },
 
@@ -652,6 +672,16 @@ const BEYOND_RANKS = {
                     return x
                 },
                 x=>"^"+format(x),
+            ],
+        },
+        2: {
+            1: [
+                ()=>{
+                    let x = player.ranks.beyond.pow(3).add(1)
+
+                    return x
+                },
+                x=>"x"+format(x),
             ],
         },
     },

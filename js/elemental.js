@@ -61,11 +61,18 @@ const ELEMENTS = {
             desc: `Electron Power boost Atomic Powers gain.`,
             cost: E(1e15),
             effect() {
-                let x = player.atom?player.atom.powers[2].add(1).root(2):E(1)
-                if (x.gte('e1e4')) x = expMult(x.div('e1e4'),0.9).mul('e1e4')
-                return overflow(x,'ee100',0.25).min('ee101')
+                let x
+                if (hasPrestige(0,867)) {
+                    x = player.atom?player.atom.powers[2].add(1).log10().add(1).log10().add(1).pow(1.5):E(1)
+                } else {
+                    x = player.atom?player.atom.powers[2].add(1).root(2):E(1)
+                    if (x.gte('e1e4')) x = expMult(x.div('e1e4'),0.9).mul('e1e4')
+                    x = overflow(x,'ee100',0.25).min('ee101')
+                }
+
+                return x
             },
-            effDesc(x) { return format(x)+"x"+(x.gte('e1e4')?" <span class='soft'>(softcapped)</span>":"") },
+            effDesc(x) { return hasPrestige(0,867) ? '^'+format(x) : format(x)+"x"+softcapHTML(x,'ee4') },
         },
         {
             desc: `Stronger's power is stronger based on Proton Powers.`,
@@ -159,7 +166,7 @@ const ELEMENTS = {
             cost: E(1e44),
             effect() {
                 let x = hasElement(129) ? player.atom.gamma_ray.pow(0.5).mul(0.02).add(1) : player.atom.gamma_ray.pow(0.35).mul(0.01).add(1)
-                return x
+                return overflow(x,1000,0.5)
             },
             effDesc(x) { return "^"+format(x) },
         },
@@ -456,7 +463,7 @@ const ELEMENTS = {
             cost: E('e1.7e6'),
             effect() {
                 let x = player.stars.points.add(1)
-                return x.softcap('e3e15',0.85,2)
+                return overflow(x.softcap('e3e15',0.85,2),'ee100',0.5)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -914,6 +921,7 @@ const ELEMENTS = {
             cost: E("e1.3e49"),
             effect() {
                 let x = tmp.radiation.bs.eff[14].max(1).log10().add(1)
+                if (hasElement(211)) x = x.pow(3)
                 return x
             },
             effDesc(x) { return "x"+format(x)+" later" },
@@ -941,7 +949,7 @@ const ELEMENTS = {
             desc: `Unlock Dark Run. Keep Oganesson-118 on darkness.`,
             cost: E("1e96"),
         },{
-            desc: `Collapsed star’s effect is now upgraded as exponent at reduced rate. It can apply to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
+            desc: `Collapsed star’s effect now provide an exponential boost at reduced rate. It can apply to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
             cost: E("e4.20e69"), // nice
         },{
             desc: `Spatial Dilation is slightly weaker.`,
@@ -1199,6 +1207,19 @@ const ELEMENTS = {
 				return x
             },
             effDesc(x) { return "x"+format(x)+" later" },
+        },{
+            br: true,
+            desc: `Meta-Rank Boost also affects Meta-Tetr starting at a reduced rate, strengthen Unpentpentium-155.`,
+            cost: E("1e5e110"),
+            effect() {
+                let x = tmp.radiation.bs.eff[14].max(1).log10().add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x)+" later" },
+        },{
+            br: true,
+            desc: `Exotic supernova scales 25% weaker.`,
+            cost: E("1e1.6e117"),
         },
     ],
     /*
