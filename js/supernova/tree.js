@@ -937,7 +937,6 @@ const TREE_UPGS = {
         fn13: {
             unl: ()=>tmp.chal13comp,
 
-            icon: 'placeholder',
             branch: ["fn8"],
             desc: `Unlock 2 new meta-types of U-Quark & U-Fermion.`,
             cost: E('e1.5e10'),

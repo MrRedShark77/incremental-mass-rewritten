@@ -306,19 +306,19 @@ const PRESTIGES = {
         return x.sub(1)
     },
     req(i) {
-        let x = EINF, fp = this.fp(i), y = player.prestiges[i].div(fp)
+        let x = EINF, fp = this.fp(i), y = player.prestiges[i]
         switch (i) {
             case 0:
-                x = Decimal.pow(1.1,y.scaleEvery('prestige0').pow(1.1)).mul(2e13)
+                x = Decimal.pow(1.1,y.scaleEvery('prestige0',false,[0,0,0,fp]).pow(1.1)).mul(2e13)
                 break;
             case 1:
-                x = y.scaleEvery('prestige1').pow(1.25).mul(3).add(4)
+                x = y.div(fp).scaleEvery('prestige1',false).pow(1.25).mul(3).add(4)
                 break;
             case 2:
-                x = hasElement(167)?y.pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
+                x = hasElement(167)?y.div(fp).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
                 break;
             case 3:
-                x = y.pow(1.25).mul(3).add(9)
+                x = y.div(fp).pow(1.25).mul(3).add(9)
                 break;
             default:
                 x = EINF
@@ -330,7 +330,7 @@ const PRESTIGES = {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
         switch (i) {
             case 0:
-                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true).mul(fp).add(1)
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true,[0,0,0,fp]).add(1)
                 break;
             case 1:
                 if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1)
@@ -351,6 +351,7 @@ const PRESTIGES = {
         let fp = 1
         if (player.prestiges[2].gte(1) && i < 2) fp *= 1.15
         if (player.prestiges[3].gte(1) && i < 3) fp *= 1.1
+        if (hasUpgrade('br',19) && i < 3) fp *= upgEffect(4,19)
         return fp
     },
     unl: [
@@ -412,6 +413,7 @@ const PRESTIGES = {
             "33": `Hybridized Uran-Astatine applies pre-Meta Pent requirement at a reduced rate.`,
             "46": `Add 500 more C13-15 max completions.`,
             "66": `All Fermions' scaling is 20% weaker.`,
+            "91": `FSS base is raised to the 1.05th power.`,
         },
         {
             "1": `The requirements from prestige level & honor are 15% weaker.`,
@@ -422,6 +424,7 @@ const PRESTIGES = {
         },
         {
             "1": `The requirements from previous prestiges are 10% weaker.`,
+            "2": `Exotic Supernova starts x1.25 later per Renown.`,
         },
     ],
     rewardEff: [
@@ -496,7 +499,10 @@ const PRESTIGES = {
             },x=>formatReduction(x)+" weaker"],
         },
         {
-            
+            "2": [()=>{
+                let x = Decimal.pow(1.25,player.prestiges[3])
+                return x
+            },x=>"x"+x.format()+" later"],
         },
     ],
     reset(i, bulk = false) {
@@ -630,6 +636,8 @@ const BEYOND_RANKS = {
         if (player.ranks.hex.gte(tmp.beyond_ranks.req) && (!auto || tmp.beyond_ranks.bulk.gt(player.ranks.beyond))) {
             player.ranks.beyond = auto ? player.ranks.beyond.max(tmp.beyond_ranks.bulk) : player.ranks.beyond.add(1)
 
+            if (hasBeyondRank(2,2)) return;
+
             player.ranks.hex = E(0)
             DARK.doReset()
         }
@@ -644,6 +652,7 @@ const BEYOND_RANKS = {
         },
         2: {
             1: `Automate Beyond-Ranks. Beyond-Ranks now affect prestige base, using the formula.`,
+            2: `Beyond-Ranks will no longer reset anything. [Meta-Lepton]'s effect is multiplied by 8.`,
         },
     },
 

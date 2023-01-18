@@ -301,7 +301,7 @@ const CHALS = {
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
             let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
-            return ret.softcap(3,0.25,0)
+            return overflow(ret.softcap(3,0.25,0),1e12,0.5)
         },
         effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
@@ -317,7 +317,7 @@ const CHALS = {
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
             let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
-            return ret.softcap(3,0.25,0)
+            return overflow(ret.softcap(3,0.25,0),1e12,0.5)
         },
         effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
@@ -379,7 +379,7 @@ const CHALS = {
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
             let ret = hasElement(133) ? x.root(1.5).mul(0.025).add(1) : x.root(1.75).mul(0.02).add(1)
-            return ret.softcap(2.3,0.25,0)
+            return overflow(ret.softcap(2.3,0.25,0),1e10,0.5)
         },
         effDesc(x) { return "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
     },

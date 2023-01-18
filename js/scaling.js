@@ -14,6 +14,8 @@ const SCALE_START = {
 		cosmic_str: E(15),
 		prestige0: E(15),
 		prestige1: E(7),
+		prestige2: E(12),
+		massUpg4: E(50),
     },
 	hyper: {
 		rank: E(120),
@@ -76,6 +78,8 @@ const SCALE_POWER= {
 		cosmic_str: 2,
 		prestige0: 1.5,
 		prestige1: 1.5,
+		prestige2: 2,
+		massUpg4: 3,
     },
 	hyper: {
 		rank: 2.5,
@@ -146,6 +150,8 @@ const SCALING_RES = {
 	cosmic_str(x=0) { return player.qu.cosmic_str },
 	prestige0() { return player.prestiges[0] },
 	prestige1() { return player.prestiges[1] },
+	prestige2() { return player.prestiges[2] },
+	massUpg4() { return E(player.massUpg[4]||0) },
 }
 
 const NAME_FROM_RES = {
@@ -154,7 +160,7 @@ const NAME_FROM_RES = {
 	tetr: "Tetr",
 	pent: "Pent",
 	hex: "Hex",
-	massUpg: "Mass Upgrades",
+	massUpg: "Mass Upgrades 1-3",
 	tickspeed: "Tickspeed",
 	bh_condenser: "Black Hole Condenser",
 	gamma_ray: "Cosmic Ray",
@@ -163,6 +169,8 @@ const NAME_FROM_RES = {
 	cosmic_str: "Cosmic String",
 	prestige0: "Prestige Level",
 	prestige1: "Honor",
+	prestige2: "Glory",
+	massUpg4: "Overpower",
 }
 
 function updateScalingHTML() {
@@ -339,6 +347,7 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="supernova") {
 			if (hasPrestige(0,552)) start = start.mul(1.25)
+			if (hasPrestige(3,2)) start = start.mul(prestigeEff(3,2))
 		}
 	}
 	if (name=='supernova' && type != 'exotic') {

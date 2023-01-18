@@ -46,8 +46,8 @@ const UPGS = {
 
             if (i==4) {
                 let pow = 1.5
-                cost = Decimal.pow(10,Decimal.pow(inc,lvl.pow(pow)).mul(start))
-                if (player.mass.gte('ee100')) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).add(1).floor()
+                cost = Decimal.pow(10,Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
+                if (player.mass.gte('ee100')) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
             } else {
                 fp = tmp.massFP
                 
@@ -373,7 +373,7 @@ const UPGS = {
             },
             18: {
                 unl() { return tmp.brUnl },
-                desc: `Fading matter's upgrade applies collapsed stars gain at reduced rate.`,
+                desc: `Fading matter's upgrade applies rage powers gain at reduced rate.`,
                 cost: E('e1.5e128'),
                 effect() {
                     let x = Decimal.pow(10,tmp.matters.upg[12].eff.max(1).log10().pow(.8))
@@ -734,7 +734,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasElement(132) },
-            lens: 18,
+            lens: 19,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -845,6 +845,16 @@ const UPGS = {
                     return x
                 },
                 effDesc(x=this.effect()) { return "x"+format(x) },
+            },
+            19: {
+                unl() { return tmp.brUnl },
+                desc: `Red Matters reduce Pre-Renown requirements slightly.`,
+                cost: E('e463'),
+                effect() {
+                    let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).log10().div(60).add(1).toNumber()
+                    return x
+                },
+                effDesc(x=this.effect()) { return "x"+format(x)+" cheaper" },
             },
         },
     },

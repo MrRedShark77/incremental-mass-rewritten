@@ -193,6 +193,10 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().pow(0.5).div(150).add(1).pow(t)
+                    if (hasElement(213)) {
+                        let y = expMult(t.add(1).pow(i.add(1).log10().add(1).log10()),0.8)
+                        return x.min(500).max(y)
+                    }
                     return x.min(500)//overflow(x,500,0.25)
                 },
                 desc(x) {
@@ -378,6 +382,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().add(1).log10().div(2000).mul(t.softcap(8,0.5,0))
+                    if (hasBeyondRank(2,2)) x = x.mul(8)
                     return x.toNumber()
                 },
                 desc(x) {

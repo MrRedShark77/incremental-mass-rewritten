@@ -264,7 +264,7 @@ function updateMassUpgradesHTML() {
 		let upg = UPGS.mass[x]
 		tmp.el["massUpg_div_"+x].setDisplay(upg.unl())
 		if (upg.unl()) {
-			tmp.el["massUpg_scale_"+x].setTxt(getScalingName("massUpg", x))
+			tmp.el["massUpg_scale_"+x].setTxt(x==4?getScalingName("massUpg4"):getScalingName("massUpg", x))
 			tmp.el["massUpg_lvl_"+x].setTxt(format(player.massUpg[x]||0,0)+(tmp.upgs.mass[x].bonus.gt(0)?" + "+format(tmp.upgs.mass[x].bonus,0):""))
 			tmp.el["massUpg_btn_"+x].setClasses({btn: true, locked: player.mass.lt(tmp.upgs.mass[x].cost)})
 			tmp.el["massUpg_cost_"+x].setTxt(formatMass(tmp.upgs.mass[x].cost))

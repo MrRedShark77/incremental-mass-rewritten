@@ -58,7 +58,7 @@ const ENTROPY = {
             inc: E(10),
 
             eff(i) {
-                let x = hasElement(114) ? i.add(1).root(1.5) : i.div(2).add(1).root(3)
+                let x = hasElement(214) ? Decimal.pow(1.1,i.pow(.8)) : hasElement(114) ? i.add(1).root(1.5) : i.div(2).add(1).root(3)
                 return x
             },
             desc(x) { return `Meta Tickspeed, BHC & Cosmic Ray start <b>${x.format()}x</b> later.` },
@@ -172,6 +172,7 @@ const ENTROPY = {
         if (rc.scale) {
             let p = rc.scale.p
             if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
+            if ((i == 2 || i == 6) && hasElement(215)) p = p**0.85
             if ((i == 2) && hasElement(179)) p **= 0.75
             r = r.scale(rc.scale.s, p, 0)
         }
@@ -188,6 +189,7 @@ const ENTROPY = {
             if (rc.scale) {
                 let p = rc.scale.p
                 if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
+                if ((i == 2 || i == 6) && hasElement(215)) p = p**0.85
                 if ((i == 2) && hasElement(179)) p **= 0.75
                 x = x.scale(rc.scale.s, p, 0, true)
             }

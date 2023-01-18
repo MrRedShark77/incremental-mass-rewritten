@@ -2,7 +2,7 @@ const DARK = {
     nextEffectAt: [
         [0,1e12,1e22],
         [1e6,1e11,1e25,1e130],
-        [1e120,1e180,'e345','e800','e2500','e56000'],
+        [1e120,1e180,'e345','e800','e2500','e56000','e125500'],
     ],
     gain() {
         let x = E(1)
@@ -145,6 +145,7 @@ const DARK = {
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
         if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0)
         if (a.gte('e56000')) x.ApQ_Overflow = Decimal.pow(10,a.div('e56000').log10().add(1).log10())
+        if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
 
         return x
     },
@@ -234,6 +235,7 @@ function updateDarkHTML() {
                 if (eff.mexp) e += `<br>Boosts each matters gain by <b>^${eff.mexp.format(3)}</b>`
                 if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5)
                 if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`
+                if (eff.fss) e += `<br>Final Star Shard is <b>${formatPercent(eff.fss-1)}</b> stronger`
 
                 tmp.el.abEff.setHTML(e)
             }

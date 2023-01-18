@@ -90,8 +90,8 @@ const STARS = {
             if (hasTree("s1") && i==4) x = x.mul(tmp.supernova.tree_eff.s1)
             if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
             if (hasElement(54)) x = x.mul(tmp.elements.effect[54])
-            x = x.mul(tmp.bosons.upgs.photon[3].effect)
             x = x.mul(tmp.stars.generator_boost_eff)
+            x = hasElement(213) ? x.pow(tmp.bosons.upgs.photon[3].effect) : x.mul(tmp.bosons.upgs.photon[3].effect)
             if (hasPrestige(1,1)) x = x.pow(2)
 
             if (QCs.active()) x = expMult(x,tmp.qu.qc_eff[0][0])

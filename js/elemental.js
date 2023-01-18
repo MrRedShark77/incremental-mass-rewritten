@@ -1220,6 +1220,17 @@ const ELEMENTS = {
             br: true,
             desc: `Exotic supernova scales 25% weaker.`,
             cost: E("1e1.6e117"),
+        },{
+            dark: true,
+            desc: `[Bottom]’s effect is changed to better, uncapping. Fourth Proton upgrade now provides an exponential boost.`,
+            cost: E('e1024'),
+        },{
+            desc: `Entropic Multiplier is overpowered.`,
+            cost: E('e2.6e127'),
+        },{
+            br: true,
+            desc: `Entropic Evaporation^2 and Condenser^2 scale another 15% weaker.`,
+            cost: E('e3.1e123'),
         },
     ],
     /*

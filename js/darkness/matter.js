@@ -35,6 +35,9 @@ const MATTERS = {
         base() {
             let x = E(1)
             for (let i = 0; i < 13; i++) x = x.mul(player.dark.matters.amt[i].add(1).log10().add(1).log10().add(1))
+
+            if (hasPrestige(1,91)) x = x.pow(1.05)
+
             return x.sub(1)
         },
         req() {
@@ -55,6 +58,8 @@ const MATTERS = {
 
         effect() {
             let fss = player.dark.matters.final
+
+            fss *= tmp.dark.abEff.fss||1
 
             let x = Decimal.pow(2,fss**1.25)
 
