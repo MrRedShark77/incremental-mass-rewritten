@@ -5,6 +5,8 @@ function resetTemp() {
     tmp = {
         tree_time: 0,
 
+        preQUGlobalSpeed: E(1),
+
         cx: 0,
         cy: 0,
 

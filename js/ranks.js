@@ -400,6 +400,7 @@ const PRESTIGES = {
             "607": `Chromas gain is increased by prestige base.`,
             "651": `Hyper Hex starts x1.33 later.`,
             "867": `Lithium-3 now provides an exponential boost. Meta-Cosmic Ray scaling starts ^8 later.`,
+            "1337": `Pre-Quantum Global Speed boosts matter exponent at a reduced rate. Prestige Level 382 is stronger.`,
         },
         {
             "1": `All-Star resources are raised by ^2.`,
@@ -421,6 +422,7 @@ const PRESTIGES = {
             "4": `Unlock new effect from Hybridized Uran-Astatine.`,
             "5": `Glory boosts glyphic mass.`,
             "8": `Glory reduces Black Hole Overflow nerf.`,
+            //"19": `?!.`,
         },
         {
             "1": `The requirements from previous prestiges are 10% weaker.`,
@@ -446,8 +448,9 @@ const PRESTIGES = {
                 return x
             },x=>"x"+format(x)],
             "382": [()=>{
-                let x = player.prestiges[0].max(0).root(2).div(1e3).toNumber()
-                return x
+                let x = player.prestiges[0].max(0).root(2).div(1e3)
+                if (hasPrestige(0,1337)) x = x.mul(10)
+                return x.toNumber()
             },x=>"+"+format(x)],
             "388": [()=>{
                 let x = tmp.qu.chroma_eff[1][1].root(2)
@@ -457,6 +460,10 @@ const PRESTIGES = {
                 let x = tmp.prestiges.base.max(1).pow(1.5)
                 return x
             },x=>"x"+format(x)],
+            "1337": [()=>{
+                let x = tmp.preQUGlobalSpeed.max(1).log10().add(1).log10().div(10)
+                return x.toNumber()
+            },x=>"+"+format(x)],
             /*
             "1": [()=>{
                 let x = E(1)
@@ -653,6 +660,7 @@ const BEYOND_RANKS = {
         2: {
             1: `Automate Beyond-Ranks. Beyond-Ranks now affect prestige base, using the formula.`,
             2: `Beyond-Ranks will no longer reset anything. [Meta-Lepton]'s effect is multiplied by 8.`,
+            4: `Accelerator's effect affects tickspeed, BHC & cosmic ray powers. Chromas gain is raised to the 1.1th power.`,
         },
     },
 

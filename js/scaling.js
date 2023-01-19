@@ -58,7 +58,11 @@ const SCALE_START = {
 	},
 	exotic: {
 		rank: E(1e16),
+		tier: E(1e25),
 		supernova: E(2e5),
+	},
+	supercritical: {
+		rank: E(1e37),
 	},
 }
 
@@ -122,8 +126,12 @@ const SCALE_POWER= {
 	},
 	exotic: {
 		rank: 15,
+		tier: 20,
 		supernova: 20,
-	}
+	},
+	supercritical: {
+		rank: 50,
+	},
 }
 
 const SCALE_FP = {
@@ -132,8 +140,8 @@ const SCALE_FP = {
 
 const QCM8_SCALES = ['rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
-const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic'] // super, hyper, ultra, meta, exotic
-const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta', 'Exotic']
+const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic', 'supercritical'] // super, hyper, ultra, meta, exotic
+const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta', 'Exotic', 'Supercritical']
 
 const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },
@@ -350,7 +358,7 @@ function getScalingStart(type, name) {
 			if (hasPrestige(3,2)) start = start.mul(prestigeEff(3,2))
 		}
 	}
-	if (name=='supernova' && type != 'exotic') {
+	if (name=='supernova' && type != 'exotic' && type != 'supercritical') {
 		start = start.add(tmp.prim.eff[7])
 	}
 	if ((name=="bh_condenser" || name=="gamma_ray" || name=="tickspeed") && hasUpgrade('atom',14)) start = start.mul(10)
@@ -474,16 +482,16 @@ function getScalingPower(type, name) {
 		}
 	}
 	if (hasUpgrade("atom",15) && name == "gamma_ray") power = power.mul(0.8)
-	if (hasElement(108) && ["rank","tier","tetr","pent"].includes(name) && type != "exotic") power = power.mul(player.qu.rip.active?0.98:0.9)
+	if (hasElement(108) && ["rank","tier","tetr","pent"].includes(name) && type != "exotic" && type != "supercritical") power = power.mul(player.qu.rip.active?0.98:0.9)
 
 	let rps = ['rank','tier','tetr','pent']
 	if (hasElement(207)) rps.push('hex')
-	if (hasPrestige(2,4) && rps.includes(name) && type != 'exotic') power = power.mul(tmp.qu.chroma_eff[1][1])
+	if (hasPrestige(2,4) && rps.includes(name) && type != 'exotic' && type != "supercritical") power = power.mul(tmp.qu.chroma_eff[1][1])
 
 	let qf = tmp.qu.qc_eff[7][1]
 	if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
-	if (PreQ_SCALES.includes(name) && type != "meta" && type != "exotic") power = power.mul(getEnRewardEff(5))
+	if (PreQ_SCALES.includes(name) && type != "meta" && type != "exotic" && type != "supercritical") power = power.mul(getEnRewardEff(5))
 	if (hasPrestige(0,388) && ['prestige0','prestige1'].includes(name) && type != "meta") power = power.mul(prestigeEff(0,388,1))
 	if (hasPrestige(1,66) && name=="fTier") power = power.mul(0.8)
 	return power.max(type=="meta"?0.5:0)

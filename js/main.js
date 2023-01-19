@@ -249,6 +249,8 @@ const FORMS = {
             if (hasPrestige(0,6)) ss = ss.pow(100)
             if (hasElement(102)) ss = ss.pow(100)
             step = step.softcap(ss,p,0,hasUpgrade('rp',16))
+
+            if (hasBeyondRank(2,4)) step = step.pow(tmp.accelEffect.eff)
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
 
@@ -288,6 +290,7 @@ const FORMS = {
             let step = E(0.0004)
             step = step.mul(tmp.dark.abEff.accelPow||1)
             if (hasElement(205)) step = step.mul(elemEffect(205))
+            if (hasUpgrade('bh',19)) step = step.mul(upgEffect(2,19))
 
             let x = player.accelerator.mul(step).add(1)
             return {step: step, eff: x}
@@ -491,7 +494,7 @@ const FORMS = {
                     if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
                 if (hasElement(129)) pow = pow.pow(elemEffect(18))
-                pow = pow//.softcap('e3e10',0.9,2)
+                if (hasBeyondRank(2,4)) pow = pow.pow(tmp.accelEffect.eff)
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
                 return {pow: pow, eff: eff}

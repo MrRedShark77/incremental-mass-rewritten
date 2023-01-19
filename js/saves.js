@@ -46,10 +46,10 @@ Decimal.prototype.scaleName = function (type, id, rev=false) {
     return x
 }
 
-Decimal.prototype.scaleEvery = function (id, rev=false, fp=SCALE_FP[id]?SCALE_FP[id]():[1,1,1,1,1]) {
+Decimal.prototype.scaleEvery = function (id, rev=false, fp=SCALE_FP[id]?SCALE_FP[id]():[1,1,1,1,1,1]) {
     var x = this.clone()
-    for (let i = 0; i < 5; i++) {
-        let s = rev?i:4-i
+    for (let i = 0; i < SCALE_TYPE.length; i++) {
+        let s = rev?i:SCALE_TYPE.length-1-i
         let sc = SCALE_TYPE[s]
         let f = fp[s]||1
 

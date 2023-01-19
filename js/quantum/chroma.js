@@ -14,6 +14,7 @@ const CHROMA = {
         if (hasUpgrade('br',18)) x = x.mul(upgEffect(4,18))
         if (hasElement(190)) x = x.pow(1.1)
         if (hasGlyphUpg(13) && i == 1) x = x.pow(2)
+        if (hasBeyondRank(2,4)) x = x.pow(1.1)
         return x
     },
     names: [

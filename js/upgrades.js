@@ -409,7 +409,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 18,
+            lens: 19,
             1: {
                 desc: "Mass Upgardes no longer spends mass.",
                 cost: E(1),
@@ -563,6 +563,18 @@ const UPGS = {
                 unl() { return tmp.brUnl },
                 desc: `Make black hole's effect stronger.`,
                 cost: E('e1.5e156'),
+            },
+            19: {
+                unl() { return tmp.brUnl },
+                desc: `Mass of black hole boosts accelerator power at a extremely reduced rate.`,
+                cost: E('e3e201'),
+                effect() {
+                    let x = player.bh.mass.add(1).log10().add(1).log10().add(1).root(6)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return "x"+format(x)
+                },
             },
         },
         3: {

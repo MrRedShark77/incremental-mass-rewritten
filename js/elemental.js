@@ -1020,7 +1020,9 @@ const ELEMENTS = {
             desc: `Exotic rank starts later based on meta-rank starting.`,
             cost: E("e4.8e79"),
             effect() {
-                let x = scaleStart('meta','rank').add(1).log10().add(1)
+                if (!tmp.scaling_start.meta || !tmp.scaling_start.meta.rank) return E(1)
+                let x = tmp.scaling_start.meta.rank.add(1).log10().add(1)
+                if (hasElement(216)) x = x.pow(2)
                 return x
             },
             effDesc(x) { return "x"+format(x)+" later" },
@@ -1231,6 +1233,16 @@ const ELEMENTS = {
             br: true,
             desc: `Entropic Evaporation^2 and Condenser^2 scale another 15% weaker.`,
             cost: E('e3.1e123'),
+        },{
+            desc: `Strengthen Unseptoctium-178 slightly.`,
+            cost: E('e4.9e130'),
+        },{
+            dark: true,
+            desc: `Final Star Shard's requirement is 20% cheaper.`,
+            cost: E('1e1480'),
+        },{
+            desc: `Unlock 16th Challenge. (Coming Soon...)`,
+            cost: EINF,
         },
     ],
     /*

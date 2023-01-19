@@ -41,7 +41,11 @@ const MATTERS = {
             return x.sub(1)
         },
         req() {
-            let x = Decimal.pow(100,player.dark.matters.final**1.5).mul(1e43)
+            let f = player.dark.matters.final
+
+            if (hasElement(217)) f *= .8
+
+            let x = Decimal.pow(100,f**1.5).mul(1e43)
             return x
         },
 
@@ -140,6 +144,7 @@ function updateMattersTemp() {
     if (player.ranks.hex.gte(91)) tmp.matters.exponent += .15
     if (hasElement(206)) tmp.matters.exponent += elemEffect(206,0)
     if (hasBeyondRank(1,1)) tmp.matters.exponent += .5
+    if (hasPrestige(0,1337)) tmp.matters.exponent += prestigeEff(0,1337,0)
     
     tmp.matters.req_unl = Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))
 

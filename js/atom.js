@@ -130,6 +130,8 @@ const ATOM = {
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
             pow = pow//.softcap('e3e12',0.9,2)
 
+            if (hasBeyondRank(2,4)) pow = pow.pow(tmp.accelEffect.eff)
+
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
 
             let exp = E(1)
