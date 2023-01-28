@@ -31,7 +31,7 @@ const MASS_DILATION = {
     },
     RPgain(m=player.mass) {
         if (CHALS.inChal(11)) return E(0)
-        let x = m.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
+        let x = m.div(1.50005e22).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
         return x.sub(player.md.particles).max(0).floor()
     },
     massGain() {
@@ -47,7 +47,7 @@ const MASS_DILATION = {
         return x.softcap(mlt(1e12),0.5,0)
     },
     mass_req() {
-        let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e56)
+        let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e22)
         return x
     },
     effect() {
@@ -117,28 +117,28 @@ const MASS_DILATION = {
             },{
                 desc: `Dilated mass boost quarks gain.`,
                 maxLvl: 1,
-                cost(x) { return E(1.5e191) },
-                bulk() { return player.md.mass.gte(1.5e191)?E(1):E(0) },
+                cost(x) { return E(1.5e150) },
+                bulk() { return player.md.mass.gte(1.5e150)?E(1):E(0) },
                 effect(x) { return E(5).pow(player.md.mass.max(1).log10().root(2)) },
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: `Mass Dilation upgrade 2 effect's formula is better.`,
                 maxLvl: 1,
-                cost(x) { return E(1.5e246) },
-                bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
+                cost(x) { return E(1.5e196) },
+                bulk() { return player.md.mass.gte(1.5e196)?E(1):E(0) },
             },{
                 unl() { return STARS.unlocked() || player.supernova.times.gte(1) },
                 desc: `Tickspeed affect all-star resources at a reduced rate.`,
                 maxLvl: 1,
-                cost(x) { return E(1.5e296) },
-                bulk() { return player.md.mass.gte(1.5e296)?E(1):E(0) },
+                cost(x) { return E(1.5e276) },
+                bulk() { return player.md.mass.gte(1.5e276)?E(1):E(0) },
                 effect(x) { return player.tickspeed.add(1).pow(2/3) },
                 effDesc(x) { return format(x)+"x" },
             },{
                 unl() { return STARS.unlocked() || player.supernova.times.gte(1) },
                 desc: `Double quarks gain.`,
-                cost(x) { return E(5).pow(x).mul('1.50001e536') },
-                bulk() { return player.md.mass.gte('1.50001e536')?player.md.mass.div('1.50001e536').max(1).log(5).add(1).floor():E(0) },
+                cost(x) { return E(5).pow(x).mul('1.50001e406') },
+                bulk() { return player.md.mass.gte('1.50001e406')?player.md.mass.div('1.50001e406').max(1).log(5).add(1).floor():E(0) },
                 effect(x) {
                     return E(2).pow(x).softcap(1e25,2/3,0)//.softcap("ee12",0.8,2)
                 },

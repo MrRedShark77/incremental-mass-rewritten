@@ -28,7 +28,7 @@ const STARS = {
         return x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
     },
     generators: {
-        req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870')],
+        req: [E(1e225),E(1e254),E('e265'),E('e275'),E('e845')],
         unl(auto=false) {
             if (player.atom.quarks.gte(!hasTree("s4")||player.stars.unls < 5?tmp.stars.generator_req:tmp.stars.generator_boost_req)) {
                 if(hasTree("s4")&&player.stars.unls > 4) player.stars.boost = auto?player.stars.boost.max(tmp.stars.generator_boost_bulk):player.stars.boost.add(1)

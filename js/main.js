@@ -32,7 +32,9 @@ const FORMS = {
     massGain() {
         let x = E(1)
         x = x.add(tmp.upgs.mass[1]?tmp.upgs.mass[1].eff.eff:1)
+		        if (player.ranks.rank.gte(5)) x = x.mul(10)
         if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
+					        if (player.ranks.rank.gte(7)) x = x.mul(8)
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         x = x.mul(tmp.tickspeedEffect.eff||E(1))
         if (player.bh.unl) x = x.mul(tmp.bh.effect)
@@ -160,6 +162,7 @@ const FORMS = {
             let step = E(1.5)
                 step = step.add(tmp.chal.eff[6])
                 step = step.add(tmp.chal.eff[2])
+				if (player.mainUpg.bh.includes(5)) step = step.times(1.5)
                 step = step.add(tmp.atom.particles[0].powerEffect.eff2)
                 if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
                 if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
@@ -188,8 +191,8 @@ const FORMS = {
     },
     rp: {
         gain() {
-            if (player.mass.lt(1e15) || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
-            let gain = player.mass.div(1e15).root(3)
+            if (player.mass.lt(1e25) || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
+            let gain = player.mass.div(1e27).root(3)
             if (player.ranks.rank.gte(14)) gain = gain.mul(2)
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
@@ -223,7 +226,7 @@ const FORMS = {
     bh: {
         see() { return player.rp.unl },
         DM_gain() {
-            let gain = player.rp.points.div(1e20)
+            let gain = player.rp.points.div(2000000)
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = player.mass.div(1e180)
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
@@ -353,9 +356,9 @@ const FORMS = {
     },
     reset_msg: {
         msgs: {
-            rp: "Require over 1e9 tonne of mass to reset previous features for gain Rage Powers",
-            dm: "Require over 1e20 Rage Power to reset all previous features for gain Dark Matters",
-            atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
+            rp: "Require over 100M tonne of mass to reset previous features for gain Rage Powers",
+            dm: "Require over 2M Rage Power to reset all previous features for gain Dark Matters",
+            atom: "Require over 1e74 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
             br: "Big Rip the Dimension, then go back",
         },

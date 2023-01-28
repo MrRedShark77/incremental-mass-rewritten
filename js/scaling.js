@@ -1,10 +1,10 @@
 const SCALE_START = {
     super: {
-        rank: E(50),
+        rank: E(6),
 		tier: E(10),
 		tetr: E(7),
 		pent: E(15),
-        massUpg: E(100),
+        massUpg: E(5),
 		tickspeed: E(100),
 		bh_condenser: E(100),
 		gamma_ray: E(100),
@@ -15,10 +15,10 @@ const SCALE_START = {
 		prestige1: E(7),
     },
 	hyper: {
-		rank: E(120),
+		rank: E(9),
 		tier: E(200),
 		tetr: E(60),
-		massUpg: E(500),
+		massUpg: E(250),
 		tickspeed: E(250),
 		bh_condenser: E(300),
 		gamma_ray: E(300),
@@ -215,11 +215,11 @@ function getScalingStart(type, name) {
 			if (player.ranks.tier.gte(100)) start = start.add(5)
 		}
 		if (name=="massUpg") {
-			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
+			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(2)
 			if (player.mainUpg.bh.includes(3)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[2][3].effect:0:0)
 		}
 		if (name=='tickspeed') {
-			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
+			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(15)
 		}
 		if (name=="prestige0") {
 			if (player.md.break.upgs[9].gte(1)) start = start.add(10)

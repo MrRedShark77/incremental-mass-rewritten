@@ -58,11 +58,14 @@ const RANKS = {
     desc: {
         rank: {
             '1': "unlock mass upgrade 1.",
-            '2': "unlock mass upgrade 2, reduce mass upgrade 1 cost scaled by 20%.",
-            '3': "unlock mass upgrade 3, reduce mass upgrade 2 cost scaled by 20%, mass upgrade 1 boosts itself.",
+            '2': "unlock mass upgrade 2, reduce mass upgrade 1 cost scaled by 20%, mass upgrade 1 boosts itself.",
+            '3': "unlock mass upgrade 3, reduce mass upgrade 2 cost scaled by 20%, mass upgrade 2 boosts itself.",
             '4': "reduce mass upgrade 3 cost scale by 20%.",
-            '5': "mass upgrade 2 boosts itself.",
+            '5': "mass upgrade 2 boosts itself, 10x mass gain",
             '6': "make mass gain is boosted by (x+1)^2, where x is rank.",
+			'7': "8.00x mass gain",
+			'8': "mass upgrade 3 boosts itself massively",
+			'10': "unlock mass upgrade 4",
             '13': "triple mass gain.",
             '14': "double Rage Powers gain.",
             '17': "make rank 6 reward effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
@@ -107,16 +110,20 @@ const RANKS = {
     },
     effect: {
         rank: {
-            '3'() {
+            '2'() {
                 let ret = E(player.massUpg[1]||0).div(20)
                 return ret
             },
-            '5'() {
+            '3'() {
                 let ret = E(player.massUpg[2]||0).div(40)
                 return ret
             },
             '6'() {
                 let ret = player.ranks.rank.add(1).pow(player.ranks.rank.gte(17)?player.ranks.rank.add(1).root(3):2)
+                return ret
+            },
+            '8'() {
+                let ret = E(player.massUpg[2]||0).div(10)
                 return ret
             },
             '40'() {
@@ -199,9 +206,10 @@ const RANKS = {
     },
     effDesc: {
         rank: {
+            2(x) { return "+"+format(x) },
             3(x) { return "+"+format(x) },
-            5(x) { return "+"+format(x) },
             6(x) { return format(x)+"x" },
+			8(x) { return "+"+format(x) },
             40(x) {  return "+"+format(x.mul(100))+"%" },
             45(x) { return format(x)+"x" },
             300(x) { return format(x)+"x" },
@@ -391,9 +399,9 @@ function updateRanksTemp() {
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
     let fp2 = tmp.qu.chroma_eff[1]
     let fp = RANKS.fp.rank()
-    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(fp2).scaleEvery('rank').div(fp).pow(1.15)).mul(10)
+    tmp.ranks.rank.req = E(20).pow(player.ranks.rank.div(fp2).scaleEvery('rank').div(fp).pow(1.15)).mul(3.5)
     tmp.ranks.rank.bulk = E(0)
-    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true).mul(fp2).add(1).floor();
+    if (player.mass.gte(20)) tmp.ranks.rank.bulk = player.mass.div(20).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true).mul(fp2).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier()

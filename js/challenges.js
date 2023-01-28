@@ -235,12 +235,12 @@ const CHALS = {
     },
     1: {
         title: "Instant Scale",
-        desc: "Super Ranks, Mass Upgrades starts at 25. In addtional, Super Tickspeed start at 50.",
+        desc: "Super Ranks, Mass Upgrades starts at 2. In addtional, Super Tickspeed start at 15.",
         reward: `Super Ranks starts later, Super Tickspeed scaling weaker by completions.`,
         max: E(100),
         inc: E(5),
         pow: E(1.3),
-        start: E(1.5e58),
+        start: E(1.5e38).pow(1.5),
         effect(x) {
             let rank = x.softcap(20,4,1).floor()
             let tick = E(0.96).pow(x.root(2))
@@ -336,7 +336,7 @@ const CHALS = {
         max: E(50),
         inc: E(64),
         pow: E(1.25),
-        start: E(1.5e76),
+        start: E(1.5e70),
         effect(x) {
             let ret = x.mul(2)
             if (hasElement(5)) ret = ret.mul(2)
@@ -352,7 +352,7 @@ const CHALS = {
         max: E(50),
         inc: E(80),
         pow: E(1.3),
-        start: E(1.989e38),
+        start: E(1.989e18),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
             let ret = x.root(1.75).mul(0.02).add(1)
