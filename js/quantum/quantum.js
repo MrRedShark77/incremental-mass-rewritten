@@ -1,6 +1,6 @@
 const QUANTUM = {
     gain() {
-        let x = player.mass.max(1).log10().div(1e13)
+        let x = player.mass.max(1).log10().div(4.5e12)
         if (x.lt(1)) return E(0)
         x = x.max(0).pow(hasTree("qu11")?3:1.5)
 

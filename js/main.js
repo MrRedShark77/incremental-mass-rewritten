@@ -369,7 +369,7 @@ const FORMS = {
                 return
             }
             if (id=="qu") {
-                player.reset_msg = "Require over "+formatMass(mlt(1e4))+" of mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")
+                player.reset_msg = "Require over "+formatMass(mlt(4.5e3))+" of mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")
                 return
             }
             player.reset_msg = this.msgs[id]
