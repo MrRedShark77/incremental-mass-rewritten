@@ -232,6 +232,7 @@ const FORMS = {
             gain = gain.root(4)
 
             if (hasTree("bh1")) gain = gain.mul(tmp.supernova.tree_eff.bh1)
+			if (hasTree("bh3")) gain = gain.mul(tmp.supernova.tree_eff.bh3)
             gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
 
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = gain.root(6)

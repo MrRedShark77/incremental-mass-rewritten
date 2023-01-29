@@ -44,6 +44,7 @@ const MASS_DILATION = {
         if (hasElement(40)) x = x.mul(tmp.elements.effect[40])
         if (hasElement(32)) x = x.pow(1.05)
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+		if (hasTree("mdn1")) x = x.mul(tmp.supernova.tree_eff.mdn1)
         return x.softcap(mlt(1e12),0.5,0)
     },
     mass_req() {
@@ -146,8 +147,8 @@ const MASS_DILATION = {
             },{
                 unl() { return player.supernova.times.gte(1) },
                 desc: `Add 0.015 Mass Dilation upgrade 6's base.`,
-                cost(x) { return E(1e50).pow(x.pow(1.5)).mul('1.50001e1556') },
-                bulk() { return player.md.mass.gte('1.50001e1556')?player.md.mass.div('1.50001e1556').max(1).log(1e50).max(0).root(1.5).add(1).floor():E(0) },
+                cost(x) { return E(1e50).pow(x.pow(1.5)).mul('1.50001e1356') },
+                bulk() { return player.md.mass.gte('1.50001e1356')?player.md.mass.div('1.50001e1356').max(1).log(1e50).max(0).root(1.5).add(1).floor():E(0) },
                 effect(i) {
                     if (player.md.break.upgs[3].gte(1)) i = i.pow(1.5).softcap(1e18,1/1.5,0)
                     let x = i.mul(0.015).add(1).softcap(1.2,0.75,0).sub(1)

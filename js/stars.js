@@ -73,7 +73,7 @@ function updateStarsTemp() {
         generators_gain: [],
     }
     tmp.stars.generator_req = player.stars.unls<5?STARS.generators.req[player.stars.unls]:EINF
-    let s = E("e8000")
+    let s = E("e6690")
     let inc = E("e100")
     if (hasUpgrade('br',5)) {
         s = s.root(10)

@@ -59,12 +59,12 @@ const FERMIONS = {
             {
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return E('e50').pow(t.pow(1.25)).mul("e800")
+                    return E('e50').pow(t.pow(1.25)).mul("e559")
                 },
                 calcTier() {
                     let res = player.atom.atomic
-                    if (res.lt('e800')) return E(0)
-                    let x = res.div('e800').max(1).log('e50').max(0).root(1.25)
+                    if (res.lt('e559')) return E(0)
+                    let x = res.div('e559').max(1).log('e50').max(0).root(1.25)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
@@ -79,12 +79,12 @@ const FERMIONS = {
             },{
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return E('e50').pow(t.pow(1.25)).mul("e400")
+                    return E('e50').pow(t.pow(1.25)).mul("e300")
                 },
                 calcTier() {
                     let res = player.md.particles
-                    if (res.lt('e400')) return E(0)
-                    let x = res.div('e400').max(1).log('e50').max(0).root(1.25)
+                    if (res.lt('e300')) return E(0)
+                    let x = res.div('e300').max(1).log('e50').max(0).root(1.25)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
@@ -99,12 +99,12 @@ const FERMIONS = {
             },{
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return E('ee3').pow(t.pow(1.5)).mul(uni("e36000"))
+                    return E('ee3').pow(t.pow(1.5)).mul(uni("e28500"))
                 },
                 calcTier() {
                     let res = player.mass
-                    if (res.lt(uni("e36000"))) return E(0)
-                    let x = res.div(uni("e36000")).max(1).log('ee3').max(0).root(1.5)
+                    if (res.lt(uni("e28500"))) return E(0)
+                    let x = res.div(uni("e28500")).max(1).log('ee3').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
@@ -206,12 +206,12 @@ const FERMIONS = {
                 },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return E('e5').pow(t.pow(1.5)).mul("e175")
+                    return E('e5').pow(t.pow(1.5)).mul("e65")
                 },
                 calcTier() {
                     let res = player.atom.quarks
-                    if (res.lt('e175')) return E(0)
-                    let x = res.div('e175').max(1).log('e5').max(0).root(1.5)
+                    if (res.lt('e65')) return E(0)
+                    let x = res.div('e65').max(1).log('e5').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
@@ -227,12 +227,12 @@ const FERMIONS = {
             },{
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return E('e4e4').pow(t.pow(1.25)).mul("e6e5")
+                    return E('e4e4').pow(t.pow(1.25)).mul("e6e4")
                 },
                 calcTier() {
                     let res = player.bh.mass
-                    if (res.lt('e6e5')) return E(0)
-                    let x = res.div('e6e5').max(1).log('e4e4').max(0).root(1.25)
+                    if (res.lt('e6e4')) return E(0)
+                    let x = res.div('e6e4').max(1).log('e4e4').max(0).root(1.25)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
@@ -248,12 +248,12 @@ const FERMIONS = {
             },{
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return E('e5e3').pow(t.pow(1.5)).mul("e4.5e5")
+                    return E('e5e3').pow(t.pow(1.5)).mul("e3.5e5")
                 },
                 calcTier() {
                     let res = player.bh.dm
-                    if (res.lt('e4.5e5')) return E(0)
-                    let x = res.div('e4.5e5').max(1).log('e5e3').max(0).root(1.5)
+                    if (res.lt('e3.5e5')) return E(0)
+                    let x = res.div('e3.5e5').max(1).log('e5e3').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {

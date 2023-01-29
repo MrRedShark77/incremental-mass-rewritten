@@ -2,7 +2,7 @@ const RADIATION = {
     names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","Gamma-ray"],
     unls: ["0","1e6","1e13","1e20","1e26","1e33","1e49"],
     hz_gain() {
-        let x = E(1)
+        let x = E(100)
         x = x.mul(tmp.radiation.ds_eff[0])
         if (hasTree('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
@@ -15,7 +15,7 @@ const RADIATION = {
     },
     ds_gain(i) {
         if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
-        let x = E(1).mul(tmp.prim.eff[6][0])
+        let x = E(100).mul(tmp.prim.eff[6][0])
         if (hasTree('rad2')) x = x.mul(10)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         if (i<RAD_LEN-1) {

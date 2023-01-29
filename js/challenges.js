@@ -383,7 +383,7 @@ const CHALS = {
         max: E(100),
         inc: E('e2000'),
         pow: E(2),
-        start: E('e3e4').mul(1.5e56),
+        start: E('e2e4').mul(1.5e40),
         effect(x) {
             let ret = x.root(1.75).mul(0.01).add(1)
             return ret
