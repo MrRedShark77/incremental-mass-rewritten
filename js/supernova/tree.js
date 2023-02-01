@@ -32,13 +32,13 @@ const TREE_IDS = [
         ['fn12','fn11','fn6','fn10','rad6',""],
         ['en1','qu5','br1'],
     ],[
-        ['s4','sn5','sn4'],
+        ['s4','qn1','sn5','mdn1','sn4'],
         ['','','','qu_qol8a'],
         [],
         ['fn7','fn8'],
         ['qu6','qu7','qu8','qu9','qu10','qu11'],
     ],[
-        ['qn1','mdn1'],
+        [],
         [],
         [],
         [],
@@ -563,7 +563,7 @@ const TREE_UPGS = {
             cost: E('e490'),
         },
         qn1: {
-			            branch: ["sn5"],
+			            branch: ["bh3"],
             unl() { return player.supernova.times.gte(38) },
             desc: `Neutron Star boosts Quarks gain`,
             cost: E(1e43),
@@ -574,7 +574,7 @@ const TREE_UPGS = {
             effDesc(x) { return format(x)+"x" },
         },
 		        mdn1: {
-			            branch: ["sn5"],
+			            branch: ["bh3"],
             unl() { return player.supernova.times.gte(102) },
             desc: `Neutron Star boosts Dilated mass gain`,
             cost: E(1e153),

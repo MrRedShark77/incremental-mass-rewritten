@@ -70,7 +70,7 @@ const SUPERNOVA = {
         return x
     },
     stardustGain() {
-        let xx = E(0.1)
+        let xx = (hasElement(118)?0.1:0)
         return xx
     },
     req(x=player.supernova.times) {
