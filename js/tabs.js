@@ -49,6 +49,7 @@ const TABS = {
             { id: "Bosons", unl() { return player.supernova.post_10 } },
             { id: "Fermions", unl() { return player.supernova.fermions.unl } },
             { id: "Radiation", unl() { return tmp.radiation.unl } },
+            { id: "Constellations", unl() { return (hasElement(118)) } },
         ],
         6: [
             { id: "Chroma" },

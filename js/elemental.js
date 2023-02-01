@@ -34,9 +34,7 @@ const ELEMENTS = {
     canBuy(x) { return player.atom.quarks.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : x <= 86) && !tmp.elements.cannot.includes(x) },
     buyUpg(x) {
         if (this.canBuy(x)) {
-            if (x == 118) {
-                alert("Coming Soon.....")
-            } else {
+             {
                 player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
                 player.atom.elements.push(x)
             }
@@ -761,7 +759,7 @@ function setupElementsHTML() {
         else if (m=='x') {
             num++
             table += ELEMENTS.upgs[num]===undefined?`<div style="width: 50px; height: 50px"></div>`
-            :`<button class="elements ${num == 118 ? 'final' : ''}" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num}); ssf[0]('${ELEMENTS.names[num]}')" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
+            :`<button class="elements ${num == 119 ? 'final' : ''}" id="elementID_${num}" onclick="ELEMENTS.buyUpg(${num}); ssf[0]('${ELEMENTS.names[num]}')" onmouseover="tmp.elements.choosed = ${num}" onmouseleave="tmp.elements.choosed = 0"><div style="font-size: 12px;">${num}</div>${ELEMENTS.names[num]}</button>`
             if (num==57 || num==89) num += 14
             else if (num==71) num += 18
             else if (num==118) num = 57
@@ -788,7 +786,7 @@ function updateElementsHTML() {
         if (upg) {
             upg.setVisible(x <= tmp.elements.unl_length)
             if (x <= tmp.elements.unl_length) {
-                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x < 118, final: x == 118})
+                upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: x > 86 && x < 118, final: x == 119})
             }
         }
     }

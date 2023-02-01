@@ -15,7 +15,6 @@ const SUPERNOVA = {
     doReset() {
         let br = player.qu.rip.active
         tmp.supernova.time = 0
-
         player.atom.points = E(0)
         player.atom.quarks = E(0)
         player.atom.particles = [E(0),E(0),E(0)]
@@ -70,6 +69,10 @@ const SUPERNOVA = {
         x = x.mul(tmp.radiation.bs.eff[11])
         return x
     },
+    stardustGain() {
+        let xx = E(0.1)
+        return xx
+    },
     req(x=player.supernova.times) {
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
         maxlimit = E(1e20).pow(x.scaleEvery('supernova').div(ml_fp).pow(1.15)).mul(1e90)
@@ -119,6 +122,7 @@ function calcSupernova(dt, dt_offline) {
     if (tmp.radiation.unl) {
         if (!player.qu.en.eth[0]) su.radiation.hz = su.radiation.hz.add(tmp.radiation.hz_gain.mul(du_gs))
         for (let x = 0; x < RAD_LEN; x++) su.radiation.ds[x] = su.radiation.ds[x].add(tmp.radiation.ds_gain[x].mul(du_gs))
+			
     }
 }
 
@@ -128,7 +132,6 @@ function updateSupernovaTemp() {
     tmp.supernova.bulk = req_data.bulk
 
     tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
-
     for (let i = 0; i < TREE_TAB.length; i++) {
         tmp.supernova.tree_afford2[i] = []
         for (let j = 0; j < tmp.supernova.tree_had2[i].length; j++) {
@@ -152,8 +155,8 @@ function updateSupernovaTemp() {
                 tmp.supernova.tree_eff[id] = t.effect()
             }
         }
-    }
-
+    }		
+    tmp.supernova.stardust_gain = SUPERNOVA.stardustGain()
     tmp.supernova.star_gain = SUPERNOVA.starGain()
 }
 
@@ -184,5 +187,7 @@ function updateSupernovaEndingHTML() {
         if (tmp.stab[5] == 1) updateBosonsHTML()
         if (tmp.stab[5] == 2) updateFermionsHTML()
         if (tmp.stab[5] == 3) updateRadiationHTML()
+			if (tmp.stab[5] == 4) {         
+		tmp.el.starDust.setTxt(format(player.supernova.stardust,2)+" "+formatGain(player.supernova.stars,tmp.supernova.stardust_gain))}
     }
 }
