@@ -4,6 +4,7 @@ const TREE_TAB = [
     {title: "Challenge"},
     {title: "Post-Supernova", unl() { return player.supernova.post_10 } },
     {title: "Quantum", unl() { return quUnl() } },
+    { title: "Constellations", unl() { return (hasElement(118)) } },
 ]
 
 const TREE_IDS = [
@@ -13,31 +14,37 @@ const TREE_IDS = [
         ['chal1'],
         ['bs4','bs1','','qf1','','rad1'],
         ['qu0'],
+        ['c1'],
     ],[
         ['s1','m1','rp1','bh1','sn1'],
         ['qol2','qol3','qol4','qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6'],
         ['chal2','chal4a','chal4b','chal3'],
         ['bs5','bs2','fn1','bs3','qf2','qf3','rad2','rad3'],
         ['qu1','qu2','qu3'],
+        ['c2','c3'],
     ],[
         ['s2','m2','t1','d1','bh2','gr1','sn2'],
         ['qol5','qol6','qol7','','','qu_qol7','',''],
         ['chal4','chal7a'],
         ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
         ['prim3','prim2','prim1','qu4','qc1','qc2','qc3'],
+        [],
     ],[
         ['s3','m3', 'bh3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9','unl4'],
         ['chal5','chal6','chal7','chal8'],
         ['fn12','fn11','fn6','fn10','rad6',""],
         ['en1','qu5','br1'],
+        [],
     ],[
         ['s4','qn1','sn5','mdn1','sn4'],
         ['','','','qu_qol8a'],
         [],
         ['fn7','fn8'],
         ['qu6','qu7','qu8','qu9','qu10','qu11'],
+        [],
     ],[
+        [],
         [],
         [],
         [],
@@ -59,6 +66,7 @@ const TREE_UPGS = {
     buy(x, auto=false) {
         if ((tmp.supernova.tree_choosed == x || auto) && tmp.supernova.tree_afford[x]) {
             if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
+            if (this.ids[x].cs) player.supernova.stardust = player.supernova.stardust.sub(this.ids[x].cost).max(0)
             else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
             player.supernova.tree.push(x)
         }
@@ -931,6 +939,38 @@ const TREE_UPGS = {
             reqDesc: `66 Quantum Shards.`,
             desc: `Unlock Big Rip.`,
             cost: E(1e42),
+        },
+        c1: {
+            cs: true,
+            desc: `Radiation Frequency boosts Stardust gain`,
+            effect() {
+                let x = player.supernova.radiation.hz.log(6).pow(0.15)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+            cost: E(3),
+        },
+        c2: {
+            cs: true,
+            branch: ["c1"],
+            desc: `Break Dilation boosts Stardust gain`,
+            effect() {
+                let x = player.md.break.mass.log(12).pow(0.35)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+            cost: E(12),
+        },
+        c3: {
+            cs: true,
+            branch: ["c2"],
+            desc: `Stardust boosts Break Dilation Energy`,
+            effect() {
+                let x = player.supernova.stardust.pow(4.45).softcap(3e6,0.75,0)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+            cost: E(140),
         },
         /*
         x: {

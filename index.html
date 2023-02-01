@@ -95,6 +95,7 @@
         <div id="stab_frame5_0">
             <div style="height: 130px;">
                 You have <span id="neutronStar">X</span> Neutron star.<br>
+                You have <span v-if="hasElement(118)"id="starDust">X</span> Stardust<br>
                 <div id="tree_desc" style="margin-top: 3px;">
                 </div>
             </div>
@@ -148,13 +149,6 @@
             <span id="nr_div">At <span id="next_radiation">0</span> of frequency, unlock <span id="unl_radiation">X</span></span><br><br>
             <div id="radiation_table"></div>
         </div>
-			<div id="stab_frame5_5">
-            <div style="height: 130px;">
-                You have <span id="starDust">X</span> Neutron star.<br>
-                <div id="tree_desc" style="margin-top: 3px;">
-                </div>
-				</div>
-				</div>
     </div>
     <div id='app' style='display: none'>
         <div id="star"></div>
@@ -446,7 +440,7 @@
             <h2>Confirmation Settings</h2><br>
             <div id="confirm_table" class="table_center"></div>
             <br><br>
-            IMR: Rebalanced v0.3.3 - <b><span style="color:#ff0000;">Portal Rebalanced</span></b> - made by Seder3214<br>
+            IMR: Rebalanced v0.3.4 - <b><span style="color:#6fe2eb;">Constellations: Start</span></b> - made by Seder3214<br>
             The game is inspired by Incremental Mass Rewritten v0.5.4.8 - made by MrRedShark77<br><br><br>
             Hint 1: Hover top image above tabs to show description...<br><br>
             Total time played: <span id="total_time">X</span><br><br>

@@ -191,7 +191,6 @@ const MASS_DILATION = {
             if (hasPrestige(0,10)) x = x.mul(prestigeEff(0,10))
             x = x.mul(tmp.bd.upgs[5].eff||1)
             if (hasElement(116)) x = x.mul(tmp.elements.effect[116]||1)
-
             return x
         },
         massGain() {
@@ -199,7 +198,8 @@ const MASS_DILATION = {
             x = x.mul(tmp.bd.upgs[0].eff||1)
             if (player.md.break.upgs[7].gte(1)) x = x.mul(tmp.bd.upgs[7].eff||1)
             if (player.md.break.upgs[8].gte(1)) x = x.mul(tmp.bd.upgs[8].eff||1)
-
+            if (hasTree("c3")) x = x.mul(tmp.supernova.tree_eff.c3)
+            if (player.md.break.upgs[10].gte(1)) x = x.mul(tmp.bd.upgs[10].eff||1)
             return x
         },
 
@@ -306,6 +306,17 @@ const MASS_DILATION = {
                     desc: `Super Prestige Level starts 10 later.`,
                     maxLvl: 1,
                     cost(x) { return uni(1e120) },
+                    bulk() { return player.md.break.mass.gte(uni(1e120))?E(1):E(0) },
+                },
+                {
+                    desc: `Death Shards boosts Relavistic Energy gain`,
+                    maxLvl: 1,
+                    cost(x) { return uni('1e300') },
+                    effect(y) {
+                        let x = player.qu.rip.amt.pow(7.25).log(1.05)
+                        return x
+                    },
+                    effDesc(x) { return format(x)+"x" },
                     bulk() { return player.md.break.mass.gte(uni(1e120))?E(1):E(0) },
                 },
             ],

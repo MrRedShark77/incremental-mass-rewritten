@@ -212,6 +212,7 @@ function getPlayerData() {
             times: E(0),
             post_10: false,
             stars: E(0),
+			stardust: E(0),
             tree: [],
             chal: {
                 noTick: true,
