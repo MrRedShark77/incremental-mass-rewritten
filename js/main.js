@@ -136,6 +136,11 @@ const FORMS = {
         let p = E(0.05)
         return p
     },
+	    unmassGain() {
+        let x = E(0)
+        x = x.sub(tmp.upgs.unmass[1]?tmp.upgs.unmass[1].eff.eff:1)
+		return x
+    },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
         can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(10) },

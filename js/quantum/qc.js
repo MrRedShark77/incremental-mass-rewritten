@@ -25,7 +25,7 @@ const QCs = {
             effDesc(x) { return `^${format(x[0])} to exponent from All-Stars resources.<br>^${format(x[1])} to strength of star generators.` },
         },{
             eff(i) {
-                let x = E(2).pow(i**2)
+                let x = E(1.2).pow(i**2)
                 return x
             },
             effDesc(x) { return `/${format(x,0)} to pre-Quantum global speed.` },

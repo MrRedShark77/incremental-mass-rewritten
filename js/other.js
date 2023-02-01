@@ -100,7 +100,7 @@ const POPUP_GROUPS = {
     },
     qu: {
         html() { return `
-            Congratulations!<br><br>You have reached ${formatMass(mlt(1e4))} of mass after beating Challenge 12!<br><br>
+            Congratulations!<br><br>You have reached ${formatMass(mlt(4.5e4))} of mass after beating Challenge 12!<br><br>
             <b>You need to go Quantum!</b>
         `},
         width: 400,

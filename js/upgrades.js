@@ -674,7 +674,7 @@ if (player.mainUpg.rp.includes(5)) x = x.add(1)
             },
             9: {
                 desc: `Unlock Break Dilation.`,
-                cost: E(1e7),
+                cost: E(1e6),
             },
             10: {
                 unl() { return player.md.break.active },
@@ -714,7 +714,7 @@ if (player.mainUpg.rp.includes(5)) x = x.add(1)
             15: {
                 unl() { return player.md.break.active },
                 desc: `Blueprint Particles give slightly more Pre-Quantum Global Speed.`,
-                cost: E(1e24),
+                cost: E(1e23),
             },
         },
     },

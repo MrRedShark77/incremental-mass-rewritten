@@ -562,7 +562,7 @@ const ELEMENTS = {
         },
         {
             desc: `Death Shard is boosted by Dilated Mass.`,
-            cost: E('e1300'),
+            cost: E('e1200'),
             effect() {
                 let x = player.md.mass.add(1).log10().add(1).pow(0.5)
                 return x
@@ -571,7 +571,7 @@ const ELEMENTS = {
         },
         {
             desc: `Entropic Accelerator & Booster nerfing is 10% weaker.`,
-            cost: E('e2700'),
+            cost: E('e1300'),
         },
         {
             desc: `Insane Challenges scale 25% weaker.`,
