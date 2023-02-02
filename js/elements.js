@@ -226,6 +226,10 @@ function updateUpperHTML() {
 	unl = player.supernova.post_10
 	tmp.el.sn_div.setDisplay(unl)
 	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")")
+
+	unl = hasElement(118)
+	tmp.el.st_div.setDisplay(unl)
+	if (unl) tmp.el.sdAmt.setHTML(format(player.supernova.stardust,0)+"<br>"+formatGain(player.supernova.stardust, tmp.supernova.stardust_gain))
 }
 
 function updateMassUpgradesHTML() {

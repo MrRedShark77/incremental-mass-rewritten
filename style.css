@@ -227,7 +227,9 @@ button {
 .quark_color {
 	animation: quark_color 6s cubic-bezier(0.37, 0, 0.63, 1) infinite
 }
-
+.light_blue {
+	color: #639bff;
+}
 @keyframes quark_color {
 	0%, 100% {
 		color: red;

@@ -944,7 +944,7 @@ const TREE_UPGS = {
             cs: true,
             desc: `Radiation Frequency boosts Stardust gain`,
             effect() {
-                let x = player.supernova.radiation.hz.log(6).pow(0.15)
+                let x = player.supernova.radiation.hz.log(6).pow(0.15).max(1)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -955,7 +955,7 @@ const TREE_UPGS = {
             branch: ["c1"],
             desc: `Break Dilation boosts Stardust gain`,
             effect() {
-                let x = player.md.break.mass.log(12).pow(0.35)
+                let x = player.md.break.mass.log(12).pow(0.35).max(1)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -966,7 +966,7 @@ const TREE_UPGS = {
             branch: ["c2"],
             desc: `Stardust boosts Break Dilation Energy`,
             effect() {
-                let x = player.supernova.stardust.pow(4.45).softcap(3e6,0.75,0)
+                let x = player.supernova.stardust.pow(4.45).softcap(3e6,0.75,0).max(1)
                 return x
             },
             effDesc(x) { return "x"+format(x) },

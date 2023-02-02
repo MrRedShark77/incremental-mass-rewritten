@@ -70,10 +70,10 @@ const SUPERNOVA = {
         return x
     },
     stardustGain() {
-        let x = E(0.1)
-        if (hasTree("c1")) x = x.mul(tmp.supernova.tree_eff.c1)
-        if (hasTree("c2")) x = x.mul(tmp.supernova.tree_eff.c2)
-        return x
+        let xx = E(hasElement(118)?0.1:0)
+        if (hasTree("c1")) xx = xx.mul(tmp.supernova.tree_eff.c1)
+		        if (hasTree("c2")) xx = xx.mul(tmp.supernova.tree_eff.c2)
+        return xx
     },
     req(x=player.supernova.times) {
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
@@ -98,8 +98,8 @@ function calcSupernova(dt, dt_offline) {
             SUPERNOVA.reset()
         }
     }
-    su.stardust = su.stardust.add(tmp.supernova.stardust_gain.mul(dt_offline))
     if (su.times.gte(1) || quUnl()) su.stars = su.stars.add(tmp.supernova.star_gain.mul(dt_offline).mul(tmp.preQUGlobalSpeed))
+    if (hasElement(118)) su.stardust = su.stardust.add(tmp.supernova.stardust_gain.mul(dt_offline))
     if (!su.post_10 && su.times.gte(10)) {
         su.post_10 = true
         addPopup(POPUP_GROUPS.supernova10)
@@ -158,8 +158,8 @@ function updateSupernovaTemp() {
             }
         }
     }		
-    tmp.supernova.stardust_gain = SUPERNOVA.stardustGain()
     tmp.supernova.star_gain = SUPERNOVA.starGain()
+	    tmp.supernova.stardust_gain = SUPERNOVA.stardustGain()
 }
 
 function updateSupernovaEndingHTML() {
@@ -181,14 +181,13 @@ function updateSupernovaEndingHTML() {
     if (tmp.tab == 5) {
         tmp.el.supernova_scale.setTxt(getScalingName('supernova'))
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
-        tmp.el.supernova_next.setTxt(format(tmp.supernova.maxlimit,2))
+	tmp.el.supernova_next.setTxt(format(tmp.supernova.maxlimit,2))}
         if (tmp.stab[5] == 0) {
             tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed)))
-            tmp.el.starDust.setTxt(format(player.supernova.stardust,2)+" "+formatGain(player.supernova.stardust,tmp.supernova.stardust_gain))
             updateTreeHTML()
         }
         if (tmp.stab[5] == 1) updateBosonsHTML()
         if (tmp.stab[5] == 2) updateFermionsHTML()
-        if (tmp.stab[5] == 3) updateRadiationHTML()
-    }
-}
+        if (tmp.stab[5] == 3) updateRadiationHTML()   
+						tmp.el.starDust.setTxt(format(player.supernova.stardust,2)+" "+formatGain(player.supernova.stardust,tmp.supernova.stardust_gain))
+}			
