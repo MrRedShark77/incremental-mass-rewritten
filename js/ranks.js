@@ -173,7 +173,7 @@ const RANKS = {
         tetr: {
             '2'() {
                 let ret = E(player.massUpg[3]||0).div(400)
-                if (ret.gte(1) && hasPrestige(0,15)) ret = ret.pow(1.5)
+                if (ret.gte(1) && hasPrestige(0,15)) ret = ret.pow(1.05)
                 return ret
             },
             '4'() {

@@ -948,7 +948,7 @@ const TREE_UPGS = {
             desc: `Radiation Frequency boosts Stardust gain`,
             reqDesc: `3 Stardust`,
             effect() {
-                let x = player.supernova.radiation.hz.log(6).pow(0.15).max(1)
+                let x = player.supernova.radiation.hz.max(1).log(6).pow(0.15).max(1)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -961,7 +961,7 @@ const TREE_UPGS = {
             req() {return player.supernova.stardust.gte(12)},
             desc: `Break Dilation boosts Stardust gain`,
             effect() {
-                let x = player.md.break.mass.log(12).pow(0.35).max(1)
+                let x = player.md.break.mass.max(1).log(12).pow(0.35).max(1)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -974,7 +974,7 @@ const TREE_UPGS = {
             branch: ["c2"],
             desc: `Stardust boosts Break Dilation Energy`,
             effect() {
-                let x = player.supernova.stardust.pow(4.45).softcap(3e6,0.75,0).max(1)
+                let x = player.supernova.stardust.max(1).pow(4.45).softcap(3e6,0.75,0)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -1127,7 +1127,7 @@ function updateTreeHTML() {
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
         <span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${t_ch.desc}</span><br>
-        <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':' '}${t_ch.cs?'Stardust':" "}${t_ch.nr?'Neutron Star':" "}</span><br>
+        <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':' '}${t_ch.nr?'Neutron Star':" "}</span><br>
         <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `
     )
