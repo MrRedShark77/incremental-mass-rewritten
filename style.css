@@ -405,12 +405,17 @@ button {
 .btn_tree:not(.bought).locked {
 	border-color: #171717;
 }
-
+.btn_tree.nr_tree.bought {
+	border-color: #00520b;
+}
 .btn_tree.qu_tree.bought {
 	border-color: #39FF49;
 	box-shadow: 0px 0px 10px 0px #39ff4a7e;
 }
-
+.btn_tree.cs_tree.bought {
+	border-color: #639bff;
+	box-shadow: 0px 0px 10px 0px #89b1f5;
+}
 .elements.final:not(.locked):not(.bought):hover {
 	transform: scale(1.3);
 }
@@ -432,10 +437,6 @@ button {
 	border-color: #ff3939;
 	box-shadow: 0px 0px 10px 0px #ff39397e;
 	background-color: #800;
-}
-
-.btn_tree:not(.qu_tree).bought {
-	border-color: #00520b;
 }
 
 .btn_tree.choosed {

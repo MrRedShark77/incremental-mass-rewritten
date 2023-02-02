@@ -707,7 +707,7 @@ const ELEMENTS = {
         },
         {
             desc: `Enter the <span id="final_118">Portal</span>.`,
-            cost: E("e1.7e17"),
+            cost: E("e1.5e17"),
         },
     ],
     /*

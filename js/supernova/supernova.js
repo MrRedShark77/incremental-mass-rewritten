@@ -183,10 +183,7 @@ function updateSupernovaEndingHTML() {
         tmp.el.supernova_rank.setTxt(format(player.supernova.times,0))
 	tmp.el.supernova_next.setTxt(format(tmp.supernova.maxlimit,2))}
         if (tmp.stab[5] == 0) {
-			if (hasElement(118)) {
-			            tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed)))
-			tmp.el.starDust.setTxt(format(player.supernova.stardust,2)+" "+formatGain(player.supernova.stardust,tmp.supernova.stardust_gain))}
-			else tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed)))
+			tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed)))
             updateTreeHTML()
         }
         if (tmp.stab[5] == 1) updateBosonsHTML()
