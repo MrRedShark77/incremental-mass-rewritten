@@ -367,6 +367,7 @@ const FORMS = {
             atom: "Require over 1e74 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
             br: "Big Rip the Dimension, then go back",
+            st: "Earn stardust to explore the constellations (Neutron Tree Extension)",
         },
         set(id) {
             if (id=="sn") {
