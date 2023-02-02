@@ -173,7 +173,6 @@ const RANKS = {
         tetr: {
             '2'() {
                 let ret = E(player.massUpg[3]||0).div(400)
-                if (ret.gte(1) && hasPrestige(0,15)) ret = ret.pow(1.05)
                 return ret
             },
             '4'() {
@@ -318,7 +317,7 @@ const PRESTIGES = {
             "8": `Mass softcap^5 starts later based on Prestige.`,
             "10": `Gain more Relativistic Energies based on Prestige.`,
             "12": `Stronger Effect's softcap^2 is 7.04% weaker.`,
-            "15": `Tetr 2's reward is overpowered.`,
+            "15": `Relativistic Energy is boosted by Relativistic Particles at reduced rate`,
             "18": `Gain 100% more Ranks to Prestige Base.`,
             "24": `Super Cosmic Strings scale 20% weaker.`,
             "28": `Remove all softcaps from Gluon Upgrade 4's effect.`,
@@ -344,6 +343,10 @@ const PRESTIGES = {
                 let x = Decimal.pow(2,player.prestiges[0])
                 return x
             },x=>x.format()+"x"],
+            "15": [_=>{
+                let x = player.md.mass.max(1).pow(0.65).log(10).max(1)
+                return x
+             }, x=>x.format()+"x"],
             "32": [_=>{
                 let x = player.prestiges[0].div(1e4).toNumber()
                 return x

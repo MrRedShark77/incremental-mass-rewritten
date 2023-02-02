@@ -189,6 +189,7 @@ const MASS_DILATION = {
             x = x.add(1).pow(x.add(1).log10()).sub(1)
 
             if (hasPrestige(0,10)) x = x.mul(prestigeEff(0,10))
+            if (hasPrestige(0,15)) x = x.mul(prestigeEff(0,15))
             x = x.mul(tmp.bd.upgs[5].eff||1)
             if (hasElement(116)) x = x.mul(tmp.elements.effect[116]||1)
             return x
