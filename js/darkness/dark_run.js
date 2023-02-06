@@ -12,12 +12,12 @@ const DARK_RUN = {
     },
 
     mass_glyph_effDesc: [
-        x => `Reduce the exponent of normal mass’s multiplier, multiplier from mass of black hole by ^${format(x)} in dark run.\nEarn more glyphs based on normal mass.`,
-        x => `Reduce the exponent of dark matter’s multiplier, rage power’s multiplier by ^${format(x)} in dark run.\nEarn more glyphs based on mass of black hole.`,
-        x => `Reduce the exponent of atom, atomic power and quark multiplier by ^${format(x)} in dark run.\nEarn more glyphs based on quarks.`,
-        x => `Reduce the exponent of relativistic particle’s multiplier, the exponent of dilated mass formula by ^${format(x)} in dark run.\nEarn more glyphs based on dilated mass.`,
-        x => `Reduce the exponent of supernova resources’ multiplier by ^${format(x[0])}, increase the supernova’s requirement by x${format(x[1])} in dark run.\nEarn more glyphs based on collapsed stars.`,
-        x => `Reduce the prestige base’s exponent /${format(x)}, increase the every rank’s requirement by x${format(x)} in dark run.\nEarn more glyphs based on prestige base.`,
+        x => `Reduce the exponent of normal mass’s multiplier, multiplier from mass of black hole by <b>^${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on normal mass.`,
+        x => `Reduce the exponent of dark matter’s multiplier, rage power’s multiplier by <b>^${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on mass of black hole.`,
+        x => `Reduce the exponent of atom, atomic power and quark multiplier by <b>^${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on quarks.`,
+        x => `Reduce the exponent of relativistic particle’s multiplier, the exponent of dilated mass formula by <b>^${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on dilated mass.`,
+        x => `Reduce the exponent of supernova resources’ multiplier by <b>^${format(x[0])}</b>, increase the supernova’s requirement by <b>x${format(x[1])}</b> in dark run.<br class='line'>Earn more glyphs based on collapsed stars.`,
+        x => `Reduce the prestige base’s exponent <b>/${format(x)}</b>, increase the every rank’s requirement by <b>x${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on prestige base.`,
     ],
 
     mass_glyph_gain: [
@@ -78,7 +78,7 @@ const DARK_RUN = {
             eff(i) { return 1.5**i },
             effDesc: x=>"^"+format(x,2),
         },{
-            desc: `Increase dark ray gain by 200% every level.`,
+            desc: `Triple dark ray gain for each level.`,
             cost(i) {
                 i *= Math.max(1,i-4)**0.5
                 return {0: Math.floor(20+20*i), 1: Math.floor(20+20*i), 2: Math.floor(20+20*i)}
@@ -130,7 +130,7 @@ const DARK_RUN = {
             cost(i) { return {0: 542, 2: 404} },
         },{
             max: 10,
-            desc: `Each matter's the exponent is increased by 12.5% per level.`,
+            desc: `Each matter's exponent is increased by 12.5% per level.`,
             cost(i) {
                 let j = Math.ceil(10*i**1.2)
                 return {0: 160+j, 1: 446+j, 2: 460+j, 3: 328+j, 4: 333+j, 5: 222+j}
@@ -196,7 +196,7 @@ function updateDarkRunHTML() {
     tmp.el.mg_max_gain.setTxt(format(player.dark.run.gamount,0))
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         tmp.el["mass_glyph"+x].setHTML(player.dark.run.glyphs[x] + (dra ? " (+" + format(tmp.dark.mass_glyph_gain[x],0) + ")" : ""))
-        tmp.el["mass_glyph_tooltip"+x].setTooltip(DARK_RUN.mass_glyph_name[x]+"\n"+DARK_RUN.mass_glyph_effDesc[x](tmp.dark.mass_glyph_eff[x]))
+        tmp.el["mass_glyph_tooltip"+x].setTooltip("<h3>"+DARK_RUN.mass_glyph_name[x]+"</h3><br class='line'>"+DARK_RUN.mass_glyph_effDesc[x](tmp.dark.mass_glyph_eff[x]))
     }
 
     let gum = tmp.mass_glyph_msg
@@ -238,7 +238,7 @@ function updateDarkRunHTML() {
 
     tmp.el.FSS_eff2.setHTML(
         player.dark.matters.final > 0
-        ? `Thanks to FSS, boosts glyphic mass gain by x${format(tmp.matters.FSS_eff[1],2)}`
+        ? `Thanks to FSS, they boost glyphic mass gain by x${format(tmp.matters.FSS_eff[1],2)}`
         : ''
     )
 }
@@ -274,7 +274,7 @@ function setupDarkRunHTML() {
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         html += `
         <div style="margin: 5px; width: 100px">
-            <div id="mass_glyph_tooltip${x}" style="margin-bottom: 5px;" onclick="glyphButton(${x})" tooltip="${DARK_RUN.mass_glyph_name[x]}"><img style="cursor: pointer" src="images/glyphs/glyph${x}.png"></div>
+            <div id="mass_glyph_tooltip${x}" class="tooltip" style="margin-bottom: 5px;" onclick="glyphButton(${x})" tooltip-html="${DARK_RUN.mass_glyph_name[x]}"><img style="cursor: pointer" src="images/glyphs/glyph${x}.png"></div>
             <div id="mass_glyph${x}">0</div>
         </div>
         `

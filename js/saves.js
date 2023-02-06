@@ -448,11 +448,13 @@ function loadGame(start=true, gotNaN=false) {
     wipe()
     load(tmp.prevSave)
     setupHTML()
+    setupTooltips()
     updateQCModPresets()
     
     if (start) {
         setInterval(save,60000)
         updateTemp()
+        updateTooltipResHTML(true)
         updateHTML()
         for (let x = 0; x < 3; x++) {
             let r = document.getElementById('ratio_d'+x)

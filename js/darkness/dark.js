@@ -226,7 +226,7 @@ function updateDarkHTML() {
 
                 e = getNextDarkEffectFromID(2) + `
                     Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
-                    <br>Makes mass gain's softcap^4-${hasElement(159)?8:6}, starting <b>^${eff.msoftcap.format(3)}</b> later
+                    <br>Makes mass gain softcaps 4-${hasElement(159)?8:6} start <b>^${eff.msoftcap.format(3)}</b> later
                 `
 
                 if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
@@ -235,7 +235,7 @@ function updateDarkHTML() {
                 if (eff.mexp) e += `<br>Boosts each matters gain by <b>^${eff.mexp.format(3)}</b>`
                 if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5)
                 if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`
-                if (eff.fss) e += `<br>Final Star Shard is <b>${formatPercent(eff.fss-1)}</b> stronger`
+                if (eff.fss) e += `<br>Final Star Shards are <b>${formatPercent(eff.fss-1)}</b> stronger`
 
                 tmp.el.abEff.setHTML(e)
             }
@@ -246,7 +246,7 @@ function updateDarkHTML() {
                 Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
             `
 
-            if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset`
+            if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset per second`
             if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`
 
             tmp.el.drEff.setHTML(e)

@@ -46,6 +46,7 @@ const ATOM = {
 
         x = overflow(x,os,0.5)
 
+        tmp.overflowBefore.quark = o
         tmp.overflow.quark = calcOverflow(o,x,os)
         tmp.overflow_start.quark = os
 

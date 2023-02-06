@@ -93,21 +93,21 @@ const RADIATION = {
                 let x = player.supernova.radiation.hz.add(1).log10().add(1).pow(b).softcap(1e30,0.5,0)
                 return x
             },
-            desc(x) { return `Radiowave is boosted by ${format(x)}x (based on Frequency)` },
+            desc(x) { return `Radio wave is boosted by ${format(x)}x (based on Frequency)` },
         },{
             title: `Tickspeed Boost`,
             eff(b) {
                 let x = b.add(1).root(2)
                 return x
             },
-            desc(x) { return `Non-bonus tickspeed is ${format(x)}x stronger` },
+            desc(x) { return `Non-bonus tickspeeds are ${format(x)}x stronger` },
         },{
             title: `Mass-Softcap Boost`,
             eff(b) {
                 let x = b.add(1).root(4)
                 return x
             },
-            desc(x) { return `Softcap^3 from mass gain start ^${format(x)} later` },
+            desc(x) { return `Mass softcap^3 starts ^${format(x)} later` },
         },{
             title: `Microwave Boost`,
             eff(b) {
@@ -122,7 +122,7 @@ const RADIATION = {
                 if (!tmp.dark.shadowEff.bhp) x = x.min(.15)
                 return x
             },
-            desc(x) { return `Exponent from the mass of BH formula is increased by ${format(x)} (hardcapped to 0.15)` },
+            desc(x) { return `Exponent from the mass of BH formula is increased by ${format(x)}` },
         },{
             title: `BH-Condenser Boost`,
             eff(b) {
@@ -236,7 +236,7 @@ const RADIATION = {
                 let x = b.div(2).add(1).root(3)
                 return x
             },
-            desc(x) { return `From BH the formulas softcap starts ^${format(x)} later` },
+            desc(x) { return `BH formula softcap starts ^${format(x)} later` },
         },
 
         /*

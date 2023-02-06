@@ -201,7 +201,7 @@ function updateTabsHTML() {
 function updateUpperHTML() {
 	let gs = tmp.preQUGlobalSpeed
 
-	tmp.el.reset_desc.setHTML(player.reset_msg)
+	//tmp.el.reset_desc.setHTML(player.reset_msg)
 
 	let unl = true
 	tmp.el.mass_div.setDisplay(unl)
@@ -257,6 +257,9 @@ function updateUpperHTML() {
     tmp.el.br_div.setDisplay(unl)
     if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active||hasElement(147)?gain2?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
 
+	unl = player.dark.matters.final>0
+	tmp.el.fss_div.setDisplay(unl)
+	if (unl) tmp.el.FSS2.setHTML(format(player.dark.matters.final,0)+"<br>(+"+(tmp.matters.FSS_base.gte(tmp.matters.FSS_req)?1:0)+")")
 }
 
 function updateMassUpgradesHTML() {
@@ -443,6 +446,7 @@ function updateHTML() {
     tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab))
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
+	if (hover_tooltip) updateTooltipResHTML()
 	updateUpperHTML()
 	if ((!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()

@@ -60,6 +60,7 @@ const MASS_DILATION = {
 
         x = overflow(x,os,0.5)
 
+        tmp.overflowBefore.dm = o
         tmp.overflow.dm = calcOverflow(o,x,os)
         tmp.overflow_start.dm = os
 
@@ -152,7 +153,7 @@ const MASS_DILATION = {
                 bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
             },{
                 unl() { return STARS.unlocked() || player.supernova.times.gte(1) },
-                desc: `Tickspeed affect all-star resources at a reduced rate.`,
+                desc: `Tickspeed affects all-star resources at a reduced rate.`,
                 maxLvl: 1,
                 cost(x) { return E(1.5e296) },
                 bulk() { return player.md.mass.gte(1.5e296)?E(1):E(0) },
@@ -169,7 +170,7 @@ const MASS_DILATION = {
                 effDesc(x) { return format(x)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 unl() { return player.supernova.times.gte(1) },
-                desc: `Add 0.015 Mass Dilation upgrade 6's base.`,
+                desc: `Add 0.015 to mass dilation upgrade 6's base.`,
                 cost(x) { return E(1e50).pow(x.pow(1.5)).mul('1.50001e1556') },
                 bulk() { return player.md.mass.gte('1.50001e1556')?player.md.mass.div('1.50001e1556').max(1).log(1e50).max(0).root(1.5).add(1).floor():E(0) },
                 effect(i) {

@@ -78,3 +78,26 @@
 	opacity: 1;
 	white-space: pre-wrap;
 }
+
+#tooltip-div {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+
+    background-color: #000e;
+    min-width: 20px;
+    max-width: 300px;
+    min-height: 10px;
+	font-size: 13px;
+	padding: 5px 10px;
+
+	border: solid 3px #444;
+	border-radius: 10px;
+
+    color: white;
+    text-align: center;
+
+    pointer-events: none;
+}

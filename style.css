@@ -114,6 +114,15 @@ button {
 }
 
 .line {
+	content: '';
+	display: block;
+	width: 100%;
+	margin-top: 6px;
+	height: 6px;
+	border-top: solid 2px white;
+}
+
+.main-line {
 	width: 100%;
 	border-bottom: solid 2px white;
 	height: 5px;

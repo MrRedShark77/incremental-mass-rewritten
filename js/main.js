@@ -92,6 +92,7 @@ const FORMS = {
 
         x = overflow(x,os,0.5)
 
+        tmp.overflowBefore.mass = o
         tmp.overflow.mass = calcOverflow(o,x,os)
         tmp.overflow_start.mass = os
 
@@ -407,6 +408,7 @@ const FORMS = {
 
             x = overflow(x,os,op)
 
+            tmp.overflowBefore.bh = o
             tmp.overflow.bh = calcOverflow(o,x,os)
             tmp.overflow_start.bh = os
             tmp.overflow_power.bh = op

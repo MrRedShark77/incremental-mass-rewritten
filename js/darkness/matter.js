@@ -189,8 +189,8 @@ function setupMattersHTML() {
                 <span id="final_star_base">You have ??? Final Star Shard base (based on previous matters)</span>
                 <br><br>
                 <button class="btn full" id="FSS_btn" onclick="MATTERS.final_star_shard.reset()">
-                    To get Final Star Shard, reset dark shadows, abyssal blots and matters, and force to Darkness reset. It boosts matters and glyphic mass.<br>
-                    Require: <span id="FSS_req">???</span> FSS base
+                    Reset dark shadows, abyssal blots, matters, and force darkness reset for a final star shard. It boosts matters gain and glyphic mass.<br>
+                    Requires: <span id="FSS_req">???</span> FSS base
                 </button>
             </div>
             `

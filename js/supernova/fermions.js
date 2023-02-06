@@ -118,7 +118,7 @@ const FERMIONS = {
                     return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+(x.gte(5)?" <span class='soft'>(softcapped)</span>":"")
                 },
                 inc: "Mass",
-                cons: "You are trapped in Mass Dilation, but they are twice effective",
+                cons: "You are trapped in Mass Dilation, but they are twice as effective",
                 isMass: true,
             },{
                 maxTier() {
@@ -223,7 +223,7 @@ const FERMIONS = {
                     return `Dark ray's effect is ^${x.format()} stronger`
                 },
                 inc: "product of above u-quarks",
-                cons: "Active all above u-quarks at once, but force to quantum reset",
+                cons: "All u-quarks at once, and force quantum reset.",
             },
 
         ],[
@@ -389,7 +389,7 @@ const FERMIONS = {
                     return `Increase prestige base's exponent by ${format(x)}`
                 },
                 inc: "product of above u-leptons",
-                cons: "Active all above u-leptons at once, but force to quantum reset",
+                cons: "All u-leptons at once, and force quantum reset.",
             },
 
             /*

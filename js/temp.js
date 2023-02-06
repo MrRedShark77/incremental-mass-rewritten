@@ -139,6 +139,13 @@ function resetTemp() {
             stronger: E(1),
         },
 
+        overflowBefore: {
+            dm: E(0),
+            mass: E(0),
+            bh: E(0),
+            quark: E(0),
+        },
+
         overflow_start: {
             dm: E('ee30'),
             mass: E('ee69'),

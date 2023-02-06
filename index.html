@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="tooltip.css">
 
     <script src="js/break_eternity.js"></script>
+    <script src="js/tooltip.js"></script>
     <script src="js/Element.js"></script>
     <script src="js/elements.js"></script>
     <script src="js/confirm.js"></script>
@@ -54,12 +55,14 @@
 
     <script src="js/secret.js"></script>
 
+    <script src="js/tooltip_res.js"></script>
     <script src="js/main.js"></script>
 
     <title>Incremental Mass Rewritten</title>
 </head>
 <body onload="loadGame()">
     <input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
+    <div id="tooltip-div"></div>
     <div id="loading" class='table_center' style="align-items: center; height: 100%;">
         <div>
             <h1>Loading game...</h1><br>
@@ -89,7 +92,7 @@
             <h2>You become <span id="supernova_rank"></span> <span id="supernova_scale"></span>Supernova</h2><br>
             Next Supernova at <span id="supernova_next">X</span> stars
         </div>
-        <div class="line"></div>
+        <div class="main-line"></div>
         <div id="sn_stabs" style="min-height: 40px;"></div><br>
         <div id="stab_frame5_0">
             <div style="height: 130px;">
@@ -144,7 +147,7 @@
                 </div>
             </div>
         </div><div id="stab_frame5_3">
-            Your frequency is <span id="frequency">0</span> Hz, which multiples any Fermions gain by <span id="frequency_eff">1</span>x<br>
+            Your frequency is <span id="frequency">0</span> Hz, which multiples all Fermion gains by <span id="frequency_eff">1</span>x<br>
             <span id="nr_div">At <span id="next_radiation">0</span> of frequency, unlock <span id="unl_radiation">X</span></span><br><br>
             <div id="radiation_table"></div>
         </div>
@@ -159,52 +162,79 @@
                 <div id="table_resources" class="top_text">
 
                     <div class="resources sml" id="mass_div">
-                        <div tooltip="Mass" t-size="small"><img class="res_img" src="images/mass.png"></div>
+                        <div id="mass_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Mass">
+                            <img class="res_img" src="images/mass.png">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="mass">X</span>
                     </div><div class="resources sml red" id="rp_div">
-                        <div tooltip="Rage Power" t-size="small"><img class="res_img" src="images/rp.png" onclick="FORMS.rp.reset()" onmousemove="FORMS.reset_msg.set('rp')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="rp_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Rage Power">
+                            <img class="res_img" src="images/rp.png" onclick="FORMS.rp.reset()" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="rpAmt">X</span>
                     </div><div class="resources sml yellow" id="dm_div">
-                        <div tooltip="Dark Matter" t-size="small"><img class="res_img" src="images/dm.png" onclick="FORMS.bh.reset()" onmousemove="FORMS.reset_msg.set('dm')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="dm_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Dark Matter">
+                            <img class="res_img" src="images/dm.png" onclick="FORMS.bh.reset()" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="dmAmt">X</span>
                     </div><div class="resources sml yellow" id="bh_div">
-                        <div tooltip="Black Hole" t-size="small"><img class="res_img" src="images/bh.png"></div>
+                        <div id="bh_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Black Hole">
+                            <img class="res_img" src="images/bh.png">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="bhMass">X</span>
                     </div><div class="resources sml" id="atom_div">
-                        <div tooltip="Atom" t-size="small"><img class="res_img" src="images/atom.png" onclick="ATOM.reset()" onmousemove="FORMS.reset_msg.set('atom')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="atom_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Atom">
+                            <img class="res_img" src="images/atom.png" onclick="ATOM.reset()" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="atomAmt">X</span>
                     </div><div class="resources sml quark_color" id="quark_div">
-                        <div tooltip="Quark" t-size="small"><img class="res_img" src="images/quark.png"></div>
+                        <div id="quarks_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Quark">
+                            <img class="res_img" src="images/quark.png">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="quarkAmt">X</span>
                     </div><div class="resources sml green" id="md_div">
-                        <div tooltip="Mass Dilation" t-size="small"><img class="res_img" src="images/md.png" onclick="MASS_DILATION.onactive()" onmousemove="FORMS.reset_msg.set('md')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="md_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Mass Dilation">
+                            <img class="res_img" src="images/md.png" onclick="MASS_DILATION.onactive()" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="md_massAmt">X</span>
                     </div> <div class="resources sml magenta" id="sn_div">
-                        <div tooltip="Supernova" t-size="small"><img class="res_img" src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" onmousemove="FORMS.reset_msg.set('sn')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="sn_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Supernova">
+                            <img class="res_img" src="images/sn.png" onclick="SUPERNOVA.reset(false,false,true)" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="supernovaAmt">X</span>
                     </div><div class="resources sml light_green" id="qu_div">
-                        <div tooltip="Quantum Foam" t-size="small"><img class="res_img" src="images/qu.png" onclick="QUANTUM.enter()" onmousemove="FORMS.reset_msg.set('qu')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="qu_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Quantum Foam">
+                            <img class="res_img" src="images/qu.png" onclick="QUANTUM.enter()" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="quAmt">X</span>
                     </div><div class="resources sml light_red" id="br_div">
-                        <div tooltip="Death Shard" t-size="small"><img class="res_img" src="images/br.png" onclick="BIG_RIP.rip()" onmousemove="FORMS.reset_msg.set('br')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="br_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Death Shard">
+                            <img class="res_img" src="images/br.png" onclick="BIG_RIP.rip()" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="brAmt">X</span>
                     </div><div class="resources sml gray" id="dark_div">
-                        <div tooltip="Dark Ray" t-size="small"><img class="res_img" src="images/dark.png" onclick="DARK.reset()" onmousemove="FORMS.reset_msg.set('dark')" onmouseleave="FORMS.reset_msg.reset()" style="cursor: pointer;"></div>
+                        <div id="dark_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Dark Ray">
+                            <img class="res_img" src="images/dark.png" onclick="DARK.reset()" style="cursor: pointer;">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="darkAmt">X</span>
+                    </div><div class="resources sml" id="fss_div">
+                        <div id="fss_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Final Star Shard">
+                            <img class="res_img" src="images/fss.png" onclick="MATTERS.final_star_shard.reset()" style="cursor: pointer;">
+                        </div>
+                        <span style="margin-left: 5px; text-align: left;" id="FSS2">X</span>
                     </div>
                     
                     <div class="resources sml orange" id="gs1_div">
-                        <div tooltip="Pre-Quantum Global Speed" t-size="medium"><img class="res_img" src="images/preQGSpeed.png"></div>
+                        <div id="speed_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Pre-Quantum Global Speed">
+                            <img class="res_img" src="images/preQGSpeed.png">
+                        </div>
                         <span style="margin-left: 5px; text-align: left;" id="preQGSpeed">X</span>
                     </div>
                 </div>
             </div>
-        </div><br><div style="min-height: 40px;">
-            <span id="reset_desc"></span>
-        </div><div style="min-height: 30px">
+        </div><br><div style="min-height: 30px">
             <div id="tabs" class="table_center"></div>
         </div>
-        <div class="line"></div>
+        <div class="main-line"></div>
         <div style="min-height: 30px;">
             <div id="stabs"></div>
         </div><br>
@@ -298,7 +328,7 @@
                             BH Condenser Power: <span id="bhCondenser_pow">X</span>x<br>
                         </div>
                     </div><br><div>
-                        <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> worth of mass gain from Black Hole, mass gain will be softcapped!</span><br>
+                        <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> of bass gain from black hole, its mass gain will be softcapped!</span><br>
                         <span id="bhFSoft1" class="red">
                             The formula (x + 1)<sup id="bhMassPower2">0.33</sup> softcaps at <b id="bhFSoftStart1">X</b>
                         </span><br>
@@ -324,7 +354,7 @@
                         <span id="atomicOverflow"></span>
                     </div>
                 </div><div id="stab_frame0_3">
-                    You collapsed <span id="stars_Amt">X</span> stars, which makes mass gain is multiplied based on every type of Ranks<br>
+                    You collapsed <span id="stars_Amt">X</span> stars, which multiplies mass gain based on all rank types.<br>
                     <span class="green">Currently: <span id="stars_Eff">X</span></span><br><br>
                     <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
                     <div id="stars_table" class="table_center"></div><br><br>
@@ -365,7 +395,7 @@
                 <div id="main_upgs_table" class="table_center"></div>
             </div><div id="tab_frame3">
                 <div id="stab_frame3_0">
-                    Note 1: Click any image to show challenge description. Click again to enter any challenge<br><br>
+                    Note: Click any image to show challenge description. Click again to enter any challenge<br><br>
                     <div class="table_center" style="width: 100%;">
                         <div style="width: calc(50% - 36px); height: 400px; overflow-y: auto; border: solid 3px white; margin: 0 15px; border-radius: 10px; background-color: black; padding: 5px 0;">
                             <div id="chals_table"></div>
@@ -398,11 +428,7 @@
                     <div id="qc_tab0">
                         Note 1: Click any image to show challenge description<br>
                         Note 2: While in Quantum challenge, you need to go to Quantum to complete the Quantum Challenge<br><br>
-                        <div class="table_center" id="QC_table"></div><br>
-                        <div id="qc_desc_div">
-                            <p id="qc_ch_title"></p>
-                            <span class="red" id="qc_ch_desc"></span>
-                        </div>
+                        <div class="table_center" id="QC_table"></div>
                     </div><div id="qc_tab1">
                         <button class="btn" onclick="addQCPresetAs()">Add present as your modifications</button><br><br>
                         <div id="QC_Presets_table"></div>
@@ -436,7 +462,7 @@
                 </div><div id="stab_frame4_2">
                     You have <span id="md_particles">X</span> Relativistic particles<br>
                     You have <span id="md_mass">X</span> of dilated mass, which makes Tickspeed <span id="md_eff">X</span> stronger<br><br>
-                    <button onclick="MASS_DILATION.onactive()" id="md_btn" class="btn full md" tooltip="When dilating mass, will reset for atom. While mass is dilated: all pre-atom resources, atomic power gains get multiplier's exponent raised to 0.8;">Dilate Mass</button><br><br>
+                    <button onclick="MASS_DILATION.onactive()" id="md_btn" class="btn full md tooltip" tooltip-html="When dilating mass, will reset for atom. While mass is dilated: all pre-atom resources, atomic power gains get multiplier's exponent raised to 0.8">Dilate Mass</button><br><br>
                     <div class="table_center">
                         <div id="md_upg_table" class="table_center" style="width: 1000px;"></div>
                     </div><br><div>
@@ -446,7 +472,7 @@
                 </div><div id="stab_frame4_3">
                     You have <span id="bd_energy">X</span> Relativistic Energy<br>
                     You have <span id="bd_mass">X</span> of Relativistic mass<br><br>
-                    <button onclick="MASS_DILATION.break.toggle()" id="bd_btn" class="btn half_full bd" tooltip="When breaking dilation, while in Big Rip, BH Condensers & Cosmic Rays are no longer nerfed by 8th QC modifier, 7th QC modifier is disabled, you can gain Relativistic Energy based on dilated mass. Relativistic Energy gains Relativistic Mass. Fixing Dilation resets your relativistic energy & its mass, also forces a Quantum reset.">Break Dilation</button><br><br>
+                    <button onclick="MASS_DILATION.break.toggle()" id="bd_btn" class="btn half_full bd tooltip" tooltip-html="When breaking dilation, while in Big Rip, BH Condensers & Cosmic Rays are no longer nerfed by 8th QC modifier, 7th QC modifier is disabled, you can gain <b>Relativistic Energy</b> based on dilated mass. Relativistic Energy generates <b>Relativistic Mass</b>. Fixing Dilation resets your relativistic energy & its mass, also forces a Quantum reset.">Break Dilation</button><br><br>
                     <div class="table_center">
                         <div id="bd_upg_table" class="table_center" style="width: 1000px;"></div>
                     </div>
@@ -479,7 +505,7 @@
                         <div style="width: 33.3%; min-width: 300px;">
                             Your frequency is <span id="enEva1">0</span> Hz<br><br>
                             <button id="evaBtn1" class="btn half_full" onclick="ENTROPY.switch(0)">Evaporate your frequency to gain Enthalpy</button><br><br>
-                            You have <span id="enAmt1">0</span> Enthalpy, which increases Entropy gain to <span id="enEff1">0</span>
+                            You have <span id="enAmt1">0</span> Enthalpy, which increases Entropy gain by <span id="enEff1">0</span>
                         </div><div style="width: 33.3%; min-width: 300px;">
                             You have <span id="enAmt2">0</span> Entropy<br><span id="enGain"></span>
                         </div><div style="width: 33.3%; min-width: 300px;">
@@ -508,7 +534,7 @@
                     </div>
                 </div><div id="stab_frame7_1">
                     <div id="FSS_eff2"></div><br>
-                    <button onclick="darkRun()" class="btn half_full" id="dark_run_btn" tooltip="Dark Running will force a Dark reset, and will trap you into Big Rip with semi-maximum QC modifiers. You will produce Glyphic Mass based on resources which nerf things, and choosing a glyph to earn will exit a Dark Run."></button>
+                    <button onclick="darkRun()" class="btn half_full tooltip" id="dark_run_btn" tooltip-html="Dark Running will force a Dark reset, and will trap you into Big Rip with semi-maximum QC modifiers. You will produce <b>Glyphic Mass</b> based on resources which nerf things, and choosing a glyph to earn will exit a Dark Run."></button>
                     <button class="btn half_full" onclick="player.dark.run.gmode = (player.dark.run.gmode+1)%3">Glyph Button Mode: <span id="mg_btn_mode">X</span></button>
                     <button class="btn half_full" onclick="player.dark.run.glyphs = [0,0,0,0,0,0]">Clear all glyphs</button>
                     <br><br>
@@ -538,7 +564,7 @@
                 <button class="btn" onclick="export_copy()">Export to clipboard</button>
                 <button class="btn" onclick="importy()">Import</button>
                 <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button>
-                <button class="btn" onclick="window.open('https://www.donationalerts.com/r/mrredshark77')" tooltip="Support the creator of IMR original version!">Donate</button>
+                <button class="btn tooltip" onclick="window.open('https://www.donationalerts.com/r/mrredshark77')" tooltip-html="Support the original creator of IMR!">Donate</button>
                 <button class="btn" onclick="createPopup(POPUP_GROUPS.help.html,'help')">Help</button><br>
                 <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button>
                 <button class="btn" onclick="createPopup(POPUP_GROUPS.fonts.html,'fonts')">Fonts</button>
@@ -549,7 +575,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6.3.3 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.3.4 - major style changes - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br>
                 Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>

@@ -121,7 +121,7 @@ const ENTROPY = {
                 let x = i.root(2).div(10).add(1).pow(-1)
                 return x
             },
-            desc(x) { return `All pre-Supernova scaling is <b>${formatReduction(x)}</b> weaker before Meta scaling (not including Pent or further).` },
+            desc(x) { return `All pre-Supernova, pre-Pent & pre-Meta scalings are <b>${formatReduction(x)}</b> weaker.` },
         },{
             title: "Entropic Condenser",
 
@@ -147,7 +147,7 @@ const ENTROPY = {
                 let x = player.qu.en.amt.add(1).log10().pow(0.75).mul(i).div(1500).add(1)
                 return x
             },
-            desc(x) { return `Radiation effects are also boosted by <b>^${x.format()}</b> (based on Entropy).` },
+            desc(x) { return `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.` },
         },
 
         /*

@@ -66,15 +66,15 @@ const RANKS = {
     desc: {
         rank: {
             '1': "unlock mass upgrade 1.",
-            '2': "unlock mass upgrade 2, reduce mass upgrade 1 cost scaled by 20%.",
-            '3': "unlock mass upgrade 3, reduce mass upgrade 2 cost scaled by 20%, mass upgrade 1 boosts itself.",
-            '4': "reduce mass upgrade 3 cost scale by 20%.",
+            '2': "unlock mass upgrade 2, reduce mass upgrade 1 scaling by 20%.",
+            '3': "unlock mass upgrade 3, reduce mass upgrade 2 scaling by 20%, and mass upgrade 1 boosts itself.",
+            '4': "reduce mass upgrade 3 scaling by 20%.",
             '5': "mass upgrade 2 boosts itself.",
             '6': "make mass gain is boosted by (x+1)^2, where x is rank.",
             '13': "triple mass gain.",
             '14': "double Rage Powers gain.",
-            '17': "make rank 6 reward effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
-            '34': "make mass upgrade 3 softcap start 1.2x later.",
+            '17': "Rank 6 reward effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
+            '34': "mass upgrade 3 softcaps 1.2x later.",
             '40': "adds tickspeed power based on ranks.",
             '45': "ranks boosts Rage Powers gain.",
             '90': "rank 40 reward is stronger.",
@@ -87,25 +87,25 @@ const RANKS = {
         tier: {
             '1': "reduce rank reqirements by 20%.",
             '2': "raise mass gain by 1.15",
-            '3': "reduce all mass upgrades cost scale by 20%.",
+            '3': "reduce all mass upgrade scalings by 20%.",
             '4': "adds +5% tickspeed power for every tier you have, softcaps at +40%.",
             '6': "make rage powers boosted by tiers.",
-            '8': "make tier 6's reward effect stronger by dark matters.",
-            '12': "make tier 4's reward effect twice effective and remove softcap.",
+            '8': "Tier 6's reward is boosted based on dark matters.",
+            '12': "Tier 4's reward is twice as effective and the softcap is removed.",
             '30': "stronger effect's softcap is 10% weaker.",
             '55': "make rank 380's effect stronger based on tier.",
             '100': "Super Tetr scale 5 later.",
         },
         tetr: {
-            '1': "reduce tier reqirements by 25%, make Hyper Rank scaling is 15% weaker.",
+            '1': "reduce tier requirements by 25%, and hyper rank scaling is 15% weaker.",
             '2': "mass upgrade 3 boosts itself.",
             '3': "raise tickspeed effect by 1.05.",
-            '4': "Super Rank scale weaker based on Tier, Super Tier scale 20% weaker.",
+            '4': "Super rank scaling is weaker based on tier, and super tier scales 20% weaker.",
             '5': "Hyper/Ultra Tickspeed starts later based on tetr.",
             '8': "Mass gain softcap^2 starts ^1.5 later.",
         },
         pent: {
-            '1': "reduce tetr reqirements by 15%, make Meta-Rank starts 1.1x later.",
+            '1': "reduce tetr requirements by 15%, and Meta-Rank starts 1.1x later.",
             '2': "tetr boost all radiations gain.",
             '4': "Meta-Tickspeeds start later based on Supernovas.",
             '5': "Meta-Ranks start later based on Pent.",
@@ -403,7 +403,7 @@ const PRESTIGES = {
             "1337": `Pre-Quantum Global Speed boosts matter exponent at a reduced rate. Prestige Level 382 is stronger.`,
         },
         {
-            "1": `All-Star resources are raised by ^2.`,
+            "1": `All star resources are squared.`,
             "2": `Meta-Supernova starts 100 later.`,
             "3": `Bosonic resources are boosted based on Prestige Base.`,
             "4": `Gain 5 free levels of each Primordium Particle.`,
@@ -411,13 +411,13 @@ const PRESTIGES = {
             "7": `Quarks are boosted based on Honor.`,
             "15": `Super & Hyper cosmic strings scale weaker based on Honors.`,
             "22": `Raise dark shadow gain by 10%.`,
-            "33": `Hybridized Uran-Astatine applies pre-Meta Pent requirement at a reduced rate.`,
+            "33": `Hybridized Uran-Astatine applies to pre-Meta Pent requirements at a reduced rate.`,
             "46": `Add 500 more C13-15 max completions.`,
             "66": `All Fermions' scaling is 20% weaker.`,
             "91": `FSS base is raised to the 1.05th power.`,
         },
         {
-            "1": `The requirements from prestige level & honor are 15% weaker.`,
+            "1": `The requirement for prestige levels & honors are 15% lower.`,
             "3": `Break dilation upgrade 12 is cheaper.`,
             "4": `Unlock new effect from Hybridized Uran-Astatine.`,
             "5": `Glory boosts glyphic mass.`,
@@ -425,7 +425,7 @@ const PRESTIGES = {
             //"19": `?!.`,
         },
         {
-            "1": `The requirements from previous prestiges are 10% weaker.`,
+            "1": `The requirements for previous prestiges are 10% lower.`,
             "2": `Exotic Supernova starts x1.25 later per Renown.`,
         },
     ],
@@ -653,12 +653,12 @@ const BEYOND_RANKS = {
     rewards: {
         1: {
             1: `Add 0.5 to matter exponent.`,
-            2: `Each matter's upgrade is stronger based on Dark Ray.`,
+            2: `All matter upgrades are stronger based on dark ray.`,
             4: `Hybridized Uran-Astatine's second effect is stronger based on FSS.`,
-            7: `Matters gain is boosted by Hept (Beyond-Ranks base).`,
+            7: `Matters gain is boosted by Hept.`,
         },
         2: {
-            1: `Automate Beyond-Ranks. Beyond-Ranks now affect prestige base, using the formula.`,
+            1: `Automate Beyond-Ranks. Beyond-Ranks now affect prestige base.`,
             2: `Beyond-Ranks will no longer reset anything. [Meta-Lepton]'s effect is multiplied by 8.`,
             4: `Accelerator's effect affects tickspeed, BHC & cosmic ray powers. Chromas gain is raised to the 1.1th power.`,
         },
@@ -814,7 +814,7 @@ function updateRanksHTML() {
             }
 
             h = `
-                Reset your Hexs (and force to Darkness reset), but current rank up. ${r}<br>
+                Reset your hexs (and force darkness reset), but current rank up. ${r}<br>
                 To ${getRankTierName(t+5)} up, require ${getRankTierName(t+4)} ${
                     t == 1
                     ? tmp.beyond_ranks.req.format(0)

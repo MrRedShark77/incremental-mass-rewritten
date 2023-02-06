@@ -47,14 +47,14 @@ const CHROMA = {
     ],
     effDesc: [
         x => {
-            return `Tickspeed power is ^${format(x)} better`
+            return `Makes tickspeed power raised to the ${format(x)}th power.`
         },
         x => {
-            return `${player.dark.unl ? "Pre-Exotic p" : "P"}re-Pents requirement is reduced by ${format(x[0])}x`+x[0].softcapHTML(1e10)
-            +(hasPrestige(2,4)?`<br>All pre-Exotic ${hasElement(207) ? "Rank-Hex" : "pre-Hexs"} scalings are ${formatReduction(x[1])} weaker`:"")
+            return `Makes all ${player.dark.unl ? "Pre-Exotic p" : "P"}re-Pent requirements reduced by ${format(x[0])}x`+x[0].softcapHTML(1e10)+"."
+            +(hasPrestige(2,4)?`<br>Also, all pre-Exotic ${hasElement(207) ? "Rank-Hex" : "pre-Hex"} scalings are ${formatReduction(x[1])} weaker.`:"")
         },
         x => {
-            return `Rewards from Challenges 1-8 are ${format(x)}x stronger`
+            return `Makes rewards from Challenges 1-8 ${format(x)}x stronger.`
         },
     ],
 }

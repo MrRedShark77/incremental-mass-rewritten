@@ -106,10 +106,10 @@ class Element {
 	}
 
 	setTooltip(input) {
-		this.setAttr("tooltip", input);
+		this.setAttr("tooltip-html", input);
 	}
 	static setTooltip(id, input) {
-		new Element(id).setAttr("tooltip", input);
+		new Element(id).setAttr("tooltip-html", input);
 	}
 
 	setSize(h, w) {
