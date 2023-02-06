@@ -401,7 +401,7 @@ const CHALS = {
     10: {
         unl() { return hasTree("chal5") },
         title: "The Reality I",
-        desc: "You are trapped in mass dilation and challenges 1-8. Additionally, you are trapped in Mass Dilation!",
+        desc: "You are trapped in mass dilation and challenges 1-8.",
         reward: `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions!</span>`,
         max: E(100),
         inc: E('e2000'),
