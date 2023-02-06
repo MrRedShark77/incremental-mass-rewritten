@@ -476,7 +476,7 @@ const CHALS = {
     15: {
         unl() { return hasElement(168) },
         title: "The Reality II",
-        desc: "You are trapped in c1-12 and quantum challenge with modifiers [10,5,10,10,10,10,10,10]. Additionally, you are trapped in quantum challenge with modifiers [10,5,10,10,10,10,10,10].",
+        desc: "You are trapped in c1-12 and quantum challenge with modifiers [10,5,10,10,10,10,10,10].",
         reward: `Normal mass's overflow starts later by completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
         max: E(100),
         inc: E('e1e6'),
