@@ -201,7 +201,7 @@ const FORMS = {
         buyMax() { 
             if (this.can()) {
                 player.currentX = tmp.cxBulk
-					player.supernova.stardust = player.supernova.stardust.sub(E(7500).mul(E(10).pow(player.currentX.sub(1))))
+					player.supernova.stardust = player.supernova.stardust.sub(E(7500).mul(E(10).pow(player.currentX.sub(1).max(1))))
             }
         },
         effect() {
@@ -216,18 +216,18 @@ const FORMS = {
         autoUnl() { return false },
     },
 	    cryz: {
-        cost(x=player.currentX) { return E(10).pow(x).times(12500).floor() },
-        can() { return player.supernova.stardust.gte(tmp.cxCost) },
+        cost(x=player.currentYZ) { return E(10).pow(x).times(125000).floor() },
+        can() { return player.supernova.stardust.gte(tmp.cyzCost) },
         buy() {
             if (this.can()) {
-			player.supernova.stardust = player.supernova.stardust.sub(tmp.cxCost).max(0)
-                player.currentX = player.currentX.add(1)
+			player.supernova.stardust = player.supernova.stardust.sub(tmp.cyzCost).max(0)
+                player.currentYZ = player.currentYZ.add(1)
             }
         },
         buyMax() { 
             if (this.can()) {
-                player.currentX = tmp.cxBulk
-					player.supernova.stardust = player.supernova.stardust.sub(E(12500).mul(E(10).pow(player.currentX.sub(1))))
+                player.currentYZ = tmp.cyzBulk
+					player.supernova.stardust = player.supernova.stardust.sub(E(12500).mul(E(10).pow(player.currentYZ.sub(1).max(1))))
             }
         },
         effect() {

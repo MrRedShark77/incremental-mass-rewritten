@@ -270,6 +270,25 @@ function updateTickspeedHTML() {
 		tmp.el.tickspeed_auto.setTxt(player.autoTickspeed?"ON":"OFF")
 	}
 }
+function updateFBHTML() {
+tmp.el.cryz_div.setDisplay(hasTree("c8"))
+	tmp.el.crx_div.setDisplay(hasTree("c8"))
+	if(hasTree("c8")){
+		let eff = tmp.cxEffect
+		tmp.el.crx_lvl.setTxt(format(player.currentX,0))
+		tmp.el.crx_btn.setClasses({btn: true, locked: !FORMS.crx.can()})
+		tmp.el.crx_cost.setTxt(format(tmp.cxCost,0))
+		tmp.el.crx_step.setHTML("+"+format(eff.step)+"/s")
+		tmp.el.crx_eff.setHTML("+"+format(eff.eff)+"/s to X gain")
+
+		let eff2 = tmp.cyzEffect
+		tmp.el.cryz_lvl.setTxt(format(player.currentYZ,0))
+		tmp.el.cryz_btn.setClasses({btn: true, locked: !FORMS.cryz.can()})
+		tmp.el.cryz_cost.setTxt(format(tmp.cyzCost,0))
+		tmp.el.cryz_step.setHTML("+"+format(eff2.step)+"/s")
+		tmp.el.cryz_eff.setHTML("+"+format(eff2.eff)+"/s to Y and Z gain")
+	}
+}
 function updateRanksRewardHTML() {
 	tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
 	for (let x = 0; x < RANKS.names.length; x++) {
@@ -431,6 +450,9 @@ function updateHTML() {
 			if (tmp.stab[4] == 3) updateBDHTML()
 		}
 		if (tmp.tab == 7) {
+			updateFBHTML()
+		}
+		if (tmp.tab == 8) {
 			updateOptionsHTML()
 		}
 	}

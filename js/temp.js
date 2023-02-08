@@ -150,6 +150,23 @@ function updateTickspeedTemp() {
     tmp.tickspeedBulk = E(0)
     if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).add(1).floor()
     tmp.tickspeedEffect = FORMS.tickspeed.effect()
+
+}
+function updateFBTemp() {
+    tmp.cyzUnl = hasTree("c8")
+
+    tmp.cyzCost = FORMS.cryz.cost()
+    tmp.cyzBulk = E(0)
+    if (player.supernova.stardust.gte(125000)) tmp.cyzBulk = player.supernova.stardust.max(1).div(125000).log(10).scaleEvery('currentYZ',true).add(1).floor()
+    tmp.cyzEffect = FORMS.cryz.effect()
+
+	
+    tmp.cxUnl = hasTree("c8")
+
+    tmp.cxCost = FORMS.crx.cost()
+    tmp.cxBulk = E(0)
+    if (player.supernova.stardust.gte(7500)) tmp.cxBulk = player.supernova.stardust.max(1).div(7500).log(10).scaleEvery('currentX',true).add(1).floor()
+    tmp.cxEffect = FORMS.crx.effect()
 }
 function updateUpgradesTemp() {
     UPGS.main.temp()
@@ -198,6 +215,7 @@ function updateTemp() {
 
     updateElementsTemp()
     updateMDTemp()
+    updateFBTemp()
     updateStarsTemp()
     updateUpgradesTemp()
     updateScalingTemp()

@@ -18,6 +18,7 @@ const TABS = {
         { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
         { id: "Supernova", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn" },
         { id: "Quantum", unl() { return quUnl() }, style: "qu" },
+            { id: "Explorations" },
         { id: "Options" },
     ],
     2: {
@@ -27,7 +28,6 @@ const TABS = {
             { id: "Atomic Generator", unl() { return player.atom.unl }, style: "atom" },
             { id: "Stars", unl() { return STARS.unlocked() } },
             { id: "Indescribable Matter", unl() { return quUnl() } },
-            { id: "Explorations" },
         ],
         1: [
             { id: "Ranks Rewards" },
