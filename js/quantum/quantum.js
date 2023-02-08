@@ -70,6 +70,7 @@ const QUANTUM = {
             if (!force) keep.push('unl1')
             keep.push('qol8','qol9')
         }
+		        if (hasTree("c5")) keep.push('c1','c2','c3','c4','c5','c6','c7','c8')
         if (hasUpgrade('br',6) && !keep.includes('unl1')) keep.push('unl1')
 
         let save_keep = []
@@ -108,6 +109,7 @@ const QUANTUM = {
         let x = E(1)
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.root(2).softcap(1e50,0.95,2))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
+        if (hasTree('c7')) x = x.mul(tmp.supernova.tree_eff.c7)
         x = x.mul(tmp.qu.cosmic_str_eff.eff)
         return x
     },
@@ -249,6 +251,7 @@ function calcQuantum(dt, dt_offline) {
     if (hasUpgrade('br',9)) {
         player.md.break.energy = player.md.break.energy.add(tmp.bd.energyGain.mul(dt))
         player.md.break.mass = player.md.break.mass.add(tmp.bd.massGain.mul(dt))
+        player.md.break.curX = player.md.break.curX.add(tmp.bd.curXgain.mul(dt))
     }
 
     if (hasTree("qu_qol1")) for (let x = 0; x < tmp.supernova.auto_tree.length; x++) TREE_UPGS.buy(tmp.supernova.auto_tree[x], true)

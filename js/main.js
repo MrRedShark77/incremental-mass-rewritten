@@ -136,11 +136,6 @@ const FORMS = {
         let p = E(0.05)
         return p
     },
-	    unmassGain() {
-        let x = E(0)
-        x = x.sub(tmp.upgs.unmass[1]?tmp.upgs.unmass[1].eff.eff:1)
-		return x
-    },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
         can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(10) },
@@ -193,6 +188,58 @@ const FORMS = {
         },
         autoUnl() { return player.mainUpg.bh.includes(5) },
         autoSwitch() { player.autoTickspeed = !player.autoTickspeed },
+    },
+	    crx: {
+        cost(x=player.currentX) { return E(10).pow(x).times(7500).floor() },
+        can() { return player.supernova.stardust.gte(tmp.cxCost) },
+        buy() {
+            if (this.can()) {
+			player.supernova.stardust = player.supernova.stardust.sub(tmp.cxCost).max(0)
+                player.currentX = player.currentX.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.currentX = tmp.cxBulk
+					player.supernova.stardust = player.supernova.stardust.sub(E(7500).mul(E(10).pow(player.currentX.sub(1))))
+            }
+        },
+        effect() {
+			let step = E(0.25)
+            let x = step.mul(player.currentX)
+            let ss = E(100)
+            let p = 0.1
+            let ss2 = E(200)
+            let p2 = 0.1	
+			return {step: step, eff: x,  ss: ss}
+        },
+        autoUnl() { return false },
+    },
+	    cryz: {
+        cost(x=player.currentX) { return E(10).pow(x).times(12500).floor() },
+        can() { return player.supernova.stardust.gte(tmp.cxCost) },
+        buy() {
+            if (this.can()) {
+			player.supernova.stardust = player.supernova.stardust.sub(tmp.cxCost).max(0)
+                player.currentX = player.currentX.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.currentX = tmp.cxBulk
+					player.supernova.stardust = player.supernova.stardust.sub(E(12500).mul(E(10).pow(player.currentX.sub(1))))
+            }
+        },
+        effect() {
+			let step = E(0.45)
+            let x = step.mul(player.currentX)
+            let ss = E(100)
+            let p = 0.1
+            let ss2 = E(200)
+            let p2 = 0.1	
+			return {step: step, eff2: x,  ss: ss}
+        },
+        autoUnl() { return false },
     },
     rp: {
         gain() {
@@ -360,6 +407,7 @@ const FORMS = {
             },
         },
     },
+
     reset_msg: {
         msgs: {
             rp: "Require over 100M tonne of mass to reset previous features for gain Rage Powers",

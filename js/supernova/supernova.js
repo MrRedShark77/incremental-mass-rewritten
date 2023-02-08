@@ -73,6 +73,7 @@ const SUPERNOVA = {
         let xx = E(hasElement(118)?0.1:0)
         if (hasTree("c1")) xx = xx.mul(tmp.supernova.tree_eff.c1)
 		        if (hasTree("c2")) xx = xx.mul(tmp.supernova.tree_eff.c2)
+        if (hasTree("c5")) xx = xx.mul(tmp.supernova.tree_eff.c5)
         return xx
     },
     req(x=player.supernova.times) {

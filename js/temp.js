@@ -151,7 +151,6 @@ function updateTickspeedTemp() {
     if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).add(1).floor()
     tmp.tickspeedEffect = FORMS.tickspeed.effect()
 }
-
 function updateUpgradesTemp() {
     UPGS.main.temp()
     UPGS.mass.temp()

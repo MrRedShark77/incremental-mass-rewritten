@@ -177,13 +177,16 @@ const MASS_DILATION = {
             if (!bd.active) if (confirm("Are you sure you want to fix Dilation?")) {
                 bd.energy = E(0)
                 bd.mass = E(0)
+                bd.curX = E(0)
+                bd.curY = E(0)
+                bd.curZ = E(0)
                 for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) bd.upgs[x] = E(0)
 
                 QUANTUM.enter(false,true,false,true)
             } else bd.active = true
         },
         energyGain() {
-            if (!player.md.break.active || !player.qu.rip.active) return E(0)
+           if (!player.md.break.active || !player.qu.rip.active && (!hasTree("c4"))) return E(0)
 
             let x = player.md.mass.add(1).log10().sub(400).div(2).max(0)
             x = x.add(1).pow(x.add(1).log10()).sub(1)
@@ -192,8 +195,27 @@ const MASS_DILATION = {
             if (hasPrestige(0,15)) x = x.mul(prestigeEff(0,15))
             x = x.mul(tmp.bd.upgs[5].eff||1)
             if (hasElement(116)) x = x.mul(tmp.elements.effect[116]||1)
+		    if (hasTree("c4")) x = x.sqrt().pow(0.9)
+			            if (hasTree("c6")) x = x.mul(tmp.supernova.tree_eff.c6)
             return x
         },
+		curXgain() {
+			           if (!player.md.break.active) return E(0)   
+					   let x = E(0)
+				   x = x.add(player.currentX.div(10))
+					   return x
+		},
+		curYgain() {
+			           if (!player.md.break.active) return E(0)
+						  					   let x = E(0)
+					   return x
+		},
+		curZgain() {
+			           if (!player.md.break.active) return E(0)
+						   
+					   let x = E(0)
+					   return x
+		},
         massGain() {
             let x = player.md.break.energy.max(0).pow(2)
             x = x.mul(tmp.bd.upgs[0].eff||1)
@@ -408,6 +430,9 @@ function updateBDTemp() {
 
     bd.energyGain = MASS_DILATION.break.energyGain()
     bd.massGain = MASS_DILATION.break.massGain()
+	bd.curXgain = MASS_DILATION.break.curXgain()
+	bd.curYgain = MASS_DILATION.break.curYgain()
+		bd.curZgain = MASS_DILATION.break.curZgain()
 
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
         let upg = MASS_DILATION.break.upgs.ids[x]
@@ -448,7 +473,7 @@ function updateBDHTML() {
     tmp.el.bd_btn.setTxt(bd.active?"Fix Dilation":"Break Dilation")
 
     tmp.el.bd_energy.setTxt(bd.energy.format(1)+" "+bd.energy.formatGain(tmp.bd.energyGain))
-    tmp.el.bd_mass.setTxt(formatMass(bd.mass)+" "+bd.mass.formatGain(tmp.bd.massGain,true))
+    tmp.el.bd_mass.setTxt(format(bd.mass)+" "+bd.mass.formatGain(tmp.bd.massGain))
 
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
         let upg = MASS_DILATION.break.upgs.ids[x]
@@ -458,7 +483,7 @@ function updateBDHTML() {
             tmp.el["bd_upg"+x+"_div"].setClasses({btn: true, full: true, bd: true, locked: !tmp.bd.upgs[x].can})
             if ((upg.maxLvl||1/0) > 1) tmp.el["bd_upg"+x+"_lvl"].setTxt(format(bd.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
             if (upg.effDesc) tmp.el["bd_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.bd.upgs[x].eff))
-            tmp.el["bd_upg"+x+"_cost"].setTxt(bd.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.bd.upgs[x].cost):"")
+            tmp.el["bd_upg"+x+"_cost"].setTxt(bd.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+format(tmp.bd.upgs[x].cost):"")
         }
     }
 }

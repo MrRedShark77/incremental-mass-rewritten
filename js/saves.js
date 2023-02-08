@@ -153,6 +153,7 @@ function getPlayerData() {
         massUpg: {},
         autoMassUpg: [null,false,false,false],
         autoTickspeed: false,
+        autoCx: false,
         mainUpg: {
             
         },
@@ -199,6 +200,9 @@ function getPlayerData() {
                 active: false,
                 energy: E(0),
                 mass: E(0),
+                curX: E(0),
+                curY: E(0),
+                curZ: E(0),
                 upgs: [],
             },
         },
@@ -246,6 +250,8 @@ function getPlayerData() {
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
+        currentX: E(0),
+        currentYZ: E(0),
         options: {
             font: 'Verdana',
             notation: 'sc',

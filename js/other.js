@@ -140,6 +140,17 @@ const POPUP_GROUPS = {
             'font-size': "14px",
         },
     },
+    sd: {
+        html() { return `
+            Congratulations!<br><br>You have buyed 118th Element!<br><br>
+            <b>Constellations unlocked in Neutron Tree!</b>
+        `},
+        width: 400,
+        height: 150,
+        otherStyle: {
+            'font-size': "14px",
+        },
+    },
 }
 
 function addPopup(data) {

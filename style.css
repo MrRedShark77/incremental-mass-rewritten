@@ -334,7 +334,19 @@ button {
 	color: black;
 	background-color: #ff009d;
 }
+.btn_tab.sd {
+	color: #639bff;
+	border-color: #639bff;
+}
 
+.btn_tab.sd:not(.choosed):hover {
+	background-color: #500031;
+}
+
+.btn_tab.sd.choosed {
+	color: black;
+	background-color: #639bff;
+}
 .btn_tab.qu {
 	color: lightgreen;
 	border-color: lightgreen;
@@ -405,17 +417,14 @@ button {
 .btn_tree:not(.bought).locked {
 	border-color: #171717;
 }
-.btn_tree.nr_tree.bought {
+.btn_tree:not(.qu_tree).bought {
 	border-color: #00520b;
 }
 .btn_tree.qu_tree.bought {
 	border-color: #39FF49;
 	box-shadow: 0px 0px 10px 0px #39ff4a7e;
 }
-.btn_tree.cs_tree.bought {
-	border-color: #639bff;
-	box-shadow: 0px 0px 10px 0px #89b1f5;
-}
+
 .elements.final:not(.locked):not(.bought):hover {
 	transform: scale(1.3);
 }

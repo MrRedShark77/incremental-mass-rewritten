@@ -27,6 +27,7 @@ const TABS = {
             { id: "Atomic Generator", unl() { return player.atom.unl }, style: "atom" },
             { id: "Stars", unl() { return STARS.unlocked() } },
             { id: "Indescribable Matter", unl() { return quUnl() } },
+            { id: "Explorations" },
         ],
         1: [
             { id: "Ranks Rewards" },
@@ -56,6 +57,9 @@ const TABS = {
             { id: "Auto-Quantum", unl() { return tmp.qu.mil_reached[6] } },
             { id: "Primordium", unl() { return PRIM.unl() } },
             { id: "Entropy", unl() { return player.qu.en.unl } },
+        ],
+        7: [
+            { id: "Explorations" },
         ],
     },
 }

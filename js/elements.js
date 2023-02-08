@@ -229,7 +229,11 @@ function updateUpperHTML() {
 
 	unl = hasElement(118)
 	tmp.el.st_div.setDisplay(unl)
-	if (unl) tmp.el.sdAmt.setHTML(format(player.supernova.stardust,0)+"<br>"+formatGain(player.supernova.stardust, tmp.supernova.stardust_gain))
+	if (unl) tmp.el.sdAmt.setHTML(format(player.supernova.stardust,2)+"<br>"+formatGain(player.supernova.stardust, tmp.supernova.stardust_gain))
+		
+		unl = hasTree("c8")
+		tmp.el.cp_div.setDisplay(unl)
+	    tmp.el.curPos.setHTML("Current Coordinates: {"+format(player.md.break.curX)+";"+format(player.md.break.curY)+";"+format(player.md.break.curZ)+"}<br>"+formatGain(player.md.break.curX, tmp.bd.curXgain)+" to X"+", "+formatGain(player.md.break.curX, tmp.bd.curYgain)+" to Y & Z")
 }
 
 function updateMassUpgradesHTML() {
@@ -266,7 +270,6 @@ function updateTickspeedHTML() {
 		tmp.el.tickspeed_auto.setTxt(player.autoTickspeed?"ON":"OFF")
 	}
 }
-
 function updateRanksRewardHTML() {
 	tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
 	for (let x = 0; x < RANKS.names.length; x++) {
@@ -388,7 +391,7 @@ function updateHTML() {
 				updateRanksHTML()
 				updateMassUpgradesHTML()
 				updateTickspeedHTML()
-				
+								tmp.el.mass_softcaps.setDisplay(tmp.rank_tab == 0);
 				tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
 				tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
 				tmp.el.massSoft3.setDisplay(tmp.massGain.gte(tmp.massSoftGain2))
