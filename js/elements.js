@@ -271,7 +271,7 @@ function updateTickspeedHTML() {
 	}
 }
 function updateFBHTML() {
-tmp.el.cryz_div.setDisplay(hasTree("c8"))
+	tmp.el.cryz_div.setDisplay(hasTree("c8"))
 	tmp.el.crx_div.setDisplay(hasTree("c8"))
 	if(hasTree("c8")){
 		let eff = tmp.cxEffect

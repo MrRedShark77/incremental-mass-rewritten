@@ -18,7 +18,7 @@ const TABS = {
         { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
         { id: "Supernova", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn" },
         { id: "Quantum", unl() { return quUnl() }, style: "qu" },
-            { id: "Explorations" },
+        { id: "Explorations", unl() { return hasTree("c8") } },
         { id: "Options" },
     ],
     2: {
