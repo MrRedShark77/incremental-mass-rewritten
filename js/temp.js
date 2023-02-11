@@ -168,6 +168,10 @@ function resetTemp() {
         scaling_power: {},
         scaling_start: {},
 
+        c16: {
+            shardGain: E(0),
+        },
+
         prevSave: "",
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
@@ -184,9 +188,10 @@ function resetTemp() {
             for (let k = 0; k < TREE_IDS[i][j].length; k++) {
                 let id = TREE_IDS[i][j][k]
                 if (id != "") {
+                    let u = TREE_UPGS.ids[id]
                     tmp.supernova.tree_had2[j].push(id)
                     tmp.supernova.tree_had.push(id)
-                    if (!TREE_UPGS.ids[id].qf) tmp.supernova.auto_tree.push(id)
+                    if (u && !u.qf && !u.cs) tmp.supernova.auto_tree.push(id)
                 }
             }
         }
@@ -278,6 +283,8 @@ function updateTemp() {
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
 
+    tmp.c16active = CHALS.inChal(16)
+
     tmp.chal13comp = player.chal.comps[13].gte(1)
     tmp.chal14comp = player.chal.comps[14].gte(1)
     tmp.chal15comp = player.chal.comps[15].gte(1)
@@ -287,6 +294,7 @@ function updateTemp() {
     tmp.mass4Unl = hasElement(202)
     tmp.brUnl = hasElement(208)
 
+    updateC16Temp()
     updateDarkTemp()
     updateQuantumTemp()
 

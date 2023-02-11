@@ -65,6 +65,7 @@ const TABS = {
             { id: "Dark Effects" },
             { id: "Dark Run", unl() { return tmp.darkRunUnlocked } },
             { id: "The Matters", unl() { return tmp.matterUnl } },
+            { id: "Corruption", unl() { return player.dark.c16.first } },
         ]
     },
 }

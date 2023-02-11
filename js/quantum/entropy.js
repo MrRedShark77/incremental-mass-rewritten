@@ -69,10 +69,11 @@ const ENTROPY = {
             inc: E(20),
 
             eff(i) {
+                if (tmp.c16active) return E(1)
                 let x = i.pow(0.5).div(5).add(1)
                 return x
             },
-            desc(x) { return `Atomic Power’s effect is <b>${formatPercent(x.sub(1))}</b> exponentially stronger.` },
+            desc(x) { return `Atomic Power’s effect is <b>${formatPercent(x.sub(1))}</b> exponentially stronger.`.corrupt(tmp.c16active) },
         },{
             title: "Entropic Evaporation",
 
@@ -95,11 +96,12 @@ const ENTROPY = {
             inc: E(2),
 
             eff(i) {
+                if (tmp.c16active) return [E(0),E(1)]
                 let x = i.div(QCs.active()?100:5).softcap(2,0.5,0)
                 let y = tmp.tickspeedEffect?tmp.tickspeedEffect.step.pow(x):E(1)
                 return [x,y]
             },
-            desc(x) { return `Tickspeed Power gives <b>^${x[0].format(2)}</b> boost to BHC & Cosmic Ray Powers.<br>Currently: <b>${x[1].format()}x</b>` },
+            desc(x) { return `Tickspeed Power gives <b>^${x[0].format(2)}</b> boost to BHC & Cosmic Ray Powers.<br>Currently: <b>${x[1].format()}x</b>`.corrupt(tmp.c16active) },
         },{
             title: "Entropic Booster",
 
@@ -107,10 +109,11 @@ const ENTROPY = {
             inc: E(2),
 
             eff(i) {
+                if (tmp.c16active) return E(1)
                 let x = i.pow(2).div(20).add(1)
                 return x
             },
-            desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray.` },
+            desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray.`.corrupt(tmp.c16active) },
         },{
             title: "Entropic Scaling",
 
@@ -198,10 +201,10 @@ const ENTROPY = {
         return x
     },
     getRewardEffect(i) {
-        if ((player.qu.rip.active || player.dark.run.active) && !tmp.en.reward_br.includes(i)) return E(0)
+        if ((player.qu.rip.active || tmp.c16active || player.dark.run.active) && !tmp.en.reward_br.includes(i)) return E(0)
         let x = player.qu.en.rewards[i]
 
-        if (hasElement(91) && (player.qu.rip.active || player.dark.run.active) && (i==1||i==4)) x = x.mul(0.1)
+        if (hasElement(91) && (player.qu.rip.active || tmp.c16active || player.dark.run.active) && (i==1||i==4)) x = x.mul(0.1)
 
         return x
     },

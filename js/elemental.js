@@ -35,6 +35,7 @@ const ELEMENTS = {
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
     canBuy(x) {
+        if (tmp.c16active && CORRUPTED_ELEMENTS.includes(x)) return false
         let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
         return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
     },
@@ -44,7 +45,7 @@ const ELEMENTS = {
             else player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
             player.atom.elements.push(x)
 
-            tmp.pass = false
+            tmp.pass = 2
         }
     },
     upgs: [
@@ -1241,8 +1242,8 @@ const ELEMENTS = {
             desc: `Final Star Shard's requirement is 20% cheaper.`,
             cost: E('1e1480'),
         },{
-            desc: `Unlock 16th Challenge. (Coming Soon...)`,
-            cost: EINF,
+            desc: `Unlock 16th Challenge.`,
+            cost: E('e7e134'),
         },
     ],
     /*
@@ -1352,7 +1353,9 @@ for (let x = 2; x <= MAX_ELEM_TIERS; x++) {
     ELEMENTS.map.push(m)
 }
 
-function hasElement(x) { return player.atom.elements.includes(x) }
+const CORRUPTED_ELEMENTS = [40,150,162,187,199,200,204]
+
+function hasElement(x) { return player.atom.elements.includes(x) && !(tmp.c16active && CORRUPTED_ELEMENTS.includes(x)) }
 
 function elemEffect(x,def=1) { return tmp.elements.effect[x]||def }
 
@@ -1401,7 +1404,7 @@ function setupElementsHTML() {
 }
 
 function updateElementsHTML() {
-    let tElem = tmp.elements
+    let tElem = tmp.elements, c16 = tmp.c16active
 
     tmp.el.elemTierDiv.setDisplay(player.dark.unl)
     tmp.el.elemTier.setHTML("Element Tier "+player.atom.elemTier)
@@ -1413,6 +1416,7 @@ function updateElementsHTML() {
         let res = eu.dark?" Dark Shadows":" Quarks"
 
         tmp.el.elem_desc.setHTML("<b>["+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
+        tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && CORRUPTED_ELEMENTS.includes(ch)})
         tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(tElem.effect[ch]):"")
     }
@@ -1437,7 +1441,7 @@ function updateElementsHTML() {
                     upg.setVisible(unl2)
                     if (unl2) {
                         let eu = ELEMENTS.upgs[x]
-                        upg.setClasses({elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: BR_ELEM.includes(x), final: x == 118, dark: eu.dark})
+                        upg.setClasses(c16 && CORRUPTED_ELEMENTS.includes(x)?{elements: true, locked: true, corrupted: true}:{elements: true, locked: !ELEMENTS.canBuy(x), bought: hasElement(x), br: BR_ELEM.includes(x), final: x == 118, dark: eu.dark})
                     }
                 }
             }

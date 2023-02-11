@@ -25,7 +25,7 @@ const DARK = {
         let a = player.dark.rays
         let x = {}
 
-        x.shadow = a.max(1).pow(2).pow(tmp.fermions.effs[0][6]||1)
+        x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1))
 
         if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
         if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1).toNumber()
@@ -93,7 +93,7 @@ const DARK = {
         if (!hasElement(127)) tmp.rank_tab = 0
         if (tmp.stab[4] == 3 && !hasElement(127)) tmp.stab[4] = 0
 
-        tmp.pass = false
+        tmp.pass = 2
     },
     shadowGain() {
         let x = E(1)
@@ -120,7 +120,7 @@ const DARK = {
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0)
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
-        if (a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
+        if (!tmp.c16active && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
 
         return x
     },
@@ -144,7 +144,7 @@ const DARK = {
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
         if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0)
-        if (a.gte('e56000')) x.ApQ_Overflow = Decimal.pow(10,a.div('e56000').log10().add(1).log10())
+        if (a.gte('e56000') && !tmp.c16active) x.ApQ_Overflow = Decimal.pow(10,a.div('e56000').log10().add(1).log10())
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
 
         return x
@@ -169,6 +169,8 @@ function calcDark(dt, dt_offline) {
             if (player.dark.matters.unls<MATTERS_LEN+1 && player.dark.matters.amt[mu-2].gte(tmp.matters.req_unl)) player.dark.matters.unls++
         }
     }
+
+    if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(player.bh.mass)
 }
 
 function updateDarkTemp() {
@@ -189,6 +191,7 @@ function updateDarkTemp() {
 function setupDarkHTML() {
     setupDarkRunHTML()
     setupMattersHTML()
+    setupC16HTML()
 }
 
 function updateDarkHTML() {
@@ -197,6 +200,15 @@ function updateDarkHTML() {
     let dtmp = tmp.dark
 	tmp.el.dark_div.setDisplay(unl)
 	if (unl) tmp.el.darkAmt.setHTML(player.dark.rays.format(0)+"<br>"+(og?dtmp.rayEff.passive?player.dark.rays.formatGain(dtmp.gain.mul(dtmp.rayEff.passive)):"(+"+dtmp.gain.format(0)+")":"(require Og-118)"))
+    let c16 = tmp.c16active
+
+    unl = player.dark.matters.final>0
+	tmp.el.fss_div.setDisplay(unl)
+	if (unl) tmp.el.FSS2.setHTML(format(player.dark.matters.final,0)+"<br>(+"+(tmp.matters.FSS_base.gte(tmp.matters.FSS_req)?1:0)+")")
+
+	unl = player.dark.c16.first
+	tmp.el.corrupt_div.setDisplay(unl)
+	if (unl) tmp.el.corruptShard1.setHTML(format(player.dark.c16.shard,0)+"<br>(+"+tmp.c16.shardGain.format(0)+")")
 
     if (tmp.tab == 7) {
         if (tmp.stab[7] == 0) {
@@ -214,7 +226,7 @@ function updateDarkHTML() {
             if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5)
             if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
             if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
-            if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncaps BH-Exponent Boost's effect`
+            if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncaps BH-Exponent Boost's effect`.corrupt(c16)
 
             tmp.el.dsEff.setHTML(e)
 
@@ -232,9 +244,9 @@ function updateDarkHTML() {
                 if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
                 if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
                 if (eff.csp) e += `<br>Boosts cosmic string's power by <b>x${eff.csp.format(3)}</b>`
-                if (eff.mexp) e += `<br>Boosts each matters gain by <b>^${eff.mexp.format(3)}</b>`
+                if (eff.mexp) e += `<br>`+`Boosts all matters gain by <b>^${eff.mexp.format(3)}</b>`.corrupt(c16)
                 if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5)
-                if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`
+                if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`.corrupt(c16)
                 if (eff.fss) e += `<br>Final Star Shards are <b>${formatPercent(eff.fss-1)}</b> stronger`
 
                 tmp.el.abEff.setHTML(e)
@@ -254,6 +266,8 @@ function updateDarkHTML() {
             updateDarkRunHTML()
         } else if (tmp.stab[7] == 2) {
             updateMattersHTML()
+        } else if (tmp.stab[7] == 3) {
+            updateC16HTML()
         }
     }
 }
@@ -288,6 +302,14 @@ function getDarkSave() {
             upg: [],
             unls: 3,
             final: 0,
+        },
+
+        c16: {
+            first: false,
+            shard: E(0),
+            bestBH: E(0),
+            charger: [],
+            tree: [],
         },
     }
     for (let x = 0; x < MATTERS_LEN; x++) {

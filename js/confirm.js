@@ -22,7 +22,7 @@ const CONFIRMS_FUNCTION = {
                 player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
             }
             if (post?!hasTree("qu_qol4"):true) {
-                tmp.pass = true
+                tmp.pass = 2
                 SUPERNOVA.doReset()
             }
         }
@@ -36,7 +36,7 @@ const CONFIRMS_FUNCTION = {
         }
     },
     qu(auto,force,rip,bd) {
-        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !CHALS.inChal(14) && !CHALS.inChal(15) && !player.dark.run.active) {
+        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !CHALS.inChal(14) && !CHALS.inChal(15) && !player.dark.run.active && !tmp.c16active) {
             player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
             player.qu.qc.active = false
         }
@@ -78,7 +78,7 @@ const CONFIRMS_FUNCTION = {
         QUANTUM.doReset(player.qu.qc.active)
     },
     bigRip() {
-        if (player.dark.run.active) return
+        if (tmp.c16active || player.dark.run.active) return
         if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain)
         player.qu.qc.active = false
         player.qu.rip.first = true

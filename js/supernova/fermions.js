@@ -11,7 +11,7 @@ const FERMIONS = {
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(base.pow(player.supernova.fermions.tiers[i][j]))
         if (hasTree("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
 
-        if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+        if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
         return x
     },
@@ -28,6 +28,7 @@ const FERMIONS = {
     bonus(i,j) {
         let x = E(0)
         if (hasTree("prim3") && j < 6) x = x.add(tmp.prim.eff[5][1].min(j>2&&!hasElement(172)?4:1/0))
+        if (hasTree('ct3')) x = x.add(treeEff('ct3'))
         return x
     },
     fp() {
@@ -186,7 +187,7 @@ const FERMIONS = {
                     return E('e5e8').pow(t.pow(2)).mul('e6e9')
                 },
                 calcTier() {
-                    let res = tmp.tickspeedEffect && tmp.pass?tmp.tickspeedEffect.eff_bottom:E(1)
+                    let res = tmp.tickspeedEffect && !tmp.pass?tmp.tickspeedEffect.eff_bottom:E(1)
                     if (res.lt('e6e9')) return E(0)
                     let x = res.div('e6e9').max(1).log('e5e8').max(0).root(2)
                     return FERMIONS.getTierScaling(x, true)
@@ -220,7 +221,7 @@ const FERMIONS = {
                     return x
                 },
                 desc(x) {
-                    return `Dark ray's effect is ^${x.format()} stronger`
+                    return `Dark ray's effect is ^${x.format()} stronger`.corrupt(tmp.c16active)
                 },
                 inc: "product of above u-quarks",
                 cons: "All u-quarks at once, and force quantum reset.",
@@ -355,7 +356,7 @@ const FERMIONS = {
                     return E('10').pow(t.pow(1.5)).mul('e80')
                 },
                 calcTier() {
-                    let res = tmp.tickspeedEffect && tmp.pass?tmp.tickspeedEffect.step:E(1)
+                    let res = tmp.tickspeedEffect && !tmp.pass?tmp.tickspeedEffect.step:E(1)
                     if (res.lt('e80')) return E(0)
                     let x = res.div('e80').max(1).log('10').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)

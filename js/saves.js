@@ -68,10 +68,12 @@ Decimal.prototype.softcapHTML = function (start, invisible) { return softcapHTML
 
 function calcOverflow(x,y,s,inv=false) { return x.gte(s) ? x.max(1).log10().div(y.max(1).log10()).pow(inv?-1:1) : E(1) }
 
+String.prototype.corrupt = function (active=true) { return active ? this.strike() + ` <span class='corrupted_text'>[Corrupted]</span>` : this }
+
 function calc(dt, dt_offline) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
 
-    if (tmp.pass) {
+    if (tmp.pass<=0) {
         player.mass = player.mass.add(tmp.massGain.mul(du_gs))
         if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
         if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
@@ -130,7 +132,7 @@ function calc(dt, dt_offline) {
         }
     }
 
-    tmp.pass = true
+    tmp.pass = Math.max(0,tmp.pass-1)
 
     player.offline.time = Math.max(player.offline.time-tmp.offlineMult*dt_offline,0)
     player.time += dt
@@ -408,16 +410,18 @@ function export_copy() {
 
 function importy() {
     createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
+        st = convertStringIntoAGY(loadgame)
+        console.log(st)
         if (ssf[2](loadgame)) return
-        if (loadgame == 'monke') {
+        if (st == 'OJY$VFe*b') {
             addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
             return
         }
-        if (loadgame == 'matt parker') {
+        if (st == 'p4H)pb{v2y5?g!') {
             addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
             return
         }
-        if (loadgame == 'SUPERNOVA.get()') {
+        if (st == 'L5{W*oI.NhA-lE)C1#e') {
             addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
             return
         }
@@ -453,7 +457,7 @@ function loadGame(start=true, gotNaN=false) {
     
     if (start) {
         setInterval(save,60000)
-        updateTemp()
+        for (let x = 0; x < 5; x++) updateTemp()
         updateTooltipResHTML(true)
         updateHTML()
         for (let x = 0; x < 3; x++) {

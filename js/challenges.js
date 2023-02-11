@@ -51,13 +51,16 @@ function updateChalTemp() {
         canFinish: false,
         gain: E(0),
     }
-    let s = tmp.qu.chroma_eff[2]
+    let s = tmp.qu.chroma_eff[2], w = treeEff('ct5'), v = 12
+
+    if (hasTree('ct5')) v++
+
     for (let x = 1; x <= CHALS.cols; x++) {
         let data = CHALS.getChalData(x)
         tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
-        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(x<=8?s:hasElement(174)&&x<=12?s.root(5):1))
+        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:1))
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
@@ -76,10 +79,12 @@ const CHALS = {
         if (x < 5) FORMS.bh.doReset()
         else if (x < 9) ATOM.doReset(chal_reset)
         else if (x < 13) SUPERNOVA.reset(true, true)
-        else DARK.doReset(true)
+        else if (x < 16) DARK.doReset(true)
+        else MATTERS.final_star_shard.reset(true)
     },
     exit(auto=false) {
         if (!player.chal.active == 0) {
+            if (player.chal.active == 16 && !auto) player.dark.c16.shard = player.dark.c16.shard.add(tmp.c16.shardGain)
             if (tmp.chal.canFinish) {
                 player.chal.comps[player.chal.active] = player.chal.comps[player.chal.active].add(tmp.chal.gain).min(tmp.chal.max[player.chal.active])
             }
@@ -89,14 +94,19 @@ const CHALS = {
             }
         }
     },
-    enter() {
+    enter(ch=player.chal.choosed) {
         if (player.chal.active == 0) {
-            player.chal.active = player.chal.choosed
-            this.reset(player.chal.choosed, false)
-        } else if (player.chal.choosed != player.chal.active) {
+            if (ch == 16) {
+                player.dark.c16.first = true
+                tmp.c16active = true
+            }
+
+            player.chal.active = ch
+            this.reset(ch, false)
+        } else if (ch != player.chal.active) {
             this.exit(true)
-            player.chal.active = player.chal.choosed
-            this.reset(player.chal.choosed, false)
+            player.chal.active = ch
+            this.reset(ch, false)
         }
     },
     getResource(x) {
@@ -112,9 +122,10 @@ const CHALS = {
     },
     getReset(x) {
         if (x < 5) return "Entering this challenge will force dark matter reset."
-        if (x < 9) return "Entering this challenge will force atom reset."
-        if (x < 13) return "Entering challenge will supernova reset."
-        return "Entering challenge will force a Darkness reset."
+        else if (x < 9) return "Entering this challenge will force atom reset."
+        else if (x < 13) return "Entering challenge will supernova reset."
+        else if (x < 16) return "Entering challenge will force a Darkness reset."
+        return "Entering challenge will force a FSS reset."
     },
     getMax(i) {
         let x = this[i].max
@@ -488,7 +499,29 @@ const CHALS = {
         },
         effDesc(x) { return "^"+format(x,2)+" later" },
     },
-    cols: 15,
+    16: {
+        unl() { return hasElement(218) },
+        title: "Chaotic Matter Annihilation",
+        desc: `
+        • You cannot gain rage points nor dark matters, and all matters’ formula is disabled, and they generate each other. Red matter generates dark matter.<br>
+        • Pre-C16 following contents (including rank & prestige tiers, main upgrades, elements, tree and etc.) are corrupted like disabled.<br>
+        • You are trapped in Mass Dilation & Dark Run with 100 all glyphs.<br>
+        • Primordium particles disabled.<br>
+        • Pre-Quantum global speed always sets to /100.<br>
+        You can earn Corrupted Shard based on your mass of black hole, when exiting the challenge.
+        `,
+        reward: `Nothing.`,
+        max: E(1),
+        inc: EINF,
+        pow: EINF,
+        start: EINF,
+        effect(x) {
+            let ret = E(1)
+            return ret
+        },
+        effDesc(x) { return "Nothing." },
+    },
+    cols: 16,
 }
 
 /*

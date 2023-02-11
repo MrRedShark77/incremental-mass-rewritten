@@ -245,6 +245,37 @@ button {
 	animation: quark_color 6s cubic-bezier(0.37, 0, 0.63, 1) infinite
 }
 
+.corrupted_text {
+	color: white;
+	animation: corrupted_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.corrupted_text2::after {
+	content: " [Corrupted]";
+	color: white;
+	animation: corrupted_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+@keyframes corrupted_text {
+	0%, 100% {
+		text-shadow: -2px -2px 0px #5555ff, 2px 2px 0px #ff5555;
+	}
+	25% {
+		text-shadow: -2px 2px 0px #5555ff, 2px -2px 0px #ff5555;
+	}
+	50% {
+		text-shadow: 2px 2px 0px #5555ff, -2px -2px 0px #ff5555;
+	}
+	75% {
+		text-shadow: 2px -2px 0px #5555ff, -2px 2px 0px #ff5555;
+	}
+}
+
+.charged_text {
+	color: cyan;
+	text-shadow: -1px -1px 3px lightskyblue, 0px 0px 5px #878ffa, 1px 1px 3px blue;
+}
+
 @keyframes quark_color {
 	0%, 100% {
 		color: red;
@@ -475,7 +506,7 @@ button {
 }
 
 .btn_tree.choosed {
-	transform: scale(1.25);
+	transform: scale(1.25) !important;
 }
 
 .elements {
@@ -483,6 +514,35 @@ button {
 	width: 50px;
 	height: 50px;
 	background-color: #444;
+}
+
+.elements.corrupted,
+.btn_tree.corrupted {
+	border-color: white;
+	color: white;
+	box-shadow: 3px 3px 3px #ff5555, -3px -3px 3px #5555ff, 3px 3px 3px #ff5555 inset, -3px -3px 3px #5555ff inset;
+	z-index: 1;
+	transform: scale(1.1);
+	animation: corrupted_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+@keyframes corrupted_div {
+	0%, 100% {
+		box-shadow: 3px 3px 3px #ff5555, -3px -3px 3px #5555ff, 3px 3px 3px #ff5555 inset, -3px -3px 3px #5555ff inset;
+		text-shadow: -2px -2px 0px #5555ff, 2px 2px 0px #ff5555;
+	}
+	25% {
+		box-shadow: -3px 3px 3px #ff5555, 3px -3px 3px #5555ff, -3px 3px 3px #ff5555 inset, 3px -3px 3px #5555ff inset;
+		text-shadow: -2px 2px 0px #5555ff, 2px -2px 0px #ff5555;
+	}
+	50% {
+		box-shadow: -3px -3px 3px #ff5555, 3px 3px 3px #5555ff, -3px -3px 3px #ff5555 inset, 3px 3px 3px #5555ff inset;
+		text-shadow: 2px 2px 0px #5555ff, -2px -2px 0px #ff5555;
+	}
+	75% {
+		box-shadow: 3px -3px 3px #ff5555, -3px 3px 3px #5555ff, 3px -3px 3px #ff5555 inset, -3px 3px 3px #5555ff inset;
+		text-shadow: 2px -2px 0px #5555ff, -2px 2px 0px #ff5555;
+	}
 }
 
 .btn {
@@ -596,7 +656,8 @@ h3 {
 }
 
 .md.locked,
-.bd.locked {
+.bd.locked,
+.charger.locked {
 	border-color: #303030;
 	cursor: default;
 }
@@ -616,6 +677,18 @@ h3 {
 	border-color: #00cea1;
 	background-color: #00363a !important;
 	box-shadow: 0 0 10px #00cea1;
+}
+
+.charger {
+	border-color: #47cbff;
+	background-color: #171717;
+}
+
+.charger:not(.locked):hover {
+	border-color: #47cbff;
+	background-color: #009ddb !important;
+	box-shadow: 2px 2px 6px #47cbff, 2px 2px 6px #47cbff inset, -2px -2px 6px white, -2px -2px 6px white inset;
+	color: black;
 }
 
 .btn.b_btn {

@@ -69,7 +69,7 @@ const QUANTUM = {
 
         SUPERNOVA.doReset()
 
-        tmp.pass = false
+        tmp.pass = 2
     },
     bpGain() {
         let x = E(1)

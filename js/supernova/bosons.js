@@ -3,70 +3,81 @@ const BOSONS = {
     gain: {
         pos_w() {
             let x = E(0.01).mul(tmp.bosons.effect.neg_w?tmp.bosons.effect.neg_w[1]:1).mul(tmp.bosons.effect.z_boson?tmp.bosons.effect.z_boson[1]:1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            
+            if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
+            
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
             return x
         },
         neg_w() {
             let x = E(0.01).mul(tmp.bosons.effect.pos_w?tmp.bosons.effect.pos_w[1]:1).mul(tmp.bosons.effect.z_boson?tmp.bosons.effect.z_boson[1]:1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            
+            if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
+            
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
             return x
         },
         z_boson() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("sn4")) x = x.pow(1.5)
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
             return x
         },
         photon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[1])
             x = hasElement(204) ? x.pow(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1) : x.mul(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1)
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
             return x
         },
         gluon() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[0])
             x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1) : x.mul(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1)
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
             return x
         },
         graviton() {
             let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1).mul(tmp.fermions.effs[1][1])
+            if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
             return x
         },
         hb() {
             let x = E(0.01).mul(tmp.fermions.effs[1][1])
+            if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs1")) x = x.mul(tmp.supernova?tmp.supernova.tree_eff.bs1:1)
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
             return x
         },
@@ -75,6 +86,7 @@ const BOSONS = {
         pos_w(x) {
             let a = x.add(1).pow(2e4)
             if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3).softcap(1e15,0.1,0))
+            if (tmp.c16active) a = overflow(a,10,0.5)
             let b = expMult(x.add(1),2/3,2)
             return [a,b]
         },
@@ -95,6 +107,7 @@ const BOSONS = {
         hb(x) {
             let a = x.add(1).log10().max(0).root(2).mul(tmp.prim.eff[4])
             if (hasTree("qu10") && !player.qu.rip.active) a = a.mul(treeEff('qu10'))
+            if (tmp.c16active) a = a.pow(.2)
             return [a]
         },
     },
@@ -112,9 +125,11 @@ const BOSONS = {
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
-                    return hasElement(204)
+                    let y = hasElement(204)
                     ?Decimal.pow(1.1,player.supernova.bosons.photon.add(10).log10().log10().add(1).mul(x.add(10).log10()).root(2).sub(1))
                     :player.supernova.bosons.photon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100))
+                    if (tmp.c16active) y = overflow(y,10,0.5)
+                    return y
                 },
                 effDesc(x) { return hasElement(204)?"^"+format(x):format(x)+"x" },
             },{
@@ -160,9 +175,11 @@ const BOSONS = {
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
-                    return hasElement(204)
+                    let y = hasElement(204)
                     ?Decimal.pow(1.1,player.supernova.bosons.gluon.add(10).log10().log10().add(1).mul(x.add(10).log10()).root(2).sub(1))
                     :player.supernova.bosons.gluon.add(1).pow(x.mul(tmp.radiation.bs.eff[7]).pow(0.8).mul(100))
+                    if (tmp.c16active) y = overflow(y,10,0.5)
+                    return y
                 },
                 effDesc(x) { return hasElement(204)?"^"+format(x):format(x)+"x" },
             },{
@@ -249,6 +266,10 @@ function updateBosonsTemp() {
 }
 
 function updateBosonsHTML() {
+    let c16 = tmp.c16active
+    tmp.el.w_boson1.setClasses({corrupted_text2: c16})
+    tmp.el.higgs_bosons.setClasses({corrupted_text2: c16})
+
     for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
         tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.bosons.gain[id].mul(tmp.preQUGlobalSpeed)))
@@ -259,6 +280,7 @@ function updateBosonsHTML() {
             tmp.el[id2+"_div"].setClasses({btn: true, full: true, b_btn: true, locked: !tmp.bosons.upgs[id][y].can})
             tmp.el[id2+"_lvl"].setTxt(format(player.supernova.b_upgs[id][y],0))
             tmp.el[id2+"_eff"].setHTML(BOSONS.upgs[id][y].effDesc(tmp.bosons.upgs[id][y].effect))
+            tmp.el[id2+"_eff"].setClasses({corrupted_text2: c16 && y == 0})
             tmp.el[id2+"_cost"].setTxt(format(tmp.bosons.upgs[id][y].cost))
         }
     }

@@ -24,6 +24,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
 
+    <script src="js/darkness/c16.js"></script>
     <script src="js/darkness/matter.js"></script>
     <script src="js/darkness/dark_run.js"></script>
     <script src="js/darkness/dark.js"></script>
@@ -111,7 +112,7 @@
                         You have <span id="graviton_amt">X</span> Graviton, which speeds Bosons production by <span id="graviton_eff0">Y</span>
                     </div>
                     <div class="higgs_boson sub_b">
-                        You have <span id="hb_amt">X</span> Higgs Boson, which raises Gravitons effect by <span id="hb_eff0">Y</span>
+                        <span id="higgs_bosons">You have <span id="hb_amt">X</span> Higgs Boson, which raises Gravitons effect by <span id="hb_eff0">Y</span></span>
                     </div>
                 </div><div class="table_center">
                     <div class="photon sub_b">
@@ -124,7 +125,7 @@
                     </div>
                 </div><div class="table_center">
                     <div class="w_boson sub_b">
-                        You have <span id="pos_w_amt">X</span> W<sup>+</sup> Boson, which multiplies Mass gain by <span id="pos_w_eff0">Y</span>,<br> multiplies W<sup>-</sup> Bosons gain by <span id="pos_w_eff1">Y</span>
+                        <span id="w_boson1">You have <span id="pos_w_amt">X</span> W<sup>+</sup> Boson, which multiplies Mass gain by <span id="pos_w_eff0">Y</span>,<br> multiplies W<sup>-</sup> Bosons gain by <span id="pos_w_eff1">Y</span></span>
                         <br><br>
                         You have <span id="neg_w_amt">X</span> W<sup>-</sup> Boson, which makes Mass gains softcap^2 starts ^<span id="neg_w_eff0">Y</span> later,<br> multiplies W<sup>+</sup> Bosons gain by <span id="neg_w_eff1">Y</span>
                     </div>
@@ -221,6 +222,11 @@
                             <img class="res_img" src="images/fss.png" onclick="MATTERS.final_star_shard.reset()" style="cursor: pointer;">
                         </div>
                         <span style="margin-left: 5px; text-align: left;" id="FSS2">X</span>
+                    </div><div class="resources sml corrupted_text" id="corrupt_div">
+                        <div id="corrupt_tooltip" class="tooltip" tooltip-pos="bottom" tooltip-align="left" tooltip-text-align="left" tooltip-html="Corrupted Shard">
+                            <img class="res_img" src="images/corrupted.png" onclick="startC16()" style="cursor: pointer;">
+                        </div>
+                        <span style="margin-left: 5px; text-align: left;" id="corruptShard1">X</span>
                     </div>
                     
                     <div class="resources sml orange" id="gs1_div">
@@ -556,6 +562,9 @@
                         <div id="FSS_eff1"></div>
                     </div><br>
                     <div class="table_center" id="matters_table"></div>
+                </div><div id="stab_frame7_3">
+                    Your best mass of black hole in 16th Challenge is <b id="bestBH">X</b>.<br><br>
+                    <div class="table_center"><div class="table_center" id="chargers_table" style="width: 1000px;"></div></div>
                 </div>
             </div><div id="tab_frame8">
                 <button class="btn" onclick="save()">Save</button>
@@ -575,7 +584,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6.3.4 - major style changes - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.4 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br>
                 Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>

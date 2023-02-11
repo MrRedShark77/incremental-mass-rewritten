@@ -8,7 +8,7 @@ const RADIATION = {
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
 
-        if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+        if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
         return x
     },
@@ -29,7 +29,7 @@ const RADIATION = {
         x = x.mul(tmp.radiation.bs.eff[3*i])
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
 
-        if (player.dark.run.active) x = expMult(x,mgEff(4)[0])
+        if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
 
         return x
     },

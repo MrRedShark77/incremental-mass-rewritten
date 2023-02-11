@@ -5,11 +5,11 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
             let reset = true
-            if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
+            if (tmp.chal14comp) reset = false
+            else if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
             else if (type == "pent" && hasTree("qol8")) reset = false
-            else if (type == "hex" && tmp.chal14comp) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -18,11 +18,11 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
             let reset = true
+            if (tmp.chal14comp) reset = false
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
             else if (type == "pent" && hasTree("qol8")) reset = false
-            else if (type == "hex" && tmp.chal14comp) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
         }
@@ -276,6 +276,10 @@ const RANKS = {
     },
 }
 
+const CORRUPTED_PRES = [
+    [10,40],
+]
+
 const PRESTIGES = {
     fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown'],
     baseExponent() {
@@ -286,7 +290,7 @@ const PRESTIGES = {
         x += glyphUpgEff(10,0)
 
         x += 1
-        if (player.dark.run.active) x /= mgEff(5)
+        if (tmp.c16active || player.dark.run.active) x /= mgEff(5)
 
         return x
     },
@@ -532,7 +536,7 @@ const PRESTIGES = {
 
 const PRES_LEN = PRESTIGES.fullNames.length
 
-function hasPrestige(x,y) { return player.prestiges[x].gte(y) }
+function hasPrestige(x,y) { return player.prestiges[x].gte(y) && !(tmp.c16active && CORRUPTED_PRES[x] && CORRUPTED_PRES[x].includes(y)) }
 
 function prestigeEff(x,y,def=E(1)) { return tmp.prestiges.eff[x][y] || def }
 
@@ -542,7 +546,7 @@ function updateRanksTemp() {
     let fp2 = tmp.qu.chroma_eff[1][0]
     let ffp = E(1)
     let ffp2 = 1
-    if (player.dark.run.active) ffp2 /= mgEff(5)
+    if (tmp.c16active || player.dark.run.active) ffp2 /= mgEff(5)
 
     let fp = RANKS.fp.rank().mul(ffp)
     tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ffp2).scaleEvery('rank',false,[1,1,1,1,fp2]).div(fp).pow(1.15)).mul(10)

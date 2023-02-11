@@ -262,3 +262,27 @@ function createPrompt(text, id, func) {
 
     document.getElementById('popups').appendChild(popup)
 }
+
+let SEED = [42421n, 18410740n, 9247923n]
+
+function convertStringIntoAGY(s) {
+    let ca = ` abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?!/<>@#$%^&*()_-+=~№;:'"[]{}|`, cl = BigInt(ca.length), r = 0n, sd = SEED[0], result = ''
+
+    for (let i = BigInt(s.length)-1n; i >= 0n; i--) {
+        let q = BigInt(ca.indexOf(s[i])), w = q >= 0n ? cl**(BigInt(s.length)-i-1n)*q : 0
+
+        if (i % 2n == 0n && w % 3n == i % (w % 4n + 2n)) w *= (w % 4n + 2n) * (i + 1n)
+
+        r += w * sd
+
+        sd = (sd + SEED[2]**(i % 3n + i * (q + 2n) % 3n)) % SEED[1]
+    }
+
+    while (r > 0n) {
+        result += ca[r % cl]
+
+        r /= cl
+    }
+
+    return result
+}

@@ -7,7 +7,7 @@ const SUPERNOVA = {
         else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
     },
     doReset() {
-        let br = player.qu.rip.active || player.dark.run.active
+        let br = player.qu.rip.active || tmp.c16active || player.dark.run.active
         tmp.supernova.time = 0
 
         player.atom.points = E(0)
@@ -53,7 +53,7 @@ const SUPERNOVA = {
 
         updateTemp()
 
-        tmp.pass = false
+        tmp.pass = 2
     },
     starGain() {
         let x = E(hasTree("c")?0.1:0)
@@ -64,7 +64,7 @@ const SUPERNOVA = {
         if (hasTree("sn5")) x = x.mul(tmp.supernova.tree_eff.sn5)
 
         let qs = Decimal.pow(1.2,player.qu.times.softcap(1e17,0.1,0))
-        if (!hasElement(140)) qs = qs.min(1e10)
+        if (!hasElement(140) || tmp.c16active) qs = qs.min(1e10)
 
         if (tmp.qu.mil_reached[6]) x = x.mul(qs.softcap('ee9',0.01,0).softcap('ee10',0.1,0))
         x = x.mul(tmp.radiation.bs.eff[11])
@@ -72,7 +72,7 @@ const SUPERNOVA = {
     },
     req(x=player.supernova.times) {
         ff = tmp.dark.shadowEff.sn||1
-        if (player.dark.run.active) ff /= mgEff(4)[1]
+        if (tmp.c16active || player.dark.run.active) ff /= mgEff(4)[1]
 
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
         maxlimit = E(1e20).pow(x.scaleEvery('supernova',false,[1,1,1,1,ff]).div(ml_fp).pow(1.25)).mul(1e90)
@@ -127,7 +127,7 @@ function calcSupernova(dt, dt_offline) {
 }
 
 function updateSupernovaTemp() {
-    let req_data = SUPERNOVA.req()
+    let req_data = SUPERNOVA.req(), c16 = tmp.c16active
     tmp.supernova.maxlimit = req_data.maxlimit
     tmp.supernova.bulk = req_data.bulk
 
@@ -142,16 +142,17 @@ function updateSupernovaTemp() {
             let branch = t.branch||""
             let unl = (t.unl?t.unl():true)
             let req = t.req?t.req():true
+            let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)
             if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
-            let can = (t.qf?player.qu.points:player.supernova.stars).gte(t.cost) && !hasTree(id) && req
-            if (branch != "") for (let x = 0; x < branch.length; x++) if (!hasTree(branch[x])) {
+            let can = (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost) && !bought && req
+            if (branch != "") for (let x = 0; x < branch.length; x++) if (!(player.supernova.tree.includes(branch[x]) || player.dark.c16.tree.includes(branch[x]))) {
                 unl = false
                 can = false
                 break
             }
-            tmp.supernova.tree_unlocked[id] = unl || hasTree(id)
+            tmp.supernova.tree_unlocked[id] = unl || bought
             tmp.supernova.tree_afford[id] = can
-            if (can && unl) tmp.supernova.tree_afford2[i].push(id)
+            if (can && unl && !(c16 && CORRUPTED_TREE.includes(id))) tmp.supernova.tree_afford2[i].push(id)
             if (t.effect) {
                 tmp.supernova.tree_eff[id] = t.effect()
             }

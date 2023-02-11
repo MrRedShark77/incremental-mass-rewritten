@@ -16,7 +16,7 @@ const ATOM = {
         x = x.pow(glyphUpgEff(5))
         if (hasUpgrade('br',17)) x = x.pow(upgEffect(4,17))
 
-        if (player.dark.run.active) x = expMult(x,mgEff(2))
+        if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(2))
 
         return x.floor()
     },
@@ -37,10 +37,10 @@ const ATOM = {
 
         if (hasUpgrade('atom',17)) x = x.pow(upgEffect(3,17))
 
-        if (player.dark.run.active) x = expMult(x,mgEff(2))
+        if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(2))
 
         let o = x
-        let os = E('ee90').pow(tmp.dark.abEff.ApQ_Overflow||1)
+        let os = tmp.c16active ? E('ee6') : E('ee90').pow(tmp.dark.abEff.ApQ_Overflow||1)
 
         if (hasUpgrade('atom',16)) os = os.pow(10)
 
@@ -80,11 +80,11 @@ const ATOM = {
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
-            if (player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
 
             if (hasGlyphUpg(12)) x = x.pow(greff.exp)
 
-            if (player.dark.run.active) x = expMult(x,mgEff(2))
+            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(2))
 
             let o = x
             let os = E('ee82').pow(tmp.dark.abEff.ApQ_Overflow||1)

@@ -230,7 +230,7 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (!CHALS.inChal(14) && !player.dark.run.active && !CHALS.inChal(15)) {
+	if (!CHALS.inChal(14) && !player.dark.run.active && !tmp.c16active && !CHALS.inChal(15)) {
 		if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent",'hex')
 		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
 	}
@@ -489,7 +489,7 @@ function getScalingPower(type, name) {
 	if (hasPrestige(2,4) && rps.includes(name) && type != 'exotic' && type != "supercritical") power = power.mul(tmp.qu.chroma_eff[1][1])
 
 	let qf = tmp.qu.qc_eff[7][1]
-	if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
+	if (!tmp.c16active) if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
 	if (PreQ_SCALES.includes(name) && type != "meta" && type != "exotic" && type != "supercritical") power = power.mul(getEnRewardEff(5))
 	if (hasPrestige(0,388) && ['prestige0','prestige1'].includes(name) && type != "meta") power = power.mul(prestigeEff(0,388,1))

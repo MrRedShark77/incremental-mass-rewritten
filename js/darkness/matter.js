@@ -3,30 +3,47 @@ const MATTERS = {
     colors: ['#0002',"#f002","#f0f2","#ffb6c122","#a0f2","#70f2","#06f2","#0cf2","#0f02","#bf02","#ff02","#f802","#fff2","#8882"],
 
     gain(i) {
-        let m0 = i == 0 ? player.bh.dm : player.dark.matters.amt[i-1]
+        let x, m0, c16 = tmp.c16active
 
-        let x = Decimal.pow(10,m0.max(1).log10().max(1).log10().add(1).pow(tmp.matters.exponent).sub(1))
+        if (c16) {
+            x = i == 12 ? E(1) : player.dark.matters.amt[i+1]
+        } else {
+            m0 = i == 0 ? player.bh.dm : player.dark.matters.amt[i-1]
+            x = Decimal.pow(10,m0.max(1).log10().max(1).log10().add(1).pow(tmp.matters.exponent).sub(1))
+        }
 
         if (hasElement(192)) x = x.mul(elemEffect(192))
 
-        x = x.pow(tmp.dark.abEff.mexp||1)
-        x = x.pow(glyphUpgEff(14,1))
-        if (i < MATTERS_LEN-1) x = x.pow(tmp.matters.upg[i+1].eff)
+        if (hasCharger(0)) x = x.mul(1e10)
 
-        x = x.pow(tmp.matters.FSS_eff[0])
-        if (hasBeyondRank(1,7)) x = x.pow(beyondRankEffect(1,7))
+        if (x.lt(1)) return x
+
+        if (i < MATTERS_LEN-1) x = c16 ? x.mul(tmp.matters.upg[i+1].eff) : x.pow(tmp.matters.upg[i+1].eff)
+
+        if (!c16) {
+            x = x.pow(tmp.dark.abEff.mexp||1)
+            x = x.pow(glyphUpgEff(14,1))
+            x = x.pow(tmp.matters.FSS_eff[0])
+            if (hasBeyondRank(1,7)) x = x.pow(beyondRankEffect(1,7))
+        }
 
         return x
     },
 
     firstUpgData(i) {
-        let lvl = player.dark.matters.upg[i], pow = Math.max(i-2,0)/10+1.5
+        let c16 = tmp.c16active
 
-        let cost = Decimal.pow(1e10,lvl.scale(i>0?25:50,1.05,1).add(1).pow(pow))
+        let lvl = player.dark.matters.upg[i], pow = c16?1.25:Math.max(i-2,0)/10+1.5
 
-        let bulk = player.dark.matters.amt[i].max(1).log(1e10).root(pow).sub(1).scale(i>0?25:50,1.05,1,true).add(1).floor()
+        let cost = c16?Decimal.pow(100,lvl.add(1).pow(pow)):Decimal.pow(1e10,lvl.scale(i>0?25:50,1.05,1).add(1).pow(pow))
 
-        let eff = i==0?lvl.mul(tmp.matters.str).add(1):Decimal.pow(4/3,lvl.mul(tmp.matters.str))
+        let bulk = (c16?player.dark.matters.amt[i].max(1).log(100).root(pow):player.dark.matters.amt[i].max(1).log(1e10).root(pow).sub(1).scale(i>0?25:50,1.05,1,true).add(1)).floor()
+
+        let base = c16?3:4/3
+
+        if (hasTree('ct4')) base += treeEff('ct4')
+
+        let eff = c16?Decimal.pow(base,lvl):i==0?lvl.mul(tmp.matters.str).add(1):Decimal.pow(base,lvl.mul(tmp.matters.str))
 
         return {cost: cost, bulk: bulk, eff: eff}
     },
@@ -43,15 +60,17 @@ const MATTERS = {
         req() {
             let f = player.dark.matters.final
 
+            if (f>5) f = (f/5)**2*5
+
             if (hasElement(217)) f *= .8
 
             let x = Decimal.pow(100,f**1.5).mul(1e43)
             return x
         },
 
-        reset() {
-            if (tmp.matters.FSS_base.gte(tmp.matters.FSS_req)) {
-                player.dark.matters.final++
+        reset(force = false) {
+            if (force || tmp.matters.FSS_base.gte(tmp.matters.FSS_req)) {
+                if (!force) player.dark.matters.final++
 
                 resetMatters()
                 player.dark.shadow = E(0)
@@ -84,10 +103,15 @@ function getMatterUpgrade(i) {
 }
 
 function resetMatters() {
-    for (let i = 0; i < 13; i++) player.dark.matters.amt[i] = E(0)
+    for (let i = 0; i < 13; i++) {
+        player.dark.matters.amt[i] = E(0)
+        player.dark.matters.upg[i] = E(0)
+    }
 }
 
 function updateMattersHTML() {
+    let c16 = tmp.c16active
+
     tmp.el.matter_exponent.setTxt(format(tmp.matters.exponent))
     tmp.el.matter_req_div.setDisplay(player.dark.matters.unls<14)
     if (player.dark.matters.unls<14) tmp.el.matter_req.setTxt(format(tmp.matters.req_unl))
@@ -100,14 +124,14 @@ function updateMattersHTML() {
             let amt = i == 0 ? player.bh.dm : player.dark.matters.amt[i-1]
 
             tmp.el['matter_amt'+i].setTxt(format(amt,0))
-            tmp.el['matter_gain'+i].setTxt(i == 0 ? amt.formatGain(tmp.bh.dm_gain) : amt.formatGain(tmp.matters.gain[i-1]))
+            tmp.el['matter_gain'+i].setTxt(i == 0 ? amt.formatGain(tmp.bh.dm_gain.mul(tmp.preQUGlobalSpeed)) : amt.formatGain(tmp.matters.gain[i-1]))
 
             if (i > 0) {
                 let tu = tmp.matters.upg[i-1]
 
                 tmp.el['matter_upg_btn'+i].setClasses({btn: true, full: true, locked: amt.lt(tu.cost)})
 
-                tmp.el['matter_upg_eff'+i].setHTML("^"+tu.eff.format(2))
+                tmp.el['matter_upg_eff'+i].setHTML((c16?"x":"^")+tu.eff.format(2))
                 tmp.el['matter_upg_cost'+i].setHTML(tu.cost.format(0))
             }
         }
@@ -126,7 +150,7 @@ function updateMattersHTML() {
 
     tmp.el.FSS_eff1.setHTML(
         player.dark.matters.final > 0
-        ? `Thanks to FSS, boosts Matters gain by ^${tmp.matters.FSS_eff[0].format(1)}`
+        ? `Thanks to FSS, boosts Matters gain by ^${tmp.matters.FSS_eff[0].format(1)}`.corrupt(c16)
         : ''
     )
 }

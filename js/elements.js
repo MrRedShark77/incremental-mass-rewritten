@@ -82,7 +82,7 @@ function setupHTML() {
 		table += `<div id="ranks_reward_div_${x}">`
 		let keys = Object.keys(RANKS.desc[rn])
 		for (let y = 0; y < keys.length; y++) {
-			table += `<span id="ranks_reward_${rn}_${y}"><b>${RANKS.fullNames[x]} ${keys[y]}:</b> ${RANKS.desc[rn][keys[y]]}${RANKS.effect[rn][keys[y]]?` Currently: <span id='ranks_eff_${rn}_${y}'></span></span>`:""}<br>`
+			table += `<span id="ranks_reward_${rn}_${y}"><b>${RANKS.fullNames[x]} ${keys[y]}:</b> ${RANKS.desc[rn][keys[y]]}${RANKS.effect[rn][keys[y]]?` Currently: <span id='ranks_eff_${rn}_${y}'></span>`:""}</span><br>`
 		}
 		table += `</div>`
 	}
@@ -94,7 +94,7 @@ function setupHTML() {
 		table += `<div id="pres_reward_div_${x}">`
 		let keys = Object.keys(PRESTIGES.rewards[x])
 		for (let y = 0; y < keys.length; y++) {
-			table += `<span id="pres_reward_${x}_${y}"><b>${PRESTIGES.fullNames[x]} ${keys[y]}:</b> ${PRESTIGES.rewards[x][keys[y]]}${PRESTIGES.rewardEff[x][keys[y]]?` Currently: <span id='pres_eff_${x}_${y}'></span></span>`:""}<br>`
+			table += `<span id="pres_reward_${x}_${y}"><b>${PRESTIGES.fullNames[x]} ${keys[y]}:</b> ${PRESTIGES.rewards[x][keys[y]]}${PRESTIGES.rewardEff[x][keys[y]]?` Currently: <span id='pres_eff_${x}_${y}'></span>`:""}</span><br>`
 		}
 		table += `</div>`
 	}
@@ -256,10 +256,6 @@ function updateUpperHTML() {
     unl = hasTree("unl4")
     tmp.el.br_div.setDisplay(unl)
     if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active||hasElement(147)?gain2?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
-
-	unl = player.dark.matters.final>0
-	tmp.el.fss_div.setDisplay(unl)
-	if (unl) tmp.el.FSS2.setHTML(format(player.dark.matters.final,0)+"<br>(+"+(tmp.matters.FSS_base.gte(tmp.matters.FSS_req)?1:0)+")")
 }
 
 function updateMassUpgradesHTML() {
@@ -329,6 +325,7 @@ function updateRanksRewardHTML() {
 }
 
 function updatePrestigesRewardHTML() {
+	let c16 = tmp.c16active
 	tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
 	for (let x = 0; x < PRES_LEN; x++) {
 		tmp.el["pres_reward_div_"+x].setDisplay(player.pres_reward == x)
@@ -337,9 +334,12 @@ function updatePrestigesRewardHTML() {
 			for (let y = 0; y < keys.length; y++) {
 				let unl = player.prestiges[x].gte(keys[y])
 				tmp.el["pres_reward_"+x+"_"+y].setDisplay(unl)
-				if (unl) if (tmp.el["pres_eff_"+x+"_"+y]) {
-					let eff = PRESTIGES.rewardEff[x][keys[y]]
-					tmp.el["pres_eff_"+x+"_"+y].setTxt(eff[1](tmp.prestiges.eff[x][keys[y]]))
+				if (unl) {
+					tmp.el["pres_reward_"+x+"_"+y].setClasses({corrupted_text2: c16 && CORRUPTED_PRES[x] && CORRUPTED_PRES[x].includes(parseInt(keys[y]))})
+					if (tmp.el["pres_eff_"+x+"_"+y]) {
+						let eff = PRESTIGES.rewardEff[x][keys[y]]
+						tmp.el["pres_eff_"+x+"_"+y].setTxt(eff[1](tmp.prestiges.eff[x][keys[y]]))
+					}
 				}
 			}
 		}
@@ -347,15 +347,23 @@ function updatePrestigesRewardHTML() {
 }
 
 function updateBeyondRanksRewardHTML() {
-	let t = tmp.beyond_ranks.max_tier, lt = tmp.beyond_ranks.latestRank
+	let t = tmp.beyond_ranks.max_tier, lt = tmp.beyond_ranks.latestRank, c16 = tmp.c16active, c16_cr = {
+		1: [7],
+	}
 	for (let x in BEYOND_RANKS.rewards) {
-		x = Number(x)
+		x = parseInt(x)
+
 		for (let y in BEYOND_RANKS.rewards[x]) {
+			y = parseInt(y)
+
 			let unl = t > x || t == x && lt.gte(y)
 			tmp.el["br_reward_"+x+"_"+y].setDisplay(unl)
-			if (unl) if (tmp.el["br_eff_"+x+"_"+y]) {
-				let eff = BEYOND_RANKS.rewardEff[x][y]
-				tmp.el["br_eff_"+x+"_"+y].setHTML(eff[1](tmp.beyond_ranks.eff[x][y]))
+			if (unl) {
+				tmp.el["br_reward_"+x+"_"+y].setClasses({corrupted_text2: c16&&c16_cr[x]&&c16_cr[x].includes(y)})
+				if (tmp.el["br_eff_"+x+"_"+y]) {
+					let eff = BEYOND_RANKS.rewardEff[x][y]
+					tmp.el["br_eff_"+x+"_"+y].setHTML(eff[1](tmp.beyond_ranks.eff[x][y]))
+				}
 			}
 		}
 	}

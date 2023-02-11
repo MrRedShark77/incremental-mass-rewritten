@@ -2,7 +2,7 @@ const DARK_RUN = {
     mass_glyph_name: ['Cyrillic Glyph', 'Deutsch Glyph', 'Swedish Glyph', 'Chinese Glyph', 'Spanish Glyph', 'Slovak Glyph'],
 
     mass_glyph_eff(i) {
-        let x, g = player.dark.run.glyphs[i]
+        let x, g = tmp.c16active ? i == 5 ? 10 : 100 : player.dark.run.glyphs[i]
 
         if (i < 4) x = 1/(g**0.5/100+1)
         else if (i == 4) x = [1/(g**0.5/100+1),1.1**(g**0.75)]
@@ -190,12 +190,13 @@ function buyGlyphUpgrade(i) {
 
 function updateDarkRunHTML() {
     let dra = player.dark.run.active
+    let c16 = tmp.c16active
 
     tmp.el.dark_run_btn.setTxt(dra?"Exit Dark Run":"Start Dark Run")
     tmp.el.mg_btn_mode.setTxt(["Earning", "Max Earning", "Clear Glyph"][player.dark.run.gmode])
     tmp.el.mg_max_gain.setTxt(format(player.dark.run.gamount,0))
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
-        tmp.el["mass_glyph"+x].setHTML(player.dark.run.glyphs[x] + (dra ? " (+" + format(tmp.dark.mass_glyph_gain[x],0) + ")" : ""))
+        tmp.el["mass_glyph"+x].setHTML(c16 ? x == 5 ? 10 : 100 : player.dark.run.glyphs[x] + (dra ? " (+" + format(tmp.dark.mass_glyph_gain[x],0) + ")" : ""))
         tmp.el["mass_glyph_tooltip"+x].setTooltip("<h3>"+DARK_RUN.mass_glyph_name[x]+"</h3><br class='line'>"+DARK_RUN.mass_glyph_effDesc[x](tmp.dark.mass_glyph_eff[x]))
     }
 
@@ -207,7 +208,11 @@ function updateDarkRunHTML() {
         let ua = player.dark.run.upg[gum]||0
         let max = u.max||Infinity
 
-        msg = "[Level "+format(ua,0)+(isFinite(max)?" / "+format(max,0):"")+"]<br><span class='sky'>"+(typeof u.desc == "function" ? u.desc() : u.desc)+"</span><br>"
+        let desc = "<span class='sky'>"+(typeof u.desc == "function" ? u.desc() : u.desc)+"</span>"
+
+        if (c16 && gum == 14) desc = desc.corrupt()
+
+        msg = "[Level "+format(ua,0)+(isFinite(max)?" / "+format(max,0):"")+"]<br>"+desc+"<br>"
 
         if (ua<max) {
             let cr = "", cost = u.cost(ua), n = 0, cl = Object.keys(cost).length
