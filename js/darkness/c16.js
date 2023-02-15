@@ -63,6 +63,8 @@ function corruptedShardGain() {
 
     let x = Decimal.pow(10,player.bh.mass.max(1).log10().div(100).root(3).sub(1))
 
+    if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
+
     return x.floor()
 }
 

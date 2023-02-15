@@ -23,7 +23,7 @@ const TREE_IDS = [
         ['chal2','chal4a','chal4b','chal3'],
         ['bs5','bs2','fn1','bs3','qf2','qf3','rad2','rad3'],
         ['qu1','qu2','qu3'],
-        ['ct2','ct3','ct4','ct5'],
+        ['ct2','ct3','ct4','ct5','ct6'],
     ],[
         ['s2','m2','t1','d1','bh2','gr1','sn2'],
         ['qol5','qol6','qol7','','','qu_qol7','',''],
@@ -1019,6 +1019,21 @@ const TREE_UPGS = {
                 return x
             },
             effDesc(x) { return "x"+format(x) },
+        },
+        ct6: {
+            branch: ['ct1'],
+
+            desc: `Mass overflow starts later based on best mass of black hole in C16.`,
+            cost: E(300),
+
+            req() { return tmp.c16active && player.atom.atomic.gte(1e8) },
+            reqDesc() { return `Reach ${format(1e8)} atomic powers during C16.` },
+
+            effect() {
+                let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
+                return overflow(x,10,0.5)
+            },
+            effDesc(x) { return "^"+format(x)+" later" },
         },
 
         /*

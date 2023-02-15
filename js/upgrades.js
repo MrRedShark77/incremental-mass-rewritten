@@ -314,7 +314,7 @@ const UPGS = {
                 cost: E(1e72),
                 effect() {
                     let ret = player.rp.points.add(1).root(10).softcap('e4000',0.1,0)
-                    return ret.softcap("e1.5e31",0.95,2)
+                    return overflow(ret.softcap("e1.5e31",0.95,2),'ee185',0.5)
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"+(x.gte("e4000")?" <span class='soft'>(softcapped)</span>":"")
@@ -377,7 +377,7 @@ const UPGS = {
                 cost: E('e1.5e128'),
                 effect() {
                     let x = Decimal.pow(10,tmp.matters.upg[12].eff.max(1).log10().pow(.8))
-                    return x
+                    return overflow(x,1e20,0.5)
                 },
                 effDesc(x=this.effect()) {
                     return "^"+format(x)

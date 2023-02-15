@@ -27,6 +27,8 @@ const QUANTUM = {
         }
     },
     doReset(force=false, dark=false, metaF=false) {
+        let c16 = tmp.c16active
+
         player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
@@ -37,7 +39,7 @@ const QUANTUM = {
             if (!force) keep.push('unl1')
             keep.push('qol8','qol9')
         }
-        if (hasUpgrade('br',6) && !keep.includes('unl1')) keep.push('unl1')
+        if (!c16 && hasUpgrade('br',6) && !keep.includes('unl1')) keep.push('unl1')
 
         let save_keep = []
         for (let x in keep) if (hasTree(keep[x])) save_keep.push(keep[x])
@@ -59,7 +61,7 @@ const QUANTUM = {
 
         for (let x = 0; x < 2; x++) if (!hasTree("qu_qol"+(2+4*x)) || force) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(0)
 
-        player.supernova.radiation.hz = hasUpgrade('br',6)?E(1e50):E(0)
+        player.supernova.radiation.hz = !c16&&hasUpgrade('br',6)?E(1e50):E(0)
         for (let x = 0; x < 7; x++) {
             player.supernova.radiation.ds[x] = E(0)
             for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)

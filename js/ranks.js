@@ -430,7 +430,8 @@ const PRESTIGES = {
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
-            "2": `Exotic Supernova starts x1.25 later per Renown.`,
+            "2": `Exotic Supernova starts x1.25 later every Renown.`,
+            "4": `Corrupted shard gain is increased by +50% per Renown.`,
         },
     ],
     rewardEff: [
@@ -514,6 +515,10 @@ const PRESTIGES = {
                 let x = Decimal.pow(1.25,player.prestiges[3])
                 return x
             },x=>"x"+x.format()+" later"],
+            "4": [()=>{
+                let x = player.prestiges[3].div(2).add(1)
+                return x
+            },x=>"x"+x.format()],
         },
     ],
     reset(i, bulk = false) {
@@ -665,6 +670,7 @@ const BEYOND_RANKS = {
             1: `Automate Beyond-Ranks. Beyond-Ranks now affect prestige base.`,
             2: `Beyond-Ranks will no longer reset anything. [Meta-Lepton]'s effect is multiplied by 8.`,
             4: `Accelerator's effect affects tickspeed, BHC & cosmic ray powers. Chromas gain is raised to the 1.1th power.`,
+            7: `Gain more fermions based on Hept, except Meta-Fermions.`,
         },
     },
 
@@ -701,6 +707,14 @@ const BEYOND_RANKS = {
                     let x = player.ranks.beyond.pow(3).add(1)
 
                     return x
+                },
+                x=>"x"+format(x),
+            ],
+            7: [
+                ()=>{
+                    let x = player.ranks.beyond.add(1).log10().add(1).pow(2)
+
+                    return overflow(x,10,0.5)
                 },
                 x=>"x"+format(x),
             ],

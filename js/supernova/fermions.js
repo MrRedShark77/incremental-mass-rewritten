@@ -37,13 +37,23 @@ const FERMIONS = {
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[2])
         return x
     },
+    fp2() {
+        let x = E(1)
+        if (hasBeyondRank(2,7)) x = x.mul(beyondRankEffect(2,7))
+        return x
+    },
+    metaFP() {
+        let x = E(1)
+        return x
+    },
     getTierScaling(t, bulk=false, meta=false) {
         let x = t
         let fp = meta?E(1):tmp.fermions.fp
+        let fp2 = meta?E(1):tmp.fermions.fp2
         if (bulk) {
-            x = t.scaleEvery('fTier',true,[1,1,1,fp]).add(1).floor()
+            x = t.scaleEvery('fTier',true,[1,1,1,fp,fp2]).add(1).floor()
         } else {
-            x = t.scaleEvery('fTier',false,[1,1,1,fp])
+            x = t.scaleEvery('fTier',false,[1,1,1,fp,fp2])
         }
         return x
     },
@@ -451,6 +461,8 @@ function updateFermionsTemp() {
     tf.prod = [FERMIONS.productF(0),FERMIONS.productF(1)]
     tf.ch = player.supernova.fermions.choosed == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed[0]),Number(player.supernova.fermions.choosed[1])]
     tf.fp = FERMIONS.fp()
+    tf.fp2 = FERMIONS.fp2()
+    tf.meta_fp = FERMIONS.metaFP()
     for (i = 0; i < 2; i++) {
         tf.gains[i] = FERMIONS.gain(i)
 

@@ -94,6 +94,8 @@ const FORMS = {
         let o = x
         let os = tmp.c16active ? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
 
+        if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
+
         x = overflow(x,os,0.5)
 
         tmp.overflowBefore.mass = o
