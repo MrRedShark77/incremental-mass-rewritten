@@ -414,6 +414,7 @@ function export_copy() {
 
 function importy() {
     createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
+        let st = loadgame
         if (st.length <= 100) st = convertStringIntoAGY(loadgame)
         console.log(st)
         if (ssf[2](loadgame)) return
