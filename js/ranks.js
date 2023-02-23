@@ -426,7 +426,7 @@ const PRESTIGES = {
             "4": `Unlock new effect from Hybridized Uran-Astatine.`,
             "5": `Glory boosts glyphic mass.`,
             "8": `Glory reduces Black Hole Overflow nerf.`,
-            //"19": `?!.`,
+            "22": `Glory boosts all matters gain.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
@@ -509,6 +509,10 @@ const PRESTIGES = {
                 let x = player.prestiges[2].root(3).div(10).add(1).pow(-1)
                 return x.toNumber()
             },x=>formatReduction(x)+" weaker"],
+            "22": [()=>{
+                let x = Decimal.pow(2,player.prestiges[2].pow(.5))
+                return x
+            },x=>"x"+format(x)],
         },
         {
             "2": [()=>{
@@ -671,6 +675,7 @@ const BEYOND_RANKS = {
             2: `Beyond-Ranks will no longer reset anything. [Meta-Lepton]'s effect is multiplied by 8.`,
             4: `Accelerator's effect affects tickspeed, BHC & cosmic ray powers. Chromas gain is raised to the 1.1th power.`,
             7: `Gain more fermions based on Hept, except Meta-Fermions.`,
+            10: `Raise mass of black hole to the 1.2th power.`,
         },
     },
 

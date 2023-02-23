@@ -1,6 +1,6 @@
 const DARK = {
     nextEffectAt: [
-        [0,1e12,1e22],
+        [0,1e12,1e22,1e130],
         [1e6,1e11,1e25,1e130],
         [1e120,1e180,'e345','e800','e2500','e56000','e125500'],
     ],
@@ -29,6 +29,7 @@ const DARK = {
 
         if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
         if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1).toNumber()
+        if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0).floor()
 
         return x
     },
@@ -171,6 +172,10 @@ function calcDark(dt, dt_offline) {
     }
 
     if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(player.bh.mass)
+
+    if (hasCharger(1)) {
+        player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
+    }
 }
 
 function updateDarkTemp() {
@@ -260,6 +265,7 @@ function updateDarkHTML() {
 
             if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset per second`
             if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`
+            if (eff.dChal) e += `<br>Adds <b>${format(eff.dChal,0)}</b> more C13-15 maximum completions`+eff.dChal.softcapHTML(100)
 
             tmp.el.drEff.setHTML(e)
         } else if (tmp.stab[7] == 1) {

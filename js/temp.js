@@ -172,6 +172,10 @@ function resetTemp() {
             shardGain: E(0),
         },
 
+        unstable_bh: {
+            fvm_eff: {},
+        },
+
         prevSave: "",
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
@@ -277,6 +281,18 @@ function updateBlackHoleTemp() {
     t.condenser_bulk = E(0)
     if (player.bh.dm.gte(1)) t.condenser_bulk = player.bh.dm.max(1).log(1.75).scaleEvery('bh_condenser',true,[1,1,1,fp]).add(1).floor()
     t.condenser_eff = FORMS.bh.condenser.effect()
+
+    // Unstable
+
+    t = tmp.unstable_bh
+
+    t.gain = UNSTABLE_BH.gain()
+    t.effect = UNSTABLE_BH.effect()
+
+    t.fvm_cost = E(10).pow(player.bh.fvm.pow(1.5)).mul(1e300).floor()
+    t.fvm_bulk = E(0)
+    if (player.bh.dm.gte(10)) t.fvm_bulk = player.bh.dm.div(1e300).max(1).log(10).root(1.5).add(1).floor()
+    t.fvm_eff = UNSTABLE_BH.fvm.effect()
 }
 
 function updateTemp() {

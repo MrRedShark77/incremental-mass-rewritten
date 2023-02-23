@@ -9,16 +9,58 @@ const CHARGERS = [
         req: E('e1000'),
         cost: E(1000),
         desc: `
-        ???.
+        Unlock the Unstable Black Hole that boosts normal black hole. (in black hole tab)
         `,
     },
 ]
+
+const UNSTABLE_BH = {
+    gain() {
+        let x = tmp.unstable_bh.fvm_eff.eff||E(1)
+
+        return x
+    },
+    getProduction(x,gain) {
+        return Decimal.pow(10,x.max(0).root(2)).add(gain).log10().pow(2)
+    },
+    calcProduction() {
+        let bh = player.bh.unstable
+
+        return this.getProduction(bh,tmp.unstable_bh.gain).sub(bh)
+    },
+    effect() {
+        let x = player.bh.unstable.add(1)
+
+        if (tmp.c16active) x = x.root(3)
+
+        return overflow(x,10,0.5)
+    },
+    fvm: {
+        can() { return tmp.c16active && player.bh.dm.gte(tmp.unstable_bh.fvm_cost) },
+        buy() {
+            if (this.can()) player.bh.fvm = player.bh.fvm.add(1)
+        },
+        buyMax() {
+            if (this.can()) player.bh.fvm = player.bh.fvm.max(tmp.unstable_bh.fvm_bulk)
+        },
+        effect() {
+            let lvl = player.bh.fvm
+
+            let pow = E(2)
+
+            let eff = pow.pow(lvl)
+
+            return {pow: pow, eff: eff}
+        },
+    },
+}
 
 function startC16() {
     if (player.chal.active == 16) {
         CHALS.exit()
     }
     else {
+        CHALS.exit()
         CHALS.enter(16)
     }
 }

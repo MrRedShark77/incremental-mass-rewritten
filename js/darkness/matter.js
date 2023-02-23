@@ -13,8 +13,8 @@ const MATTERS = {
         }
 
         if (hasElement(192)) x = x.mul(elemEffect(192))
-
         if (hasCharger(0)) x = x.mul(1e10)
+        if (hasPrestige(2,22)) x = x.mul(prestigeEff(2,22))
 
         if (x.lt(1)) return x
 

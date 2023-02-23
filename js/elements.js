@@ -64,7 +64,7 @@ function setupHTML() {
 					<img src="images/mass_upg${x}.png">
 					<span style="margin-left: 5px; text-align: left;"><span id="massUpg_scale_${x}"></span>${upg.title} [<span id="massUpg_lvl_${x}">X</span>]</span>
 				</div>
-			</div><button id="massUpg_btn_${x}" class="btn" style="width: 200px;" onclick="UPGS.mass.buy(${x}, true)">Cost: <span id="massUpg_cost_${x}">X</span></button>
+			</div><button id="massUpg_btn_${x}" class="btn" style="width: 300px;" onclick="UPGS.mass.buy(${x}, true)">Cost: <span id="massUpg_cost_${x}">X</span></button>
 			<button class="btn" style="width: 120px;" onclick="UPGS.mass.buyMax(${x})">Buy Max</button>
 			<button id="massUpg_auto_${x}" class="btn" style="width: 80px;" onclick="UPGS.mass.autoSwitch(${x})">OFF</button>
 			<div style="margin-left: 5px; text-align: left; width: 400px">
@@ -417,6 +417,24 @@ function updateBlackHoleHTML() {
 
 	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh))
     tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh)}</b>, your mass of black hole is ${overflowFormat(tmp.overflow.bh||1)}!`)
+
+	// Unstable 
+
+	let unl = hasCharger(1)
+
+	tmp.el.unstable_bhUnl.setDisplay(unl)
+	tmp.el.falseVacuumDiv.setDisplay(unl)
+	if (unl) {
+		tmp.el.bhUnstable.setHTML(formatMass(player.bh.unstable)+" "+formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true))
+		tmp.el.bhUnstableEffect.setHTML("^"+format(tmp.unstable_bh.effect))
+
+		tmp.el.fvm_lvl.setTxt(format(player.bh.fvm,0))
+		tmp.el.fvm_btn.setClasses({btn: true, locked: !UNSTABLE_BH.fvm.can()})
+		tmp.el.fvm_cost.setTxt(format(tmp.unstable_bh.fvm_cost,0))
+		tmp.el.fvm_pow.setTxt(format(tmp.unstable_bh.fvm_eff.pow))
+		tmp.el.fvm_eff.setHTML(format(tmp.unstable_bh.fvm_eff.eff))
+		tmp.el.fvm_auto.setTxt(player.bh.autoFVM?"ON":"OFF")
+	}
 }
 
 function updateOptionsHTML() {

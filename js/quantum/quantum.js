@@ -32,18 +32,20 @@ const QUANTUM = {
         player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
-        let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11','fn13']
-        for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
-        if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b','chal7a','chal8')
-        if (tmp.qu.mil_reached[3]) {
-            if (!force) keep.push('unl1')
-            keep.push('qol8','qol9')
-        }
-        if (!c16 && hasUpgrade('br',6) && !keep.includes('unl1')) keep.push('unl1')
+        if (!hasTree('ct8')) {
+            let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11','fn13']
+            for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
+            if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b','chal7a','chal8')
+            if (tmp.qu.mil_reached[3]) {
+                if (!force) keep.push('unl1')
+                keep.push('qol8','qol9')
+            }
+            if (!c16 && hasUpgrade('br',6) && !keep.includes('unl1')) keep.push('unl1')
 
-        let save_keep = []
-        for (let x in keep) if (hasTree(keep[x])) save_keep.push(keep[x])
-        player.supernova.tree = save_keep
+            let save_keep = []
+            for (let x in keep) if (hasTree(keep[x])) save_keep.push(keep[x])
+            player.supernova.tree = save_keep
+        }
 
         player.supernova.bosons = {
             pos_w: E(0),

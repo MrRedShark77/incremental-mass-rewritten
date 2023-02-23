@@ -403,6 +403,10 @@ const FORMS = {
 
             if (hasCharger(0)) x = x.pow(2)
 
+            if (hasBeyondRank(2,10)) x = x.pow(1.2)
+
+            x = x.pow(tmp.unstable_bh.effect)
+
             if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || player.dark.run.active ? 5 : 100)

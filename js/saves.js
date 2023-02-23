@@ -79,6 +79,7 @@ function calc(dt, dt_offline) {
         if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
         if (FORMS.accel.autoUnl() && player.autoAccel) FORMS.accel.buyMax()
         if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
+        if (player.bh.autoFVM) UNSTABLE_BH.fvm.buyMax()
         if (hasElement(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
         if (player.mass.gte(1.5e136)) player.chal.unl = true
         for (let x = 0; x < RANKS.names.length; x++) {
@@ -183,8 +184,11 @@ function getPlayerData() {
             unl: false,
             dm: E(0),
             mass: E(0),
+            unstable: E(0),
             condenser: E(0),
             autoCondenser: false,
+            fvm: E(0),
+            autoFVM: false,
         },
         chal: {
             unl: false,
@@ -410,7 +414,7 @@ function export_copy() {
 
 function importy() {
     createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
-        st = convertStringIntoAGY(loadgame)
+        if (st.length <= 100) st = convertStringIntoAGY(loadgame)
         console.log(st)
         if (ssf[2](loadgame)) return
         if (st == 'OJY$VFe*b') {

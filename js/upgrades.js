@@ -760,9 +760,9 @@ const UPGS = {
                 cost: E(50),
                 effect() {
                     let x = player.qu.rip.amt.add(1).log10().div(25).add(1)
-                    return x
+                    return x.softcap(30,0.5,0)
                 },
-                effDesc(x=this.effect()) { return "^"+format(x) },
+                effDesc(x=this.effect()) { return "^"+format(x)+x.softcapHTML(30) },
             },
             4: {
                 desc: `Start with 2 tiers of each Fermion in Big Rip.`,

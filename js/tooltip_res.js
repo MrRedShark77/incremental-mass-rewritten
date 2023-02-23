@@ -44,6 +44,11 @@ const TOOLTIP_RES = {
             if (tmp.overflowBefore.bh.gte(tmp.overflow_start.bh))
             h += `<br>(<b>+${formatMass(tmp.overflowBefore.bh)}</b> gained before <b>overflow</b>)`;
 
+            if (hasCharger(1))
+            h += `
+            <br class='line'>You have <b class='corrupted_text'>${formatMass(player.bh.unstable)} ${formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true)}</b> of Unstable Black Hole.
+            `;
+
             if (quUnl())
             h += `
             <br class='line'>You have <b class='cyan'>${player.atom.points.format(0)} ${player.atom.points.formatGain(tmp.atom.gain.mul(tmp.preQUGlobalSpeed))}</b> Atom. (after Quantum)
@@ -142,7 +147,7 @@ const TOOLTIP_RES = {
 
             if (player.dark.unl) {
                 h += `You have <b>${player.dark.shadow.format(0)} ${player.dark.shadow.formatGain(tmp.dark.shadowGain)}</b> Dark Shadow.`
-                if (tmp.chal14comp) h += `<br>You have <b>${player.dark.abyssalBlot.format(0)} ${player.dark.abyssalBlot.formatGain(tmp.dark.abGain)}</b> Abyssal Bolt.`
+                if (tmp.chal14comp) h += `<br>You have <b>${player.dark.abyssalBlot.format(0)} ${player.dark.abyssalBlot.formatGain(tmp.dark.abGain)}</b> Abyssal Blot.`
                 h += `<br class='line'>`
             }
             

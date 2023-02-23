@@ -30,7 +30,7 @@ const TREE_IDS = [
         ['chal4','chal7a'],
         ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
         ['prim3','prim2','prim1','qu4','qc1','qc2','qc3'],
-        [],
+        ['ct8','','','ct7',''],
     ],[
         ['s3','m3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9','unl4'],
@@ -55,7 +55,7 @@ const TREE_IDS = [
     ],
 ]
 
-const CS_TREE = (_=>{
+const CS_TREE = (()=>{
     let t = []
     for (let i in TREE_IDS) t.push(...TREE_IDS[i][5])
     return t
@@ -1034,6 +1034,27 @@ const TREE_UPGS = {
                 return overflow(x,10,0.5)
             },
             effDesc(x) { return "^"+format(x)+" later" },
+        },
+        ct7: {
+            branch: ['ct5'],
+
+            desc: `Neutronium-0 now affects Challenge 14 at a reduced rate. (like [ct5])`,
+            cost: E(1500),
+
+            req() { return player.chal.comps[14]&&player.chal.comps[14].gte(777) },
+            reqDesc() { return `Get ${format(777,0)} C14 completions.` },
+        },
+        ct8: {
+            branch: ['ct2'],
+
+            desc: `Keep pre-C16 tree on entering C16. Best mass of black hole in C16 boosts all radiation gains.`,
+            cost: E(2500),
+
+            effect() {
+                let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
         },
 
         /*

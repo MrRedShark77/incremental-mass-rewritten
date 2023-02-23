@@ -285,7 +285,7 @@
                                 <img src="images/tickspeed.png">
                                 <span style="margin-left: 5px; text-align: left;"><span id="tickspeed_scale"></span>Tickspeeds [<span id="tickspeed_lvl">X</span>]</span>
                             </div>
-                        </div><button id="tickspeed_btn" class="btn" style="width: 200px;" onclick="FORMS.tickspeed.buy()">Cost: <span id="tickspeed_cost">X</span> Rage Points</button>
+                        </div><button id="tickspeed_btn" class="btn" style="width: 300px;" onclick="FORMS.tickspeed.buy()">Cost: <span id="tickspeed_cost">X</span> Rage Points</button>
                         <button class="btn" style="width: 120px;" onclick="FORMS.tickspeed.buyMax()">Buy Max</button>
                         <button id="tickspeed_auto" class="btn" style="width: 80px;" onclick="FORMS.tickspeed.autoSwitch()">OFF</button>
                         <div style="margin-left: 5px; text-align: left; width: 400px">
@@ -298,7 +298,7 @@
                                 <img src="images/accelerator.png">
                                 <span style="margin-left: 5px; text-align: left;"><span id="accel_scale"></span>Accelerators [<span id="accel_lvl">X</span>]</span>
                             </div>
-                        </div><button id="accel_btn" class="btn" style="width: 200px;" onclick="FORMS.accel.buy()">Cost: <span id="accel_cost">X</span> Rage Points</button>
+                        </div><button id="accel_btn" class="btn" style="width: 300px;" onclick="FORMS.accel.buy()">Cost: <span id="accel_cost">X</span> Rage Points</button>
                         <button class="btn" style="width: 120px;" onclick="FORMS.accel.buyMax()">Buy Max</button>
                         <button id="accel_auto" class="btn" style="width: 80px;" onclick="FORMS.accel.autoSwitch()">OFF</button>
                         <div style="margin-left: 5px; text-align: left; width: 400px">
@@ -318,20 +318,42 @@
                         <div id="strongerOverflow"></div>
                     </div>
                 </div><div id="stab_frame0_1">
-                    You have <span id="bhMass2">X</span> of Black Hole<br>
-                    <span class="green">Which boosts mass gain by <span id="bhEffect">X</span></span><br><br>
-                    Black Hole mass's gain formula - (x + 1)<sup id="bhMassPower">0.33</sup> * <span id="bhCondenserEffect">X</span><br><br>
+                    <div class="table_center">
+                        <div style="width: 50%; min-width: 600px;">
+                            You have <span id="bhMass2">X</span> of Black Hole<br>
+                            <span class="green">Which boosts mass gain by <span id="bhEffect">X</span></span><br><br>
+                            Black Hole mass's gain formula - (x + 1)<sup id="bhMassPower">0.33</sup> * <span id="bhCondenserEffect">X</span>
+                        </div><div style="width: 50%; min-width: 600px;" id="unstable_bhUnl">
+                            You have <span id="bhUnstable" class="corrupted_text">X</span> of Unstable Black Hole<br>
+                            <span class="green">Which boosts mass of black hole gain by <span id="bhUnstableEffect">X</span></span><br><br>
+                            Unstable BH's production is decreased based on its mass
+                        </div>
+                    </div>
+                    <br><br>
                     <div style="width: 100%; margin-bottom: 5px;" class="table_center">
                         <div style="width: 400px">
                             <div class="resources">
                                 <img src="images/bhCondenser.png">
                                 <span style="margin-left: 5px; text-align: left;"><span id="bhCondenser_scale"></span>Black Hole Condensers [<span id="bhCondenser_lvl">X</span>]</span>
                             </div>
-                        </div><button id="bhCondenser_btn" class="btn" style="width: 200px;" onclick="FORMS.bh.condenser.buy()">Cost: <span id="bhCondenser_cost">X</span> Dark Matters</button>
+                        </div><button id="bhCondenser_btn" class="btn" style="width: 300px;" onclick="FORMS.bh.condenser.buy()">Cost: <span id="bhCondenser_cost">X</span> Dark Matters</button>
                         <button class="btn" style="width: 120px;" onclick="FORMS.bh.condenser.buyMax()">Buy Max</button>
                         <button id="bhCondenser_auto" class="btn" style="width: 80px;" onclick="FORMS.bh.condenser.autoSwitch()">OFF</button>
                         <div style="margin-left: 5px; text-align: left; width: 400px">
                             BH Condenser Power: <span id="bhCondenser_pow">X</span>x<br>
+                        </div>
+                    </div><div style="width: 100%; margin-bottom: 5px;" class="table_center" id="falseVacuumDiv">
+                        <div style="width: 400px">
+                            <div class="resources">
+                                <img src="images/fvm.png">
+                                <span style="margin-left: 5px; text-align: left;"><span id="fvm_scale"></span>False Vacuum Manipulators [<span id="fvm_lvl">X</span>]</span>
+                            </div>
+                        </div><button id="fvm_btn" class="btn" style="width: 300px;" onclick="UNSTABLE_BH.fvm.buy()">Cost: <span id="fvm_cost">X</span> Dark Matters in C16</button>
+                        <button class="btn" style="width: 120px;" onclick="UNSTABLE_BH.fvm.buyMax()">Buy Max</button>
+                        <button id="fvm_auto" class="btn" style="width: 80px;" onclick="player.bh.autoFVM = !player.bh.autoFVM">OFF</button>
+                        <div style="margin-left: 5px; text-align: left; width: 400px">
+                            FV Manipulator Power: <span id="fvm_pow">X</span>x<br>
+                            FV Manipulator Effect: <span id="fvm_eff">X</span>x<br> to Unstable BH production speed
                         </div>
                     </div><br><div>
                         <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> of mass gain from black hole, its mass gain will be softcapped!</span><br>
@@ -349,7 +371,7 @@
                                 <img src="images/gamma_ray.png">
                                 <span style="margin-left: 5px; text-align: left;"><span id="gamma_ray_scale"></span>Cosmic Rays [<span id="gamma_ray_lvl">X</span>]</span>
                             </div>
-                        </div><button id="gamma_ray_btn" class="btn" style="width: 200px;" onclick="ATOM.gamma_ray.buy()">Cost: <span id="gamma_ray_cost">X</span> Atoms</button>
+                        </div><button id="gamma_ray_btn" class="btn" style="width: 300px;" onclick="ATOM.gamma_ray.buy()">Cost: <span id="gamma_ray_cost">X</span> Atoms</button>
                         <button class="btn" style="width: 120px;" onclick="ATOM.gamma_ray.buyMax()">Buy Max</button>
                         <button id="gamma_ray_auto" class="btn" style="width: 80px;" onclick="player.atom.auto_gr = !player.atom.auto_gr">OFF</button>
                         <div style="margin-left: 5px; text-align: left; width: 400px">
@@ -374,7 +396,7 @@
                                 <img src="images/cosmic_string.png">
                                 <span style="margin-left: 5px; text-align: left;"><span id="cosmic_str_scale"></span>Cosmic Strings [<span id="cosmic_str_lvl">X</span>]</span>
                             </div>
-                        </div><button id="cosmic_str_btn" class="btn" style="width: 200px;" onclick="QUANTUM.cosmic_str.buy()">Cost: <span id="cosmic_str_cost">X</span> Quantum Foam</button>
+                        </div><button id="cosmic_str_btn" class="btn" style="width: 300px;" onclick="QUANTUM.cosmic_str.buy()">Cost: <span id="cosmic_str_cost">X</span> Quantum Foam</button>
                         <button class="btn" style="width: 120px;" onclick="QUANTUM.cosmic_str.buyMax()">Buy Max</button>
                         <button id="cosmic_str_auto" class="btn" style="width: 80px;" onclick="player.qu.auto_cr = !player.qu.auto_cr">OFF</button>
                         <div style="margin-left: 5px; text-align: left; width: 400px">
@@ -584,7 +606,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6.4.1 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.4.2 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br>
                 Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>
