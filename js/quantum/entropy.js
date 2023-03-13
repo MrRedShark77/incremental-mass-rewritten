@@ -149,7 +149,7 @@ const ENTROPY = {
             eff(i) {
                 if (tmp.c16active) return E(1)
                 let x = player.qu.en.amt.add(1).log10().pow(0.75).mul(i).div(1500).add(1)
-                return x
+                return overflow(x,50,0.5)
             },
             desc(x) { return `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.`.corrupt(tmp.c16active) },
         },

@@ -68,6 +68,8 @@ const RADIATION = {
         if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
         if (i < 17) x = x.add(tmp.radiation.bs.eff[17])
 
+        if (hasTree('ct9')) x = x.add(treeEff('ct9'))
+
         if (hasTree('rad6')) x = x.mul(1.6-0.05*Math.floor(i/3))
 
         return x
