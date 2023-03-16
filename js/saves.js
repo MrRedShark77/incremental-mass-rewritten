@@ -51,6 +51,9 @@ Decimal.prototype.scaleEvery = function (id, rev=false, fp=SCALE_FP[id]?SCALE_FP
     for (let i = 0; i < SCALE_TYPE.length; i++) {
         let s = rev?i:SCALE_TYPE.length-1-i
         let sc = SCALE_TYPE[s]
+
+        if (tmp.no_scalings[sc].includes(id)) continue
+
         let f = fp[s]||1
 
         x = rev?x.mul(f).scaleName(sc,id,rev):x.scaleName(sc,id,rev).div(f)
@@ -319,6 +322,7 @@ function loadPlayer(load) {
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
     player.chal.choosed = 0
+    if (player.dark.c16.first && player.dark.c16.totalS.eq(0) && player.dark.c16.shard.gt(0)) player.dark.c16.totalS = player.dark.c16.shard
     for (i = 0; i < 2; i++) for (let x = 0; x < FERMIONS.types[i].length; x++) {
         let f = FERMIONS.types[i][x]
         player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0)

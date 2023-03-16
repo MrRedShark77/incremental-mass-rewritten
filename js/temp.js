@@ -168,6 +168,8 @@ function resetTemp() {
         scaling_power: {},
         scaling_start: {},
 
+        no_scalings: {},
+
         c16: {
             shardGain: E(0),
         },
@@ -206,6 +208,7 @@ function resetTemp() {
 
         tmp.scaling_power[st] = {}
         tmp.scaling_start[st] = {}
+        tmp.no_scalings[st] = []
     }
     for (let x = 0; x < MATTERS_LEN; x++) tmp.matters.upg[x] = {} 
     tmp.el = keep[0]
@@ -286,12 +289,15 @@ function updateBlackHoleTemp() {
 
     t = tmp.unstable_bh
 
+    let p = 1.5
+    if (hasBeyondRank(1,137)) p **= 0.8
+
     t.gain = UNSTABLE_BH.gain()
     t.effect = UNSTABLE_BH.effect()
 
-    t.fvm_cost = E(10).pow(player.bh.fvm.pow(1.5)).mul(1e300).floor()
+    t.fvm_cost = E(10).pow(player.bh.fvm.pow(p)).mul(1e300).floor()
     t.fvm_bulk = E(0)
-    if (player.bh.dm.gte(10)) t.fvm_bulk = player.bh.dm.div(1e300).max(1).log(10).root(1.5).add(1).floor()
+    if (player.bh.dm.gte(10)) t.fvm_bulk = player.bh.dm.div(1e300).max(1).log(10).root(p).add(1).floor()
     t.fvm_eff = UNSTABLE_BH.fvm.effect()
 }
 

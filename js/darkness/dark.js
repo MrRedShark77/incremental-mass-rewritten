@@ -313,6 +313,7 @@ function getDarkSave() {
         c16: {
             first: false,
             shard: E(0),
+            totalS: E(0),
             bestBH: E(0),
             charger: [],
             tree: [],

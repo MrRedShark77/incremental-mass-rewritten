@@ -86,7 +86,10 @@ const CHALS = {
     },
     exit(auto=false) {
         if (!player.chal.active == 0) {
-            if (player.chal.active == 16 && !auto) player.dark.c16.shard = player.dark.c16.shard.add(tmp.c16.shardGain)
+            if (player.chal.active == 16 && !auto) {
+                player.dark.c16.shard = player.dark.c16.shard.add(tmp.c16.shardGain)
+                player.dark.c16.totalS = player.dark.c16.totalS.add(tmp.c16.shardGain)
+            }
             if (tmp.chal.canFinish) {
                 player.chal.comps[player.chal.active] = player.chal.comps[player.chal.active].add(tmp.chal.gain).min(tmp.chal.max[player.chal.active])
             }
@@ -345,6 +348,7 @@ const CHALS = {
         pow: E(1.25),
         start: E(1.5e136),
         effect(x) {
+            if (hasPrestige(1,127)) return E(1)
             let ret = E(0.97).pow(x.root(2).softcap(5,0.5,0))
             return ret
         },

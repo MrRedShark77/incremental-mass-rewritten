@@ -45,6 +45,7 @@ const UPGS = {
             let cost, bulk = E(0), fp
 
             if (i==4) {
+                //if (hasCharger(2)) start = E(10)
                 let pow = 1.5
                 cost = Decimal.pow(10,Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
                 if (player.mass.gte('ee100')) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
@@ -207,6 +208,7 @@ const UPGS = {
             },
             bonus() {
                 let x = E(0)
+                if (hasUpgrade('atom',20)) x = x.add(upgEffect(3,20))
                 return x
             },
         },
@@ -409,7 +411,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 19,
+            lens: 20,
             1: {
                 desc: "Mass Upgardes no longer spend mass.",
                 cost: E(1),
@@ -576,6 +578,18 @@ const UPGS = {
                     return "x"+format(x)
                 },
             },
+            20: {
+                unl() { return player.dark.c16.first },
+                desc: `Corrupted Shards boost mass of black hole gain.`,
+                cost: E('e1e273'),
+                effect() {
+                    let x = player.dark.c16.totalS.add(1)
+                    return overflow(x,10,0.5).pow(3)
+                },
+                effDesc(x=this.effect()) {
+                    return "^"+format(x)
+                },
+            },
         },
         3: {
             title: "Atom Upgrades",
@@ -590,7 +604,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") },
-            lens: 19,
+            lens: 20,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -730,6 +744,18 @@ const UPGS = {
                 },
                 effDesc(x=this.effect()) {
                     return "^"+format(x)+" later"
+                },
+            },
+            20: {
+                unl() { return player.dark.c16.first },
+                desc: `Atomic Powers add Overpowers at an extremely reduced rate.`,
+                cost: E('e2.7e186'),
+                effect() {
+                    let x = player.atom.atomic.add(1).log10().add(1).log10().root(2)
+                    return overflow(x,10,0.5).floor()
+                },
+                effDesc(x=this.effect()) {
+                    return "+"+format(x,0)
                 },
             },
         },

@@ -15,6 +15,7 @@ const MATTERS = {
         if (hasElement(192)) x = x.mul(elemEffect(192))
         if (hasCharger(0)) x = x.mul(1e10)
         if (hasPrestige(2,22)) x = x.mul(prestigeEff(2,22))
+        if (hasPrestige(1,139)) x = x.mul(prestigeEff(1,139))
 
         if (x.lt(1)) return x
 
@@ -60,11 +61,13 @@ const MATTERS = {
         req() {
             let f = player.dark.matters.final
 
+            if (hasTree('ct10')) f *= treeEff('ct10')
+
             if (f>5) f = (f/5)**2*5
 
             if (hasElement(217)) f *= .8
 
-            let x = Decimal.pow(100,f**1.5).mul(1e43)
+            let x = Decimal.pow(100,Decimal.pow(f,1.5)).mul(1e43)
             return x
         },
 

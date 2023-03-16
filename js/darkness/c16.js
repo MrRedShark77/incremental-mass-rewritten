@@ -11,6 +11,12 @@ const CHARGERS = [
         desc: `
         Unlock the Unstable Black Hole that boosts normal black hole. (in black hole tab)
         `,
+    },{
+        req: E('e4500'),
+        cost: E(15000),
+        desc: `
+        Unstable Black Hole's effect is 50% stronger. (after overflow)
+        `,
     },
 ]
 
@@ -33,7 +39,11 @@ const UNSTABLE_BH = {
 
         if (tmp.c16active) x = x.root(3)
 
-        return overflow(x,10,0.5)
+        x = overflow(x,10,0.5)
+
+        if (hasCharger(2)) x = x.pow(1.5)
+
+        return x
     },
     fvm: {
         can() { return tmp.c16active && player.bh.dm.gte(tmp.unstable_bh.fvm_cost) },

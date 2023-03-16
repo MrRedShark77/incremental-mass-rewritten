@@ -400,6 +400,7 @@ const FORMS = {
             x = x.pow(glyphUpgEff(2))
 
             if (hasUpgrade('atom',18)) x = x.pow(tmp.atom.particles[1].powerEffect.eff2)
+            if (hasUpgrade('bh',20)) x = x.pow(upgEffect(2,20))
 
             if (hasCharger(0)) x = x.pow(2)
 
@@ -417,6 +418,7 @@ const FORMS = {
 
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
+            if (!tmp.c16active && hasTree('ct11')) os = os.pow(treeEff('ct11'))
 
             if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
 

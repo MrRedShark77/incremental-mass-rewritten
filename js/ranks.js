@@ -419,6 +419,8 @@ const PRESTIGES = {
             "46": `Add 500 more C13-15 max completions.`,
             "66": `All Fermions' scaling is 20% weaker.`,
             "91": `FSS base is raised to the 1.05th power.`,
+            "127": `Remove all pre-Exotic scalings from Rank & Tier, but nullify C5's reward.`,
+            "139": `Matters' production is tripled every FSS. FV Manipulator's cost is slightly weaker.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
@@ -499,6 +501,10 @@ const PRESTIGES = {
                 let x = tmp.qu.chroma_eff[1][0].max(1).log10().add(1).pow(2)
                 return x
             },x=>"x"+x.format()+" later"],
+            "139": [()=>{
+                let x = Decimal.pow(3,player.dark.matters.final)
+                return x
+            },x=>"x"+x.format(0)],
         },
         {
             "5": [()=>{
@@ -676,6 +682,7 @@ const BEYOND_RANKS = {
             4: `Accelerator's effect affects tickspeed, BHC & cosmic ray powers. Chromas gain is raised to the 1.1th power.`,
             7: `Gain more fermions based on Hept, except Meta-Fermions.`,
             10: `Raise mass of black hole to the 1.2th power.`,
+            15: `Remove all scalings from mass upgrades 1-3.`,
         },
     },
 
