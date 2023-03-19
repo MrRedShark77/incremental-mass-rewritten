@@ -263,7 +263,7 @@ const RANKS = {
         rank() {
             let f = E(1)
             if (player.ranks.tier.gte(1)) f = f.mul(1/0.8)
-            f = f.mul(tmp.chal.eff[5].pow(-1))
+            if (!hasCharger(3)) f = f.mul(tmp.chal.eff[5].pow(-1))
             return f
         },
         tier() {
@@ -429,6 +429,7 @@ const PRESTIGES = {
             "5": `Glory boosts glyphic mass.`,
             "8": `Glory reduces Black Hole Overflow nerf.`,
             "22": `Glory boosts all matters gain.`,
+            "25": `Uncap pre-darkness challenges' completion cap. C7's reward is changed.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
@@ -683,6 +684,11 @@ const BEYOND_RANKS = {
             7: `Gain more fermions based on Hept, except Meta-Fermions.`,
             10: `Raise mass of black hole to the 1.2th power.`,
             15: `Remove all scalings from mass upgrades 1-3.`,
+            17: `[qu9] is more effective based on mass of black hole. Exotic Supernova starts later based on Quantizes.`,
+            20: `C1's reward is changed.`,
+        },
+        3: {
+            1: `Mass & Stronger Overflow is weaker based on archverse tier of normal mass.`
         },
     },
 
@@ -729,6 +735,26 @@ const BEYOND_RANKS = {
                     return overflow(x,10,0.5)
                 },
                 x=>"x"+format(x),
+            ],
+            17: [
+                ()=>{
+                    let x = player.bh.mass.add(1).log10().add(1).log10().add(1).pow(2)
+                    
+                    let y = player.qu.times.add(1).log10().root(2).div(8).add(1)
+
+                    return [x,y]
+                },
+                x=>"x"+format(x[0])+" effective; x"+format(x[1])+" later",
+            ],
+        },
+        3: {
+            1: [
+                ()=>{
+                    let x = Decimal.pow(0.99,player.mass.div(1.5e56).max(1).log10().div(1e9).max(1).log10().div(15).root(3))
+
+                    return x
+                },
+                x=>formatReduction(x)+" weaker",
             ],
         },
     },

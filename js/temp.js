@@ -156,7 +156,9 @@ function resetTemp() {
         },
 
         overflow_power: {
+            mass: E(.5),
             bh: E(0.5),
+            stronger: E(.5),
         },
 
         mass_glyph_msg: 0,

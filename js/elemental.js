@@ -768,6 +768,7 @@ const ELEMENTS = {
             desc: `7th challenge’s effect gives more C9-12 completions at 10% rate.`,
             cost: E("e9e24"),
             effect() {
+                if (hasPrestige(2,25)) return E(0)
                 let c = tmp.chal?tmp.chal.eff[7]:E(0)
                 let x = c.div(10).ceil()
                 return x

@@ -19,6 +19,8 @@ const DARK = {
         if (hasPrestige(0,233)) x = x.mul(prestigeEff(0,233))
         x = x.mul(glyphUpgEff(6))
 
+        if (hasUpgrade('br',20)) x = x.mul(upgEffect(4,20))
+
         return x.floor()
     },
     rayEffect() {

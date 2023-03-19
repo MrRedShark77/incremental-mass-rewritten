@@ -93,14 +93,18 @@ const FORMS = {
 
         let o = x
         let os = tmp.c16active ? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
+        let op = E(.5)
 
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
 
-        x = overflow(x,os,0.5)
+        if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
+
+        x = overflow(x,os,op)
 
         tmp.overflowBefore.mass = o
         tmp.overflow.mass = calcOverflow(o,x,os)
         tmp.overflow_start.mass = os
+        tmp.overflow_power.mass = op
 
         if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
 
@@ -418,7 +422,7 @@ const FORMS = {
 
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
-            if (!tmp.c16active && hasTree('ct11')) os = os.pow(treeEff('ct11'))
+            if (hasTree('ct11')) os = os.pow(treeEff('ct11'))
 
             if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
 

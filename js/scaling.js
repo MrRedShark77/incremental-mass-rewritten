@@ -242,17 +242,6 @@ function updateScalingTemp() {
 	tmp.scaling_qc8 = sqc8
 }
 
-function noScalings(type,name) {
-	if (name=="rank"||name=='tier') {
-		if (type<4 && hasPrestige(1,127)) return true
-	}
-	else if (name=="massUpg") {
-		if (hasBeyondRank(2,15)) return true
-	}
-
-	return false
-}
-
 function scalingActive(name, amt, type) {
 	if (tmp.no_scalings[type].includes(name) || SCALE_START[type][name] === undefined) return false
 	return Decimal.gte(amt, tmp.scaling_start[type][name]);
@@ -372,10 +361,18 @@ function getScalingStart(type, name) {
 		else if (name=="supernova") {
 			if (hasPrestige(0,552)) start = start.mul(1.25)
 			if (hasPrestige(3,2)) start = start.mul(prestigeEff(3,2))
+			if (hasBeyondRank(2,17)) start = start.mul(beyondRankEffect(2,17)[1])
+		}
+	} else if (type==5) {
+		if (name=="rank") {
+			if (tmp.chal && hasBeyondRank(2,20)) start = start.mul(tmp.chal.eff[1].scrank)
 		}
 	}
 	if (name=='supernova' && type < 4) {
 		start = start.add(tmp.prim.eff[7])
+	}
+	if (name=="fTier" && type < 4) {
+		if (tmp.chal && hasBeyondRank(2,20)) start = start.mul(tmp.chal.eff[1].scrank)
 	}
 	if ((name=="bh_condenser" || name=="gamma_ray" || name=="tickspeed") && hasUpgrade('atom',14)) start = start.mul(10)
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) start = start.pow(tmp.qu.qc_eff[7][0])
@@ -386,7 +383,7 @@ function getScalingStart(type, name) {
 
 function getScalingPower(type, name) {
 	let power = E(1)
-	if (name == "supernova" && type<4) {
+	if (name == "supernova" && (hasCharger(3)?type<5:type<3)) {
 		power = power.mul(tmp.fermions.effs[1][4])
 	}
 	if (name == "fTier" && type<4) {
@@ -427,6 +424,9 @@ function getScalingPower(type, name) {
 		}
 		else if (name=="prestige0" || name=="prestige1") {
 			if (hasElement(134)) power = power.mul(0.95)
+		}
+		else if (name=="massUpg4") {
+			if (tmp.chal && hasBeyondRank(2,20)) power = power.mul(tmp.chal.eff[1].over)
 		}
 	}
 	else if (type==1) {
@@ -482,6 +482,7 @@ function getScalingPower(type, name) {
 		}
 		else if (name=='prestige0') {
 			if (hasElement(197)) power = power.mul(0.9)
+			if (tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
 		}
 	}
 	else if (type==3) {
@@ -492,6 +493,10 @@ function getScalingPower(type, name) {
 	else if (type==4) {
 		if (name=='rank') {
 			if (hasElement(197)) power = power.mul(0.9)
+			if (tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
+		}
+		else if (name=="tier") {
+			if (tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
 		}
 		else if (name=="supernova") {
 			if (hasElement(212)) power = power.mul(0.75)
@@ -511,4 +516,18 @@ function getScalingPower(type, name) {
 	if (hasPrestige(0,388) && ['prestige0','prestige1'].includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
 	if (hasPrestige(1,66) && name=="fTier") power = power.mul(0.8)
 	return power.max(type==3?0.5:0)
+}
+
+function noScalings(type,name) {
+	if (name=="rank"||name=='tier') {
+		if (type<4 && hasPrestige(1,127)) return true
+	}
+	else if (name=="massUpg") {
+		if (hasBeyondRank(2,15)) return true
+	}
+	else if (name=="supernova") {
+		if (type<3 && hasCharger(3)) return true
+	}
+
+	return false
 }

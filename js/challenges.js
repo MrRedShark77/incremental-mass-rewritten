@@ -20,7 +20,7 @@ function updateChalHTML() {
             tmp.el["chal_div_"+x].setDisplay(unl)
             tmp.el["chal_btn_"+x].setClasses({img_chal: true, ch: CHALS.inChal(x), chal_comp: player.chal.comps[x].gte(tmp.chal.max[x])})
             if (unl) {
-                tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+" / "+format(tmp.chal.max[x],0))
+                tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+(tmp.chal.max[x].gte(EINF)?"":" / "+format(tmp.chal.max[x],0)))
             }
         }
         tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
@@ -29,11 +29,11 @@ function updateChalHTML() {
         tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
         if (player.chal.choosed != 0) {
             let chal = CHALS[player.chal.choosed]
-            tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${format(player.chal.comps[player.chal.choosed],0)+"/"+format(tmp.chal.max[player.chal.choosed],0)} Completions]`)
+            tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${format(player.chal.comps[player.chal.choosed],0)+(tmp.chal.max[player.chal.choosed].gte(EINF)?"":"/"+format(tmp.chal.max[player.chal.choosed],0))} Completions]`)
             tmp.el.chal_ch_desc.setHTML(chal.desc)
             tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
             tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
-            tmp.el.chal_ch_reward.setHTML("Reward: "+chal.reward)
+            tmp.el.chal_ch_reward.setHTML("Reward: "+(typeof chal.reward == 'function' ? chal.reward() : chal.reward))
             tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
         }
     }
@@ -55,6 +55,7 @@ function updateChalTemp() {
 
     if (hasTree('ct5')) v++
     if (hasTree('ct7')) v++
+    if (hasTree('ct13')) v++
 
     for (let x = 1; x <= CHALS.cols; x++) {
         let data = CHALS.getChalData(x)
@@ -100,6 +101,8 @@ const CHALS = {
         }
     },
     enter(ch=player.chal.choosed) {
+        if (ch<13 && player.dark.c16.first) return
+
         if (player.chal.active == 0) {
             if (ch == 16) {
                 player.dark.c16.first = true
@@ -133,8 +136,9 @@ const CHALS = {
         return "Entering challenge will force a FSS reset."
     },
     getMax(i) {
+        if (i <= 12 && hasPrestige(2,25)) return EINF 
         let x = this[i].max
-        if (i <= 4) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
+        if (i <= 4 && !hasPrestige(2,25)) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
         if (hasElement(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
         if (hasElement(20) && (i==7)) x = x.add(50)
         if (hasElement(41) && (i==7)) x = x.add(50)
@@ -168,6 +172,7 @@ const CHALS = {
         if (hasElement(2)) x = x.mul(0.75)
         if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
         if (hasElement(180) && i <= 12) x = x.mul(.7)
+        if (i != 7 && hasPrestige(2,25)) x = x.mul(tmp.chal.eff[7])
         return x
     },
     getPower2(i) {
@@ -175,6 +180,7 @@ const CHALS = {
         if (hasElement(92)) x = x.mul(0.75)
         if (hasElement(120)) x = x.mul(0.75)
         if (hasElement(180) && i <= 12) x = x.mul(.7)
+        if (i != 7 && hasPrestige(2,25)) x = x.mul(tmp.chal.eff[7])
         return x
     },
     getPower3(i) {
@@ -276,17 +282,20 @@ const CHALS = {
     1: {
         title: "Instant Scale",
         desc: "Super rank and mass upgrade scaling starts at 25. Also, Super tickspeed starts at 50.",
-        reward: `Super Ranks starts later, Super Tickspeed scales weaker by completions.`,
+        reward: ()=>hasBeyondRank(2,20)?`Supercritical Rank & All Fermions start later, Super Overpower scales weaker by completions.`:`Super Rank starts later, Super Tickspeed scales weaker by completions.`,
         max: E(100),
         inc: E(5),
         pow: E(1.3),
         start: E(1.5e58),
         effect(x) {
-            let rank = x.softcap(20,4,1).floor()
-            let tick = E(0.96).pow(x.root(2))
-            return {rank: rank, tick: tick}
+            let c = hasBeyondRank(2,20)
+            let rank = c?E(0):x.softcap(20,4,1).floor()
+            let tick = c?E(1):E(0.96).pow(x.root(2))
+            let scrank = x.add(1).log10().div(10).add(1).root(3)
+            let over = Decimal.pow(0.99,x.add(1).log10().root(2))
+            return {rank: rank, tick: tick, scrank, over}
         },
-        effDesc(x) { return "+"+format(x.rank,0)+" later to Super Ranks, Super Tickspeed scaling "+format(E(1).sub(x.tick).mul(100))+"% weaker" },
+        effDesc(x) { return hasBeyondRank(2,20)?formatMult(x.scrank)+" later to Supercritical Rank & All Fermions starting, "+formatReduction(x.over)+" weaker to Super Overpower scaling":"+"+format(x.rank,0)+" later to Super Rank starting, "+format(E(1).sub(x.tick).mul(100))+"% weaker to Super Tickspeed scaling" },
     },
     2: {
         unl() { return player.chal.comps[1].gte(1) || player.atom.unl },
@@ -342,17 +351,18 @@ const CHALS = {
         unl() { return player.atom.unl },
         title: "No Rank",
         desc: "You cannot rank up.",
-        reward: `Rank requirement is weaker by completions.`,
+        reward: ()=> hasCharger(3)?`Exotic Rank & Tier, Ultra Prestige Level scale weaker by completions.`:`Rank requirement is weaker by completions.`,
         max: E(50),
         inc: E(50),
         pow: E(1.25),
         start: E(1.5e136),
         effect(x) {
-            if (hasPrestige(1,127)) return E(1)
-            let ret = E(0.97).pow(x.root(2).softcap(5,0.5,0))
+            let c = hasCharger(3)
+            if (!c && hasPrestige(1,127)) return E(1)
+            let ret = c?Decimal.pow(0.97,x.add(1).log10().root(4)):E(0.97).pow(x.root(2).softcap(5,0.5,0))
             return ret
         },
-        effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return hasCharger(3)?formatReduction(x)+" weaker":format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     6: {
         unl() { return player.chal.comps[5].gte(1) || player.supernova.times.gte(1) || quUnl() },
@@ -373,17 +383,18 @@ const CHALS = {
         unl() { return player.chal.comps[6].gte(1) || player.supernova.times.gte(1) || quUnl() },
         title: "No Rage Powers",
         desc: "You cannot gain rage powers. Instead, dark matters are gained from mass at a reduced rate. Additionally, mass gain softcap is stronger.",
-        reward: `Each completion increases challenges 1-4 cap by 2.<br><span class="yellow">On 16th completion, unlock Elements</span>`,
+        reward: ()=>hasPrestige(2,25)?`Pre-Impossible challenges scale weaker by completions, but this reward doesn't affect C7.`:`Each completion increases challenges 1-4 cap by 2.<br><span class="yellow">On 16th completion, unlock Elements</span>`,
         max: E(50),
         inc: E(64),
         pow: E(1.25),
         start: E(1.5e76),
         effect(x) {
-            let ret = x.mul(2)
-            if (hasElement(5)) ret = ret.mul(2)
-            return ret.floor()
+            let c = hasPrestige(2,25)
+            let ret = c?Decimal.pow(0.987,x.add(1).log10().root(2)):x.mul(2)
+            if (hasElement(5)) ret = c?ret.pow(2):ret.mul(2)
+            return c?ret:ret.floor()
         },
-        effDesc(x) { return "+"+format(x,0) },
+        effDesc(x) { return hasPrestige(2,25)?formatReduction(x)+" weaker":"+"+format(x,0) },
     },
     8: {
         unl() { return player.chal.comps[7].gte(1) || player.supernova.times.gte(1) || quUnl() },

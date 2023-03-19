@@ -119,6 +119,7 @@ function updatePrimordiumTemp() {
     let tp = tmp.prim
 
     tp.parts = []
+    tp.bonus = []
     tp.t_base = E(5)
     if (hasTree('prim1')) tp.t_base = tp.t_base.sub(1)
 
@@ -148,21 +149,22 @@ function updatePrimordiumTemp() {
     tp.unspent = pt.sub(tp.spent_theorem).max(0)
     for (let i = 0; i < player.qu.prim.particles.length; i++) {
         let pp = player.qu.prim.particles[i]
+        let b = E(0)
+        if (hasTree('ct12')) b = b.add(treeEff('ct12'))
         if (tmp.c16active) {
             pp = E(0)
-            tp.parts[i] = pp
         }
         else {
             if (hasTree('qu_qol10') && i < 4) pp = pt
             else if (hasTree('qu_qol11') && i < 6) pp = pt
             else if (hasTree('qu_qol12') && i < 8) pp = pt
 
-            tp.parts[i] = pp
-
-            if (hasPrestige(1,4)) pp = pp.add(5)
-            if (player.qu.rip.active || tmp.c16active || player.dark.run.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
+            if (hasPrestige(1,4)) b = b.add(5)
         }
-        tp.eff[i] = PRIM.particle.eff[i](pp.softcap(100,0.75,0))
+        tp.parts[i] = pp
+        tp.bonus[i] = b
+        if (player.qu.rip.active || tmp.c16active || player.dark.run.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
+        tp.eff[i] = PRIM.particle.eff[i](pp.add(b).softcap(100,0.75,0))
     }
 
     calcPartChances()
@@ -173,7 +175,7 @@ function updatePrimordiumHTML() {
     tmp.el.prim_theorem.setTxt(format(tmp.prim.unspent,0)+" / "+format(player.qu.prim.theorems,0))
     tmp.el.prim_next_theorem.setTxt(format(player.qu.bp,1)+" / "+format(tmp.prim.next_theorem,1))
     for (let i = 0; i < player.qu.prim.particles.length; i++) {
-        tmp.el["prim_part"+i].setTxt(format(tmp.prim.parts[i],0))
+        tmp.el["prim_part"+i].setTxt(format(tmp.prim.parts[i],0)+(tmp.prim.bonus[i].gt(0)?" + "+tmp.prim.bonus[i].format(0):""))
         tmp.el["prim_part_eff"+i].setHTML(PRIM.particle.effDesc[i](tmp.prim.eff[i]))
     }
 }

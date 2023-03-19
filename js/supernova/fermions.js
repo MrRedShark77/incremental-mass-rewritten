@@ -352,11 +352,14 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let m = i.add(1).log10().mul(t).root(4)
-                    let x = Math.min(hasElement(157)?m.div(150).add(1).softcap(5,0.5,0).pow(-1).toNumber():1,E(0.95).pow(m.softcap(27,0.5,0)).max(2/3).toNumber())
+                    let x = hasCharger(3)
+                    ?Decimal.pow(0.975,overflow(m.max(1).log10(),10,0.5))
+                    :Math.min(hasElement(157)?m.div(150).add(1).softcap(5,0.5,0).pow(-1).toNumber():1,E(0.95).pow(m.softcap(27,0.5,0)).max(2/3).toNumber())
                     return x
                 },
                 desc(x) {
-                    return `Pre-Meta-Supernova Scalings are ${format(100-x*100)}% weaker`
+                    let w = formatReduction(x)
+                    return hasCharger(3)?`Meta & Exotic Supernovas scale ${w} weaker`:`Pre-Meta-Supernova Scalings are ${w} weaker`
                 },
                 inc: "Atom",
                 cons: "U-Leptons, Z<sup>0</sup> bosons do nothing",

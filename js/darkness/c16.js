@@ -17,6 +17,12 @@ const CHARGERS = [
         desc: `
         Unstable Black Hole's effect is 50% stronger. (after overflow)
         `,
+    },{
+        req: E('e30000'),
+        cost: E(1e7),
+        desc: `
+        Remove all pre-Meta scalings from Supernova. [Neut-Muon]'s effect is now changed. Denullify C5's effect, but it's changed.
+        `,
     },
 ]
 
