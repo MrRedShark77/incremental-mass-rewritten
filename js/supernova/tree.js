@@ -1122,7 +1122,7 @@ const TREE_UPGS = {
             branch: ['ct7'],
             icon: "placeholder",
 
-            desc: `Neutronium-0 now affects Challenge 15 at a reduced rate (like [ct5]). C15 now affects Black Hole, Atomic, & Quark Overflows.`,
+            desc: `Neutronium-0 now affects Challenge 15 at a reduced rate (like [ct5]). C15 now affects Atomic & Quark Overflows.`,
             cost: E(2.5e8),
 
             req() { return player.chal.comps[14]&&player.chal.comps[14].gte(960) },
