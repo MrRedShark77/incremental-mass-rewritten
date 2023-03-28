@@ -1,6 +1,7 @@
 var tmp = {}
 
 function resetTemp() {
+    let d = new Date()
     keep = [tmp.el, tmp.prevSave]
     tmp = {
         tree_time: 0,
@@ -181,6 +182,9 @@ function resetTemp() {
         },
 
         prevSave: "",
+
+        april: d.getDate() == 1 && d.getMonth() == 3,
+        aprilEnabled: false,
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}

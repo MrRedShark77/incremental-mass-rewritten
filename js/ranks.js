@@ -319,7 +319,7 @@ const PRESTIGES = {
                 x = y.div(fp).scaleEvery('prestige1',false).pow(1.25).mul(3).add(4)
                 break;
             case 2:
-                x = hasElement(167)?y.div(fp).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
+                x = hasElement(167)?y.div(fp).scaleEvery('prestige2',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
                 break;
             case 3:
                 x = y.div(fp).pow(1.25).mul(3).add(9)
@@ -340,7 +340,7 @@ const PRESTIGES = {
                 if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1)
                 break
             case 2:
-                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
+                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('prestige2',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
                 break
             case 3:
                 if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).mul(fp).add(1)
@@ -421,6 +421,7 @@ const PRESTIGES = {
             "91": `FSS base is raised to the 1.05th power.`,
             "127": `Remove all pre-Exotic scalings from Rank & Tier, but nullify C5's reward.`,
             "139": `Matters' production is tripled every FSS. FV Manipulator's cost is slightly weaker.`,
+            "167": `Abyssal Blot's fourth reward is raised by FSS.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
@@ -430,6 +431,7 @@ const PRESTIGES = {
             "8": `Glory reduces Black Hole Overflow nerf.`,
             "22": `Glory boosts all matters gain.`,
             "25": `Uncap pre-darkness challenges' completion cap. C7's reward is changed.`,
+            "28": `FV Manipulator Power is boosted by Honor.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
@@ -465,9 +467,9 @@ const PRESTIGES = {
                 return x
             },x=>formatReduction(x)+" weaker"],
             "607": [()=>{
-                let x = tmp.prestiges.base.max(1).pow(1.5)
+                let x = tmp.prestiges.base.max(1).pow(1.5).softcap('e7500',0.1,0)
                 return x
-            },x=>"x"+format(x)],
+            },x=>"x"+format(x)+softcapHTML(x,'e7500')],
             "1337": [()=>{
                 let x = tmp.preQUGlobalSpeed.max(1).log10().add(1).log10().div(10)
                 return x.toNumber()
@@ -518,6 +520,10 @@ const PRESTIGES = {
             },x=>formatReduction(x)+" weaker"],
             "22": [()=>{
                 let x = Decimal.pow(2,player.prestiges[2].pow(.5))
+                return x
+            },x=>"x"+format(x)],
+            "28": [()=>{
+                let x = player.prestiges[1].root(2).div(10).add(1)
                 return x
             },x=>"x"+format(x)],
         },

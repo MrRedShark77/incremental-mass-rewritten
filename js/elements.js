@@ -338,7 +338,7 @@ function updatePrestigesRewardHTML() {
 					tmp.el["pres_reward_"+x+"_"+y].setClasses({corrupted_text2: c16 && CORRUPTED_PRES[x] && CORRUPTED_PRES[x].includes(parseInt(keys[y]))})
 					if (tmp.el["pres_eff_"+x+"_"+y]) {
 						let eff = PRESTIGES.rewardEff[x][keys[y]]
-						tmp.el["pres_eff_"+x+"_"+y].setTxt(eff[1](tmp.prestiges.eff[x][keys[y]]))
+						tmp.el["pres_eff_"+x+"_"+y].setHTML(eff[1](tmp.prestiges.eff[x][keys[y]]))
 					}
 				}
 			}

@@ -495,6 +495,14 @@ function loadGame(start=true, gotNaN=false) {
         treeCanvas()
         setInterval(drawTreeHTML, 10)
         setInterval(checkNaN,1000)
+
+        if (tmp.april) createConfirm("Do you want to disable softcap everywhere?",'april',()=>{
+            createPopup(`You trolled! I can't disable softcap! April Fools! <br><br> <img src="https://media.tenor.com/GryShD35-psAAAAM/troll-face-creepy-smile.gif">`,'troll','Dammit!')
+            document.body.style.background = `url(https://usagif.com/wp-content/uploads/2021/4fh5wi/troll-face-26.gif)`
+            tmp.aprilEnabled = true
+        },()=>{
+            createPopup(`<img style="width: 200px; height: 200px" src="https://media.tenor.com/U1dgzSAQk8wAAAAd/kys.gif">`,'kys','die')
+        })
     }
 }
 

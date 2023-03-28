@@ -14,7 +14,7 @@ const SCALE_START = {
 		cosmic_str: E(15),
 		prestige0: E(15),
 		prestige1: E(7),
-		prestige2: E(12),
+		prestige2: E(30),
 		massUpg4: E(50),
     },
 	hyper: {
@@ -55,6 +55,7 @@ const SCALE_START = {
 		gamma_ray: E(1e6),
 		supernova: E(100),
 		fTier: E(1.25e4),
+		prestige0: E(4000),
 	},
 	exotic: {
 		rank: E(1e16),
@@ -123,6 +124,7 @@ const SCALE_POWER= {
 		gamma_ray: 1.001,
 		supernova: 1.025,
 		fTier: 1.001,
+		prestige0: 1.0025,
 	},
 	exotic: {
 		rank: 15,
@@ -527,6 +529,9 @@ function noScalings(type,name) {
 	}
 	else if (name=="supernova") {
 		if (type<3 && hasCharger(3)) return true
+	}
+	else if (name=="tickspeed") {
+		if (hasCharger(4)) return true
 	}
 
 	return false

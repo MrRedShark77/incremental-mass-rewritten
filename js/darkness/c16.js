@@ -23,6 +23,12 @@ const CHARGERS = [
         desc: `
         Remove all pre-Meta scalings from Supernova. [Neut-Muon]'s effect is now changed. Denullify C5's effect, but it's changed.
         `,
+    },{
+        req: E('e45000'),
+        cost: E(5e8),
+        desc: `
+        Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed.
+        `,
     },
 ]
 
@@ -63,6 +69,8 @@ const UNSTABLE_BH = {
             let lvl = player.bh.fvm
 
             let pow = E(2)
+
+            if (hasPrestige(2,28)) pow = pow.mul(prestigeEff(2,28))
 
             let eff = pow.pow(lvl)
 

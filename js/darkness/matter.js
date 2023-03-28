@@ -16,6 +16,7 @@ const MATTERS = {
         if (hasCharger(0)) x = x.mul(1e10)
         if (hasPrestige(2,22)) x = x.mul(prestigeEff(2,22))
         if (hasPrestige(1,139)) x = x.mul(prestigeEff(1,139))
+        if (hasTree('ct15')) x = x.mul(treeEff('ct15'))
 
         if (x.lt(1)) return x
 

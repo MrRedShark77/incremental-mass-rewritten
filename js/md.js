@@ -57,6 +57,7 @@ const MASS_DILATION = {
         let os = E('ee30').pow(glyphUpgEff(8))
 
         if (hasUpgrade('atom',19)) os = os.pow(upgEffect(3,19))
+        if (hasTree('ct14')) os = os.pow(treeEff('ct14'))
 
         x = overflow(x,os,0.5)
 

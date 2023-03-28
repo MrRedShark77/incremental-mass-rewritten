@@ -37,7 +37,7 @@ const TREE_IDS = [
         ['chal5','chal6','chal7','chal8'],
         ['fn12','fn11','fn6','fn10','rad6',""],
         ['en1','qu5','br1'],
-        ['','ct12','','ct13',''],
+        ['ct15','ct12','','ct13','ct14'],
     ],[
         ['s4','sn5','sn4'],
         ['','','','qu_qol8a'],
@@ -1104,7 +1104,6 @@ const TREE_UPGS = {
         },
         ct12: {
             branch: ['ct9'],
-            icon: "placeholder",
 
             desc: `Best mass of black hole in C16 adds free primordium particles.`,
             cost: E(5e7),
@@ -1120,13 +1119,41 @@ const TREE_UPGS = {
         },
         ct13: {
             branch: ['ct7'],
-            icon: "placeholder",
 
             desc: `Neutronium-0 now affects Challenge 15 at a reduced rate (like [ct5]). C15 now affects Atomic & Quark Overflows.`,
             cost: E(2.5e8),
 
             req() { return player.chal.comps[14]&&player.chal.comps[14].gte(960) },
             reqDesc() { return `Get ${format(960,0)} C14 completions.` },
+        },
+        ct14: {
+            branch: ['ct11'],
+            icon: "placeholder",
+
+            desc: `Dilated mass overflow starts later based on best mass of black hole in C16.`,
+            cost: E(1e10),
+
+            req() { return tmp.c16active && player.atom.atomic.gte(1e180) },
+            reqDesc() { return `Reach ${format(1e180)} atomic powers during C16.` },
+
+            effect() {
+                let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
+                return x
+            },
+            effDesc(x) { return "^"+format(x)+" later" },
+        },
+        ct15: {
+            branch: ['ct8'],
+            icon: "placeholder",
+
+            desc: `Total corrupted shards boost matters gain.`,
+            cost: E(2.5e10),
+
+            effect() {
+                let x = player.dark.c16.totalS.add(1).root(2)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
         },
 
         /*

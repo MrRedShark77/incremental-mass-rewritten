@@ -117,7 +117,7 @@ const DARK = {
         let a = player.dark.shadow
 
         x.ray = hasElement(143) ? a.add(1).log2().add(1).pow(1.5) : a.add(1).log10().add(1)
-        x.mass = a.add(1).log10().add(1).root(2)
+        x.mass = hasCharger(4) ? overflow(a.add(1),10,0.25) : a.add(1).log10().add(1).root(2)
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0)
@@ -143,7 +143,7 @@ const DARK = {
         x.shadow = a.add(1).log10().add(1).pow(2)
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
         if (a.gte(1e120)) x.hr = a.div(1e120).log10().add(1).pow(2)
-        if (a.gte(1e180)) x.pb = a.div(1e180).log10().add(1)
+        if (a.gte(1e180)) x.pb = a.div(1e180).log10().add(1).pow(hasPrestige(1,167)?(player.dark.matters.final+1)**.5:1)
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
         if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0)

@@ -304,6 +304,7 @@ const FORMS = {
             if (hasUpgrade('bh',19)) step = step.mul(upgEffect(2,19))
 
             let x = player.accelerator.mul(step).add(1)
+            x = overflow(x,100,0.5)
             return {step: step, eff: x}
         },
         autoUnl() { return true },
@@ -564,6 +565,8 @@ function loop() {
 }
 
 function format(ex, acc=4, max=12, type=player.options.notation) {
+    if (tmp.aprilEnabled && Math.random() < .9) return "Troll"
+
     ex = E(ex)
     neg = ex.lt(0)?"-":""
     if (ex.mag == Infinity) return neg + 'Infinite'

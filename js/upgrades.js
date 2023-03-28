@@ -200,9 +200,11 @@ const UPGS = {
                 if (hasUpgrade('rp',17)) step = step.add(.005)
                 if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
 
-                let x = step.mul(xx).add(1)
+                let ss = E(10)
+
+                let x = step.mul(xx).add(1).softcap(ss,0.5,0)
                 
-                return {step: step, eff: x, ss: EINF}
+                return {step: step, eff: x, ss: ss}
             },
             effDesc(eff) {
                 return {

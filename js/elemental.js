@@ -239,7 +239,7 @@ const ELEMENTS = {
             cost: E(1e130),
             effect() {
                 let x = player.md.mass.add(1).pow(0.0125)
-                return x.softcap('ee27',0.95,2)
+                return overflow(x.softcap('ee27',0.95,2),"ee110",0.25)
             },
             effDesc(x) { return format(x)+"x"+x.softcapHTML('ee27') },
         },
