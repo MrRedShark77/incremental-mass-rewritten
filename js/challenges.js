@@ -101,8 +101,6 @@ const CHALS = {
         }
     },
     enter(ch=player.chal.choosed) {
-        if (ch<13 && player.dark.c16.first) return
-
         if (player.chal.active == 0) {
             if (ch == 16) {
                 player.dark.c16.first = true
