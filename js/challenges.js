@@ -1,7 +1,7 @@
 function setupChalHTML() {
     let chals_table = new Element("chals_table")
 	let table = ""
-	for (let x = Math.ceil(CHALS.cols/4)-1; x >= 0; x--) {
+	for (let x = 0; x < Math.ceil(CHALS.cols/4); x++) {
         table += `<div class="table_center" style="min-height: 160px;">`
         for (let y = 1; y <= Math.min(CHALS.cols-4*x,4); y++) {
             let i = 4*x+y
@@ -334,7 +334,7 @@ const CHALS = {
     4: {
         unl() { return player.chal.comps[3].gte(1) || player.atom.unl },
         title: "Weakened Rage",
-        desc: "Rage Points gain is rooted by 10. Additionally, mass gain softcap starts 100 OoMs eariler.",
+        desc: "Rage Power gain is rooted by 10. Additionally, mass gain softcap starts 100 OoMs eariler.",
         reward: `Rage Powers gain is raised by completions.`,
         max: E(100),
         inc: E(30),
@@ -521,7 +521,7 @@ const CHALS = {
         unl() { return hasElement(218) },
         title: "Chaotic Matter Annihilation",
         desc: `
-        • You cannot gain rage points nor dark matters, and all matters’ formula is disabled, and they generate each other. Red matter generates dark matter.<br>
+        • You cannot gain Rage Power nor dark matters, and all matters’ formula is disabled, and they generate each other. Red matter generates dark matter.<br>
         • Pre-C16 following contents (including rank & prestige tiers, main upgrades, elements, tree and etc.) are corrupted like disabled.<br>
         • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>
         • Primordium particles disabled.<br>

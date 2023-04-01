@@ -195,9 +195,9 @@ const ATOM = {
                     player.rp.points.add(1).log10().add(10).log10().mul(x.add(1).log10().add(10).log10()).root(3).sub(1)
                 )
                 .mul(player.mass.add(1).log10().add(10).log10())
-                :hasElement(19)
+                :(hasElement(19)
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
-                :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))
+                :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
                 return {eff1: a, eff2: b}
             },
             x=>{

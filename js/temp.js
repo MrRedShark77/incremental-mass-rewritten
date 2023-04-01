@@ -17,7 +17,7 @@ function resetTemp() {
         stab: [],
         qc_tab: 0,
         qc_ch: -1,
-        pass: true,
+        pass: 0,
         notify: [],
         popup: [],
         saving: 0,
