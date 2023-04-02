@@ -94,6 +94,8 @@ const FORMS = {
         let o = x
         let os = tmp.c16active ? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
         let op = E(.5)
+        let os2 = tmp.c16active ? E('ee11') : E('ee279')
+        let op2 = E(.25)
 
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
 
@@ -101,10 +103,12 @@ const FORMS = {
 
         x = overflow(x,os,op)
 
+        x = overflow(x,os2,op2)
+
         tmp.overflowBefore.mass = o
         tmp.overflow.mass = calcOverflow(o,x,os)
-        tmp.overflow_start.mass = os
-        tmp.overflow_power.mass = op
+        tmp.overflow_start.mass = [os,os2]
+        tmp.overflow_power.mass = [op,op2]
 
         if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
 
@@ -418,8 +422,11 @@ const FORMS = {
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || player.dark.run.active ? 5 : 100)
 
             let o = x
-            let os = tmp.c16active ? E('ee3') : E('ee69')
+            let os = tmp.c16active ? E('ee3') : E('ee69').pow(exoticAEff(1,1))
             let op = E(0.5)
+
+            let os2 = tmp.c16active ? E('ee6') : E('ee249')
+            let op2 = E(0.25)
 
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
@@ -428,11 +435,12 @@ const FORMS = {
             if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
 
             x = overflow(x,os,op)
+            x = overflow(x,os2,op2)
 
             tmp.overflowBefore.bh = o
             tmp.overflow.bh = calcOverflow(o,x,os)
-            tmp.overflow_start.bh = os
-            tmp.overflow_power.bh = op
+            tmp.overflow_start.bh = [os,os2]
+            tmp.overflow_power.bh = [op,op2]
 
             if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
             return x

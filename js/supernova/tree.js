@@ -37,7 +37,7 @@ const TREE_IDS = [
         ['chal5','chal6','chal7','chal8'],
         ['fn12','fn11','fn6','fn10','rad6',""],
         ['en1','qu5','br1'],
-        ['ct15','ct12','','ct13','ct14'],
+        ['ct15','ct12','ct16','ct13','ct14'],
     ],[
         ['s4','sn5','sn4'],
         ['','','','qu_qol8a'],
@@ -1128,7 +1128,6 @@ const TREE_UPGS = {
         },
         ct14: {
             branch: ['ct11'],
-            icon: "placeholder",
 
             desc: `Dilated mass overflow starts later based on best mass of black hole in C16.`,
             cost: E(1e10),
@@ -1151,6 +1150,20 @@ const TREE_UPGS = {
 
             effect() {
                 let x = player.dark.c16.totalS.add(1).root(2)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },
+        ct16: {
+            unl: ()=>tmp.eaUnl,
+            branch: ['ct10'],
+            icon: "placeholder",
+
+            desc: `Best mass of black hole in C16 boosts Muon & Pion gain.`,
+            cost: E(5e16),
+
+            effect() {
+                let x = player.dark.c16.bestBH.add(1).log10().div(1e5).add(1).pow(2)
                 return x
             },
             effDesc(x) { return "x"+format(x) },

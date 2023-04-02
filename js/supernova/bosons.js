@@ -97,6 +97,7 @@ const BOSONS = {
         },
         z_boson(x) {
             let a = FERMIONS.onActive("14") ? E(1) : x.add(1).log10().add(1).pow(tmp.fermions.effs[0][2])
+            if (tmp.c16active) a = a.softcap('e308',0.01,0)
             let b = x.add(1).pow(2/3)
             return [a,b]
         },

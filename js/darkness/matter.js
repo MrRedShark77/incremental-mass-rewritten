@@ -29,6 +29,8 @@ const MATTERS = {
             if (hasBeyondRank(1,7)) x = x.pow(beyondRankEffect(1,7))
         }
 
+        if (hasElement(4,1)) x = c16 ? x.pow(1.1) : expMult(x,1.05)
+
         return x
     },
 
@@ -57,16 +59,18 @@ const MATTERS = {
 
             if (hasPrestige(1,91)) x = x.pow(1.05)
 
+            x = x.pow(exoticAEff(1,2))
+
             return x.sub(1)
         },
         req() {
             let f = player.dark.matters.final
 
-            if (hasTree('ct10')) f *= treeEff('ct10')
+            if (hasTree('ct10')) f = f.mul(treeEff('ct10'))
 
-            if (f>5) f = (f/5)**2*5
+            f = f.scaleEvery('FSS')
 
-            if (hasElement(217)) f *= .8
+            if (hasElement(217)) f = f.mul(.8)
 
             let x = Decimal.pow(100,Decimal.pow(f,1.5)).mul(1e43)
             return x
@@ -74,7 +78,7 @@ const MATTERS = {
 
         reset(force = false) {
             if (force || tmp.matters.FSS_base.gte(tmp.matters.FSS_req)) {
-                if (!force) player.dark.matters.final++
+                if (!force) player.dark.matters.final = player.dark.matters.final.add(1)
 
                 resetMatters()
                 player.dark.shadow = E(0)
@@ -86,11 +90,11 @@ const MATTERS = {
         effect() {
             let fss = player.dark.matters.final
 
-            fss *= tmp.dark.abEff.fss||1
+            fss = fss.mul(tmp.dark.abEff.fss||1)
 
-            let x = Decimal.pow(2,fss**1.25)
+            let x = Decimal.pow(2,fss.pow(1.25))
 
-            let y = fss*.15+1
+            let y = fss.mul(.15).add(1)
 
             return [x,y]
         },
@@ -147,13 +151,16 @@ function updateMattersHTML() {
 
     if (unl) {
         tmp.el.FSS1.setTxt(format(player.dark.matters.final,0))
+
+        tmp.el.FSS_scale.setTxt(getScalingName("FSS"))
+
         tmp.el.final_star_base.setHTML(`You have ${tmp.matters.FSS_base.format(0)} FSS base (based on previous matters)`)
         tmp.el.FSS_req.setTxt(tmp.matters.FSS_req.format(0))
         tmp.el.FSS_btn.setClasses({btn: true, full: true, locked: tmp.matters.FSS_base.lt(tmp.matters.FSS_req)})
     }
 
     tmp.el.FSS_eff1.setHTML(
-        player.dark.matters.final > 0
+        player.dark.matters.final.gt(0)
         ? `Thanks to FSS, boosts Matters gain by ^${tmp.matters.FSS_eff[0].format(1)}`.corrupt(c16)
         : ''
     )
@@ -213,7 +220,7 @@ function setupMattersHTML() {
             html +=
             `
             <div class="matter_div final" id="final_star_shard_div">
-                You have <h3 id="FSS1">0</h3> Final Star Shard (FSS)<br>
+                You have <h3 id="FSS1">0</h3> <span id="FSS_scale"></span> Final Star Shard (FSS)<br>
                 <span id="final_star_base">You have ??? Final Star Shard base (based on previous matters)</span>
                 <br><br>
                 <button class="btn full" id="FSS_btn" onclick="MATTERS.final_star_shard.reset()">

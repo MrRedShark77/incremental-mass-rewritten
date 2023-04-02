@@ -12,6 +12,8 @@ const CHROMA = {
         if (hasTree('qu8')) x = x.mul(tmp.supernova.tree_eff.qu8)
         if (hasPrestige(0,607)) x = x.mul(prestigeEff(0,607))
         if (hasUpgrade('br',18)) x = x.mul(upgEffect(4,18))
+        if (hasElement(6,1)) x = x.mul(muElemEff(6))
+
         if (hasElement(190)) x = x.pow(1.1)
         if (hasGlyphUpg(13) && i == 1) x = x.pow(2)
         if (hasBeyondRank(2,4)) x = x.pow(1.1)

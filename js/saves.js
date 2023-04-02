@@ -211,7 +211,9 @@ function getPlayerData() {
             ratio: 0,
             dRatio: [1,1,1],
             elements: [],
-            elemTier: 1,
+            muonic_el: [],
+            elemTier: [1,1],
+            elemLayer: 0,
         },
         md: {
             active: false,
@@ -327,6 +329,7 @@ function loadPlayer(load) {
         let f = FERMIONS.types[i][x]
         player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0)
     }
+    if (typeof player.atom.elemTier == "number") player.atom.elemTier = [player.atom.elemTier,1]
     let off_time = (Date.now() - player.offline.current)/1000
     if (off_time >= 60 && player.offline.active) player.offline.time += off_time
 }
@@ -490,6 +493,7 @@ function loadGame(start=true, gotNaN=false) {
             tmp.cx = e.clientX
             tmp.cy = e.clientY
         }
+        updateMuonSymbol(true)
         setInterval(loop, 50)
         setInterval(updateStarsScreenHTML, 50)
         treeCanvas()

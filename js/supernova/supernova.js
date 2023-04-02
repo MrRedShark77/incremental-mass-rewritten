@@ -109,11 +109,13 @@ function calcSupernova(dt, dt_offline) {
     }
 
     if (su.fermions.unl) {
+        let w = hasElement(3,1) ? 7 : 6
+
         if (tmp.fermions.ch[0] >= 0) {
             su.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]] = su.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]]
             .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]])
         }
-        if (tmp.fermions.ch[0] != 0 || tmp.fermions.ch[1] >= 6) if (hasTree("qu_qol8") && !(!hasTree("qu_qol8a")&&QCs.active())) for (let i = 0; i < 2; i++) for (let j = 0; j < 6; j++) if (j < FERMIONS.getUnlLength()) {
+        if (tmp.fermions.ch[0] != 0 || tmp.fermions.ch[1] >= 6) if (hasTree("qu_qol8") && !(!hasTree("qu_qol8a")&&QCs.active())) for (let i = 0; i < 2; i++) for (let j = 0; j < w; j++) if (j < FERMIONS.getUnlLength()) {
             su.fermions.tiers[i][j] = su.fermions.tiers[i][j]
             .max(tmp.fermions.tiers[i][j])
         }

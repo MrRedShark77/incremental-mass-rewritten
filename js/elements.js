@@ -415,9 +415,11 @@ function updateBlackHoleHTML() {
 	tmp.el.bhCondenser_auto.setDisplay(FORMS.bh.condenser.autoUnl())
 	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
 
-	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh))
-    tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh)}</b>, your mass of black hole is ${overflowFormat(tmp.overflow.bh||1)}!`)
+	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[0]))
+    tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh[0])}</b>, your mass of black hole is ${overflowFormat(tmp.overflow.bh||1)}!`)
 
+	tmp.el.bhOverflow2.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[1]))
+    tmp.el.bhOverflow2.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh[1])}</b>, your black hole mass overflow is even stronger!`)
 	// Unstable 
 
 	let unl = hasCharger(1)
@@ -500,41 +502,47 @@ function updateHTML() {
 				tmp.el.massSoft9.setDisplay(tmp.massGain.gte(tmp.massSoftGain8))
 				tmp.el.massSoftStart9.setTxt(formatMass(tmp.massSoftGain8))
 
-				tmp.el.massOverflow.setDisplay(player.mass.gte(tmp.overflow_start.mass))
-    			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass)}</b>, your mass is ${overflowFormat(tmp.overflow.mass||1)}!`)
+				tmp.el.massOverflow.setDisplay(player.mass.gte(tmp.overflow_start.mass[0]))
+    			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass[0])}</b>, your mass is ${overflowFormat(tmp.overflow.mass||1)}!`)
+
+				tmp.el.massOverflow2.setDisplay(player.mass.gte(tmp.overflow_start.mass[1]))
+    			tmp.el.massOverflow2.setHTML(`Because of mass overflow^2 at <b>${formatMass(tmp.overflow_start.mass[1])}</b>, your mass overflow is even stronger!`)
 
 				tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger))
     			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger)}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
 			}
-			if (tmp.stab[0] == 1) {
+			else if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()
 			}
-			if (tmp.stab[0] == 2) {
+			else if (tmp.stab[0] == 2) {
 				updateAtomicHTML()
 			}
-			if (tmp.stab[0] == 3) {
+			else if (tmp.stab[0] == 3) {
 				updateStarsHTML()
 			}
 		}
-		if (tmp.tab == 1) {
+		else if (tmp.tab == 1) {
 			if (tmp.stab[1] == 0) updateRanksRewardHTML()
-			if (tmp.stab[1] == 1) updateScalingHTML()
-			if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
-			if (tmp.stab[1] == 3) updateBeyondRanksRewardHTML()
+			else if (tmp.stab[1] == 1) updateScalingHTML()
+			else if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
+			else if (tmp.stab[1] == 3) updateBeyondRanksRewardHTML()
 		}
-		if (tmp.tab == 2) {
+		else if (tmp.tab == 2) {
 			updateMainUpgradesHTML()
 		}
-		if (tmp.tab == 3) {
+		else if (tmp.tab == 3) {
 			updateChalHTML()
 		}
-		if (tmp.tab == 4) {
+		else if (tmp.tab == 4) {
 			if (tmp.stab[4] == 0) updateAtomHTML()
-			if (tmp.stab[4] == 1) updateElementsHTML()
-			if (tmp.stab[4] == 2) updateMDHTML()
-			if (tmp.stab[4] == 3) updateBDHTML()
+			else if (tmp.stab[4] == 1) updateElementsHTML()
+			else if (tmp.stab[4] == 2) updateMDHTML()
+			else if (tmp.stab[4] == 3) updateBDHTML()
+			else if (tmp.stab[4] == 4) {
+				updateExoticAtomsHTML()
+			}
 		}
-		if (tmp.tab == 8) {
+		else if (tmp.tab == 8) {
 			updateOptionsHTML()
 		}
 	}

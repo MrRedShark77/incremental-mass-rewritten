@@ -432,11 +432,13 @@ const PRESTIGES = {
             "22": `Glory boosts all matters gain.`,
             "25": `Uncap pre-darkness challenges' completion cap. C7's reward is changed.`,
             "28": `FV Manipulator Power is boosted by Honor.`,
+            "34": `Pions boost Muons gain at a reduced rate.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
             "2": `Exotic Supernova starts x1.25 later every Renown.`,
             "4": `Corrupted shard gain is increased by +50% per Renown.`,
+            "6": `Exotic Atoms boost them other resources.`,
         },
     ],
     rewardEff: [
@@ -526,6 +528,10 @@ const PRESTIGES = {
                 let x = player.prestiges[1].root(2).div(10).add(1)
                 return x
             },x=>"x"+format(x)],
+            "34": [()=>{
+                let x = player.dark.exotic_atom.amount[1].add(1).log10().add(1).pow(1.5)
+                return x
+            },x=>"x"+format(x)],
         },
         {
             "2": [()=>{
@@ -534,6 +540,10 @@ const PRESTIGES = {
             },x=>"x"+x.format()+" later"],
             "4": [()=>{
                 let x = player.prestiges[3].div(2).add(1)
+                return x
+            },x=>"x"+x.format()],
+            "6": [()=>{
+                let x = tmp.exotic_atom.amount.add(1).log10().add(1)
                 return x
             },x=>"x"+x.format()],
         },
@@ -694,7 +704,9 @@ const BEYOND_RANKS = {
             20: `C1's reward is changed.`,
         },
         3: {
-            1: `Mass & Stronger Overflow is weaker based on archverse tier of normal mass.`
+            1: `Mass & Stronger Overflow is weaker based on archverse tier of normal mass.`,
+            2: `Super FSS starts +1 later.`,
+            4: `Beyond Rank boosts Muon & Pion gain.`,
         },
     },
 
@@ -710,7 +722,7 @@ const BEYOND_RANKS = {
             ],
             4: [
                 ()=>{
-                    let x = player.dark.matters.final**0.75/10+1
+                    let x = player.dark.matters.final.pow(.75).div(10).add(1)
 
                     return x
                 },
@@ -761,6 +773,14 @@ const BEYOND_RANKS = {
                     return x
                 },
                 x=>formatReduction(x)+" weaker",
+            ],
+            4: [
+                ()=>{
+                    let x = player.ranks.beyond.add(1).log10().add(1).pow(2)
+
+                    return x
+                },
+                x=>"x"+format(x),
             ],
         },
     },

@@ -29,12 +29,26 @@ const CHARGERS = [
         desc: `
         Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed.
         `,
+    },{
+        req: E('e89000'),
+        cost: E(5e10),
+        desc: `
+        Unlock Exotic Atoms in Atom tab, and unlock new elements' layer.
+        `,
+    },{
+        req: E('ee6'),
+        cost: E(1e26),
+        desc: `
+        Remove all pre-Meta scalings from BHC. [Neut-Tau]'s effect no longer affects BHC's cheapness.
+        `,
     },
 ]
 
 const UNSTABLE_BH = {
     gain() {
         let x = tmp.unstable_bh.fvm_eff.eff||E(1)
+
+        x = x.mul(exoticAEff(1,0))
 
         return x
     },
@@ -131,6 +145,8 @@ function corruptedShardGain() {
 
     if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 
+    x = x.mul(exoticAEff(0,0))
+
     return x.floor()
 }
 
@@ -159,3 +175,5 @@ function updateC16HTML() {
         tmp.el[id+"_div"].setClasses({btn: true, full: true, charger: true, locked: !req || cs.lt(c.cost) || hasCharger(i)})
     }
 }
+
+const CORRUPTED_ELEMENTS = [40,64,67,150,162,187,199,200,204]

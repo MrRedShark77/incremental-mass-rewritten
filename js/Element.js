@@ -67,7 +67,10 @@ class Element {
 	}
 
 	setVisible(bool) {
-		this.el.style.visibility = bool ? "visible" : "hidden";
+		var s = this.el.style
+		s.visibility = bool ? "visible" : "hidden";
+		s.opacity = bool ? 1 : 0
+		s.pointerEvents = bool ? "all" : "none"
 	}
 	static setVisible(id, bool) {
 		new Element(id).setVisible(bool);

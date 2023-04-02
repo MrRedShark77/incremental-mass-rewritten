@@ -21,6 +21,8 @@ const ENTROPY = {
         if (player.md.break.upgs[6].gte(1)) x = x.mul(tmp.bd.upgs[6].eff?tmp.bd.upgs[6].eff[0]:1)
         x = x.mul(tmp.dark.shadowEff.en||1)
 
+        x = x.pow(exoticAEff(0,2))
+
         x = overflow(x,tmp.en.cap.max(1),0.25)
 
         return x

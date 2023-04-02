@@ -50,10 +50,14 @@ function resetTemp() {
         elements: {
             choosed: 0,
             effect: [null],
+            mu_effect: [null],
             cannot: [],
             ts: 0,
             te: 118,
             tt: 118,
+
+            max_tier: [1,1],
+            unl_length: [0,0],
         },
     
         fermions: {
@@ -121,6 +125,7 @@ function resetTemp() {
             abEff: {},
             mass_glyph_eff: [],
             mass_glyph_gain: [],
+            mg_passive: [],
         },
 
         matters: {
@@ -179,6 +184,12 @@ function resetTemp() {
 
         unstable_bh: {
             fvm_eff: {},
+        },
+
+        exotic_atom: {
+            amount: E(0),
+            gain: [E(0),E(0)],
+            eff: [[],[]],
         },
 
         prevSave: "",
@@ -283,7 +294,7 @@ function updateBlackHoleTemp() {
     t.dm_can = t.dm_gain.gte(1)
     t.effect = FORMS.bh.effect()
 
-    let fp = tmp.fermions.effs[1][5]
+    let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
 
     t.condenser_bonus = FORMS.bh.condenser.bonus()
     t.condenser_cost = E(1.75).pow(player.bh.condenser.scaleEvery('bh_condenser',false,[1,1,1,fp])).floor()
@@ -321,6 +332,7 @@ function updateTemp() {
     tmp.moreUpgs = hasElement(192)
     tmp.mass4Unl = hasElement(202)
     tmp.brUnl = hasElement(208)
+    tmp.eaUnl = hasCharger(5)
 
     updateC16Temp()
     updateDarkTemp()

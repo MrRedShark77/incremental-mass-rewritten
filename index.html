@@ -24,6 +24,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
 
+    <script src="js/darkness/exotic_atoms.js"></script>
     <script src="js/darkness/c16.js"></script>
     <script src="js/darkness/matter.js"></script>
     <script src="js/darkness/dark_run.js"></script>
@@ -315,6 +316,7 @@
                         <span id="massSoft8" style="color: rgb(0, 255, 149)">After <b id="massSoftStart8">X</b> of mass gain will softcap^7 mass gain!<br></span>
                         <span id="massSoft9" style="color: rgb(0, 225, 255)">After <b id="massSoftStart9">X</b> of mass gain will softcap^8 mass gain!</span>
                         <div id="massOverflow"></div>
+                        <div id="massOverflow2" style="color: rgb(255, 197, 215)"></div>
                         <div id="strongerOverflow"></div>
                     </div>
                 </div><div id="stab_frame0_1">
@@ -361,6 +363,7 @@
                             The formula (x + 1)<sup id="bhMassPower2">0.33</sup> softcaps at <b id="bhFSoftStart1">X</b>
                         </span><br>
                         <span id="bhOverflow"></span>
+                        <div id="bhOverflow2" style="color: rgb(255, 197, 215)"></div>
                     </div>
                 </div><div id="stab_frame0_2">
                     You have <span id="atomicAmt">X</span> Atomic Power<br>
@@ -479,9 +482,8 @@
                         <span id="quarkOverflow"></span>
                     </div>
                 </div><div id="stab_frame4_1">
-                    <div id="elemTierDiv">
-                        <button onclick="player.atom.elemTier = Math.max(1,player.atom.elemTier-1)" class="btn"><--</button><span id="elemTier" style="margin: 0px 10px">Element Tier 1</span><button onclick="player.atom.elemTier = Math.min(MAX_ELEM_TIERS,player.atom.elemTier+1)" class="btn">--></button><br><br>
-                    </div>
+                    <button class="btn" id="elemLayer" onclick="changeElemLayer()">Elements' Layer: Normal</button>
+                    <div id="elemTierDiv"></div><br>
                     <div id="elem_ch_div" style="min-height: 70px;">
                         <span id="elem_desc" class='sky'>X</span><br>
                         Cost: <span id="elem_cost">X</span><br>
@@ -503,6 +505,25 @@
                     <button onclick="MASS_DILATION.break.toggle()" id="bd_btn" class="btn half_full bd tooltip" tooltip-html="When breaking dilation, while in Big Rip, BH Condensers & Cosmic Rays are no longer nerfed by 8th QC modifier, 7th QC modifier is disabled, you can gain <b>Relativistic Energy</b> based on dilated mass. Relativistic Energy generates <b>Relativistic Mass</b>. Fixing Dilation resets your relativistic energy & its mass, also forces a Quantum reset.">Break Dilation</button><br><br>
                     <div class="table_center">
                         <div id="bd_upg_table" class="table_center" style="width: 1000px;"></div>
+                    </div>
+                </div><div id="stab_frame4_4">
+                    <button class="btn half_full tooltip" id="mcf_btn" tooltip-html="Tiering will result in forcing FSS reset." onclick="EXOTIC_ATOM.tier()">
+                        Muon-Catalyzed Fusion Tier 0<br>
+                        Requirement: ??? Exotic Atoms
+                    </button>
+                    <div id="ea_div">
+                        <br>
+                        <div>You have <span id="ext_atom">0</span> Exotic Atoms (Muon & Pion based).</div>
+                        <div class="table_center">
+                            <div style="width: 50%; min-width: 500px;">
+                                You have <span id="ea_amt0">0</span> Muons.<br><br>
+                                <div class="sky" id="ea_milestone_table0"></div>
+                            </div>
+                            <div style="width: 50%; min-width: 500px;">
+                                You have <span id="ea_amt1">0</span> Pions.<br><br>
+                                <div class="sky" id="ea_milestone_table1"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div><div id="tab_frame6">
@@ -606,7 +627,7 @@
                 <h2>Confirmation Settings</h2><br>
                 <div id="confirm_table" class="table_center"></div>
                 <br><br>
-                Incremental Mass Rewritten v0.6.4.5 - made by MrRedShark77<br>
+                Incremental Mass Rewritten v0.6.5 - made by MrRedShark77<br>
                 The game is inspired by Distance Incremental & Synergism<br>
                 Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                 Hint 1: Hover top image above tabs to show description...<br><br>

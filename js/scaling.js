@@ -16,6 +16,7 @@ const SCALE_START = {
 		prestige1: E(7),
 		prestige2: E(30),
 		massUpg4: E(50),
+		FSS: E(5),
     },
 	hyper: {
 		rank: E(120),
@@ -45,6 +46,7 @@ const SCALE_START = {
 		supernova: E(60),
 		fTier: E(100),
 		prestige0: E(320),
+		prestige1: E(200),
 	},
 	meta: {
 		rank: E(1e4),
@@ -55,7 +57,7 @@ const SCALE_START = {
 		gamma_ray: E(1e6),
 		supernova: E(100),
 		fTier: E(1.25e4),
-		prestige0: E(4000),
+		prestige0: E(3500),
 	},
 	exotic: {
 		rank: E(1e16),
@@ -85,6 +87,7 @@ const SCALE_POWER= {
 		prestige1: 1.5,
 		prestige2: 2,
 		massUpg4: 3,
+		FSS: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -114,6 +117,7 @@ const SCALE_POWER= {
 		supernova: 5,
 		fTier: 6,
 		prestige0: 3,
+		prestige1: 3,
 	},
 	meta: {
 		rank: 1.0025,
@@ -162,6 +166,7 @@ const SCALING_RES = {
 	prestige1() { return player.prestiges[1] },
 	prestige2() { return player.prestiges[2] },
 	massUpg4() { return E(player.massUpg[4]||0) },
+	FSS() { return player.dark.matters.final },
 }
 
 const NAME_FROM_RES = {
@@ -181,6 +186,7 @@ const NAME_FROM_RES = {
 	prestige1: "Honor",
 	prestige2: "Glory",
 	massUpg4: "Overpower",
+	FSS: "Final Star Shard",
 }
 
 function updateScalingHTML() {
@@ -265,7 +271,10 @@ function getScalingName(name, x=0, y=0) {
 }
 
 function getScalingStart(type, name) {
+	let c16 = tmp.c16active
+
 	let start = SCALE_START[SCALE_TYPE[type]][name]
+
 	if (type==0) {
 		if (name=="rank") {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(25)
@@ -295,6 +304,9 @@ function getScalingStart(type, name) {
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
 		}
+		else if (name=="FSS") {
+			if (hasBeyondRank(3,2)) start = start.add(1)
+		}
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {
@@ -321,6 +333,9 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="massUpg") {
 			if (hasElement(189)) start = start.pow(1.5)
+		}
+		else if (name=="prestige0") {
+			start = start.mul(exoticAEff(0,1))
 		}
 	}
 	else if (type==3) {
@@ -353,6 +368,9 @@ function getScalingStart(type, name) {
 		}
 		else if (name=='tetr') {
 			if (hasElement(211)) start = start.mul(elemEffect(211))
+		}
+		else if (name=="prestige0") {
+			start = start.mul(exoticAEff(0,1))
 		}
 	} else if (type==4) {
 		if (name=="rank") {
@@ -532,6 +550,12 @@ function noScalings(type,name) {
 	}
 	else if (name=="tickspeed") {
 		if (hasCharger(4)) return true
+	}
+	else if (name=="fTier") {
+		if (type < 3 && hasElement(2,1)) return true
+	}
+	else if (name=="bh_condenser") {
+		if (hasCharger(6)) return true
 	}
 
 	return false
