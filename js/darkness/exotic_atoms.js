@@ -39,7 +39,7 @@ const MUONIC_ELEM = {
             effDesc: x=>formatMult(x),
         },
         {
-            desc: `Placeholder.`,
+            desc: `Not affected by Neutronium-0, each pre-16 challenge’s completions boost each chroma gain.`,
             cost: E(1e20),
             eff() {
                 let c16 = tmp.c16active
