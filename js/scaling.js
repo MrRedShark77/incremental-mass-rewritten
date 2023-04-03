@@ -557,6 +557,9 @@ function noScalings(type,name) {
 	else if (name=="bh_condenser") {
 		if (hasCharger(6)) return true
 	}
+	else if (name=="gamma_ray") {
+		if (hasCharger(7)) return true
+	}
 
 	return false
 }

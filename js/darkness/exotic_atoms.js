@@ -57,6 +57,19 @@ const MUONIC_ELEM = {
             desc: `C9’s effect softcap is 1% weaker.`,
             cost: E(1e32),
         },
+        {
+            desc: `Remove the softcap of dark shadow’s fourth reward. Supernovas boost Pion gain`,
+            cost: E(1e42),
+            eff() {
+                let x = player.supernova.times.div(1e6).add(1)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },
+        {
+            desc: `De-corrupt Unoctseptium-187.`,
+            cost: E(1e46),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -70,7 +83,7 @@ const MUONIC_ELEM = {
         */
     ],
     getUnlLength() {
-        let u = 8
+        let u = 10
         return u
     },
 }
@@ -105,7 +118,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e8),E(1e12),E(1e25),E(1e34)],
+    requirement: [E(0),E(5e4),E(1e8),E(1e12),E(1e25),E(1e34),E(1e44)],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -138,9 +151,11 @@ const EXOTIC_ATOM = {
         
         let x = xy.div(10)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
+        if (hasPrestige(1,247)) x = x.mul(prestigeEff(1,247))
         
         let y = xy.div(20)
         if (hasElement(1,1)) y = y.mul(muElemEff(1))
+        if (hasElement(9,1)) y = y.mul(muElemEff(9))
 
         return [x,y]
     },
@@ -158,6 +173,10 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).log10().div(5).add(1).root(2)
                 return x
             },x=>`Boosts entropy gain by <b>^${format(x)}</b>`],
+            [a=>{
+                let x = a.add(1).log10().add(1).pow(2)
+                return x.toNumber()
+            },x=>`Impossible Challenges 1-12 start <b>${formatMult(x)}</b> later`],
         ],[
             [a=>{
                 let x = a.add(1).pow(2)

@@ -27,7 +27,7 @@ const CHARGERS = [
         req: E('e45000'),
         cost: E(5e8),
         desc: `
-        Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed.
+        Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed, but nullify [Tau]'s effect.
         `,
     },{
         req: E('e89000'),
@@ -39,7 +39,13 @@ const CHARGERS = [
         req: E('ee6'),
         cost: E(1e26),
         desc: `
-        Remove all pre-Meta scalings from BHC. [Neut-Tau]'s effect no longer affects BHC's cheapness.
+        Remove all scalings from BHC. [Neut-Tau]'s effect no longer affects BHC's cheapness. In C16, BHC is 1,000,000x cheaper.
+        `,
+    },{
+        req: E('e1.7e6'),
+        cost: E(1e31),
+        desc: `
+        Remove all scalings from Cosmic Ray. [Neut-Tau]'s effect now re-affects BHC's cheapness, but its effect is MASSIVELY weaker.
         `,
     },
 ]

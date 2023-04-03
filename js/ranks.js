@@ -419,9 +419,10 @@ const PRESTIGES = {
             "46": `Add 500 more C13-15 max completions.`,
             "66": `All Fermions' scaling is 20% weaker.`,
             "91": `FSS base is raised to the 1.05th power.`,
-            "127": `Remove all pre-Exotic scalings from Rank & Tier, but nullify C5's reward.`,
+            "127": `Remove all pre-Exotic scalings from Rank & Tier, but nullify C5's reward and Hybridized Uran-Astatine’s first effect for Rank & Tier.`,
             "139": `Matters' production is tripled every FSS. FV Manipulator's cost is slightly weaker.`,
             "167": `Abyssal Blot's fourth reward is raised by FSS.`,
+            "247": `Muon's production is increased by MCF tier.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
@@ -510,6 +511,10 @@ const PRESTIGES = {
                 let x = Decimal.pow(3,player.dark.matters.final)
                 return x
             },x=>"x"+x.format(0)],
+            "247": [()=>{
+                let x = Decimal.pow(player.dark.exotic_atom.tier+1,1.5)
+                return x
+            },x=>"x"+x.format()],
         },
         {
             "5": [()=>{
@@ -576,19 +581,20 @@ function updateRanksTemp() {
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
     let fp2 = tmp.qu.chroma_eff[1][0]
+    let rt_fp2 = hasPrestige(1,127) ? 1 : fp2
     let ffp = E(1)
     let ffp2 = 1
     if (tmp.c16active || player.dark.run.active) ffp2 /= mgEff(5)
 
     let fp = RANKS.fp.rank().mul(ffp)
-    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ffp2).scaleEvery('rank',false,[1,1,1,1,fp2]).div(fp).pow(1.15)).mul(10)
+    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = E(0)
-    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,fp2]).mul(ffp2).add(1).floor();
+    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2]).mul(ffp2).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier().mul(ffp)
-    tmp.ranks.tier.req = player.ranks.tier.div(ffp2).scaleEvery('tier',false,[1,1,1,fp2]).div(fp).add(2).pow(2).floor()
-    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,fp2]).mul(ffp2).add(1).floor();
+    tmp.ranks.tier.req = player.ranks.tier.div(ffp2).scaleEvery('tier',false,[1,1,1,rt_fp2]).div(fp).add(2).pow(2).floor()
+    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,rt_fp2]).mul(ffp2).add(1).floor();
 
     fp = E(1).mul(ffp)
     let pow = 2

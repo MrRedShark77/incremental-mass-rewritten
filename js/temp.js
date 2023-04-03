@@ -52,6 +52,7 @@ function resetTemp() {
             effect: [null],
             mu_effect: [null],
             cannot: [],
+            deCorrupt: [],
             ts: 0,
             te: 118,
             tt: 118,
@@ -255,7 +256,7 @@ function updateMassTemp() {
 }
 
 function updateTickspeedTemp() {
-    tmp.tickspeedFP = tmp.fermions.effs[1][2]
+    tmp.tickspeedFP = hasCharger(4) ? 1 : tmp.fermions.effs[1][2]
     tmp.tickspeedCost = E(2).pow(player.tickspeed.scaleEvery('tickspeed')).floor()
     tmp.tickspeedBulk = E(0)
     if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).add(1).floor()
@@ -295,6 +296,7 @@ function updateBlackHoleTemp() {
     t.effect = FORMS.bh.effect()
 
     let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
+    if (hasCharger(6) && tmp.c16active) fp *= 1e6
 
     t.condenser_bonus = FORMS.bh.condenser.bonus()
     t.condenser_cost = E(1.75).pow(player.bh.condenser.scaleEvery('bh_condenser',false,[1,1,1,fp])).floor()

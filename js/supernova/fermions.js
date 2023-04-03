@@ -376,8 +376,9 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = i.add(1).log10().pow(0.75).div(100).add(1).pow(t.pow(0.75))
-                    if (tmp.c16active) x = overflow(x,150,0.05)
+                    let c = hasCharger(7)
+                    let x = c ? t.add(1).pow(i.add(1).log10().add(1).log10()) : i.add(1).log10().pow(0.75).div(100).add(1).pow(t.pow(0.75))
+                    if (!c && tmp.c16active) x = overflow(x,150,0.05)
                     return x
                 },
                 desc(x) {

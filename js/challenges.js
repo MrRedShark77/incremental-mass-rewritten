@@ -203,6 +203,7 @@ const CHALS = {
             s2 = 5
             s3 = 10
         }
+        if (x <= 12) s3 *= exoticAEff(0,3)
         let pow = chal.pow
         if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
         chal.pow = chal.pow.max(1)

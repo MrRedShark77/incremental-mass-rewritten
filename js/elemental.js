@@ -35,7 +35,7 @@ const ELEMENTS = {
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
     canBuy(x) {
-        if (tmp.c16active && CORRUPTED_ELEMENTS.includes(x)) return false
+        if (tmp.c16active && !tmp.elements.deCorrupt.includes(x) && CORRUPTED_ELEMENTS.includes(x)) return false
         let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
         return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
     },
@@ -1077,6 +1077,7 @@ const ELEMENTS = {
             cost: E("e2e90"),
             effect() {
                 let x = Decimal.pow(2,tmp.prestiges.base.max(1).log10().root(2))
+                if (tmp.c16active) x = overflow(x,10,.5)
                 return x
             },
             effDesc(x) { return "^"+format(x)+" later" },
@@ -1365,7 +1366,7 @@ for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
     }
 }
 
-function hasElement(x,layer=0) { return player.atom[["elements","muonic_el"][layer]].includes(x) && !(tmp.c16active && CORRUPTED_ELEMENTS.includes(x)) }
+function hasElement(x,layer=0) { return player.atom[["elements","muonic_el"][layer]].includes(x) && (layer > 0 || (tmp.elements.deCorrupt.includes(x) || !(tmp.c16active && CORRUPTED_ELEMENTS.includes(x)))) }
 
 function elemEffect(x,def=1) { return tmp.elements.effect[x]||def }
 
@@ -1501,6 +1502,10 @@ function updateElementsTemp() {
     tElem.ts = ELEMENTS.exp[et[elayer]-1]
     tElem.te = ELEMENTS.exp[et[elayer]]
     tElem.tt = tElem.te - tElem.ts
+
+    let decor = []
+    if (hasElement(10,1)) decor.push(187)
+    tElem.deCorrupt = decor
 
     let cannot = []
     if (player.qu.rip.active) {

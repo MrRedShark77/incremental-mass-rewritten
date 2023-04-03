@@ -2,7 +2,7 @@ const DARK_RUN = {
     mass_glyph_name: ['Cyrillic Glyph', 'Deutsch Glyph', 'Swedish Glyph', 'Chinese Glyph', 'Spanish Glyph', 'Slovak Glyph'],
 
     mass_glyph_eff(i) {
-        let x, g = tmp.c16active ? i == 5 ? 10 : 100 : player.dark.run.glyphs[i]
+        let x, g = (tmp.c16active ? i == 5 ? 10 : 100 : player.dark.run.glyphs[i]) / tmp.dark.glyph_weak
 
         if (i < 4) x = 1/(g**0.5/100+1)
         else if (i == 4) x = [1/(g**0.5/100+1),1.1**(g**0.75)]
@@ -260,8 +260,11 @@ function updateDarkRunTemp() {
     dtmp.glyph_mult = dtmp.rayEff.glyph||1
     if (hasPrestige(2,5)) dtmp.glyph_mult *= prestigeEff(2,5,1)
     dtmp.glyph_mult *= tmp.matters.FSS_eff[1]
+    
+    let w = 1
+    dtmp.glyph_weak = w
 
-    var dp = 0
+    let dp = 0
     if (hasElement(7,1)) dp += 3
 
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {

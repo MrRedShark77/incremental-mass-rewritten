@@ -52,11 +52,13 @@ Decimal.prototype.scaleEvery = function (id, rev=false, fp=SCALE_FP[id]?SCALE_FP
         let s = rev?i:SCALE_TYPE.length-1-i
         let sc = SCALE_TYPE[s]
 
-        if (tmp.no_scalings[sc].includes(id)) continue
-
         let f = fp[s]||1
 
-        x = rev?x.mul(f).scaleName(sc,id,rev):x.scaleName(sc,id,rev).div(f)
+        // if (Decimal.gt(f,1)) console.log(id,format(f))
+
+        // if (tmp.no_scalings[sc].includes(id)) continue
+
+        x = tmp.no_scalings[sc].includes(id) ? rev?x.mul(f):x.div(f) : rev?x.mul(f).scaleName(sc,id,rev):x.scaleName(sc,id,rev).div(f)
     }
     return x
 }
