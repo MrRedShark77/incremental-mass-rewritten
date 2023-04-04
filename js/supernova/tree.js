@@ -1004,7 +1004,9 @@ const TREE_UPGS = {
             reqDesc() { return `Reach ${format(1e300)} dark matters during C16.` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1).log10().div(tmp.c16active?8:30)
+                let p = hasPrestige(2,40), c = tmp.c16active
+                let x = player.dark.c16.bestBH.add(1).log10().add(1).log10().div(c?8:30)
+                if (p) x = x.mul(c?3:1.2)
                 return x.toNumber()
             },
             effDesc(x) { return "+"+format(x) },
@@ -1080,7 +1082,8 @@ const TREE_UPGS = {
 
             effect() {
                 let x = Decimal.pow(0.95,overflow(player.dark.c16.totalS.add(1).log10(),2,0.5).root(2))
-                return x.toNumber()
+                // if (hasElement(11,1)) x = x.pow(2)
+                return x
             },
             effDesc(x) { return formatReduction(x) },
         },
@@ -1143,7 +1146,6 @@ const TREE_UPGS = {
         },
         ct15: {
             branch: ['ct8'],
-            icon: "placeholder",
 
             desc: `Total corrupted shards boost matters gain.`,
             cost: E(2.5e10),
@@ -1157,9 +1159,8 @@ const TREE_UPGS = {
         ct16: {
             unl: ()=>tmp.eaUnl,
             branch: ['ct10'],
-            icon: "placeholder",
 
-            desc: `Best mass of black hole in C16 boosts Muon & Pion gain.`,
+            desc: `Best mass of black hole in C16 boosts Kaon & Pion gain.`,
             cost: E(5e16),
 
             effect() {

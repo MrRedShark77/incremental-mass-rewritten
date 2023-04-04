@@ -160,13 +160,14 @@ const CHALS = {
         return x.floor()
     },
     getScaleName(i) {
-        if (player.chal.comps[i].gte(i==13?10:1000)) return " Impossible"
-        if (player.chal.comps[i].gte(i==13?5:i==8?200:i>8&&i!=13?50:300)) return " Insane"
-        if (player.chal.comps[i].gte(i==13?2:i>8&&i!=13?10:75)) return " Hardened"
+        if (player.chal.comps[i].gte(i==13||i==16?10:1000)) return " Impossible"
+        if (player.chal.comps[i].gte(i==13||i==16?5:i==8?200:i>8&&i!=13&&i!=16?50:300)) return " Insane"
+        if (player.chal.comps[i].gte(i==13||i==16?2:i>8&&i!=13&&i!=16?10:75)) return " Hardened"
         return ""
     },
     getPower(i) {
         let x = E(1)
+        if (i == 16) return x
         if (hasElement(2)) x = x.mul(0.75)
         if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
         if (hasElement(180) && i <= 12) x = x.mul(.7)
@@ -175,6 +176,7 @@ const CHALS = {
     },
     getPower2(i) {
         let x = E(1)
+        if (i == 16) return x
         if (hasElement(92)) x = x.mul(0.75)
         if (hasElement(120)) x = x.mul(0.75)
         if (hasElement(180) && i <= 12) x = x.mul(.7)
@@ -183,6 +185,7 @@ const CHALS = {
     },
     getPower3(i) {
         let x = E(1)
+        if (i == 16) return x
         if (hasElement(120)) x = x.mul(0.75)
         if (hasElement(180) && i <= 12) x = x.mul(.7)
         return x
@@ -198,7 +201,7 @@ const CHALS = {
         if (x == 8) s2 = 200
         if (x > 8) s2 = 50
         let s3 = 1000
-        if (x == 13) {
+        if (x == 13 || x == 16) {
             s1 = 2
             s2 = 5
             s3 = 10
@@ -527,16 +530,16 @@ const CHALS = {
         • Pre-Quantum global speed always sets to /100.<br>
         You can earn Corrupted Shard based on your mass of black hole, when exiting the challenge.
         `,
-        reward: `Nothing.`,
+        reward: `Improve Hybridized Uran-Astatine. [NOT IMPLEMENTED]<br><span class="yellow">On first completion, unlock ???</span>`,
         max: E(1),
-        inc: EINF,
-        pow: EINF,
-        start: EINF,
+        inc: E('e1.25e11'),
+        pow: E(2),
+        start: E('e1.25e11'),
         effect(x) {
-            let ret = E(1)
+            let ret = x.mul(0.048).add(1)
             return ret
         },
-        effDesc(x) { return "Nothing." },
+        effDesc(x) { return "^"+format(x) },
     },
     cols: 16,
 }

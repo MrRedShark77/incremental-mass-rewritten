@@ -30,7 +30,7 @@ const MUONIC_ELEM = {
             cost: E(1e13),
         },
         {
-            desc: `Muon & Pion are doubled every muonic element bought.`,
+            desc: `Kaon & Pion are doubled every muonic element bought.`,
             cost: E(1e15),
             eff() {
                 let x = Decimal.pow(2,player.atom.muonic_el.length)
@@ -70,6 +70,10 @@ const MUONIC_ELEM = {
             desc: `De-corrupt Unoctseptium-187.`,
             cost: E(1e46),
         },
+        {
+            desc: `De-corrupt FSS’s reward to Matters.`,
+            cost: E(1e54),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -83,7 +87,7 @@ const MUONIC_ELEM = {
         */
     ],
     getUnlLength() {
-        let u = 10
+        let u = 11
         return u
     },
 }

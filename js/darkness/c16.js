@@ -42,8 +42,8 @@ const CHARGERS = [
         Remove all scalings from BHC. [Neut-Tau]'s effect no longer affects BHC's cheapness. In C16, BHC is 1,000,000x cheaper.
         `,
     },{
-        req: E('e1.7e6'),
-        cost: E(1e31),
+        req: E('e1.6e6'),
+        cost: E(5e30),
         desc: `
         Remove all scalings from Cosmic Ray. [Neut-Tau]'s effect now re-affects BHC's cheapness, but its effect is MASSIVELY weaker.
         `,

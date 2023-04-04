@@ -228,6 +228,9 @@ function updateDarkHTML() {
 	tmp.el.corrupt_div.setDisplay(unl)
 	if (unl) tmp.el.corruptShard1.setHTML(format(player.dark.c16.shard,0)+"<br>(+"+tmp.c16.shardGain.format(0)+")")
 
+    unl = player.chal.comps[16].gte(1)
+	tmp.el.idk_div.setDisplay(unl)
+
     if (tmp.tab == 7) {
         if (tmp.stab[7] == 0) {
             tmp.el.darkRay.setHTML(player.dark.rays.format(0))
@@ -241,7 +244,7 @@ function updateDarkHTML() {
             `
 
             if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
-            if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5)
+            if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5,hasElement(9,1))
             if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
             if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
             if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncaps BH-Exponent Boost's effect`.corrupt(c16)

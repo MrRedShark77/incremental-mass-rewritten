@@ -433,7 +433,8 @@ const PRESTIGES = {
             "22": `Glory boosts all matters gain.`,
             "25": `Uncap pre-darkness challenges' completion cap. C7's reward is changed.`,
             "28": `FV Manipulator Power is boosted by Honor.`,
-            "34": `Pions boost Muons gain at a reduced rate.`,
+            "34": `Pions boost Kaons gain at a reduced rate.`,
+            "40": `[ct4]'s effect is better.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
@@ -712,7 +713,7 @@ const BEYOND_RANKS = {
         3: {
             1: `Mass & Stronger Overflow is weaker based on archverse tier of normal mass.`,
             2: `Super FSS starts +1 later.`,
-            4: `Beyond Rank boosts Muon & Pion gain.`,
+            4: `Beyond Rank boosts Kaon & Pion gain.`,
         },
     },
 

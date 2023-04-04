@@ -89,6 +89,8 @@ const FORMS = {
 
         if (hasTree('ct1')) x = x.pow(treeEff('ct1'))
 
+        if (hasUpgrade('rp',20)) x = x.pow(upgEffect(1,20))
+
         if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
         let o = x

@@ -279,6 +279,19 @@ button {
 	text-shadow: -1px -1px 3px lightskyblue, 0px 0px 5px #878ffa, 1px 1px 3px blue;
 }
 
+.idk {
+	animation: idk 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+@keyframes idk {
+	0%, 100% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 0.25;
+	}
+}
+
 @keyframes quark_color {
 	0%, 100% {
 		color: red;

@@ -25,9 +25,10 @@ const MATTERS = {
         if (!c16) {
             x = x.pow(tmp.dark.abEff.mexp||1)
             x = x.pow(glyphUpgEff(14,1))
-            x = x.pow(tmp.matters.FSS_eff[0])
             if (hasBeyondRank(1,7)) x = x.pow(beyondRankEffect(1,7))
         }
+
+        if (hasElement(11,1) || !c16) x = x.pow(tmp.matters.FSS_eff[0])
 
         if (hasElement(4,1)) x = c16 ? x.pow(1.1) : expMult(x,1.05)
 
@@ -88,11 +89,15 @@ const MATTERS = {
         },
 
         effect() {
+            let c16 = tmp.c16active
+
             let fss = player.dark.matters.final
 
             fss = fss.mul(tmp.dark.abEff.fss||1)
 
             let x = Decimal.pow(2,fss.pow(1.25))
+
+            if (c16) x = x.log10().div(10).add(1)
 
             let y = fss.mul(.15).add(1)
 
@@ -161,7 +166,7 @@ function updateMattersHTML() {
 
     tmp.el.FSS_eff1.setHTML(
         player.dark.matters.final.gt(0)
-        ? `Thanks to FSS, boosts Matters gain by ^${tmp.matters.FSS_eff[0].format(1)}`.corrupt(c16)
+        ? `Thanks to FSS, boosts Matters gain by ^${tmp.matters.FSS_eff[0].format(1)}`.corrupt(c16 && !hasElement(11,1))
         : ''
     )
 }
