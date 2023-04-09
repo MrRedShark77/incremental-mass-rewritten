@@ -24,7 +24,7 @@ const CHARGERS = [
         Remove all pre-Meta scalings from Supernova. [Neut-Muon]'s effect is now changed. Denullify C5's effect, but it's changed.
         `,
     },{
-        req: E('e45000'),
+        req: E('e35000'),
         cost: E(5e8),
         desc: `
         Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed, but nullify [Tau]'s effect.
