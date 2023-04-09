@@ -46,7 +46,7 @@ const RESOURCES_DIS = {
         desc: (gs)=>format(player.atom.quarks,0)+"<br>"+(hasElement(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec).mul(gs):0):"(+"+format(tmp.atom.quarkGain,0)+")"),
     },
     md: {
-        unl: ()=>player.bh.unl,
+        unl: ()=>MASS_DILATION.unlocked(),
         icon: "md",
         class: "green",
 
