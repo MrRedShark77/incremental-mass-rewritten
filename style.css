@@ -96,7 +96,7 @@ body {
     color: white;
     background-color: hsl(0, 0%, 7%);
 	overflow: hidden;
-	font-size: 16px;
+	font-size: 14px;
 	margin: 0px;
 	user-select: none;
 }

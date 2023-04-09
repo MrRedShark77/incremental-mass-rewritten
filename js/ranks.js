@@ -903,7 +903,7 @@ function updateRanksHTML() {
             }
 
             h = `
-                Reset your hexs (hexes) (and force a darkness reset) but hept/oct/enne etc. up. ${r}<br>
+                Reset your hexes (and force a darkness reset) but hept/oct/enne etc. up. ${r}<br>
                 To ${getRankTierName(t+5)} up, require ${getRankTierName(t+4)} ${
                     t == 1
                     ? tmp.beyond_ranks.req.format(0)
