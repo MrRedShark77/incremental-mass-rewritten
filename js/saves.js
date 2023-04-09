@@ -279,6 +279,7 @@ function getPlayerData() {
             notation: 'sc',
             tree_animation: 0,
             massDis: 0,
+            res_hide: {},
         },
         confirms: {},
         offline: {
