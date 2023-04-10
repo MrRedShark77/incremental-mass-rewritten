@@ -79,6 +79,11 @@ const TOOLTIP_RES = {
             if (tmp.overflowBefore.quark.gte(tmp.overflow_start.quark))
             h += `<br>(<b>+${format(tmp.overflowBefore.quark,0)}</b> gained before <b>overflow</b>)`;
 
+            if (tmp.eaUnl) h += `
+            <br class='line'>
+            You have <b class='orange'>${tmp.exotic_atom.amount.format(0)}</b> Exotic Atoms.
+            `
+
             return h
         },
     },
@@ -111,7 +116,8 @@ const TOOLTIP_RES = {
         full: "Supernova",
         desc() {
             let h = `
-            You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.
+            You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.<br>
+            You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
             <br class='line'>
             <i>
             ${"Reach over <b>"+format(tmp.supernova.maxlimit)+"</b> collapsed stars to go Supernova"}.

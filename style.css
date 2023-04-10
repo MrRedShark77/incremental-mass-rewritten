@@ -954,7 +954,13 @@ h3 {
 	position: absolute;
 	bottom: -20px;
 	right: 5px;
+	transition: transform 0.25s;
 	transform: rotate(-15deg);
+}
+
+#tabs .btn_tab:hover > iconify-icon,
+#tabs .btn_tab.choosed > iconify-icon {
+	transform: scale(1.3) rotate(-25deg);
 }
 
 #tabs .btn_tab.choosed {
@@ -1005,6 +1011,46 @@ h3 {
 #res_hider_table > div > div {
 	display: flex;
 	align-items: center;
+}
+
+#nav_btns {
+	position: fixed;
+	height: 100%;
+	pointer-events: none;
+	width: calc(100% - 450px);
+	z-index: 1;
+}
+
+#nav_btns > button {
+	position: absolute;
+	bottom: 25px;
+	width: 40px;
+	height: 50px;
+	pointer-events: all;
+	background-color: white;
+}
+
+#nav_btns > button > iconify-icon {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	transition: transform 0.25s;
+	color: black;
+}
+
+#nav_btns > button.toggled > iconify-icon {
+	transform: translate(-50%, -50%) rotate(180deg);
+}
+
+#nav_left_hider {
+	left: 0;
+	border-radius: 0 15px 15px 0;
+}
+
+#nav_right_hider {
+	right: 0;
+	border-radius: 15px 0 0 15px;
 }
 
 /*

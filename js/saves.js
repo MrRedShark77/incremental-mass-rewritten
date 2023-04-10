@@ -280,6 +280,8 @@ function getPlayerData() {
             tree_animation: 0,
             massDis: 0,
             res_hide: {},
+
+            nav_hide: [],
         },
         confirms: {},
         offline: {
@@ -496,6 +498,8 @@ function loadGame(start=true, gotNaN=false) {
             tmp.cx = e.clientX
             tmp.cy = e.clientY
         }
+        document.addEventListener('keydown', e => {keyEvent(e)})
+        updateNavigation()
         updateMuonSymbol(true)
         setInterval(loop, 50)
         setInterval(updateStarsScreenHTML, 50)

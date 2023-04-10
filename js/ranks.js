@@ -281,6 +281,7 @@ const CORRUPTED_PRES = [
 ]
 
 const PRESTIGES = {
+    names: ['prestige','honor','glory','renown'],
     fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown'],
     baseExponent() {
         let x = 0

@@ -134,6 +134,7 @@ function setupHTML() {
 	}
 	scaling_table.setHTML(table)
 
+	setupStatsHTML()
 	setupResourcesHTML()
 	setupChalHTML()
 	setupAtomHTML()
@@ -176,12 +177,15 @@ function setupHTML() {
 }
 
 function updateTabsHTML() {
+	let s = !player.options.nav_hide[0]
 	tmp.el.stabs_div.setDisplay(TABS[2][tmp.tab])
 	
 	for (let x = 0; x < TABS[1].length; x++) {
 		let tab = TABS[1][x]
-		tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
-		tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.tab})
+		if (s) {
+			tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
+			tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.tab})
+		}
 
 		if (tmp.el["tab_frame"+x]) tmp.el["tab_frame"+x].setDisplay(x == tmp.tab)
 		if (TABS[2][x]) {
@@ -299,7 +303,7 @@ function updateTickspeedHTML() {
 }
 
 function updateRanksRewardHTML() {
-	tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
+	// tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
 		tmp.el["ranks_reward_div_"+x].setDisplay(player.ranks_reward == x)
@@ -316,7 +320,7 @@ function updateRanksRewardHTML() {
 
 function updatePrestigesRewardHTML() {
 	let c16 = tmp.c16active
-	tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
+	// tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
 	for (let x = 0; x < PRES_LEN; x++) {
 		tmp.el["pres_reward_div_"+x].setDisplay(player.pres_reward == x)
 		if (player.pres_reward == x) {
@@ -468,7 +472,7 @@ function updateHTML() {
     tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab))
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
-	updateResourcesHTML()
+	if (!player.options.nav_hide[1]) updateResourcesHTML()
 	if (hover_tooltip) updateTooltipResHTML()
 	// updateUpperHTML()
 	if ((!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
@@ -517,6 +521,8 @@ function updateHTML() {
 			}
 		}
 		else if (tmp.tab == 1) {
+			updateStatsHTML()
+
 			if (tmp.stab[1] == 0) updateRanksRewardHTML()
 			else if (tmp.stab[1] == 1) updateScalingHTML()
 			else if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
