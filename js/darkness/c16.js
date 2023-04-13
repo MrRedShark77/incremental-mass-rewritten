@@ -30,7 +30,7 @@ const CHARGERS = [
         Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed, but nullify [Tau]'s effect.
         `,
     },{
-        req: E('e89000'),
+        req: E('e77000'),
         cost: E(5e10),
         desc: `
         Unlock Exotic Atoms in Atom tab, and unlock new elements' layer.
