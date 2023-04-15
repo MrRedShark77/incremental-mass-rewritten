@@ -4,6 +4,7 @@ const ELEMENTS = {
     ],
     la: [null,'*','**','*','**'],
     exp: [0,118,218,362,558,814,1138],
+    max_hsize: [19],
     names: [
         null,
         'H','He','Li','Be','B','C','N','O','F','Ne',
@@ -1335,6 +1336,8 @@ for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
     let [ts,te] = [ELEMENTS.exp[x-1],ELEMENTS.exp[x]]
 
     if (x > 1) {
+        ELEMENTS.max_hsize[x-1] = 11 + 4*x
+
         let m = 'xx1xxxxxxxxxxxxxxxxvxx2xxxxxxxxxxxxxxxxv_v'
 
         for (let y = x; y >= 1; y--) {
@@ -1382,11 +1385,12 @@ function setupElementsHTML() {
 	let table = ""
     let num = 0
     for (let k = 1; k <= MAX_ELEM_TIERS; k++) {
+        let hs = `style="width: ${50*ELEMENTS.max_hsize[k-1]}px; margin: auto"`
         let n = 0, p = (k+3)**2*2, xs = ELEMENTS.exp[k-1], xe = ELEMENTS.exp[k]
-        table += `<div id='elemTier${k}_div'><div class='table_center'>`
+        table += `<div id='elemTier${k}_div'><div ${hs}><div class='table_center'>`
         for (let i = 0; i < ELEMENTS.map[k-1].length; i++) {
             let m = ELEMENTS.map[k-1][i]
-            if (m=='v') table += '</div><div class="table_center">'
+            if (m=='v') table += `</div><div class="table_center">`
             else if (m=='_' || !isNaN(Number(m))) table += `<div ${ELEMENTS.la[m]!==undefined&&k==1?`id='element_la_${m}'`:""} style="width: 50px; height: 50px">${ELEMENTS.la[m]!==undefined?"<br>"+ELEMENTS.la[m]:""}</div>`
             else if (m=='x') {
                 num++
@@ -1418,7 +1422,7 @@ function setupElementsHTML() {
                 }
             }
         }
-        table += "</div></div>"
+        table += "</div></div></div>"
     }
 	elements_table.setHTML(table)
 

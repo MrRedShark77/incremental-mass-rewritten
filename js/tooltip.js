@@ -48,7 +48,7 @@ function updateTooltips() {
             }
         }
 
-        style.top = Math.max(TOOLTIP_CONFING.padding_y,dy) + window.scrollY
+        style.top = Math.max(TOOLTIP_CONFING.padding_y,Math.min(window.innerHeight-t_rect.height-TOOLTIP_CONFING.padding_y,dy)) + window.scrollY
         style.left = Math.max(TOOLTIP_CONFING.padding_x,Math.min(window.innerWidth-t_rect.width-TOOLTIP_CONFING.padding_x,dx)) + window.scrollX
         style['text-align'] = text_align
     } else {

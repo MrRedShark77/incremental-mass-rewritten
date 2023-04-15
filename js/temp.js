@@ -11,6 +11,8 @@ function resetTemp() {
         cx: 0,
         cy: 0,
 
+        mobile: false,
+
         start: false,
 
         sn_tab: 0,

@@ -465,6 +465,8 @@ function updateHTML() {
 	document.documentElement.style.setProperty('--cx', tmp.cx)
 	document.documentElement.style.setProperty('--cy', tmp.cy)
 
+	tmp.mobile = window.innerWidth < 1200
+
 	let displayMainTab = true
 	
 	tmp.el.loading.setDisplay(!tmp.start)

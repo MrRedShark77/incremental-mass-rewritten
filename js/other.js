@@ -340,7 +340,7 @@ function updateNavigation() {
 
         tmp.el[ids[i][0]].setClasses({toggled: h})
         tmp.el[ids[i][1]].setDisplay(!h)
-        if (h) w -= i == 0 ? 200 : 250
+        if (h) w -= i == 0 ? 198 : 248
     }
 
     let p = `calc(100% - ${w}px)`
