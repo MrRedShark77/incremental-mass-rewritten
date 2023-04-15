@@ -467,15 +467,14 @@ function updateHTML() {
 
 	let displayMainTab = true
 	
-	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
-	tmp.el.loading.setDisplay(tmp.offlineActive)
-    tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab))
+	tmp.el.loading.setDisplay(!tmp.start)
+    tmp.el.app.setDisplay(tmp.start && (player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab)
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
 	if (!player.options.nav_hide[1]) updateResourcesHTML()
 	if (hover_tooltip) updateTooltipResHTML()
 	// updateUpperHTML()
-	if ((!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
+	if (tmp.start && (!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()
 		updateDarkHTML()
 		if (tmp.tab == 0) {

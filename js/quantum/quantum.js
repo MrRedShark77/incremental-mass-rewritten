@@ -187,7 +187,7 @@ function getQUSave() {
     return s
 }
 
-function calcQuantum(dt, dt_offline) {
+function calcQuantum(dt) {
     if (player.mass.gte(mlt(1e4)) && !player.qu.reached && player.chal.comps[12].gte(1)) {
         player.qu.reached = true
         createPopup(POPUP_GROUPS.qu.html(),'quReached')
@@ -204,7 +204,7 @@ function calcQuantum(dt, dt_offline) {
         }
 
         if (player.qu.auto.enabled) {
-            player.qu.auto.time += dt_offline
+            player.qu.auto.time += dt
 
             let can = false
             if (player.qu.auto.mode == 0) can = tmp.qu.gain.gte(tmp.qu.auto_input)
@@ -232,7 +232,7 @@ function calcQuantum(dt, dt_offline) {
 
     if (hasTree("qu_qol1")) for (let x = 0; x < tmp.supernova.auto_tree.length; x++) TREE_UPGS.buy(tmp.supernova.auto_tree[x], true)
 
-    calcEntropy(dt, dt_offline)
+    calcEntropy(dt)
 }
 
 function updateQuantumTemp() {

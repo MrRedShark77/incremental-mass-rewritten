@@ -160,7 +160,7 @@ const DARK = {
     },
 }
 
-function calcDark(dt, dt_offline) {
+function calcDark(dt) {
     if (player.dark.unl) {
         player.dark.shadow = player.dark.shadow.add(tmp.dark.shadowGain.mul(dt))
 

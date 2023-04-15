@@ -569,7 +569,7 @@ function loop() {
     ssf[1]()
     updateTemp()
     updateHTML()
-    calc(diff/1000*tmp.offlineMult,diff/1000);
+    calc(diff/1000);
     date = Date.now();
     player.offline.current = date
 }

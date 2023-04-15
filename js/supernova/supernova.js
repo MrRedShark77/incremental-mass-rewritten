@@ -82,21 +82,21 @@ const SUPERNOVA = {
     },
 }
 
-function calcSupernova(dt, dt_offline) {
+function calcSupernova(dt) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
     let su = player.supernova
 
     if (player.tickspeed.gte(1)) su.chal.noTick = false
     if (player.bh.condenser.gte(1)) su.chal.noBHC = false
 
-    if (tmp.supernova.reached && (!tmp.offlineActive || su.times.gte(1)) && !su.post_10) {
+    if (tmp.supernova.reached && (tmp.start || su.times.gte(1)) && !su.post_10) {
         if (su.times.lte(0)) tmp.supernova.time += dt
         else {
             addNotify("You become Supernova!")
             SUPERNOVA.reset()
         }
     }
-    if (su.times.gte(1) || quUnl()) su.stars = su.stars.add(tmp.supernova.star_gain.mul(dt_offline).mul(tmp.preQUGlobalSpeed))
+    if (su.times.gte(1) || quUnl()) su.stars = su.stars.add(tmp.supernova.star_gain.mul(dt).mul(tmp.preQUGlobalSpeed))
 
     if (!su.post_10 && su.times.gte(10)) {
         su.post_10 = true
@@ -165,7 +165,7 @@ function updateSupernovaTemp() {
 }
 
 function updateSupernovaEndingHTML() {
-    if (tmp.supernova.reached && !tmp.offlineActive && player.supernova.times.lte(0) && !player.supernova.post_10) {
+    if (tmp.supernova.reached && tmp.start && player.supernova.times.lte(0) && !player.supernova.post_10) {
         tmp.tab = 5
         document.body.style.backgroundColor = `hsl(0, 0%, ${7-Math.min(tmp.supernova.time/4,1)*7}%)`
         tmp.el.supernova_scene.setDisplay(tmp.supernova.time>4)

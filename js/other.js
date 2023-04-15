@@ -53,6 +53,8 @@ const POPUP_GROUPS = {
         uni (mass of Universe): 50,276,520,864 MMWG = 1.5e56 g<br>
         mlt (mass of Multiverse): 1e1e9 uni (logarithmic)<br>
         mgv (mass of Megaverse): 1e15 mlt<br>
+        giv (mass of Gigaverse): 1e15 mgv<br>
+        arv^n (mass of n-th Archverse): 1e15 arv^n-1<br>
         `,
     },
     fonts: {
