@@ -53,6 +53,8 @@ const POPUP_GROUPS = {
         uni (mass of Universe): 50,276,520,864 MMWG = 1.5e56 g<br>
         mlt (mass of Multiverse): 1e1e9 uni (logarithmic)<br>
         mgv (mass of Megaverse): 1e15 mlt<br>
+        giv (mass of Gigaverse): 1e15 mgv<br>
+        arv^n (mass of n-th Archverse): 1e15 arv^n-1<br>
         `,
     },
     fonts: {
@@ -285,4 +287,108 @@ function convertStringIntoAGY(s) {
     }
 
     return result
+}
+
+function keyEvent(e) {
+    let k = e.keyCode
+
+    // console.log(k)
+
+    if (k == 38 || k == 40) {
+        let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
+
+        while (true) {
+            t += v
+            tt = TABS[1][t]
+            if (!tt) {
+                tmp.tab = s
+                return
+            }
+            else if (!tt.unl || tt.unl()) {
+                tmp.tab = t
+                return
+            }
+        }
+    } else if (k == 37 || k == 39) {
+        if (!TABS[2][tmp.tab]) return
+
+        let v = k == 39 ? 1 : -1, t = tmp.stab[tmp.tab], s = t
+
+        while (true) {
+            t += v
+            tt = TABS[2][tmp.tab][t]
+            if (!tt) {
+                tmp.stab[tmp.tab] = s
+                return
+            }
+            else if (!tt.unl || tt.unl()) {
+                tmp.stab[tmp.tab] = t
+                return
+            }
+        }
+    }
+}
+
+function hideNavigation(i) { player.options.nav_hide[i] = !player.options.nav_hide[i]; updateNavigation() }
+
+function updateNavigation() {
+    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"]]
+    let w = 450
+
+    for (i in player.options.nav_hide) {
+        let h = player.options.nav_hide[i]
+
+        tmp.el[ids[i][0]].setClasses({toggled: h})
+        tmp.el[ids[i][1]].setDisplay(!h)
+        if (h) w -= i == 0 ? 198 : 248
+    }
+
+    let p = `calc(100% - ${w}px)`
+
+    tmp.el.main_app.changeStyle('width',p)
+    tmp.el.nav_btns.changeStyle('width',p)
+}
+
+function setupStatsHTML() {
+    let h = ""
+
+    for (let i in RANKS.names) {
+        h += `<div id="stats_${RANKS.names[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.ranks_reward = ${i}">${RANKS.fullNames[i]}</button></div>`
+    }
+
+    new Element("ranks_reward_btn").setHTML(h)
+
+    h = ""
+
+    for (let i in SCALE_TYPE) {
+        h += `<div id="stats_${SCALE_TYPE[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.scaling_ch = ${i}">${FULL_SCALE_NAME[i]}</button></div>`
+    }
+
+    new Element("scaling_btn").setHTML(h)
+
+    h = ""
+
+    for (let i in PRESTIGES.names) {
+        h += `<div id="stats_${PRESTIGES.names[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.pres_reward = ${i}">${PRESTIGES.fullNames[i]}</button></div>`
+    }
+
+    new Element("pres_reward_btn").setHTML(h)
+}
+
+/*
+ranks_reward: 0,
+pres_reward: 0,
+scaling_ch: 0,
+*/
+
+function updateStatsHTML() {
+    if (tmp.stab[1] == 0) for (let i in RANKS.names) {
+        tmp.el[`stats_${RANKS.names[i]}_btn`].setDisplay(player.ranks[RANKS.names[i]].gt(0))
+    }
+    else if (tmp.stab[1] == 1) for (let i in SCALE_TYPE) {
+        tmp.el[`stats_${SCALE_TYPE[i]}_btn`].setDisplay(tmp.scaling[SCALE_TYPE[i]].length>0)
+    }
+    else if (tmp.stab[1] == 2) for (let i in PRESTIGES.names) {
+        tmp.el[`stats_${PRESTIGES.names[i]}_btn`].setDisplay(player.prestiges[i].gt(0))
+    }
 }

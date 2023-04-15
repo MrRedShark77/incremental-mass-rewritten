@@ -160,7 +160,7 @@ const DARK = {
     },
 }
 
-function calcDark(dt, dt_offline) {
+function calcDark(dt) {
     if (player.dark.unl) {
         player.dark.shadow = player.dark.shadow.add(tmp.dark.shadowGain.mul(dt))
 
@@ -213,12 +213,15 @@ function setupDarkHTML() {
 }
 
 function updateDarkHTML() {
+    let dtmp = tmp.dark
+    let c16 = tmp.c16active
+
+    /*
     let og = hasElement(118)
     let unl = og || player.dark.unl
-    let dtmp = tmp.dark
+
 	tmp.el.dark_div.setDisplay(unl)
 	if (unl) tmp.el.darkAmt.setHTML(player.dark.rays.format(0)+"<br>"+(og?dtmp.rayEff.passive?player.dark.rays.formatGain(dtmp.gain.mul(dtmp.rayEff.passive)):"(+"+dtmp.gain.format(0)+")":"(require Og-118)"))
-    let c16 = tmp.c16active
 
     unl = player.dark.matters.final.gt(0)
 	tmp.el.fss_div.setDisplay(unl)
@@ -230,6 +233,7 @@ function updateDarkHTML() {
 
     unl = player.chal.comps[16].gte(1)
 	tmp.el.idk_div.setDisplay(unl)
+    */
 
     if (tmp.tab == 7) {
         if (tmp.stab[7] == 0) {
@@ -269,7 +273,7 @@ function updateDarkHTML() {
                 if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5)
                 if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`.corrupt(c16)
                 if (eff.fss) e += `<br>Final Star Shards are <b>${formatPercent(eff.fss-1)}</b> stronger`
-                if (eff.ea) e += `<br>Raises Exotic Atom's formula bu <b>${format(eff.ea)}</b>`+eff.ea.softcapHTML(1.75)
+                if (eff.ea) e += `<br>Raises Exotic Atom's formula by <b>${format(eff.ea)}</b>`+eff.ea.softcapHTML(1.75)
 
                 tmp.el.abEff.setHTML(e)
             }

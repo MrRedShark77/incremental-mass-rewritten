@@ -13,15 +13,15 @@ const TABS = {
         }
     },
     1: [
-        { id: "Main" },
-        { id: "Stats" },
-        { id: "Upgrades", unl() { return player.rp.unl } },
-        { id: "Challenges", unl() { return player.chal.unl } },
-        { id: "Atom", unl() { return player.atom.unl }, style: "atom" },
-        { id: "Supernova", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn" },
-        { id: "Quantum", unl() { return quUnl() }, style: "qu" },
-        { id: "Darkness", unl() { return player.dark.unl }, style: "dark" },
-        { id: "Options" },
+        { id: "Main", icon: "pajamas:weight" },
+        { id: "Stats", icon: "material-symbols:query-stats" },
+        { id: "Upgrades", icon: "carbon:upgrade", unl() { return player.rp.unl } },
+        { id: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl } },
+        { id: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl }, style: "atom" },
+        { id: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn" },
+        { id: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu" },
+        { id: "Darkness", icon: "ic:baseline-remove-red-eye", color: "grey", unl() { return player.dark.unl }, style: "dark" },
+        { id: "Options", icon: "mdi:gear" },
     ],
     2: {
         0: [
@@ -67,6 +67,10 @@ const TABS = {
             { id: "Dark Run", unl() { return tmp.darkRunUnlocked } },
             { id: "The Matters", unl() { return tmp.matterUnl } },
             { id: "Corruption", unl() { return player.dark.c16.first } },
-        ]
+        ],
+        8: [
+            { id: "Options" },
+            { id: "Resource Hider" },
+        ],
     },
 }

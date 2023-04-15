@@ -191,7 +191,7 @@ const NAME_FROM_RES = {
 
 function updateScalingHTML() {
 	let s = SCALE_TYPE[player.scaling_ch]
-	tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
+	// tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
 	if (!tmp.scaling) return
 	for (let x = 0; x < SCALE_TYPE.length; x++) {
 		tmp.el["scaling_div_"+x].setDisplay(player.scaling_ch == x)
