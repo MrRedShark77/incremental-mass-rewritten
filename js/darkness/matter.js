@@ -124,6 +124,7 @@ function resetMatters() {
 
 function updateMattersHTML() {
     let c16 = tmp.c16active
+    let inf_gs = tmp.preInfGlobalSpeed
 
     tmp.el.matter_exponent.setTxt(format(tmp.matters.exponent))
     tmp.el.matter_req_div.setDisplay(player.dark.matters.unls<14)
@@ -137,7 +138,7 @@ function updateMattersHTML() {
             let amt = i == 0 ? player.bh.dm : player.dark.matters.amt[i-1]
 
             tmp.el['matter_amt'+i].setTxt(format(amt,0))
-            tmp.el['matter_gain'+i].setTxt(i == 0 ? amt.formatGain(tmp.bh.dm_gain.mul(tmp.preQUGlobalSpeed)) : amt.formatGain(tmp.matters.gain[i-1]))
+            tmp.el['matter_gain'+i].setTxt(i == 0 ? amt.formatGain(tmp.bh.dm_gain.mul(tmp.preQUGlobalSpeed)) : amt.formatGain(tmp.matters.gain[i-1].mul(inf_gs)))
 
             if (i > 0) {
                 let tu = tmp.matters.upg[i-1]

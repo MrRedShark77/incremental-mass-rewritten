@@ -68,7 +68,7 @@ const RESOURCES_DIS = {
         icon: "qu",
         class: "light_green",
 
-        desc: (gs)=>format(player.qu.points,0)+"<br>"+(hasUpgrade('br',8)?player.qu.points.formatGain(tmp.qu.gain.div(10)):"(+"+format(tmp.qu.gain,0)+")"),
+        desc: (gs)=>format(player.qu.points,0)+"<br>"+(hasUpgrade('br',8)?player.qu.points.formatGain(tmp.qu.gain.div(10).mul(gs)):"(+"+format(tmp.qu.gain,0)+")"),
 
         resetBtn() { QUANTUM.enter() },
     },
@@ -77,7 +77,7 @@ const RESOURCES_DIS = {
         icon: "br",
         class: "light_red",
 
-        desc: (gs)=>player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active||hasElement(147)?hasUpgrade('br',8)?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"),
+        desc: (gs)=>player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active||hasElement(147)?hasUpgrade('br',8)?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10).mul(gs)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"),
 
         resetBtn() { BIG_RIP.rip() },
     },
@@ -86,7 +86,7 @@ const RESOURCES_DIS = {
         icon: "dark",
         class: "gray",
 
-        desc: (gs)=>player.dark.rays.format(0)+"<br>"+(hasElement(118)?tmp.dark.rayEff.passive?player.dark.rays.formatGain(tmp.dark.gain.mul(tmp.dark.rayEff.passive)):"(+"+tmp.dark.gain.format(0)+")":"(require Og-118)"),
+        desc: (gs)=>player.dark.rays.format(0)+"<br>"+(hasElement(118)?tmp.dark.rayEff.passive?player.dark.rays.formatGain(tmp.dark.gain.mul(tmp.dark.rayEff.passive).mul(gs)):"(+"+tmp.dark.gain.format(0)+")":"(require Og-118)"),
 
         resetBtn() { DARK.reset() },
     },
@@ -112,14 +112,16 @@ const RESOURCES_DIS = {
         icon: "preQGSpeed",
         class: "orange",
 
-        desc: (gs)=>formatMult(tmp.preQUGlobalSpeed),
+        desc: (gs)=>formatMult(tmp.preQUGlobalSpeed)+(tmp.inf_unl?"<br><span class='yellow'>"+formatMult(tmp.preInfGlobalSpeed)+"</span>":""),
     },
-    idk: {
-        unl: ()=>player.chal.comps[16].gt(0),
-        icon: "mark",
-        class: "idk",
+    inf: {
+        unl: ()=>tmp.inf_unl,
+        icon: "inf",
+        class: "yellow",
 
-        desc: (gs)=>"",
+        desc: (gs)=>player.inf.points.format(0)+"<br>(+"+tmp.IP_gain.format(0)+")",
+
+        resetBtn() { INF.goInf() },
     },
 
     /*
@@ -162,8 +164,11 @@ function setupResourcesHTML() {
     new Element("res_hider_table").setHTML(h2)
 }
 
+const INF_GS_RES = ['qu','br','dark']
+
 function updateResourcesHTML() {
-    let gs = tmp.preQUGlobalSpeed
+    let qu_gs = tmp.preQUGlobalSpeed
+    let inf_gs = tmp.preInfGlobalSpeed
 
     for (i in RESOURCES_DIS) {
         let rd = RESOURCES_DIS[i]
@@ -172,7 +177,7 @@ function updateResourcesHTML() {
         tmp.el[i+"_res_div"].setDisplay(unl)
 
         if (unl) {
-            tmp.el[i+"_res_desc"].setHTML(rd.desc(gs))
+            tmp.el[i+"_res_desc"].setHTML(rd.desc(INF_GS_RES.includes(i) ? inf_gs : qu_gs))
         }
     }
 }

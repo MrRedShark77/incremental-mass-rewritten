@@ -171,6 +171,9 @@ function updateQCTemp() {
     if (hasTree("qc3")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(treeEff('qc3',0))
     if (hasElement(146)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(elemEffect(146,0))
 
+    let weak = 1
+    if (tmp.inf_unl) weak *= theoremEff('proto',3)
+
     tmp.qu.qc_s_eff = tmp.qu.qc_s_b.pow(player.qu.qc.shard)
 
     let s = 0
@@ -178,7 +181,7 @@ function updateQCTemp() {
     for (let x = 0; x < QCs_len; x++) {
         let m = QCs.getMod(x)
         s += m
-        tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m)
+        tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m*weak)
         if (hasTree('qc2') && m >= 10) bs++
     }
     tmp.qu.qc_s = s

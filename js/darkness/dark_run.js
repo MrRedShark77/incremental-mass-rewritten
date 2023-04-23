@@ -262,6 +262,9 @@ function updateDarkRunTemp() {
     dtmp.glyph_mult *= tmp.matters.FSS_eff[1]
     
     let w = 1
+
+    if (tmp.inf_unl) w /= theoremEff('time',3)
+
     dtmp.glyph_weak = w
 
     let dp = 0

@@ -24,6 +24,10 @@
     <script src="js/other.js"></script>
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
+    <script src="js/debug.js"></script>
+
+    <script src="js/infinity/core.js"></script>
+    <script src="js/infinity/inf.js"></script>
 
     <script src="js/darkness/exotic_atoms.js"></script>
     <script src="js/darkness/c16.js"></script>
@@ -86,12 +90,19 @@
         <div id="sns4" style='font-size: 20px;'>... to discover!</div><br>
         <button class="btn" id="sns5" onclick="SUPERNOVA.reset()">You'll be Supernova...</button>
     </div>
+    <div id="inf_popup" style='display: none;'>
+        <div class="pos_center">
+            <h1><b>Your mass is enough to go Infinity!</b></h1><br><br>
+            You have reached the limit of lifting where only gods withstand... You need to condense all your progress to evolve!<br><br>
+            <button class="btn" onclick="infButton()">Get Infinity Theorem</button>
+        </div>
+    </div>
     <div id='app' style='display: none;'>
         <div id="star"></div>
         <div class="table_center" style="height: 100%; width: 100%;">
             <div id="tabs">
             </div>
-            <div id="main_app" style="width: calc(100% - 450px); height: 100%; overflow-y: auto; position: relative;">
+            <div id="main_app" style="width: calc(100% - 450px); height: 100%; overflow-y: auto; overflow-x: hidden; position: relative;">
                 <div id="nav_btns">
                     <button id="nav_left_hider" onclick="hideNavigation(0)"><iconify-icon icon="ic:round-arrow-back-ios" width="35"></iconify-icon></button>
                     <button id="nav_right_hider" onclick="hideNavigation(1)"><iconify-icon icon="ic:round-arrow-forward-ios" width="35"></iconify-icon></button>
@@ -104,12 +115,12 @@
                     <div id="stabs"></div>
                 </div><br>
                 <div id="tab_frames">
-                    <div id="tab_frame5" style=" position: relative;">
-                        <div style="position: absolute; top: -180px; left: 25px;">
-                            <button class="btn" onclick="SUPERNOVA.reset(true)">Reset without being Supernova</button>
-                        </div>
+                    <div id="tab_frame5" style="position: relative;">
                         <div id="stab_frame5_0">
-                            <div style="height: 130px;">
+                            <div style="height: 130px; position: relative;">
+                                <div style="position: absolute; bottom: 10px; left: 25px;">
+                                    <button class="btn" onclick="SUPERNOVA.reset(true)">Reset without being Supernova</button>
+                                </div>
                                 You have <span id="neutronStar">X</span> Neutron star.<br>
                                 <div id="tree_desc" style="margin-top: 3px;">
                     
@@ -532,6 +543,40 @@
                         </div>
                     </div><div id="tab_frame8">
                         <div id="stab_frame8_0">
+                            <div id="theorem_debug" class="table_center">
+                                <!--
+                                <div class="theorem_div">
+                                    <div>
+                                        <iconify-icon icon="ic:baseline-star" width="20"></iconify-icon>
+                                        <iconify-icon icon="ic:baseline-star" width="20"></iconify-icon>
+                                        <iconify-icon icon="ic:baseline-star" width="20"></iconify-icon>
+                                        <iconify-icon icon="ic:baseline-star" width="20"></iconify-icon>
+                                    </div>
+                                    <iconify-icon icon="pajamas:weight" width="50"></iconify-icon>
+                                    <b>100%</b>
+                                </div>
+                                -->
+                            </div>
+                            <h2>Theorem Picker</h2>
+                            <div id="pre_theorem" class="table_center"></div>
+                            Any Theorem's Level is <span id="pt_lvl" class="tooltip" tooltip-html="Based on normal mass, best mass of black hole in C16">???</span><br>
+                            <div class="table_center">
+                                <div style="width: 50%; min-width: 500px;">
+                                    <h2>Core</h2>
+                                    <div id="theorem_table" class="table_center"></div>
+                                </div><div style="width: 50%; min-width: 500px;">
+                                    <h2>Inventory</h2>
+                                    <div id="theorem_inv_table" class="table_center"></div>
+                                </div>
+                            </div>
+                        </div><div id="stab_frame8_1">
+                            <div id="core_eff_div"></div>
+                        </div><div id="stab_frame8_2">
+                            <p>You have <b id="ip_amt">???</b> Infinity Points.</p>
+                            <div id="inf_upg_table"></div>
+                        </div>
+                    </div><div id="tab_frame9">
+                        <div id="stab_frame9_0">
                             <button class="btn" onclick="save()">Save</button>
                             <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',()=>wipe(true))">Hard Reset</button>
                             <button class="btn" onclick="exporty()">Export</button>
@@ -549,7 +594,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten v0.6.5.3 - Revamp Test 3 - made by MrRedShark77<br>
+                            Incremental Mass Rewritten v0.7 beta 1 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                             Hint 1: Hover top image above tabs to show description...<br><br>
@@ -558,7 +603,7 @@
                             <!-- <a href="https://www.easycounter.com/">
                             <img src="https://www.easycounter.com/counter.php?mrredshark77"
                             border="0" alt="error"></a> -->
-                        </div><div id="stab_frame8_1">
+                        </div><div id="stab_frame9_1">
                             <div id="res_hider_table" class="table_center"></div>
                         </div>
 

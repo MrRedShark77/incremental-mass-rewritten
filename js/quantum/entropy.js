@@ -176,7 +176,7 @@ const ENTROPY = {
         let r = player.qu.en.rewards[i]
 
         if (rc.scale) {
-            let p = rc.scale.p
+            let p = rc.scale.p * (tmp.en.s_p||1)
             if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
             if ((i == 2 || i == 6) && hasElement(215)) p = p**0.85
             if ((i == 2) && hasElement(179)) p **= 0.75
@@ -193,7 +193,7 @@ const ENTROPY = {
         if (en.gte(rc.start)) {
             x = en.div(rc.start).max(1).log(rc.inc)
             if (rc.scale) {
-                let p = rc.scale.p
+                let p = rc.scale.p * (tmp.en.s_p||1)
                 if ((i == 2 || i == 6) && hasElement(106)) p = p**0.85
                 if ((i == 2 || i == 6) && hasElement(215)) p = p**0.85
                 if ((i == 2) && hasElement(179)) p **= 0.75
@@ -216,6 +216,8 @@ const ENTROPY = {
 function getEnRewardEff(x,def=1) { return tmp.en.rewards_eff[x] ?? E(def) }
 
 function calcEntropy(dt) {
+    let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
+
     if(player.md.break.upgs[10].gte(1) && player.qu.en.unl){
 		let s1 = Decimal.pow(4,player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
@@ -243,7 +245,7 @@ function calcEntropy(dt) {
         else player.bh.mass = s
     }
 
-    let a = player.qu.en.amt.add(tmp.en.gain.amt.mul(dt))
+    let a = player.qu.en.amt.add(tmp.en.gain.amt.mul(inf_gs))
     if (!hasElement(185)) a = a.min(tmp.en.cap)
     player.qu.en.amt = a
 
@@ -257,6 +259,9 @@ function updateEntropyTemp() {
     if (hasElement(109)) rbr.push(0)
     if (hasElement(130)) rbr.push(5,7)
     tmp.en.reward_br = rbr
+
+    tmp.en.s_p = 1
+    if (tmp.inf_unl) tmp.en.s_p *= theoremEff('proto',2)
 
     for (let x = 0; x < ENTROPY.rewards.length; x++) {
         let rc = ENTROPY.rewards[x]
@@ -273,6 +278,8 @@ function updateEntropyTemp() {
 }
 
 function updateEntropyHTML() {
+    let inf_gs = tmp.preInfGlobalSpeed
+
     tmp.el.enEva1.setTxt(player.supernova.radiation.hz.format())
     tmp.el.enEva2.setTxt(formatMass(player.bh.mass))
 
@@ -280,7 +287,7 @@ function updateEntropyHTML() {
     tmp.el.enAmt2.setTxt(player.qu.en.amt.format(1) + " / " + tmp.en.cap.format(1))
     tmp.el.enAmt3.setTxt(player.qu.en.hr[2].format())
 
-    tmp.el.enGain.setTxt(player.qu.en.amt.formatGain(tmp.en.gain.amt))
+    tmp.el.enGain.setTxt(player.qu.en.amt.formatGain(tmp.en.gain.amt.mul(inf_gs)))
 
     tmp.el.enEff1.setTxt(tmp.en.eff.eth.format(1))
     tmp.el.enEff2.setTxt(tmp.en.eff.hr.format(1))

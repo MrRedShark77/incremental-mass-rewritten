@@ -492,13 +492,14 @@ function updateMDHTML() {
 }
 
 function updateBDHTML() {
+    let inf_gs = tmp.preInfGlobalSpeed
     let bd = player.md.break
     let c16 = tmp.c16active
 
     tmp.el.bd_btn.setTxt(bd.active?"Fix Dilation":"Break Dilation")
 
-    tmp.el.bd_energy.setTxt(bd.energy.format(1)+" "+bd.energy.formatGain(tmp.bd.energyGain))
-    tmp.el.bd_mass.setTxt(formatMass(bd.mass)+" "+bd.mass.formatGain(tmp.bd.massGain,true))
+    tmp.el.bd_energy.setTxt(bd.energy.format(1)+" "+bd.energy.formatGain(tmp.bd.energyGain.mul(inf_gs)))
+    tmp.el.bd_mass.setTxt(formatMass(bd.mass)+" "+bd.mass.formatGain(tmp.bd.massGain.mul(inf_gs),true))
 
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
         let upg = MASS_DILATION.break.upgs.ids[x]

@@ -21,6 +21,7 @@ const TABS = {
         { id: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn" },
         { id: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu" },
         { id: "Darkness", icon: "ic:baseline-remove-red-eye", color: "grey", unl() { return player.dark.unl }, style: "dark" },
+        { id: "Infinity", icon: "game-icons:infinity", color: "orange", unl() { return tmp.inf_unl }, style: "inf" },
         { id: "Options", icon: "mdi:gear" },
     ],
     2: {
@@ -69,6 +70,11 @@ const TABS = {
             { id: "Corruption", unl() { return player.dark.c16.first } },
         ],
         8: [
+            { id: "Core" },
+            { id: "Core Effect" },
+            { id: "Infinity Upgrades", style: "inf" },
+        ],
+        9: [
             { id: "Options" },
             { id: "Resource Hider" },
         ],

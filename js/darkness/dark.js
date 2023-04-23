@@ -110,6 +110,8 @@ const DARK = {
 
         if (hasPrestige(1,22)) x = x.pow(1.1)
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('time',2))
+
         return x
     },
     shadowEff() {
@@ -133,6 +135,8 @@ const DARK = {
         x = x.mul(tmp.dark.shadowEff.ab||1)
         if (hasElement(189)) x = x.mul(elemEffect(189))
         if (hasElement(153)) x = x.pow(elemEffect(153))
+
+        if (tmp.inf_unl) x = x.pow(theoremEff('time',2))
 
         return x
     },
@@ -216,6 +220,8 @@ function updateDarkHTML() {
     let dtmp = tmp.dark
     let c16 = tmp.c16active
 
+    let inf_gs = tmp.preInfGlobalSpeed
+
     /*
     let og = hasElement(118)
     let unl = og || player.dark.unl
@@ -238,7 +244,7 @@ function updateDarkHTML() {
     if (tmp.tab == 7) {
         if (tmp.stab[7] == 0) {
             tmp.el.darkRay.setHTML(player.dark.rays.format(0))
-            tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain))
+            tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain.mul(inf_gs)))
 
             let eff = dtmp.shadowEff
 
@@ -257,7 +263,7 @@ function updateDarkHTML() {
 
             tmp.el.ab_div.setDisplay(tmp.chal14comp)
             if (tmp.chal14comp) {
-                tmp.el.abyssalBlot.setHTML(player.dark.abyssalBlot.format(0)+" "+player.dark.abyssalBlot.formatGain(tmp.dark.abGain))
+                tmp.el.abyssalBlot.setHTML(player.dark.abyssalBlot.format(0)+" "+player.dark.abyssalBlot.formatGain(tmp.dark.abGain.mul(inf_gs)))
 
                 eff = dtmp.abEff
 

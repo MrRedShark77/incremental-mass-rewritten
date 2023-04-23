@@ -1263,33 +1263,36 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (player.dark.unl) u = 118+14
+        if (tmp.inf_unl) u = 218
         else {
-            if (quUnl()) u = 77+3
+            if (player.dark.unl) u = 118+14
             else {
-                if (player.supernova.times.gte(1)) u = 49+5
+                if (quUnl()) u = 77+3
                 else {
-                    if (player.chal.comps[8].gte(1)) u += 14
-                    if (hasElement(18)) u += 3
-                    if (MASS_DILATION.unlocked()) u += 15
-                    if (STARS.unlocked()) u += 18
+                    if (player.supernova.times.gte(1)) u = 49+5
+                    else {
+                        if (player.chal.comps[8].gte(1)) u += 14
+                        if (hasElement(18)) u += 3
+                        if (MASS_DILATION.unlocked()) u += 15
+                        if (STARS.unlocked()) u += 18
+                    }
+                    if (player.supernova.post_10) u += 3
+                    if (player.supernova.fermions.unl) u += 10
+                    if (tmp.radiation.unl) u += 10
                 }
-                if (player.supernova.post_10) u += 3
-                if (player.supernova.fermions.unl) u += 10
-                if (tmp.radiation.unl) u += 10
+                if (PRIM.unl()) u += 3
+                if (hasTree('unl3')) u += 3
+                if (player.qu.rip.first) u += 9
+                if (hasUpgrade("br",9)) u += 23 // 23
             }
-            if (PRIM.unl()) u += 3
-            if (hasTree('unl3')) u += 3
-            if (player.qu.rip.first) u += 9
-            if (hasUpgrade("br",9)) u += 23 // 23
+            if (tmp.chal13comp) u += 10 + 2
+            if (tmp.chal14comp) u += 6 + 11
+            if (tmp.chal15comp) u += 16 + 4
+            if (tmp.darkRunUnlocked) u += 7
+            if (tmp.matterUnl) u += 14
+            if (tmp.mass4Unl) u += 6
+            if (tmp.brUnl) u += 10
         }
-        if (tmp.chal13comp) u += 10 + 2
-        if (tmp.chal14comp) u += 6 + 11
-        if (tmp.chal15comp) u += 16 + 4
-        if (tmp.darkRunUnlocked) u += 7
-        if (tmp.matterUnl) u += 14
-        if (tmp.mass4Unl) u += 6
-        if (tmp.brUnl) u += 10
 
         return u
     },

@@ -543,7 +543,7 @@ const CHALS = {
         • Pre-Quantum global speed always sets to /100.<br>
         You can earn Corrupted Shard based on your mass of black hole, when exiting the challenge.
         `,
-        reward: `Improve Hybridized Uran-Astatine. [NOT IMPLEMENTED]<br><span class="yellow">On first completion, unlock ???</span>`,
+        reward: `Improve Hybridized Uran-Astatine.<br><span class="yellow">On first completion, unlock ???</span>`,
         max: E(1),
         inc: E('e1.25e11'),
         pow: E(2),

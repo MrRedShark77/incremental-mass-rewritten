@@ -7,6 +7,7 @@ function resetTemp() {
         tree_time: 0,
 
         preQUGlobalSpeed: E(1),
+        preInfGlobalSpeed: E(1),
 
         cx: 0,
         cy: 0,
@@ -188,6 +189,7 @@ function resetTemp() {
         },
 
         unstable_bh: {
+            p: 1,
             fvm_eff: {},
         },
 
@@ -201,6 +203,19 @@ function resetTemp() {
 
         april: d.getDate() == 1 && d.getMonth() == 3,
         aprilEnabled: false,
+
+        inf_reached: false,
+        inf_time: 0,
+        inf_limit: Decimal.pow(10,Number.MAX_VALUE),
+
+        inf_unl: false,
+
+        core_chance: CORE_CHANCE_MIN,
+        core_lvl: 1,
+        core_score: {},
+        core_eff: {},
+
+        iu_eff: [],
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
@@ -233,6 +248,10 @@ function resetTemp() {
         tmp.no_scalings[st] = []
     }
     for (let x = 0; x < MATTERS_LEN; x++) tmp.matters.upg[x] = {} 
+    for (let i in CORE) {
+        tmp.core_score[i] = [0,0,0,0]
+        tmp.core_eff[i] = []
+    }
     tmp.el = keep[0]
     tmp.prevSave = keep[1]
 }
@@ -311,6 +330,9 @@ function updateBlackHoleTemp() {
     // Unstable
 
     t = tmp.unstable_bh
+    
+    t.p = 1
+    if (tmp.inf_unl) t.p /= theoremEff('bh',2)
 
     let p = 1.5
     if (hasBeyondRank(1,137)) p **= 0.8
@@ -330,6 +352,8 @@ function updateTemp() {
 
     tmp.c16active = CHALS.inChal(16)
 
+    tmp.inf_unl = player.inf.theorem.gte(1)
+
     tmp.chal13comp = player.chal.comps[13].gte(1)
     tmp.chal14comp = player.chal.comps[14].gte(1)
     tmp.chal15comp = player.chal.comps[15].gte(1)
@@ -340,6 +364,7 @@ function updateTemp() {
     tmp.brUnl = hasElement(208)
     tmp.eaUnl = hasCharger(5)
 
+    updateInfTemp()
     updateC16Temp()
     updateDarkTemp()
     updateQuantumTemp()
@@ -363,5 +388,6 @@ function updateTemp() {
     updateRanksTemp()
     updateMassTemp()
 
+    tmp.preInfGlobalSpeed = FORMS.getPreInfGlobalSpeed()
     tmp.preQUGlobalSpeed = FORMS.getPreQUGlobalSpeed()
 }

@@ -5,7 +5,7 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
             let reset = true
-            if (tmp.chal14comp) reset = false
+            if (tmp.chal14comp || tmp.inf_unl) reset = false
             else if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
@@ -18,7 +18,7 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
             let reset = true
-            if (tmp.chal14comp) reset = false
+            if (tmp.chal14comp || tmp.inf_unl) reset = false
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
@@ -28,10 +28,10 @@ const RANKS = {
         }
     },
     unl: {
-        tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) || tmp.radiation.unl },
-        tetr() { return player.mainUpg.atom.includes(3) || tmp.radiation.unl },
-        pent() { return tmp.radiation.unl },
-        hex() { return tmp.chal13comp },
+        tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) || tmp.radiation.unl || tmp.inf_unl },
+        tetr() { return player.mainUpg.atom.includes(3) || tmp.radiation.unl || tmp.inf_unl },
+        pent() { return tmp.radiation.unl || tmp.inf_unl },
+        hex() { return tmp.chal13comp || tmp.inf_unl },
     },
     doReset: {
         rank() {
@@ -57,10 +57,10 @@ const RANKS = {
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
-        rank() { return player.mainUpg.rp.includes(5) },
-        tier() { return player.mainUpg.rp.includes(6) },
-        tetr() { return player.mainUpg.atom.includes(5) },
-        pent() { return hasTree("qol8") },
+        rank() { return player.mainUpg.rp.includes(5) || tmp.inf_unl },
+        tier() { return player.mainUpg.rp.includes(6) || tmp.inf_unl },
+        tetr() { return player.mainUpg.atom.includes(5) || tmp.inf_unl },
+        pent() { return hasTree("qol8") || tmp.inf_unl },
         hex() { return true },
     },
     desc: {
@@ -289,6 +289,7 @@ const PRESTIGES = {
         if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
         x += tmp.fermions.effs[1][6]||0
         x += glyphUpgEff(10,0)
+        if (tmp.inf_unl) x += theoremEff('mass',3,0)
 
         x += 1
         if (tmp.c16active || player.dark.run.active) x /= mgEff(5)
@@ -441,7 +442,7 @@ const PRESTIGES = {
             "1": `The requirements for previous prestiges are 10% lower.`,
             "2": `Exotic Supernova starts x1.25 later every Renown.`,
             "4": `Corrupted shard gain is increased by +50% per Renown.`,
-            "6": `Exotic Atoms boost them other resources.`,
+            "6": `Exotic Atoms boost their other resources.`,
         },
     ],
     rewardEff: [
@@ -582,6 +583,8 @@ function prestigeEff(x,y,def=E(1)) { return tmp.prestiges.eff[x][y] || def }
 function updateRanksTemp() {
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
+    let ifp = E(1)
+    if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',2))
     let fp2 = tmp.qu.chroma_eff[1][0]
     let rt_fp2 = hasPrestige(1,127) ? 1 : fp2
     let ffp = E(1)
@@ -589,14 +592,14 @@ function updateRanksTemp() {
     if (tmp.c16active || player.dark.run.active) ffp2 /= mgEff(5)
 
     let fp = RANKS.fp.rank().mul(ffp)
-    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
+    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ifp).div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = E(0)
-    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2]).mul(ffp2).add(1).floor();
+    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2]).mul(ffp2).mul(ifp).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier().mul(ffp)
-    tmp.ranks.tier.req = player.ranks.tier.div(ffp2).scaleEvery('tier',false,[1,1,1,rt_fp2]).div(fp).add(2).pow(2).floor()
-    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,rt_fp2]).mul(ffp2).add(1).floor();
+    tmp.ranks.tier.req = player.ranks.tier.div(ifp).div(ffp2).scaleEvery('tier',false,[1,1,1,rt_fp2]).div(fp).add(2).pow(2).floor()
+    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,rt_fp2]).mul(ffp2).mul(ifp).add(1).floor();
 
     fp = E(1).mul(ffp)
     let pow = 2
@@ -607,15 +610,15 @@ function updateRanksTemp() {
 
     let tps = 0
 
-    tmp.ranks.tetr.req = player.ranks.tetr.div(ffp2).scaleEvery('tetr',false,[1,1,1,fp2]).div(fp).pow(pow).mul(3).add(10-tps).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true,[1,1,1,fp2]).mul(ffp2).add(1).floor();
+    tmp.ranks.tetr.req = player.ranks.tetr.div(ifp).div(ffp2).scaleEvery('tetr',false,[1,1,1,fp2]).div(fp).pow(pow).mul(3).add(10-tps).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true,[1,1,1,fp2]).mul(ffp2).mul(ifp).add(1).floor();
 
     fp = E(1).mul(ffp)
     let fpa = hasPrestige(1,33) ? [1,1,1,prestigeEff(1,33,1)] : []
     if (player.ranks.hex.gte(1)) fp = fp.div(0.8)
     pow = 1.5
-    tmp.ranks.pent.req = player.ranks.pent.div(ffp2).scaleEvery('pent',false,fpa).div(fp).pow(pow).add(15-tps).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15-tps).gte(0)?player.ranks.tetr.sub(15-tps).max(0).root(pow).mul(fp).scaleEvery('pent',true,fpa).mul(ffp2).add(1).floor():E(0);
+    tmp.ranks.pent.req = player.ranks.pent.div(ifp).div(ffp2).scaleEvery('pent',false,fpa).div(fp).pow(pow).add(15-tps).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15-tps).gte(0)?player.ranks.tetr.sub(15-tps).max(0).root(pow).mul(fp).scaleEvery('pent',true,fpa).mul(ffp2).mul(ifp).add(1).floor():E(0);
 
     fp = E(1)
     pow = 1.8
@@ -624,8 +627,8 @@ function updateRanksTemp() {
         s /= 2
         pow *= 0.9
     }
-    tmp.ranks.hex.req = player.ranks.hex.div(ffp2).div(fp).scaleEvery('hex',false).pow(pow).add(s-tps).floor()
-    tmp.ranks.hex.bulk = player.ranks.pent.sub(s-tps).gte(0)?player.ranks.pent.sub(s-tps).max(0).root(pow).scaleEvery('hex',true).mul(fp).mul(ffp2).add(1).floor():E(0);
+    tmp.ranks.hex.req = player.ranks.hex.div(ifp).div(ffp2).div(fp).scaleEvery('hex',false).pow(pow).add(s-tps).floor()
+    tmp.ranks.hex.bulk = player.ranks.pent.sub(s-tps).gte(0)?player.ranks.pent.sub(s-tps).max(0).root(pow).scaleEvery('hex',true).mul(fp).mul(ffp2).mul(ifp).add(1).floor():E(0);
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]

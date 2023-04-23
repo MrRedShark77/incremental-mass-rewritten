@@ -135,6 +135,8 @@ function updateSupernovaTemp() {
 
     tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
 
+    let no_req1 = hasInfUpgrade(0)
+
     for (let i = 0; i < TREE_TAB.length; i++) {
         tmp.supernova.tree_afford2[i] = []
         for (let j = 0; j < tmp.supernova.tree_had2[i].length; j++) {
@@ -142,10 +144,11 @@ function updateSupernovaTemp() {
             let t = TREE_UPGS.ids[id]
 
             let branch = t.branch||""
-            let unl = (t.unl?t.unl():true)
-            let req = t.req?t.req():true
+            let unl = !t.unl||t.unl()
+            let req = !t.req||t.req()
             let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)
             if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
+            if (no_req1 && !CS_TREE.includes(id)) req = true
             let can = (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost) && !bought && req
             if (branch != "") for (let x = 0; x < branch.length; x++) if (!(player.supernova.tree.includes(branch[x]) || player.dark.c16.tree.includes(branch[x]))) {
                 unl = false

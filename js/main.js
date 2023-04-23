@@ -17,10 +17,18 @@ const ST_NAMES = [
 const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark']
 
 const FORMS = {
-    getPreQUGlobalSpeed() {
-        if (tmp.c16active) return E(0.01)
-
+    getPreInfGlobalSpeed() {
         let x = E(1)
+        
+        if (tmp.inf_unl) x = x.mul(theoremEff('time',0))
+
+        return x
+    },
+    getPreQUGlobalSpeed() {
+        let x = E(1), inf = tmp.preInfGlobalSpeed
+
+        if (tmp.c16active) return inf.div(100)
+
         if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)
         if (hasElement(103)) x = x.mul(tmp.elements.effect[103])
@@ -28,8 +36,11 @@ const FORMS = {
         if (player.mainUpg.br.includes(3)) x = x.pow(tmp.upgs.main[4][3].effect)
         if (hasPrestige(0,5)) x = x.pow(2)
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('time',1))
+
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[1])
-        return x
+
+        return x.mul(inf)
     },
     massGain() {
         let x = E(1)
@@ -91,6 +102,9 @@ const FORMS = {
 
         if (hasUpgrade('rp',20)) x = x.pow(upgEffect(1,20))
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('mass',0))
+        if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1))
+
         if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
         let o = x
@@ -100,6 +114,7 @@ const FORMS = {
         let op2 = E(.25)
 
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
+        if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
@@ -305,6 +320,7 @@ const FORMS = {
         },
         effect() {
             let step = E(0.0004)
+            if (tmp.inf_unl) step = step.add(theoremEff('atom',3,0))
             step = step.mul(tmp.dark.abEff.accelPow||1)
             if (hasElement(205)) step = step.mul(elemEffect(205))
             if (hasUpgrade('bh',19)) step = step.mul(upgEffect(2,19))
@@ -419,6 +435,8 @@ const FORMS = {
 
             x = x.pow(tmp.unstable_bh.effect)
 
+            if (tmp.inf_unl) x = x.pow(theoremEff('bh',0))
+
             if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || player.dark.run.active ? 5 : 100)
@@ -433,6 +451,7 @@ const FORMS = {
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
             if (hasTree('ct11')) os = os.pow(treeEff('ct11'))
+            if (tmp.inf_unl) os = os.pow(theoremEff('bh',1))
 
             if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
 

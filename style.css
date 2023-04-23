@@ -408,6 +408,15 @@ button {
 	background-color: #222;
 }
 
+.btn_tab.inf {
+	color: orange;
+	border-color: orange;
+}
+
+.btn_tab.inf:hover {
+	background-color: #220;
+}
+
 .btn_tab.dilation {
 	color: #25ff30;
 	border-color: #25ff30;
@@ -1071,6 +1080,227 @@ h3 {
 }
 */
 
+#inf_popup {
+	color: black;
+	font-size: 16px;
+}
+
+@keyframes inf_reset_1 {
+	0% {transform:scale(1); filter:blur(0px); opacity: 1;}
+	80% {transform:scale(3,0); filter:blur(5px); opacity: 0; background-color: orange;}
+	90% {transform:scale(1); filter:blur(0px); opacity: 0; background-color: orange;}
+	100% {opacity: 1; background-color: orange;}
+}
+
+@keyframes inf_reset_2 {
+	0% {opacity: 1; background-color: orange;}
+	50% {opacity: 0; background-color: orange;}
+	100% {opacity: 1; background-color: hsl(0, 0%, 7%);}
+}
+
+.theorem_div {
+	position: relative;
+	width: 90px;
+	height: 90px;
+	background-color: #000;
+	border: solid 5px white;
+	margin: 10px;
+	transition: box-shadow 0.25s;
+}
+
+.theorem_div.bh {
+	color: yellow;
+	border-color: yellow;
+}
+
+.theorem_div.atom {
+	color: skyblue;
+	border-color: skyblue;
+}
+
+.theorem_div.proto {
+	color: lightgreen;
+	border-color: lightgreen;
+}
+
+.theorem_div.time {
+	color: pink;
+	border-color: pink;
+}
+
+.theorem_div > .c_pow {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.theorem_div > .c_lvl {
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.theorem_div > .c_type {
+	font-size: 48px;
+	font-family: 'Times New Roman', Times, serif;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.theorem_div > div > div {
+	position: absolute;
+	z-index: 1;
+	font-size: 18px;
+}
+
+.theorem_div > div > div:nth-child(1) {
+	top: 10px;
+	left: 10px;
+}
+
+.theorem_div > div > div:nth-child(2) {
+	top: 10px;
+	right: 10px;
+}
+
+.theorem_div > div > div:nth-child(3) {
+	bottom: 10px;
+	right: 10px;
+}
+
+.theorem_div > div > div:nth-child(4) {
+	bottom: 10px;
+	left: 10px;
+}
+
+.theorem_div * {
+	pointer-events: none;
+}
+
+#pre_theorem {
+	align-items: center;
+	min-height: 120px;
+	width: 100%;
+	padding: 10px 0;
+	background-color: #e702;
+}
+
+#pre_theorem > div {
+	cursor: pointer;
+}
+
+.theorem_div.choosed {
+	box-shadow: inset white 0 0 15px;
+}
+
+#theorem_inv_table {
+	margin-top: 10px;
+	padding: 10px 0;
+	width: calc(100% - 4px);
+	height: 300px;
+	overflow-y: auto;
+	border: solid 2px grey;
+}
+
+#theorem_inv_table > div {
+	position: relative;
+	width: 64px;
+	height: 64px;
+}
+
+#theorem_inv_table .theorem_div {
+	position: absolute;
+	margin: 0;
+	top: 0px;
+	left: 0px;
+	transform: scale(.64) translate(-27px, -27px);
+}
+
+#theorem_table .theorem_div {
+	margin: 0;
+	transform: scale(.8);
+}
+
+#inf_upg_table > div {
+	height: 150px;
+	margin: 10px 0;
+}
+
+.iu_req_div {
+	width: 150px;
+	height: 150px;
+	position: relative;
+	transform: rotate(-90deg);
+	font-size: 12px;
+}
+
+.iu_req_div > div {
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+}
+
+.inf_upg {
+	color: black;
+	position: relative;
+	width: 250px;
+	font-size: 12px;
+	height: calc(100% - 8px);
+	margin: 5px;
+	padding: 0px;
+	border: solid 4px #ac4b0a;
+	box-shadow: inset 0 0 5px #ac4b0a;
+	background-color: #f08400;
+	transition-duration: 0.25s;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.inf_upg > * {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	transition-duration: 1s;
+	pointer-events: none;
+}
+
+.inf_upg.locked {
+	cursor: default;
+	background-color: #b46300;
+}
+
+.inf_upg.bought {
+	cursor: default;
+	background-color: #ffbd30;
+	border: solid 4px #f06c14;
+	box-shadow: inset 0 0 5px #f06c14, 0 0 5px #f06c14;
+}
+
+.inf_upg > img {
+	opacity: 0.5;
+	z-index: 0;
+}
+
+.inf_upg > div {
+	width: 100%;
+	left: 50%;
+	opacity: 0;
+	filter: blur(3px);
+}
+
+.inf_upg:hover > div {
+    opacity: 1;
+    filter: blur(0px);
+}
+
+.inf_upg:hover > img {
+	opacity: 0;
+	filter: blur(3px);
+	transform: scale(0.5) translate(-100%, -100%);
+}
 
 @keyframes f_spin {
 	0% {

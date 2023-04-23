@@ -59,7 +59,7 @@ const UNSTABLE_BH = {
         return x
     },
     getProduction(x,gain) {
-        return Decimal.pow(10,x.max(0).root(2)).add(gain).log10().pow(2)
+        return Decimal.pow(1+9*tmp.unstable_bh.p,x.max(0).root(2)).add(gain).log(1+9*tmp.unstable_bh.p).pow(2)
     },
     calcProduction() {
         let bh = player.bh.unstable
@@ -91,6 +91,8 @@ const UNSTABLE_BH = {
             let pow = E(2)
 
             if (hasPrestige(2,28)) pow = pow.mul(prestigeEff(2,28))
+
+            if (tmp.inf_unl) pow = pow.mul(theoremEff('bh',3))
 
             let eff = pow.pow(lvl)
 

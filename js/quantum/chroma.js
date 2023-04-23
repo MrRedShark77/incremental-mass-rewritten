@@ -33,7 +33,7 @@ const CHROMA = {
             return x
         },
         i => {
-            let c = 1 // tmp.chal ? tmp.chal.eff[16] : 1
+            let c = tmp.chal ? tmp.chal.eff[16] : 1
 
             let x = E(1.01).pow(i.add(1).log10().max(0).pow(0.8))
             if (hasUpgrade('br',7) && (player.qu.rip.active || hasElement(148))) x = x.pow(2)
@@ -75,6 +75,7 @@ function updateChromaTemp() {
 }
 
 function updateChromaHTML() {
+    let inf_gs = tmp.preInfGlobalSpeed
     tmp.el.qu_theory.setTxt(format(tmp.qu.theories,0))
     tmp.el.qu_theory_div.setDisplay(player.qu.chr_get.length<3)
 
@@ -84,7 +85,7 @@ function updateChromaHTML() {
         tmp.el[id+"_btn"].setClasses({btn: true, locked: !tmp.qu.pick_chr})
         tmp.el[id+"_btn"].setDisplay(!player.qu.chr_get.includes(x))
 
-        tmp.el[id+"_amt"].setTxt(format(player.qu.chroma[x],1)+" "+formatGain(player.qu.chroma[x],tmp.qu.chroma_gain[x]))
+        tmp.el[id+"_amt"].setTxt(format(player.qu.chroma[x],1)+" "+formatGain(player.qu.chroma[x],tmp.qu.chroma_gain[x].mul(inf_gs)))
         tmp.el[id+"_eff"].setHTML(CHROMA.effDesc[x](tmp.qu.chroma_eff[x]))
     }
 }

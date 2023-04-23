@@ -45,7 +45,7 @@ const UPGS = {
             let cost, bulk = E(0), fp
 
             if (i==4) {
-                //if (hasCharger(2)) start = E(10)
+                if (hasInfUpgrade(2)) start = E(1e10)
                 let pow = 1.5
                 cost = Decimal.pow(10,Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
                 if (player.mass.gte('ee100')) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
@@ -189,7 +189,7 @@ const UPGS = {
             },
         },
         4: {
-            unl() { return hasElement(202) },
+            unl() { return hasElement(202) || hasInfUpgrade(2) },
             title: "Overpower",
             start: E(1e100),
             inc: E(1.5),
@@ -198,6 +198,8 @@ const UPGS = {
                 
                 let step = E(.005)
                 if (hasUpgrade('rp',17)) step = step.add(.005)
+                if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
+
                 if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
 
                 let ss = E(10)
@@ -244,7 +246,7 @@ const UPGS = {
                     player.mainUpg.rp.push(x)
                 }
             },
-            auto_unl() { return player.mainUpg.bh.includes(5) },
+            auto_unl() { return player.mainUpg.bh.includes(5) || tmp.inf_unl },
             lens: 20,
             1: {
                 desc: "Boosters add Musclers.",
@@ -421,7 +423,7 @@ const UPGS = {
             res: "Dark Matter",
             getRes() { return player.bh.dm },
             unl() { return player.bh.unl },
-            auto_unl() { return player.mainUpg.atom.includes(2) },
+            auto_unl() { return player.mainUpg.atom.includes(2) || tmp.inf_unl },
             can(x) { return player.bh.dm.gte(this[x].cost) && !player.mainUpg.bh.includes(x) },
             buy(x) {
                 if (this.can(x)) {
@@ -621,7 +623,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            auto_unl() { return hasTree("qol1") },
+            auto_unl() { return hasTree("qol1") || tmp.inf_unl },
             lens: 20,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
@@ -789,7 +791,7 @@ const UPGS = {
                     player.mainUpg.br.push(x)
                 }
             },
-            auto_unl() { return hasElement(132) },
+            auto_unl() { return hasElement(132) || tmp.inf_unl },
             lens: 20,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,

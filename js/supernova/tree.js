@@ -68,7 +68,7 @@ const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
 'c','s2','s3','s4','sn3',
 'sn4','t1','bh2','gr1','chal1',
 'chal2','chal3','bs1','fn2','fn3',
-'fn5','fn6']
+'fn5','fn6','fn10']
 
 const TREE_UPGS = {
     buy(x, auto=false) {

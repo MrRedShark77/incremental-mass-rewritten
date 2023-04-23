@@ -223,6 +223,7 @@ function exoticAEff(i,j,def=1) { return tmp.exotic_atom.eff[i][j]||def }
 
 function updateExoticAtomsHTML() {
     let ea = player.dark.exotic_atom, tea = tmp.exotic_atom, t = ea.tier
+    let inf_gs = tmp.preInfGlobalSpeed
 
     tmp.el.mcf_btn.setHTML(`
     Muon-Catalyzed Fusion Tier <b>${format(t,0)}</b><br>
@@ -234,10 +235,10 @@ function updateExoticAtomsHTML() {
     if (t>0) {
         let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0]),ea.amount[1].add(tea.gain[1])).sub(tea.amount)
 
-        tmp.el.ext_atom.setHTML(tea.amount.format(0)+" "+tea.amount.formatGain(g))
+        tmp.el.ext_atom.setHTML(tea.amount.format(0)+" "+tea.amount.formatGain(g.mul(inf_gs)))
 
         for (let i = 0; i < 2; i++) {
-            tmp.el['ea_amt'+i].setHTML(ea.amount[i].format(2)+" "+ea.amount[i].formatGain(tea.gain[i]))
+            tmp.el['ea_amt'+i].setHTML(ea.amount[i].format(2)+" "+ea.amount[i].formatGain(tea.gain[i].mul(inf_gs)))
 
             let h = ""
 

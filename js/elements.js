@@ -147,6 +147,7 @@ function setupHTML() {
 	setupRadiationHTML()
 	setupQuantumHTML()
 	setupDarkHTML()
+	setupInfHTML()
 
 	/*
 	function setupTestHTML() {
@@ -434,7 +435,7 @@ function updateBlackHoleHTML() {
 }
 
 function updateOptionsHTML() {
-	if (tmp.stab[8] == 0) {
+	if (tmp.stab[9] == 0) {
 		for (let x = 0; x < CONFIRMS.length; x++) {
 			let unl = 
 			CONFIRMS[x] == "sn"
@@ -455,7 +456,7 @@ function updateOptionsHTML() {
 		tmp.el.mass_dis.setTxt(["Default",'Always show g','Always show mlt','Important units only'][player.options.massDis])
 	
 		tmp.el.omega_badge.setDisplay(localStorage.getItem("imr_secret_badge1") == "1")
-	} else if (tmp.stab[8] == 1) {
+	} else if (tmp.stab[9] == 1) {
 		updateResourcesHiderHTML()
 	}
 }
@@ -470,7 +471,7 @@ function updateHTML() {
 	let displayMainTab = true
 	
 	tmp.el.loading.setDisplay(!tmp.start)
-    tmp.el.app.setDisplay(tmp.start && (player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab)
+    tmp.el.app.setDisplay(tmp.inf_time != 2 && tmp.inf_time != 3 && tmp.start && (player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab)
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
 	if (!player.options.nav_hide[1]) updateResourcesHTML()
@@ -544,7 +545,8 @@ function updateHTML() {
 				updateExoticAtomsHTML()
 			}
 		}
-		else if (tmp.tab == 8) {
+		else if (tmp.tab == 8) updateInfHTML()
+		else if (tmp.tab == 9) {
 			updateOptionsHTML()
 		}
 	}

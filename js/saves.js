@@ -78,9 +78,10 @@ String.prototype.corrupt = function (active=true) { return active ? this.strike(
 
 function calc(dt) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
+    let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
 
-    if (tmp.pass<=0) {
-        player.mass = player.mass.add(tmp.massGain.mul(du_gs))
+    if (tmp.pass<=0 && tmp.inf_time == 0) {
+        player.mass = player.mass.add(tmp.massGain.mul(du_gs)).min(tmp.inf_limit)
         if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
         if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
         if (FORMS.accel.autoUnl() && player.autoAccel) FORMS.accel.buyMax()
@@ -125,7 +126,8 @@ function calc(dt) {
         calcStars(du_gs)
         calcSupernova(dt)
         calcQuantum(dt)
-        calcDark(dt)
+        calcDark(inf_gs)
+        calcInf(dt)
 
         if (hasTree("qu_qol4")) player.supernova.times = player.supernova.times.max(tmp.supernova.bulk)
 
@@ -139,7 +141,6 @@ function calc(dt) {
         }
     }
 
-    if (tmp.pass > 0) console.log('passed')
     tmp.pass = Math.max(0,tmp.pass-1)
 
     player.time += dt
@@ -308,6 +309,7 @@ function getPlayerData() {
     }
     s.qu = getQUSave()
     s.dark = getDarkSave()
+    s.inf = getInfSave()
     return s
 }
 
@@ -336,6 +338,7 @@ function loadPlayer(load) {
         player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0)
     }
     if (typeof player.atom.elemTier == "number") player.atom.elemTier = [player.atom.elemTier,1]
+    if (player.inf.pre_theorem.length == 0) generatePreTheorems()
 }
 
 function clonePlayer(obj,data) {
@@ -386,7 +389,7 @@ function convertStringToDecimal() {
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
 }
 
-function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) && !quUnl() }
+function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) && !quUnl() || tmp.inf_reached }
 
 function save(){
     let str = btoa(JSON.stringify(player))
@@ -516,6 +519,8 @@ function loadGame(start=true, gotNaN=false) {
             tmp.cy = e.clientY
         }
         document.addEventListener('keydown', e => {keyEvent(e)})
+        updateTheoremInv()
+        updateTheoremCore()
         updateNavigation()
         updateMuonSymbol(true)
         setInterval(loop, 1000/FPS)

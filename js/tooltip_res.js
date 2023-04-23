@@ -167,11 +167,18 @@ const TOOLTIP_RES = {
         },
     },
     speed: {
-        full: "Pre-Quantum Global Speed",
+        full: "Global Speed",
         desc() {
             let h = `<i>
-            Speeds up the production of pre-Quantum resources. (after exponent, dilation, etc.)
+            Pre-Quantum: Speeds up the production of pre-Quantum resources (after exponent, dilation, etc.).
             </i>`
+
+            if (tmp.inf_unl) h += `
+            <br class='line'>
+            <i>
+            Pre-Infinity: Speeds up the production of pre-Infinity resources. Applying pre-Quantum global speed. (after exponent, dilation, etc.)
+            </i>
+            `
 
             return h
         },
@@ -207,16 +214,19 @@ const TOOLTIP_RES = {
             return h
         },
     },
-    idk: {
-        full: "???",
+    inf: {
+        full: "Infinity",
         desc() {
             let h = `
-            What am i supposed to do now?...
+            Your Infinity Theorem is <b class="yellow">${player.inf.theorem.format(0)}</b>.
             <br class='line'>
             <i>
-            Reach <b>???</b> of mass to ???.
-            </i>
-            `
+            Reach over <b>${formatMass(INF.req)}</b> of normal mass to get Infinity Points and choose Theorem in Core.
+            <br><br>
+            Your normal mass limit is <b>${formatMass(tmp.inf_limit)}</b>
+            <br><br>
+            Going Infinity resets everything darkness as well!
+            </i>`
 
             return h
         },

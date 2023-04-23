@@ -91,4 +91,33 @@ const CONFIRMS_FUNCTION = {
 
         DARK.doReset()
     },
+    inf(limit) {
+        if (limit || player.inf.pt_choosed >= 0) {
+            if (player.inf.theorem.eq(0)) addTheorem('mass',[0,1,1,1],1,1)
+            else {
+                let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
+
+                addTheorem(td.type,td.star_c,Math.floor(tmp.core_lvl),td.power_m*getPowerMult()+1,getCoreChance())
+            }
+        }
+
+        if (player.inf.theorem.eq(0)) {
+            player.inf.points = player.inf.points.add(2)
+            player.inf.total = player.inf.total.add(2)
+        }
+        else {
+            player.inf.points = player.inf.points.add(tmp.IP_gain)
+            player.inf.total = player.inf.total.add(tmp.IP_gain)
+        }
+
+        if (tmp.inf_reached) player.inf.theorem = player.inf.theorem.add(1)
+
+        INF.doReset()
+
+        updateTheoremCore()
+        updateTheoremInv()
+    },
+    t_switch() {
+        
+    },
 }
