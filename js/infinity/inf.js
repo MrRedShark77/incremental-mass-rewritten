@@ -348,14 +348,16 @@ function updateInfHTML() {
             for (let c in ru) {
                 c = parseInt(c)
 
-                let el = tmp.el[`iu_${r*4+c}_div`]
+                let id = r*4+c
+
+                let el = tmp.el[`iu_${id}_div`]
 
                 if (el) {
-                    let u = ru[c], b = hasInfUpgrade(r*4+c)
+                    let u = ru[c], b = hasInfUpgrade(id)
 
                     el.setClasses({inf_upg: true, locked: !b && (player.inf.points.lt(u.cost) || !req), bought: b})
 
-                    tmp.el[`iu_${r*4+c}_desc`].setHTML(b?u.effectDesc?"<br>Effect: "+u.effectDesc(infUpgEffect(r*4+c)):"":"<br>Cost: <b>"+u.cost.format(0)+"</b> Infinity Points")
+                    tmp.el[`iu_${id}_desc`].setHTML(b?u.effectDesc?"<br>Effect: "+u.effectDesc(infUpgEffect(id)):"":"<br>Cost: <b>"+u.cost.format(0)+"</b> Infinity Points")
                 }
             }
         }
@@ -376,15 +378,15 @@ function setupInfUpgradesHTML() {
         for (let c in ru) {
             c = parseInt(c)
 
-            let u = ru[c]
+            let u = ru[c], id = r*4+c
 
             h += `
-            <button class='inf_upg' id='iu_${r*4+c}_div' onclick='buyInfUpgrade(${r},${c})'>
-                <img src='images/upgrades/iu_template.png'>
+            <button class='inf_upg' id='iu_${id}_div' onclick='buyInfUpgrade(${r},${c})'>
+                <img src='images/upgrades/iu${id}.png'>
                 <div>
                     <b>${u.title}</b><br>
                     ${u.desc}<br>
-                    <span id='iu_${r*4+c}_desc'></span>
+                    <span id='iu_${id}_desc'></span>
                 </div>
             </button>
             `
