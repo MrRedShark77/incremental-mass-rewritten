@@ -141,6 +141,8 @@ const INF = {
         player.atom.elemTier[0] = 1
         player.atom.elemLayer = 0
 
+        updateMuonSymbol()
+
         updateTemp()
 
         generatePreTheorems()
