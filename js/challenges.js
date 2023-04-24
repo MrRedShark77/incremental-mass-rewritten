@@ -536,12 +536,12 @@ const CHALS = {
         unl() { return hasElement(218) },
         title: "Chaotic Matter Annihilation",
         desc: `
-        • You cannot gain Rage Power nor dark matters, and all matters’ formula is disabled, and they generate each other. Red matter generates dark matter.<br>
-        • Pre-C16 following contents (including rank & prestige tiers, main upgrades, elements, tree and etc.) are corrupted like disabled.<br>
+        • You cannot gain rage powers, and all matters' formulas are disabled, and they generate each other. Red matter generates dark matter.<br>
+        • Pre-C16 features, such as rank, prestige tiers, main upgrades, elements, tree upgrades, etc. may be corrupted (disabled).<br>
         • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>
-        • Primordium particles disabled.<br>
-        • Pre-Quantum global speed always sets to /100.<br>
-        You can earn Corrupted Shard based on your mass of black hole, when exiting the challenge.
+        • Primordium particles are disabled.<br>
+        • Pre-Quantum global speed is always set to /100.<br>
+        You can earn Corrupted Shards based on your mass of black hole, when exiting the challenge.
         `,
         reward: `Improve Hybridized Uran-Astatine.<br><span class="yellow">On first completion, unlock ???</span>`,
         max: E(1),
@@ -549,7 +549,7 @@ const CHALS = {
         pow: E(2),
         start: E('e1.25e11'),
         effect(x) {
-            let ret = x.mul(0.048).add(1)
+            let ret = x.mul(0.05).add(1)
             return ret
         },
         effDesc(x) { return "^"+format(x) },

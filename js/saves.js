@@ -599,7 +599,7 @@ function simulateTime(sec) {
         quarks: player.atom.quarks.max(1).div(player_before.atom.quarks.max(1)).log10(),
         sn: player.supernova.times.sub(player_before.supernova.times),
     }
-    console.log(s,player_before.bh.mass.format(),player.bh.mass.format())
+    //console.log(s,player_before.bh.mass.format(),player.bh.mass.format())
     if (s.mass.gte(10)) h += `<br>Your mass's exponent is increased by <b>${s.mass.format(1)}</b>.`
     if (s.bh_mass.gte(10)) h += `<br>Your exponent of mass of black hole is increased by <b>${s.bh_mass.format(1)}</b>.`
     if (s.quarks.gte(10)) h += `<br>Your quark's exponent is increased by <b>${s.quarks.format(1)}</b>.`

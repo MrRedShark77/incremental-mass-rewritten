@@ -183,14 +183,14 @@ const INF = {
                 cost: E(1),
             },{
                 title: "Infinity Mass",
-                desc: "Normal mass gain is boosted by total infinity points.",
+                desc: "Normal mass & BH mass gains are boosted by total infinity points.",
                 cost: E(1),
                 effect() {
-                    let x = player.inf.total.add(1).pow(2)
+                    let x = player.inf.total
 
-                    return x.softcap(1e3,0.5,0)
+                    return [x.add(1).pow(2).softcap(1e3,0.5,0),overflow(x.add(1),10,0.5)]
                 },
-                effectDesc: x => "^"+x.format(0)+x.softcapHTML(1e3),
+                effectDesc: x => "^"+x[0].format(0)+" to normal mass"+x[0].softcapHTML(1e3)+"; ^"+x[1].format(0)+" to BH mass",
             },{
                 title: "Legacy Mass Upgrade 4",
                 desc: "Start with overpower unlocked, its starting cost is massively decreased (likewise, start with Binilbium-202 unlocked).",

@@ -462,7 +462,7 @@ const TREE_UPGS = {
             branch: ["fn1"],
             req() { return player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01") },
             reqDesc() { return `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilating mass in [Down]` },
-            desc: `Unlock 2 new types of U-Quark & U-Fermion.`,
+            desc: `Unlock 2 more types of U-Quark & U-Fermion.`,
             cost: E(1e33),
         },
         fn3: {
@@ -490,17 +490,17 @@ const TREE_UPGS = {
             branch: ["fn2"],
             req() { return player.mass.gte(uni('e4e4')) && FERMIONS.onActive("02") && CHALS.inChal(5) },
             reqDesc() { return `Reach ${formatMass(uni("e4e4"))} while in [Charm] & Challenge 5.` },
-            desc: `Unlock 2 new more types of U-Quark & U-Fermion.`,
+            desc: `Unlock 2 more types of U-Quark & U-Fermion.`,
             cost: E(1e48),
         },
         fn7: {
             branch: ["fn6"],
-            desc: `Unlock 2 new more types of U-Quark & U-Fermion.`,
+            desc: `Unlock 2 more types of U-Quark & U-Fermion.`,
             cost: E(1e90),
         },
         fn8: {
             branch: ["fn7"],
-            desc: `Unlock 2 new final types of U-Quark & U-Fermion.`,
+            desc: `Unlock 2 final types of U-Quark & U-Fermion.`,
             cost: E(1e159),
         },
         fn9: {
@@ -642,7 +642,7 @@ const TREE_UPGS = {
         qu4: {
             qf: true,
             branch: ["qu1", 'qu2', 'qu3'],
-            desc: `Remove effect's softcaps from [sn2].`,
+            desc: `Remove softcaps from [sn2]'s effect.`,
             cost: E(35),
         },
         qu5: {
@@ -851,7 +851,7 @@ const TREE_UPGS = {
             branch: ['qc1'],
             req() { return tmp.qu.qc_s >= 70 && player.mass.gte(uni('ee5')) && QCs.active() },
             reqDesc() { return `Reach ${formatMass(uni('ee5'))} of mass with QS 70 build (before bonus).` },
-            desc: `Get 1 extra shard when a nerf reach 10.`,
+            desc: `Get 1 extra shard when a nerf reaches 10.`,
             cost: E(1e27),
         },
         qc3: {
@@ -951,7 +951,7 @@ const TREE_UPGS = {
             unl: ()=>tmp.chal13comp,
 
             branch: ["fn8"],
-            desc: `Unlock 2 new meta-types of U-Quark & U-Fermion.`,
+            desc: `Unlock 2 meta-types of U-Quark & U-Fermion.`,
             cost: E('e1.5e10'),
         },
 

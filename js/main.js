@@ -103,7 +103,7 @@ const FORMS = {
         if (hasUpgrade('rp',20)) x = x.pow(upgEffect(1,20))
 
         if (tmp.inf_unl) x = x.pow(theoremEff('mass',0))
-        if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1))
+        if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[0])
 
         if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
@@ -436,6 +436,7 @@ const FORMS = {
             x = x.pow(tmp.unstable_bh.effect)
 
             if (tmp.inf_unl) x = x.pow(theoremEff('bh',0))
+            if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[1])
 
             if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
