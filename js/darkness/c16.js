@@ -1,7 +1,7 @@
 const CHARGERS = [
     {
         req: E(1e100),
-        cost: E(10),
+        cost: E(3),
         desc: `
         Multiply all matters gain by 1e10, and square mass of black hole gain.
         `,

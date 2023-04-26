@@ -1044,8 +1044,8 @@ const TREE_UPGS = {
             desc: `Neutronium-0 now affects Challenge 14 at a reduced rate. (like [ct5])`,
             cost: E(1500),
 
-            req() { return player.chal.comps[14]&&player.chal.comps[14].gte(777) },
-            reqDesc() { return `Get ${format(777,0)} C14 completions.` },
+            req() { return player.chal.comps[14]&&player.chal.comps[14].gte(750) },
+            reqDesc() { return `Get ${format(750,0)} C14 completions.` },
         },
         ct8: {
             branch: ['ct2'],
@@ -1111,8 +1111,8 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free primordium particles.`,
             cost: E(5e7),
 
-            req() { return tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e2070') && player.bh.condenser.lte(0) },
-            reqDesc() { return `Reach ${formatMass('1e2070')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
+            req() { return tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.bh.condenser.lte(0) },
+            reqDesc() { return `Reach ${formatMass('1e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
 
             effect() {
                 let x = player.dark.c16.bestBH.add(1).log10().root(2)
@@ -1126,8 +1126,8 @@ const TREE_UPGS = {
             desc: `Neutronium-0 now affects Challenge 15 at a reduced rate (like [ct5]). C15 now affects Atomic & Quark Overflows.`,
             cost: E(2.5e8),
 
-            req() { return player.chal.comps[14]&&player.chal.comps[14].gte(960) },
-            reqDesc() { return `Get ${format(960,0)} C14 completions.` },
+            req() { return player.chal.comps[14]&&player.chal.comps[14].gte(940) },
+            reqDesc() { return `Get ${format(940,0)} C14 completions.` },
         },
         ct14: {
             branch: ['ct11'],
@@ -1135,8 +1135,8 @@ const TREE_UPGS = {
             desc: `Dilated mass overflow starts later based on best mass of black hole in C16.`,
             cost: E(1e10),
 
-            req() { return tmp.c16active && player.atom.atomic.gte(1e180) },
-            reqDesc() { return `Reach ${format(1e180)} atomic powers during C16.` },
+            req() { return tmp.c16active && player.atom.atomic.gte(1e169) },
+            reqDesc() { return `Reach ${format(1e169)} atomic powers during C16.` },
 
             effect() {
                 let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
