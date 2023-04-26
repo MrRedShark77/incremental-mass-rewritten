@@ -1135,8 +1135,8 @@ const TREE_UPGS = {
             desc: `Dilated mass overflow starts later based on best mass of black hole in C16.`,
             cost: E(1e10),
 
-            req() { return tmp.c16active && player.atom.atomic.gte(1e169) },
-            reqDesc() { return `Reach ${format(1e169)} atomic powers during C16.` },
+            req() { return tmp.c16active && player.atom.atomic.gte(1e144) },
+            reqDesc() { return `Reach ${format(1e144)} atomic powers during C16.` },
 
             effect() {
                 let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
