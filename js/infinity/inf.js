@@ -116,7 +116,7 @@ const INF = {
         let dark = player.dark
         let darkSave = getDarkSave()
 
-        dark.rays = E(0)
+        dark.rays = hasInfUpgrade(7)?E(1e12):E(0)
         dark.shadow = E(0)
         dark.abyssalBlot = E(0)
 
@@ -145,6 +145,8 @@ const INF = {
 
         updateTemp()
 
+        player.inf.pt_choosed=-1
+
         generatePreTheorems()
 
         tmp.pass = 2
@@ -165,12 +167,14 @@ const INF = {
         let s = player.mass.add(1).log10().add(1).log10().div(308).max(1).log(1.1).add(1)
         s = s.mul(player.dark.c16.bestBH.add(1).log10().div(3.5e6).max(1).log(1.1).add(1))
 
-        return s.max(1).root(2).toNumber()
+        return s.max(1).root(2).softcap(5,0.25,0).toNumber()
     },
     gain() {
         if (player.mass.lt(this.req)) return E(0)
         let x = player.mass.add(1).log10().add(1).log10().sub(307).root(2).div(2)
         x = Decimal.pow(10,x.sub(1))
+
+        if (hasInfUpgrade(5)) x = x.mul(infUpgEffect(5))
 
         return x.max(1).floor()
     },
@@ -188,7 +192,7 @@ const INF = {
                 effect() {
                     let x = player.inf.total
 
-                    return [x.add(1).pow(2).softcap(1e3,0.5,0),overflow(x.add(1),10,0.5)]
+                    return [x.add(1).pow(2).softcap(1e3,0.5,0),overflow(x.add(1).softcap(10,0.5,0),10,0.5)]
                 },
                 effectDesc: x => "^"+x[0].format(0)+" to normal mass"+x[0].softcapHTML(1e3)+"; ^"+x[1].format(0)+" to BH mass",
             },{
@@ -213,11 +217,36 @@ const INF = {
                 effectDesc: x => "Placeholder",
             },
             */
+        ],[
+            {
+                title: "Tree Automation",
+                desc: "Automate pre-corrupted tree.",
+                cost: E(100),
+            },{
+                title: "Self-Infinity",
+                desc: "Infinity theorem boosts infinity points gain.",
+                cost: E(100),
+                effect() {
+                    let x = Decimal.pow(2,player.inf.theorem)
+
+                    return x
+                },
+                effectDesc: x => formatMult(x,0),
+            },{
+                title: "Stop Big Rip Switching",
+                desc: "Pre-218 big rip elements are now affordable outside Bif Rip. Automate elements tier 2 (119th-218th).",
+                cost: E(100),
+            },{
+                title: "Dark Passive",
+                desc: "Start with more dark rays (like dark ray’s first reward unlocked).",
+                cost: E(100),
+            },
         ],
     ],
 
     upg_row_req: [
         1,
+        2,
     ],
 }
 
@@ -319,6 +348,9 @@ function calcInf(dt) {
     }
 
     if (!player.inf.reached && player.mass.gte(INF.req)) player.inf.reached=true
+
+    if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
+    if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x)
 }
 
 function setupInfHTML() {

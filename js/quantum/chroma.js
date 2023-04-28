@@ -28,8 +28,9 @@ const CHROMA = {
     eff: [
         i => {
             //if (tmp.c16active) return E(1)
-            let x = i.add(1).log10().add(1).root(3)
-            if (hasUpgrade('br',10)) x = x.mul(1.1)
+            let c = hasElement(13,1)
+            let x = c ? expMult(i.add(1).log10().add(1),2) : i.add(1).log10().add(1).root(3)
+            if (hasUpgrade('br',10)) x = c ? x.pow(1.1) : x.mul(1.1)
             return x
         },
         i => {

@@ -105,6 +105,7 @@ const QUANTUM = {
             let pow = E(2)
             if (hasTree('qu6')) pow = pow.mul(treeEff('qu6'))
             pow = pow.mul(tmp.dark.abEff.csp||1)
+            pow = pow.pow(exoticAEff(1,3))
 
             let x = pow.pow(player.qu.cosmic_str)
             return {pow: pow, eff: x}
@@ -232,7 +233,7 @@ function calcQuantum(dt) {
         player.md.break.mass = player.md.break.mass.add(tmp.bd.massGain.mul(inf_gs))
     }
 
-    if (hasTree("qu_qol1")) for (let x = 0; x < tmp.supernova.auto_tree.length; x++) TREE_UPGS.buy(tmp.supernova.auto_tree[x], true)
+    if (hasTree("qu_qol1") || hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.normal.length; x++) TREE_UPGS.buy(TREE_TYPES.normal[x], true)
 
     calcEntropy(dt)
 }

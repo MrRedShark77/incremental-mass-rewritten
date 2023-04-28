@@ -1203,6 +1203,20 @@ for (let i in CS_TREE) {
     }
 }
 
+const TREE_TYPES = (()=>{
+    let t = {
+        normal: [],
+        qu: [],
+        cs: [],
+    }
+    for (let x in TREE_UPGS.ids) {
+        if (TREE_UPGS.ids[x].qf) t.qu.push(x)
+        else if (TREE_UPGS.ids[x].cs) t.cs.push(x)
+        else t.normal.push(x)
+    }
+    return t
+})()
+
 function hasTree(id) { return (player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)) && !(tmp.c16active && CORRUPTED_TREE.includes(id)) }
 
 function treeEff(id,def=1) { return tmp.supernova.tree_eff[id]||E(def) }

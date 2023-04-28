@@ -15,6 +15,7 @@ const SCALE_START = {
 		prestige0: E(15),
 		prestige1: E(7),
 		prestige2: E(30),
+		prestige3: E(8),
 		massUpg4: E(50),
 		FSS: E(5),
     },
@@ -33,6 +34,7 @@ const SCALE_START = {
 		cosmic_str: E(90),
 		prestige0: E(80),
 		prestige1: E(60),
+		prestige2: E(60),
 	},
 	ultra: {
 		rank: E(600),
@@ -86,6 +88,7 @@ const SCALE_POWER= {
 		prestige0: 1.5,
 		prestige1: 1.5,
 		prestige2: 2,
+		prestige3: 2,
 		massUpg4: 3,
 		FSS: 2,
     },
@@ -104,6 +107,7 @@ const SCALE_POWER= {
 		cosmic_str: 4,
 		prestige0: 2,
 		prestige1: 2,
+		prestige2: 3,
 	},
 	ultra: {
 		rank: 4,
@@ -165,6 +169,7 @@ const SCALING_RES = {
 	prestige0() { return player.prestiges[0] },
 	prestige1() { return player.prestiges[1] },
 	prestige2() { return player.prestiges[2] },
+	prestige3() { return player.prestiges[3] },
 	massUpg4() { return E(player.massUpg[4]||0) },
 	FSS() { return player.dark.matters.final },
 }
@@ -185,6 +190,7 @@ const NAME_FROM_RES = {
 	prestige0: "Prestige Level",
 	prestige1: "Honor",
 	prestige2: "Glory",
+	prestige2: "Renown",
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
 }

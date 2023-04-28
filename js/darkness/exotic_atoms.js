@@ -74,6 +74,14 @@ const MUONIC_ELEM = {
             desc: `De-corrupt FSS’s reward to Matters.`,
             cost: E(1e54),
         },
+        {
+            desc: `Pion’s first reward is even stronger. Honor 247’s reward affects Pion gain.`,
+            cost: E(1e64),
+        },
+        {
+            desc: `Pyro-Radioactive Plasma is better.`,
+            cost: E(1e81),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -88,6 +96,7 @@ const MUONIC_ELEM = {
     ],
     getUnlLength() {
         let u = 11
+        if (tmp.inf_unl) u += 7
         return u
     },
 }
@@ -122,7 +131,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e8),E(1e12),E(1e25),E(1e34),E(1e44)],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66)],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -160,6 +169,7 @@ const EXOTIC_ATOM = {
         let y = xy.div(20)
         if (hasElement(1,1)) y = y.mul(muElemEff(1))
         if (hasElement(9,1)) y = y.mul(muElemEff(9))
+        if (hasElement(12,1)&&hasPrestige(1,247)) y = y.mul(prestigeEff(1,247))
 
         return [x,y]
     },
@@ -183,7 +193,7 @@ const EXOTIC_ATOM = {
             },x=>`Impossible Challenges 1-12 start <b>${formatMult(x)}</b> later`],
         ],[
             [a=>{
-                let x = a.add(1).pow(2)
+                let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
                 return x
             },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b>`],
             [a=>{
@@ -194,6 +204,10 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).log10().div(80).add(1).root(2)
                 return x
             },x=>`FSS's base is raised by <b>${format(x)}</b>`],
+            [a=>{
+                let x = a.add(1).log10().div(10).add(1).root(2)
+                return x
+            },x=>`Cosmic String's power is raised by <b>${format(x)}</b>`],
         ],
     ],
 }

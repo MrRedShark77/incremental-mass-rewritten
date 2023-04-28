@@ -234,7 +234,7 @@ function resetTemp() {
                     let u = TREE_UPGS.ids[id]
                     tmp.supernova.tree_had2[j].push(id)
                     tmp.supernova.tree_had.push(id)
-                    if (u && !u.qf && !u.cs) tmp.supernova.auto_tree.push(id)
+                    // if (u && !u.qf && !u.cs) tmp.supernova.auto_tree.push(id)
                 }
             }
         }

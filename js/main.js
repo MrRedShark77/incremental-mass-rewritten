@@ -20,7 +20,7 @@ const FORMS = {
     getPreInfGlobalSpeed() {
         let x = E(1)
         
-        if (tmp.inf_unl) x = x.mul(theoremEff('time',0))
+        if (tmp.inf_unl) x = x.mul(10).mul(theoremEff('time',0))
 
         return x
     },

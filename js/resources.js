@@ -91,7 +91,7 @@ const RESOURCES_DIS = {
         resetBtn() { DARK.reset() },
     },
     fss: {
-        unl: ()=>player.dark.matters.final.gt(0),
+        unl: ()=>player.dark.matters.final.gt(0) || tmp.inf_unl&&hasElement(188),
         icon: "fss",
 
         desc: (gs)=>format(player.dark.matters.final,0)+"<br>(+"+(tmp.matters.FSS_base.gte(tmp.matters.FSS_req)?1:0)+")",
@@ -119,7 +119,7 @@ const RESOURCES_DIS = {
         icon: "inf",
         class: "yellow",
 
-        desc: (gs)=>player.inf.points.format(0)+"<br>(+"+tmp.IP_gain.format(0)+")",
+        desc: (gs)=>player.inf.points.format(0)+"<br>(+"+tmp.IP_gain.format(0)+")"+"<br>("+formatPercent(player.mass.max(1).log10().max(1).log10().div(tmp.inf_limit.max(1).log10().max(10).log10()).max(0).min(1))+" to infinity)",
 
         resetBtn() { INF.goInf() },
     },

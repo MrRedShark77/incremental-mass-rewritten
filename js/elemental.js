@@ -38,7 +38,7 @@ const ELEMENTS = {
     canBuy(x) {
         if (tmp.c16active && isElemCorrupted(x)) return false
         let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
-        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
+        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : hasInfUpgrade(6) ? x < 218 : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
     },
     buyUpg(x) {
         if (this.canBuy(x)) {

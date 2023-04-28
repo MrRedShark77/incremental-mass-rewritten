@@ -1226,7 +1226,7 @@ h3 {
 }
 
 #inf_upg_table > div {
-	height: 150px;
+	min-height: 150px;
 	margin: 10px 0;
 }
 
@@ -1249,7 +1249,7 @@ h3 {
 	position: relative;
 	width: 250px;
 	font-size: 12px;
-	height: calc(100% - 8px);
+	height: 142px;
 	margin: 5px;
 	padding: 0px;
 	border: solid 4px #ac4b0a;
