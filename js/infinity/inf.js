@@ -234,7 +234,7 @@ const INF = {
                 effectDesc: x => formatMult(x,0),
             },{
                 title: "Stop Big Rip Switching",
-                desc: "Pre-218 big rip elements are now affordable outside Bif Rip. Automate elements tier 2 (119th-218th).",
+                desc: "Pre-218 big rip elements are now affordable outside Big Rip. Automate elements tier 2 (119th-218th).",
                 cost: E(100),
             },{
                 title: "Dark Passive",
