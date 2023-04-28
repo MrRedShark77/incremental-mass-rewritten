@@ -190,7 +190,7 @@ const NAME_FROM_RES = {
 	prestige0: "Prestige Level",
 	prestige1: "Honor",
 	prestige2: "Glory",
-	prestige2: "Renown",
+	prestige3: "Renown",
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
 }
