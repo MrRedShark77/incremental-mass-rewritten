@@ -8,7 +8,7 @@ const INF = {
         resetMainUpgs(1,[3])
         resetMainUpgs(2,[5,6])
         resetMainUpgs(3,[2,6])
-        resetMainUpgs(4)
+        resetMainUpgs(4,[8])
 
         let e = [14,18,24,30,122,124,131,136,143,194]
         if (hasInfUpgrade(2)) e.push(202)
