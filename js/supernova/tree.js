@@ -4,7 +4,7 @@ const TREE_TAB = [
     {title: "Challenge"},
     {title: "Post-Supernova", unl() { return player.supernova.post_10 } },
     {title: "Quantum", unl() { return quUnl() } },
-    {title: "Corruption", unl() { return player.dark.c16.first } },
+    {title: "Corruption", unl() { return player.dark.c16.first || hasInfUpgrade(8) } },
 ]
 
 const CORRUPTED_TREE = ['s1']

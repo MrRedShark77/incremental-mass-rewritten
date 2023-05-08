@@ -480,6 +480,7 @@ function updateHTML() {
 	if (tmp.start && (!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()
 		updateDarkHTML()
+		updateInfHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
 				updateRanksHTML()
@@ -545,7 +546,6 @@ function updateHTML() {
 				updateExoticAtomsHTML()
 			}
 		}
-		else if (tmp.tab == 8) updateInfHTML()
 		else if (tmp.tab == 9) {
 			updateOptionsHTML()
 		}

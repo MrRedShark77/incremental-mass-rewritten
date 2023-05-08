@@ -425,6 +425,7 @@ const PRESTIGES = {
             "139": `Matters' production is tripled every FSS. FV Manipulator's cost is slightly weaker.`,
             "167": `Abyssal Blot's fourth reward is raised by FSS.`,
             "247": `Muon's production is increased by MCF tier.`,
+            "300": `Softcaps of Meta-Quark and Meta-Lepton are slightly weaker.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
@@ -718,6 +719,12 @@ const BEYOND_RANKS = {
             1: `Mass & Stronger Overflow is weaker based on archverse tier of normal mass.`,
             2: `Super FSS starts +1 later.`,
             4: `Beyond Rank boosts Kaon & Pion gain.`,
+            12: `Remove the softcap of dark ray's fourth reward.`,
+            18: `Super FSS scales +2.5% weaker per beyond-ranks' maximum tier (capped at 50%).`,
+            32: `Argon-18 affects tickspeed's power.`,
+        },
+        4: {
+            1: `Beta Particles affect supercritical supernova starting at a reduced rate.`,
         },
     },
 
@@ -792,6 +799,24 @@ const BEYOND_RANKS = {
                     return x
                 },
                 x=>"x"+format(x),
+            ],
+            18: [
+                ()=>{
+                    let x = 1-tmp.beyond_ranks.max_tier*0.025
+
+                    return Math.max(0.5,x)
+                },
+                x=>formatReduction(x)+" weaker",
+            ],
+        },
+        4: {
+            1: [
+                ()=>{
+                    let x = overflow(tmp.prim.eff[7].div(5),1e6,0.5)
+
+                    return x
+                },
+                x=>"+"+format(x)+" later",
             ],
         },
     },
@@ -879,7 +904,7 @@ function updateRanksHTML() {
 
             // Beyond Rank
 
-            tmp.el.br_auto.setDisplay(hasBeyondRank(2,1))
+            tmp.el.br_auto.setDisplay(hasBeyondRank(2,1)||hasInfUpgrade(10))
             tmp.el.br_auto.setTxt(player.auto_ranks.beyond?"ON":"OFF")
 
             let t = tmp.beyond_ranks.max_tier

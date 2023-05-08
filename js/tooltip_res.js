@@ -116,6 +116,8 @@ const TOOLTIP_RES = {
         full: "Supernova",
         desc() {
             let h = `
+            You have becomed <b>${player.supernova.times.format(0)}</b> ${getScalingName('supernova')}Supernova
+            <br class='line'>
             You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.<br>
             You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
             <br class='line'>

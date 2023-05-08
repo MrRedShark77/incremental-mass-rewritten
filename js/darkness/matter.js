@@ -76,6 +76,21 @@ const MATTERS = {
             let x = Decimal.pow(100,Decimal.pow(f,1.5)).mul(1e43)
             return x
         },
+        bulk() {
+            let f = tmp.matters.FSS_base
+
+            if (f.lt(1e43)) return E(0)
+
+            let x = f.div(1e43).max(1).log(100).root(1.5)
+
+            if (hasElement(217)) x = x.div(.8)
+
+            x = x.scaleEvery('FSS',true)
+
+            if (hasTree('ct10')) x = x.div(treeEff('ct10'))
+
+            return x.add(1).floor()
+        },
 
         reset(force = false) {
             if (force || tmp.matters.FSS_base.gte(tmp.matters.FSS_req)) {
@@ -113,6 +128,10 @@ function getMatterUpgrade(i) {
     let amt = player.dark.matters.amt[i]
 
     if (amt.gte(tu.cost) && player.dark.matters.upg[i].lt(tu.bulk)) player.dark.matters.upg[i] = tu.bulk
+}
+
+function buyMaxMatters() {
+    for (let i = 0; i < player.dark.matters.unls-1; i++) getMatterUpgrade(i)
 }
 
 function resetMatters() {
@@ -186,6 +205,7 @@ function updateMattersTemp() {
     if (hasElement(206)) tmp.matters.exponent += elemEffect(206,0)
     if (hasBeyondRank(1,1)) tmp.matters.exponent += .5
     if (hasPrestige(0,1337)) tmp.matters.exponent += prestigeEff(0,1337,0)
+    if (hasElement(14,1)) tmp.matters.exponent += muElemEff(14,0)
     
     tmp.matters.req_unl = Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))
 

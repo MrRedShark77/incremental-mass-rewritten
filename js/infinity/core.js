@@ -4,7 +4,7 @@ const CORE = {
         icon: `N`,
         preEff: [
             `Boost normal mass gain.`,
-            `Boost normal overflow starting.`,
+            `Boost normal mass overflow starting.`,
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
         ],
@@ -417,6 +417,18 @@ function updateTheoremInv() {
     }
 }
 
+function removeTheorem() {
+    if (t_choosed.includes('c') || t_choosed == '-') return
+
+    createConfirm("Are you sure you want to remove the selected theorem?",'remove_selected',()=>{
+        delete player.inf.inv[t_choosed]
+
+        t_choosed = '-'
+
+        updateTheoremInv()
+    })
+}
+
 function createPreTheorem() {
     let c = [], t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)]
     while (c.length == 0) {
@@ -461,6 +473,9 @@ function chooseTheorem(id,is_core=false) {
                 if (core[id] !== undefined) {
                     createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
                         [inv[t_choosed], core[id]] = [core[id], inv[t_choosed]]
+
+                        t_choosed = '-'
+
                         INF.doReset()
                         updateTheoremCore()
                         updateTheoremInv()
@@ -474,6 +489,9 @@ function chooseTheorem(id,is_core=false) {
             else {
                 createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
                     [inv[id], core[t_choosed.split('c')[0]]] = [core[t_choosed.split('c')[0]], inv[id]]
+
+                    t_choosed = '-'
+
                     INF.doReset()
                     updateTheoremCore()
                     updateTheoremInv()
@@ -499,7 +517,11 @@ function updateCoreTemp() {
 
         for (let j = 0; j < 4; j++) {
             let sc = Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
-            sc = overflow(sc,1000,0.5).toNumber()
+            sc = overflow(sc,1000,0.5)
+            if (sc.gt(0)) sc = sc.add(tmp.dim_mass_eff)
+
+            sc = sc.toNumber()
+
             s[j] = sc
             eff[j] = t.eff[j](sc)
         }

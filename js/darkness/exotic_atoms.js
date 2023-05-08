@@ -82,6 +82,15 @@ const MUONIC_ELEM = {
             desc: `Pyro-Radioactive Plasma is better.`,
             cost: E(1e81),
         },
+        {
+            desc: `Final Star Shards increase Matter formula.`,
+            cost: E(1e100),
+            eff() {
+                let x = player.dark.matters.final.root(2).div(5)
+                return x.toNumber()
+            },
+            effDesc: x=>"+"+format(x),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -131,7 +140,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66)],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88)],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -191,6 +200,10 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).log10().add(1).pow(2)
                 return x.toNumber()
             },x=>`Impossible Challenges 1-12 start <b>${formatMult(x)}</b> later`],
+            [a=>{
+                let x = Decimal.pow(0.8725,a.add(1).log10().softcap(20,0.25,0).root(2))
+                return x.toNumber()
+            },x=>`Weaken softcaps of atomic power's effect by <b>${formatReduction(x)}</b>`],
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)

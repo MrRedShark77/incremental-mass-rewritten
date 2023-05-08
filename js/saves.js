@@ -93,7 +93,7 @@ function calc(dt) {
             let rn = RANKS.names[x]
             if (RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
         }
-        if (player.auto_ranks.beyond && hasBeyondRank(2,1)) BEYOND_RANKS.reset(true)
+        if (player.auto_ranks.beyond && (hasBeyondRank(2,1)||hasInfUpgrade(10))) BEYOND_RANKS.reset(true)
         for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
             let id = UPGS.main.ids[x]
@@ -599,10 +599,24 @@ function simulateTime(sec) {
         quarks: player.atom.quarks.max(1).div(player_before.atom.quarks.max(1)).log10(),
         sn: player.supernova.times.sub(player_before.supernova.times),
     }
-    //console.log(s,player_before.bh.mass.format(),player.bh.mass.format())
-    if (s.mass.gte(10)) h += `<br>Your mass's exponent is increased by <b>${s.mass.format(1)}</b>.`
-    if (s.bh_mass.gte(10)) h += `<br>Your exponent of mass of black hole is increased by <b>${s.bh_mass.format(1)}</b>.`
-    if (s.quarks.gte(10)) h += `<br>Your quark's exponent is increased by <b>${s.quarks.format(1)}</b>.`
+
+    let s2 = {
+        mass: player.mass.max(1).log10().max(1).div(player_before.mass.max(1).log10().max(1)).log10(),
+        bh_mass: player.bh.mass.max(1).log10().max(1).div(player_before.bh.mass.max(1).log10().max(1)).log10(),
+        quarks: player.atom.quarks.max(1).log10().max(1).div(player_before.atom.quarks.max(1).log10().max(1)).log10(),
+    }
+
+    // console.log(s2)
+
+    if (s2.mass.gte(10)) h += `<br>Your mass's exponent<sup>2</sup> is increased by <b>${s2.mass.format(2)}</b>.`
+    else if (s.mass.gte(10)) h += `<br>Your mass's exponent is increased by <b>${s.mass.format(2)}</b>.`
+
+    if (s2.bh_mass.gte(10)) h += `<br>Your exponent<sup>2</sup> of mass of black hole is increased by <b>${s2.bh_mass.format(2)}</b>.`
+    else if (s.bh_mass.gte(10)) h += `<br>Your exponent of mass of black hole is increased by <b>${s.bh_mass.format(2)}</b>.`
+
+    if (s2.quarks.gte(10)) h += `<br>Your quark's exponent<sup>2</sup> is increased by <b>${s2.quarks.format(2)}</b>.`
+    else if (s.quarks.gte(10)) h += `<br>Your quark's exponent is increased by <b>${s.quarks.format(2)}</b>.`
+
     if (s.sn.gte(1e3)) h += `<br>You were becomed <b>${s.sn.format(0)}</b> more supernovas.`
 
     createPopup(h,'offline')

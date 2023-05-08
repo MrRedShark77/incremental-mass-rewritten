@@ -102,9 +102,13 @@ const ATOM = {
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75).pow(getEnRewardEff(1))
+            let base = hasElement(23)?1.5:1.75
+            let x = player.atom.atomic.max(1).log(base).pow(getEnRewardEff(1))
             if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
-            x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,0.1,0).softcap(2.5e35,0.1,0)
+
+            let w = 0.1 ** exoticAEff(0,4)
+
+            x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,w,0).softcap(2.5e35,w,0)
             return x.floor()
         },
     },

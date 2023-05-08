@@ -5,10 +5,12 @@ const INF = {
 
         // QoL
 
+        let iu11 = hasInfUpgrade(11)
+
         resetMainUpgs(1,[3])
         resetMainUpgs(2,[5,6])
         resetMainUpgs(3,[2,6])
-        resetMainUpgs(4,[8])
+        if (!iu11) resetMainUpgs(4,[8])
 
         let e = [14,18,24,30,122,124,131,136,143,194]
         if (hasInfUpgrade(2)) e.push(202)
@@ -106,7 +108,7 @@ const INF = {
         qu.rip.active = false
         qu.rip.amt = E(0)
 
-        bmd.active = false
+        if (!iu11) bmd.active = false
         bmd.energy = E(0)
         bmd.mass = E(0)
         for (let x = 0; x < 12; x++) if (x != 10) bmd.upgs[x] = E(0)
@@ -128,6 +130,10 @@ const INF = {
 
         dark.c16 = darkSave.c16
 
+        if (hasInfUpgrade(8)) {
+            for (let i = 0; i < infUpgEffect(8); i++) dark.c16.tree.push(...TREE_IDS[i][5])
+        }
+
         dark.exotic_atom = darkSave.exotic_atom
 
         player.bh.fvm = E(0)
@@ -140,6 +146,10 @@ const INF = {
         tmp.stab[7] = 0
         player.atom.elemTier[0] = 1
         player.atom.elemLayer = 0
+
+        // Infinity
+
+        player.inf.dim_mass = E(0)
 
         updateMuonSymbol()
 
@@ -167,7 +177,7 @@ const INF = {
         let s = player.mass.add(1).log10().add(1).log10().div(308).max(1).log(1.1).add(1)
         s = s.mul(player.dark.c16.bestBH.add(1).log10().div(3.5e6).max(1).log(1.1).add(1))
 
-        return s.max(1).root(2).softcap(5,0.25,0).toNumber()
+        return s.max(1).root(2).softcap(5,1/3,0).toNumber()
     },
     gain() {
         if (player.mass.lt(this.req)) return E(0)
@@ -241,13 +251,82 @@ const INF = {
                 desc: "Start with more dark rays (like dark ray’s first reward unlocked).",
                 cost: E(100),
             },
+        ],[
+            {
+                title: "Corrupted Construction",
+                desc: "Start with rows of upgrades bought in corrupted tree (based on infinity theorems, starting at 2, and maximum 4 rows).",
+                cost: E(2e3),
+                effect() {
+                    let x = Math.min(Math.max(1,player.inf.theorem-1),4)
+
+                    return x
+                },
+                effectDesc: x => "Row 1-"+x+" of upgrades",
+            },{
+                title: "Parallel Extruder",
+                desc: "Unlock new generator in Main tab. Also, passively generate Dimensional Mass that increases meta-score of equipped theorems.",
+                cost: E(2e3),
+            },{
+                title: "Final Star Automation",
+                desc: "Automate final star shard, and it doesn’t reset anything. Also, start with beyond-ranks automation.",
+                cost: E(2e3),
+            },{
+                title: "Lethal Universe",
+                desc: "Keep big rip upgrades and breaking dilation on infinity.",
+                cost: E(2e3),
+            },
         ],
     ],
 
     upg_row_req: [
         1,
         2,
+        3,
     ],
+
+    dim_mass: {
+        gain() {
+            if (!hasInfUpgrade(9)) return E(0)
+
+            let x = tmp.peEffect.eff||E(1)
+
+            return x
+        },
+        effect() {
+            let x = player.inf.dim_mass.add(1).log10().pow(2).div(10)
+
+            return x//.softcap(10,0.5,0)
+        },
+    },
+    pe: {
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('pe')).mul(1000).floor() },
+        can() { return player.inf.points.gte(tmp.peCost) },
+        buy() {
+            if (this.can()) {
+                player.inf.points = player.inf.points.sub(tmp.peCost).max(0)
+                player.inf.pe = player.inf.pe.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.inf.points = player.inf.points.sub(this.cost(tmp.peBulk.sub(1))).max(0)
+                player.inf.pe = tmp.peBulk
+            }
+        },
+        effect() {
+            let t = player.inf.pe
+
+            let bonus = E(0)
+
+            let step = E(2)
+            
+            let eff = step.pow(t.add(bonus))
+
+            let eff_bottom = eff
+
+            return {step: step, eff: eff, bonus: bonus, eff_bottom: eff_bottom}
+        },
+    },
 }
 
 const IU_LENGTH = (()=>{
@@ -286,6 +365,9 @@ function getInfSave() {
         pre_theorem: [],
         upg: [],
         pt_choosed: -1,
+
+        dim_mass: E(0),
+        pe: E(0),
     }
     //for (let i = 0; i < 4; i++) s.pre_theorem.push(createPreTheorem())
     return s
@@ -294,6 +376,14 @@ function getInfSave() {
 function infUpgEffect(i,def=1) { return tmp.iu_eff[i] || def }
 
 function updateInfTemp() {
+    tmp.peCost = INF.pe.cost(player.inf.pe)
+    tmp.peBulk = E(0)
+    if (player.inf.points.gte(100)) tmp.peBulk = player.inf.points.div(1000).log(1.2).scaleEvery('pe',true).add(1).floor()
+    tmp.peEffect = INF.pe.effect()
+
+    tmp.dim_mass_gain = INF.dim_mass.gain()
+    tmp.dim_mass_eff = INF.dim_mass.effect()
+
     for (let r in INF.upgs) {
         r = parseInt(r)
 
@@ -351,6 +441,8 @@ function calcInf(dt) {
 
     if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
     if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x)
+
+    player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
 }
 
 function setupInfHTML() {
@@ -359,39 +451,53 @@ function setupInfHTML() {
 }
 
 function updateInfHTML() {
-    if (tmp.stab[8] == 0) updateCoreHTML()
-    else if (tmp.stab[8] == 1) {
-        let h = ``
-        for (let t in CORE) {
-            let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
-            for (let i = 0; i < 4; i++) {
-                if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+ct.preEff[i]+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
-            }
-            if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p*100,0)}%)</b></h2><br>`+hh+'<br>'
-        }
-        tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")
+    if (tmp.tab == 0 && tmp.stab[0] == 5) {
+        tmp.el.dim_mass.setTxt(formatMass(player.inf.dim_mass)+" "+player.inf.dim_mass.formatGain(tmp.dim_mass_gain,true))
+        tmp.el.dim_mass_eff.setHTML("+"+tmp.dim_mass_eff.format())
+
+        let pe_eff = tmp.peEffect
+		tmp.el.pe_scale.setTxt(getScalingName('pe'))
+		tmp.el.pe_lvl.setTxt(format(player.inf.pe,0)+(pe_eff.bonus.gte(1)?" + "+format(pe_eff.bonus,0):""))
+		tmp.el.pe_btn.setClasses({btn: true, locked: !INF.pe.can()})
+		tmp.el.pe_cost.setTxt(format(tmp.peCost,0))
+		tmp.el.pe_step.setHTML(formatMult(pe_eff.step))
+		tmp.el.pe_eff.setTxt(formatMult(pe_eff.eff))
     }
-    else if (tmp.stab[8] == 2) {
-        tmp.el.ip_amt.setHTML(player.inf.points.format(0))
+    else if (tmp.tab == 8) {
+        if (tmp.stab[8] == 0) updateCoreHTML()
+        else if (tmp.stab[8] == 1) {
+            let h = ``
+            for (let t in CORE) {
+                let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
+                for (let i = 0; i < 4; i++) {
+                    if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+ct.preEff[i]+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
+                }
+                if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p*100,0)}%)</b></h2><br>`+hh+'<br>'
+            }
+            tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")
+        }
+        else if (tmp.stab[8] == 2) {
+            tmp.el.ip_amt.setHTML(player.inf.points.format(0))
 
-        for (let r in INF.upgs) {
-            r = parseInt(r)
+            for (let r in INF.upgs) {
+                r = parseInt(r)
 
-            let ru = INF.upgs[r], req = player.inf.theorem.gte(INF.upg_row_req[r])
+                let ru = INF.upgs[r], req = player.inf.theorem.gte(INF.upg_row_req[r])
 
-            for (let c in ru) {
-                c = parseInt(c)
+                for (let c in ru) {
+                    c = parseInt(c)
 
-                let id = r*4+c
+                    let id = r*4+c
 
-                let el = tmp.el[`iu_${id}_div`]
+                    let el = tmp.el[`iu_${id}_div`]
 
-                if (el) {
-                    let u = ru[c], b = hasInfUpgrade(id)
+                    if (el) {
+                        let u = ru[c], b = hasInfUpgrade(id)
 
-                    el.setClasses({inf_upg: true, locked: !b && (player.inf.points.lt(u.cost) || !req), bought: b})
+                        el.setClasses({inf_upg: true, locked: !b && (player.inf.points.lt(u.cost) || !req), bought: b})
 
-                    tmp.el[`iu_${id}_desc`].setHTML(b?u.effectDesc?"<br>Effect: "+u.effectDesc(infUpgEffect(id)):"":"<br>Cost: <b>"+u.cost.format(0)+"</b> Infinity Points")
+                        tmp.el[`iu_${id}_desc`].setHTML(b?u.effectDesc?"<br>Effect: "+u.effectDesc(infUpgEffect(id)):"":"<br>Cost: <b>"+u.cost.format(0)+"</b> Infinity Points")
+                    }
                 }
             }
         }

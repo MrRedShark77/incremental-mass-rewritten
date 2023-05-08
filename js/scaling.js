@@ -18,6 +18,7 @@ const SCALE_START = {
 		prestige3: E(8),
 		massUpg4: E(50),
 		FSS: E(5),
+		pe: E(25),
     },
 	hyper: {
 		rank: E(120),
@@ -68,6 +69,7 @@ const SCALE_START = {
 	},
 	supercritical: {
 		rank: E(1e37),
+		supernova: E(1e7),
 	},
 }
 
@@ -91,6 +93,7 @@ const SCALE_POWER= {
 		prestige3: 2,
 		massUpg4: 3,
 		FSS: 2,
+		pe: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -141,6 +144,7 @@ const SCALE_POWER= {
 	},
 	supercritical: {
 		rank: 50,
+		supernova: 75,
 	},
 }
 
@@ -172,6 +176,7 @@ const SCALING_RES = {
 	prestige3() { return player.prestiges[3] },
 	massUpg4() { return E(player.massUpg[4]||0) },
 	FSS() { return player.dark.matters.final },
+	pe() { return player.inf.pe},
 }
 
 const NAME_FROM_RES = {
@@ -193,6 +198,7 @@ const NAME_FROM_RES = {
 	prestige3: "Renown",
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
+	pe: "Parallel Extruder",
 }
 
 function updateScalingHTML() {
@@ -393,6 +399,9 @@ function getScalingStart(type, name) {
 		if (name=="rank") {
 			if (tmp.chal && hasBeyondRank(2,20)) start = start.mul(tmp.chal.eff[1].scrank)
 		}
+		else if (name=="supernova") {
+			if (hasBeyondRank(4,1)) start = start.add(beyondRankEffect(4,1,0))
+		}
 	}
 	if (name=='supernova' && type < 4) {
 		start = start.add(tmp.prim.eff[7])
@@ -453,6 +462,9 @@ function getScalingPower(type, name) {
 		}
 		else if (name=="massUpg4") {
 			if (tmp.chal && hasBeyondRank(2,20)) power = power.mul(tmp.chal.eff[1].over)
+		}
+		else if (name=='FSS') {
+			if (hasBeyondRank(3,18)) power = power.mul(beyondRankEffect(3,18))
 		}
 	}
 	else if (type==1) {

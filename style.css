@@ -652,6 +652,12 @@ h3 {
     font-size: 20px;
 }
 
+h4 {
+	display: inline;
+	font-weight: bold;
+    font-size: 18px;
+}
+
 *::-webkit-scrollbar {
     width: 10px;
 }
@@ -1243,7 +1249,6 @@ h3 {
 
 #inf_upg_table > div {
 	min-height: 150px;
-	margin: 10px 0;
 }
 
 .iu_req_div {

@@ -172,8 +172,8 @@
                                 </div>
                             </div>
                         </div><div id="stab_frame5_3">
-                            Your frequency is <span id="frequency">0</span> Hz, which multiples all Fermion gains by <span id="frequency_eff">1</span>x<br>
-                            <span id="nr_div">At <span id="next_radiation">0</span> of frequency, unlock <span id="unl_radiation">X</span></span><br><br>
+                            Your frequency is <h4 id="frequency">0</h4> Hz, which multiples all Fermion gains by <h4 id="frequency_eff">1</h4>x<br>
+                            <span id="nr_div">At <b id="next_radiation">0</b> of frequency, unlock <b id="unl_radiation">X</b></span><br><br>
                             <div id="radiation_table"></div>
                         </div>
                     </div><div id="tab_frame0">
@@ -252,12 +252,12 @@
                         </div><div id="stab_frame0_1">
                             <div class="table_center">
                                 <div style="width: 50%; min-width: 600px;">
-                                    You have <span id="bhMass2">X</span> of Black Hole<br>
-                                    <span class="green">Which boosts mass gain by <span id="bhEffect">X</span></span><br><br>
+                                    You have <h4 id="bhMass2">X</h4> of Black Hole<br>
+                                    <span class="green">Which boosts mass gain by <h4 id="bhEffect">X</h4></span><br><br>
                                     Black Hole mass's gain formula - (x + 1)<sup id="bhMassPower">0.33</sup> * <span id="bhCondenserEffect">X</span>
                                 </div><div style="width: 50%; min-width: 600px;" id="unstable_bhUnl">
-                                    You have <span id="bhUnstable" class="corrupted_text">X</span> of Unstable Black Hole<br>
-                                    <span class="green">Which boosts mass of black hole gain by <span id="bhUnstableEffect">X</span></span><br><br>
+                                    You have <h4 id="bhUnstable" class="corrupted_text">X</h4> of Unstable Black Hole<br>
+                                    <span class="green">Which boosts mass of black hole gain by <h4 id="bhUnstableEffect">X</h4></span><br><br>
                                     Unstable BH's production is decreased based on its mass
                                 </div>
                             </div>
@@ -296,8 +296,8 @@
                                 <div id="bhOverflow2" style="color: rgb(255, 197, 215)"></div>
                             </div>
                         </div><div id="stab_frame0_2">
-                            You have <span id="atomicAmt">X</span> Atomic Power<br>
-                            <span class="green">Which provides <span id="atomicEff">X</span> free Tickspeeds</span><br><br>
+                            You have <h4 id="atomicAmt">X</h4> Atomic Power<br>
+                            <span class="green">Which provides <h4 id="atomicEff">X</h4> free Tickspeeds</span><br><br>
                             <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade">
                                 <div style="width: 300px">
                                     <div class="resources">
@@ -315,14 +315,14 @@
                                 <span id="atomicOverflow"></span>
                             </div>
                         </div><div id="stab_frame0_3">
-                            You collapsed <span id="stars_Amt">X</span> stars, which multiplies mass gain based on all rank types.<br>
-                            <span class="green">Currently: <span id="stars_Eff">X</span></span><br><br>
+                            You collapsed <h4 id="stars_Amt">X</h4> stars, which multiplies mass gain based on all rank types.<br>
+                            <span class="green">Currently: <h4 id="stars_Eff">X</h4></span><br><br>
                             <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
                             <div id="stars_table" class="table_center"></div><br><br>
                             <span id="starSoft1" class="red">After <b id="starSoftStart1">X</b> of collapsed stars gain will softcap collapsed stars gain!</span><br>
                         </div><div id="stab_frame0_4">
-                            You have <span id="bpAmt">0</span> Blueprint Particle<br>
-                            <span class="green">Which increases pre-Quantum global speed by <span id="bpEff">1</span>x</span><br><br>
+                            You have <h4 id="bpAmt">0</h4> Blueprint Particle<br>
+                            <span class="green">Which increases pre-Quantum global speed by <h4 id="bpEff">1</h4>x</span><br><br>
                             <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade">
                                 <div style="width: 300px">
                                     <div class="resources">
@@ -335,6 +335,24 @@
                                 <div style="margin-left: 5px; text-align: left; width: 400px">
                                     Cosmic Strings Power: <span id="cosmic_str_pow">X</span>x<br>
                                     Cosmic Strings Effect: <span id="cosmic_str_eff">X</span>x
+                                </div>
+                            </div>
+                        </div><div id="stab_frame0_5">
+                            You have <h4 id="dim_mass">X</h4> of dimensional mass
+                            <div class="green">Which boosts meta-score of equipped theorems by <h4 id="dim_mass_eff">X</h4></div>
+                            <br>
+                            <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade">
+                                <div style="width: 300px">
+                                    <div class="resources">
+                                        <img src="images/pe.png">
+                                        <span style="margin-left: 5px; text-align: left;"><span id="pe_scale"></span>Parallel Extruder [<span id="pe_lvl">X</span>]</span>
+                                    </div>
+                                </div><button id="pe_btn" class="btn" style="width: 300px;" onclick="INF.pe.buy()">Cost: <span id="pe_cost">X</span> Infinity Points</button>
+                                <button class="btn" style="width: 120px;" onclick="INF.pe.buyMax()">Buy Max</button>
+                                <button id="pe_auto" class="btn" style="width: 80px; display: none;" onclick="">OFF</button>
+                                <div style="margin-left: 5px; text-align: left; width: 400px">
+                                    Parallel Extruder Power: <span id="pe_step">X</span><br>
+                                    Parallel Extruder Effect: <span id="pe_eff">X</span> to dimensional mass gain
                                 </div>
                             </div>
                         </div>
@@ -420,8 +438,8 @@
                                 <span id="elem_eff" class='green'>X</span>
                             </div><br><div id="elements_table"></div>
                         </div><div id="stab_frame4_2">
-                            You have <span id="md_particles">X</span> Relativistic particles<br>
-                            You have <span id="md_mass">X</span> of dilated mass, which makes Tickspeed <span id="md_eff">X</span> stronger<br><br>
+                            You have <h4 id="md_particles">X</h4> Relativistic particles<br>
+                            You have <h4 id="md_mass">X</h4> of dilated mass, which makes Tickspeed <h4 id="md_eff">X</h4> stronger<br><br>
                             <button onclick="MASS_DILATION.onactive()" id="md_btn" class="btn full md tooltip"
                             tooltip-html="Dilating mass will force an atom reset. While mass is dilated, all pre-atom resources and atomic power gain will get their multipliers' exponents raised to 0.8">Dilate Mass</button><br><br>
                             <div class="table_center">
@@ -431,8 +449,8 @@
                                 <span id="dmOverflow"></span>
                             </div>
                         </div><div id="stab_frame4_3">
-                            You have <span id="bd_energy">X</span> Relativistic Energy<br>
-                            You have <span id="bd_mass">X</span> of Relativistic mass<br><br>
+                            You have <h4 id="bd_energy">X</h4> Relativistic Energy<br>
+                            You have <h4 id="bd_mass">X</h4> of Relativistic mass<br><br>
                             <button onclick="MASS_DILATION.break.toggle()" id="bd_btn" class="btn half_full bd tooltip"
                             tooltip-html="When breaking dilation, while in Big Rip, BH Condensers & Cosmic Rays are no longer nerfed by 8th QC modifier, 7th QC modifier is disabled, you can gain <b>Relativistic Energy</b> based on dilated mass. Relativistic Energy generates <b>Relativistic Mass</b>. Fixing Dilation resets your relativistic energy & its mass, also forces a Quantum reset.">Break Dilation</button><br><br>
                             <div class="table_center">
@@ -445,7 +463,7 @@
                             </button>
                             <div id="ea_div">
                                 <br>
-                                <div>You have <span id="ext_atom">0</span> Exotic Atoms (Kaon & Pion based).</div>
+                                <div>You have <h4 id="ext_atom">0</h4> Exotic Atoms (Kaon & Pion based).</div>
                                 <div class="table_center">
                                     <div style="width: 50%; min-width: 500px;">
                                         You have <span id="ea_amt0">0</span> Kaons.<br><br>
@@ -534,11 +552,12 @@
                             <div>
                                 10<sup>lg(lg(x))<sup id="matter_exponent">2</sup></sup> to each matter gain by previous matter.
                                 <div id="matter_req_div">Tip: Reach <span id="matter_req">???</span> of current matter to unlock next matter!</div>
-                                <div id="FSS_eff1"></div>
+                                <div id="FSS_eff1"></div><br>
+                                <button class="btn" onclick="buyMaxMatters()">Max All Upgrades</button>
                             </div><br>
                             <div class="table_center" id="matters_table"></div>
                         </div><div id="stab_frame7_3">
-                            Your best mass of black hole in the 16th Challenge is <b id="bestBH">X</b>.<br><br>
+                            Your best mass of black hole in the 16th Challenge is <h4 id="bestBH">X</h4>.<br><br>
                             <div class="table_center"><div class="table_center" id="chargers_table" style="width: 1000px;"></div></div>
                         </div>
                     </div><div id="tab_frame8">
@@ -565,7 +584,7 @@
                                     <h2>Core</h2>
                                     <div id="theorem_table" class="table_center"></div>
                                 </div><div style="width: 50%; min-width: 500px;">
-                                    <h2>Inventory</h2>
+                                    <h2>Inventory</h2><br><button onclick="removeTheorem()">Remove selected theorem in inventory</button>
                                     <div id="theorem_inv_table" class="table_center"></div>
                                 </div>
                             </div>
@@ -594,7 +613,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten v0.7 beta 2 - made by MrRedShark77<br>
+                            Incremental Mass Rewritten v0.7 beta 3 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                             Hint 1: Hover top image above tabs to show description...<br><br>

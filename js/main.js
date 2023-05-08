@@ -116,6 +116,8 @@ const FORMS = {
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
+        os = os.min(os2)
+
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
         x = overflow(x,os,op)
@@ -283,6 +285,8 @@ const FORMS = {
             step = step.softcap(ss,p,0,hasUpgrade('rp',16))
 
             if (hasBeyondRank(2,4)) step = step.pow(tmp.accelEffect.eff)
+
+            if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
 
@@ -453,6 +457,8 @@ const FORMS = {
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
             if (hasTree('ct11')) os = os.pow(treeEff('ct11'))
             if (tmp.inf_unl) os = os.pow(theoremEff('bh',1))
+
+            os = os.min(os2)
 
             if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
 

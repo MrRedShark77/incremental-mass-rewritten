@@ -112,6 +112,8 @@ const CONFIRMS_FUNCTION = {
 
         if (tmp.inf_reached) player.inf.theorem = player.inf.theorem.add(1)
 
+        updateInfTemp()
+
         INF.doReset()
 
         updateTheoremCore()

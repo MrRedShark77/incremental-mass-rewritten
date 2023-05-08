@@ -31,7 +31,7 @@ const DARK = {
 
         if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
         if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1).toNumber()
-        if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0).floor()
+        if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0,hasBeyondRank(3,12)).floor()
 
         return x
     },
@@ -180,6 +180,8 @@ function calcDark(dt) {
                 if (hasElement(195)) getMatterUpgrade(x)
             }
             if (player.dark.matters.unls<MATTERS_LEN+1 && player.dark.matters.amt[mu-2].gte(tmp.matters.req_unl)) player.dark.matters.unls++
+
+            if (hasInfUpgrade(10)) player.dark.matters.final = player.dark.matters.final.max(MATTERS.final_star_shard.bulk())
         }
     }
 
@@ -292,7 +294,7 @@ function updateDarkHTML() {
 
             if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset per second`
             if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`
-            if (eff.dChal) e += `<br>Adds <b>${format(eff.dChal,0)}</b> more C13-15 maximum completions`+eff.dChal.softcapHTML(100)
+            if (eff.dChal) e += `<br>Adds <b>${format(eff.dChal,0)}</b> more C13-15 maximum completions`+eff.dChal.softcapHTML(100,hasBeyondRank(3,12))
 
             tmp.el.drEff.setHTML(e)
         } else if (tmp.stab[7] == 1) {
