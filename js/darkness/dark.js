@@ -65,7 +65,7 @@ const DARK = {
 
         let k = []
 
-        if (hasElement(127)) k.push(8,9,11)
+        if (hasElement(127) || hasInfUpgrade(11)) k.push(8,9,11)
         else bmd.active = false
         bmd.energy = E(0)
         bmd.mass = E(0)
@@ -191,8 +191,16 @@ function calcDark(dt) {
         player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
     }
 
-    if (tmp.eaUnl && player.dark.exotic_atom.tier>0) {
-        for (let i = 0; i < 2; i++) player.dark.exotic_atom.amount[i] = player.dark.exotic_atom.amount[i].add(tmp.exotic_atom.gain[i].mul(dt))
+    if (tmp.eaUnl) {
+        if (hasInfUpgrade(14)) {
+            for (let i = 1; i <= tmp.elements.unl_length[1]; i++) buyElement(i,1)
+
+            EXOTIC_ATOM.tier()
+        }
+
+        if (player.dark.exotic_atom.tier>0) {
+            for (let i = 0; i < 2; i++) player.dark.exotic_atom.amount[i] = player.dark.exotic_atom.amount[i].add(tmp.exotic_atom.gain[i].mul(dt))
+        }
     }
 }
 

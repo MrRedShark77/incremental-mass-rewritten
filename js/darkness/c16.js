@@ -64,7 +64,7 @@ const UNSTABLE_BH = {
     calcProduction() {
         let bh = player.bh.unstable
 
-        return this.getProduction(bh,tmp.unstable_bh.gain).sub(bh)
+        return this.getProduction(bh,tmp.unstable_bh.gain.mul(tmp.preInfGlobalSpeed)).sub(bh)
     },
     effect() {
         let x = player.bh.unstable.add(1)
@@ -149,7 +149,7 @@ function setupC16HTML() {
 function corruptedShardGain() {
     if (!tmp.c16active || player.bh.mass.lt('e100')) return E(0)
 
-    let x = Decimal.pow(10,player.bh.mass.max(1).log10().div(100).root(3).sub(1))
+    let x = Decimal.pow(10,overflow(player.bh.mass.max(1).log10(),1e9,0.5).div(100).root(3).sub(1))
 
     if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 

@@ -299,7 +299,7 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10())
+                    let x = hasElement(17,1) ? t.pow(2).mul(i.add(1).log10().add(1)).add(1) : t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10())
                     return x
                 },
                 desc(x) {

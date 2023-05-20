@@ -5,7 +5,7 @@ const INF = {
 
         // QoL
 
-        let iu11 = hasInfUpgrade(11)
+        let iu11 = hasInfUpgrade(11), iu15 = hasInfUpgrade(15)
 
         resetMainUpgs(1,[3])
         resetMainUpgs(2,[5,6])
@@ -15,6 +15,7 @@ const INF = {
         let e = [14,18,24,30,122,124,131,136,143,194]
         if (hasInfUpgrade(2)) e.push(202)
         if (hasInfUpgrade(3)) e.push(161)
+        if (iu15) e.push(218)
 
         player.atom.elements = e
         player.atom.muonic_el = []
@@ -128,6 +129,12 @@ const INF = {
 
         dark.matters = darkSave.matters
 
+        if (iu15) {
+            darkSave.c16.first = true
+            darkSave.c16.bestBH = dark.c16.bestBH
+            darkSave.c16.charger = dark.c16.charger
+        }
+
         dark.c16 = darkSave.c16
 
         if (hasInfUpgrade(8)) {
@@ -177,6 +184,8 @@ const INF = {
         let s = player.mass.add(1).log10().add(1).log10().div(308).max(1).log(1.1).add(1)
         s = s.mul(player.dark.c16.bestBH.add(1).log10().div(3.5e6).max(1).log(1.1).add(1))
 
+        if (hasElement(16,1)) s = s.mul(player.inf.dim_mass.add(1).log(1e6).add(1))
+
         return s.max(1).root(2).softcap(5,1/3,0).toNumber()
     },
     gain() {
@@ -185,6 +194,7 @@ const INF = {
         x = Decimal.pow(10,x.sub(1))
 
         if (hasInfUpgrade(5)) x = x.mul(infUpgEffect(5))
+        if (hasElement(17,1)) x = x.mul(muElemEff(17))
 
         return x.max(1).floor()
     },
@@ -254,7 +264,7 @@ const INF = {
         ],[
             {
                 title: "Corrupted Construction",
-                desc: "Start with rows of upgrades bought in corrupted tree (based on infinity theorems, starting at 2, and maximum 4 rows).",
+                desc: "Start with rows of upgrades bought in corrupted tree (based on infinity theorems, starting at 2, ending at 5).",
                 cost: E(2e3),
                 effect() {
                     let x = Math.min(Math.max(1,player.inf.theorem-1),4)
@@ -275,6 +285,30 @@ const INF = {
                 desc: "Keep big rip upgrades and breaking dilation on infinity.",
                 cost: E(2e3),
             },
+        ],[
+            {
+                title: "Dark Challenge Automation",
+                desc: "Automate challenges 13-15.",
+                cost: E(6e6),
+            },{
+                title: "Exotic Speed",
+                desc: "Infinity Theorems boost kaon and pion gains.",
+                cost: E(6e6),
+                effect() {
+                    let x = Decimal.pow(2,player.inf.theorem)
+
+                    return x
+                },
+                effectDesc: x => formatMult(x,0),
+            },{
+                title: "Muonic Automation",
+                desc: "Automate muonic elements and muon-catalyzed fusion.",
+                cost: E(6e6),
+            },{
+                title: "Corrupted Peak",
+                desc: "Start with C16 unlocked. Keep corruption upgrades and best BH in C16 on infinity.",
+                cost: E(6e6),
+            },
         ],
     ],
 
@@ -282,6 +316,7 @@ const INF = {
         1,
         2,
         3,
+        6,
     ],
 
     dim_mass: {
@@ -318,7 +353,7 @@ const INF = {
 
             let bonus = E(0)
 
-            let step = E(2)
+            let step = E(2).add(exoticAEff(1,4,0))
             
             let eff = step.pow(t.add(bonus))
 
@@ -481,6 +516,12 @@ function updateInfHTML() {
 
             for (let r in INF.upgs) {
                 r = parseInt(r)
+
+                let unl = r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])
+
+                tmp.el['iu_row'+r].setDisplay(unl)
+
+                if (!unl) continue;
 
                 let ru = INF.upgs[r], req = player.inf.theorem.gte(INF.upg_row_req[r])
 

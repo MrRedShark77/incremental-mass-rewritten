@@ -292,6 +292,8 @@ const PRESTIGES = {
         if (tmp.inf_unl) x += theoremEff('mass',3,0)
 
         x += 1
+
+        if (hasBeyondRank(4,2)) x *= beyondRankEffect(4,2)
         if (tmp.c16active || player.dark.run.active) x /= mgEff(5)
 
         return x
@@ -438,6 +440,7 @@ const PRESTIGES = {
             "28": `FV Manipulator Power is boosted by Honor.`,
             "34": `Pions boost Kaons gain at a reduced rate.`,
             "40": `[ct4]'s effect is better.`,
+            45: `Unstable BH affects mass of black hole overflow^2 starting.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
@@ -541,6 +544,11 @@ const PRESTIGES = {
                 let x = player.dark.exotic_atom.amount[1].add(1).log10().add(1).pow(1.5)
                 return x
             },x=>"x"+format(x)],
+            45: [()=>{
+                let x = player.bh.unstable.add(1)
+                if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
+                return x
+            },x=>"^"+format(x)+" later"],
         },
         {
             "2": [()=>{
@@ -691,7 +699,7 @@ const BEYOND_RANKS = {
         if (player.ranks.hex.gte(tmp.beyond_ranks.req) && (!auto || tmp.beyond_ranks.bulk.gt(player.ranks.beyond))) {
             player.ranks.beyond = auto ? player.ranks.beyond.max(tmp.beyond_ranks.bulk) : player.ranks.beyond.add(1)
 
-            if (hasBeyondRank(2,2)) return;
+            if (hasBeyondRank(2,2)||hasInfUpgrade(10)) return;
 
             player.ranks.hex = E(0)
             DARK.doReset()
@@ -725,6 +733,7 @@ const BEYOND_RANKS = {
         },
         4: {
             1: `Beta Particles affect supercritical supernova starting at a reduced rate.`,
+            2: `Prestige base's exponent is increased by +15% per beyond-ranks' maximum tier, starting at Dec.`,
         },
     },
 
@@ -817,6 +826,14 @@ const BEYOND_RANKS = {
                     return x
                 },
                 x=>"+"+format(x)+" later",
+            ],
+            2: [
+                ()=>{
+                    let x = (tmp.beyond_ranks.max_tier-3)*0.2+1
+
+                    return Math.max(1,x)
+                },
+                x=>"x"+format(x,1),
             ],
         },
     },

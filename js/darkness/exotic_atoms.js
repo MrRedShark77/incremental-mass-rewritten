@@ -91,6 +91,28 @@ const MUONIC_ELEM = {
             },
             effDesc: x=>"+"+format(x),
         },
+        {
+            desc: `C15's reward affects mass overflow^2 starting.`,
+            cost: E(1e111),
+            eff() {
+                if (!tmp.chal) return E(1)
+                let x = overflow(tmp.chal.eff[15],10,0.5).pow(2)
+                return x
+            },
+            effDesc: x=>"^"+format(x),
+        },{
+            desc: `Dimensional mass affects pre-theorem's level.`,
+            cost: E(1e130),
+        },{
+            desc: `Quantum times boost infinity points gain. De-nullify [Tau]’s effect, but its formula is changed.`,
+            cost: E(1e150),
+            eff() {
+                let x = player.qu.times.add(1).log10().add(1)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },
+
         /*
         {
             desc: `Placeholder.`,
@@ -105,7 +127,8 @@ const MUONIC_ELEM = {
     ],
     getUnlLength() {
         let u = 11
-        if (tmp.inf_unl) u += 7
+        if (tmp.inf_unl) u += 4
+        if (hasInfUpgrade(9)) u += 3
         return u
     },
 }
@@ -140,7 +163,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88)],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121)],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -170,6 +193,7 @@ const EXOTIC_ATOM = {
         if (hasPrestige(3,6)) xy = xy.mul(prestigeEff(3,6))
         if (hasElement(5,1)) xy = xy.mul(muElemEff(5))
         if (hasBeyondRank(3,4)) xy = xy.mul(beyondRankEffect(3,4))
+        if (hasInfUpgrade(13)) xy = xy.mul(infUpgEffect(13))
         
         let x = xy.div(10)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
@@ -221,6 +245,10 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).log10().div(10).add(1).root(2)
                 return x
             },x=>`Cosmic String's power is raised by <b>${format(x)}</b>`],
+            [a=>{
+                let x = a.add(1).ssqrt().div(50)
+                return isNaN(x)?E(0):x
+            },x=>`Increase parallel extruder's power by <b>+${format(x)}</b>`],
         ],
     ],
 }
@@ -260,9 +288,9 @@ function updateExoticAtomsHTML() {
 
     tmp.el.ea_div.setDisplay(t>0)
     if (t>0) {
-        let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0]),ea.amount[1].add(tea.gain[1])).sub(tea.amount)
+        let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0].mul(inf_gs)),ea.amount[1].add(tea.gain[1].mul(inf_gs))).sub(tea.amount)
 
-        tmp.el.ext_atom.setHTML(tea.amount.format(0)+" "+tea.amount.formatGain(g.mul(inf_gs)))
+        tmp.el.ext_atom.setHTML(tea.amount.format(0)+" "+tea.amount.formatGain(g))
 
         for (let i = 0; i < 2; i++) {
             tmp.el['ea_amt'+i].setHTML(ea.amount[i].format(2)+" "+ea.amount[i].formatGain(tea.gain[i].mul(inf_gs)))

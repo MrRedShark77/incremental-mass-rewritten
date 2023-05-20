@@ -160,8 +160,8 @@ const UPGS = {
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
 
                 let o = ret
-                let os = E('e115')
-                let op = E(.5)
+                let os = E('e115'), os2 = E('e1555')
+                let op = E(.5), op2 = E(0.25)
 
                 if (hasElement(210)) os = os.mul(elemEffect(210))
 
@@ -169,9 +169,11 @@ const UPGS = {
 
                 ret = overflow(ret,os,op)
 
+                ret = overflow(ret,os2,op2)
+
                 tmp.overflow.stronger = calcOverflow(o,ret,os)
-                tmp.overflow_start.stronger = os
-                tmp.overflow_power.stronger = op
+                tmp.overflow_start.stronger = [os,os2]
+                tmp.overflow_power.stronger = [op,op2]
                 
                 return {step: step, eff: ret, ss: ss}
             },

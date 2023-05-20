@@ -120,6 +120,8 @@ const FORMS = {
 
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
+        if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
+
         x = overflow(x,os,op)
 
         x = overflow(x,os2,op2)
@@ -457,6 +459,8 @@ const FORMS = {
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
             if (hasTree('ct11')) os = os.pow(treeEff('ct11'))
             if (tmp.inf_unl) os = os.pow(theoremEff('bh',1))
+
+            if (hasPrestige(2,45)) os2 = os2.pow(prestigeEff(2,45))
 
             os = os.min(os2)
 

@@ -374,7 +374,7 @@ function updateTheoremCore() {
     resetCoreTemp()
 
     for (let i = 0; i < MAX_CORE_LENGTH; i++) {
-        let u = i < MIN_CORE_LENGTH
+        let u = i < tmp.min_core_len
         let t = tmp.el['coreT'+i]
 
         t.setDisplay(u)
@@ -508,6 +508,10 @@ function chooseTheorem(id,is_core=false) {
 }
 
 function updateCoreTemp() {
+    tmp.min_core_len = MIN_CORE_LENGTH
+
+    if (player.inf.theorem.gte(6)) tmp.min_core_len++
+
     tmp.core_lvl = INF.level()
 
     for (let i in CORE) {

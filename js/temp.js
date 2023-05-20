@@ -279,7 +279,7 @@ function updateMassTemp() {
 }
 
 function updateTickspeedTemp() {
-    tmp.tickspeedFP = hasCharger(4) ? 1 : tmp.fermions.effs[1][2]
+    tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : tmp.fermions.effs[1][2]
     tmp.tickspeedCost = E(2).pow(player.tickspeed.scaleEvery('tickspeed')).floor()
     tmp.tickspeedBulk = E(0)
     if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).add(1).floor()

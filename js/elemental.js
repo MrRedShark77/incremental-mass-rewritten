@@ -388,7 +388,7 @@ const ELEMENTS = {
             cost: E('e4600'),
         },
         {
-            desc: `Normal mass boost all-star resources at a reduced rate.`,
+            desc: `Normal mass boosts all-star resources at a reduced rate.`,
             cost: E('e5200'),
             effect() {
                 let x = player.mass.max(1).log10().root(2)
