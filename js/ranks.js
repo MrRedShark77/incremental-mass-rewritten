@@ -85,7 +85,7 @@ const RANKS = {
             '800': "make mass gain softcap 0.25% weaker based on rank, hardcaps at 25%.",
         },
         tier: {
-            '1': "reduce rank reqirements by 20%.",
+            '1': "reduce rank requirement by 20%.",
             '2': "raise mass gain by 1.15",
             '3': "reduce all mass upgrade scalings by 20%.",
             '4': "adds +5% tickspeed power for every tier you have, softcaps at +40%.",
