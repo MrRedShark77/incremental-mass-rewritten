@@ -340,6 +340,24 @@ function loadPlayer(load) {
     }
     if (typeof player.atom.elemTier == "number") player.atom.elemTier = [player.atom.elemTier,1]
     if (player.inf.pre_theorem.length == 0) generatePreTheorems()
+
+    let tt = {}
+
+    for (let i = 0; i < player.inf.core.length; i++) {
+        let t = player.inf.core[i].type
+        if (!tt[t]) tt[t] = 1
+        else tt[t]++
+
+        if (tt[t]>1) {
+            for (let j = 0; j < MAX_INV_LENGTH; j++) if (!player.inf.inv[j]) {
+                player.inf.inv[j] = player.inf.core[i]
+                player.inf.core[i] = undefined
+                break
+            }
+
+            tt[t]--
+        }
+    }
 }
 
 function clonePlayer(obj,data) {

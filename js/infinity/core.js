@@ -222,11 +222,16 @@ const MIN_CORE_LENGTH = 4
 const MAX_INV_LENGTH = 100
 
 var core_tmp = {}
+var core_weight = {}
 
 function resetCoreTemp() {
-    for (let i in CORE) core_tmp[i] = {
-        total_s: [0,0,0,0],
-        total_p: 1,
+    for (let i in CORE) {
+        core_tmp[i] = {
+            total_s: [0,0,0,0],
+            total_p: 1,
+        }
+
+        core_weight[i] = 0
     }
 }
 
@@ -396,6 +401,8 @@ function updateTheoremCore() {
             <br class='line'>
             ${getTheoremPreEffects(type,s)}
             `)
+
+            core_weight[type]++
         }
     }
 }
@@ -470,31 +477,21 @@ function chooseTheorem(id,is_core=false) {
 
         if (inv[t_choosed]) {
             if (is_core) {
-                if (core[id] !== undefined) {
-                    createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
-                        [inv[t_choosed], core[id]] = [core[id], inv[t_choosed]]
-
-                        t_choosed = '-'
-
-                        INF.doReset()
-                        updateTheoremCore()
-                        updateTheoremInv()
-                    })
-                    return
+                if (core[id] !== undefined && core[id] !== null) {
+                    if (checkSwitchingCore(t_choosed,id)) {
+                        createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
+                            switchTheorems(t_choosed,id)
+                        })
+                        return
+                    }
                 }
                 else [inv[t_choosed], core[id]] = [core[id], inv[t_choosed]]
             } else [inv[id], inv[t_choosed]] = [inv[t_choosed], inv[id]]
         } else if (core[t_choosed.split('c')[0]]) {
             if (is_core) [core[id], core[t_choosed.split('c')[0]]] = [core[t_choosed.split('c')[0]], core[id]]
-            else {
+            else if (checkSwitchingCore(id,t_choosed.split('c')[0])) {
                 createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
-                    [inv[id], core[t_choosed.split('c')[0]]] = [core[t_choosed.split('c')[0]], inv[id]]
-
-                    t_choosed = '-'
-
-                    INF.doReset()
-                    updateTheoremCore()
-                    updateTheoremInv()
+                    switchTheorems(id,t_choosed.split('c')[0])
                 })
                 return
             }
@@ -503,6 +500,24 @@ function chooseTheorem(id,is_core=false) {
         t_choosed = '-'
     }
 
+    updateTheoremCore()
+    updateTheoremInv()
+}
+
+function checkSwitchingCore(id1,id2) {
+    let inv = player.inf.inv, core = player.inf.core;
+
+    return !inv[id1] || inv[id1].type == core[id2].type || core_weight[inv[id1].type] < 1
+}
+
+function switchTheorems(id1,id2) {
+    let inv = player.inf.inv, core = player.inf.core;
+
+    [inv[id1], core[id2]] = [core[id2], inv[id1]]
+
+    t_choosed = '-'
+
+    INF.doReset()
     updateTheoremCore()
     updateTheoremInv()
 }
