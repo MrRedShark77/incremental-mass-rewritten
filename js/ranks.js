@@ -834,7 +834,7 @@ const BEYOND_RANKS = {
             ],
             2: [
                 ()=>{
-                    let x = (tmp.beyond_ranks.max_tier-3)*0.2+1
+                    let x = (tmp.beyond_ranks.max_tier-3)**0.2*0.2+1
 
                     return Math.max(1,x)
                 },
