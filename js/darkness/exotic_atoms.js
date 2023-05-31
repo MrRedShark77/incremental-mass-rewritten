@@ -111,6 +111,14 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>formatMult(x),
+        },{
+            desc: `Accelerators raise the Argon-18's effect at an extremely reduced rate (after first overflow).`,
+            cost: E(1e170),
+            eff() {
+                let x = player.accelerator.add(10).log10()
+                return x
+            },
+            effDesc: x=>"^"+format(x),
         },
 
         /*
@@ -163,7 +171,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121)],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222)],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -228,6 +236,10 @@ const EXOTIC_ATOM = {
                 let x = Decimal.pow(0.8725,a.add(1).log10().softcap(20,0.25,0).root(2))
                 return x.toNumber()
             },x=>`Weaken softcaps of atomic power's effect by <b>${formatReduction(x)}</b>`],
+            [a=>{
+                let x = a.add(10).log10().pow(2).sub(1).div(5e3)
+                return x.toNumber()
+            },x=>`Increase the base of Prestige Level 382 for Collapsed Star's effect, the base of Binilunium-201 for BH's effect by <b>+${format(x)}</b>`],
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)

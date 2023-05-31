@@ -221,6 +221,8 @@ const MAX_CORE_LENGTH = 8
 const MIN_CORE_LENGTH = 4
 const MAX_INV_LENGTH = 100
 
+const MAX_CORE_FIT = 1
+
 var core_tmp = {}
 var core_weight = {}
 
@@ -507,7 +509,7 @@ function chooseTheorem(id,is_core=false) {
 function checkSwitchingCore(id1,id2) {
     let inv = player.inf.inv, core = player.inf.core;
 
-    return !inv[id1] || inv[id1].type == core[id2].type || core_weight[inv[id1].type] < 1
+    return !inv[id1] || inv[id1].type == core[id2].type || core_weight[inv[id1].type] < MAX_CORE_FIT
 }
 
 function switchTheorems(id1,id2) {

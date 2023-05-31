@@ -521,7 +521,7 @@ const FORMS = {
             let x = (player.mainUpg.atom.includes(12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
 
-            if (hasElement(201)) x = Decimal.pow(1.1,x.max(1).log10().add(1).log10().pow(.8))
+            if (hasElement(201)) x = Decimal.pow(1.1+exoticAEff(0,5,0),x.max(1).log10().add(1).log10().pow(.8))
 
             if (hasUpgrade('bh',18)) x = x.pow(2.5)
 

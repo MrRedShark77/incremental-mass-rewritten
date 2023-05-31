@@ -39,7 +39,7 @@ const STARS = {
             }
 
             if (hasPrestige(0,382)) {
-                x = Decimal.pow(1.1,pp.log10().add(1).mul(player.stars.points.add(1).log10().add(1).log10().add(1)).root(2).sub(1))
+                x = Decimal.pow(1.1+exoticAEff(0,5,0),pp.log10().add(1).mul(player.stars.points.add(1).log10().add(1).log10().add(1)).root(2).sub(1))
             } else {
                 x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1)
             
@@ -63,7 +63,7 @@ const STARS = {
             x = x.softcap('ee70',0.91,2)//.min('ee70')
         }
 
-        if (tmp.c16active) x = overflow(x,10,0.5)
+        if (tmp.c16active) x = overflow(x,10,0.5).min('ee70')
 
         return x
     },

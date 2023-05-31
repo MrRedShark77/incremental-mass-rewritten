@@ -306,8 +306,14 @@ const INF = {
                 cost: E(6e6),
             },{
                 title: "Corrupted Peak",
-                desc: "Start with C16 unlocked. Keep corruption upgrades and best BH in C16 on infinity.",
+                desc: "Start with C16 unlocked. Keep corruption upgrades and best BH in C16 on infinity. Unlock more corruption upgrades.",
                 cost: E(6e6),
+            },
+        ],[
+            {
+                title: "Break Infinity",
+                desc: "Reaching infinity no longer plays animation. You can lift beyond normal mass limit and get infinity theorems freely. Finally, unlock Element Tier 3, more Muonic Elements.<br><b><i>[COMING IN RELEASE]</i></b>",
+                cost: EINF,
             },
         ],
     ],
@@ -317,6 +323,7 @@ const INF = {
         2,
         3,
         6,
+        9,
     ],
 
     dim_mass: {

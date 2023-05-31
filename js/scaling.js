@@ -560,6 +560,9 @@ function noScalings(type,name) {
 	if (name=="rank"||name=='tier') {
 		if (type<4 && hasPrestige(1,127)) return true
 	}
+	else if (name=="tetr") {
+		return hasCharger(8)
+	}
 	else if (name=="massUpg") {
 		if (hasBeyondRank(2,15)) return true
 	}

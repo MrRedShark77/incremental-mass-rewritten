@@ -47,6 +47,18 @@ const CHARGERS = [
         desc: `
         Remove all scalings from Cosmic Ray. [Neut-Tau]'s effect now re-affects BHC's cheapness, but its effect is MASSIVELY weaker.
         `,
+    },{
+        req: E('e3.9e9'),
+        cost: E(1e270),
+        desc: `
+        Remove all scalings from Tetr. However, Hybridized Uran-Astatine's first effect no longer affects it. Tetr is 500x cheaper in C16.
+        `,
+    },{
+        req: E('e4e10'),
+        cost: E('e400'),
+        desc: `
+        De-corrupt 40th, 64th, 67th, 150th, 199th, 200th, and 204th elements.
+        `, // 40,64,67,150,199,200,204
     },
 ]
 
@@ -118,7 +130,7 @@ function buyCharger(i) {
 
     let c = CHARGERS[i], cost = c.cost
 
-    if (player.dark.c16.shard.gte(cost)) {
+    if (player.dark.c16.shard.gte(cost) && !tmp.c16active) {
         player.dark.c16.shard = player.dark.c16.shard.sub(cost).max(0)
 
         player.dark.c16.charger.push(i)
@@ -163,13 +175,20 @@ function updateC16Temp() {
 }
 
 function updateC16HTML() {
+    let c16 = tmp.c16active
     let bh = player.dark.c16.bestBH, cs = player.dark.c16.shard
     tmp.el.bestBH.setHTML(formatMass(player.dark.c16.bestBH))
+
+    let e = hasInfUpgrade(15)?12:8
 
     for (let i in CHARGERS) {
         i = parseInt(i)
 
         let c = CHARGERS[i], id = 'charger'+i
+
+        tmp.el[id+"_div"].setDisplay(i<e)
+
+        if (i>=e) continue;
 
         let req = bh.gte(c.req)
 
@@ -180,8 +199,8 @@ function updateC16HTML() {
         tmp.el[id+"_desc"].setDisplay(req)
         tmp.el[id+"_cost"].setDisplay(req && !hasCharger(i))
 
-        tmp.el[id+"_div"].setClasses({btn: true, full: true, charger: true, locked: !req || cs.lt(c.cost) || hasCharger(i)})
+        tmp.el[id+"_div"].setClasses({btn: true, full: true, charger: true, locked: !req || cs.lt(c.cost) || hasCharger(i) || c16})
     }
 }
 
-const CORRUPTED_ELEMENTS = [40,64,67,150,162,187,199,200,204]
+const CORRUPTED_ELEMENTS = [40,64,67,150,162,187,199,200,204] // 40,64,67,150,199,200,204

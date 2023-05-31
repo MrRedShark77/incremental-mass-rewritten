@@ -78,6 +78,7 @@ const DARK_RUN = {
             eff(i) { return 1.5**i },
             effDesc: x=>"^"+format(x,2),
         },{
+            max: 100,
             desc: `Triple dark ray gain for each level.`,
             cost(i) {
                 i *= Math.max(1,i-4)**0.5

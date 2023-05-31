@@ -81,7 +81,7 @@ const ELEMENTS = {
             cost: E(2.5e16),
             effect() {
                 let x = player.atom?player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1):E(1)
-                return x.softcap(1e45,0.1,0)
+                return overflow(x.softcap(1e45,0.1,0),'e60000',0.5)
             },
             effDesc(x) { return format(x)+"x stronger" },
         },
@@ -167,8 +167,9 @@ const ELEMENTS = {
             desc: `You can now automatically buy Cosmic Rays. Cosmic Ray raises tickspeed effect at an extremely reduced rate.`,
             cost: E(1e44),
             effect() {
-                let x = hasElement(129) ? player.atom.gamma_ray.pow(0.5).mul(0.02).add(1) : player.atom.gamma_ray.pow(0.35).mul(0.01).add(1)
-                return overflow(x,1000,0.5)
+                let x = overflow(hasElement(129) ? player.atom.gamma_ray.pow(0.5).mul(0.02).add(1) : player.atom.gamma_ray.pow(0.35).mul(0.01).add(1),1000,0.5)
+                if (hasElement(18,1)) x = x.pow(muElemEff(18))
+                return x
             },
             effDesc(x) { return "^"+format(x) },
         },
@@ -1514,6 +1515,7 @@ function updateElementsTemp() {
 
     let decor = []
     if (hasElement(10,1)) decor.push(187)
+    if (hasCharger(9)) decor.push(40,64,67,150,199,200,204)
     tElem.deCorrupt = decor
 
     let cannot = []

@@ -428,6 +428,7 @@ const PRESTIGES = {
             "167": `Abyssal Blot's fourth reward is raised by FSS.`,
             "247": `Muon's production is increased by MCF tier.`,
             "300": `Softcaps of Meta-Quark and Meta-Lepton are slightly weaker.`,
+            400: `Each particle power's 1st effect is stronger.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
@@ -595,7 +596,10 @@ function updateRanksTemp() {
     let ifp = E(1)
     if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',2))
     let fp2 = tmp.qu.chroma_eff[1][0]
-    let rt_fp2 = hasPrestige(1,127) ? 1 : fp2
+
+    let tetr_fp2 = hasCharger(8) ? 1 : fp2
+
+    let rt_fp2 = hasPrestige(1,127) ? tmp.c16active ? 5e2 : 1 : fp2
     let ffp = E(1)
     let ffp2 = 1
     if (tmp.c16active || player.dark.run.active) ffp2 /= mgEff(5)
@@ -619,8 +623,8 @@ function updateRanksTemp() {
 
     let tps = 0
 
-    tmp.ranks.tetr.req = player.ranks.tetr.div(ifp).div(ffp2).scaleEvery('tetr',false,[1,1,1,fp2]).div(fp).pow(pow).mul(3).add(10-tps).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true,[1,1,1,fp2]).mul(ffp2).mul(ifp).add(1).floor();
+    tmp.ranks.tetr.req = player.ranks.tetr.div(ifp).div(ffp2).scaleEvery('tetr',false,[1,1,1,tetr_fp2]).div(fp).pow(pow).mul(3).add(10-tps).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true,[1,1,1,tetr_fp2]).mul(ffp2).mul(ifp).add(1).floor();
 
     fp = E(1).mul(ffp)
     let fpa = hasPrestige(1,33) ? [1,1,1,prestigeEff(1,33,1)] : []
@@ -733,7 +737,8 @@ const BEYOND_RANKS = {
         },
         4: {
             1: `Beta Particles affect supercritical supernova starting at a reduced rate.`,
-            2: `Prestige base's exponent is increased by +15% per beyond-ranks' maximum tier, starting at Dec.`,
+            2: `Prestige base's exponent is increased by +20% per beyond-ranks' maximum tier, starting at Dec.`,
+            40: `[Tau]'s reward is cubed.`,
         },
     },
 

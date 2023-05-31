@@ -300,6 +300,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = hasElement(17,1) ? t.pow(2).mul(i.add(1).log10().add(1)).add(1) : t.pow(0.8).mul(0.025).add(1).pow(i.add(1).log10())
+                    if (hasBeyondRank(4,40)) x = x.pow(3)
                     return x
                 },
                 desc(x) {

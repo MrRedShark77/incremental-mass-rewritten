@@ -1323,6 +1323,10 @@ h4 {
 	transform: scale(0.5) translate(-100%, -100%);
 }
 
+#iu_row4 > .inf_upg {
+	width: 1030px;
+}
+
 @keyframes f_spin {
 	0% {
 		background-position-x: 0px;
