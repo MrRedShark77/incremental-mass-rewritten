@@ -344,6 +344,8 @@ function loadPlayer(load) {
     let tt = {}
 
     for (let i = 0; i < player.inf.core.length; i++) {
+        if (!player.inf.core[i]) continue
+
         let t = player.inf.core[i].type
         if (!tt[t]) tt[t] = 1
         else tt[t]++
