@@ -112,7 +112,7 @@ const TREE_UPGS = {
         },
         sn3: {
             branch: ["sn2"],
-            desc: `Blue star boost Neutron star gain at a reduced rate.`,
+            desc: `Blue stars boost Neutron star gain at a reduced rate.`,
             req() { return player.supernova.times.gte(6) },
             reqDesc: `6 Supernovas.`,
             cost: E(50000),
@@ -161,7 +161,7 @@ const TREE_UPGS = {
         },
         m2: {
             branch: ["m1"],
-            desc: `Multiplies the Mass requirement for softcap^2 by 1.5`,
+            desc: `Raise the Mass requirement for softcap^2 by 1.5`,
             cost: E(800),
         },
         m3: {
@@ -227,7 +227,7 @@ const TREE_UPGS = {
             branch: ["s1"],
             req() { return player.supernova.times.gte(3) },
             reqDesc: `3 Supernovas.`,
-            desc: `Star boost's Tetr's softcap is 50% weaker.`,
+            desc: `Tetr amount to Star boost’s softcap is 50% weaker.`,
             cost: E(2500),
         },
         s3: {
@@ -281,7 +281,7 @@ const TREE_UPGS = {
             branch: ["qol4"],
             req() { return player.supernova.times.gte(16) },
             reqDesc: `16 Supernovas.`,
-            desc: `Tetrs no longer resets anything.`,
+            desc: `Tetr no longer resets anything.`,
             cost: E(1e13),
         },
         qol6: {
@@ -310,7 +310,7 @@ const TREE_UPGS = {
             branch: ["unl1"],
             req() { return player.supernova.times.gte(78) },
             reqDesc: `78 Supernovas.`,
-            desc: `You can now automatically buy Radiation Boosters, they no longer spent.`,
+            desc: `You can now automatically buy Radiation Boosters, they no longer spent Radiation.`,
             cost: E(1e111),
         },
         chal1: {
@@ -341,13 +341,13 @@ const TREE_UPGS = {
         },
         chal4: {
             branch: ["chal2","chal3"],
-            desc: `Unlock new challenge.`,
+            desc: `Unlock the 9th Challenge.`,
             cost: E(1.5e4),
         },
         chal4a: {
             unl() { return player.supernova.post_10 },
             branch: ["chal4"],
-            desc: `Challenge 9th effect is better.`,
+            desc: `Challenge 9’s effect is better.`,
             cost: E(1e8),
         },
         chal4b: {
@@ -358,24 +358,24 @@ const TREE_UPGS = {
         },
         chal5: {
             branch: ["chal4"],
-            desc: `Unlock new challenge.`,
+            desc: `Unlock the 10th Challenge.`,
             cost: E(1e17),
         },
         chal6: {
             unl() { return tmp.radiation.unl },
             branch: ["chal5"],
-            desc: `Unlock new challenge.`,
+            desc: `Unlock the 11th Challenge.`,
             cost: E(1e88),
         },
         chal7: {
             branch: ["chal6"],
-            desc: `Unlock 12th Challenge.`,
+            desc: `Unlock the 12th Challenge.`,
             cost: E(1e200),
         },
         chal7a: {
             unl() { return hasTree("unl3") },
             branch: ["chal7"],
-            desc: `Make 12th Challenges effect better.`,
+            desc: `Challenge 12’s effect is better.`,
             cost: E('e900'),
         },
         chal8: {
@@ -406,7 +406,7 @@ const TREE_UPGS = {
             unl() { return player.supernova.post_10 },
             req() { return player.supernova.times.gte(15) },
             reqDesc: `15 supernovas`,
-            desc: `Tickspeed affect Higgs Bosons gain at a reduced rate.`,
+            desc: `Tickspeed affects Higgs Boson gain at a reduced rate.`,
             cost: E(1e13),
             effect() {
                 let x = player.tickspeed.add(1).pow(0.6)
@@ -450,7 +450,7 @@ const TREE_UPGS = {
         fn1: {
             unl() { return player.supernova.fermions.unl },
             branch: ["bs1"],
-            desc: `Tickspeed affect each Fermions gain at a reduced rate.`,
+            desc: `Tickspeed affects Fermions gain at a reduced rate.`,
             cost: E(1e27),
             effect() {
                 let x = E(1.25).pow(player.tickspeed.softcap(1e24,0.5,2).pow(0.4))
@@ -535,7 +535,7 @@ const TREE_UPGS = {
         },
         rad1: {
             unl() { return tmp.radiation.unl },
-            desc: `Gain more frequency based on Supernova, any more radiation if you unlocked next radiation.`,
+            desc: `Gain more frequency based on Supernova, it will also multiply Radiations that is not the last available types.`,
             cost: E(1e54),
             effect() {
                 let x = player.supernova.times.add(1)
@@ -560,7 +560,7 @@ const TREE_UPGS = {
         },
         rad5: {
             branch: ["rad3"],
-            desc: `All Radiation gains are increased by 10% for every Supernovas you have become.`,
+            desc: `All Radiation gains are increased by 10% for every Supernova you have become.`,
             cost: E(1e170),
             effect() {
                 let x = E(1.1).pow(player.supernova.times)
@@ -850,7 +850,7 @@ const TREE_UPGS = {
             qf: true,
             branch: ['qc1'],
             req() { return tmp.qu.qc_s >= 70 && player.mass.gte(uni('ee5')) && QCs.active() },
-            reqDesc() { return `Reach ${formatMass(uni('ee5'))} of mass with QS 70 build (before bonus).` },
+            reqDesc() { return `Reach ${formatMass(uni('ee5'))} of mass with QS 70 build (before bonus from [qc2]).` },
             desc: `Get 1 extra shard when a nerf reaches 10.`,
             cost: E(1e27),
         },
@@ -880,8 +880,8 @@ const TREE_UPGS = {
             qf: true,
             branch: ['qu5'],
             req() { return tmp.qu.qc_s >= 76 && player.mass.gte(uni('e7500')) && QCs.active() },
-            reqDesc() { return `Reach ${formatMass(uni('e7500'))} of mass with 76 QS build (before bonus).` },
-            desc: `Quantum Shard boost Death Shard gain.`,
+            reqDesc() { return `Reach ${formatMass(uni('e7500'))} of mass with 76 QS build (before bonus from [qc2]).` },
+            desc: `Quantum Shards boost Death Shard gain.`,
             cost: E(1e58),
             effect() {
                 let x = (player.qu.qc.shard+1)**0.5
@@ -997,7 +997,7 @@ const TREE_UPGS = {
         ct4: {
             branch: ['ct1'],
 
-            desc: `Best mass of black hole in C16 adds the base of each matter's upgrade.`,
+            desc: `Best mass of black hole in C16 adds to the base of all matter's upgrade.`,
             cost: E(100),
 
             req() { return tmp.c16active && player.bh.dm.gte(1e300) },
@@ -1344,7 +1344,7 @@ function updateTreeHTML() {
     let c16 = tmp.c16active
     let req = ""
     let t_ch = TREE_UPGS.ids[tmp.supernova.tree_choosed]
-    if (tmp.supernova.tree_choosed != "") req = t_ch.req?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Require: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
+    if (tmp.supernova.tree_choosed != "") req = t_ch.req?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
     tmp.el.tree_desc.setHTML(
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>

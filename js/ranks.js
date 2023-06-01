@@ -389,10 +389,10 @@ const PRESTIGES = {
             "5": `Pre-Quantum Global Speed is raised by ^2 (before division).`,
             "6": `Tickspeed Power softcap starts ^100 later.`,
             "8": `Mass softcap^5 starts later based on Prestige.`,
-            "10": `Gain more Relativistic Energies based on Prestige.`,
+            "10": `Gain more Relativistic Energy based on Prestige.`,
             "12": `Stronger Effect's softcap^2 is 7.04% weaker.`,
             "15": `Tetr 2's reward is overpowered.`,
-            "18": `Gain 100% more Ranks to Prestige Base.`,
+            "18": `Rank’s effect on Prestige Base is doubled.`,
             "24": `Super Cosmic Strings scale 20% weaker.`,
             "28": `Remove all softcaps from Gluon Upgrade 4's effect.`,
             "32": `Prestige Base’s exponent is increased based on Prestige Level.`,
@@ -403,7 +403,7 @@ const PRESTIGES = {
             "218": `Unquadpentium-145 is slightly stronger.`,
             "233": `Red Matter boosts Dark Ray.`,
             "382": `Matter exponent is increased by prestige level. Collapsed star's effect is overpowered.`,
-            "388": `Hybridized Uran-Astatine also applies pre-Meta pre-Glory at a reduced rate.`,
+            "388": `Hybridized Uran-Astatine also applies to pre-Meta pre-Glory at a reduced rate.`,
             "552": `Exotic supernova starts x1.25 later.`,
             "607": `Chromas gain is increased by prestige base.`,
             "651": `Hyper Hex starts x1.33 later.`,
@@ -411,14 +411,14 @@ const PRESTIGES = {
             "1337": `Pre-Quantum Global Speed boosts matter exponent at a reduced rate. Prestige Level 382 is stronger.`,
         },
         {
-            "1": `All star resources are squared.`,
+            "1": `All-star resources are squared.`,
             "2": `Meta-Supernova starts 100 later.`,
             "3": `Bosonic resources are boosted based on Prestige Base.`,
             "4": `Gain 5 free levels of each Primordium Particle.`,
             "5": `Pent 5's reward is stronger based on Prestige Base.`,
             "7": `Quarks are boosted based on Honor.`,
-            "15": `Super & Hyper cosmic strings scale weaker based on Honors.`,
-            "22": `Raise dark shadow gain by 10%.`,
+            "15": `Super & Hyper cosmic strings scale weaker based on Honor.`,
+            "22": `Raise dark shadow gain by 1.1.`,
             "33": `Hybridized Uran-Astatine applies to pre-Meta Pent requirements at a reduced rate.`,
             "46": `Add 500 more C13-15 max completions.`,
             "66": `All Fermions' scaling is 20% weaker.`,
@@ -433,7 +433,7 @@ const PRESTIGES = {
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
             "3": `Break dilation upgrade 12 is cheaper.`,
-            "4": `Unlock new effect from Hybridized Uran-Astatine.`,
+            "4": `Unlock new effect for Hybridized Uran-Astatine.`,
             "5": `Glory boosts glyphic mass.`,
             "8": `Glory reduces Black Hole Overflow nerf.`,
             "22": `Glory boosts all matters gain.`,
@@ -712,7 +712,7 @@ const BEYOND_RANKS = {
 
     rewards: {
         1: {
-            1: `Add 0.5 to matter exponent.`,
+            1: `Add 0.5 to matter exponents.`,
             2: `All matter upgrades are stronger based on dark ray.`,
             4: `Hybridized Uran-Astatine's second effect is stronger based on FSS.`,
             7: `Matters gain is boosted by Hept.`,
@@ -864,8 +864,13 @@ function getRankTierName(i) {
         let m = ''
         let h = Math.floor(i / 100), d = Math.floor(i / 10) % 10, o = i % 10
 
-        if (d > 0) m += (d > 2 ? (o == 1 ? 'hen' : RTNS2[0][o]) + RTNS2[1][d] + 'cont' : (d == 2 && o == 3 ? "tr" : d > 1 && o == 1 ? "hen" : RTNS2[0][o]) + RTNS[1][d]) + (h > 0 ? 'a' : '');
-        if (h > 0) m += h > 1 ? RTNS2[2][h] + 'ct' : 'hect';
+        if (d > 1 && o == 1) m += 'hen' 
+        else if (d == 2 && o == 3) m += 'tr' 
+        else m += RTNS2[0][o]
+        if (d > 2) m += RTNS2[1][d] + 'cont'
+        else m += RTNS[1][d]
+        if (h > 0 && d > 0) m += 'a'
+        if (h > 0) m += (h > 1 ? RTNS2[2][h] + 'ct' : 'hect')
 
         return capitalFirst(m)
     }
@@ -954,7 +959,7 @@ function updateRanksHTML() {
             }
 
             h = `
-                Reset your hexes (and force a darkness reset) but hept/oct/enne etc. up. ${r}<br>
+                Reset your Hexes (and force a darkness reset) but hept/oct/enne etc. up. ${r}<br>
                 To ${getRankTierName(t+5)} up, require ${getRankTierName(t+4)} ${
                     t == 1
                     ? tmp.beyond_ranks.req.format(0)

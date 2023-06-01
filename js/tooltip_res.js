@@ -178,7 +178,7 @@ const TOOLTIP_RES = {
             if (tmp.inf_unl) h += `
             <br class='line'>
             <i>
-            Pre-Infinity: Speeds up the production of pre-Infinity resources. Applying pre-Quantum global speed. (after exponent, dilation, etc.)
+            Pre-Infinity: Speeds up the production of pre-Infinity resources. Applies pre-Quantum global speed. (after exponent, dilation, etc.)
             </i>
             `
 
@@ -189,7 +189,7 @@ const TOOLTIP_RES = {
         full: "Final Star Shard (FSS)",
         desc() {
             let h = `
-            Your Final Star Shard's base is <b>${tmp.matters.FSS_base.format(0)}</b>.
+            Your FSS base is <b>${tmp.matters.FSS_base.format(0)}</b>.
             <br class='line'>
             <i>
             Reach over <b>${tmp.matters.FSS_req.format(0)}</b> of FSS's base to get Final Star Shard.
@@ -205,7 +205,7 @@ const TOOLTIP_RES = {
             Your best mass of black hole in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
             <br class='line'>
             <i>
-            Start the 16th Challenge. Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge and reaching <b>${formatMass('e100')}</b> of black hole.<br><br>
+            Start the 16th Challenge. Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge with more than <b>${formatMass('e100')}</b> of black hole.<br><br>
             • You cannot gain rage powers, and all matters' formulas are disabled, and they generate each other. Red matter generates dark matter.<br>
             • Pre-C16 features, such as rank, prestige tiers, main upgrades, elements, tree upgrades, etc. may be corrupted (disabled).<br>
             • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>

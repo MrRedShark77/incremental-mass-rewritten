@@ -186,7 +186,7 @@ function updateMattersHTML() {
 
     tmp.el.FSS_eff1.setHTML(
         player.dark.matters.final.gt(0)
-        ? `Thanks to FSS, boosts Matters gain by ^${tmp.matters.FSS_eff[0].format(1)}`.corrupt(c16 && !hasElement(11,1))
+        ? `Thanks to FSS, your Matters gain is boosted by ^${tmp.matters.FSS_eff[0].format(1)}`.corrupt(c16 && !hasElement(11,1))
         : ''
     )
 }
