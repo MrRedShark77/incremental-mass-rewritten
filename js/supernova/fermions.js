@@ -129,7 +129,7 @@ const FERMIONS = {
                     return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+(x.gte(5)?" <span class='soft'>(softcapped)</span>":"")
                 },
                 inc: "Mass",
-                cons: "You are trapped in Mass Dilation, but they are twice as effective",
+                cons: "You are trapped in Mass Dilation, and it is twice as strong",
                 isMass: true,
             },{
                 maxTier() {
@@ -261,7 +261,7 @@ const FERMIONS = {
                     return x//.softcap(1e18,0.1,0)
                 },
                 desc(x) {
-                    return `Collapse Stars gain softcap starts ^${format(x)} later`+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"")
+                    return `Collapsed Stars gain softcap starts ^${format(x)} later`+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"")
                 },
                 inc: "Quark",
                 cons: "^0.625 to the exponent of Atoms gain",

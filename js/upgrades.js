@@ -363,7 +363,7 @@ const UPGS = {
             },
             15: {
                 unl() { return player.atom.unl },
-                desc: "Mass boost Atom gain.",
+                desc: "Mass boosts Atom gain.",
                 cost: E('e480'),
                 effect() {
                     let ret = player.mass.max(1).log10().pow(1.25)
@@ -817,7 +817,7 @@ const UPGS = {
                 cost: E(250),
             },
             5: {
-                desc: `Reduce Star Booster’s starting cost to ^0.1. Star Booster’s base is increased based on Death Shards.`,
+                desc: `Root Star Booster’s starting cost by 10. Star Booster’s base is increased based on Death Shards.`,
                 cost: E(2500),
                 effect() {
                     let x = player.qu.rip.amt.add(1).log10().add(1).pow(3)
@@ -830,7 +830,7 @@ const UPGS = {
                 cost: E(15000),
             },
             7: {
-                desc: `Hybridized Uran-Astatine is twice effective, while Big Ripped.`,
+                desc: `Hybridized Uran-Astatine is twice as effective in Big Rip.`,
                 cost: E(100000),
             },
             8: {
@@ -838,7 +838,7 @@ const UPGS = {
                 cost: E(750000),
             },
             9: {
-                desc: `Unlock Break Dilation.`,
+                desc: `Unlock Break Dilation and Prestige (in the mass tab).`,
                 cost: E(1e7),
             },
             10: {

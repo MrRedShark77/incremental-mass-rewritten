@@ -20,7 +20,7 @@ const QCs = {
             eff(i) {
                 return [1-0.03*i,2/(i+2)]
             },
-            effDesc(x) { return `<b>^${format(x[0])}</b> to exponent from all star resources.<br><b>^${format(x[1])}</b> to strength of star generators.` },
+            effDesc(x) { return `<b>^${format(x[0])}</b> to exponent of all-star resources.<br><b>^${format(x[1])}</b> to strength of star generators.` },
         },{
             eff(i) {
                 let x = E(2).pow(i**2)
@@ -50,7 +50,7 @@ const QCs = {
                 let x = 1.2**i
                 return x
             },
-            effDesc(x) { return `<b>x${format(x)}</b> to requirements of any pre-Quantum Challenges.` },
+            effDesc(x) { return `<b>x${format(x)}</b> to requirements of any pre-Quantum Challenge.` },
         },{
             eff(i) {
                 if (hasElement(163)) i /= 2

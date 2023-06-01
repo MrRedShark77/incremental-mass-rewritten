@@ -141,7 +141,7 @@ const MASS_DILATION = {
                 },
                 effDesc(x) { return "+^"+format(x)+(x.gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
             },{
-                desc: `Dilated mass boost quarks gain.`,
+                desc: `Dilated mass boosts quark gain.`,
                 maxLvl: 1,
                 cost(x) { return E(1.5e191) },
                 bulk() { return player.md.mass.gte(1.5e191)?E(1):E(0) },
@@ -271,12 +271,12 @@ const MASS_DILATION = {
                     },
                     effDesc(x) { return "+^"+format(x) },
                 },{
-                    desc: `Multiplier from DM effect is transformed to Exponent (at a reduced rate, is weaker while Big Ripped), but second MD upgrade's cost is exponentally increased. Purchasing this upgrade will reset it.`,
+                    desc: `Multiplier from the DM effect is transformed to an exponent (at a reduced rate, is weaker while Big Ripped), but second MD upgrade's cost is exponentally increased. Purchasing this upgrade will reset it.`,
                     maxLvl: 1,
                     cost(x) { return E(1.619e23) },
                     bulk() { return player.md.break.mass.gte(1.619e23)?E(1):E(0) },
                 },{
-                    desc: `11th MD Upgrade is 50% stronger, its effected level softcaps at 1e18.`,
+                    desc: `11th MD upgrade is 50% stronger, its effecteive level softcaps at 1e18.`,
                     maxLvl: 1,
                     cost(x) { return E(1.989e33) },
                     bulk() { return player.md.break.mass.gte(1.989e33)?E(1):E(0) },
@@ -291,7 +291,7 @@ const MASS_DILATION = {
                     },
                     effDesc(x) { return "x"+format(x)+" later" },
                 },{
-                    desc: `Triple Relativistic Energies gain.`,
+                    desc: `Triple Relativistic Energy gain.`,
                     cost(x) { return E(10).pow(x.pow(1.5)).mul(2.9835e48) },
                     bulk() { return player.md.break.mass.gte(2.9835e48)?player.md.break.mass.div(2.9835e48).max(1).log10().root(1.5).add(1).floor():E(0) },
                     effect(y) {
@@ -301,7 +301,7 @@ const MASS_DILATION = {
                     },
                     effDesc(x) { return format(x,0)+"x" },
                 },{
-                    desc: `Death Shard & Entropy boosts each other.`,
+                    desc: `Death Shard & Entropy boost each other.`,
                     maxLvl: 1,
                     cost(x) { return uni(1e35) },
                     bulk() { return player.md.break.mass.gte(uni(1e35))?E(1):E(0) },

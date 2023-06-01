@@ -17,7 +17,7 @@ const DARK_RUN = {
         x => `Reduce the exponent of atom, atomic power and quark multiplier by <b>^${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on quarks.`,
         x => `Reduce the exponent of relativistic particle’s multiplier, the exponent of dilated mass formula by <b>^${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on dilated mass.`,
         x => `Reduce the exponent of supernova resources’ multiplier by <b>^${format(x[0])}</b>, increase the supernova’s requirement by <b>x${format(x[1])}</b> in dark run.<br class='line'>Earn more glyphs based on collapsed stars.`,
-        x => `Reduce the prestige base’s exponent <b>/${format(x)}</b>, increase the every rank’s requirement by <b>x${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on prestige base.`,
+        x => `Reduce the prestige base’s exponent by <b>/${format(x)}</b>, increase every rank’s requirement by <b>x${format(x)}</b> in dark run.<br class='line'>Earn more glyphs based on prestige base.`,
     ],
 
     mass_glyph_gain: [
@@ -123,7 +123,7 @@ const DARK_RUN = {
             effDesc: x=>"+"+format(x,1),
         },{
             max: 1,
-            desc: `Cosmic ray effect is now exponent at super reduced rate.`,
+            desc: `Cosmic ray effect is now an exponent at a super reduced rate.`,
             cost(i) { return {0: 487, 4: 271, 5: 121} },
         },{
             max: 1,
@@ -247,7 +247,7 @@ function updateDarkRunHTML() {
 
     tmp.el.FSS_eff2.setHTML(
         player.dark.matters.final.gt(0)
-        ? `Thanks to FSS, they boost glyphic mass gain by x${format(tmp.matters.FSS_eff[1],2)}`
+        ? `Thanks to FSS, your glyphic mass gain is boosted by x${format(tmp.matters.FSS_eff[1],2)}`
         : ''
     )
 }

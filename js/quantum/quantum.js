@@ -117,7 +117,7 @@ const QUANTUM = {
         [E(3), `You start with challenges tree and qol7 unlocked.`],
         [E(5), `You start with qol8-9, unl1, and radiation unlocked.`],
         [E(6), `Double Quantum Foam gain.`],
-        [E(8), `Pre-Quantum global speed affects blueprint particle and chroma at a reduced rate.`],
+        [E(8), `Pre-Quantum global speed affects Blueprint Particles and Chroma at a reduced rate.`],
         [E(10), `Supernova stars are boosted by Quantizes (capped at 1e10). Unlock Auto-Quantum.`],
     ],
     auto: {
