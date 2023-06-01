@@ -71,7 +71,12 @@ const CHROMA_LEN = 3
 function updateChromaTemp() {
     for (let x = 0; x < CHROMA_LEN; x++) {
         tmp.qu.chroma_gain[x] = CHROMA.gain(x)
-        tmp.qu.chroma_eff[x] = CHROMA.eff[x](player.qu.chroma[x])
+
+        let c = player.qu.chroma[x]
+
+        if (x == 1) c = overflow(c,'e3.5e5',0.5)
+
+        tmp.qu.chroma_eff[x] = CHROMA.eff[x](c)
     }
 }
 
