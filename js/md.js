@@ -276,7 +276,7 @@ const MASS_DILATION = {
                     cost(x) { return E(1.619e23) },
                     bulk() { return player.md.break.mass.gte(1.619e23)?E(1):E(0) },
                 },{
-                    desc: `11th MD upgrade is 50% stronger, its effecteive level softcaps at 1e18.`,
+                    desc: `11th MD upgrade is 50% stronger, its effective level softcaps at 1e18.`,
                     maxLvl: 1,
                     cost(x) { return E(1.989e33) },
                     bulk() { return player.md.break.mass.gte(1.989e33)?E(1):E(0) },
