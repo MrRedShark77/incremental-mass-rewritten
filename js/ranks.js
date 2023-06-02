@@ -12,6 +12,8 @@ const RANKS = {
             else if (type == "pent" && hasTree("qol8")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
+
+            addQuote(1)
         }
     },
     bulk(type) {

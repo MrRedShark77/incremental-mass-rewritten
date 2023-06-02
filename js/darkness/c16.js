@@ -120,6 +120,8 @@ function startC16() {
     else {
         CHALS.exit()
         CHALS.enter(16)
+
+        addQuote(10)
     }
 }
 

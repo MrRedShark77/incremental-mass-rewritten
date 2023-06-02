@@ -292,6 +292,7 @@ function getPlayerData() {
             current: Date.now(),
             time: 0,
         },
+        quotes: [],
         time: 0,
     }
     for (let x = 0; x < PRES_LEN; x++) s.prestiges.push(E(0))

@@ -79,6 +79,8 @@ const TREE_UPGS = {
             
             if (CS_TREE.includes(x)) player.dark.c16.tree.push(x)
             else  player.supernova.tree.push(x)
+
+            if (x == 'unl1') addQuote(6)
         }
     },
     ids: {

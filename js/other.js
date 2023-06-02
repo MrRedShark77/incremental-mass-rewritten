@@ -163,6 +163,69 @@ const POPUP_GROUPS = {
     },
 }
 
+const QUOTES = [
+    null,
+    `
+    <h2>Chapter 1: The First Lift</h2><br>
+    <img class='quote' src='images/quotes/1.png'><br>
+    Your potential of gaining weight starts here. How much mass can you gain?
+    `,`
+    <h2>Chapter 2: Rage Power</h2><br>
+    <img class='quote' src='images/quotes/2.png'><br>
+    You feel outrageous and want to be energy-efficient. You are stronger with less effort needed.
+    `,`
+    <h2>Chapter 3: The Black Hole</h2><br>
+    <img class='quote' src='images/quotes/3.png'><br>
+    You pulled up a hidden mystery of cosmos. The force was so strong, it forms a black hole!
+    `,`
+    <h2>Chapter 4: The Atom</h2><br>
+    <img class='quote' src='images/quotes/4.png'><br>
+    You discovered a Atom! You decompose it to find a physical miracle: Gravity. This helps you to go further!
+    `,`
+    <h2>Chapter 5: Supernova Born</h2><br>
+    <img class='quote' src='images/quotes/5.png'><br>
+    A new age of stars rises, while the stars collapsed.  Neutron stars felt elder...
+    `,`
+    <h2>Chapter 6: The Radiation</h2><br>
+    <img class='quote' src='images/quotes/6.png'><br>
+    As stars radiate, you dig deeper: Radiation.
+    `,`
+    <h2>Chapter 7: Scale to Quantum</h2><br>
+    <img class='quote' src='images/quotes/7.png'><br>
+    Mass has collapsed in quantum scale! Good luck on new features!
+    `,`
+    <h2>Chapter 8: Ripping Universe</h2><br>
+    <img class='quote' src='images/quotes/8.png'><br>
+    All the spacetime rips before your eyes!
+    `,`
+    <h2>Chapter 9: Trapped in Darkness</h2><br>
+    <img class='quote' src='images/quotes/9.png'><br>
+    You rose up the darkness. Time to research the mysteries of matter!
+    `,`
+    <h2>Chapter 10: The Corruption</h2><br>
+    <img class='quote' src='images/quotes/10.png'><br>
+    The final challenge stands against you. Good luck!
+    `,`
+    <h2>Chapter 11: The Infinity</h2><br>
+    <img class='quote' src='images/quotes/11.png'><br>
+    Infinity. You have been evolved to a god.
+    `,`
+    <h2>Chapter 12: Broken Infinity</h2><br>
+    <img class='quote' src='images/quotes/12.png'><br>
+    Your omnipotence ascends as you surpass Infinity.
+    `,
+]
+
+function addQuote(i, debug=false) {
+    if (!debug) {
+        if (player.quotes.includes(i)) return;
+
+        player.quotes.push(i)
+    }
+
+    createPopup(QUOTES[i],'quote'+i,`Let's Go!`)
+}
+
 function createPopup(text, id, txtButton) {
     if (popups.includes(id)) return
 

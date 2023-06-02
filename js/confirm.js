@@ -3,19 +3,27 @@ const CONFIRMS_FUNCTION = {
         player.rp.points = player.rp.points.add(tmp.rp.gain)
         player.rp.unl = true
         FORMS.rp.doReset()
+
+        addQuote(2)
     },
     bh() {
         player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain)
         player.bh.unl = true
         FORMS.bh.doReset()
+
+        addQuote(3)
     },
     atom() {
         player.atom.points = player.atom.points.add(tmp.atom.gain)
         player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain)
         player.atom.unl = true
         ATOM.doReset()
+
+        addQuote(4)
     },
     sn(force,chal,post,fermion) {
+        addQuote(5)
+
         if (tmp.supernova.reached || force || fermion) {
             tmp.el.supernova_scene.setDisplay(false)
             if (!force && !fermion) {
@@ -52,9 +60,13 @@ const CONFIRMS_FUNCTION = {
             if (rip) {
                 if (hasUpgrade('br',4)) for (let x = 0; x < 2; x++) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(2)
             }
+
+            addQuote(7)
         } else {
             document.body.style.animation = "implode 2s 1"
             setTimeout(()=>{
+                addQuote(7)
+
                 if (player.qu.times.lte(0)) {
                     createPopup(POPUP_GROUPS.qus2.html(),'qus2');
                     createPopup(POPUP_GROUPS.qus1.html(),'qus1');
@@ -84,12 +96,16 @@ const CONFIRMS_FUNCTION = {
         player.qu.rip.first = true
         player.qu.rip.active = !player.qu.rip.active
         QUANTUM.enter(false,true,true)
+
+        addQuote(8)
     },
     dark() {
         player.dark.unl = true
         player.dark.rays = player.dark.rays.add(tmp.dark.gain)
 
         DARK.doReset()
+
+        addQuote(9)
     },
     inf(limit) {
         if (limit || player.inf.pt_choosed >= 0) {
@@ -118,6 +134,8 @@ const CONFIRMS_FUNCTION = {
 
         updateTheoremCore()
         updateTheoremInv()
+
+        addQuote(11)
     },
     t_switch() {
         
