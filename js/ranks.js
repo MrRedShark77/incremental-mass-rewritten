@@ -5,20 +5,22 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
             let reset = true
-            if (tmp.chal14comp) reset = false
+            if (tmp.chal14comp || tmp.inf_unl) reset = false
             else if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
             else if (type == "pent" && hasTree("qol8")) reset = false
             if (reset) this.doReset[type]()
             updateRanksTemp()
+
+            addQuote(1)
         }
     },
     bulk(type) {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
             let reset = true
-            if (tmp.chal14comp) reset = false
+            if (tmp.chal14comp || tmp.inf_unl) reset = false
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
@@ -28,10 +30,10 @@ const RANKS = {
         }
     },
     unl: {
-        tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) || tmp.radiation.unl },
-        tetr() { return player.mainUpg.atom.includes(3) || tmp.radiation.unl },
-        pent() { return tmp.radiation.unl },
-        hex() { return tmp.chal13comp },
+        tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || player.mainUpg.atom.includes(3) || tmp.radiation.unl || tmp.inf_unl },
+        tetr() { return player.mainUpg.atom.includes(3) || tmp.radiation.unl || tmp.inf_unl },
+        pent() { return tmp.radiation.unl || tmp.inf_unl },
+        hex() { return tmp.chal13comp || tmp.inf_unl },
     },
     doReset: {
         rank() {
@@ -57,10 +59,10 @@ const RANKS = {
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
-        rank() { return player.mainUpg.rp.includes(5) },
-        tier() { return player.mainUpg.rp.includes(6) },
-        tetr() { return player.mainUpg.atom.includes(5) },
-        pent() { return hasTree("qol8") },
+        rank() { return player.mainUpg.rp.includes(5) || tmp.inf_unl },
+        tier() { return player.mainUpg.rp.includes(6) || tmp.inf_unl },
+        tetr() { return player.mainUpg.atom.includes(5) || tmp.inf_unl },
+        pent() { return hasTree("qol8") || tmp.inf_unl },
         hex() { return true },
     },
     desc: {
@@ -70,31 +72,31 @@ const RANKS = {
             '3': "unlock mass upgrade 3, reduce mass upgrade 2 scaling by 20%, and mass upgrade 1 boosts itself.",
             '4': "reduce mass upgrade 3 scaling by 20%.",
             '5': "mass upgrade 2 boosts itself.",
-            '6': "make mass gain is boosted by (x+1)^2, where x is rank.",
+            '6': "boost mass gain by (x+1)^2, where x is rank.",
             '13': "triple mass gain.",
             '14': "double Rage Powers gain.",
             '17': "Rank 6 reward effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
             '34': "mass upgrade 3 softcaps 1.2x later.",
             '40': "adds tickspeed power based on ranks.",
-            '45': "ranks boosts Rage Powers gain.",
+            '45': "rank boosts Rage Powers gain.",
             '90': "rank 40 reward is stronger.",
             '180': "mass gain is raised by 1.025.",
             '220': "rank 40 reward is overpowered.",
-            '300': "rank multiplie quark gain.",
-            '380': "rank multiplie mass gain.",
-            '800': "make mass gain softcap 0.25% weaker based on rank.",
+            '300': "rank multiplies quark gain.",
+            '380': "rank multiplies mass gain.",
+            '800': "make mass gain softcap 0.25% weaker based on rank, hardcaps at 25%.",
         },
         tier: {
-            '1': "reduce rank reqirements by 20%.",
+            '1': "reduce rank requirements by 20%.",
             '2': "raise mass gain by 1.15",
             '3': "reduce all mass upgrade scalings by 20%.",
             '4': "adds +5% tickspeed power for every tier you have, softcaps at +40%.",
-            '6': "make rage powers boosted by tiers.",
+            '6': "boost rage powers based on tiers.",
             '8': "Tier 6's reward is boosted based on dark matters.",
             '12': "Tier 4's reward is twice as effective and the softcap is removed.",
             '30': "stronger effect's softcap is 10% weaker.",
             '55': "make rank 380's effect stronger based on tier.",
-            '100': "Super Tetr scale 5 later.",
+            '100': "Super Tetr scales 5 later.",
         },
         tetr: {
             '1': "reduce tier requirements by 25%, and hyper rank scaling is 15% weaker.",
@@ -106,7 +108,7 @@ const RANKS = {
         },
         pent: {
             '1': "reduce tetr requirements by 15%, and Meta-Rank starts 1.1x later.",
-            '2': "tetr boost all radiations gain.",
+            '2': "tetr boosts all radiations gain.",
             '4': "Meta-Tickspeeds start later based on Supernovas.",
             '5': "Meta-Ranks start later based on Pent.",
             '8': "Mass gain softcap^4 starts later based on Pent.",
@@ -114,7 +116,7 @@ const RANKS = {
         },
         hex: {
             '1': "reduce pent reqirements by 20%.",
-            '4': "increase dark ray earned by +20% per hex.",
+            '4': "increase dark ray gain by +20% per hex.",
             '6': "remove first softcap of normal mass gain.",
             '10': "remove second softcap of normal mass gain.",
             '13': "remove third softcap of normal mass gain.",
@@ -123,7 +125,7 @@ const RANKS = {
             '43': "hex 4's effect is overpowered.",
             '48': "remove sixth softcap of normal mass gain.",
             '62': "remove seventh softcap of normal mass gain.",
-            '91': "+0.15 to matter exponent.",
+            '91': "+0.15 to matter exponents.",
             '157': "remove eighth softcap of normal mass gain.",
         },
     },
@@ -281,6 +283,7 @@ const CORRUPTED_PRES = [
 ]
 
 const PRESTIGES = {
+    names: ['prestige','honor','glory','renown'],
     fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown'],
     baseExponent() {
         let x = 0
@@ -288,8 +291,11 @@ const PRESTIGES = {
         if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
         x += tmp.fermions.effs[1][6]||0
         x += glyphUpgEff(10,0)
+        if (tmp.inf_unl) x += theoremEff('mass',3,0)
 
         x += 1
+
+        if (hasBeyondRank(4,2)) x *= beyondRankEffect(4,2)
         if (tmp.c16active || player.dark.run.active) x /= mgEff(5)
 
         return x
@@ -322,7 +328,7 @@ const PRESTIGES = {
                 x = hasElement(167)?y.div(fp).scaleEvery('prestige2',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
                 break;
             case 3:
-                x = y.div(fp).pow(1.25).mul(3).add(9)
+                x = y.div(fp).scaleEvery('prestige3',false).pow(1.25).mul(3).add(9)
                 break;
             default:
                 x = EINF
@@ -343,7 +349,7 @@ const PRESTIGES = {
                 if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('prestige2',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
                 break
             case 3:
-                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).mul(fp).add(1)
+                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true).mul(fp).add(1)
                 break 
             default:
                 x = E(0)
@@ -361,20 +367,20 @@ const PRESTIGES = {
     unl: [
         ()=>true,
         ()=>true,
-        ()=>tmp.chal14comp,
-        ()=>tmp.brUnl,
+        ()=>tmp.chal14comp||tmp.inf_unl,
+        ()=>tmp.brUnl||tmp.inf_unl,
     ],
     noReset: [
-        ()=>hasUpgrade('br',11),
-        ()=>tmp.chal13comp,
-        ()=>tmp.chal15comp,
-        ()=>false,
+        ()=>hasUpgrade('br',11)||tmp.inf_unl,
+        ()=>tmp.chal13comp||tmp.inf_unl,
+        ()=>tmp.chal15comp||tmp.inf_unl,
+        ()=>tmp.inf_unl,
     ],
     autoUnl: [
-        ()=>tmp.chal13comp,
-        ()=>tmp.chal14comp,
-        ()=>tmp.chal15comp,
-        ()=>false,
+        ()=>tmp.chal13comp||tmp.inf_unl,
+        ()=>tmp.chal14comp||tmp.inf_unl,
+        ()=>tmp.chal15comp||tmp.inf_unl,
+        ()=>tmp.inf_unl,
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -385,10 +391,10 @@ const PRESTIGES = {
             "5": `Pre-Quantum Global Speed is raised by ^2 (before division).`,
             "6": `Tickspeed Power softcap starts ^100 later.`,
             "8": `Mass softcap^5 starts later based on Prestige.`,
-            "10": `Gain more Relativistic Energies based on Prestige.`,
+            "10": `Gain more Relativistic Energy based on Prestige.`,
             "12": `Stronger Effect's softcap^2 is 7.04% weaker.`,
             "15": `Tetr 2's reward is overpowered.`,
-            "18": `Gain 100% more Ranks to Prestige Base.`,
+            "18": `Rank’s effect on Prestige Base is doubled.`,
             "24": `Super Cosmic Strings scale 20% weaker.`,
             "28": `Remove all softcaps from Gluon Upgrade 4's effect.`,
             "32": `Prestige Base’s exponent is increased based on Prestige Level.`,
@@ -399,7 +405,7 @@ const PRESTIGES = {
             "218": `Unquadpentium-145 is slightly stronger.`,
             "233": `Red Matter boosts Dark Ray.`,
             "382": `Matter exponent is increased by prestige level. Collapsed star's effect is overpowered.`,
-            "388": `Hybridized Uran-Astatine also applies pre-Meta pre-Glory at a reduced rate.`,
+            "388": `Hybridized Uran-Astatine also applies to pre-Meta pre-Glory at a reduced rate.`,
             "552": `Exotic supernova starts x1.25 later.`,
             "607": `Chromas gain is increased by prestige base.`,
             "651": `Hyper Hex starts x1.33 later.`,
@@ -407,14 +413,14 @@ const PRESTIGES = {
             "1337": `Pre-Quantum Global Speed boosts matter exponent at a reduced rate. Prestige Level 382 is stronger.`,
         },
         {
-            "1": `All star resources are squared.`,
+            "1": `All-star resources are squared.`,
             "2": `Meta-Supernova starts 100 later.`,
             "3": `Bosonic resources are boosted based on Prestige Base.`,
             "4": `Gain 5 free levels of each Primordium Particle.`,
             "5": `Pent 5's reward is stronger based on Prestige Base.`,
             "7": `Quarks are boosted based on Honor.`,
-            "15": `Super & Hyper cosmic strings scale weaker based on Honors.`,
-            "22": `Raise dark shadow gain by 10%.`,
+            "15": `Super & Hyper cosmic strings scale weaker based on Honor.`,
+            "22": `Raise dark shadow gain by 1.1.`,
             "33": `Hybridized Uran-Astatine applies to pre-Meta Pent requirements at a reduced rate.`,
             "46": `Add 500 more C13-15 max completions.`,
             "66": `All Fermions' scaling is 20% weaker.`,
@@ -423,11 +429,13 @@ const PRESTIGES = {
             "139": `Matters' production is tripled every FSS. FV Manipulator's cost is slightly weaker.`,
             "167": `Abyssal Blot's fourth reward is raised by FSS.`,
             "247": `Muon's production is increased by MCF tier.`,
+            "300": `Softcaps of Meta-Quark and Meta-Lepton are slightly weaker.`,
+            400: `Each particle power's 1st effect is stronger.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
             "3": `Break dilation upgrade 12 is cheaper.`,
-            "4": `Unlock new effect from Hybridized Uran-Astatine.`,
+            "4": `Unlock new effect for Hybridized Uran-Astatine.`,
             "5": `Glory boosts glyphic mass.`,
             "8": `Glory reduces Black Hole Overflow nerf.`,
             "22": `Glory boosts all matters gain.`,
@@ -435,12 +443,13 @@ const PRESTIGES = {
             "28": `FV Manipulator Power is boosted by Honor.`,
             "34": `Pions boost Kaons gain at a reduced rate.`,
             "40": `[ct4]'s effect is better.`,
+            45: `Unstable BH affects mass of black hole overflow^2 starting.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
             "2": `Exotic Supernova starts x1.25 later every Renown.`,
             "4": `Corrupted shard gain is increased by +50% per Renown.`,
-            "6": `Exotic Atoms boost them other resources.`,
+            "6": `Exotic Atoms boost their other resources.`,
         },
     ],
     rewardEff: [
@@ -538,6 +547,11 @@ const PRESTIGES = {
                 let x = player.dark.exotic_atom.amount[1].add(1).log10().add(1).pow(1.5)
                 return x
             },x=>"x"+format(x)],
+            45: [()=>{
+                let x = player.bh.unstable.add(1)
+                if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
+                return x
+            },x=>"^"+format(x)+" later"],
         },
         {
             "2": [()=>{
@@ -581,21 +595,26 @@ function prestigeEff(x,y,def=E(1)) { return tmp.prestiges.eff[x][y] || def }
 function updateRanksTemp() {
     if (!tmp.ranks) tmp.ranks = {}
     for (let x = 0; x < RANKS.names.length; x++) if (!tmp.ranks[RANKS.names[x]]) tmp.ranks[RANKS.names[x]] = {}
+    let ifp = E(1)
+    if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',2))
     let fp2 = tmp.qu.chroma_eff[1][0]
-    let rt_fp2 = hasPrestige(1,127) ? 1 : fp2
+
+    let tetr_fp2 = hasCharger(8) ? 1 : fp2
+
+    let rt_fp2 = hasPrestige(1,127) ? tmp.c16active ? 5e2 : 1 : fp2
     let ffp = E(1)
     let ffp2 = 1
     if (tmp.c16active || player.dark.run.active) ffp2 /= mgEff(5)
 
     let fp = RANKS.fp.rank().mul(ffp)
-    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
+    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ifp).div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = E(0)
-    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2]).mul(ffp2).add(1).floor();
+    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2]).mul(ffp2).mul(ifp).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier().mul(ffp)
-    tmp.ranks.tier.req = player.ranks.tier.div(ffp2).scaleEvery('tier',false,[1,1,1,rt_fp2]).div(fp).add(2).pow(2).floor()
-    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,rt_fp2]).mul(ffp2).add(1).floor();
+    tmp.ranks.tier.req = player.ranks.tier.div(ifp).div(ffp2).scaleEvery('tier',false,[1,1,1,rt_fp2]).div(fp).add(2).pow(2).floor()
+    tmp.ranks.tier.bulk = player.ranks.rank.max(0).root(2).sub(2).mul(fp).scaleEvery('tier',true,[1,1,1,rt_fp2]).mul(ffp2).mul(ifp).add(1).floor();
 
     fp = E(1).mul(ffp)
     let pow = 2
@@ -606,15 +625,15 @@ function updateRanksTemp() {
 
     let tps = 0
 
-    tmp.ranks.tetr.req = player.ranks.tetr.div(ffp2).scaleEvery('tetr',false,[1,1,1,fp2]).div(fp).pow(pow).mul(3).add(10-tps).floor()
-    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true,[1,1,1,fp2]).mul(ffp2).add(1).floor();
+    tmp.ranks.tetr.req = player.ranks.tetr.div(ifp).div(ffp2).scaleEvery('tetr',false,[1,1,1,tetr_fp2]).div(fp).pow(pow).mul(3).add(10-tps).floor()
+    tmp.ranks.tetr.bulk = player.ranks.tier.sub(10-tps).div(3).max(0).root(pow).mul(fp).scaleEvery('tetr',true,[1,1,1,tetr_fp2]).mul(ffp2).mul(ifp).add(1).floor();
 
     fp = E(1).mul(ffp)
     let fpa = hasPrestige(1,33) ? [1,1,1,prestigeEff(1,33,1)] : []
     if (player.ranks.hex.gte(1)) fp = fp.div(0.8)
     pow = 1.5
-    tmp.ranks.pent.req = player.ranks.pent.div(ffp2).scaleEvery('pent',false,fpa).div(fp).pow(pow).add(15-tps).floor()
-    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15-tps).gte(0)?player.ranks.tetr.sub(15-tps).max(0).root(pow).mul(fp).scaleEvery('pent',true,fpa).mul(ffp2).add(1).floor():E(0);
+    tmp.ranks.pent.req = player.ranks.pent.div(ifp).div(ffp2).scaleEvery('pent',false,fpa).div(fp).pow(pow).add(15-tps).floor()
+    tmp.ranks.pent.bulk = player.ranks.tetr.sub(15-tps).gte(0)?player.ranks.tetr.sub(15-tps).max(0).root(pow).mul(fp).scaleEvery('pent',true,fpa).mul(ffp2).mul(ifp).add(1).floor():E(0);
 
     fp = E(1)
     pow = 1.8
@@ -623,8 +642,8 @@ function updateRanksTemp() {
         s /= 2
         pow *= 0.9
     }
-    tmp.ranks.hex.req = player.ranks.hex.div(ffp2).div(fp).scaleEvery('hex',false).pow(pow).add(s-tps).floor()
-    tmp.ranks.hex.bulk = player.ranks.pent.sub(s-tps).gte(0)?player.ranks.pent.sub(s-tps).max(0).root(pow).scaleEvery('hex',true).mul(fp).mul(ffp2).add(1).floor():E(0);
+    tmp.ranks.hex.req = player.ranks.hex.div(ifp).div(ffp2).div(fp).scaleEvery('hex',false).pow(pow).add(s-tps).floor()
+    tmp.ranks.hex.bulk = player.ranks.pent.sub(s-tps).gte(0)?player.ranks.pent.sub(s-tps).max(0).root(pow).scaleEvery('hex',true).mul(fp).mul(ffp2).mul(ifp).add(1).floor():E(0);
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
@@ -686,7 +705,7 @@ const BEYOND_RANKS = {
         if (player.ranks.hex.gte(tmp.beyond_ranks.req) && (!auto || tmp.beyond_ranks.bulk.gt(player.ranks.beyond))) {
             player.ranks.beyond = auto ? player.ranks.beyond.max(tmp.beyond_ranks.bulk) : player.ranks.beyond.add(1)
 
-            if (hasBeyondRank(2,2)) return;
+            if (hasBeyondRank(2,2)||hasInfUpgrade(10)) return;
 
             player.ranks.hex = E(0)
             DARK.doReset()
@@ -695,7 +714,7 @@ const BEYOND_RANKS = {
 
     rewards: {
         1: {
-            1: `Add 0.5 to matter exponent.`,
+            1: `Add 0.5 to matter exponents.`,
             2: `All matter upgrades are stronger based on dark ray.`,
             4: `Hybridized Uran-Astatine's second effect is stronger based on FSS.`,
             7: `Matters gain is boosted by Hept.`,
@@ -714,6 +733,14 @@ const BEYOND_RANKS = {
             1: `Mass & Stronger Overflow is weaker based on archverse tier of normal mass.`,
             2: `Super FSS starts +1 later.`,
             4: `Beyond Rank boosts Kaon & Pion gain.`,
+            12: `Remove the softcap of dark ray's fourth reward.`,
+            18: `Super FSS scales +2.5% weaker per beyond-ranks' maximum tier (capped at 50%).`,
+            32: `Argon-18 affects tickspeed's power.`,
+        },
+        4: {
+            1: `Beta Particles affect supercritical supernova starting at a reduced rate.`,
+            2: `Prestige base's exponent is increased by +20% per beyond-ranks' maximum tier, starting at Dec.`,
+            40: `[Tau]'s reward is cubed.`,
         },
     },
 
@@ -789,6 +816,32 @@ const BEYOND_RANKS = {
                 },
                 x=>"x"+format(x),
             ],
+            18: [
+                ()=>{
+                    let x = 1-tmp.beyond_ranks.max_tier*0.025
+
+                    return Math.max(0.5,x)
+                },
+                x=>formatReduction(x)+" weaker",
+            ],
+        },
+        4: {
+            1: [
+                ()=>{
+                    let x = overflow(tmp.prim.eff[7].div(5),1e6,0.5)
+
+                    return x
+                },
+                x=>"+"+format(x)+" later",
+            ],
+            2: [
+                ()=>{
+                    let x = (tmp.beyond_ranks.max_tier-3)**0.2*0.2+1
+
+                    return Math.max(1,x)
+                },
+                x=>"x"+format(x,1),
+            ],
         },
     },
 }
@@ -813,8 +866,13 @@ function getRankTierName(i) {
         let m = ''
         let h = Math.floor(i / 100), d = Math.floor(i / 10) % 10, o = i % 10
 
-        if (d > 0) m += (d > 2 ? (o == 1 ? 'hen' : RTNS2[0][o]) + RTNS2[1][d] + 'cont' : (d == 2 && o == 3 ? "tr" : d > 1 && o == 1 ? "hen" : RTNS2[0][o]) + RTNS[1][d]) + (h > 0 ? 'a' : '');
-        if (h > 0) m += h > 1 ? RTNS2[2][h] + 'ct' : 'hect';
+        if (d > 1 && o == 1) m += 'hen' 
+        else if (d == 2 && o == 3) m += 'tr' 
+        else m += RTNS2[0][o]
+        if (d > 2) m += RTNS2[1][d] + 'cont'
+        else m += RTNS[1][d]
+        if (h > 0 && d > 0) m += 'a'
+        if (h > 0) m += (h > 1 ? RTNS2[2][h] + 'ct' : 'hect')
 
         return capitalFirst(m)
     }
@@ -875,7 +933,7 @@ function updateRanksHTML() {
 
             // Beyond Rank
 
-            tmp.el.br_auto.setDisplay(hasBeyondRank(2,1))
+            tmp.el.br_auto.setDisplay(hasBeyondRank(2,1)||hasInfUpgrade(10))
             tmp.el.br_auto.setTxt(player.auto_ranks.beyond?"ON":"OFF")
 
             let t = tmp.beyond_ranks.max_tier
@@ -903,7 +961,7 @@ function updateRanksHTML() {
             }
 
             h = `
-                Reset your hexs (and force darkness reset), but current rank up. ${r}<br>
+                Reset your Hexes (and force a darkness reset) but hept/oct/enne etc. up. ${r}<br>
                 To ${getRankTierName(t+5)} up, require ${getRankTierName(t+4)} ${
                     t == 1
                     ? tmp.beyond_ranks.req.format(0)

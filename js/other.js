@@ -53,6 +53,8 @@ const POPUP_GROUPS = {
         uni (mass of Universe): 50,276,520,864 MMWG = 1.5e56 g<br>
         mlt (mass of Multiverse): 1e1e9 uni (logarithmic)<br>
         mgv (mass of Megaverse): 1e15 mlt<br>
+        giv (mass of Gigaverse): 1e15 mgv<br>
+        arv^n (mass of n-th Archverse): 1e15 arv^n-1<br>
         `,
     },
     fonts: {
@@ -65,14 +67,17 @@ const POPUP_GROUPS = {
             <button class="btn" style="font-family: Cousine;" onclick="player.options.font = 'Cousine'">Cousine</button>
             <button class="btn" style="font-family: 'Flexi IBM VGA False';" onclick="player.options.font = 'Flexi IBM VGA False'">Flexi IBM VGA False</button>
             <button class="btn" style="font-family: Inconsolata;" onclick="player.options.font = 'Inconsolata'">Inconsolata</button>
+            <button class="btn" style="font-family: 'Lato';" onclick="player.options.font = 'Lato'">Lato</button>
             <button class="btn" style="font-family: 'Lucida Handwriting';" onclick="player.options.font = 'Lucida Handwriting'">Lucida Handwriting</button>
             <button class="btn" style="font-family: Monospace-Typewritter;" onclick="player.options.font = 'Monospace-Typewritter'">Monospace Typewritter</button>
             <button class="btn" style="font-family: 'MS Sans Serif';" onclick="player.options.font = 'MS Sans Serif'">MS Sans Serif</button>
+            <button class="btn" style="font-family: 'Noto Sans JP';" onclick="player.options.font = 'Noto Sans JP'">Noto Sans JP</button>
             <button class="btn" style="font-family: 'Nova Mono';" onclick="player.options.font = 'Nova Mono'">Nova Mono</button>
             <button class="btn" style="font-family: 'Nunito';" onclick="player.options.font = 'Nunito'">Nunito</button>
             <button class="btn" style="font-family: 'Retron2000';" onclick="player.options.font = 'Retron2000'">Retron 2000</button>
             <button class="btn" style="font-family: 'Roboto';" onclick="player.options.font = 'Roboto'">Roboto</button>
             <button class="btn" style="font-family: 'Roboto Mono';" onclick="player.options.font = 'Roboto Mono'">Roboto Mono</button>
+            <button class="btn" style="font-family: 'Source Sans Pro';" onclick="player.options.font = 'Source Sans Pro'">Source Sans Pro</button>
             <button class="btn" style="font-family: 'Source Serif Pro';" onclick="player.options.font = 'Source Serif Pro'">Source Serif Pro</button>
             <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="player.options.font = 'Verdana, Geneva, Tahoma, sans-serif'">Verdana</button>
         `,
@@ -156,6 +161,69 @@ const POPUP_GROUPS = {
             'font-size': "14px",
         },
     },
+}
+
+const QUOTES = [
+    null,
+    `
+    <h2>Chapter 1: The First Lift</h2><br>
+    <img class='quote' src='images/quotes/1.png'><br>
+    Your potential of gaining weight starts here. How much mass can you gain?
+    `,`
+    <h2>Chapter 2: Rage Power</h2><br>
+    <img class='quote' src='images/quotes/2.png'><br>
+    You feel outrageous and want to be energy-efficient. You are stronger with less effort needed.
+    `,`
+    <h2>Chapter 3: The Black Hole</h2><br>
+    <img class='quote' src='images/quotes/3.png'><br>
+    You pulled up a hidden mystery of cosmos. The force was so strong, it forms a black hole!
+    `,`
+    <h2>Chapter 4: The Atom</h2><br>
+    <img class='quote' src='images/quotes/4.png'><br>
+    You discovered a Atom! You decompose it to find a physical miracle: Gravity. This helps you to go further!
+    `,`
+    <h2>Chapter 5: Supernova Born</h2><br>
+    <img class='quote' src='images/quotes/5.png'><br>
+    A new age of stars rises, while the stars collapsed.  Neutron stars felt elder...
+    `,`
+    <h2>Chapter 6: The Radiation</h2><br>
+    <img class='quote' src='images/quotes/6.png'><br>
+    As stars radiate, you dig deeper: Radiation.
+    `,`
+    <h2>Chapter 7: Scale to Quantum</h2><br>
+    <img class='quote' src='images/quotes/7.png'><br>
+    Mass has collapsed in quantum scale! Good luck on new features!
+    `,`
+    <h2>Chapter 8: Ripping Universe</h2><br>
+    <img class='quote' src='images/quotes/8.png'><br>
+    All the spacetime rips before your eyes!
+    `,`
+    <h2>Chapter 9: Trapped in Darkness</h2><br>
+    <img class='quote' src='images/quotes/9.png'><br>
+    You rose up the darkness. Time to research the mysteries of matter!
+    `,`
+    <h2>Chapter 10: The Corruption</h2><br>
+    <img class='quote' src='images/quotes/10.png'><br>
+    The final challenge stands against you. Good luck!
+    `,`
+    <h2>Chapter 11: The Infinity</h2><br>
+    <img class='quote' src='images/quotes/11.png'><br>
+    Infinity. You have been evolved to a god.
+    `,`
+    <h2>Chapter 12: Broken Infinity</h2><br>
+    <img class='quote' src='images/quotes/12.png'><br>
+    Your omnipotence ascends as you surpass Infinity.
+    `,
+]
+
+function addQuote(i, debug=false) {
+    if (!debug) {
+        if (player.quotes.includes(i)) return;
+
+        player.quotes.push(i)
+    }
+
+    createPopup(QUOTES[i],'quote'+i,`Let's Go!`)
 }
 
 function createPopup(text, id, txtButton) {
@@ -285,4 +353,108 @@ function convertStringIntoAGY(s) {
     }
 
     return result
+}
+
+function keyEvent(e) {
+    let k = e.keyCode
+
+    // console.log(k)
+
+    if (k == 38 || k == 40) {
+        let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
+
+        while (true) {
+            t += v
+            tt = TABS[1][t]
+            if (!tt) {
+                tmp.tab = s
+                return
+            }
+            else if (!tt.unl || tt.unl()) {
+                tmp.tab = t
+                return
+            }
+        }
+    } else if (k == 37 || k == 39) {
+        if (!TABS[2][tmp.tab]) return
+
+        let v = k == 39 ? 1 : -1, t = tmp.stab[tmp.tab], s = t
+
+        while (true) {
+            t += v
+            tt = TABS[2][tmp.tab][t]
+            if (!tt) {
+                tmp.stab[tmp.tab] = s
+                return
+            }
+            else if (!tt.unl || tt.unl()) {
+                tmp.stab[tmp.tab] = t
+                return
+            }
+        }
+    }
+}
+
+function hideNavigation(i) { player.options.nav_hide[i] = !player.options.nav_hide[i]; updateNavigation() }
+
+function updateNavigation() {
+    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"]]
+    let w = 450
+
+    for (i in player.options.nav_hide) {
+        let h = player.options.nav_hide[i]
+
+        tmp.el[ids[i][0]].setClasses({toggled: h})
+        tmp.el[ids[i][1]].setDisplay(!h)
+        if (h) w -= i == 0 ? 198 : 248
+    }
+
+    let p = `calc(100% - ${w}px)`
+
+    tmp.el.main_app.changeStyle('width',p)
+    tmp.el.nav_btns.changeStyle('width',p)
+}
+
+function setupStatsHTML() {
+    let h = ""
+
+    for (let i in RANKS.names) {
+        h += `<div id="stats_${RANKS.names[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.ranks_reward = ${i}">${RANKS.fullNames[i]}</button></div>`
+    }
+
+    new Element("ranks_reward_btn").setHTML(h)
+
+    h = ""
+
+    for (let i in SCALE_TYPE) {
+        h += `<div id="stats_${SCALE_TYPE[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.scaling_ch = ${i}">${FULL_SCALE_NAME[i]}</button></div>`
+    }
+
+    new Element("scaling_btn").setHTML(h)
+
+    h = ""
+
+    for (let i in PRESTIGES.names) {
+        h += `<div id="stats_${PRESTIGES.names[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.pres_reward = ${i}">${PRESTIGES.fullNames[i]}</button></div>`
+    }
+
+    new Element("pres_reward_btn").setHTML(h)
+}
+
+/*
+ranks_reward: 0,
+pres_reward: 0,
+scaling_ch: 0,
+*/
+
+function updateStatsHTML() {
+    if (tmp.stab[1] == 0) for (let i in RANKS.names) {
+        tmp.el[`stats_${RANKS.names[i]}_btn`].setDisplay(player.ranks[RANKS.names[i]].gt(0))
+    }
+    else if (tmp.stab[1] == 1) for (let i in SCALE_TYPE) {
+        tmp.el[`stats_${SCALE_TYPE[i]}_btn`].setDisplay(tmp.scaling[SCALE_TYPE[i]].length>0)
+    }
+    else if (tmp.stab[1] == 2) for (let i in PRESTIGES.names) {
+        tmp.el[`stats_${PRESTIGES.names[i]}_btn`].setDisplay(player.prestiges[i].gt(0))
+    }
 }

@@ -13,6 +13,14 @@ function setupChalHTML() {
 }
 
 function updateChalHTML() {
+    let chal_unl = player.chal.active > 0
+	tmp.el.chal_upper.setVisible(chal_unl)
+	if (chal_unl) {
+		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
+		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
+		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
+	}
+
     if (tmp.stab[3]==0){
         for (let x = 1; x <= CHALS.cols; x++) {
             let chal = CHALS[x]
@@ -136,7 +144,7 @@ const CHALS = {
         else if (x < 9) return "Entering this challenge will force atom reset."
         else if (x < 13) return "Entering challenge will supernova reset."
         else if (x < 16) return "Entering challenge will force a Darkness reset."
-        return "Entering challenge will force a FSS reset."
+        return "Entering challenge will force an FSS reset."
     },
     getMax(i) {
         if (i <= 12 && hasPrestige(2,25)) return EINF 
@@ -289,7 +297,7 @@ const CHALS = {
     1: {
         title: "Instant Scale",
         desc: "Super rank and mass upgrade scaling starts at 25. Also, Super tickspeed starts at 50.",
-        reward: ()=>hasBeyondRank(2,20)?`Supercritical Rank & All Fermions start later, Super Overpower scales weaker by completions.`:`Super Rank starts later, Super Tickspeed scales weaker by completions.`,
+        reward: ()=>hasBeyondRank(2,20)?`Supercritical Rank & All Fermions Tier scaling starts later, Super Overpower scales weaker based on completions.`:`Super Rank starts later, Super Tickspeed scales weaker based on completions.`,
         max: E(100),
         inc: E(5),
         pow: E(1.3),
@@ -308,7 +316,7 @@ const CHALS = {
         unl() { return player.chal.comps[1].gte(1) || player.atom.unl },
         title: "Anti-Tickspeed",
         desc: "You cannot buy Tickspeed.",
-        reward: `For every completion adds +7.5% to Tickspeed Power.`,
+        reward: `Each completion adds +7.5% to Tickspeed Power.`,
         max: E(100),
         inc: E(10),
         pow: E(1.3),
@@ -358,7 +366,7 @@ const CHALS = {
         unl() { return player.atom.unl },
         title: "No Rank",
         desc: "You cannot rank up.",
-        reward: ()=> hasCharger(3)?`Exotic Rank & Tier, Ultra Prestige Level scale weaker by completions.`:`Rank requirement is weaker by completions.`,
+        reward: ()=> hasCharger(3)?`Exotic Rank & Tier, Ultra Prestige Level scale weaker based on completions.`:`Rank requirement is weaker based on completions.`,
         max: E(50),
         inc: E(50),
         pow: E(1.25),
@@ -374,7 +382,7 @@ const CHALS = {
     6: {
         unl() { return player.chal.comps[5].gte(1) || player.supernova.times.gte(1) || quUnl() },
         title: "No Tickspeed & Condenser",
-        desc: "You cannot buy Tickspeed & BH Condenser.",
+        desc: "You cannot buy Tickspeed or BH Condenser.",
         reward: `Every completion adds 10% to tickspeed and BH condenser power.`,
         max: E(50),
         inc: E(64),
@@ -390,7 +398,7 @@ const CHALS = {
         unl() { return player.chal.comps[6].gte(1) || player.supernova.times.gte(1) || quUnl() },
         title: "No Rage Powers",
         desc: "You cannot gain rage powers. Instead, dark matters are gained from mass at a reduced rate. Additionally, mass gain softcap is stronger.",
-        reward: ()=>hasPrestige(2,25)?`Pre-Impossible challenges scale weaker by completions, but this reward doesn't affect C7.`:`Each completion increases challenges 1-4 cap by 2.<br><span class="yellow">On 16th completion, unlock Elements</span>`,
+        reward: ()=>(hasPrestige(2,25)?`Pre-Impossible challenges scale weaker by completions, but this reward doesn't affect C7.`:`Each completion increases challenges 1-4 cap by 2.`) + `<br><span class="yellow">On 16th completion, unlock Elements</span>`,
         max: E(50),
         inc: E(64),
         pow: E(1.25),
@@ -467,7 +475,7 @@ const CHALS = {
     12: {
         unl() { return hasTree("chal7") },
         title: "Decay of Atom",
-        desc: "You cannot gain Atoms & Quarks.",
+        desc: "You cannot gain Atoms or Quarks.",
         reward: `Completions add free Radiation Boosters.<br><span class="yellow">On first completion, unlock new prestige layer!</span>`,
         max: E(100),
         inc: E('e2e7'),
@@ -513,7 +521,7 @@ const CHALS = {
         unl() { return hasElement(168) },
         title: "The Reality II",
         desc: "You are trapped in c1-12 and quantum challenge with modifiers [10,5,10,10,10,10,10,10].",
-        reward: `Normal mass's overflow starts later by completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
+        reward: `Normal mass's overflow starts later based on completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
         max: E(100),
         inc: E('e1e6'),
         pow: E(2),
@@ -528,20 +536,20 @@ const CHALS = {
         unl() { return hasElement(218) },
         title: "Chaotic Matter Annihilation",
         desc: `
-        • You cannot gain Rage Power nor dark matters, and all matters’ formula is disabled, and they generate each other. Red matter generates dark matter.<br>
-        • Pre-C16 following contents (including rank & prestige tiers, main upgrades, elements, tree and etc.) are corrupted like disabled.<br>
+        • You cannot gain rage powers, and all matters' formulas are disabled, and they generate each other. Red matter generates dark matter.<br>
+        • Pre-C16 features, such as rank, prestige tiers, main upgrades, elements, tree upgrades, etc. may be corrupted (disabled).<br>
         • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>
-        • Primordium particles disabled.<br>
-        • Pre-Quantum global speed always sets to /100.<br>
-        You can earn Corrupted Shard based on your mass of black hole, when exiting the challenge.
+        • Primordium particles are disabled.<br>
+        • Pre-Quantum global speed is always set to /100.<br>
+        You can earn Corrupted Shards based on your mass of black hole, when exiting the challenge.
         `,
-        reward: `Improve Hybridized Uran-Astatine. [NOT IMPLEMENTED]<br><span class="yellow">On first completion, unlock ???</span>`,
+        reward: `Improve Hybridized Uran-Astatine.<br><span class="yellow">On first completion, unlock ???</span>`,
         max: E(1),
         inc: E('e1.25e11'),
         pow: E(2),
         start: E('e1.25e11'),
         effect(x) {
-            let ret = x.mul(0.048).add(1)
+            let ret = x.mul(0.05).add(1)
             return ret
         },
         effDesc(x) { return "^"+format(x) },

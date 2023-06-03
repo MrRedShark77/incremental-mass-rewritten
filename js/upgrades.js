@@ -45,7 +45,7 @@ const UPGS = {
             let cost, bulk = E(0), fp
 
             if (i==4) {
-                //if (hasCharger(2)) start = E(10)
+                if (hasInfUpgrade(2)) start = E(1e10)
                 let pow = 1.5
                 cost = Decimal.pow(10,Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
                 if (player.mass.gte('ee100')) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
@@ -160,8 +160,8 @@ const UPGS = {
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
 
                 let o = ret
-                let os = E('e115')
-                let op = E(.5)
+                let os = E('e115'), os2 = E('e1555')
+                let op = E(.5), op2 = E(0.25)
 
                 if (hasElement(210)) os = os.mul(elemEffect(210))
 
@@ -169,9 +169,11 @@ const UPGS = {
 
                 ret = overflow(ret,os,op)
 
+                ret = overflow(ret,os2,op2)
+
                 tmp.overflow.stronger = calcOverflow(o,ret,os)
-                tmp.overflow_start.stronger = os
-                tmp.overflow_power.stronger = op
+                tmp.overflow_start.stronger = [os,os2]
+                tmp.overflow_power.stronger = [op,op2]
                 
                 return {step: step, eff: ret, ss: ss}
             },
@@ -189,7 +191,7 @@ const UPGS = {
             },
         },
         4: {
-            unl() { return hasElement(202) },
+            unl() { return hasElement(202) || hasInfUpgrade(2) },
             title: "Overpower",
             start: E(1e100),
             inc: E(1.5),
@@ -198,6 +200,8 @@ const UPGS = {
                 
                 let step = E(.005)
                 if (hasUpgrade('rp',17)) step = step.add(.005)
+                if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
+
                 if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
 
                 let ss = E(10)
@@ -244,7 +248,7 @@ const UPGS = {
                     player.mainUpg.rp.push(x)
                 }
             },
-            auto_unl() { return player.mainUpg.bh.includes(5) },
+            auto_unl() { return player.mainUpg.bh.includes(5) || tmp.inf_unl },
             lens: 20,
             1: {
                 desc: "Boosters add Musclers.",
@@ -359,7 +363,7 @@ const UPGS = {
             },
             15: {
                 unl() { return player.atom.unl },
-                desc: "Mass boost Atom gain.",
+                desc: "Mass boosts Atom gain.",
                 cost: E('e480'),
                 effect() {
                     let ret = player.mass.max(1).log10().pow(1.25)
@@ -421,7 +425,7 @@ const UPGS = {
             res: "Dark Matter",
             getRes() { return player.bh.dm },
             unl() { return player.bh.unl },
-            auto_unl() { return player.mainUpg.atom.includes(2) },
+            auto_unl() { return player.mainUpg.atom.includes(2) || tmp.inf_unl },
             can(x) { return player.bh.dm.gte(this[x].cost) && !player.mainUpg.bh.includes(x) },
             buy(x) {
                 if (this.can(x)) {
@@ -621,7 +625,7 @@ const UPGS = {
                     player.mainUpg.atom.push(x)
                 }
             },
-            auto_unl() { return hasTree("qol1") },
+            auto_unl() { return hasTree("qol1") || tmp.inf_unl },
             lens: 20,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
@@ -789,7 +793,7 @@ const UPGS = {
                     player.mainUpg.br.push(x)
                 }
             },
-            auto_unl() { return hasElement(132) },
+            auto_unl() { return hasElement(132) || tmp.inf_unl },
             lens: 20,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
@@ -813,7 +817,7 @@ const UPGS = {
                 cost: E(250),
             },
             5: {
-                desc: `Reduce Star Booster’s starting cost to ^0.1. Star Booster’s base is increased based on Death Shards.`,
+                desc: `Root Star Booster’s starting cost by 10. Star Booster’s base is increased based on Death Shards.`,
                 cost: E(2500),
                 effect() {
                     let x = player.qu.rip.amt.add(1).log10().add(1).pow(3)
@@ -826,7 +830,7 @@ const UPGS = {
                 cost: E(15000),
             },
             7: {
-                desc: `Hybridized Uran-Astatine is twice effective, while Big Ripped.`,
+                desc: `Hybridized Uran-Astatine is twice as effective in Big Rip.`,
                 cost: E(100000),
             },
             8: {
@@ -834,7 +838,7 @@ const UPGS = {
                 cost: E(750000),
             },
             9: {
-                desc: `Unlock Break Dilation.`,
+                desc: `Unlock Break Dilation and Prestige (in the mass tab).`,
                 cost: E(1e7),
             },
             10: {

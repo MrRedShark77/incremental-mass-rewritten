@@ -4,6 +4,7 @@ const ELEMENTS = {
     ],
     la: [null,'*','**','*','**'],
     exp: [0,118,218,362,558,814,1138],
+    max_hsize: [19],
     names: [
         null,
         'H','He','Li','Be','B','C','N','O','F','Ne',
@@ -37,7 +38,7 @@ const ELEMENTS = {
     canBuy(x) {
         if (tmp.c16active && isElemCorrupted(x)) return false
         let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
-        return res.gte(this.upgs[x].cost) && !hasElement(x) && (player.qu.rip.active ? true : !BR_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
+        return res.gte(this.upgs[x].cost) && !hasElement(x) && (hasInfUpgrade(6) && x <= 218 || (player.qu.rip.active ? true : !BR_ELEM.includes(x))) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
     },
     buyUpg(x) {
         if (this.canBuy(x)) {
@@ -55,7 +56,7 @@ const ELEMENTS = {
             cost: E(5e8),
         },
         {
-            desc: `Hardened Challenge scales 25% weaker.`,
+            desc: `Hardened Challenge scaling is 25% weaker.`,
             cost: E(2.5e12),
         },
         {
@@ -80,7 +81,7 @@ const ELEMENTS = {
             cost: E(2.5e16),
             effect() {
                 let x = player.atom?player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1):E(1)
-                return x.softcap(1e45,0.1,0)
+                return overflow(x.softcap(1e45,0.1,0),'e60000',0.5)
             },
             effDesc(x) { return format(x)+"x stronger" },
         },
@@ -146,7 +147,7 @@ const ELEMENTS = {
             cost: E(1e33),
         },
         {
-            desc: `Super BH Condenser & Cosmic Ray scales 20% weaker.`,
+            desc: `Super BH Condenser & Cosmic Ray scale 20% weaker.`,
             cost: E(1e34),
         },
         {
@@ -159,15 +160,16 @@ const ELEMENTS = {
             effDesc(x) { return "+"+format(x*100)+"%" },
         },
         {
-            desc: `Raise Atom's gain by 1.1.`,
+            desc: `Raise Atom gain by 1.1.`,
             cost: E(1e40),
         },
         {
             desc: `You can now automatically buy Cosmic Rays. Cosmic Ray raises tickspeed effect at an extremely reduced rate.`,
             cost: E(1e44),
             effect() {
-                let x = hasElement(129) ? player.atom.gamma_ray.pow(0.5).mul(0.02).add(1) : player.atom.gamma_ray.pow(0.35).mul(0.01).add(1)
-                return overflow(x,1000,0.5)
+                let x = overflow(hasElement(129) ? player.atom.gamma_ray.pow(0.5).mul(0.02).add(1) : player.atom.gamma_ray.pow(0.35).mul(0.01).add(1),1000,0.5)
+                if (hasElement(18,1)) x = x.pow(muElemEff(18))
+                return x
             },
             effDesc(x) { return "^"+format(x) },
         },
@@ -223,7 +225,7 @@ const ELEMENTS = {
             cost: E(1e90),
         },
         {
-            desc: `Mass gain is raised to the power of 1.5th if you dilated mass.`,
+            desc: `Mass gain is raised to 1.5 while in mass dilation.`,
             cost: E(1e97),
         },
         {
@@ -311,7 +313,7 @@ const ELEMENTS = {
             cost: E('e315'),
         },
         {
-            desc: `Collapsed star boost quark gain.`,
+            desc: `Collapsed stars boost quark gain.`,
             cost: E('e325'),
             effect() {
                 let x = player.stars.points.add(1).pow(1/3)
@@ -387,7 +389,7 @@ const ELEMENTS = {
             cost: E('e4600'),
         },
         {
-            desc: `Collapsed stars boost all-star resources at a reduced rate.`,
+            desc: `Normal mass boosts all-star resources at a reduced rate.`,
             cost: E('e5200'),
             effect() {
                 let x = player.mass.max(1).log10().root(2)
@@ -404,7 +406,7 @@ const ELEMENTS = {
             cost: E('e2.2e4'),
         },
         {
-            desc: `Tickspeed power boosts base from Star Booster at a reduced rate.`,
+            desc: `Tickspeed power boosts base of Star Booster at a reduced rate.`,
             cost: E('e3.6e4'),
             effect() {
                 let x = tmp.tickspeedEffect?tmp.tickspeedEffect.step.max(1).log10().div(10).max(1):E(1)
@@ -456,11 +458,11 @@ const ELEMENTS = {
             cost: E('e8e5'),
         },
         {
-            desc: `Lanthanum's effect is twice stronger.`,
+            desc: `Lanthanum's effect is twice as strong.`,
             cost: E('e1.1e6'),
         },
         {
-            desc: `Collapsed star boosts quarks gain.`,
+            desc: `Collapsed stars boost quarks gain.`,
             cost: E('e1.7e6'),
             effect() {
                 let x = player.stars.points.add(1)
@@ -553,11 +555,11 @@ const ELEMENTS = {
             effDesc(x) { return formatReduction(x)+" weaker" },
         },
         {
-            desc: `Stronger’s Power softcap starts 3x later, is 10% weaker.`,
+            desc: `Stronger’s Power softcap starts 3x later, and is 10% weaker.`,
             cost: E('e7.5e15'),
         },
         {
-            desc: `Tickspeed’s Power softcap starts ^2 later, scales 50% weaker.`,
+            desc: `Tickspeed’s Power softcap starts ^2 later, and scales 50% weaker.`,
             cost: E('e2e16'),
         },
         {
@@ -565,7 +567,7 @@ const ELEMENTS = {
             cost: E('e150'),
         },
         {
-            desc: `All tickspeed scalings starts 100x later (after nerf from 8th QC modifier).`,
+            desc: `All tickspeed scalings start 100x later (after nerf from 8th QC modifier).`,
             cost: E('e500'),
         },
         {
@@ -796,21 +798,21 @@ const ELEMENTS = {
             cost: E("e3e20"),
         },{
             dark: true,
-            desc: `You can now automatically complete Challenges 12.`,
+            desc: `You can now automatically complete Challenge 12.`,
             cost: E("e12"),
         },{
             dark: true,
-            desc: `Unlock 13th Challenge. Automate big rip upgrades.`,
+            desc: `Unlock the 13th Challenge, Automate Big Rip upgrades.`,
             cost: E("e13"),
         },{
-            desc: `Make 3, 4 & 8 Challenges’ effect better.`,
+            desc: `Make the 3rd, 4th & 8th Challenges’ effect better.`,
             cost: E("e6.5e27"),
         },{
-            desc: `Super Prestige Level & Honor is 5% weaker.`,
+            desc: `Super Prestige Level & Honor are 5% weaker.`,
             cost: E("e1.5e29"),
         },{
             br: true,
-            desc: `Dark shadow gain is boosted by death shard.`,
+            desc: `Dark Shadow gain is boosted by Death Shards.`,
             cost: E("e2.5e25"),
             effect() {
                 let x = player.qu.rip.amt.add(1).log10().add(1)
@@ -819,7 +821,7 @@ const ELEMENTS = {
             effDesc(x) { return "x"+format(x,1) },
         },{
             dark: true,
-            desc: `You can now gain relativistic energy outside Big Rip. Keep quantum tree non-QoL on entering any dark challenge.`,
+            desc: `You can now gain Relativistic Energy outside of Big Rip. Keep non-QoL quantum tree on entering any dark challenge.`,
             cost: E("1e18"),
         },{
             desc: `Super & Hyper cosmic string scalings are 25% weaker.`,
@@ -859,10 +861,10 @@ const ELEMENTS = {
             cost: E("1e27"),
         },{
             dark: true,
-            desc: `Unlock 14th Challenge.`,
+            desc: `Unlock the 14th Challenge.`,
             cost: E("1e32"),
         },{
-            desc: `Prestige base boost dark rays earned.`,
+            desc: `Prestige Base boosts dark rays earned.`,
             cost: E("e1.7e31"),
             effect() {
                 let pb = tmp.prestiges.base||E(1)
@@ -872,7 +874,7 @@ const ELEMENTS = {
             effDesc(x) { return "x"+format(x)+softcapHTML(x,1e12) },
         },{
             br: true,
-            desc: `Quantum shard’s base is increased by the number of elements bought.`,
+            desc: `Quantum shard’s base is increased based on the number of elements bought.`,
             cost: E("ee30"),
             effect() {
                 let x = player.atom.elements.length/100
@@ -881,11 +883,11 @@ const ELEMENTS = {
             effDesc(x) { return "+"+format(x,2) },
         },{
             dark: true,
-            desc: `Outside Big Rip, you can now gain death shards. Automate cosmic strings.`,
+            desc: `Outside of Big Rip, you can now gain Death Shards. Automate Cosmic Strings.`,
             cost: E("1e40"),
         },{
             br: true,
-            desc: `Big Rip upgrade 7 is allowed outside Big Rip.`,
+            desc: `Big Rip upgrade 7 is active outside of Big Rip.`,
             cost: E("e2.6e30"),
         },{
             desc: `Stronger’s effect softcap is slightly weaker.`,
@@ -933,7 +935,7 @@ const ELEMENTS = {
             cost: E("1e80"),
         },{
             dark: true,
-            desc: `Uncap [Neut-Muon]’s effect, and it’s better if effect is greater than 33%.`,
+            desc: `Uncap [Neut-Muon]’s effect, and it’s better if its effect is greater than 33%.`,
             cost: E("1e84"),
         },{
             br: true,
@@ -951,7 +953,7 @@ const ELEMENTS = {
             desc: `Unlock Dark Run. Keep Oganesson-118 on darkness.`,
             cost: E("1e96"),
         },{
-            desc: `Collapsed star’s effect now provide an exponential boost at reduced rate. It can apply to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
+            desc: `Collapsed star’s effect now provide an exponential boost at a reduced rate. It now applies to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
             cost: E("e2e69"),
         },{
             desc: `Spatial Dilation is slightly weaker.`,
@@ -962,21 +964,21 @@ const ELEMENTS = {
             cost: E("e4.20e69"), // nice
         },{
             br: true,
-            desc: `[rp1]’s effect is another overpowered.`,
+            desc: `[rp1]’s effect is overpowered again.`,
             cost: E("e6.3e69"),
         },{
             br: true,
-            desc: `[bh1]’s effect is another overpowered again.`,
+            desc: `[bh1]’s effect is overpowered for the third time.`,
             cost: E("e2.27e70"),
         },{
             desc: `Hex’s requirement and Glory’s requirement are slightly weaker.`,
             cost: E("e1.08e72"),
         },{
             dark: true,
-            desc: `Unlock 15th Challenge.`,
+            desc: `Unlock the 15th Challenge.`,
             cost: E("1e106"),
         },{
-            desc: `Remove two softcaps of particle powers earned.`,
+            desc: `Remove two softcaps of particle powers gain.`,
             cost: E("e2.35e72"),
         },{
             br: true,
@@ -1066,7 +1068,7 @@ const ELEMENTS = {
             effDesc(x) { return "x"+format(x) },
         },{
             dark: true,
-            desc: `Entropy’s cap is now instead an overflow softcap.`,
+            desc: `Entropy’s hardcap is now a softcap.`,
             cost: E("e200"),
         },{
             br: true,
@@ -1107,7 +1109,7 @@ const ELEMENTS = {
             effDesc(x) { return "^"+format(x) },
         },{
             dark: true,
-            desc: `Each matter’s gain is increased by 10% every OoM^2 of dark matter. Unlock more main upgrades.`,
+            desc: `Each Matter’s gain is increased by 10% for every OoM^2 of Dark Matter. Unlock more main upgrades.`,
             cost: E(1e303),
             effect() {
                 let x = Decimal.pow(1.1,player.bh.dm.add(1).log10().add(1).log10())
@@ -1115,7 +1117,7 @@ const ELEMENTS = {
             },
             effDesc(x) { return "x"+format(x) },
         },{
-            desc: `Hybridized Uran-Astatine’s first effect makes exotic rank and meta-tier starting later at ^0.5 rate.`,
+            desc: `Hybridized Uran-Astatine’s first effect makes Exotic Rank and Meta-Tier start later at ^0.5 rate.`,
             cost: E("e3.3e93"),
             effect() {
                 let x = tmp.qu.chroma_eff[1][0].max(1).root(2)
@@ -1135,13 +1137,13 @@ const ELEMENTS = {
             cost: E("e7.7e92"),
         },{
             dark: true,
-            desc: `Exotic rank and ultra prestige level scaling is 10% weaker.`,
+            desc: `Exotic Rank and Ultra Prestige Level scaling are 10% weaker.`,
             cost: E('e435'),
         },{
             desc: `Particle powers’ first effect is better.`,
             cost: E("e1.6e94"),
         },{
-            desc: `Unlock Accelerators, tickspeed now provides exponential boost, but nullify Argon-18 and Unpentnilium-150 (except in 15th Challenge).`,
+            desc: `Unlock Accelerators, tickspeed now provides an exponential boost, but nullify Argon-18 and Unpentnilium-150 (except in 15th Challenge).`,
             cost: E("e8.6e95"),
         },{
             br: true,
@@ -1165,10 +1167,10 @@ const ELEMENTS = {
             effDesc(x) { return "^"+format(x) },
         },{
             dark: true,
-            desc: `1st and 3rd Photon & Gluon upgrades provides an exponential boost. Keep big rip upgrades on darkness.`,
+            desc: `1st and 3rd Photon & Gluon upgrades provide an exponential boost. Keep big rip upgrades on darkness.`,
             cost: E('e605'),
         },{
-            desc: `Overpower boosts accelerator power at reduced rate.`,
+            desc: `Overpower boosts accelerator power at a reduced rate.`,
             cost: E("e4.2e101"),
             effect() {
                 let x = (player.massUpg[4]||E(1)).pow(1.5).add(10).log10()
@@ -1227,7 +1229,7 @@ const ELEMENTS = {
             cost: E("1e1.6e117"),
         },{
             dark: true,
-            desc: `[Bottom]’s effect is changed to better, uncapping. Fourth Proton upgrade now provides an exponential boost.`,
+            desc: `[Bottom]’s effect is now better, and is uncapped. Additionally, the Fourth Photon upgrade now provides an exponential boost.`,
             cost: E('e1024'),
         },{
             desc: `Entropic Multiplier is overpowered.`,
@@ -1244,7 +1246,7 @@ const ELEMENTS = {
             desc: `Final Star Shard's requirement is 20% cheaper.`,
             cost: E('1e1480'),
         },{
-            desc: `Unlock 16th Challenge.`,
+            desc: `Unlock the 16th Challenge.`,
             cost: E('e7e134'),
         },
     ],
@@ -1262,33 +1264,36 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (player.dark.unl) u = 118+14
+        if (tmp.inf_unl) u = 218
         else {
-            if (quUnl()) u = 77+3
+            if (player.dark.unl) u = 118+14
             else {
-                if (player.supernova.times.gte(1)) u = 49+5
+                if (quUnl()) u = 77+3
                 else {
-                    if (player.chal.comps[8].gte(1)) u += 14
-                    if (hasElement(18)) u += 3
-                    if (MASS_DILATION.unlocked()) u += 15
-                    if (STARS.unlocked()) u += 18
+                    if (player.supernova.times.gte(1)) u = 49+5
+                    else {
+                        if (player.chal.comps[8].gte(1)) u += 14
+                        if (hasElement(18)) u += 3
+                        if (MASS_DILATION.unlocked()) u += 15
+                        if (STARS.unlocked()) u += 18
+                    }
+                    if (player.supernova.post_10) u += 3
+                    if (player.supernova.fermions.unl) u += 10
+                    if (tmp.radiation.unl) u += 10
                 }
-                if (player.supernova.post_10) u += 3
-                if (player.supernova.fermions.unl) u += 10
-                if (tmp.radiation.unl) u += 10
+                if (PRIM.unl()) u += 3
+                if (hasTree('unl3')) u += 3
+                if (player.qu.rip.first) u += 9
+                if (hasUpgrade("br",9)) u += 23 // 23
             }
-            if (PRIM.unl()) u += 3
-            if (hasTree('unl3')) u += 3
-            if (player.qu.rip.first) u += 9
-            if (hasUpgrade("br",9)) u += 23 // 23
+            if (tmp.chal13comp) u += 10 + 2
+            if (tmp.chal14comp) u += 6 + 11
+            if (tmp.chal15comp) u += 16 + 4
+            if (tmp.darkRunUnlocked) u += 7
+            if (tmp.matterUnl) u += 14
+            if (tmp.mass4Unl) u += 6
+            if (tmp.brUnl) u += 10
         }
-        if (tmp.chal13comp) u += 10 + 2
-        if (tmp.chal14comp) u += 6 + 11
-        if (tmp.chal15comp) u += 16 + 4
-        if (tmp.darkRunUnlocked) u += 7
-        if (tmp.matterUnl) u += 14
-        if (tmp.mass4Unl) u += 6
-        if (tmp.brUnl) u += 10
 
         return u
     },
@@ -1335,6 +1340,8 @@ for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
     let [ts,te] = [ELEMENTS.exp[x-1],ELEMENTS.exp[x]]
 
     if (x > 1) {
+        ELEMENTS.max_hsize[x-1] = 11 + 4*x
+
         let m = 'xx1xxxxxxxxxxxxxxxxvxx2xxxxxxxxxxxxxxxxv_v'
 
         for (let y = x; y >= 1; y--) {
@@ -1382,11 +1389,12 @@ function setupElementsHTML() {
 	let table = ""
     let num = 0
     for (let k = 1; k <= MAX_ELEM_TIERS; k++) {
+        let hs = `style="width: ${50*ELEMENTS.max_hsize[k-1]}px; margin: auto"`
         let n = 0, p = (k+3)**2*2, xs = ELEMENTS.exp[k-1], xe = ELEMENTS.exp[k]
-        table += `<div id='elemTier${k}_div'><div class='table_center'>`
+        table += `<div id='elemTier${k}_div'><div ${hs}><div class='table_center'>`
         for (let i = 0; i < ELEMENTS.map[k-1].length; i++) {
             let m = ELEMENTS.map[k-1][i]
-            if (m=='v') table += '</div><div class="table_center">'
+            if (m=='v') table += `</div><div class="table_center">`
             else if (m=='_' || !isNaN(Number(m))) table += `<div ${ELEMENTS.la[m]!==undefined&&k==1?`id='element_la_${m}'`:""} style="width: 50px; height: 50px">${ELEMENTS.la[m]!==undefined?"<br>"+ELEMENTS.la[m]:""}</div>`
             else if (m=='x') {
                 num++
@@ -1418,7 +1426,7 @@ function setupElementsHTML() {
                 }
             }
         }
-        table += "</div></div>"
+        table += "</div></div></div>"
     }
 	elements_table.setHTML(table)
 
@@ -1507,6 +1515,7 @@ function updateElementsTemp() {
 
     let decor = []
     if (hasElement(10,1)) decor.push(187)
+    if (hasCharger(9)) decor.push(40,64,67,150,199,200,204)
     tElem.deCorrupt = decor
 
     let cannot = []

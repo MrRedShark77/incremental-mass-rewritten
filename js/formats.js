@@ -210,7 +210,7 @@ const FORMATS = {
       format(ex, acc, max) {
         ex = E(ex)
         let e = ex.log10().floor()
-        if (e.lt(63)) return format(ex,acc,max,"st")
+        if (e.lt(63) && e.gte(max)) return format(ex,acc,max,"st")
         else {
           let m = ex.div(E(10).pow(e))
           return e.gte(1e3) ? (e.gte(1e9)?"":m.toFixed(4))+"e"+this.format(e,0,max) : format(ex,acc,max,"sc")

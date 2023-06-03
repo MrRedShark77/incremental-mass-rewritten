@@ -17,10 +17,18 @@ const ST_NAMES = [
 const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark']
 
 const FORMS = {
-    getPreQUGlobalSpeed() {
-        if (tmp.c16active) return E(0.01)
-
+    getPreInfGlobalSpeed() {
         let x = E(1)
+        
+        if (tmp.inf_unl) x = x.mul(10).mul(theoremEff('time',0))
+
+        return x
+    },
+    getPreQUGlobalSpeed() {
+        let x = E(1), inf = tmp.preInfGlobalSpeed
+
+        if (tmp.c16active) return inf.div(100)
+
         if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)
         if (hasElement(103)) x = x.mul(tmp.elements.effect[103])
@@ -28,8 +36,11 @@ const FORMS = {
         if (player.mainUpg.br.includes(3)) x = x.pow(tmp.upgs.main[4][3].effect)
         if (hasPrestige(0,5)) x = x.pow(2)
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('time',1))
+
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[1])
-        return x
+
+        return x.mul(inf)
     },
     massGain() {
         let x = E(1)
@@ -91,6 +102,9 @@ const FORMS = {
 
         if (hasUpgrade('rp',20)) x = x.pow(upgEffect(1,20))
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('mass',0))
+        if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[0])
+
         if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
         let o = x
@@ -100,8 +114,13 @@ const FORMS = {
         let op2 = E(.25)
 
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
+        if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
+
+        os = os.min(os2)
 
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
+
+        if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
 
         x = overflow(x,os,op)
 
@@ -268,6 +287,8 @@ const FORMS = {
             step = step.softcap(ss,p,0,hasUpgrade('rp',16))
 
             if (hasBeyondRank(2,4)) step = step.pow(tmp.accelEffect.eff)
+
+            if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])
             
             let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
 
@@ -305,6 +326,7 @@ const FORMS = {
         },
         effect() {
             let step = E(0.0004)
+            if (tmp.inf_unl) step = step.add(theoremEff('atom',3,0))
             step = step.mul(tmp.dark.abEff.accelPow||1)
             if (hasElement(205)) step = step.mul(elemEffect(205))
             if (hasUpgrade('bh',19)) step = step.mul(upgEffect(2,19))
@@ -419,6 +441,9 @@ const FORMS = {
 
             x = x.pow(tmp.unstable_bh.effect)
 
+            if (tmp.inf_unl) x = x.pow(theoremEff('bh',0))
+            if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[1])
+
             if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || player.dark.run.active ? 5 : 100)
@@ -433,6 +458,11 @@ const FORMS = {
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
             if (hasTree('ct11')) os = os.pow(treeEff('ct11'))
+            if (tmp.inf_unl) os = os.pow(theoremEff('bh',1))
+
+            if (hasPrestige(2,45)) os2 = os2.pow(prestigeEff(2,45))
+
+            os = os.min(os2)
 
             if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
 
@@ -491,7 +521,7 @@ const FORMS = {
             let x = (player.mainUpg.atom.includes(12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
 
-            if (hasElement(201)) x = Decimal.pow(1.1,x.max(1).log10().add(1).log10().pow(.8))
+            if (hasElement(201)) x = Decimal.pow(1.1+exoticAEff(0,5,0),x.max(1).log10().add(1).log10().pow(.8))
 
             if (hasUpgrade('bh',18)) x = x.pow(2.5)
 
@@ -542,20 +572,20 @@ const FORMS = {
     },
     reset_msg: {
         msgs: {
-            rp: "Require over 1e9 tonne of mass to reset previous features for gain Rage Powers",
-            dm: "Require over 1e20 Rage Power to reset all previous features for gain Dark Matters",
-            atom: "Require over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
+            rp: "Reach over 1e9 tonne of mass to reset previous features for gain Rage Powers",
+            dm: "Reach over 1e20 Rage Power to reset all previous features for gain Dark Matters",
+            atom: "Reach over 1e100 uni of black hole to reset all previous features for gain Atoms & Quarks",
             md: "Dilate mass, then cancel",
             br: "Big Rip the Dimension, then go back",
             dark: "Require Oganesson-118 to go Dark",
         },
         set(id) {
             if (id=="sn") {
-                player.reset_msg = "Reach over "+format(tmp.supernova.maxlimit)+" collapsed stars to be Supernova"
+                player.reset_msg = "Reach over "+format(tmp.supernova.maxlimit)+" collapsed stars to go Supernova"
                 return
             }
             if (id=="qu") {
-                player.reset_msg = "Require over "+formatMass(mlt(1e4))+" of mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")
+                player.reset_msg = "Reach over "+formatMass(mlt(1e4))+" of mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")
                 return
             }
             player.reset_msg = this.msgs[id]
@@ -569,7 +599,7 @@ function loop() {
     ssf[1]()
     updateTemp()
     updateHTML()
-    calc(diff/1000*tmp.offlineMult,diff/1000);
+    calc(diff/1000);
     date = Date.now();
     player.offline.current = date
 }

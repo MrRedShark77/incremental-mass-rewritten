@@ -7,9 +7,14 @@ function resetTemp() {
         tree_time: 0,
 
         preQUGlobalSpeed: E(1),
+        preInfGlobalSpeed: E(1),
 
         cx: 0,
         cy: 0,
+
+        mobile: false,
+
+        start: false,
 
         sn_tab: 0,
         tree_tab: 0,
@@ -184,6 +189,7 @@ function resetTemp() {
         },
 
         unstable_bh: {
+            p: 1,
             fvm_eff: {},
         },
 
@@ -197,6 +203,19 @@ function resetTemp() {
 
         april: d.getDate() == 1 && d.getMonth() == 3,
         aprilEnabled: false,
+
+        inf_reached: false,
+        inf_time: 0,
+        inf_limit: Decimal.pow(10,Number.MAX_VALUE),
+
+        inf_unl: false,
+
+        core_chance: CORE_CHANCE_MIN,
+        core_lvl: 1,
+        core_score: {},
+        core_eff: {},
+
+        iu_eff: [],
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
@@ -215,7 +234,7 @@ function resetTemp() {
                     let u = TREE_UPGS.ids[id]
                     tmp.supernova.tree_had2[j].push(id)
                     tmp.supernova.tree_had.push(id)
-                    if (u && !u.qf && !u.cs) tmp.supernova.auto_tree.push(id)
+                    // if (u && !u.qf && !u.cs) tmp.supernova.auto_tree.push(id)
                 }
             }
         }
@@ -229,6 +248,10 @@ function resetTemp() {
         tmp.no_scalings[st] = []
     }
     for (let x = 0; x < MATTERS_LEN; x++) tmp.matters.upg[x] = {} 
+    for (let i in CORE) {
+        tmp.core_score[i] = [0,0,0,0]
+        tmp.core_eff[i] = []
+    }
     tmp.el = keep[0]
     tmp.prevSave = keep[1]
 }
@@ -256,7 +279,7 @@ function updateMassTemp() {
 }
 
 function updateTickspeedTemp() {
-    tmp.tickspeedFP = hasCharger(4) ? 1 : tmp.fermions.effs[1][2]
+    tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : tmp.fermions.effs[1][2]
     tmp.tickspeedCost = E(2).pow(player.tickspeed.scaleEvery('tickspeed')).floor()
     tmp.tickspeedBulk = E(0)
     if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).add(1).floor()
@@ -307,6 +330,9 @@ function updateBlackHoleTemp() {
     // Unstable
 
     t = tmp.unstable_bh
+    
+    t.p = 1
+    if (tmp.inf_unl) t.p /= theoremEff('bh',2)
 
     let p = 1.5
     if (hasBeyondRank(1,137)) p **= 0.8
@@ -326,6 +352,8 @@ function updateTemp() {
 
     tmp.c16active = CHALS.inChal(16)
 
+    tmp.inf_unl = player.inf.theorem.gte(1)
+
     tmp.chal13comp = player.chal.comps[13].gte(1)
     tmp.chal14comp = player.chal.comps[14].gte(1)
     tmp.chal15comp = player.chal.comps[15].gte(1)
@@ -336,6 +364,7 @@ function updateTemp() {
     tmp.brUnl = hasElement(208)
     tmp.eaUnl = hasCharger(5)
 
+    updateInfTemp()
     updateC16Temp()
     updateDarkTemp()
     updateQuantumTemp()
@@ -359,5 +388,6 @@ function updateTemp() {
     updateRanksTemp()
     updateMassTemp()
 
+    tmp.preInfGlobalSpeed = FORMS.getPreInfGlobalSpeed()
     tmp.preQUGlobalSpeed = FORMS.getPreQUGlobalSpeed()
 }

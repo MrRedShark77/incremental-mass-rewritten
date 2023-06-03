@@ -142,6 +142,9 @@ function updatePrimordiumTemp() {
     }
 
     let pt = player.qu.prim.theorems
+    let pstr = E(1)
+
+    if (tmp.inf_unl) pstr = pstr.mul(theoremEff('proto',1))
 
     tp.theorems = PRIM.getTheorems()
     tp.next_theorem = PRIM.getNextTheorem()
@@ -164,7 +167,7 @@ function updatePrimordiumTemp() {
         tp.parts[i] = pp
         tp.bonus[i] = b
         if (player.qu.rip.active || tmp.c16active || player.dark.run.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
-        tp.eff[i] = PRIM.particle.eff[i](pp.add(b).softcap(100,0.75,0))
+        tp.eff[i] = PRIM.particle.eff[i](pp.add(b).softcap(100,0.75,0).mul(pstr))
     }
 
     calcPartChances()

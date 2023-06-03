@@ -123,3 +123,5 @@ class Element {
 		new Element(id).setSize(h, w);
 	}
 }
+
+var el = x => document.getElementById(x);

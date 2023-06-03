@@ -1,29 +1,25 @@
 function setupHTML() {
-	let sn_stabs = new Element("sn_stabs")
 	let tabs = new Element("tabs")
 	let stabs = new Element("stabs")
 	let table = ""
 	let table2 = ""
-	let table3 = ""
 	for (let x = 0; x < TABS[1].length; x++) {
-		table += `<div style="width: 145px">
-			<button onclick="TABS.choose(${x})" class="btn_tab" id="tab${x}">${TABS[1][x].id}</button>
+		table += `<div>
+			<button onclick="TABS.choose(${x})" class="btn_tab" id="tab${x}">${TABS[1][x].icon ? `<iconify-icon icon="${TABS[1][x].icon}" width="72" style="color: ${TABS[1][x].color||"white"}"></iconify-icon>` : ""}<div>${TABS[1][x].id}</div></button>
 		</div>`
 		if (TABS[2][x]) {
 			let a = `<div id="stabs${x}" class="table_center">`
 			for (let y = 0; y < TABS[2][x].length; y++) {
-				a += `<div style="width: 145px">
+				a += `<div style="width: 160px">
 					<button onclick="TABS.choose(${y}, true)" class="btn_tab" id="stab${x}_${y}">${TABS[2][x][y].id}</button>
 				</div>`
 			}
 			a += `</div>`
-			if (x == 5) table3 += a
-			else table2 += a
+			table2 += a
 		}
 	}
 	tabs.setHTML(table)
 	stabs.setHTML(table2)
-	sn_stabs.setHTML(table3)
 
 	let ranks_table = new Element("ranks_table")
 	table = ""
@@ -58,8 +54,8 @@ function setupHTML() {
 	table = ""
 	for (let x = 1; x <= UPGS.mass.cols; x++) {
 		let upg = UPGS.mass[x]
-		table += `<div style="width: 100%; margin-bottom: 5px;" class="table_center" id="massUpg_div_${x}">
-			<div style="width: 400px">
+		table += `<div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="massUpg_div_${x}">
+			<div style="width: 300px">
 				<div class="resources">
 					<img src="images/mass_upg${x}.png">
 					<span style="margin-left: 5px; text-align: left;"><span id="massUpg_scale_${x}"></span>${upg.title} [<span id="massUpg_lvl_${x}">X</span>]</span>
@@ -138,6 +134,8 @@ function setupHTML() {
 	}
 	scaling_table.setHTML(table)
 
+	setupStatsHTML()
+	setupResourcesHTML()
 	setupChalHTML()
 	setupAtomHTML()
 	setupElementsHTML()
@@ -149,6 +147,7 @@ function setupHTML() {
 	setupRadiationHTML()
 	setupQuantumHTML()
 	setupDarkHTML()
+	setupInfHTML()
 
 	/*
 	function setupTestHTML() {
@@ -179,11 +178,15 @@ function setupHTML() {
 }
 
 function updateTabsHTML() {
+	let s = !player.options.nav_hide[0]
+	tmp.el.stabs_div.setDisplay(TABS[2][tmp.tab])
+	
 	for (let x = 0; x < TABS[1].length; x++) {
-		if (x != 5 && tmp.tab == 5) continue
 		let tab = TABS[1][x]
-		tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
-		tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.tab})
+		if (s) {
+			tmp.el["tab"+x].setDisplay(tab.unl ? tab.unl() : true)
+			tmp.el["tab"+x].setClasses({btn_tab: true, [tab.style ? tab.style : "normal"]: true, choosed: x == tmp.tab})
+		}
 
 		if (tmp.el["tab_frame"+x]) tmp.el["tab_frame"+x].setDisplay(x == tmp.tab)
 		if (TABS[2][x]) {
@@ -221,14 +224,6 @@ function updateUpperHTML() {
 	if (unl) {
 		tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true))
 		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain.mul(gs)):"(+"+format(tmp.atom.gain,0)+")"))
-	}
-	
-	unl = player.chal.active > 0
-	tmp.el.chal_upper.setVisible(unl)
-	if (unl) {
-		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
-		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
-		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
 	}
 	
 	unl = player.atom.unl
@@ -309,7 +304,7 @@ function updateTickspeedHTML() {
 }
 
 function updateRanksRewardHTML() {
-	tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
+	// tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
 		tmp.el["ranks_reward_div_"+x].setDisplay(player.ranks_reward == x)
@@ -326,7 +321,7 @@ function updateRanksRewardHTML() {
 
 function updatePrestigesRewardHTML() {
 	let c16 = tmp.c16active
-	tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
+	// tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
 	for (let x = 0; x < PRES_LEN; x++) {
 		tmp.el["pres_reward_div_"+x].setDisplay(player.pres_reward == x)
 		if (player.pres_reward == x) {
@@ -416,10 +411,10 @@ function updateBlackHoleHTML() {
 	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
 
 	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[0]))
-    tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh[0])}</b>, your mass of black hole is ${overflowFormat(tmp.overflow.bh||1)}!`)
+    tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh[0])}</b>, your mass of black hole gain is ${overflowFormat(tmp.overflow.bh||1)}!`)
 
 	tmp.el.bhOverflow2.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[1]))
-    tmp.el.bhOverflow2.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh[1])}</b>, your black hole mass overflow is even stronger!`)
+    tmp.el.bhOverflow2.setHTML(`Because of black hole mass overflow^2 at <b>${formatMass(tmp.overflow_start.bh[1])}</b>, your black hole mass overflow is even stronger!`)
 	// Unstable 
 
 	let unl = hasCharger(1)
@@ -440,26 +435,30 @@ function updateBlackHoleHTML() {
 }
 
 function updateOptionsHTML() {
-	for (let x = 0; x < CONFIRMS.length; x++) {
-		let unl = 
-		CONFIRMS[x] == "sn"
-		?(player.supernova.times.gte(1) || quUnl())
-		:CONFIRMS[x] == "qu"
-		?quUnl()
-		:CONFIRMS[x] == "br"
-		?player.qu.rip.first
-		:player[CONFIRMS[x]].unl
-
-		tmp.el["confirm_div_"+x].setDisplay(unl)
-		tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
+	if (tmp.stab[9] == 0) {
+		for (let x = 0; x < CONFIRMS.length; x++) {
+			let unl = 
+			CONFIRMS[x] == "sn"
+			?(player.supernova.times.gte(1) || quUnl())
+			:CONFIRMS[x] == "qu"
+			?quUnl()
+			:CONFIRMS[x] == "br"
+			?player.qu.rip.first
+			:player[CONFIRMS[x]].unl
+	
+			tmp.el["confirm_div_"+x].setDisplay(unl)
+			tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
+		}
+		tmp.el.total_time.setTxt(formatTime(player.time))
+		tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
+		tmp.el.tree_anim_btn.setDisplay(player.supernova.times.gte(1) || quUnl())
+		tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
+		tmp.el.mass_dis.setTxt(["Default",'Always show g','Always show mlt','Important units only'][player.options.massDis])
+	
+		tmp.el.omega_badge.setDisplay(localStorage.getItem("imr_secret_badge1") == "1")
+	} else if (tmp.stab[9] == 1) {
+		updateResourcesHiderHTML()
 	}
-	tmp.el.total_time.setTxt(formatTime(player.time))
-	tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
-	tmp.el.tree_anim_btn.setDisplay(player.supernova.times.gte(1) || quUnl())
-	tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
-	tmp.el.mass_dis.setTxt(["Default",'Always show g','Always show mlt','Important units only'][player.options.massDis])
-
-	tmp.el.omega_badge.setDisplay(localStorage.getItem("imr_secret_badge1") == "1")
 }
 
 function updateHTML() {
@@ -467,18 +466,21 @@ function updateHTML() {
 	document.documentElement.style.setProperty('--cx', tmp.cx)
 	document.documentElement.style.setProperty('--cy', tmp.cy)
 
-	let displayMainTab = tmp.tab != 5
+	tmp.mobile = window.innerWidth < 1200
+
+	let displayMainTab = true
 	
-	tmp.el.offlineSpeed.setTxt(format(tmp.offlineMult))
-	tmp.el.loading.setDisplay(tmp.offlineActive)
-    tmp.el.app.setDisplay(tmp.offlineActive ? false : ((player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab))
+	tmp.el.loading.setDisplay(!tmp.start)
+    tmp.el.app.setDisplay(tmp.inf_time != 2 && tmp.inf_time != 3 && tmp.start && (player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab)
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
+	if (!player.options.nav_hide[1]) updateResourcesHTML()
 	if (hover_tooltip) updateTooltipResHTML()
-	updateUpperHTML()
-	if ((!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
+	// updateUpperHTML()
+	if (tmp.start && (!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()
 		updateDarkHTML()
+		updateInfHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
 				updateRanksHTML()
@@ -503,13 +505,16 @@ function updateHTML() {
 				tmp.el.massSoftStart9.setTxt(formatMass(tmp.massSoftGain8))
 
 				tmp.el.massOverflow.setDisplay(player.mass.gte(tmp.overflow_start.mass[0]))
-    			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass[0])}</b>, your mass is ${overflowFormat(tmp.overflow.mass||1)}!`)
+    			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass[0])}</b>, your mass gain is ${overflowFormat(tmp.overflow.mass||1)}!`)
 
 				tmp.el.massOverflow2.setDisplay(player.mass.gte(tmp.overflow_start.mass[1]))
     			tmp.el.massOverflow2.setHTML(`Because of mass overflow^2 at <b>${formatMass(tmp.overflow_start.mass[1])}</b>, your mass overflow is even stronger!`)
 
-				tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger))
-    			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger)}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
+				tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[0]))
+    			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger[0])}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
+			
+				tmp.el.strongerOverflow2.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[1]))
+    			tmp.el.strongerOverflow2.setHTML(`Because of stronger overflow^2 at <b>${format(tmp.overflow_start.stronger[1])}</b>, your stronger overflow is even stronger!`)
 			}
 			else if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()
@@ -522,6 +527,8 @@ function updateHTML() {
 			}
 		}
 		else if (tmp.tab == 1) {
+			updateStatsHTML()
+
 			if (tmp.stab[1] == 0) updateRanksRewardHTML()
 			else if (tmp.stab[1] == 1) updateScalingHTML()
 			else if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
@@ -542,7 +549,7 @@ function updateHTML() {
 				updateExoticAtomsHTML()
 			}
 		}
-		else if (tmp.tab == 8) {
+		else if (tmp.tab == 9) {
 			updateOptionsHTML()
 		}
 	}

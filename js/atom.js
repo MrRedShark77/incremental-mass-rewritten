@@ -37,12 +37,15 @@ const ATOM = {
 
         if (hasUpgrade('atom',17)) x = x.pow(upgEffect(3,17))
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('atom',0))
+
         if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(2))
 
         let o = x
         let os = tmp.c16active ? E('ee6') : E('ee90').pow(tmp.dark.abEff.ApQ_Overflow||1).pow(treeEff('ct13')?tmp.chal.eff[15]:1)
 
         if (hasUpgrade('atom',16)) os = os.pow(10)
+        if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
 
         x = overflow(x,os,0.5)
 
@@ -89,6 +92,8 @@ const ATOM = {
             let o = x
             let os = tmp.c16active ? E('e500') : E('ee82').pow(tmp.dark.abEff.ApQ_Overflow||1).pow(treeEff('ct13')?tmp.chal.eff[15]:1)
 
+            if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
+
             x = overflow(x,os,0.25)
 
             tmp.overflow.atomic = calcOverflow(o,x,os)
@@ -97,9 +102,13 @@ const ATOM = {
             return x
         },
         effect() {
-            let x = player.atom.atomic.max(1).log(hasElement(23)?1.5:1.75).pow(getEnRewardEff(1))
+            let base = hasElement(23)?1.5:1.75
+            let x = player.atom.atomic.max(1).log(base).pow(getEnRewardEff(1))
             if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
-            x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,0.1,0).softcap(2.5e35,0.1,0)
+
+            let w = 0.1 ** exoticAEff(0,4)
+
+            x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,w,0).softcap(2.5e35,w,0)
             return x.floor()
         },
     },
@@ -184,12 +193,12 @@ const ATOM = {
         },
         powerEffect: [
             x=>{
-                let a = hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(3)
+                let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(3)
                 let b = hasElement(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(2)
+                let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(2)
                 let b = hasUpgrade('atom',18)
                 ?Decimal.pow(1.1,
                     player.rp.points.add(1).log10().add(10).log10().mul(x.add(1).log10().add(10).log10()).root(3).sub(1)
@@ -198,26 +207,29 @@ const ATOM = {
                 :(hasElement(19)
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
+
+                if (hasUpgrade('atom',18)) b = overflow(b,1e120,0.5)
+
                 return {eff1: a, eff2: b}
             },
             x=>{
-                let a = hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1)
+                let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1)
                 let b = hasElement(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
                 return {eff1: a, eff2: b}
             },
         ],
         desc: [
             x=>{ return `
-                Boosts Mass gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
-                Adds Tickspeed Power by ${format(x.eff2.mul(100))}%
+                Boost Mass gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
+                Increases Tickspeed Power by ${format(x.eff2.mul(100))}%
             ` },
             x=>{ return `
-                Boosts Rage Power gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
-                Makes Mass gain boosted by Rage Powers - ${hasUpgrade('atom',18)?"^"+format(x.eff2):format(x.eff2)+"x"}<br><br>
+                Boost Rage Power gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
+                Boost Mass gain based on Rage Powers - ${hasUpgrade('atom',18)?"^"+format(x.eff2):format(x.eff2)+"x"}<br><br>
             ` },
             x=>{ return `
-                Boosts Dark Matter gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
-                Adds BH Condenser Power by ${format(x.eff2)}
+                Boost Dark Matter gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>
+                Increases BH Condenser Power by ${format(x.eff2)}
             ` },
         ],
         colors: ['#0f0','#ff0','#f00'],
@@ -287,7 +299,7 @@ function updateAtomicHTML() {
 	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
 
     tmp.el.atomicOverflow.setDisplay(player.atom.atomic.gte(tmp.overflow_start.atomic))
-    tmp.el.atomicOverflow.setHTML(`Because of atomic power overflow at <b>${format(tmp.overflow_start.atomic)}</b>, your atomic power is ${overflowFormat(tmp.overflow.atomic||1)}!`)
+    tmp.el.atomicOverflow.setHTML(`Because of atomic power overflow at <b>${format(tmp.overflow_start.atomic)}</b>, your atomic power gain is ${overflowFormat(tmp.overflow.atomic||1)}!`)
 }
 
 function updateAtomHTML() {
@@ -301,5 +313,5 @@ function updateAtomHTML() {
     }
 
     tmp.el.quarkOverflow.setDisplay(player.atom.quarks.gte(tmp.overflow_start.quark))
-    tmp.el.quarkOverflow.setHTML(`Because of quark overflow at <b>${format(tmp.overflow_start.quark)}</b>, your quark is ${overflowFormat(tmp.overflow.quark||1)}!`)
+    tmp.el.quarkOverflow.setHTML(`Because of quark overflow at <b>${format(tmp.overflow_start.quark)}</b>, your quark gain is ${overflowFormat(tmp.overflow.quark||1)}!`)
 }

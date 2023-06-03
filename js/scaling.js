@@ -15,8 +15,10 @@ const SCALE_START = {
 		prestige0: E(15),
 		prestige1: E(7),
 		prestige2: E(30),
+		prestige3: E(8),
 		massUpg4: E(50),
 		FSS: E(5),
+		pe: E(25),
     },
 	hyper: {
 		rank: E(120),
@@ -33,6 +35,7 @@ const SCALE_START = {
 		cosmic_str: E(90),
 		prestige0: E(80),
 		prestige1: E(60),
+		prestige2: E(60),
 	},
 	ultra: {
 		rank: E(600),
@@ -66,6 +69,7 @@ const SCALE_START = {
 	},
 	supercritical: {
 		rank: E(1e37),
+		supernova: E(1e7),
 	},
 }
 
@@ -86,8 +90,10 @@ const SCALE_POWER= {
 		prestige0: 1.5,
 		prestige1: 1.5,
 		prestige2: 2,
+		prestige3: 2,
 		massUpg4: 3,
 		FSS: 2,
+		pe: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -104,6 +110,7 @@ const SCALE_POWER= {
 		cosmic_str: 4,
 		prestige0: 2,
 		prestige1: 2,
+		prestige2: 3,
 	},
 	ultra: {
 		rank: 4,
@@ -137,6 +144,7 @@ const SCALE_POWER= {
 	},
 	supercritical: {
 		rank: 50,
+		supernova: 75,
 	},
 }
 
@@ -165,8 +173,10 @@ const SCALING_RES = {
 	prestige0() { return player.prestiges[0] },
 	prestige1() { return player.prestiges[1] },
 	prestige2() { return player.prestiges[2] },
+	prestige3() { return player.prestiges[3] },
 	massUpg4() { return E(player.massUpg[4]||0) },
 	FSS() { return player.dark.matters.final },
+	pe() { return player.inf.pe},
 }
 
 const NAME_FROM_RES = {
@@ -185,13 +195,15 @@ const NAME_FROM_RES = {
 	prestige0: "Prestige Level",
 	prestige1: "Honor",
 	prestige2: "Glory",
+	prestige3: "Renown",
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
+	pe: "Parallel Extruder",
 }
 
 function updateScalingHTML() {
 	let s = SCALE_TYPE[player.scaling_ch]
-	tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
+	// tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
 	if (!tmp.scaling) return
 	for (let x = 0; x < SCALE_TYPE.length; x++) {
 		tmp.el["scaling_div_"+x].setDisplay(player.scaling_ch == x)
@@ -387,6 +399,9 @@ function getScalingStart(type, name) {
 		if (name=="rank") {
 			if (tmp.chal && hasBeyondRank(2,20)) start = start.mul(tmp.chal.eff[1].scrank)
 		}
+		else if (name=="supernova") {
+			if (hasBeyondRank(4,1)) start = start.add(beyondRankEffect(4,1,0))
+		}
 	}
 	if (name=='supernova' && type < 4) {
 		start = start.add(tmp.prim.eff[7])
@@ -447,6 +462,9 @@ function getScalingPower(type, name) {
 		}
 		else if (name=="massUpg4") {
 			if (tmp.chal && hasBeyondRank(2,20)) power = power.mul(tmp.chal.eff[1].over)
+		}
+		else if (name=='FSS') {
+			if (hasBeyondRank(3,18)) power = power.mul(beyondRankEffect(3,18))
 		}
 	}
 	else if (type==1) {
@@ -541,6 +559,9 @@ function getScalingPower(type, name) {
 function noScalings(type,name) {
 	if (name=="rank"||name=='tier') {
 		if (type<4 && hasPrestige(1,127)) return true
+	}
+	else if (name=="tetr") {
+		return hasCharger(8)
 	}
 	else if (name=="massUpg") {
 		if (hasBeyondRank(2,15)) return true

@@ -74,6 +74,53 @@ const MUONIC_ELEM = {
             desc: `De-corrupt FSS’s reward to Matters.`,
             cost: E(1e54),
         },
+        {
+            desc: `Pion’s first reward is even stronger. Honor 247’s reward affects Pion gain.`,
+            cost: E(1e64),
+        },
+        {
+            desc: `Pyro-Radioactive Plasma is better.`,
+            cost: E(1e81),
+        },
+        {
+            desc: `Final Star Shards increase Matter formula.`,
+            cost: E(1e100),
+            eff() {
+                let x = player.dark.matters.final.root(2).div(5)
+                return x.toNumber()
+            },
+            effDesc: x=>"+"+format(x),
+        },
+        {
+            desc: `C15's reward affects mass overflow^2 starting.`,
+            cost: E(1e111),
+            eff() {
+                if (!tmp.chal) return E(1)
+                let x = overflow(tmp.chal.eff[15],10,0.5).pow(2)
+                return x
+            },
+            effDesc: x=>"^"+format(x),
+        },{
+            desc: `Dimensional mass affects pre-theorem's level.`,
+            cost: E(1e130),
+        },{
+            desc: `Quantum times boost infinity points gain. De-nullify [Tau]’s effect, but its formula is changed.`,
+            cost: E(1e150),
+            eff() {
+                let x = player.qu.times.add(1).log10().add(1)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },{
+            desc: `Accelerators raise the Argon-18's effect at an extremely reduced rate (after first overflow).`,
+            cost: E(1e170),
+            eff() {
+                let x = player.accelerator.add(10).log10()
+                return x
+            },
+            effDesc: x=>"^"+format(x),
+        },
+
         /*
         {
             desc: `Placeholder.`,
@@ -88,6 +135,8 @@ const MUONIC_ELEM = {
     ],
     getUnlLength() {
         let u = 11
+        if (tmp.inf_unl) u += 4
+        if (hasInfUpgrade(9)) u += 3
         return u
     },
 }
@@ -122,7 +171,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e8),E(1e12),E(1e25),E(1e34),E(1e44)],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222)],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -152,6 +201,7 @@ const EXOTIC_ATOM = {
         if (hasPrestige(3,6)) xy = xy.mul(prestigeEff(3,6))
         if (hasElement(5,1)) xy = xy.mul(muElemEff(5))
         if (hasBeyondRank(3,4)) xy = xy.mul(beyondRankEffect(3,4))
+        if (hasInfUpgrade(13)) xy = xy.mul(infUpgEffect(13))
         
         let x = xy.div(10)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
@@ -160,6 +210,7 @@ const EXOTIC_ATOM = {
         let y = xy.div(20)
         if (hasElement(1,1)) y = y.mul(muElemEff(1))
         if (hasElement(9,1)) y = y.mul(muElemEff(9))
+        if (hasElement(12,1)&&hasPrestige(1,247)) y = y.mul(prestigeEff(1,247))
 
         return [x,y]
     },
@@ -181,9 +232,17 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).log10().add(1).pow(2)
                 return x.toNumber()
             },x=>`Impossible Challenges 1-12 start <b>${formatMult(x)}</b> later`],
+            [a=>{
+                let x = Decimal.pow(0.8725,a.add(1).log10().softcap(20,0.25,0).root(2))
+                return x.toNumber()
+            },x=>`Weaken softcaps of atomic power's effect by <b>${formatReduction(x)}</b>`],
+            [a=>{
+                let x = a.add(10).log10().pow(2).sub(1).div(5e3)
+                return x.toNumber()
+            },x=>`Increase the base of Prestige Level 382 for Collapsed Star's effect, the base of Binilunium-201 for BH's effect by <b>+${format(x)}</b>`],
         ],[
             [a=>{
-                let x = a.add(1).pow(2)
+                let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
                 return x
             },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b>`],
             [a=>{
@@ -194,6 +253,14 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).log10().div(80).add(1).root(2)
                 return x
             },x=>`FSS's base is raised by <b>${format(x)}</b>`],
+            [a=>{
+                let x = a.add(1).log10().div(10).add(1).root(2)
+                return x
+            },x=>`Cosmic String's power is raised by <b>${format(x)}</b>`],
+            [a=>{
+                let x = a.add(1).ssqrt().div(50)
+                return isNaN(x)?E(0):x
+            },x=>`Increase parallel extruder's power by <b>+${format(x)}</b>`],
         ],
     ],
 }
@@ -223,6 +290,7 @@ function exoticAEff(i,j,def=1) { return tmp.exotic_atom.eff[i][j]||def }
 
 function updateExoticAtomsHTML() {
     let ea = player.dark.exotic_atom, tea = tmp.exotic_atom, t = ea.tier
+    let inf_gs = tmp.preInfGlobalSpeed
 
     tmp.el.mcf_btn.setHTML(`
     Muon-Catalyzed Fusion Tier <b>${format(t,0)}</b><br>
@@ -232,12 +300,12 @@ function updateExoticAtomsHTML() {
 
     tmp.el.ea_div.setDisplay(t>0)
     if (t>0) {
-        let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0]),ea.amount[1].add(tea.gain[1])).sub(tea.amount)
+        let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0].mul(inf_gs)),ea.amount[1].add(tea.gain[1].mul(inf_gs))).sub(tea.amount)
 
         tmp.el.ext_atom.setHTML(tea.amount.format(0)+" "+tea.amount.formatGain(g))
 
         for (let i = 0; i < 2; i++) {
-            tmp.el['ea_amt'+i].setHTML(ea.amount[i].format(2)+" "+ea.amount[i].formatGain(tea.gain[i]))
+            tmp.el['ea_amt'+i].setHTML(ea.amount[i].format(2)+" "+ea.amount[i].formatGain(tea.gain[i].mul(inf_gs)))
 
             let h = ""
 
