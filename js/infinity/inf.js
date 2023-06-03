@@ -312,7 +312,7 @@ const INF = {
         ],[
             {
                 title: "Break Infinity",
-                desc: "Reaching infinity no longer plays animation. You can lift beyond normal mass limit and get infinity theorems freely. Finally, unlock Element Tier 3, more Muonic Elements.<br><b><i>[COMING IN RELEASE]</i></b>",
+                desc: "Reaching infinity no longer plays animation. You can lift beyond normal mass limit and get infinity theorems freely. Finally, unlock Element Tier 3, more Muonic Elements.<br><b><i>[COMING AFTER RELEASE]</i></b>",
                 cost: EINF,
             },
         ],
