@@ -23,7 +23,8 @@ const ENTROPY = {
 
         x = x.pow(exoticAEff(0,2))
 
-        x = overflow(x,tmp.en.cap.max(1),0.25)
+        if (hasElement(185)) x = overflow(x,tmp.en.cap.max(10),0.25)
+        else x = x.min(tmp.en.cap)
 
         return x
     },
