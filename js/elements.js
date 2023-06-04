@@ -202,6 +202,15 @@ function updateTabsHTML() {
 }
 
 function updateUpperHTML() {
+	let chal_unl = player.chal.active > 0
+	tmp.el.chal_upper.setVisible(chal_unl)
+	if (chal_unl) {
+		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
+		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
+		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
+	}
+
+	/*
 	let gs = tmp.preQUGlobalSpeed
 
 	//tmp.el.reset_desc.setHTML(player.reset_msg)
@@ -251,6 +260,7 @@ function updateUpperHTML() {
     unl = hasTree("unl4")
     tmp.el.br_div.setDisplay(unl)
     if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active||hasElement(147)?gain2?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
+	*/
 }
 
 function updateMassUpgradesHTML() {
@@ -476,7 +486,7 @@ function updateHTML() {
 	updateTabsHTML()
 	if (!player.options.nav_hide[1]) updateResourcesHTML()
 	if (hover_tooltip) updateTooltipResHTML()
-	// updateUpperHTML()
+	updateUpperHTML()
 	if (tmp.start && (!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()
 		updateDarkHTML()

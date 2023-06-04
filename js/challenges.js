@@ -13,14 +13,6 @@ function setupChalHTML() {
 }
 
 function updateChalHTML() {
-    let chal_unl = player.chal.active > 0
-	tmp.el.chal_upper.setVisible(chal_unl)
-	if (chal_unl) {
-		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
-		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
-		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
-	}
-
     if (tmp.stab[3]==0){
         for (let x = 1; x <= CHALS.cols; x++) {
             let chal = CHALS[x]
