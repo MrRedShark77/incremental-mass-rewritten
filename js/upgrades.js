@@ -374,17 +374,17 @@ const UPGS = {
                 },
             },
             16: {
-                unl() { return tmp.moreUpgs },
+                unl() { return tmp.moreUpgs || tmp.inf_unl },
                 desc: `Remove tickspeed power's softcap.`,
                 cost: E('e1.8e91'),
             },
             17: {
-                unl() { return tmp.mass4Unl },
+                unl() { return tmp.mass4Unl || tmp.inf_unl },
                 desc: `Overpower power is increased by 0.005.`,
                 cost: E('e7.75e116'),
             },
             18: {
-                unl() { return tmp.brUnl },
+                unl() { return tmp.brUnl || tmp.inf_unl },
                 desc: `Fading matter's upgrade applies to rage powers gain at a reduce rate.`,
                 cost: E('e1.5e128'),
                 effect() {
@@ -396,7 +396,7 @@ const UPGS = {
                 },
             },
             19: {
-                unl() { return tmp.brUnl },
+                unl() { return tmp.brUnl || tmp.inf_unl },
                 desc: `Supernovas boost overpower power.`,
                 cost: E('e6e144'),
                 effect() {
@@ -408,7 +408,7 @@ const UPGS = {
                 },
             },
             20: {
-                unl() { return player.dark.exotic_atom.tier>0 },
+                unl() { return player.dark.exotic_atom.tier>0 || tmp.inf_unl },
                 desc: `Corrupted Shards boost normal mass gain.`,
                 cost: E('e2e357'),
                 effect() {
@@ -560,7 +560,7 @@ const UPGS = {
                 },
             },
             16: {
-                unl() { return tmp.moreUpgs },
+                unl() { return tmp.moreUpgs || tmp.inf_unl },
                 desc: `Red matter's upgrade applies to mass gain at a reduced rate.`,
                 cost: E('e5e101'),
                 effect() {
@@ -572,7 +572,7 @@ const UPGS = {
                 },
             },
             17: {
-                unl() { return tmp.moreUpgs },
+                unl() { return tmp.moreUpgs || tmp.inf_unl },
                 desc: `Violet matter's upgrade applies to collapsed stars at a reduced rate.`,
                 cost: E('e4e113'),
                 effect() {
@@ -584,12 +584,12 @@ const UPGS = {
                 },
             },
             18: {
-                unl() { return tmp.brUnl },
+                unl() { return tmp.brUnl || tmp.inf_unl },
                 desc: `Make black hole's effect stronger.`,
                 cost: E('e1.5e156'),
             },
             19: {
-                unl() { return tmp.brUnl },
+                unl() { return tmp.brUnl || tmp.inf_unl },
                 desc: `Mass of black hole boosts accelerator power at an extremely reduced rate.`,
                 cost: E('e3e201'),
                 effect() {
@@ -601,7 +601,7 @@ const UPGS = {
                 },
             },
             20: {
-                unl() { return player.dark.c16.first },
+                unl() { return player.dark.c16.first || tmp.inf_unl },
                 desc: `Corrupted Shards boost mass of black hole gain.`,
                 cost: E('e1e273'),
                 effect() {
@@ -735,12 +735,12 @@ const UPGS = {
                 cost: E('e3.4e14'),
             },
             16: {
-                unl() { return tmp.moreUpgs },
+                unl() { return tmp.moreUpgs || tmp.inf_unl },
                 desc: `Quark Overflow starts ^10 later.`,
                 cost: E('e3e96'),
             },
             17: {
-                unl() { return tmp.moreUpgs },
+                unl() { return tmp.moreUpgs || tmp.inf_unl },
                 desc: `Pink matter's upgrade applies to quark gain at a reduced rate.`,
                 cost: E('e7.45e98'),
                 effect() {
@@ -752,12 +752,12 @@ const UPGS = {
                 },
             },
             18: {
-                unl() { return tmp.mass4Unl },
+                unl() { return tmp.mass4Unl || tmp.inf_unl },
                 desc: `Neutron Power's second effect now provides an expontial boost and applies to mass of black hole.`,
                 cost: E('e4.2e120'),
             },
             19: {
-                unl() { return tmp.brUnl },
+                unl() { return tmp.brUnl || tmp.inf_unl },
                 desc: `Yellow matter's upgrade applies to dilated mass overflow at a reduced rate.`,
                 cost: E('e8e139'),
                 effect() {
@@ -769,7 +769,7 @@ const UPGS = {
                 },
             },
             20: {
-                unl() { return player.dark.c16.first },
+                unl() { return player.dark.c16.first || tmp.inf_unl },
                 desc: `Atomic Powers add Overpowers at an extremely reduced rate.`,
                 cost: E('e2.7e186'),
                 effect() {
@@ -842,17 +842,17 @@ const UPGS = {
                 cost: E(1e7),
             },
             10: {
-                unl() { return player.md.break.active },
+                unl() { return player.md.break.active || tmp.inf_unl },
                 desc: `Chromas are 10% stronger.`,
                 cost: E(2.5e8),
             },
             11: {
-                unl() { return player.md.break.active },
+                unl() { return player.md.break.active || tmp.inf_unl },
                 desc: `Prestige Level no longer resets anything.`,
                 cost: E(1e10),
             },
             12: {
-                unl() { return player.md.break.active },
+                unl() { return player.md.break.active || tmp.inf_unl },
                 desc: `Mass gain softcap^5 starts later based on Atom.`,
                 cost: E(1e16),
                 effect() {
@@ -862,7 +862,7 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "^"+format(x)+" later" },
             },
             13: {
-                unl() { return player.md.break.active },
+                unl() { return player.md.break.active || tmp.inf_unl },
                 desc: `Death Shard gain is boosted based on Prestige Base.`,
                 cost: E(1e17),
                 effect() {
@@ -872,22 +872,22 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "x"+format(x) },
             },
             14: {
-                unl() { return player.md.break.active },
+                unl() { return player.md.break.active || tmp.inf_unl },
                 desc: `Super Fermion Tier starts 10 later (after QC8 nerf).`,
                 cost: E(1e22),
             },
             15: {
-                unl() { return player.md.break.active },
+                unl() { return player.md.break.active || tmp.inf_unl },
                 desc: `Blueprint Particles boost Pre-Quantum Global Speed slightly.`,
                 cost: E(1e24),
             },
             16: {
-                unl() { return tmp.moreUpgs },
+                unl() { return tmp.moreUpgs || tmp.inf_unl },
                 desc: `Unsoftcap the first effect from Alpha, Omega & Sigma particles. They're stronger.`,
                 cost: E(1e273),
             },
             17: {
-                unl() { return tmp.mass4Unl },
+                unl() { return tmp.mass4Unl || tmp.inf_unl },
                 desc: `Dark matter raises atoms gain at a reduced rate.`,
                 cost: E('e386'),
                 effect() {
@@ -897,7 +897,7 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "^"+format(x) },
             },
             18: {
-                unl() { return tmp.brUnl },
+                unl() { return tmp.brUnl || tmp.inf_unl },
                 desc: `Chromas gain is boosted by mass.`,
                 cost: E('e408'),
                 effect() {
@@ -907,7 +907,7 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "x"+format(x) },
             },
             19: {
-                unl() { return tmp.brUnl },
+                unl() { return tmp.brUnl || tmp.inf_unl },
                 desc: `Red Matters reduce Pre-Renown requirements slightly.`,
                 cost: E('e463'),
                 effect() {
@@ -917,7 +917,7 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "x"+format(x)+" cheaper" },
             },
             20: {
-                unl() { return player.dark.c16.first },
+                unl() { return player.dark.c16.first || tmp.inf_unl },
                 desc: `Total corrupted Shards boost dark rays gain.`,
                 cost: E('e784'),
                 effect() {

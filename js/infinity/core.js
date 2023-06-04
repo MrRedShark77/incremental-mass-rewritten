@@ -487,11 +487,11 @@ function chooseTheorem(id,is_core=false) {
                         return
                     }
                 }
-                else [inv[t_choosed], core[id]] = [core[id], inv[t_choosed]]
+                else if (checkSwitchingCore(t_choosed,id)) [inv[t_choosed], core[id]] = [core[id], inv[t_choosed]]
             } else [inv[id], inv[t_choosed]] = [inv[t_choosed], inv[id]]
         } else if (core[t_choosed.split('c')[0]]) {
             if (is_core) [core[id], core[t_choosed.split('c')[0]]] = [core[t_choosed.split('c')[0]], core[id]]
-            else if (checkSwitchingCore(id,t_choosed.split('c')[0])) {
+            else {
                 createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
                     switchTheorems(id,t_choosed.split('c')[0])
                 })
@@ -509,7 +509,7 @@ function chooseTheorem(id,is_core=false) {
 function checkSwitchingCore(id1,id2) {
     let inv = player.inf.inv, core = player.inf.core;
 
-    return !inv[id1] || inv[id1].type == core[id2].type || core_weight[inv[id1].type] < MAX_CORE_FIT
+    return !inv[id1] || (core[id2] && inv[id1].type == core[id2].type) || core_weight[inv[id1].type] < MAX_CORE_FIT
 }
 
 function switchTheorems(id1,id2) {
