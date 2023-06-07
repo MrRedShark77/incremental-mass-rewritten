@@ -81,7 +81,9 @@ function calc(dt) {
     let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
 
     if (tmp.pass<=0 && tmp.inf_time == 0) {
-        player.mass = player.mass.add(tmp.massGain.mul(du_gs)).min(tmp.inf_limit)
+        player.mass = player.mass.add(tmp.massGain.mul(du_gs))
+        if (!tmp.brokenInf) player.mass = player.mass.min(tmp.inf_limit)
+        
         if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
         if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
         if (FORMS.accel.autoUnl() && player.autoAccel) FORMS.accel.buyMax()

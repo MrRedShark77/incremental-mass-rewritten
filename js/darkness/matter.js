@@ -31,6 +31,7 @@ const MATTERS = {
         if (hasElement(11,1) || !c16) x = x.pow(tmp.matters.FSS_eff[0])
 
         if (hasElement(4,1)) x = c16 ? x.pow(1.1) : expMult(x,1.05)
+        if (hasElement(227)) x = c16 ? x.pow(elemEffect(227)) : expMult(x,elemEffect(227))
 
         return x
     },
@@ -199,7 +200,7 @@ function updateMattersTemp() {
     tmp.matters.str = 1
     if (hasBeyondRank(1,2)) tmp.matters.str *= beyondRankEffect(1,2)
 
-    tmp.matters.exponent = 2 + glyphUpgEff(11,0)
+    tmp.matters.exponent = 2 + glyphUpgEff(11,0) + exoticAEff(1,5,0)
     if (hasPrestige(0,382)) tmp.matters.exponent += prestigeEff(0,382,0)
     if (player.ranks.hex.gte(91)) tmp.matters.exponent += .15
     if (hasElement(206)) tmp.matters.exponent += elemEffect(206,0)

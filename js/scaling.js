@@ -19,6 +19,7 @@ const SCALE_START = {
 		massUpg4: E(50),
 		FSS: E(5),
 		pe: E(25),
+		inf_theorem: E(10),
     },
 	hyper: {
 		rank: E(120),
@@ -94,6 +95,7 @@ const SCALE_POWER= {
 		massUpg4: 3,
 		FSS: 2,
 		pe: 2,
+		inf_theorem: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -177,6 +179,7 @@ const SCALING_RES = {
 	massUpg4() { return E(player.massUpg[4]||0) },
 	FSS() { return player.dark.matters.final },
 	pe() { return player.inf.pe},
+	inf_theorem() { return player.inf.theorem},
 }
 
 const NAME_FROM_RES = {
@@ -199,6 +202,7 @@ const NAME_FROM_RES = {
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
 	pe: "Parallel Extruder",
+	inf_theorem: "Infinity Theorem",
 }
 
 function updateScalingHTML() {
@@ -318,6 +322,7 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="FSS") {
 			if (hasBeyondRank(3,2)) start = start.add(1)
+			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 		}
 	}
 	else if (type==1) {
@@ -557,7 +562,11 @@ function getScalingPower(type, name) {
 }
 
 function noScalings(type,name) {
-	if (name=="rank"||name=='tier') {
+	if (name=="rank") {
+		if (type<4 && hasPrestige(1,127)) return true
+		// else if (type == 4) return true
+	}
+	else if (name=="tier") {
 		if (type<4 && hasPrestige(1,127)) return true
 	}
 	else if (name=="tetr") {
@@ -581,6 +590,10 @@ function noScalings(type,name) {
 	else if (name=="gamma_ray") {
 		if (hasCharger(7)) return true
 	}
+	else if (name=="prestige0") {
+		if (type < 3 && hasBeyondRank(5,7)) return true
+	}
+	
 
 	return false
 }

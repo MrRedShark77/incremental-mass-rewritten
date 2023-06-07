@@ -119,6 +119,23 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>"^"+format(x),
+        },{
+            desc: `Atomic power’s free tickspeeds now append to cosmic strings at a logarithmic rate.`,
+            cost: E(1e270),
+            eff() {
+                if (!tmp.atom) return E(0)
+                let x = tmp.atom.atomicEff.max(1).log10().floor()
+                return x
+            },
+            effDesc: x=>"+"+format(x,0),
+        },{
+            desc: `Exotic atoms boost infinity points gain, starting at 1.798e308.`,
+            cost: E(Number.MAX_VALUE),
+            eff() {
+                let x = tmp.exotic_atom.amount.div(Number.MAX_VALUE).max(1).log(1.1).add(1)
+                return x
+            },
+            effDesc: x=>formatMult(x),
         },
 
         /*
@@ -135,8 +152,12 @@ const MUONIC_ELEM = {
     ],
     getUnlLength() {
         let u = 11
+
         if (tmp.inf_unl) u += 4
         if (hasInfUpgrade(9)) u += 3
+
+        if (tmp.brokenInf) u += 2
+
         return u
     },
 }
@@ -171,7 +192,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222)],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321')],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -182,8 +203,11 @@ const EXOTIC_ATOM = {
         if (tmp.exotic_atom.amount.gte(tmp.exotic_atom.req)) {
             player.dark.exotic_atom.tier++
 
-            player.dark.exotic_atom.amount = [E(0),E(0)]
-            MATTERS.final_star_shard.reset(true)
+            if (!hasElement(225)) {
+                player.dark.exotic_atom.amount = [E(0),E(0)]
+
+                MATTERS.final_star_shard.reset(true)
+            }
 
             updateExoticAtomsTemp()
         }
@@ -211,6 +235,8 @@ const EXOTIC_ATOM = {
         if (hasElement(1,1)) y = y.mul(muElemEff(1))
         if (hasElement(9,1)) y = y.mul(muElemEff(9))
         if (hasElement(12,1)&&hasPrestige(1,247)) y = y.mul(prestigeEff(1,247))
+
+        if (hasPrestige(1,510)) [x,y] = [x.pow(1.1),y.pow(1.1)]
 
         return [x,y]
     },
@@ -261,6 +287,10 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).ssqrt().div(50)
                 return isNaN(x)?E(0):x
             },x=>`Increase parallel extruder's power by <b>+${format(x)}</b>`],
+            [a=>{
+                let x = a.add(1).log10().div(50)
+                return x.toNumber()
+            },x=>`Increase matter exponent by <b>+${format(x)}</b>`],
         ],
     ],
 }

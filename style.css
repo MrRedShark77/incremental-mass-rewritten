@@ -499,6 +499,14 @@ button {
 	box-shadow: 0 0 10px #666;
 }
 
+.elements.inf.bought {
+	color: black;
+	border-color: orange;
+	background-color: none;
+	background: radial-gradient(circle, yellow 0%, orange 50%, yellow 100%);
+	box-shadow: 0 0 10px yellow;
+}
+
 .elements.muon.bought {
 	color: #fc0;
 	border-color: #f60;
@@ -534,12 +542,17 @@ button {
 }
 
 .elements.corrupted,
-.btn_tree.corrupted {
+.btn_tree.corrupted,
+.elements.c16.bought {
 	border-color: white;
 	color: white;
 	box-shadow: 3px 3px 3px #ff5555, -3px -3px 3px #5555ff, 3px 3px 3px #ff5555 inset, -3px -3px 3px #5555ff inset;
 	z-index: 1;
 	animation: corrupted_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.elements.c16.bought {
+	background-color: #171717;
 }
 
 .elements.corrupted {

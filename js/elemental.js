@@ -37,13 +37,17 @@ const ELEMENTS = {
     ],
     canBuy(x) {
         if (tmp.c16active && isElemCorrupted(x)) return false
-        let res = this.upgs[x].dark ? player.dark.shadow : player.atom.quarks
-        return res.gte(this.upgs[x].cost) && !hasElement(x) && (hasInfUpgrade(6) && x <= 218 || (player.qu.rip.active ? true : !BR_ELEM.includes(x))) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
+        let u = this.upgs[x]
+        let res = u.inf ? player.inf.points : u.dark ? player.dark.shadow : player.atom.quarks
+        return res.gte(u.cost) && !hasElement(x) && (hasInfUpgrade(6) && x <= 218 || player.qu.rip.active || !BR_ELEM.includes(x)) && (tmp.c16active || !C16_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
     },
     buyUpg(x) {
         if (this.canBuy(x)) {
-            if (this.upgs[x].dark) player.dark.shadow = player.dark.shadow.sub(this.upgs[x].cost)
-            else player.atom.quarks = player.atom.quarks.sub(this.upgs[x].cost)
+            let u = this.upgs[x]
+
+            if (u.inf) player.inf.points = player.inf.points.sub(u.cost)
+            else if (u.dark) player.dark.shadow = player.dark.shadow.sub(u.cost)
+            else player.atom.quarks = player.atom.quarks.sub(u.cost)
             player.atom.elements.push(x)
 
             tmp.pass = 2
@@ -81,7 +85,7 @@ const ELEMENTS = {
             cost: E(2.5e16),
             effect() {
                 let x = player.atom?player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1):E(1)
-                return overflow(x.softcap(1e45,0.1,0),'e60000',0.5)
+                return overflow(x.softcap(1e45,0.1,0),'e60000',0.5).min('ee6')
             },
             effDesc(x) { return format(x)+"x stronger" },
         },
@@ -1160,7 +1164,10 @@ const ELEMENTS = {
             desc: `Booster boosts its effect.`,
             cost: E("e4e99"),
             effect() {
-                let x = (player.massUpg[2]||E(0)).add(10).log10().pow(0.8);
+                let m = player.massUpg[2]||E(0)
+                let x = m.add(10).log10().pow(0.8);
+
+                if (hasElement(228)) x = x.mul(Decimal.pow(1.1,m.max(1).log10()))
                 
 				return x
             },
@@ -1199,7 +1206,8 @@ const ELEMENTS = {
             desc: `Muscler boosts its effect.`,
             cost: E('e1.4e112'),
             effect() {
-                let x = (player.massUpg[1]||E(0)).add(10).log10().pow(0.8);
+                let m = player.massUpg[1]||E(0)
+                let x = m.add(10).log10().pow(0.8);
                 
 				return x
             },
@@ -1248,6 +1256,59 @@ const ELEMENTS = {
         },{
             desc: `Unlock the 16th Challenge.`,
             cost: E('e7e134'),
+        },{
+            desc: `[m1]’s effect is even better.`,
+            cost: E('e3e333'),
+        },{
+            dark: true,
+            desc: `7th break dilation upgrade is even better.`,
+            cost: E('e400000'),
+        },{
+            c16: true,
+            desc: `Beyond Rank’s next tier requirement is 5% weaker.`,
+            cost: E('e1e20'),
+        },{
+            inf: true,
+            desc: `The softcap of theorem’s level starts +5 later.`,
+            cost: E('1e13'),
+        },{
+            c16: true,
+            desc: `Improve the formula of corrupted shard gain better.`,
+            cost: E('e1e23'),
+        },{
+            desc: `The effect of Glory 45 is even stronger.`,
+            cost: E('e3e380'),
+        },{
+            inf: true,
+            desc: `Infinity theorem increases parallel extruder’s power. Muon-Catalyzed Fusion no longer resets.`,
+            cost: E('1e14'),
+            effect() {
+                let x = player.inf.theorem.div(20)
+                return x
+            },
+            effDesc(x) { return "+"+format(x,2) },
+        },{
+            dark: true,
+            desc: `Quantum Shard’s base is boosted by FSS.`,
+            cost: E('e640000'),
+            effect() {
+                let x = player.dark.matters.final.div(10).add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x,1) },
+        },{
+            c16: true,
+            desc: `Matter exponent boosts matters gain outside C16 (changed during C16).`,
+            cost: E('e1e25'),
+            effect() {
+                let x = Math.log10(tmp.matters.exponent+1)/20
+                if (tmp.c16active) x *= 5
+                return x+1
+            },
+            effDesc(x) { return "^"+format(x)+(tmp.c16active?'':' to exponent') },
+        },{
+            desc: `Biniltrium-203 is overpowered.`,
+            cost: E('ee448'),
         },
     ],
     /*
@@ -1295,15 +1356,23 @@ const ELEMENTS = {
             if (tmp.brUnl) u += 10
         }
 
+        if (tmp.brokenInf) u += 10
+
         return u
     },
 }
 
-const MAX_ELEM_TIERS = 2
+const MAX_ELEM_TIERS = 3
 
 const BR_ELEM = (()=>{
     let x = []
     for (let i in ELEMENTS.upgs) if (i>86&&i<=118 || i>0&&ELEMENTS.upgs[i].br) x.push(Number(i))
+    return x
+})()
+
+const C16_ELEM = (()=>{
+    let x = []
+    for (let i in ELEMENTS.upgs) if (i>0&&ELEMENTS.upgs[i].c16) x.push(Number(i))
     return x
 })()
 
@@ -1460,12 +1529,12 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         let eu = elem_const.upgs[ch]
-        let res = [eu.dark?" Dark Shadows":" Quarks"," Exotic Atoms"][elayer]
+        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks"," Exotic Atoms"][elayer]
         let eff = tElem[["effect","mu_effect"][elayer]]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
         tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer)})
-        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
+        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(eu.c16?" in Challenge 16":BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(eff[ch]):"")
     }
 
@@ -1494,7 +1563,7 @@ function updateElementsHTML() {
                         upg.setClasses(
                             c16 && isElemCorrupted(x,elayer)
                             ?{elements: true, locked: true, corrupted: true}
-                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark}
+                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf}
                         )
                     }
                 }
@@ -1534,4 +1603,5 @@ function updateElementsTemp() {
 
     tElem.max_tier = [1,1]
     if (player.dark.unl) tElem.max_tier[0]++
+    if (tmp.brokenInf) tElem.max_tier[0]++
 }

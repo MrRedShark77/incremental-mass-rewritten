@@ -306,7 +306,9 @@ const MASS_DILATION = {
                     cost(x) { return uni(1e35) },
                     bulk() { return player.md.break.mass.gte(uni(1e35))?E(1):E(0) },
                     effect(y) {
-                        let x = [player.qu.rip.amt.add(1).log10().add(1).pow(2),player.qu.en.amt.add(1).log10().add(1).pow(1.5)]
+                        let x = hasElement(220)
+                        ?[expMult(player.qu.rip.amt,0.5),expMult(player.qu.en.amt,1/3)]
+                        :[player.qu.rip.amt.add(1).log10().add(1).pow(2),player.qu.en.amt.add(1).log10().add(1).pow(1.5)]
 
                         return x
                     },

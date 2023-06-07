@@ -107,8 +107,12 @@ const QUANTUM = {
             pow = pow.mul(tmp.dark.abEff.csp||1)
             pow = pow.pow(exoticAEff(1,3))
 
-            let x = pow.pow(player.qu.cosmic_str)
-            return {pow: pow, eff: x}
+            let b = E(0)
+
+            if (hasElement(19,1)) b = b.add(muElemEff(19,0))
+
+            let x = pow.pow(player.qu.cosmic_str.add(b))
+            return {pow: pow, eff: x, bonus: b}
         },
     },
     mils: [
@@ -276,7 +280,7 @@ function updateQuantumHTML() {
         tmp.el.bpAmt.setTxt(format(player.qu.bp,1)+" "+formatGain(player.qu.bp,tmp.qu.bpGain.mul(inf_gs)))
         tmp.el.bpEff.setTxt(format(tmp.qu.bpEff))
 
-        tmp.el.cosmic_str_lvl.setTxt(format(player.qu.cosmic_str,0))//+(tmp.qu.cosmic_str_bonus.gte(1)?" + "+format(tmp.qu.cosmic_str_bonus,0):"")
+        tmp.el.cosmic_str_lvl.setTxt(format(player.qu.cosmic_str,0)+(tmp.qu.cosmic_str_eff.bonus.gte(1)?" + "+format(tmp.qu.cosmic_str_eff.bonus,0):""))
         tmp.el.cosmic_str_btn.setClasses({btn: true, locked: !tmp.qu.cosmic_str_can})
         tmp.el.cosmic_str_scale.setTxt(getScalingName('cosmic_str'))
         tmp.el.cosmic_str_cost.setTxt(format(tmp.qu.cosmic_str_cost,0))

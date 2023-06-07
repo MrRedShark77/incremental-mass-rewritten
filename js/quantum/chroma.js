@@ -75,6 +75,7 @@ function updateChromaTemp() {
         let c = player.qu.chroma[x]
 
         if (x == 1) c = overflow(c,'e3.5e5',0.5)
+        else if (x == 2) c = overflow(c,'e2.5e5',0.5)
 
         tmp.qu.chroma_eff[x] = CHROMA.eff[x](c)
     }

@@ -431,6 +431,7 @@ const PRESTIGES = {
             "247": `Muon's production is increased by MCF tier.`,
             "300": `Softcaps of Meta-Quark and Meta-Lepton are slightly weaker.`,
             400: `Each particle power's 1st effect is stronger.`,
+            510: `Raise Kaon & Pion gains to the 1.1th power.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
@@ -548,9 +549,9 @@ const PRESTIGES = {
                 return x
             },x=>"x"+format(x)],
             45: [()=>{
-                let x = player.bh.unstable.add(1)
+                let x = hasElement(224) ? Decimal.pow(1.1,player.bh.unstable.root(4)) : player.bh.unstable.add(1)
                 if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
-                return x
+                return overflow(x,1e100,0.5)
             },x=>"^"+format(x)+" later"],
         },
         {
@@ -666,6 +667,12 @@ function updateRanksTemp() {
 
     // Beyond
 
+    let p = 1
+
+    if (hasElement(221)) p /= 0.95
+
+    tmp.beyond_ranks.tier_power = p
+
     tmp.beyond_ranks.max_tier = BEYOND_RANKS.getTier()
     tmp.beyond_ranks.latestRank = BEYOND_RANKS.getRankFromTier(tmp.beyond_ranks.max_tier)
 
@@ -689,16 +696,16 @@ const BEYOND_RANKS = {
         return x
     },
     getTier() {
-        let x = player.ranks.beyond.gt(0)?player.ranks.beyond.log10().max(0).pow(.8).add(1).floor().toNumber():1
+        let x = player.ranks.beyond.gt(0)?player.ranks.beyond.log10().max(0).pow(.8).mul(tmp.beyond_ranks.tier_power).add(1).floor().toNumber():1
         return x
     },
     getRankFromTier(i) {
-        let hp = Decimal.pow(10,(i-1)**(1/.8)).ceil()
+        let hp = Decimal.pow(10,Math.pow((i-1)/tmp.beyond_ranks.tier_power,1/.8)).ceil()
 
         return player.ranks.beyond.div(hp).floor()
     },
     getRequirementFromTier(i,t=tmp.beyond_ranks.latestRank,mt=tmp.beyond_ranks.max_tier) {
-        return Decimal.pow(10,(mt)**(1/.8)-(mt-i)**(1/.8)).mul(Decimal.add(t,1)).ceil()
+        return Decimal.pow(10,Math.pow(mt/tmp.beyond_ranks.tier_power,1/.8)-Math.pow((mt-i)/tmp.beyond_ranks.tier_power,1/.8)).mul(Decimal.add(t,1)).ceil()
     },
 
     reset(auto=false) {
@@ -741,6 +748,10 @@ const BEYOND_RANKS = {
             1: `Beta Particles affect supercritical supernova starting at a reduced rate.`,
             2: `Prestige base's exponent is increased by +20% per beyond-ranks' maximum tier, starting at Dec.`,
             40: `[Tau]'s reward is cubed.`,
+        },
+        5: {
+            2: `Super FSS starts +1 later per beyond-ranks' maximum tier, starting at Dec.`,
+            7: `Remove pre-meta scalings from Prestige Level.`,
         },
     },
 
@@ -841,6 +852,16 @@ const BEYOND_RANKS = {
                     return Math.max(1,x)
                 },
                 x=>"x"+format(x,1),
+            ],
+        },
+        5: {
+            2: [
+                ()=>{
+                    let x = tmp.beyond_ranks.max_tier-3
+
+                    return Math.max(1,x)
+                },
+                x=>"+"+format(x,0)+" later",
             ],
         },
     },

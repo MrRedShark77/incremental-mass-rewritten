@@ -430,7 +430,8 @@ const CHALS = {
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
             let ret = x.root(hasTree("chal4a")?3.5:4).mul(0.1).add(1)
-            return ret.softcap(21,hasElement(8,1)?0.253:0.25,0)
+            ret = ret.softcap(21,hasElement(8,1)?0.253:0.25,0)
+            return overflow(ret,5e8,0.5)
         },
         effDesc(x) { return "^"+format(x)+softcapHTML(x,21) },
     },

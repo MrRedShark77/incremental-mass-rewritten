@@ -109,6 +109,9 @@ const ATOM = {
             let w = 0.1 ** exoticAEff(0,4)
 
             x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,w,0).softcap(2.5e35,w,0)
+
+            x = overflow(x,'e2000',0.5)
+
             return x.floor()
         },
     },
@@ -195,6 +198,9 @@ const ATOM = {
             x=>{
                 let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(3)
                 let b = hasElement(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
+
+                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
+
                 return {eff1: a, eff2: b}
             },
             x=>{
@@ -208,6 +214,7 @@ const ATOM = {
                 ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
 
+                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
                 if (hasUpgrade('atom',18)) b = overflow(b,1e120,0.5)
 
                 return {eff1: a, eff2: b}
@@ -215,6 +222,9 @@ const ATOM = {
             x=>{
                 let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1)
                 let b = hasElement(30) ? x.add(1).log2().pow(1.2).mul(0.01) : x.add(1).pow(2).log2().mul(0.01)
+
+                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
+
                 return {eff1: a, eff2: b}
             },
         ],

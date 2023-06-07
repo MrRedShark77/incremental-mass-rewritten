@@ -171,6 +171,8 @@ function updateQCTemp() {
     if (hasTree("qc3")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(treeEff('qc3',0))
     if (hasElement(146)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(elemEffect(146,0))
 
+    if (hasElement(226)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.pow(elemEffect(226))
+
     let weak = 1
     if (tmp.inf_unl) weak *= theoremEff('proto',3)
 

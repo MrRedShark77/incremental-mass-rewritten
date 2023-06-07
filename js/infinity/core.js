@@ -70,7 +70,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = Math.pow(1+Math.log10(s+1)/10,-1)
+                let x = Math.pow(1+Math.log10(s+1)/100,-1)
 
                 return x
             },
@@ -481,8 +481,9 @@ function chooseTheorem(id,is_core=false) {
             if (is_core) {
                 if (core[id] !== undefined && core[id] !== null) {
                     if (checkSwitchingCore(t_choosed,id)) {
-                        createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
-                            switchTheorems(t_choosed,id)
+                        if (isTheoremHigher(core[id],inv[t_choosed])) switchTheorems(t_choosed,id)
+                        else createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
+                            switchTheorems(t_choosed,id,true)
                         })
                         return
                     }
@@ -491,9 +492,10 @@ function chooseTheorem(id,is_core=false) {
             } else [inv[id], inv[t_choosed]] = [inv[t_choosed], inv[id]]
         } else if (core[t_choosed.split('c')[0]]) {
             if (is_core) [core[id], core[t_choosed.split('c')[0]]] = [core[t_choosed.split('c')[0]], core[id]]
-            else {
-                createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
-                    switchTheorems(id,t_choosed.split('c')[0])
+            else if (checkSwitchingCore(id,t_choosed.split('c')[0])) {
+                if (isTheoremHigher(core[t_choosed.split('c')[0]],inv[id])) switchTheorems(id,t_choosed.split('c')[0])
+                else createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
+                    switchTheorems(id,t_choosed.split('c')[0],true)
                 })
                 return
             }
@@ -512,14 +514,25 @@ function checkSwitchingCore(id1,id2) {
     return !inv[id1] || (core[id2] && inv[id1].type == core[id2].type) || core_weight[inv[id1].type] < MAX_CORE_FIT
 }
 
-function switchTheorems(id1,id2) {
+function isTheoremHigher(t,t_target) {
+    if (!t_target || t.type != t_target.type || t.level > t_target.level || Math.pow(t.level,t.power) > Math.pow(t_target.level,t_target.power)) return false
+
+    for (let i = 0; i < 4; i++) if (t.star[i] > t_target.star[i]) return false
+
+    return true
+}
+
+function switchTheorems(id1,id2,force=false) {
     let inv = player.inf.inv, core = player.inf.core;
 
     [inv[id1], core[id2]] = [core[id2], inv[id1]]
 
     t_choosed = '-'
 
-    INF.doReset()
+    if (force) {
+        INF.doReset()
+    }
+    
     updateTheoremCore()
     updateTheoremInv()
 }
