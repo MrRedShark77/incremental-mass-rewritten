@@ -119,7 +119,7 @@ const RESOURCES_DIS = {
         icon: "inf",
         class: "yellow",
 
-        desc: (gs)=>player.inf.points.format(0)+"<br>"+(hasInfUpgrade(16)?player.inf.points.formatGain(tmp.IP_gain.mul(infUpgEffect(16))):tmp.IP_gain.format(0)+")")+"<br>("+formatPercent(player.mass.max(1).log10().max(1).log10().div(tmp.inf_limit.max(1).log10().max(10).log10()).max(0).min(1))+(tmp.brokenInf?" to next infinity)":" to infinity)"),
+        desc: (gs)=>player.inf.points.format(0)+(hasInfUpgrade(20)?"<br>":"<br>(+")+(hasInfUpgrade(20)?player.inf.points.formatGain(tmp.IP_gain.mul(infUpgEffect(20))):tmp.IP_gain.format(0)+")")+"<br>("+formatPercent(player.mass.max(1).log10().max(1).log10().div(tmp.inf_limit.max(1).log10().max(10).log10()).max(0).min(1))+(tmp.brokenInf?" to next infinity)":" to infinity)"),
 
         resetBtn() { INF.goInf() },
     },

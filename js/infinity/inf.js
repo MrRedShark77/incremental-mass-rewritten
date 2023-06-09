@@ -519,7 +519,7 @@ function calcInf(dt) {
 player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
 if (hasElement(229) && player.inf.core[0].type == 'mass') player.inf.core[0].level = E(player.inf.theorem_max).floor()
     player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
-    if (hasInfUpgrade(16)) player.inf.points = player.inf.points.add(tmp.IP_gain.mul(dt).mul(infUpgEffect(16)))
+    if (hasInfUpgrade(20)) player.inf.points = player.inf.points.add(tmp.IP_gain.mul(dt).mul(infUpgEffect(20)))
 }
 
 function setupInfHTML() {
