@@ -542,7 +542,7 @@ const CHALS = {
         pow: E(2),
         start: E('e1.25e11'),
         effect(x) {
-            let ret = x.mul(0.05).add(1)
+            let ret = x.mul(hasElement(232)?0.075:0.05).add(1)
             return ret
         },
         effDesc(x) { return "^"+format(x) },

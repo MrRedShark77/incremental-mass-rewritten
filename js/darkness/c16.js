@@ -60,6 +60,13 @@ const CHARGERS = [
         De-corrupt 40th, 64th, 67th, 150th, 199th, 200th, and 204th elements.
         `, // 40,64,67,150,199,200,204
     },
+    {
+        req: E('e3.45e11'),
+        cost: E('e674'),
+        desc: `
+        From this moment, the dark run glyphs amount in C16 will be reduced to 50 (5 slovak).
+        `, // 40,64,67,150,199,200,204
+    },
 ]
 
 const UNSTABLE_BH = {

@@ -1171,6 +1171,7 @@ const TREE_UPGS = {
 
             effect() {
                 let x = player.dark.c16.bestBH.add(1).log10().div(1e5).add(1).pow(2)
+                if (hasElement(231)) x = player.dark.c16.bestBH.add(1).log10().div(2.5e4).add(1).pow(2.025)
                 return x
             },
             effDesc(x) { return "x"+format(x) },

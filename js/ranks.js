@@ -564,7 +564,7 @@ const PRESTIGES = {
                 return x
             },x=>"x"+x.format()],
             "6": [()=>{
-                let x = tmp.exotic_atom.amount.add(1).log10().add(1)
+                let x = tmp.exotic_atom.amount.add(1).log10().add(1).mul(hasElement(22,1)?muElemEff(22):1)
                 return x
             },x=>"x"+x.format()],
         },
@@ -752,6 +752,8 @@ const BEYOND_RANKS = {
         5: {
             2: `Super FSS starts +1 later per beyond-ranks' maximum tier, starting at Dec.`,
             7: `Remove pre-meta scalings from Prestige Level.`,
+            11: `Remove pre-ultra scalings from Pent.`,
+            23: `Add matter exponent based on Exotic Atoms.`,
         },
     },
 
@@ -862,6 +864,14 @@ const BEYOND_RANKS = {
                     return Math.max(1,x)
                 },
                 x=>"+"+format(x,0)+" later",
+            ],
+            23: [
+                ()=>{
+                    let x = E(tmp.exotic_atom.amount.add(1).log10().log10().add(1))
+
+                    return x
+                },
+                x=>"+"+format(x,3),
             ],
         },
     },

@@ -184,7 +184,7 @@ const INF = {
     },
     goInf(limit=false) {
         if (player.mass.gte(this.req)) {
-            if (limit || player.inf.pt_choosed >= 0) CONFIRMS_FUNCTION.inf(limit)
+            if (limit || player.inf.pt_choosed >= 0 && (player.confirms.inf)) CONFIRMS_FUNCTION.inf(limit)
             else createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
         }
     },
@@ -204,7 +204,7 @@ const INF = {
         if (hasInfUpgrade(5)) x = x.mul(infUpgEffect(5))
         if (hasElement(17,1)) x = x.mul(muElemEff(17))
         if (hasElement(20,1)) x = x.mul(muElemEff(20))
-
+        if (hasElement(235)) x = x.mul(elemEffect(235))
         return x.max(1).floor()
     },
 
@@ -325,6 +325,19 @@ const INF = {
                 cost: E(1e12),
             },
         ],
+        [
+            {
+                title: "Master Infinity",
+                desc: "Now you can passively gain Infinity Points based on Corrupted Shards.",
+                cost: E(5e19),
+                effect() {
+                    let x = player.dark.c16.shard.max(1).log10().log10().log(2).add(1)
+
+                    return x
+                },
+                effectDesc: x => formatPercent(x-1),
+            },
+        ],
     ],
 
     upg_row_req: [
@@ -333,6 +346,7 @@ const INF = {
         3,
         6,
         9,
+        11,
     ],
 
     dim_mass: {
@@ -340,7 +354,7 @@ const INF = {
             if (!hasInfUpgrade(9)) return E(0)
 
             let x = tmp.peEffect.eff||E(1)
-
+            if (hasElement(23,1) && (!CHALS.inChal(16))) x = x.pow(muElemEff(23,1))
             return x
         },
         effect() {
@@ -411,6 +425,7 @@ function buyInfUpgrade(r,c) {
 function getInfSave() {
     let s = {
         theorem: E(0),
+        theorem_max: E(),
         total: E(0),
         points: E(0),
         reached: false,
@@ -458,7 +473,8 @@ function updateInfTemp() {
     tmp.inf_level_ss = 5
 
     if (hasElement(222)) tmp.inf_level_ss += 5
-
+    if (hasElement(230)) tmp.inf_level_ss += elemEffect(230)
+    if (hasElement(233)) tmp.inf_level_ss += elemEffect(233)
     tmp.IP_gain = INF.gain()
     tmp.inf_limit = INF.limit()
     tmp.inf_reached = player.mass.gte(tmp.inf_limit)
@@ -500,8 +516,10 @@ function calcInf(dt) {
 
     if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
     if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
-
+player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
+if (hasElement(229) && player.inf.core[0].type == 'mass') player.inf.core[0].level = E(player.inf.theorem_max).floor()
     player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
+    if (hasInfUpgrade(16)) player.inf.points = player.inf.points.add(tmp.IP_gain.mul(dt).mul(infUpgEffect(16)))
 }
 
 function setupInfHTML() {

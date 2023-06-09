@@ -37,6 +37,7 @@ const SCALE_START = {
 		prestige0: E(80),
 		prestige1: E(60),
 		prestige2: E(60),
+		inf_theorem: E(35),
 	},
 	ultra: {
 		rank: E(600),
@@ -113,6 +114,7 @@ const SCALE_POWER= {
 		prestige0: 2,
 		prestige1: 2,
 		prestige2: 3,
+		inf_theorem: 10,
 	},
 	ultra: {
 		rank: 4,
@@ -592,6 +594,9 @@ function noScalings(type,name) {
 	}
 	else if (name=="prestige0") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
+	}
+	else if (name=="pent") {
+		if (type < 2 && hasBeyondRank(5,11)) return true
 	}
 	
 

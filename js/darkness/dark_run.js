@@ -2,7 +2,7 @@ const DARK_RUN = {
     mass_glyph_name: ['Cyrillic Glyph', 'Deutsch Glyph', 'Swedish Glyph', 'Chinese Glyph', 'Spanish Glyph', 'Slovak Glyph'],
 
     mass_glyph_eff(i) {
-        let x, g = (tmp.c16active ? i == 5 ? 10 : 100 : player.dark.run.glyphs[i]) / tmp.dark.glyph_weak
+        let x, g = (tmp.c16active ? i == 5 ? hasCharger(10)?5:10 : hasCharger(10)?50:100 : player.dark.run.glyphs[i]) / tmp.dark.glyph_weak
 
         if (i < 4) x = 1/(g**0.5/100+1)
         else if (i == 4) x = [1/(g**0.5/100+1),1.1**(g**0.75)]

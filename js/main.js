@@ -14,7 +14,7 @@ const ST_NAMES = [
 		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
 	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark','inf']
 
 const FORMS = {
     getPreInfGlobalSpeed() {
@@ -26,8 +26,8 @@ const FORMS = {
     },
     getPreQUGlobalSpeed() {
         let x = E(1), inf = tmp.preInfGlobalSpeed
-
-        if (tmp.c16active) return inf.div(100)
+        if (tmp.c16active && (hasElement(236))) return inf.mul(10000)
+        if (tmp.c16active && (!hasElement(236))) return inf.div(100)
 
         if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)

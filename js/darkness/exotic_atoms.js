@@ -137,6 +137,33 @@ const MUONIC_ELEM = {
             },
             effDesc: x=>formatMult(x),
         },
+        {
+            desc: `Boost 4th Dark Ray's effect by Exotic Atoms.`,
+            cost: E('e325'),
+            eff() {
+                let x = tmp.exotic_atom.amount.max(1).log10().log10().div(1.25).add(1)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },
+        {
+            desc: ` [Renown 6] Effect is better by Exotic Atoms.`,
+            cost: E('e360'),
+            eff() {
+                let x = tmp.exotic_atom.amount.max(1).log(10).div(20).add(1)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },
+        {
+            desc: `Chromium-24 applies to Dimensional Mass at logariphmic rate (Works only outside of C16).`,
+            cost: E('e450'),
+            eff() {
+                let x = E(elemEffect(24)).max(1).log10().div(10).add(1)
+                return x
+            },
+            effDesc: x=>"^"+format(x),
+        },
 
         /*
         {
@@ -156,8 +183,7 @@ const MUONIC_ELEM = {
         if (tmp.inf_unl) u += 4
         if (hasInfUpgrade(9)) u += 3
 
-        if (tmp.brokenInf) u += 2
-
+        if (tmp.brokenInf) u += 5
         return u
     },
 }
@@ -192,7 +218,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321')],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490')],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -226,6 +252,7 @@ const EXOTIC_ATOM = {
         if (hasElement(5,1)) xy = xy.mul(muElemEff(5))
         if (hasBeyondRank(3,4)) xy = xy.mul(beyondRankEffect(3,4))
         if (hasInfUpgrade(13)) xy = xy.mul(infUpgEffect(13))
+        if (hasElement(237)) xy = xy.mul(elemEffect(237))
         
         let x = xy.div(10)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
@@ -269,14 +296,16 @@ const EXOTIC_ATOM = {
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
+                if (player.dark.exotic_atom.tier == E(13)) x = hasElement(12,1) ? expMult(a.add(1),6) : a.add(1).pow(4)
                 return x
-            },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b>`],
+            },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier == E(13)?`[Muonized]</span>`:`</span>`}`],
             [a=>{
                 let x = a.add(1).pow(3)
                 return x
             },x=>`Black hole overflow starts <b>^${format(x)}</b> later`],
             [a=>{
                 let x = a.add(1).log10().div(80).add(1).root(2)
+                
                 return x
             },x=>`FSS's base is raised by <b>${format(x)}</b>`],
             [a=>{

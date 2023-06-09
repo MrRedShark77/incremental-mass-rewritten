@@ -72,7 +72,7 @@ const MATTERS = {
 
             f = f.scaleEvery('FSS')
 
-            if (hasElement(217)) f = f.mul(.8)
+            if (hasElement(217)) f = f.mul(hasElement(238)?0.6:hasElement(234)?0.7:0.8)
 
             let x = Decimal.pow(100,Decimal.pow(f,1.5)).mul(1e43)
             return x
@@ -84,7 +84,7 @@ const MATTERS = {
 
             let x = f.div(1e43).max(1).log(100).root(1.5)
 
-            if (hasElement(217)) x = x.div(.8)
+            if (hasElement(217)) x = x.div(hasElement(238)?0.6:hasElement(234)?0.7:0.8)
 
             x = x.scaleEvery('FSS',true)
 
@@ -207,6 +207,7 @@ function updateMattersTemp() {
     if (hasBeyondRank(1,1)) tmp.matters.exponent += .5
     if (hasPrestige(0,1337)) tmp.matters.exponent += prestigeEff(0,1337,0)
     if (hasElement(14,1)) tmp.matters.exponent += muElemEff(14,0)
+    if (hasBeyondRank(5,23)) tmp.matters.exponent += beyondRankEffect(5,23)
     
     tmp.matters.req_unl = Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))
 

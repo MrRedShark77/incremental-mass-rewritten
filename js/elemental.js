@@ -1310,6 +1310,78 @@ const ELEMENTS = {
             desc: `Biniltrium-203 is overpowered.`,
             cost: E('ee448'),
         },
+        {
+            inf: true,
+            desc: `First Core Slot Theorem level will be based on max theorem level on infinity (Only if Theorem Type is Newton).`,
+            cost: E('3e16'),
+            effect() {
+                let x = player.inf.theorem_max.floor()
+                return x
+            },
+            effDesc(x) { return format(x,0)+" Level" },
+        },
+        {
+            dark: true,
+            desc: `Maximum beyond ranks tier scales the start of theorem level's softcap.`,
+            cost: E('e830000'),
+            effect() {
+                let x = tmp.beyond_ranks.max_tier
+                return x
+            },
+            effDesc(x) { return "+"+format(x,1)+' later' },
+        },
+        {
+            desc: `[ct16] formula is better.`,
+            cost: E('e5e458'),
+        },
+        {
+            c16: true,
+            desc: `C15's reward is even more better.`,
+            cost: E('e1.5e28'),
+        },
+        {
+            inf: true,
+            desc: `Muon-Catalyzed Fusion Tier scales theorem softcap later.`,
+            cost: E('2e18'),
+            effect() {
+                let x = player.dark.exotic_atom.tier
+                return x
+            },
+            effDesc(x) { return "+"+format(x,1)+' later' },
+        },
+        {
+            dark: true,
+            desc: `Biunseptium-217 effect is better (20% => <b>30%</b>).`,
+            cost: E('e1425000'),
+        },
+        {
+            desc: `Max Theorem's Level boosts Infinity Points.`,
+            cost: E('e4e487'),
+            effect() {
+                let x = player.inf.theorem_max.div(2).log(1.1).add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,3) },
+        },
+        {
+            inf: true,
+            desc: `Set the Pre-Quantum GS to x10000 in C16.`,
+            cost: E('5e19'),
+        },
+        {
+            dark: true,
+            desc: `Infinity Points boosts Exotic Atoms.`,
+            cost: E('e1570000'),
+            effect() {
+                let x = player.inf.points.log(1.1).add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,3) },
+        },
+        {
+            desc: `Biunseptium-217 effect is better again (30% => <b>40%</b>).`,
+            cost: E('e2e501'),
+        },
     ],
     /*
     {
@@ -1357,7 +1429,7 @@ const ELEMENTS = {
         }
 
         if (tmp.brokenInf) u += 10
-
+if (hasElement(228)) u += 10
         return u
     },
 }

@@ -351,6 +351,7 @@ function updateCoreHTML() {
     let reached = player.inf.reached
 
     tmp.el.preTReq.setDisplay(!reached)
+    tmp.el.maxLevel.setTxt(format(player.inf.theorem_max,0))
 
     let lvl = tmp.core_lvl, fl = Math.floor(lvl)
     tmp.el.pt_lvl.setHTML(`<b>${format(fl,0)}</b> (${formatPercent(lvl-fl)})`)
@@ -510,7 +511,6 @@ function chooseTheorem(id,is_core=false) {
 
 function checkSwitchingCore(id1,id2) {
     let inv = player.inf.inv, core = player.inf.core;
-
     return !inv[id1] || (core[id2] && inv[id1].type == core[id2].type) || core_weight[inv[id1].type] < MAX_CORE_FIT
 }
 
