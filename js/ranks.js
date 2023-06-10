@@ -758,7 +758,7 @@ const BEYOND_RANKS = {
         },
         6: {
             1: `Boost Muonic Phosphorus effect by 3.00x per beyond-ranks' maximum tier.`,
-            2: `Muonic Titanium is stronger based on mass (starts at e3e790).`,
+            2: `Muonic Titanium is stronger based on mass (starts at e3e788).`,
         },
     },
 
@@ -891,7 +891,7 @@ const BEYOND_RANKS = {
             2: [
                 ()=>{
                     let x = E(1)
-                    if (player.mass.gte('e3e790')) x = player.mass.div('e3e790').max(1).log10().log10().log10().log2().div(3).add(1)
+                    if (player.mass.gte('e3e788')) x = player.mass.div('e3e788').max(1).log10().log10().log10().log2().div(3).add(1)
 
                     return x
                 },
