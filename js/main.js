@@ -119,6 +119,7 @@ const FORMS = {
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
+if (player.mass.gte(os3)) os = os.min(os3)
         os = os.min(os2)
 
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
