@@ -332,7 +332,7 @@ const INF = {
                 effect() {
                     let x = player.inf.theorem_max.max(1).log10().log10().log(2).add(1)
 
-                    return x.max(2)
+                    return x
                 },
                 effectDesc: x => formatPercent(x-1),
             },
