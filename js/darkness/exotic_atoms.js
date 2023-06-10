@@ -296,7 +296,7 @@ const EXOTIC_ATOM = {
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
-                if (player.dark.exotic_atom.tier == E(13)) x = hasElement(12,1) ? expMult(a.add(1),3.2) : a.add(1).pow(3)
+                if (player.dark.exotic_atom.tier == E(13)) x = hasElement(12,1) ? expMult(a.add(1),5) : a.add(1).pow(4)
                 return x
             },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier == E(13)?`[Muonized]</span>`:`</span>`}`],
             [a=>{
