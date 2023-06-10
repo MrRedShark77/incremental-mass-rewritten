@@ -153,7 +153,7 @@ const DARK = {
         }
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
-        if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0)
+        if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0,hasElement(234))
         if (a.gte('e56000') && !tmp.c16active) x.ApQ_Overflow = Decimal.pow(10,a.div('e56000').log10().add(1).log10())
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
         if (a.gte('ee7')) {

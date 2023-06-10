@@ -670,6 +670,7 @@ function updateRanksTemp() {
     let p = 1
 
     if (hasElement(221)) p /= 0.95
+    p /= getFragmentEffect('time')
 
     tmp.beyond_ranks.tier_power = p
 
@@ -752,6 +753,9 @@ const BEYOND_RANKS = {
         5: {
             2: `Super FSS starts +1 later per beyond-ranks' maximum tier, starting at Dec.`,
             7: `Remove pre-meta scalings from Prestige Level.`,
+        },
+        6: {
+            1: `'Self-Infinity' and 'Exotic Speed' upgrades use a formula with base 3 instead of base 2.`
         },
     },
 

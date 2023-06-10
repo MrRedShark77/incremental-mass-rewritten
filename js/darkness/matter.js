@@ -49,7 +49,9 @@ const MATTERS = {
 
         if (hasTree('ct4')) base += treeEff('ct4')
 
-        let eff = c16?Decimal.pow(base,lvl):i==0?lvl.mul(tmp.matters.str).add(1):Decimal.pow(base,lvl.mul(tmp.matters.str))
+        if (!c16) lvl = lvl.mul(tmp.matters.str)
+
+        let eff = c16?Decimal.pow(base,lvl):i==0?hasElement(21,1)?Decimal.pow(base,lvl.root(5)):lvl.add(1):Decimal.pow(base,lvl)
 
         return {cost: cost, bulk: bulk, eff: eff}
     },

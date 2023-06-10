@@ -160,7 +160,7 @@ const UPGS = {
                 if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
 
                 let o = ret
-                let os = E('e115'), os2 = E('e1555')
+                let os = E('e115').mul(getFragmentEffect('mass')), os2 = E('e1555')
                 let op = E(.5), op2 = E(0.25)
 
                 if (hasElement(210)) os = os.mul(elemEffect(210))

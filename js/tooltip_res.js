@@ -220,7 +220,7 @@ const TOOLTIP_RES = {
         full: "Infinity",
         desc() {
             let h = `
-            Your Infinity Theorem is <b class="yellow">${player.inf.theorem.format(0)}</b>.
+            Your ${getScalingName('inf_theorem')}Infinity Theorem is <b class="yellow">${player.inf.theorem.format(0)}</b>.
             <br class='line'>
             <i>
             Reach over <b>${formatMass(INF.req)}</b> of normal mass to get Infinity Points and choose Theorem in Core.

@@ -59,7 +59,11 @@ const RESOURCES_DIS = {
         icon: "sn",
         class: "magenta",
 
-        desc: (gs)=>format(player.supernova.times,0)+(player.supernova.post_10?"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")":""),
+        desc: (gs)=>{
+            let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
+            let h = tmp.inf_unl?format(g.mul(FPS),0)+"/sec":format(g,0)
+            return format(player.supernova.times,0)+(player.supernova.post_10?"<br>(+"+h+")":"")
+        },
 
         resetBtn() { if (player.supernova.post_10) SUPERNOVA.reset(false,false,true) },
     },
@@ -103,7 +107,7 @@ const RESOURCES_DIS = {
         icon: "corrupted",
         class: "corrupted_text",
 
-        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>(+"+tmp.c16.shardGain.format(0)+")",
+        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(232)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):"(+"+tmp.c16.shardGain.format(0)+")"),
 
         resetBtn() { startC16() },
     },

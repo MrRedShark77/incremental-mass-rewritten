@@ -38,6 +38,15 @@ const CORE = {
             x => formatMult(x),
             x => "+"+format(x),
         ],
+
+        fragment: [
+            f=>{
+                let x = f.add(1).pow(2)
+
+                return x
+            },
+            x => `Stronger overflow starts <b>${formatMult(x)}</b> later.`,
+        ],
     },
     bh: {
         title: `Hawking Theorem`,
@@ -86,6 +95,15 @@ const CORE = {
             x => formatReduction(x),
             x => formatMult(x),
         ],
+
+        fragment: [
+            f=>{
+                let x = f.add(1).log10().div(10).add(1)
+
+                return x
+            },
+            x => `Raise mass of unstable black hole gain to the <b>${format(x)}</b>th power.`,
+        ],
     },
     atom: {
         title: `Dalton Theorem`,
@@ -130,6 +148,15 @@ const CORE = {
             x => "+"+format(x),
             x => "+"+format(x),
         ],
+
+        fragment: [
+            f=>{
+                let x = f.add(1)
+
+                return x
+            },
+            x => `Boost kaon & pion gains by <b>${formatMult(x)}</b>.`,
+        ],
     },
     proto: {
         title: `Protoversal Theorem`,
@@ -170,6 +197,15 @@ const CORE = {
             x => formatReduction(x),
             x => formatReduction(x),
         ],
+
+        fragment: [
+            f=>{
+                let x = f.add(1).log10().root(2).div(100).add(1)
+
+                return x
+            },
+            x => `Raise chromas gain to the <b>${format(x)}</b>th power.`,
+        ],
     },
     time: {
         title: `Einstein Theorem`,
@@ -209,6 +245,15 @@ const CORE = {
             x => "^"+format(x),
             x => "^"+format(x),
             x => formatReduction(x),
+        ],
+
+        fragment: [
+            f=>{
+                let x = f.add(1).log10().root(2).div(50).add(1).pow(-1)
+
+                return x.toNumber()
+            },
+            x => `Weaken beyond rank’s next tier requirement by <b>${formatReduction(x)}</b>.`,
         ],
     },
 }
@@ -304,10 +349,21 @@ function getTheoremHTML(data,sub=false) {
     `
 }
 
-function getTheoremPreEffects(t,s) {
+function calcFragmentBase(data,s,p,level) {
+    let lvl = level||data.level, m = 0
+    s.forEach(i=>{m += i})
+
+    return Decimal.pow(1.5*p,lvl-1).mul(m**(2*p)*lvl).floor()
+}
+
+function getTheoremPreEffects(data,s,p,level) {
+    let t = data.type
+
     let e = ""
     for (let i = 0; i < 4; i++) if (s[i]) e += CORE[t].preEff[i]+"<br>"
-    return e+`(Based on <b>${CORE[t].res}</b>)`
+    e += `(Based on <b>${CORE[t].res}</b>)`
+    if (tmp.tfUnl) e += `<br class='line'><b>+${format(calcFragmentBase(data,s,p,level),0)}</b> fragment base`
+    return e
 }
 
 function setupCoreHTML() {
@@ -363,18 +419,20 @@ function updateCoreHTML() {
 
         if (!reached) continue
 
-        let p = player.inf.pre_theorem[i], s = p.star_c.map(x => x < chance)
+        let p = player.inf.pre_theorem[i], s = p.star_c.map(x => x < chance), power = Math.round(100+pm*p.power_m*100)/100
         pt.setClasses({theorem_div:true, tooltip:true, [p.type]:true, choosed: player.inf.pt_choosed == i})
-        pt.setHTML(getTheoremHTML({type: p.type, level: fl, power: Math.round(100+pm*p.power_m*100)/100, star: s},true))
+        pt.setHTML(getTheoremHTML({type: p.type, level: fl, power, star: s},true))
 
         pt.setTooltip(`
         <h3>${CORE[p.type].title}</h3>
         <br class='line'>
-        ${getTheoremPreEffects(p.type,s)}
+        ${getTheoremPreEffects(p,s,power,fl)}
         `)
     }
     
     tmp.el.preTReq.setHTML(`Reach over <b>${formatMass(INF.req)}</b> of normal mass to show theorems that you will choose.`)
+
+    tmp.el.formTBtn.setDisplay(tmp.tfUnl)
 }
 
 function updateTheoremCore() {
@@ -401,7 +459,7 @@ function updateTheoremCore() {
             t.setTooltip(`
             <h3>${CORE[type].title}</h3>
             <br class='line'>
-            ${getTheoremPreEffects(type,s)}
+            ${getTheoremPreEffects(p,p.star,p.power)}
             `)
 
             core_weight[type]++
@@ -421,7 +479,7 @@ function updateTheoremInv() {
         t.setTooltip(p?`
         <h3>${CORE[p.type].title}</h3>
         <br class='line'>
-        ${getTheoremPreEffects(p.type,p.star)}
+        ${getTheoremPreEffects(p,p.star,p.power)}
         `:"")
     }
 }
@@ -436,6 +494,20 @@ function removeTheorem() {
 
         updateTheoremInv()
     })
+}
+
+function formTheorem() {
+    if (t_choosed.includes('c') || t_choosed == '-' || !tmp.tfUnl) return
+
+    let inv = player.inf.inv[t_choosed]
+
+    player.inf.fragment[inv.type] = player.inf.fragment[inv.type].add(calcFragmentBase(inv,inv.star,inv.power));
+
+    delete player.inf.inv[t_choosed]
+
+    t_choosed = '-'
+
+    updateTheoremInv()
 }
 
 function createPreTheorem() {
@@ -465,6 +537,8 @@ function addTheorem(type, star, level, power, chance=CORE_CHANCE_MIN) {
     if (s) createPopup("Your inventory is maxed! You need to remove unused or useless theorem...",'inv_maxed')
     updateTheoremInv()
 }
+
+function getFragmentEffect(id,def=1) { return tmp.fragment_eff[id]||def }
 
 function chooseTheorem(id,is_core=false) {
     let inv = player.inf.inv, core = player.inf.core;
@@ -559,5 +633,7 @@ function updateCoreTemp() {
             s[j] = sc
             eff[j] = t.eff[j](sc)
         }
+
+        tmp.fragment_eff[i] = t.fragment[0](player.inf.fragment[i])
     }
 }

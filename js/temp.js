@@ -215,6 +215,7 @@ function resetTemp() {
         core_lvl: 1,
         core_score: {},
         core_eff: {},
+        fragment_eff: {},
 
         iu_eff: [],
     }
@@ -365,6 +366,7 @@ function updateTemp() {
     tmp.brUnl = hasElement(208)
     tmp.eaUnl = hasCharger(5)
     tmp.brokenInf = hasInfUpgrade(16)
+    tmp.tfUnl = hasElement(230)
 
     updateInfTemp()
     updateC16Temp()

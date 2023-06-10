@@ -21,7 +21,7 @@ const INF = {
 
         player.atom.elements = e
         player.atom.muonic_el = []
-        for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)
+        for (let x = 1; x <= (hasElement(229) ? 15 : 16); x++) player.chal.comps[x] = E(0)
         player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
         "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
 
@@ -256,7 +256,7 @@ const INF = {
                 desc: "Infinity theorem boosts infinity points gain.",
                 cost: E(100),
                 effect() {
-                    let x = Decimal.pow(2,player.inf.theorem)
+                    let x = Decimal.pow(hasBeyondRank(6,1)?3:2,player.inf.theorem)
 
                     return x
                 },
@@ -304,7 +304,7 @@ const INF = {
                 desc: "Infinity Theorems boost kaon and pion gains.",
                 cost: E(6e6),
                 effect() {
-                    let x = Decimal.pow(2,player.inf.theorem)
+                    let x = Decimal.pow(hasBeyondRank(6,1)?3:2,player.inf.theorem)
 
                     return x
                 },
@@ -419,11 +419,13 @@ function getInfSave() {
         inv: [],
         pre_theorem: [],
         upg: [],
+        fragment: {},
         pt_choosed: -1,
 
         dim_mass: E(0),
         pe: E(0),
     }
+    for (let i in CORE) s.fragment[i] = E(0)
     //for (let i = 0; i < 4; i++) s.pre_theorem.push(createPreTheorem())
     return s
 }
@@ -502,6 +504,13 @@ function calcInf(dt) {
     if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
 
     player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
+
+    if (hasElement(232)) {
+        let cs = tmp.c16.shardGain
+
+        player.dark.c16.shard = player.dark.c16.shard.add(cs.mul(dt))
+        player.dark.c16.totalS = player.dark.c16.totalS.add(cs.mul(dt))
+    }
 }
 
 function setupInfHTML() {
@@ -531,6 +540,8 @@ function updateInfHTML() {
                 for (let i = 0; i < 4; i++) {
                     if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+ct.preEff[i]+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
                 }
+                let f = player.inf.fragment[t]
+                if (f.gt(0)) hh += `<br>${f.format(0)} ${ct.title.split(' ')[0]} Fragments | ${ct.fragment[1](tmp.fragment_eff[t])}<br>`
                 if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p*100,0)}%)</b></h2><br>`+hh+'<br>'
             }
             tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")

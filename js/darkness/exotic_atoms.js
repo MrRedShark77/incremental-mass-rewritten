@@ -136,6 +136,17 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>formatMult(x),
+        },{
+            desc: `Red Matter’s Upgrade is even stronger.`,
+            cost: E('e420'),
+        },{
+            desc: `Total infinity points boost kaon & pion gains.`,
+            cost: E('e470'),
+            eff() {
+                let x = player.inf.total.add(1).root(4)
+                return x
+            },
+            effDesc: x=>formatMult(x),
         },
 
         /*
@@ -157,6 +168,7 @@ const MUONIC_ELEM = {
         if (hasInfUpgrade(9)) u += 3
 
         if (tmp.brokenInf) u += 2
+        if (tmp.tfUnl) u += 2
 
         return u
     },
@@ -226,6 +238,9 @@ const EXOTIC_ATOM = {
         if (hasElement(5,1)) xy = xy.mul(muElemEff(5))
         if (hasBeyondRank(3,4)) xy = xy.mul(beyondRankEffect(3,4))
         if (hasInfUpgrade(13)) xy = xy.mul(infUpgEffect(13))
+        if (hasElement(22,1)) xy = xy.mul(muElemEff(22))
+
+        xy = xy.mul(getFragmentEffect('atom'))
         
         let x = xy.div(10)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))

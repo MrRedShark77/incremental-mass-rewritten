@@ -50,6 +50,11 @@ const ELEMENTS = {
             else player.atom.quarks = player.atom.quarks.sub(u.cost)
             player.atom.elements.push(x)
 
+            if (x==230) {
+                updateTheoremCore()
+                updateTheoremInv()
+            }
+
             tmp.pass = 2
         }
     },
@@ -1309,6 +1314,34 @@ const ELEMENTS = {
         },{
             desc: `Biniltrium-203 is overpowered.`,
             cost: E('ee448'),
+        },{
+            dark: true,
+            desc: `Increase C16’s max completions to 100. Keep C16 completions in infinity.`,
+            cost: E('e810000'),
+        },{
+            inf: true,
+            desc: `Allow you to form any theorem into its fragments, they give you benefits.`,
+            cost: E('5e17'),
+        },{
+            c16: true,
+            desc: `Mass of black hole boosts mass overflow^1-2 starting.`,
+            cost: E('e1e26'),
+            effect() {
+                let x = player.bh.mass.add(10).log10().root(20)
+                return x
+            },
+            effDesc(x) { return "^"+format(x)+' later' },
+        },{
+            inf: true,
+            desc: `Passively generate 100% of corrupted shards gained by best mass of black hole in C16.`,
+            cost: E('1.25e19'),
+        },{
+            desc: `Super Parallel Extruder starts +25 later.`,
+            cost: E('ee505'),
+        },{
+            dark: true,
+            desc: `Remove the softcap of abyssal blot’s seven reward.`,
+            cost: E('e1800000'),
         },
     ],
     /*
@@ -1356,7 +1389,8 @@ const ELEMENTS = {
             if (tmp.brUnl) u += 10
         }
 
-        if (tmp.brokenInf) u += 10
+        if (tmp.brokenInf) u += 12
+        if (tmp.tfUnl) u += 4
 
         return u
     },

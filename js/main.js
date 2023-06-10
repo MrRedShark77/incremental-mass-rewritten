@@ -122,6 +122,12 @@ const FORMS = {
 
         if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
 
+        if (hasElement(231)) {
+            let p = elemEffect(231)
+            os = os.pow(p)
+            os2 = os2.pow(p)
+        }
+
         x = overflow(x,os,op)
 
         x = overflow(x,os2,op2)

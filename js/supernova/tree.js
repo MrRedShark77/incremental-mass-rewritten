@@ -718,7 +718,7 @@ const TREE_UPGS = {
             cost: E(1e32),
             effect() {
                 let x = E(1.0333).pow(player.qu.bp.add(1).log10().softcap(70,0.5,0))
-                return x
+                return overflow(x,'e450',0.5)
             },
             effDesc(x) { return format(x)+"x" },
         },
