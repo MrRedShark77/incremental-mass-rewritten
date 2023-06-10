@@ -142,7 +142,6 @@ const INF = {
         if (hasInfUpgrade(8)) {
             for (let i = 0; i < infUpgEffect(8); i++) dark.c16.tree.push(...TREE_IDS[i][5])
         }
-if (hasInfUpgrade(20)) player.dark.c16.shard = Math.max(player.dark.c16.shard)
         dark.exotic_atom = darkSave.exotic_atom
 
         player.bh.fvm = E(0)
@@ -328,12 +327,12 @@ if (hasInfUpgrade(20)) player.dark.c16.shard = Math.max(player.dark.c16.shard)
         [
             {
                 title: "Master Infinity",
-                desc: "Now you can passively gain Infinity Points based on Corrupted Shards.<br> Keep Corrupted Shards on Infinity Reset",
+                desc: "Now you can passively gain Infinity Points based on Max Theorem's level.<br> Keep Corrupted Shards on Infinity Reset",
                 cost: E(5e19),
                 effect() {
-                    let x = player.dark.c16.shard.max(1).log10().log10().log(2).add(1)
+                    let x = player.inf.theorem_max.max(1).log10().log10().log(2).add(1)
 
-                    return x.max(1.1)
+                    return x.max(2)
                 },
                 effectDesc: x => formatPercent(x-1),
             },
