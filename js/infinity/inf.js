@@ -327,7 +327,7 @@ const INF = {
         [
             {
                 title: "Master Infinity",
-                desc: "Now you can passively gain Infinity Points based on Max Theorem's level.<br> Keep Corrupted Shards on Infinity Reset",
+                desc: "Now you can passively gain Infinity Points based on Max Theorem's level.",
                 cost: E(5e19),
                 effect() {
                     let x = player.inf.theorem_max.max(1).log10().log10().log(2).add(1)
