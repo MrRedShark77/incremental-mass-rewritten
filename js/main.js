@@ -459,7 +459,7 @@ const FORMS = {
 
             let os2 = tmp.c16active ? E('ee6') : E('ee249')
             let op2 = E(0.25)
-            let os3 = tmp.c16active ? E('ee12') : E('ee1100')
+            let os3 = tmp.c16active ? E('ee14') : E('ee1100')
             let op3 = E(0.15)
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
