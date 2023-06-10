@@ -425,6 +425,8 @@ function updateBlackHoleHTML() {
 
 	tmp.el.bhOverflow2.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[1]))
     tmp.el.bhOverflow2.setHTML(`Because of black hole mass overflow^2 at <b>${formatMass(tmp.overflow_start.bh[1])}</b>, your black hole mass overflow is even stronger!`)
+	tmp.el.bhOverflow3.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[2]))
+    tmp.el.bhOverflow3.setHTML(`Because of black hole mass overflow^3 at <b>${formatMass(tmp.overflow_start.bh[2])}</b>, your black hole mass overflow is even stronger!`)
 	// Unstable 
 
 	let unl = hasCharger(1)
@@ -519,6 +521,10 @@ function updateHTML() {
 
 				tmp.el.massOverflow2.setDisplay(player.mass.gte(tmp.overflow_start.mass[1]))
     			tmp.el.massOverflow2.setHTML(`Because of mass overflow^2 at <b>${formatMass(tmp.overflow_start.mass[1])}</b>, your mass overflow is even stronger!`)
+
+				
+				tmp.el.massOverflow3.setDisplay(player.mass.gte(tmp.overflow_start.mass[2]))
+    			tmp.el.massOverflow3.setHTML(`Because of mass overflow^3 at <b>${formatMass(tmp.overflow_start.mass[2])}</b>, your mass overflow is even stronger!`)
 
 				tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[0]))
     			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger[0])}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)

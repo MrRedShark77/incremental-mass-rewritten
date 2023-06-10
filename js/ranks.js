@@ -565,6 +565,7 @@ const PRESTIGES = {
             },x=>"x"+x.format()],
             "6": [()=>{
                 let x = tmp.exotic_atom.amount.add(1).log10().add(1).mul(hasElement(22,1)?muElemEff(22):1)
+                x = x.softcap(40000,0.25,0)
                 return x
             },x=>"x"+x.format()],
         },
@@ -753,7 +754,11 @@ const BEYOND_RANKS = {
             2: `Super FSS starts +1 later per beyond-ranks' maximum tier, starting at Dec.`,
             7: `Remove pre-meta scalings from Prestige Level.`,
             11: `Remove pre-ultra scalings from Pent.`,
-            23: `Add matter exponent based on Exotic Atoms.`,
+            23: `Add matter exponent based on beyond-ranks' maximum tier.`,
+        },
+        6: {
+            1: `Boost Muonic Phosphorus effect by 3.00x per beyond-ranks' maximum tier.`,
+            2: `Muonic Titanium is stronger based on mass (starts at e3e790).`,
         },
     },
 
@@ -867,11 +872,30 @@ const BEYOND_RANKS = {
             ],
             23: [
                 ()=>{
-                    let x = E(tmp.exotic_atom.amount.add(1).log10().log10().add(1))
+                    let x = tmp.beyond_ranks.max_tier-3**0.2+1
 
                     return x
                 },
                 x=>"+"+format(x,3),
+            ],
+        },
+        6: {
+            1: [
+                ()=>{
+                    let x = tmp.beyond_ranks.max_tier*3
+
+                    return Math.max(1,x)
+                },
+                x=>"x"+format(x,0),
+            ],
+            2: [
+                ()=>{
+                    let x = E(1)
+                    if (player.mass.gte('e3e790')) x = player.mass.div('e3e790').max(1).log10().log10().log10().log2().div(3).add(1)
+
+                    return x
+                },
+                x=>"x"+format(x,3),
             ],
         },
     },

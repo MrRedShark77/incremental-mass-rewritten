@@ -113,6 +113,9 @@ const FORMS = {
         let os2 = tmp.c16active ? E('ee11') : E('ee279')
         let op2 = E(.25)
 
+        let os3 = tmp.c16active ? E('ee25') : E('ee800')
+        let op3 = E(.25)
+
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
@@ -126,10 +129,12 @@ const FORMS = {
 
         x = overflow(x,os2,op2)
 
+        x = overflow(x,os3,op3)
+
         tmp.overflowBefore.mass = o
         tmp.overflow.mass = calcOverflow(o,x,os)
-        tmp.overflow_start.mass = [os,os2]
-        tmp.overflow_power.mass = [op,op2]
+        tmp.overflow_start.mass = [os,os2,os3]
+        tmp.overflow_power.mass = [op,op2,op3]
 
         if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
 
@@ -454,7 +459,8 @@ const FORMS = {
 
             let os2 = tmp.c16active ? E('ee6') : E('ee249')
             let op2 = E(0.25)
-
+            let os3 = tmp.c16active ? E('ee20') : E('ee1100')
+            let op3 = E(0.15)
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
             if (hasTree('ct11')) os = os.pow(treeEff('ct11'))
@@ -468,11 +474,12 @@ const FORMS = {
 
             x = overflow(x,os,op)
             x = overflow(x,os2,op2)
+            x = overflow(x,os3,op3)
 
             tmp.overflowBefore.bh = o
             tmp.overflow.bh = calcOverflow(o,x,os)
-            tmp.overflow_start.bh = [os,os2]
-            tmp.overflow_power.bh = [op,op2]
+            tmp.overflow_start.bh = [os,os2,os3]
+            tmp.overflow_power.bh = [op,op2,op3]
 
             if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
             return x

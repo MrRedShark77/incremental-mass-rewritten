@@ -97,7 +97,7 @@ const MUONIC_ELEM = {
             eff() {
                 if (!tmp.chal) return E(1)
                 let x = overflow(tmp.chal.eff[15],10,0.5).pow(2)
-                return x
+                return x.mul(hasBeyondRank(6,1)?beyondRankEffect(6,1):1)
             },
             effDesc: x=>"^"+format(x),
         },{
@@ -151,6 +151,7 @@ const MUONIC_ELEM = {
             cost: E('e360'),
             eff() {
                 let x = tmp.exotic_atom.amount.max(1).log(10).div(20).add(1)
+                if (hasBeyondRank(6,2)) x = x.mul(beyondRankEffect(6,2))
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -163,6 +164,15 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>"^"+format(x),
+        },
+        {
+            desc: `227-Bibiseptium is better based on Exotic Atoms.`,
+            cost: E('e630'),
+            eff() {
+                let x = tmp.exotic_atom.amount.max(1).log10().log10().div(20).add(1)
+                return x
+            },
+            effDesc: x=>"x"+format(x),
         },
 
         /*
@@ -183,7 +193,7 @@ const MUONIC_ELEM = {
         if (tmp.inf_unl) u += 4
         if (hasInfUpgrade(9)) u += 3
 
-        if (tmp.brokenInf) u += 5
+        if (tmp.brokenInf) u += 6
         return u
     },
 }
@@ -218,7 +228,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490')],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490'),E('e628'),E('e700'),E('e1000')],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -271,8 +281,9 @@ const EXOTIC_ATOM = {
         [
             [a=>{
                 let x = overflow(a.add(1).root(2),100,0.5)
+                if (player.dark.exotic_atom.tier >= E(14)) x = overflow(a.add(1).root(0.05),10,0.75)
                 return x
-            },x=>`Boosts corrupted shard gain by <b>${formatMult(x)}</b>`],
+            },x=>`Boosts corrupted shard gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier >= E(14)?`[Muonized]</span>`:`</span>`}`],
             [a=>{
                 let x = a.add(1).log10().div(10).add(1).root(2)
                 return x
@@ -293,19 +304,24 @@ const EXOTIC_ATOM = {
                 let x = a.add(10).log10().pow(2).sub(1).div(5e3)
                 return x.toNumber()
             },x=>`Increase the base of Prestige Level 382 for Collapsed Star's effect, the base of Binilunium-201 for BH's effect by <b>+${format(x)}</b>`],
+            [a=>{
+                if (player.dark.exotic_atom.tier == 14) x = a.add(10).log(5).pow(0.65).sub(1)
+                else x = E(1)
+                return x.toNumber()
+            },x=>`Increase Quantum Shards base by <b>x${format(x)}</b>. Req: 14th Tier`],
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
-                if (player.dark.exotic_atom.tier == E(13)) x = hasElement(12,1) ? expMult(a.add(1),5) : a.add(1).pow(4)
+                if (player.dark.exotic_atom.tier >= E(13)) x = hasElement(12,1) ? expMult(a.add(1),5) : a.add(1).pow(4)
+                x = x.softcap('e700000000',0.5,0)
                 return x
-            },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier == E(13)?`[Muonized]</span>`:`</span>`}`],
+            },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier >= E(13)?`[Muonized]</span>`:`</span>`}`],
             [a=>{
                 let x = a.add(1).pow(3)
                 return x
             },x=>`Black hole overflow starts <b>^${format(x)}</b> later`],
             [a=>{
-                let x = a.add(1).log10().div(80).add(1).root(2)
-                
+                let x = a.add(1).log10().div(80).add(1).root(2)   
                 return x
             },x=>`FSS's base is raised by <b>${format(x)}</b>`],
             [a=>{
@@ -320,6 +336,10 @@ const EXOTIC_ATOM = {
                 let x = a.add(1).log10().div(50)
                 return x.toNumber()
             },x=>`Increase matter exponent by <b>+${format(x)}</b>`],
+            [a=>{
+                if (player.dark.exotic_atom.tier == 15) x = a.add(1).log10().div(55)
+                return x.toNumber()
+            },x=>`Reduce FSS requirement by <b>${formatPercent(x-1)}</b>`],
         ],
     ],
 }

@@ -597,6 +597,7 @@ function noScalings(type,name) {
 	}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true
+		if (type = 2 && hasElement(240)) return true
 	}
 	
 

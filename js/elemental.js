@@ -1302,6 +1302,7 @@ const ELEMENTS = {
             cost: E('e1e25'),
             effect() {
                 let x = Math.log10(tmp.matters.exponent+1)/20
+                if (hasElement(24,1)) x = x*(muElemEff(24,1))
                 if (tmp.c16active) x *= 5
                 return x+1
             },
@@ -1336,7 +1337,7 @@ const ELEMENTS = {
         },
         {
             c16: true,
-            desc: `C15's reward is even more better.`,
+            desc: `C16's reward is even more better.`,
             cost: E('e1.5e28'),
         },
         {
@@ -1371,7 +1372,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Infinity Points boosts Exotic Atoms.`,
-            cost: E('e1570000'),
+            cost: E('e1670000'),
             effect() {
                 let x = player.inf.points.log(1.1).add(1)
                 return x
@@ -1381,6 +1382,40 @@ const ELEMENTS = {
         {
             desc: `Biunseptium-217 effect is better again (30% => <b>40%</b>).`,
             cost: E('e2e501'),
+        },
+        {
+            c16: true,
+            desc: `Dimensional Mass adds free C16 max completions.`,
+            cost: E('e1.6e35'),
+            effect() {
+                let x = player.inf.dim_mass.div(100).log(10).log(2).add(1)
+                return x
+            },
+            effDesc(x) { return "+"+format(x,3) },
+        },
+        {
+            inf: true,
+            desc: `Remove Ultra Pent scaling.`,
+            cost: E('1e22'),
+        },
+        {
+            desc: `Boost Dark Shadows 4th effect by Infinity Points.`,
+            cost: E('e1e670'),
+            effect() {
+                let x = player.inf.points.log(6).log(2).add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,3) },
+        },
+        {
+            dark: true,
+            desc: `Add 5 C16 max completions per muonized effects amount.`,
+            cost: E('e4230000'),
+            effect() {
+                let x = (player.dark.exotic_atom.tier-12)*5
+                return x
+            },
+            effDesc(x) { return "+"+format(x,0) },
         },
     ],
     /*
@@ -1428,8 +1463,7 @@ const ELEMENTS = {
             if (tmp.brUnl) u += 10
         }
 
-        if (tmp.brokenInf) u += 10
-if (hasElement(228)) u += 10
+        if (tmp.brokenInf) u += 24
         return u
     },
 }
