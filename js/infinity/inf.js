@@ -330,7 +330,7 @@ const INF = {
                 desc: "Now you can passively gain Infinity Points based on Max Theorem's level.",
                 cost: E(5e19),
                 effect() {
-                    let x = player.inf.theorem_max.max(1).log10().log10().log(2).add(1)
+                    let x = player.inf.theorem_max.max(1).log10().add(1)
 
                     return x
                 },
