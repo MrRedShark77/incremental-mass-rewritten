@@ -142,7 +142,7 @@ const INF = {
         if (hasInfUpgrade(8)) {
             for (let i = 0; i < infUpgEffect(8); i++) dark.c16.tree.push(...TREE_IDS[i][5])
         }
-
+if (hasInfUpgrade(20)) player.dark.c16.shard = Math.max(player.dark.c16.shard)
         dark.exotic_atom = darkSave.exotic_atom
 
         player.bh.fvm = E(0)
