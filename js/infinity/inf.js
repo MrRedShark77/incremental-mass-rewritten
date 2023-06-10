@@ -331,6 +331,7 @@ const INF = {
                 desc: "Now you can passively gain Infinity Points based on Corrupted Shards.",
                 cost: E(5e19),
                 effect() {
+if (player.dark.c16.shard.lte(0)) let x = E(1)
                     let x = player.dark.c16.shard.max(1).log10().log10().log(2).add(1)
 
                     return x
