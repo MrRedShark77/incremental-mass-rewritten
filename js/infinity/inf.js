@@ -328,12 +328,12 @@ const INF = {
         [
             {
                 title: "Master Infinity",
-                desc: "Now you can passively gain Infinity Points based on Corrupted Shards.",
+                desc: "Now you can passively gain Infinity Points based on Corrupted Shards.<br> Keep Corrupted Shards on Infinity Reset",
                 cost: E(5e19),
                 effect() {
                     let x = player.dark.c16.shard.max(1).log10().log10().log(2).add(1)
 
-                    return x.max(1)
+                    return x.max(1.1)
                 },
                 effectDesc: x => formatPercent(x-1),
             },
