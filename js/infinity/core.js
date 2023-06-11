@@ -488,8 +488,7 @@ function chooseTheorem(id,is_core=false) {
                 if (core[id] !== undefined && core[id] !== null) {
                     if (checkSwitchingCore(t_choosed,id)) {
                         if (isTheoremHigher(core[id],inv[t_choosed])) switchTheorems(t_choosed,id)
-                        else
-                            createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
+                        else createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
                             switchTheorems(t_choosed,id,true)
                         })
                         return
