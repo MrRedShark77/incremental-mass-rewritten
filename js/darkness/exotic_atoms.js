@@ -176,7 +176,7 @@ const MUONIC_ELEM = {
         },
         {
             desc: `Muonic Calcium-20's effect formula is better.`,
-            cost: E('e770'),
+            cost: E('e745'),
         },
 
         /*
