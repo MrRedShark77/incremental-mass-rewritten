@@ -501,7 +501,7 @@ function chooseTheorem(id,is_core=false) {
             else if (checkSwitchingCore(id,t_choosed.split('c')[0])) {
                 if (isTheoremHigher(core[t_choosed.split('c')[0]],inv[id])) switchTheorems(id,t_choosed.split('c')[0])
                 else createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
-                    switchTheorems(t_choosed.split('c')[0])
+                    switchTheorems(id,t_choosed.split('c')[0])
                 })
                 return
             }
