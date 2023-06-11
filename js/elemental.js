@@ -1468,7 +1468,7 @@ const ELEMENTS = {
         {
             inf: true,
             desc: `Second and Third Core Slot Theorem level will be based on max theorem level on infinity (Only if Theorem Type is 2nd: Protoversal,3rd:Einstein).`,
-            cost: E('1e26'),
+            cost: E('7e25'),
             effect() {
                 let x = player.inf.theorem_max.floor()
                 return x
@@ -1488,7 +1488,7 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Add 1000 C16 max completions.`,
-            cost: E('e2e39'),
+            cost: E('e1e38'),
         },
         {
             desc: `Scale Super Parallel Extruder later by Max Theorem's level.`,
@@ -1502,7 +1502,7 @@ const ELEMENTS = {
         {
             inf: true,
             desc: `Unlock Modificators.`,
-            cost: E('1e27'),
+            cost: E('3e26'),
         },
     ],
     /*
