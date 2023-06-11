@@ -1453,7 +1453,7 @@ const ELEMENTS = {
         },
         {
             desc: `Infinity Points scales mass overflow and overflow^2 (works only outside of C16).`,
-            cost: E('e7e741'),
+            cost: E('e1e736'),
             effect() {
                 let x = player.inf.points.max(1).root(0.25).add(1)
                 return x
@@ -1478,7 +1478,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Bitrinilium-230 effect is better based on Infinity Points.`,
-            cost: E('e6500000'),
+            cost: E('e7990000'),
             effect() {
                 let x = player.inf.points.max(1).root(10).log10().div(3).add(1)
                 return x
@@ -1488,11 +1488,11 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Add 1000 C16 max completions.`,
-            cost: E('e7.25e39'),
+            cost: E('e2e39'),
         },
         {
             desc: `Scale Super Parallel Extruder later by Max Theorem's level.`,
-            cost: E('e1e756'),
+            cost: E('e1e752'),
             effect() {
                 let x = player.inf.theorem_max.max(1).root(1.25).add(1).floor()
                 return x
