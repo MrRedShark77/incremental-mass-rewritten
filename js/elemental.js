@@ -1463,7 +1463,7 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Muonic Vanadium is better.`,
-            cost: E('e1e38'),
+            cost: E('e3e37'),
         },
         {
             inf: true,
