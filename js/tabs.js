@@ -74,7 +74,7 @@ const TABS = {
             { id: "Core" },
             { id: "Core Effect" },
             { id: "Infinity Upgrades", style: "inf" },
-            { id: "Modificators" },
+            { id: "Modificators", unl() {return hasElement(253)} },
         ],
         9: [
             { id: "Options" },
