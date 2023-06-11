@@ -456,8 +456,10 @@ function updateOptionsHTML() {
 			?quUnl()
 			:CONFIRMS[x] == "br"
 			?player.qu.rip.first
+			:CONFIRMS[x] == "inf"
+			?player.inf.theorem_max.gte(1)
 			:player[CONFIRMS[x]].unl
-	
+
 			tmp.el["confirm_div_"+x].setDisplay(unl)
 			tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
 		}

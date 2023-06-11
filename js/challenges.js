@@ -164,6 +164,8 @@ const CHALS = {
         if (i==13||i==14||i==15)  x = x.add(tmp.dark.rayEff.dChal||0)
         if (hasElement(239) && i==16) x = x.add(elemEffect(239).floor())
         if (hasElement(242) && i==16) x = x.add(elemEffect(242))
+        if (hasElement(246) && i==16) x = x.add(elemEffect(246))
+        if (hasElement(251) && i==16) x = x.add(1000)
         return x.floor()
     },
     getScaleName(i) {
@@ -545,7 +547,7 @@ const CHALS = {
         start: E('e1.25e11'),
         effect(x) {
             let ret = x.mul(hasElement(232)?0.075:0.05).add(1)
-            ret = ret.softcap(E(1.1),0.05,0)
+            ret = ret.softcap(E(1.07),0.05,0)
             return ret
         },
         effDesc(x) { return "^"+format(x) },

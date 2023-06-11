@@ -129,10 +129,10 @@ const MUONIC_ELEM = {
             },
             effDesc: x=>"+"+format(x,0),
         },{
-            desc: `Exotic atoms boost infinity points gain, starting at 1.798e308.`,
+            desc: `Exotic atoms boost infinity points gain, starting at 1.798e308`,
             cost: E(Number.MAX_VALUE),
             eff() {
-                let x = tmp.exotic_atom.amount.div(Number.MAX_VALUE).max(1).log(1.1).add(1)
+                let x = tmp.exotic_atom.amount.div(Number.MAX_VALUE).max(1).log(hasElement(25,1)?1.001:1.1).add(1)
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -160,7 +160,7 @@ const MUONIC_ELEM = {
             desc: `Chromium-24 applies to Dimensional Mass at logariphmic rate (Works only outside of C16).`,
             cost: E('e450'),
             eff() {
-                let x = E(elemEffect(24)).max(1).log10().div(10).add(1)
+                let x = E(elemEffect(24)).max(1).log10().div(hasElement(248)?5:10).add(1)
                 return x
             },
             effDesc: x=>"^"+format(x),
@@ -173,6 +173,10 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>"x"+format(x),
+        },
+        {
+            desc: `Muonic Calcium-20's effect formula is better.`,
+            cost: E('e770'),
         },
 
         /*
@@ -193,7 +197,7 @@ const MUONIC_ELEM = {
         if (tmp.inf_unl) u += 4
         if (hasInfUpgrade(9)) u += 3
 
-        if (tmp.brokenInf) u += 6
+        if (tmp.brokenInf) u += 7
         return u
     },
 }
@@ -228,7 +232,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490'),E('e628'),E('e700'),E('e1000')],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490'),E('e628'),E('e650'),E('e1000')],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -305,14 +309,14 @@ const EXOTIC_ATOM = {
                 return x.toNumber()
             },x=>`Increase the base of Prestige Level 382 for Collapsed Star's effect, the base of Binilunium-201 for BH's effect by <b>+${format(x)}</b>`],
             [a=>{
-                if (player.dark.exotic_atom.tier == 14) x = a.add(10).log(5).pow(0.65).sub(1)
+                if (player.dark.exotic_atom.tier >= 14) x = a.add(10).log(5).pow(0.65).sub(1)
                 else x = E(1)
                 return x.toNumber()
             },x=>`Increase Quantum Shards base by <b>x${format(x)}</b>. Req: 14th Tier`],
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
-                if (player.dark.exotic_atom.tier >= E(13)) x = hasElement(12,1) ? expMult(a.add(1),5) : a.add(1).pow(4)
+                if (player.dark.exotic_atom.tier >= E(13)) x = hasElement(12,1) ? expMult(a.add(1),3) : a.add(1).pow(3)
                 x = x.softcap('e700000000',0.5,0)
                 return x
             },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier >= E(13)?`[Muonized]</span>`:`</span>`}`],
@@ -337,10 +341,10 @@ const EXOTIC_ATOM = {
                 return x.toNumber()
             },x=>`Increase matter exponent by <b>+${format(x)}</b>`],
             [a=>{
-                if (player.dark.exotic_atom.tier == 15) x = a.add(1).log10().log10().div(1.5).add(1)
-else x = E(1.1)
+                if (player.dark.exotic_atom.tier >= 15) x = Decimal.pow(0.95,overflow(a.add(1).log10(),2,0.5).root(4))
+else x = E(0)
                 return x.toNumber()
-            },x=>`Reduce FSS requirement by <b>${formatPercent(x-1)}</b>. Req: 15th Tier.`],
+            },x=>`Reduce FSS requirement by <b>${formatReduction(x)}</b>. Req: 15th Tier.`],
         ],
     ],
 }

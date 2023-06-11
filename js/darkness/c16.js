@@ -169,10 +169,12 @@ function setupC16HTML() {
 }
 
 function corruptedShardGain() {
-    if (!tmp.c16active || player.bh.mass.lt('e100')) return E(0)
+    let bh = player.bh.mass
 
-    let x = Decimal.pow(10,overflow(player.bh.mass.max(1).log10(),1e9,0.5).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))
+    if (hasElement(245)) bh = player.dark.c16.bestBH.max('e100')
+   else if (!tmp.c16active || player.bh.mass.lt('e100')) return E(0)
 
+let x = Decimal.pow(10,overflow(bh.max(1).log10(),1e9,0.5).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))
     if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 
     x = x.mul(exoticAEff(0,0))

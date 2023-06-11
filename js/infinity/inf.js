@@ -184,7 +184,9 @@ const INF = {
     goInf(limit=false) {
         if (player.mass.gte(this.req)) {
             if (limit || player.inf.pt_choosed >= 0 && (player.confirms.inf)) CONFIRMS_FUNCTION.inf(limit)
-            else createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
+            else {
+                if (player.confirms.inf) createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
+            else CONFIRMS_FUNCTION.inf(limit)}
         }
     },
     level() {
@@ -362,6 +364,18 @@ const INF = {
             return x//.softcap(10,0.5,0)
         },
     },
+    nm_base: {
+        gain() {
+            if (!hasElement(253)) return E(0)
+            let x = tmp.nmEffect.eff||E(1)
+            return x
+        },
+        effect() {
+            let x = player.inf.nm_base.add(1).log(15).div(300)
+
+            return x//.softcap(10,0.5,0)
+        },
+    },
     pe: {
         cost(i) { return Decimal.pow(1.2,i.scaleEvery('pe')).mul(1000).floor() },
         can() { return player.inf.points.gte(tmp.peCost) },
@@ -391,6 +405,33 @@ const INF = {
             let eff_bottom = eff
 
             return {step: step, eff: eff, bonus: bonus, eff_bottom: eff_bottom}
+        },
+    },
+    nm: {
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('nm')).mul(1e25).floor() },
+        can() { return player.inf.points.gte(tmp.nmCost) },
+        buy() {
+            if (this.can()) {
+                player.inf.points = player.inf.points.sub(tmp.nmCost).max(0)
+                player.inf.nm = player.inf.nm.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.inf.points = player.inf.points.sub(this.cost(tmp.nmBulk.sub(1))).max(0)
+                player.inf.nm = tmp.nmBulk
+            }
+        },
+        effect() {
+            let t = player.inf.nm
+
+            let bonus = E(0)
+
+            let step = E(2)
+            
+            let eff = step.pow(t.add(bonus))
+
+            return {step: step, eff: eff, bonus: bonus}
         },
     },
 }
@@ -436,7 +477,9 @@ function getInfSave() {
         pt_choosed: -1,
 
         dim_mass: E(0),
+        nm_base: E(0),
         pe: E(0),
+        nm: E(0),
     }
     //for (let i = 0; i < 4; i++) s.pre_theorem.push(createPreTheorem())
     return s
@@ -449,10 +492,14 @@ function updateInfTemp() {
     tmp.peBulk = E(0)
     if (player.inf.points.gte(100)) tmp.peBulk = player.inf.points.div(1000).log(1.2).scaleEvery('pe',true).add(1).floor()
     tmp.peEffect = INF.pe.effect()
-
+    tmp.nmCost = INF.nm.cost(player.inf.nm)
+    tmp.nmBulk = E(0)
+    if (player.inf.points.gte(100)) tmp.nmBulk = player.inf.points.div(1e25).log(1.2).scaleEvery('nm',true).add(1).floor()
+    tmp.nmEffect = INF.nm.effect()
     tmp.dim_mass_gain = INF.dim_mass.gain()
     tmp.dim_mass_eff = INF.dim_mass.effect()
-
+    tmp.nm_base_gain = INF.nm_base.gain()
+    tmp.nm_base_eff = INF.nm_base.effect()
     for (let r in INF.upgs) {
         r = parseInt(r)
 
@@ -503,7 +550,6 @@ function calcInf(dt) {
     if (!tmp.brokenInf && tmp.inf_reached && tmp.inf_time == 0) {
         tmp.inf_time += 1
         document.body.style.animation = "inf_reset_1 10s 1"
-
         setTimeout(()=>{
             tmp.inf_time += 1
             document.body.style.backgroundColor = 'orange'
@@ -512,12 +558,20 @@ function calcInf(dt) {
     }
     
     if (!player.inf.reached && player.mass.gte(INF.req)) player.inf.reached=true
+    if (hasElement(245)) {
+        let cs = tmp.c16.shardGain
 
+        player.dark.c16.shard = player.dark.c16.shard.add(cs.mul(dt))
+        player.dark.c16.totalS = player.dark.c16.totalS.add(cs.mul(dt))
+    }
     if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
     if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
 player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
 if (hasElement(229) && player.inf.core[0].type == 'mass') player.inf.core[0].level = E(player.inf.theorem_max).floor()
+if (hasElement(249) && player.inf.core[1].type == 'proto') player.inf.core[1].level = E(player.inf.theorem_max).floor()
+if (hasElement(249) && player.inf.core[2].type == 'time') player.inf.core[2].level = E(player.inf.theorem_max).floor()
     player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
+    player.inf.nm_base = player.inf.nm_base.add(tmp.nm_base_gain.mul(dt))
     if (hasInfUpgrade(20)) player.inf.points = player.inf.points.add(tmp.IP_gain.mul(dt).mul(infUpgEffect(20)))
 }
 
@@ -530,7 +584,6 @@ function updateInfHTML() {
     if (tmp.tab == 0 && tmp.stab[0] == 5) {
         tmp.el.dim_mass.setTxt(formatMass(player.inf.dim_mass)+" "+player.inf.dim_mass.formatGain(tmp.dim_mass_gain,true))
         tmp.el.dim_mass_eff.setHTML("+"+tmp.dim_mass_eff.format())
-
         let pe_eff = tmp.peEffect
 		tmp.el.pe_scale.setTxt(getScalingName('pe'))
 		tmp.el.pe_lvl.setTxt(format(player.inf.pe,0)+(pe_eff.bonus.gte(1)?" + "+format(pe_eff.bonus,0):""))
@@ -539,6 +592,7 @@ function updateInfHTML() {
 		tmp.el.pe_step.setHTML(formatMult(pe_eff.step))
 		tmp.el.pe_eff.setTxt(formatMult(pe_eff.eff))
     }
+    
     else if (tmp.tab == 8) {
         if (tmp.stab[8] == 0) updateCoreHTML()
         else if (tmp.stab[8] == 1) {
@@ -584,6 +638,15 @@ function updateInfHTML() {
             }
         }
     }
+    let nm_eff = tmp.nmEffect
+    tmp.el.nm_scale.setTxt(getScalingName('nm'))
+    tmp.el.nm_lvl.setTxt(format(player.inf.nm,0)+(nm_eff.bonus.gte(1)?" + "+format(nm_eff.bonus,0):""))
+    tmp.el.nm_btn.setClasses({btn: true, locked: !INF.nm.can()})
+    tmp.el.nm_cost.setTxt(format(tmp.nmCost,0))
+    tmp.el.nm_step.setHTML(formatMult(nm_eff.step))
+    tmp.el.nm_eff.setTxt(formatMult(nm_eff.eff))
+    tmp.el.nm_base.setTxt(formatMass(player.inf.nm_base)+" "+player.inf.nm_base.formatGain(tmp.nm_base_gain,true))
+    tmp.el.nm_base_eff.setHTML("+"+tmp.nm_base_eff.format())
 }
 
 function setupInfUpgradesHTML() {

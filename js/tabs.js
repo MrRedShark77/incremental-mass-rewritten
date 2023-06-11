@@ -74,6 +74,7 @@ const TABS = {
             { id: "Core" },
             { id: "Core Effect" },
             { id: "Infinity Upgrades", style: "inf" },
+            { id: "Modificators" },
         ],
         9: [
             { id: "Options" },

@@ -326,6 +326,9 @@ function getScalingStart(type, name) {
 			if (hasBeyondRank(3,2)) start = start.add(1)
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 		}
+		else if (name='pe') {
+if (hasElement(252)) start = start.add(elemEffect(252))
+		}
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {

@@ -73,6 +73,7 @@ const MATTERS = {
             f = f.scaleEvery('FSS')
 
             if (hasElement(217)) f = f.mul(hasElement(238)?0.6:hasElement(234)?0.7:0.8)
+           if (player.dark.exotic_atom.tier >= 15) f = f.mul(exoticAEff(1,6))
 
             let x = Decimal.pow(100,Decimal.pow(f,1.5)).mul(1e43)
             return x
@@ -85,7 +86,7 @@ const MATTERS = {
             let x = f.div(1e43).max(1).log(100).root(1.5)
 
             if (hasElement(217)) x = x.div(hasElement(238)?0.6:hasElement(234)?0.7:0.8)
-
+            if (player.dark.exotic_atom.tier >= 15) x = x.div(exoticAEff(1,6))
             x = x.scaleEvery('FSS',true)
 
             if (hasTree('ct10')) x = x.div(treeEff('ct10'))

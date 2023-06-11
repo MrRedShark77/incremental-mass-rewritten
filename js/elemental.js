@@ -1326,7 +1326,7 @@ const ELEMENTS = {
             desc: `Maximum beyond ranks tier scales the start of theorem level's softcap.`,
             cost: E('e830000'),
             effect() {
-                let x = tmp.beyond_ranks.max_tier
+                let x = tmp.beyond_ranks.max_tier*(hasElement(250)?elemEffect(250):1)
                 return x
             },
             effDesc(x) { return "+"+format(x,1)+' later' },
@@ -1399,23 +1399,110 @@ const ELEMENTS = {
             cost: E('1e22'),
         },
         {
-            desc: `Boost Dark Shadows 4th effect by Infinity Points.`,
-            cost: E('e1e670'),
+            desc: `Boost Dark Rays 4th effect by Infinity Points.`,
+            cost: E('e1e640'),
             effect() {
-                let x = player.inf.points.log(6).log(2).add(1)
+                let x = player.inf.points.log10().log(2).div(10).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
         },
         {
             dark: true,
-            desc: `Add 5 C16 max completions per muonized effects amount.`,
+            desc: `Add 5 C16 max completions per Muon-Catalyzed Fusion Tier (starts at 12).`,
             cost: E('e4230000'),
             effect() {
                 let x = (player.dark.exotic_atom.tier-12)*5
                 return x
             },
             effDesc(x) { return "+"+format(x,0) },
+        },
+        {
+            desc: `Dark Ray's 1st effect is better by Corrupted Shards.`,
+            cost: E('e5e710'),
+            effect() {
+                let x = player.dark.c16.shard.max(1).root(0.1).add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,3) },
+        },
+        {
+            c16: true,
+            desc: `Dimensional Mass adds primordium particles.`,
+            cost: E('e1e38'),
+            effect() {
+                let x = player.inf.dim_mass.root(2.25).add(1)
+                return x
+            },
+            effDesc(x) { return "+"+format(x,3) },
+        },
+        {
+            inf: true,
+            desc: `Passively generate 100% of corrupted shards gained by best mass of black hole in C16.`,
+            cost: E('1e24'),
+        },
+        {
+            dark: true,
+            desc: `Add more C16 max completions per maximum beyond ranks.`,
+            cost: E('e8110000'),
+            effect() {
+                let x = tmp.beyond_ranks.max_tier*10
+                return x
+            },
+            effDesc(x) { return "+"+format(x,1) },
+        },
+        {
+            desc: `Infinity Points scales mass overflow and overflow^2 (works only outside of C16).`,
+            cost: E('e7e741'),
+            effect() {
+                let x = player.inf.points.max(1).root(0.25).add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x,3) },
+        },
+        {
+            c16: true,
+            desc: `Muonic Vanadium is better.`,
+            cost: E('e5.5e38'),
+        },
+        {
+            inf: true,
+            desc: `Second and Third Core Slot Theorem level will be based on max theorem level on infinity (Only if Theorem Type is 2nd: Protoversal,3rd:Einstein).`,
+            cost: E('1e26'),
+            effect() {
+                let x = player.inf.theorem_max.floor()
+                return x
+            },
+            effDesc(x) { return format(x,0)+" Level" },
+        },
+        {
+            dark: true,
+            desc: `Bitrinilium-230 effect is better based on Infinity Points.`,
+            cost: E('e8410000'),
+            effect() {
+                let x = player.inf.points.max(1).root(10).log10().div(3).add(1)
+                return x
+            },
+            effDesc(x) { return "x"+format(x,3) },
+        },
+        {
+            c16: true,
+            desc: `Add 1000 C16 max completions.`,
+            cost: E('e7.25e39'),
+        },
+        {
+            desc: `Scale Super Parallel Extruder later by Max Theorem's level.`,
+            cost: E('e1e756'),
+            effect() {
+                let x = player.inf.theorem_max.max(1).root(1.25).add(1).floor()
+                return x
+            },
+            effDesc(x) { return "+"+format(x,0)+' later' },
+        },
+        {
+            inf: true,
+            desc: `Unlock Modificators.`,
+            cost: E('1e27'),
         },
     ],
     /*
@@ -1463,7 +1550,7 @@ const ELEMENTS = {
             if (tmp.brUnl) u += 10
         }
 
-        if (tmp.brokenInf) u += 24
+        if (tmp.brokenInf) u += 35
         return u
     },
 }

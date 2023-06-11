@@ -1024,7 +1024,7 @@ const TREE_UPGS = {
             cost: E(100),
 
             effect() {
-                let x = overflow(tmp.qu.chroma_eff[2],10,0.5).root(3)
+                let x = overflow(tmp.qu.chroma_eff[2],10,0.5).root(3).softcap(40000000,0.1,0)
                 return x
             },
             effDesc(x) { return "x"+format(x) },

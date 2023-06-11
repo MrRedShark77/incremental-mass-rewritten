@@ -27,11 +27,11 @@ const DARK = {
         let a = player.dark.rays
         let x = {}
 
-        x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1))
+        x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1)).mul(hasElement(243)?elemEffect(243):1).softcap('e7000000',0.1,0)
 
         if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
         if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1).toNumber()
-        if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0,hasBeyondRank(3,12)).mul(hasElement(21,1)?muElemEff(21):1).floor()
+        if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0,hasBeyondRank(3,12)).mul(hasElement(21,1)?muElemEff(21):1).mul(hasElement(241)?elemEffect(241):1).floor()
 
         return x
     },
@@ -122,7 +122,7 @@ const DARK = {
         x.mass = hasCharger(4) ? overflow(a.add(1),10,0.25) : a.add(1).log10().add(1).root(2)
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
-        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1)).mul(hasElement(241)?elemEffect(241):1)
+        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1)).softcap(600000,0.25,0)
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
         if (!tmp.c16active && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
@@ -297,8 +297,7 @@ function updateDarkHTML() {
             eff = dtmp.rayEff
 
             e = getNextDarkEffectFromID(0) + `
-                Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
-            `
+                Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>`+eff.shadow.softcapHTML('e7000000')
 
             if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset per second`
             if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`

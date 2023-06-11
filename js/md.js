@@ -231,9 +231,15 @@ const MASS_DILATION = {
             if (player.md.break.upgs[7].gte(1)) x = x.mul(tmp.bd.upgs[7].eff||1)
             if (player.md.break.upgs[8].gte(1)) x = x.mul(tmp.bd.upgs[8].eff||1)
 
+            x = x.softcap(tmp.bd.massSoftcap1,0.2,0)
+
             return x
         },
-
+        gainSoftcap1() {
+            let s = E('e3000000')
+            
+            return s
+        },
         upgs: {
             buy(x) {
                 if (tmp.bd.upgs[x].can) {
@@ -360,7 +366,8 @@ const MASS_DILATION = {
                         return y.add(1).floor()
                     },
                     effect(y) {
-                        let x = Decimal.pow(2,y)
+                        let base = E(2)
+                        let x = Decimal.pow(base,y)
 
                         return x
                     },
@@ -455,7 +462,7 @@ function updateBDTemp() {
 
     bd.energyGain = MASS_DILATION.break.energyGain()
     bd.massGain = MASS_DILATION.break.massGain()
-
+    bd.massSoftcap1 = MASS_DILATION.break.gainSoftcap1()
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
         let upg = MASS_DILATION.break.upgs.ids[x]
         bd.upgs[x].cost = upg.cost(player.md.break.upgs[x])
@@ -503,7 +510,8 @@ function updateBDHTML() {
 
     tmp.el.bd_energy.setTxt(bd.energy.format(1)+" "+bd.energy.formatGain(tmp.bd.energyGain.mul(inf_gs)))
     tmp.el.bd_mass.setTxt(formatMass(bd.mass)+" "+bd.mass.formatGain(tmp.bd.massGain.mul(inf_gs),true))
-
+    tmp.el.bdSoft1.setDisplay(player.md.mass.gte(tmp.bd.massSoftcap1))
+    tmp.el.bdSoftStart1.setTxt(formatMass(tmp.bd.massSoftcap1))
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
         let upg = MASS_DILATION.break.upgs.ids[x]
         let unl = upg.unl?upg.unl():true

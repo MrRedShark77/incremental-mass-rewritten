@@ -203,7 +203,7 @@ const UPGS = {
                 if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
 
                 if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
-
+                if (player.inf.nm) step = step.add(tmp.nm_base_eff)
                 let ss = E(10)
 
                 let x = step.mul(xx).add(1).softcap(ss,0.5,0)

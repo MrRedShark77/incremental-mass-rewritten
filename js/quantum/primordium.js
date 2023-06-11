@@ -154,6 +154,7 @@ function updatePrimordiumTemp() {
         let pp = player.qu.prim.particles[i]
         let b = E(0)
         if (hasTree('ct12')) b = b.add(treeEff('ct12'))
+        if (hasElement(244)) b = b.add(elemEffect(244))
         if (tmp.c16active) {
             pp = E(0)
         }

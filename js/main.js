@@ -14,7 +14,7 @@ const ST_NAMES = [
 		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
 	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark','inf']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark', 'inf']
 
 const FORMS = {
     getPreInfGlobalSpeed() {
@@ -124,6 +124,11 @@ const FORMS = {
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
         if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
+        if (hasElement(247) && (!CHALS.inChal(16))) {
+            let p = elemEffect(247)
+            os = os.pow(p)
+            os2 = os2.pow(p)
+        }
 
         x = overflow(x,os,op)
 
@@ -335,7 +340,6 @@ const FORMS = {
             step = step.mul(tmp.dark.abEff.accelPow||1)
             if (hasElement(205)) step = step.mul(elemEffect(205))
             if (hasUpgrade('bh',19)) step = step.mul(upgEffect(2,19))
-
             let x = player.accelerator.mul(step).add(1)
             x = overflow(x,100,0.5)
             return {step: step, eff: x}
@@ -459,7 +463,7 @@ const FORMS = {
 
             let os2 = tmp.c16active ? E('ee6') : E('ee249')
             let op2 = E(0.25)
-            let os3 = tmp.c16active ? E('ee14') : E('ee1100')
+            let os3 = tmp.c16active ? E('ee15') : E('ee1100')
             let op3 = E(0.15)
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])

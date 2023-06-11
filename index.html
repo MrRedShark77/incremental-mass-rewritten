@@ -6,7 +6,7 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mrredshark77.github.io/incremental-mass-rewritten/" />
-    <meta property="og:title" content="IMR:NP [Re:] v0.7.0.3p2" />
+    <meta property="og:title" content="IMR:NP [Re:] v0.7.0.4" />
     <meta property="og:description" content="IMR:NP made by Seder3214." />
     <meta property="og:image" content="https://mrredshark77.github.io/incremental-mass-rewritten//images/thumbail.jpg" />
 
@@ -457,8 +457,9 @@
                             <button onclick="MASS_DILATION.break.toggle()" id="bd_btn" class="btn half_full bd tooltip"
                             tooltip-html="When breaking dilation, while in Big Rip, BH Condensers & Cosmic Rays are no longer nerfed by 8th QC modifier, 7th QC modifier is disabled, you can gain <b>Relativistic Energy</b> based on dilated mass. Relativistic Energy generates <b>Relativistic Mass</b>. Fixing Dilation resets your relativistic energy & its mass, also forces a Quantum reset.">Break Dilation</button><br><br>
                             <div class="table_center">
-                                <div id="bd_upg_table" class="table_center" style="width: 1000px;"></div>
-                            </div>
+                                <div id="bd_upg_table" class="table_center" style="width: 1000px;"></div><br>
+                            </div><br>
+                            <span id="bdSoft1" class="red">After <b id="bdSoftStart1">X</b> of Relativistic mass gain will softcap Relativistic mass gain!</span>
                         </div><div id="stab_frame4_4">
                             <button class="btn half_full tooltip" id="mcf_btn" tooltip-html="Tiering will result in forcing FSS reset." onclick="EXOTIC_ATOM.tier()">
                                 Muon-Catalyzed Fusion Tier 0<br>
@@ -599,6 +600,24 @@
                         </div><div id="stab_frame8_2">
                             <p>You have <b id="ip_amt">???</b> Infinity Points. Hover any upgrade to see its description.</p>
                             <div id="inf_upg_table"></div>
+                        </div><div id="stab_frame8_3">
+                            You have <h4 id="nm_base">X</h4> of Newton Fragments
+                            <div class="green">Which boosts Overpower Power by <h4 id="nm_base_eff">X</h4></div>
+                            <br>
+                            <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade">
+                                <div style="width: 300px">
+                                    <div class="resources">
+                                        <img src="images/nm.png">
+                                        <span style="margin-left: 5px; text-align: left;"><span id="nm_scale"></span>Newton Modificator [<span id="nm_lvl">X</span>]</span>
+                                    </div>
+                                </div><button id="nm_btn" class="btn" style="width: 300px;" onclick="INF.nm.buy()">Cost: <span id="nm_cost">X</span> Infinity Points</button>
+                                <button class="btn" style="width: 120px;" onclick="INF.nm.buyMax()">Buy Max</button>
+                                <button id="nm_auto" class="btn" style="width: 80px; display: none;" onclick="">OFF</button>
+                                <div style="margin-left: 5px; text-align: left; width: 400px">
+                                    Newton Modificator Power: <span id="nm_step">X</span><br>
+                                    Newton Modificator Effect: <span id="nm_eff">X</span> to Newton Fragments gain
+                                </div>
+                            </div>
                         </div>
                     </div><div id="tab_frame9">
                         <div id="stab_frame9_0">
@@ -619,7 +638,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten: New Path [Re:] - v0.7.0.3p2 - made by Seder3214<br>
+                            Incremental Mass Rewritten: New Path [Re:] - v0.7.0.4 - made by Seder3214<br>
                             Based on Incremental Mass Rewritten -  v0.7.0.1 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
