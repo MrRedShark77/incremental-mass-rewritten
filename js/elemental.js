@@ -1444,7 +1444,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Add more C16 max completions per maximum beyond ranks.`,
-            cost: E('e8110000'),
+            cost: E('e6400000'),
             effect() {
                 let x = tmp.beyond_ranks.max_tier*10
                 return x
@@ -1478,7 +1478,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Bitrinilium-230 effect is better based on Infinity Points.`,
-            cost: E('e8410000'),
+            cost: E('e7000000'),
             effect() {
                 let x = player.inf.points.max(1).root(10).log10().div(3).add(1)
                 return x
