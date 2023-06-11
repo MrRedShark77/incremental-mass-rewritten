@@ -1429,7 +1429,7 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Dimensional Mass adds primordium particles.`,
-            cost: E('e1e38'),
+            cost: E('e1e37'),
             effect() {
                 let x = player.inf.dim_mass.root(2.25).add(1)
                 return x
@@ -1444,7 +1444,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Add more C16 max completions per maximum beyond ranks.`,
-            cost: E('e6400000'),
+            cost: E('e6000000'),
             effect() {
                 let x = tmp.beyond_ranks.max_tier*10
                 return x
@@ -1463,7 +1463,7 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Muonic Vanadium is better.`,
-            cost: E('e5.5e38'),
+            cost: E('e1e38'),
         },
         {
             inf: true,
@@ -1478,7 +1478,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Bitrinilium-230 effect is better based on Infinity Points.`,
-            cost: E('e7000000'),
+            cost: E('e6500000'),
             effect() {
                 let x = player.inf.points.max(1).root(10).log10().div(3).add(1)
                 return x
