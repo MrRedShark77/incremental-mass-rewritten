@@ -488,8 +488,7 @@ function chooseTheorem(id,is_core=false) {
                 if (core[id] !== undefined && core[id] !== null) {
                     if (checkSwitchingCore(t_choosed,id)) {
                         if (isTheoremHigher(core[id],inv[t_choosed])) switchTheorems(t_choosed,id)
-                        else
-                            createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
+                        else createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
                             switchTheorems(t_choosed,id,true)
                         })
                         return
@@ -502,7 +501,7 @@ function chooseTheorem(id,is_core=false) {
             else if (checkSwitchingCore(id,t_choosed.split('c')[0])) {
                 if (isTheoremHigher(core[t_choosed.split('c')[0]],inv[id])) switchTheorems(id,t_choosed.split('c')[0])
                 else createConfirm(`Are you sure you want to pick theorem out of core?`,'pickout',()=>{
-                    switchTheorems(t_choosed.split('c')[0])
+                    switchTheorems(id,t_choosed.split('c')[0])
                 })
                 return
             }
