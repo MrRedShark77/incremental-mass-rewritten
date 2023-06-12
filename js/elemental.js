@@ -1538,7 +1538,7 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return "^"+format(x,0)+' later' },
-            cost: E('e9783000'),
+            cost: E('e9650000'),
         },
         {
             c16: true,
