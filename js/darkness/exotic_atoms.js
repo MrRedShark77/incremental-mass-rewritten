@@ -183,7 +183,7 @@ const MUONIC_ELEM = {
             cost: E('e855'),
             eff() {
                 let x = E(1)
-                if (tmp.exotic_atom.amount.gte('1e855')) x = tmp.exotic_atom.amount.max(1).div('1e855').log10().log10().add(1).softcap(1.5,0.01,0)
+                if (tmp.exotic_atom.amount.gte('1e855')) x = tmp.exotic_atom.amount.max(1).div('1e855').log10().log10().add(1).softcap(1.75,0.01,0)
                 return x.max(1)
             },
             effDesc: x=>"x"+format(x),
