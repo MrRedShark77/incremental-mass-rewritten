@@ -129,7 +129,14 @@ const FORMS = {
             os = os.pow(p)
             os2 = os2.pow(p)
         }
-
+        if (hasElement(254) && (!CHALS.inChal(16))) {
+            let p = elemEffect(254)
+            os3 = os3.pow(p)
+        }
+        if (hasElement(258) && (!CHALS.inChal(16))) {
+            let p = elemEffect(258)
+            os3 = os3.pow(p)
+        }
         x = overflow(x,os,op)
 
         x = overflow(x,os2,op2)
@@ -473,7 +480,10 @@ const FORMS = {
             if (hasPrestige(2,45)) os2 = os2.pow(prestigeEff(2,45))
 
             os = os.min(os3)
-
+            if (hasElement(257) && (!CHALS.inChal(16))) {
+                let p = elemEffect(247)
+                os3 = os3.pow(p)
+            }
             if (hasPrestige(2,8)) op = op.pow(prestigeEff(2,8))
 
             x = overflow(x,os,op)

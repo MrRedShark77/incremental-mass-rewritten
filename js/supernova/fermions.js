@@ -228,6 +228,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().add(1).log10().div(200).mul(t.softcap(8,0.5,0)).add(1)
+
                     return x.softcap(15,hasPrestige(1,300)?0.55:0.5,0)
                 },
                 desc(x) {

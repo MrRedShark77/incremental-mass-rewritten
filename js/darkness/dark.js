@@ -153,7 +153,7 @@ const DARK = {
         }
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
-        if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0)
+        if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,hasElement(260)?1:0.2,0)
         if (a.gte('e56000') && !tmp.c16active) x.ApQ_Overflow = Decimal.pow(10,a.div('e56000').log10().add(1).log10())
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
         if (a.gte('ee7')) {
@@ -286,7 +286,7 @@ function updateDarkHTML() {
                 if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
                 if (eff.csp) e += `<br>Boosts cosmic string's power by <b>x${eff.csp.format(3)}</b>`
                 if (eff.mexp) e += `<br>`+`Boosts all matters gain by <b>^${eff.mexp.format(3)}</b>`.corrupt(c16)
-                if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5)
+                if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(hasElement(260)?EINF:5)
                 if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`.corrupt(c16)
                 if (eff.fss) e += `<br>Final Star Shards are <b>${formatPercent(eff.fss-1)}</b> stronger`
                 if (eff.ea) e += `<br>Raises Exotic Atom's formula by <b>${format(eff.ea)}</b>`+eff.ea.softcapHTML(1.75)

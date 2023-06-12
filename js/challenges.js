@@ -166,6 +166,7 @@ const CHALS = {
         if (hasElement(242) && i==16) x = x.add(elemEffect(242))
         if (hasElement(246) && i==16) x = x.add(elemEffect(246))
         if (hasElement(251) && i==16) x = x.add(1000)
+        if (hasElement(259) && i==15) x = x.add(1000000)
         return x.floor()
     },
     getScaleName(i) {
@@ -480,7 +481,8 @@ const CHALS = {
         start: uni('e8.4e8'),
         effect(x) {
             let ret = x.root(hasTree("chal7a")?1.5:2)
-            return ret.softcap(50,0.5,0)
+            ret = ret.softcap(50,0.5,0)
+            return overflow(ret,1e68,0.5)
         },
         effDesc(x) { return "+"+format(x)+softcapHTML(x,50) },
     },

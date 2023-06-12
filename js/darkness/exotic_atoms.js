@@ -178,6 +178,16 @@ const MUONIC_ELEM = {
             desc: `Muonic Calcium-20's effect formula is better.`,
             cost: E('e745'),
         },
+        {
+            desc: `Boost Newton Modificator Power based on Exotic Atoms (starts at 1e855).`,
+            cost: E('e855'),
+            eff() {
+                let x = E(1)
+                if (tmp.exotic_atom.amount.gte('1e855')) x = tmp.exotic_atom.amount.max(1).div('1e855').log10().log10().add(1).softcap(1.5,0.01,0)
+                return x.max(1)
+            },
+            effDesc: x=>"x"+format(x),
+        },
 
         /*
         {
@@ -197,7 +207,7 @@ const MUONIC_ELEM = {
         if (tmp.inf_unl) u += 4
         if (hasInfUpgrade(9)) u += 3
 
-        if (tmp.brokenInf) u += 7
+        if (tmp.brokenInf) u += 8
         return u
     },
 }

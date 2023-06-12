@@ -74,7 +74,6 @@ const UNSTABLE_BH = {
         let x = tmp.unstable_bh.fvm_eff.eff||E(1)
 
         x = x.mul(exoticAEff(1,0))
-
         return x
     },
     getProduction(x,gain) {
@@ -178,6 +177,7 @@ let x = Decimal.pow(10,overflow(bh.max(1).log10(),1e9,0.5).div(100).root(hasElem
     if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 
     x = x.mul(exoticAEff(0,0))
+    if (player.inf.pm) x = x.mul(tmp.pm_base_eff)
 
     return x.floor()
 }

@@ -170,7 +170,6 @@ const UPGS = {
                 ret = overflow(ret,os,op)
 
                 ret = overflow(ret,os2,op2)
-
                 tmp.overflow.stronger = calcOverflow(o,ret,os)
                 tmp.overflow_start.stronger = [os,os2]
                 tmp.overflow_power.stronger = [op,op2]

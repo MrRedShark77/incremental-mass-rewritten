@@ -1360,6 +1360,7 @@ const ELEMENTS = {
             cost: E('e4e487'),
             effect() {
                 let x = player.inf.theorem_max.div(2).log(1.1).add(1)
+                if (hasPrestige(1,950)) x = x.pow(1.25)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1504,6 +1505,50 @@ const ELEMENTS = {
             desc: `Unlock Modificators.`,
             cost: E('3e26'),
         },
+        {
+            desc: `Mass overflow^3 starts later based on Newton Fragments (outside of C16).`,
+            effect() {
+                let x = player.inf.nm_base.max(1).root(1.25).add(1).floor()
+                x = x.softcap(1e18,0.01,0)
+                return x
+            },
+            effDesc(x) { return "^"+format(x,0)+` later.${elemEffect(254).gte(1e18)?` <span class='soft'>(softcapped)</span>`:``}`},
+            cost: E('e1e781'),
+        },
+        {
+            dark: true,
+            desc: `Unlock Valor.`,
+            cost: E('e9750000'),
+        },
+        {
+            inf: true,
+            desc: `Unlock Protoversal Modificator.`,
+            cost: E('2e27'),
+        },
+        {
+            desc: `Biquadseptuim-247 applies to BH mass overflow^3.`,
+            cost: E('e3e786'),
+        },
+        {
+            dark: true,
+            desc: `Mass overflow^3 starts later based on Protoversal Fragments (outside of C16).`,
+            effect() {
+                let x = player.inf.pm_base.max(1).root(0.65).add(1).floor()
+                return x
+            },
+            effDesc(x) { return "^"+format(x,0)+' later' },
+            cost: E('e9783000'),
+        },
+        {
+            c16: true,
+            desc: `Add 1000000 C15 max completions.`,
+            cost: E('e1e48'),
+        },
+        {
+            inf: true,
+            desc: `Remove the softcap of 7th Abyssal Blot effect.<br>Also, Fourth and Fifth Core Slot Theorem level will be based on max theorem level on infinity (Only if Theorem Type is 4th: Dalton,5th:Hawking)`,
+            cost: E('1e28'),
+        },
     ],
     /*
     {
@@ -1551,6 +1596,7 @@ const ELEMENTS = {
         }
 
         if (tmp.brokenInf) u += 35
+        if (hasElement(253)) u += 7
         return u
     },
 }

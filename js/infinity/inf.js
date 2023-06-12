@@ -376,6 +376,18 @@ const INF = {
             return x//.softcap(10,0.5,0)
         },
     },
+    pm_base: {
+        gain() {
+            if (!hasElement(256)) return E(0)
+            let x = tmp.pmEffect.eff||E(1)
+            return x
+        },
+        effect() {
+            let x = player.inf.pm_base.add(1).root(0.15).pow(2).add(1)
+
+            return x//.softcap(10,0.5,0)
+        },
+    },
     pe: {
         cost(i) { return Decimal.pow(1.2,i.scaleEvery('pe')).mul(1000).floor() },
         can() { return player.inf.points.gte(tmp.peCost) },
@@ -424,6 +436,38 @@ const INF = {
         },
         effect() {
             let t = player.inf.nm
+
+            let bonus = E(0)
+
+            let step = E(2)
+            if (hasPrestige(4,1)) step = step.mul(prestigeEff(4,1))
+            if (hasElement(26,1)) {
+                let p = muElemEff(26,1)
+                step = step.mul(p)
+            }
+            
+            let eff = step.pow(t.add(bonus))
+
+            return {step: step, eff: eff, bonus: bonus}
+        },
+    },
+    pm: {
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('pm')).mul(1e25).floor() },
+        can() { return player.inf.points.gte(tmp.pmCost) },
+        buy() {
+            if (this.can()) {
+                player.inf.points = player.inf.points.sub(tmp.pmCost).max(0)
+                player.inf.pm = player.inf.pm.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.inf.points = player.inf.points.sub(this.cost(tmp.pmBulk.sub(1))).max(0)
+                player.inf.pm = tmp.pmBulk
+            }
+        },
+        effect() {
+            let t = player.inf.pm
 
             let bonus = E(0)
 
@@ -478,7 +522,9 @@ function getInfSave() {
 
         dim_mass: E(0),
         nm_base: E(0),
+        pm_base: E(0),
         pe: E(0),
+        pm: E(0),
         nm: E(0),
     }
     //for (let i = 0; i < 4; i++) s.pre_theorem.push(createPreTheorem())
@@ -496,10 +542,16 @@ function updateInfTemp() {
     tmp.nmBulk = E(0)
     if (player.inf.points.gte(100)) tmp.nmBulk = player.inf.points.div(1e25).log(1.2).scaleEvery('nm',true).add(1).floor()
     tmp.nmEffect = INF.nm.effect()
+    tmp.pmCost = INF.nm.cost(player.inf.pm)
+    tmp.pmBulk = E(0)
+    if (player.inf.points.gte(100)) tmp.pmBulk = player.inf.points.div(1e25).log(1.2).scaleEvery('pm',true).add(1).floor()
+    tmp.pmEffect = INF.pm.effect()
     tmp.dim_mass_gain = INF.dim_mass.gain()
     tmp.dim_mass_eff = INF.dim_mass.effect()
     tmp.nm_base_gain = INF.nm_base.gain()
     tmp.nm_base_eff = INF.nm_base.effect()
+    tmp.pm_base_gain = INF.pm_base.gain()
+    tmp.pm_base_eff = INF.pm_base.effect()
     for (let r in INF.upgs) {
         r = parseInt(r)
 
@@ -570,8 +622,11 @@ player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
 if (hasElement(229) && player.inf.core[0].type == 'mass') player.inf.core[0].level = E(player.inf.theorem_max).floor()
 if (hasElement(249) && player.inf.core[1].type == 'proto') player.inf.core[1].level = E(player.inf.theorem_max).floor()
 if (hasElement(249) && player.inf.core[2].type == 'time') player.inf.core[2].level = E(player.inf.theorem_max).floor()
+if (hasElement(260) && player.inf.core[3].type == 'atom') player.inf.core[3].level = E(player.inf.theorem_max).floor()
+if (hasElement(260) && player.inf.core[4].type == 'bh') player.inf.core[4].level = E(player.inf.theorem_max).floor()
     player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
     player.inf.nm_base = player.inf.nm_base.add(tmp.nm_base_gain.mul(dt))
+    player.inf.pm_base = player.inf.pm_base.add(tmp.pm_base_gain.mul(dt))
     if (hasInfUpgrade(20)) player.inf.points = player.inf.points.add(tmp.IP_gain.mul(dt).mul(infUpgEffect(20)))
 }
 
@@ -647,6 +702,19 @@ function updateInfHTML() {
     tmp.el.nm_eff.setTxt(formatMult(nm_eff.eff))
     tmp.el.nm_base.setTxt(formatMass(player.inf.nm_base)+" "+player.inf.nm_base.formatGain(tmp.nm_base_gain,true))
     tmp.el.nm_base_eff.setHTML("+"+tmp.nm_base_eff.format())
+
+    let unl = hasElement(256)
+    tmp.el.pm_div.setDisplay(unl);
+    tmp.el.pm_base_div.setDisplay(unl);
+    let pm_eff = tmp.pmEffect
+    tmp.el.pm_scale.setTxt(getScalingName('nm'))
+    tmp.el.pm_lvl.setTxt(format(player.inf.pm,0)+(pm_eff.bonus.gte(1)?" + "+format(pm_eff.bonus,0):""))
+    tmp.el.pm_btn.setClasses({btn: true, locked: !INF.pm.can()})
+    tmp.el.pm_cost.setTxt(format(tmp.pmCost,0))
+    tmp.el.pm_step.setHTML(formatMult(pm_eff.step))
+    tmp.el.pm_eff.setTxt(formatMult(pm_eff.eff))
+    tmp.el.pm_base.setTxt(formatMass(player.inf.pm_base)+" "+player.inf.pm_base.formatGain(tmp.pm_base_gain,true))
+    tmp.el.pm_base_eff.setHTML("x"+tmp.pm_base_eff.format())
 }
 
 function setupInfUpgradesHTML() {

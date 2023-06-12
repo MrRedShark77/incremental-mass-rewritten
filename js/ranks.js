@@ -283,8 +283,8 @@ const CORRUPTED_PRES = [
 ]
 
 const PRESTIGES = {
-    names: ['prestige','honor','glory','renown'],
-    fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown'],
+    names: ['prestige','honor','glory','renown','valor'],
+    fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown','Valor'],
     baseExponent() {
         let x = 0
         if (hasElement(100)) x += tmp.elements.effect[100]
@@ -330,6 +330,9 @@ const PRESTIGES = {
             case 3:
                 x = y.div(fp).scaleEvery('prestige3',false).pow(1.25).mul(3).add(9)
                 break;
+                case 4:
+                    x = y.div(fp).scaleEvery('prestige4',false).pow(1.15).mul(6).add(14)
+                    break;
             default:
                 x = EINF
                 break;
@@ -351,6 +354,9 @@ const PRESTIGES = {
             case 3:
                 if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true).mul(fp).add(1)
                 break 
+                case 3:
+                    if (y.gte(14)) x = y.sub(14).div(6).max(0).root(1.15).scaleEvery('prestige4',true).mul(fp).add(1)
+                    break 
             default:
                 x = E(0)
                 break;
@@ -369,6 +375,7 @@ const PRESTIGES = {
         ()=>true,
         ()=>tmp.chal14comp||tmp.inf_unl,
         ()=>tmp.brUnl||tmp.inf_unl,
+        ()=>hasElement(255),
     ],
     noReset: [
         ()=>hasUpgrade('br',11)||tmp.inf_unl,
@@ -381,6 +388,7 @@ const PRESTIGES = {
         ()=>tmp.chal14comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
+        ()=>player.prestiges[4].gte(7)
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -432,6 +440,7 @@ const PRESTIGES = {
             "300": `Softcaps of Meta-Quark and Meta-Lepton are slightly weaker.`,
             400: `Each particle power's 1st effect is stronger.`,
             510: `Raise Kaon & Pion gains to the 1.1th power.`,
+            950: `Bitripentium-235 is raised to the 1.25th power.`,
         },
         {
             "1": `The requirement for prestige levels & honors are 15% lower.`,
@@ -451,6 +460,11 @@ const PRESTIGES = {
             "2": `Exotic Supernova starts x1.25 later every Renown.`,
             "4": `Corrupted shard gain is increased by +50% per Renown.`,
             "6": `Exotic Atoms boost their other resources.`,
+            "14": `.`,
+        },
+        {
+            "1": `Increase Newton Modificator Power is 1.25x stronger per Valor.`,
+            "7": `Automate Valor.`,
         },
     ],
     rewardEff: [
@@ -566,6 +580,12 @@ const PRESTIGES = {
             "6": [()=>{
                 let x = tmp.exotic_atom.amount.add(1).log10().add(1).mul(hasElement(22,1)?muElemEff(22):1)
                 x = x.softcap(40000,0.25,0)
+                return x
+            },x=>"x"+x.format()],
+        },
+        {
+            "1": [()=>{
+                let x = Decimal.pow(1.25,player.prestiges[4])
                 return x
             },x=>"x"+x.format()],
         },
