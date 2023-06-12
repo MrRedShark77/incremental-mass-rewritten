@@ -1508,8 +1508,8 @@ const ELEMENTS = {
         {
             desc: `Mass overflow^3 starts later based on Newton Fragments (outside of C16).`,
             effect() {
-                let x = player.inf.nm_base.max(1).root(1.25).add(1).floor()
-                x = x.softcap(1e18,0.01,0)
+                let x = player.inf.nm_base.max(1).root(.65).add(1).floor()
+                x = x.softcap(1e40,0.01,0)
                 return x
             },
             effDesc(x) { return "^"+format(x,0)+` later.${elemEffect(254).gte(1e18)?` <span class='soft'>(softcapped)</span>`:``}`},
@@ -1534,6 +1534,7 @@ const ELEMENTS = {
             desc: `Mass overflow^3 starts later based on Protoversal Fragments (outside of C16).`,
             effect() {
                 let x = player.inf.pm_base.max(1).root(0.65).add(1).floor()
+                x = x.softcap(1e30,0.01,0)
                 return x
             },
             effDesc(x) { return "^"+format(x,0)+' later' },
