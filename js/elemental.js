@@ -1518,7 +1518,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Unlock Valor.`,
-            cost: E('e9750000'),
+            cost: E('e9600000'),
         },
         {
             inf: true,
@@ -1527,7 +1527,7 @@ const ELEMENTS = {
         },
         {
             desc: `Biquadseptuim-247 applies to BH mass overflow^3.`,
-            cost: E('e3e786'),
+            cost: E('e3e783'),
         },
         {
             dark: true,
