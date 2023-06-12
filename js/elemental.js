@@ -1533,7 +1533,7 @@ const ELEMENTS = {
             dark: true,
             desc: `Mass overflow^3 starts later based on Protoversal Fragments (outside of C16).`,
             effect() {
-                let x = player.inf.pm_base.max(1).root(0.65).add(1).floor()
+                let x = player.inf.pm_base.max(1).root(0.15).add(1).floor()
                 x = x.softcap(1e22,0.01,0)
                 return x
             },
