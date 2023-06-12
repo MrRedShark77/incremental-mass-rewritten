@@ -1492,7 +1492,7 @@ const ELEMENTS = {
         },
         {
             desc: `Scale Super Parallel Extruder later by Max Theorem's level.`,
-            cost: E('e2e747'),
+            cost: E('e1e743'),
             effect() {
                 let x = player.inf.theorem_max.max(1).root(1.25).add(1).floor()
                 return x
