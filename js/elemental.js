@@ -1652,7 +1652,7 @@ const ELEMENTS = {
         }
 
         if (tmp.brokenInf) u += 35
-        if (hasElement(253)) u += 20
+        if (hasElement(253)) u += 16
         return u
     },
 }
