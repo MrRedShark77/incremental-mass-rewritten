@@ -361,7 +361,7 @@ const EXOTIC_ATOM = {
                 return x.toNumber()
             },x=>`Increase matter exponent by <b>+${format(x)}</b>`],
             [a=>{
-                if (player.dark.exotic_atom.tier >= 15) x = Decimal.pow(0.95,overflow(a.add(1).log10(),2,0.5).root(4)).div(tmp.am_mass_eff.max(1))
+                if (player.dark.exotic_atom.tier >= 15) x = Decimal.pow(0.95,overflow(a.add(1).log10(),2,0.5).root(4)).div(player.dark.matters.am?tmp.am_mass_eff.max(1):1)
 else x = E(0)
                 return x.toNumber()
             },x=>`Reduce FSS requirement by <b>${formatReduction(x)}</b>. Req: 15th Tier.`],

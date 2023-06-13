@@ -1589,16 +1589,16 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Bitritrium-233 is better.`,
-            cost: E('e3e53'),
+            cost: E('e5e52'),
         },
         {
             desc: `C15 reward is better.`,
-            cost: E('e5e879'),
+            cost: E('e5e875'),
         },
         {
             dark: true,
             desc: `Unlock Anti-Matters.`,
-            cost: E('e11680000'),
+            cost: E('e11500000'),
         },
         {
             inf: true,
@@ -1652,7 +1652,7 @@ const ELEMENTS = {
         }
 
         if (tmp.brokenInf) u += 35
-        if (hasElement(253)) u += 20
+        if (hasElement(253)) u += 16
         return u
     },
 }
