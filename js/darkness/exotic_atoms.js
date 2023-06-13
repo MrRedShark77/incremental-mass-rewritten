@@ -44,7 +44,7 @@ const MUONIC_ELEM = {
             eff() {
                 let c16 = tmp.c16active
                 let x = E(1)
-                for (let i = 1; i <= 15; i++) x = x.mul(Decimal.pow(c16?1.25:1.1,player.chal.comps[i].root(2)))
+                for (let i = 1; i <= 15; i++) x = x.mul(Decimal.pow(c16|| (CHALS.inChal(17))?1.25:1.1,player.chal.comps[i].root(2)))
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -133,6 +133,7 @@ const MUONIC_ELEM = {
             cost: E(Number.MAX_VALUE),
             eff() {
                 let x = tmp.exotic_atom.amount.div(Number.MAX_VALUE).max(1).log(hasElement(25,1)?1.001:1.1).add(1)
+                if (player.chal.comps[17].gte(1)) x = x.mul(player.chal.comps[17].mul(1.5).pow(0.25).add(1))
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -188,7 +189,10 @@ const MUONIC_ELEM = {
             },
             effDesc: x=>"x"+format(x),
         },
-
+        {
+            desc: `Change [Master Infinity] effect (Max Theorem's Level => <b>Corrupted Shards</b>).`,
+            cost: E('e870'),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -207,7 +211,7 @@ const MUONIC_ELEM = {
         if (tmp.inf_unl) u += 4
         if (hasInfUpgrade(9)) u += 3
 
-        if (tmp.brokenInf) u += 8
+        if (tmp.brokenInf) u += 9
         return u
     },
 }
@@ -242,7 +246,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490'),E('e628'),E('e650'),E('e1000')],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490'),E('e628'),E('e650'),E('e850')],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -277,6 +281,7 @@ const EXOTIC_ATOM = {
         if (hasBeyondRank(3,4)) xy = xy.mul(beyondRankEffect(3,4))
         if (hasInfUpgrade(13)) xy = xy.mul(infUpgEffect(13))
         if (hasElement(237)) xy = xy.mul(elemEffect(237))
+        if (player.inf.dm) xy = xy.mul(tmp.dm_base_eff)
         
         let x = xy.div(10)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
@@ -323,6 +328,11 @@ const EXOTIC_ATOM = {
                 else x = E(1)
                 return x.toNumber()
             },x=>`Increase Quantum Shards base by <b>x${format(x)}</b>. Req: 14th Tier`],
+            [a=>{
+                if (player.dark.exotic_atom.tier >= 16) x = Decimal.pow(0.95,a.add(10).log(5).pow(0.65).sub(1))
+                else x = E(1)
+                return x.toNumber()
+            },x=>`Reduce Hyper-Glory and Meta-Prestige Level scaling power by <b>${formatReduction(x)}</b>. Req: 16th Tier`],
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
@@ -351,7 +361,7 @@ const EXOTIC_ATOM = {
                 return x.toNumber()
             },x=>`Increase matter exponent by <b>+${format(x)}</b>`],
             [a=>{
-                if (player.dark.exotic_atom.tier >= 15) x = Decimal.pow(0.95,overflow(a.add(1).log10(),2,0.5).root(4))
+                if (player.dark.exotic_atom.tier >= 15) x = Decimal.pow(0.95,overflow(a.add(1).log10(),2,0.5).root(4)).div(tmp.am_mass_eff.max(1))
 else x = E(0)
                 return x.toNumber()
             },x=>`Reduce FSS requirement by <b>${formatReduction(x)}</b>. Req: 15th Tier.`],

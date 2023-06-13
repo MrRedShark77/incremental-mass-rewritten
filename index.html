@@ -6,7 +6,7 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mrredshark77.github.io/incremental-mass-rewritten/" />
-    <meta property="og:title" content="IMR:NP [Re:] v0.7.0.5p2" />
+    <meta property="og:title" content="IMR:NP [Re:] v0.7.0.6" />
     <meta property="og:description" content="IMR:NP made by Seder3214, based on Incremental Mass Rewritten made by MrRedShark77." />
     <meta property="og:image" content="https://mrredshark77.github.io/incremental-mass-rewritten//images/thumbail.jpg" />
 
@@ -358,7 +358,25 @@
                                     Parallel Extruder Effect: <span id="pe_eff">X</span> to dimensional mass gain
                                 </div>
                             </div>
-                        </div>
+                        </div><div id="stab_frame0_6">
+                        <div id='am_mass_div'><br>
+                            You have <h4 id="am_mass">X</h4> of Anti-Matter<br>
+                            <div class="green">Boosting 7th Pion effect by <h4 id="am_mass_eff">X</h4></div><br>
+                        </div><br>
+                        <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="am_div">
+                            <div style="width: 300px">
+                                <div class="resources">
+                                    <img src="images/am.png">
+                                    <span style="margin-left: 5px; text-align: left;"><span id="am_scale"></span>Antimatter Generator [<span id="am_lvl">X</span>]</span>
+                                </div>
+                            </div><button id="am_btn" class="btn" style="width: 300px;" onclick="MATTERS.am.buy()">Cost: <span id="am_cost">X</span> Antimatter</button>
+                            <button class="btn" style="width: 120px;" onclick="MATTERS.am.buyMax()">Buy Max</button>
+                            <button id="am_auto" class="btn" style="width: 80px; display: none;" onclick="">OFF</button>
+                            <div style="margin-left: 5px; text-align: left; width: 400px">
+                                Antimatter Generator Power: <span id="am_step">X</span><br>
+                                Antimatter Generator Effect: <span id="am_eff">X</span> to Antimatter gain
+                            </div>
+                        </div></div>
                     </div><div id="tab_frame1">
                         <div id="stab_frame1_0">
                             <div id="ranks_reward_btn" class="table_center"></div><br>
@@ -636,6 +654,24 @@
                                     Protoversal Modificator Effect: <span id="pm_eff">X</span> to Protoversal Fragments gain
                                 </div>
                             </div>
+                            <div id='dm_base_div'><br>
+                                You have <h4 id="dm_base">X</h4> of Dalton Fragments<br>
+                                <div class="green">Which boosts Kaons & Pions gains by <h4 id="dm_base_eff">X</h4></div><br>
+                            </div><br>
+                            <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="dm_div">
+                                <div style="width: 300px">
+                                    <div class="resources">
+                                        <img src="images/dalm.png">
+                                        <span style="margin-left: 5px; text-align: left;"><span id="dm_scale"></span>Dalton Modificator [<span id="dm_lvl">X</span>]</span>
+                                    </div>
+                                </div><button id="dm_btn" class="btn" style="width: 300px;" onclick="INF.dm.buy()">Cost: <span id="dm_cost">X</span> Infinity Points</button>
+                                <button class="btn" style="width: 120px;" onclick="INF.dm.buyMax()">Buy Max</button>
+                                <button id="dm_auto" class="btn" style="width: 80px; display: none;" onclick="">OFF</button>
+                                <div style="margin-left: 5px; text-align: left; width: 400px">
+                                    Dalton Modificator Power: <span id="dm_step">X</span><br>
+                                    Dalton Modificator Effect: <span id="dm_eff">X</span> to Dalton Fragments gain
+                                </div>
+                            </div>
                         </div>
                     </div><div id="tab_frame9">
                         <div id="stab_frame9_0">
@@ -656,7 +692,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten: New Path [Re:] - v0.7.0.5p2 - made by Seder3214<br>
+                            Incremental Mass Rewritten: New Path [Re:] - v0.7.0.6 - made by Seder3214<br>
                             Based on Incremental Mass Rewritten -  v0.7.0.1 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>

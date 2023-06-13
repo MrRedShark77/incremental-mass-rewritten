@@ -63,7 +63,7 @@ const SCALE_START = {
 		supernova: E(100),
 		fTier: E(1.25e4),
 		prestige0: E(3500),
-		prestige1: E(1000),
+		prestige1: E(3500),
 	},
 	exotic: {
 		rank: E(1e16),
@@ -141,7 +141,7 @@ const SCALE_POWER= {
 		supernova: 1.025,
 		fTier: 1.001,
 		prestige0: 1.0025,
-		prestige1: 1.05,
+		prestige1: 1.0025,
 	},
 	exotic: {
 		rank: 15,
@@ -508,6 +508,9 @@ function getScalingPower(type, name) {
 		else if (name=="prestige0") {
 			if (hasElement(154)) power = power.mul(0.9)
 		}
+		else if (name =='prestige1'){
+			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
+		}
 		else if (name=="tetr") {
 			if (hasElement(154)) power = power.mul(0.9)
 		}
@@ -539,7 +542,10 @@ function getScalingPower(type, name) {
 		if (name=='supernova') {
 			if (hasElement(78)) power = power.mul(0.8)
 		}
-	}
+		else if (name='prestige0') {
+			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
+		}
+ 	}
 	else if (type==4) {
 		if (name=='rank') {
 			if (hasElement(197)) power = power.mul(0.9)
@@ -599,8 +605,6 @@ function noScalings(type,name) {
 	}
 	else if (name=="prestige0") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
-	}
-	else if (name == 'prestige1'){
 	}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true

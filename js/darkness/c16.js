@@ -170,7 +170,7 @@ function setupC16HTML() {
 function corruptedShardGain() {
     let bh = player.bh.mass
 
-    if (hasElement(245)) bh = player.dark.c16.bestBH.max('e100')
+    if (hasElement(245) && (!CHALS.inChal(17))) bh = player.dark.c16.bestBH.max('e100')
    else if (!tmp.c16active || player.bh.mass.lt('e100')) return E(0)
 
 let x = Decimal.pow(10,overflow(bh.max(1).log10(),1e9,0.5).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))

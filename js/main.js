@@ -28,7 +28,7 @@ const FORMS = {
         let x = E(1), inf = tmp.preInfGlobalSpeed
         if (tmp.c16active && (hasElement(236))) return inf.mul(10000)
         if (tmp.c16active && (!hasElement(236))) return inf.div(100)
-
+        if (CHALS.inChal(17)) return inf.div(1e9)
         if (tmp.qu.mil_reached[1]) x = x.mul(10)
         if (quUnl()) x = x.mul(tmp.qu.bpEff)
         if (hasElement(103)) x = x.mul(tmp.elements.effect[103])
@@ -67,7 +67,7 @@ const FORMS = {
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) x = x.pow(tmp.chal.eff[3])
-        if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) {
+        if (tmp.c16active || CHALS.inChal(17)|| player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) {
             x = expMult(x,tmp.md.pen)
             if (hasElement(28)) x = x.pow(1.5)
         }
@@ -108,12 +108,12 @@ const FORMS = {
         if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
         let o = x
-        let os = tmp.c16active ? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
+        let os = tmp.c16active || CHALS.inChal(17)? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
         let op = E(.5)
-        let os2 = tmp.c16active ? E('ee11') : E('ee279')
+        let os2 = tmp.c16active || CHALS.inChal(17)? E('ee11') : E('ee279')
         let op2 = E(.25)
 
-        let os3 = tmp.c16active ? E('ee25') : E('ee800')
+        let os3 = tmp.c16active|| CHALS.inChal(17) ? E('ee25') : E('ee800')
         let op3 = E(.25)
 
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
@@ -124,16 +124,16 @@ const FORMS = {
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
         if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
-        if (hasElement(247) && (!CHALS.inChal(16))) {
+        if (hasElement(247) && (!CHALS.inChal(16))|| CHALS.inChal(17)) {
             let p = elemEffect(247)
             os = os.pow(p)
             os2 = os2.pow(p)
         }
-        if (hasElement(254) && (!CHALS.inChal(16))) {
+        if (hasElement(254) && (!CHALS.inChal(16)) || CHALS.inChal(17)) {
             let p = elemEffect(254)
             os3 = os3.pow(p)
         }
-        if (hasElement(258) && (!CHALS.inChal(16))) {
+        if (hasElement(258) && (!CHALS.inChal(16))|| CHALS.inChal(17)) {
             let p = elemEffect(258)
             os3 = os3.pow(p)
         }
@@ -356,7 +356,7 @@ const FORMS = {
     },
     rp: {
         gain() {
-            if (tmp.c16active || player.mass.lt(1e15) || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
+            if (tmp.c16active || CHALS.inChal(17)|| player.mass.lt(1e15) || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
             let gain = player.mass.div(1e15).root(3)
             if (player.ranks.rank.gte(14)) gain = gain.mul(2)
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())

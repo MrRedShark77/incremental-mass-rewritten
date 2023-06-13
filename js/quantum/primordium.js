@@ -155,7 +155,7 @@ function updatePrimordiumTemp() {
         let b = E(0)
         if (hasTree('ct12')) b = b.add(treeEff('ct12'))
         if (hasElement(244)) b = b.add(elemEffect(244))
-        if (tmp.c16active) {
+        if (tmp.c16active || (CHALS.inChal(17))) {
             pp = E(0)
         }
         else {
@@ -167,7 +167,7 @@ function updatePrimordiumTemp() {
         }
         tp.parts[i] = pp
         tp.bonus[i] = b
-        if (player.qu.rip.active || tmp.c16active || player.dark.run.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
+        if (player.qu.rip.active || tmp.c16active || (CHALS.inChal(17))|| player.dark.run.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
         tp.eff[i] = PRIM.particle.eff[i](pp.add(b).softcap(100,0.75,0).mul(pstr))
     }
 

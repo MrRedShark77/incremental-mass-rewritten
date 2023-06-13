@@ -7,7 +7,7 @@ const MASS_DILATION = {
         return x
     },
     onactive() {
-        if (tmp.c16active || player.dark.run.active) return
+        if (tmp.c16active || CHALS.inChal(17)|| player.dark.run.active) return
         if (player.md.active) player.md.particles = player.md.particles.add(tmp.md.rp_gain)
         player.md.active = !player.md.active
         ATOM.doReset()
@@ -19,7 +19,7 @@ const MASS_DILATION = {
         if (FERMIONS.onActive("01")) x = x.div(10)
         if (QCs.active()) x = x.mul(tmp.qu.qc_eff[4])
         if (hasElement(24) && hasPrestige(0,40)) x = x.mul(tmp.elements.effect[24])
-        if (tmp.c16active || player.dark.run.active) x = x.pow(mgEff(3))
+        if (tmp.c16active|| player.dark.run.active) x = x.pow(mgEff(3))
         return x
     },
     RPmultgain() {
@@ -197,7 +197,7 @@ const MASS_DILATION = {
         toggle() {
             let bd = player.md.break
 
-            if (bd.active) createConfirm("Are you sure you want to fix Dilation?",'bd',()=>{
+            if (bd.active ) createConfirm("Are you sure you want to fix Dilation?",'bd',()=>{
                 bd.active = false
         
                 bd.energy = E(0)
@@ -206,6 +206,7 @@ const MASS_DILATION = {
 
                 QUANTUM.enter(false,true,false,true)
             })
+            else if (CHALS.inChal(17)) bd.active = false
             else bd.active = true
         },
         energyGain() {

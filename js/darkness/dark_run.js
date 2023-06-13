@@ -2,7 +2,7 @@ const DARK_RUN = {
     mass_glyph_name: ['Cyrillic Glyph', 'Deutsch Glyph', 'Swedish Glyph', 'Chinese Glyph', 'Spanish Glyph', 'Slovak Glyph'],
 
     mass_glyph_eff(i) {
-        let x, g = (tmp.c16active ? i == 5 ? hasCharger(10)?5:10 : hasCharger(10)?50:100 : player.dark.run.glyphs[i]) / tmp.dark.glyph_weak
+        let x, g = (tmp.c16active || CHALS.inChal(17)? i == 5 ? hasCharger(10)?5:10 : hasCharger(10)?50:100 : player.dark.run.glyphs[i]) / tmp.dark.glyph_weak
 
         if (i < 4) x = 1/(g**0.5/100+1)
         else if (i == 4) x = [1/(g**0.5/100+1),1.1**(g**0.75)]
@@ -199,7 +199,7 @@ function updateDarkRunHTML() {
     tmp.el.mg_max_gain.setTxt(format(player.dark.run.gamount,0))
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         tmp.el["mass_glyph"+x].setHTML(
-            c16 ? x == 5 ? 10 : 100 : player.dark.run.glyphs[x]
+            c16|| CHALS.inChal(17)? x == 5 ? 10 : 100 : player.dark.run.glyphs[x]
             + (dra ? " (+" + format(tmp.dark.mass_glyph_gain[x],0) + ")" : dtmp.mg_passive[x]>0 ? " ["+format(dtmp.mg_passive[x],0)+"]" : ""))
         tmp.el["mass_glyph_tooltip"+x].setTooltip("<h3>"+DARK_RUN.mass_glyph_name[x]+"</h3><br class='line'>"+DARK_RUN.mass_glyph_effDesc[x](tmp.dark.mass_glyph_eff[x]))
     }

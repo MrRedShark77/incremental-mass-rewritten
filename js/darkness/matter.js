@@ -17,6 +17,7 @@ const MATTERS = {
         if (hasPrestige(2,22)) x = x.mul(prestigeEff(2,22))
         if (hasPrestige(1,139)) x = x.mul(prestigeEff(1,139))
         if (hasTree('ct15')) x = x.mul(treeEff('ct15'))
+        if (player.dark.matters.am) x = x.mul(tmp.am_mass_eff)
 
         if (x.lt(1)) return x
 
@@ -35,7 +36,45 @@ const MATTERS = {
 
         return x
     },
+    am: {
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('am')).mul(10).floor() },
+        can() { return player.dark.matters.am_mass.gte(tmp.amCost) },
+        buy() {
+            if (this.can()) {
+                player.dark.matters.am_mass = player.dark.matters.am_mass.sub(tmp.amCost).max(0)
+                player.dark.matters.am = player.dark.matters.am.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.dark.matters.am_mass = player.dark.matters.am_mass.sub(this.cost(tmp.amBulk.sub(1))).max(0)
+                player.dark.matters.am = tmp.amBulk
+            }
+        },
+        effect() {
+            let t = player.dark.matters.am
 
+            let bonus = E(0)
+
+            let step = E(1.5)
+            
+            let eff = step.mul(t.add(bonus)).add(1)
+
+            return {step: step, eff: eff, bonus: bonus}
+        },
+    },
+    am_mass: {
+        gain() {
+            if (!hasElement(267)) return E(0)
+            let x = MATTERS.am.effect().eff
+            return x
+        },
+        effect() {
+            let x = player.dark.matters.am_mass.add(1).log(4).root(3).div(10).add(1)
+
+            return x.softcap(1000000,0.1,0)
+        },
+    },
     firstUpgData(i) {
         let c16 = tmp.c16active
 
@@ -93,7 +132,6 @@ const MATTERS = {
 
             return x.add(1).floor()
         },
-
         reset(force = false) {
             if (force || tmp.matters.FSS_base.gte(tmp.matters.FSS_req)) {
                 if (!force) player.dark.matters.final = player.dark.matters.final.add(1)
@@ -146,7 +184,6 @@ function resetMatters() {
 function updateMattersHTML() {
     let c16 = tmp.c16active
     let inf_gs = tmp.preInfGlobalSpeed
-
     tmp.el.matter_exponent.setTxt(format(tmp.matters.exponent))
     tmp.el.matter_req_div.setDisplay(player.dark.matters.unls<14)
     if (player.dark.matters.unls<14) tmp.el.matter_req.setTxt(format(tmp.matters.req_unl))
@@ -197,7 +234,6 @@ function updateMattersTemp() {
     tmp.matters.FSS_base = MATTERS.final_star_shard.base()
     tmp.matters.FSS_req = MATTERS.final_star_shard.req()
     tmp.matters.FSS_eff = MATTERS.final_star_shard.effect()
-
     tmp.matters.str = 1
     if (hasBeyondRank(1,2)) tmp.matters.str *= beyondRankEffect(1,2)
 

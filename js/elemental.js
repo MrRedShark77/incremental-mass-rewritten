@@ -1020,7 +1020,7 @@ const ELEMENTS = {
             cost: E("1e141"),
             effect() {
                 let e = tmp.dark.shadowEff.en||E(1)
-                let x = expMult(e,0.5)
+                let x = expMult(e,hasElement(262)?0.525:0.5)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -1326,7 +1326,8 @@ const ELEMENTS = {
             desc: `Maximum beyond ranks tier scales the start of theorem level's softcap.`,
             cost: E('e830000'),
             effect() {
-                let x = tmp.beyond_ranks.max_tier*(hasElement(250)?elemEffect(250):1)
+                if (CHALS.inChal(17)) x = E(0)
+                else x = tmp.beyond_ranks.max_tier*(hasElement(250)?elemEffect(250):1)
                 return x
             },
             effDesc(x) { return "+"+format(x,1)+' later' },
@@ -1345,7 +1346,8 @@ const ELEMENTS = {
             desc: `Muon-Catalyzed Fusion Tier scales theorem softcap later.`,
             cost: E('2e18'),
             effect() {
-                let x = player.dark.exotic_atom.tier
+                if (CHALS.inChal(17)) x = E(0)
+                else x = player.dark.exotic_atom.tier*(hasElement(266)?2.5:1)
                 return x
             },
             effDesc(x) { return "+"+format(x,1)+' later' },
@@ -1432,7 +1434,8 @@ const ELEMENTS = {
             desc: `Dimensional Mass adds primordium particles.`,
             cost: E('e1e37'),
             effect() {
-                let x = player.inf.dim_mass.root(2.25).add(1)
+                if (CHALS.inChal(17)) x = E(0)
+                else x = player.inf.dim_mass.root(2.25).add(1)
                 return x
             },
             effDesc(x) { return "+"+format(x,3) },
@@ -1456,7 +1459,8 @@ const ELEMENTS = {
             desc: `Infinity Points scales mass overflow and overflow^2 (works only outside of C16).`,
             cost: E('e1e736'),
             effect() {
-                let x = player.inf.points.max(1).root(0.25).add(1)
+                if (CHALS.inChal(17)) x = E(1)
+                else x = player.inf.points.max(1).root(0.25).add(1)
                 return x
             },
             effDesc(x) { return "^"+format(x,3) },
@@ -1508,11 +1512,12 @@ const ELEMENTS = {
         {
             desc: `Mass overflow^3 starts later based on Newton Fragments (outside of C16).`,
             effect() {
-                let x = player.inf.nm_base.max(1).root(.65).add(1).floor()
-                x = x.softcap(1e30,0.01,0)
+                if (CHALS.inChal(17)) x = E(1)
+                else x = player.inf.nm_base.max(1).root(.65).add(1).floor()
+                x = x.softcap(hasElement(269)?1e300:1e30,0.01,0)
                 return x
             },
-            effDesc(x) { return "^"+format(x,0)+` later.${elemEffect(254).gte(1e18)?` <span class='soft'>(softcapped)</span>`:``}`},
+            effDesc(x) { return "^"+format(x,0)+` later.${elemEffect(254).gte(hasElement(269)?1e300:1e30)?` <span class='soft'>(softcapped)</span>`:``}`},
             cost: E('e1e781'),
         },
         {
@@ -1533,11 +1538,12 @@ const ELEMENTS = {
             dark: true,
             desc: `Mass overflow^3 starts later based on Protoversal Fragments (outside of C16).`,
             effect() {
-                let x = player.inf.pm_base.max(1).root(0.65).add(1).floor()
-                x = x.softcap(1e22,0.01,0)
+                if (CHALS.inChal(17)) x = E(1)
+                else x = player.inf.pm_base.max(1).root(0.55).add(1).floor()
+                x = x.softcap(hasElement(269)?1e300:1e22,0.01,0)
                 return x
             },
-            effDesc(x) { return "^"+format(x,0)+' later' },
+            effDesc(x) { return "^"+format(x,0)+` later.${elemEffect(254).gte(hasElement(269)?1e300:1e22)?` <span class='soft'>(softcapped)</span>`:``}` },
             cost: E('e9783000'),
         },
         {
@@ -1549,6 +1555,55 @@ const ELEMENTS = {
             inf: true,
             desc: `Remove the softcap of 7th Abyssal Blot effect.<br>Also, Fourth and Fifth Core Slot Theorem level will be based on max theorem level on infinity (Only if Theorem Type is 4th: Dalton,5th:Hawking)`,
             cost: E('1e28'),
+        },
+        {
+            inf: true,
+            desc: `Unlock Dalton Modificator.`,
+            cost: E('2e30'),
+        },
+        {
+            desc: `Unseptseptium-177 formula is better .`,
+            cost: E('e1e864'),
+        },
+        {
+            c16: true,
+            desc: `Infinity Points boosts mass overflow^3 in C16.`,
+            effect() {
+                if (CHALS.inChal(17)) x = E(1)
+                else x = player.inf.points.max(1).log(1.1).pow(2).add(1).floor()
+                return x
+            },
+            effDesc(x) { return "^"+format(x,0)+' later' },
+            cost: E('e1e51'),
+        },
+        {
+            dark: true,
+            desc: `Remove [Renown 6] softcap and raise its efffect by ^1.5.`,
+            cost: E('e10835000'),
+        },
+        {
+            inf: true,
+            desc: `Unlock Challenge 17.`,
+            cost: E('7e30'),
+        },
+        {
+            c16: true,
+            desc: `Bitritrium-233 is better.`,
+            cost: E('e3e53'),
+        },
+        {
+            desc: `C15 reward is better.`,
+            cost: E('e5e879'),
+        },
+        {
+            dark: true,
+            desc: `Unlock Anti-Matters.`,
+            cost: E('e11680000'),
+        },
+        {
+            inf: true,
+            desc: `Remove 258 and 254th effects softcaps.`,
+            cost: E('1e32'),
         },
     ],
     /*
@@ -1597,7 +1652,7 @@ const ELEMENTS = {
         }
 
         if (tmp.brokenInf) u += 35
-        if (hasElement(253)) u += 7
+        if (hasElement(253)) u += 20
         return u
     },
 }
@@ -1615,7 +1670,6 @@ const C16_ELEM = (()=>{
     for (let i in ELEMENTS.upgs) if (i>0&&ELEMENTS.upgs[i].c16) x.push(Number(i))
     return x
 })()
-
 function getElementId(x) {
     let log = Math.floor(Math.log10(x))
     let list = ["n", "u", "b", "t", "q", "p", "h", "s", "o", "e"]
@@ -1681,10 +1735,10 @@ for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
         })
     }
 }
-
+const OVERFLOWED_ELEMENTS = [222,230,233,245,247,254,258] // 40,64,67,150,199,200,204
 function isElemCorrupted(x,layer=0) { return layer == 0 && !tmp.elements.deCorrupt.includes(x) && CORRUPTED_ELEMENTS.includes(x) }
-
-function hasElement(x,layer=0) { return player.atom[["elements","muonic_el"][layer]].includes(x) && !(tmp.c16active && isElemCorrupted(x)) }
+function isElemOverflowed(x,layer=0) { return layer == 0 && OVERFLOWED_ELEMENTS .includes(x) }
+function hasElement(x,layer=0) { return player.atom[["elements","muonic_el"][layer]].includes(x) && !(tmp.c16active && isElemCorrupted(x))&& !(CHALS.inChal(17) && isElemOverflowed(x)) }
 
 function elemEffect(x,def=1) { return tmp.elements.effect[x]||def }
 
@@ -1755,7 +1809,7 @@ function setupElementsHTML() {
 }
 
 function updateElementsHTML() {
-    let tElem = tmp.elements, c16 = tmp.c16active
+    let tElem = tmp.elements, c16 = tmp.c16active,c17 = CHALS.inChal(17)
     let et = player.atom.elemTier, elayer = player.atom.elemLayer
 
     tmp.el.elemLayer.setDisplay(tmp.eaUnl)
@@ -1773,7 +1827,7 @@ function updateElementsHTML() {
         let eff = tElem[["effect","mu_effect"][elayer]]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
-        tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer)})
+        tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer),overflowed_text: c17 && isElemOverflowed(ch,elayer)})
         tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(eu.c16?" in Challenge 16":BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(eff[ch]):"")
     }
@@ -1801,8 +1855,8 @@ function updateElementsHTML() {
                     if (unl2) {
                         let eu = elem_const.upgs[x]
                         upg.setClasses(
-                            c16 && isElemCorrupted(x,elayer)
-                            ?{elements: true, locked: true, corrupted: true}
+                            c16 && isElemCorrupted(x,elayer) || (c17 && isElemOverflowed(x,elayer))
+                            ?{elements: true, locked: true, corrupted: true,overflowed: true}
                             :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf}
                         )
                     }

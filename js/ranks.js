@@ -297,7 +297,6 @@ const PRESTIGES = {
 
         if (hasBeyondRank(4,2)) x *= beyondRankEffect(4,2)
         if (tmp.c16active || player.dark.run.active) x /= mgEff(5)
-
         return x
     },
     base() {
@@ -312,7 +311,7 @@ const PRESTIGES = {
         if (tmp.dark.abEff.pb) x = x.mul(tmp.dark.abEff.pb)
 
         if (hasBeyondRank(2,1)) x = x.mul(beyondRankEffect(2,1))
-
+        if (player.chal.comps[17].gte(1)) x=x.mul(player.chal.comps[17].mul(2.15).pow(10.5).add(1).softcap(1e13,0.15,0))
         return x.sub(1)
     },
     req(i) {
@@ -460,11 +459,10 @@ const PRESTIGES = {
             "2": `Exotic Supernova starts x1.25 later every Renown.`,
             "4": `Corrupted shard gain is increased by +50% per Renown.`,
             "6": `Exotic Atoms boost their other resources.`,
-            "14": `.`,
         },
         {
             "1": `Increase Newton Modificator Power is 1.25x stronger per Valor.`,
-            "7": `Automate Valor.`,
+            "2": `Automate Valor.`,
         },
     ],
     rewardEff: [
@@ -579,9 +577,10 @@ const PRESTIGES = {
             },x=>"x"+x.format()],
             "6": [()=>{
                 let x = tmp.exotic_atom.amount.add(1).log10().add(1).mul(hasElement(22,1)?muElemEff(22):1)
-                x = x.softcap(40000,0.25,0)
-                return x
-            },x=>"x"+x.format()],
+                x = x.softcap(40000,hasElement(264)?1:0.25,0)
+                x = x.softcap(22000000,0.15,0)
+                return x.pow(hasElement(264)?1.5:1)
+            },x=>"x"+x.format()+(prestigeEff(3,6).gte(40000) && !hasElement(264)?` <span class='soft'>(softcapped)</span>`:'')+(prestigeEff(3,6).gte(22000000)? ` <span class='soft'>(softcapped^2)</span>`:'')],
         },
         {
             "1": [()=>{

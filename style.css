@@ -281,7 +281,11 @@ button {
 	color: white;
 	animation: corrupted_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
-
+.overflowed_text::after {
+	content: " [Overflowed]";
+	color: white;
+	animation: overflowed_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
 @keyframes corrupted_text {
 	0%, 100% {
 		text-shadow: -2px -2px 0px #5555ff, 2px 2px 0px #ff5555;
@@ -296,7 +300,20 @@ button {
 		text-shadow: 2px -2px 0px #5555ff, -2px 2px 0px #ff5555;
 	}
 }
-
+@keyframes overflowed_text {
+	0%, 100% {
+		text-shadow: -2px -2px 0px #9e9e9e, 2px 2px 0px #bebebe;
+	}
+	25% {
+		text-shadow: -2px 2px 0px #575757, 2px -2px 0px #646363;
+	}
+	50% {
+		text-shadow: 2px 2px 0px #afafaf, -2px -2px 0px #ffffff;
+	}
+	75% {
+		text-shadow: 2px -2px 0px #979797, -2px 2px 0px #585656;
+	}
+}
 .charged_text {
 	color: cyan;
 	text-shadow: -1px -1px 3px lightskyblue, 0px 0px 5px #878ffa, 1px 1px 3px blue;
@@ -550,7 +567,13 @@ button {
 	z-index: 1;
 	animation: corrupted_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
-
+.elements.overflowed {
+	border-color: white;
+	color: white;
+	box-shadow: 3px 3px 3px #b1b1b1, -3px -3px 3px #646464, 3px 3px 3px #bebdbd inset, -3px -3px 3px #6d6d6d inset;
+	z-index: 1;
+	animation: overflowed_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
 .elements.c16.bought {
 	background-color: #171717;
 }
@@ -590,7 +613,20 @@ button {
 		text-shadow: 2px -2px 0px #5555ff, -2px 2px 0px #ff5555;
 	}
 }
-
+@keyframes overflowed_div {
+	0%, 100% {
+		box-shadow: 3px 3px 3px #acacac, -3px -3px 3px #555555, 3px 3px 3px #ffffff inset, -3px -3px 3px #737374 inset;
+	}
+	25% {
+		box-shadow: -3px 3px 3px #525151, 3px -3px 3px #757575, -3px 3px 3px #afaeae inset, 3px -3px 3px #fefeff inset;
+	}
+	50% {
+		box-shadow: -3px -3px 3px #616060, 3px 3px 3px #d8d8da, -3px -3px 3px #807e7e inset, 3px 3px 3px #5b5b5c inset;
+	}
+	75% {
+		box-shadow: 3px -3px 3px #bbbbbb, -3px 3px 3px #2a2a2b, 3px -3px 3px #a8a8a8 inset, -3px 3px 3px #3e3e3f inset;
+	}
+}
 .btn {
 	cursor: pointer;
 	background-color: #444;

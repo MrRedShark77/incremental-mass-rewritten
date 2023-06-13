@@ -565,4 +565,5 @@ function updateCoreTemp() {
             eff[j] = t.eff[j](sc)
         }
     }
+    updateTheoremCore()
 }

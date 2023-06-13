@@ -169,7 +169,7 @@ function calcDark(dt) {
         player.dark.shadow = player.dark.shadow.add(tmp.dark.shadowGain.mul(dt))
 
         if (tmp.chal14comp) player.dark.abyssalBlot = player.dark.abyssalBlot.add(tmp.dark.abGain.mul(dt))
-
+if (hasElement(267)) player.dark.matters.am_mass = player.dark.matters.am_mass.add(tmp.am_mass_gain.mul(dt))
         if (tmp.dark.rayEff.passive) player.dark.rays = player.dark.rays.add(tmp.dark.gain.mul(dt).mul(tmp.dark.rayEff.passive))
 
         if (tmp.matterUnl) {
@@ -206,7 +206,12 @@ function calcDark(dt) {
 
 function updateDarkTemp() {
     let dtmp = tmp.dark
-
+    tmp.am_mass_gain = MATTERS.am_mass.gain()
+    tmp.am_mass_eff = MATTERS.am_mass.effect()
+    tmp.amCost = MATTERS.am.cost(player.dark.matters.am)
+    tmp.amBulk = E(0)
+    if (player.dark.matters.am_mass.gte(10)) tmp.amBulk = player.dark.matters.am_mass.div(10).log(1.2).scaleEvery('am',true).add(1).floor()
+    tmp.amEffect = MATTERS.am.effect()
     updateExoticAtomsTemp()
     updateMattersTemp()
     updateDarkRunTemp()
@@ -232,24 +237,19 @@ function updateDarkHTML() {
 
     let inf_gs = tmp.preInfGlobalSpeed
 
-    /*
-    let og = hasElement(118)
-    let unl = og || player.dark.unl
-
-	tmp.el.dark_div.setDisplay(unl)
-	if (unl) tmp.el.darkAmt.setHTML(player.dark.rays.format(0)+"<br>"+(og?dtmp.rayEff.passive?player.dark.rays.formatGain(dtmp.gain.mul(dtmp.rayEff.passive)):"(+"+dtmp.gain.format(0)+")":"(require Og-118)"))
-
-    unl = player.dark.matters.final.gt(0)
-	tmp.el.fss_div.setDisplay(unl)
-	if (unl) tmp.el.FSS2.setHTML(format(player.dark.matters.final,0)+"<br>(+"+(tmp.matters.FSS_base.gte(tmp.matters.FSS_req)?1:0)+")")
-
-	unl = player.dark.c16.first
-	tmp.el.corrupt_div.setDisplay(unl)
-	if (unl) tmp.el.corruptShard1.setHTML(format(player.dark.c16.shard,0)+"<br>(+"+tmp.c16.shardGain.format(0)+")")
-
-    unl = player.chal.comps[16].gte(1)
-	tmp.el.idk_div.setDisplay(unl)
-    */
+    if (tmp.tab == 0 && tmp.stab[0] == 6){
+        let unl2 = hasElement(267)
+        tmp.el.am_div.setDisplay(unl2);
+        tmp.el.am_mass_div.setDisplay(unl2);
+        let am_eff = tmp.amEffect
+        tmp.el.am_scale.setTxt(getScalingName('am'))
+        tmp.el.am_lvl.setTxt(format(player.dark.matters.am,0)+(am_eff.bonus.gte(1)?" + "+format(am_eff.bonus,0):""))
+        tmp.el.am_btn.setClasses({btn: true, locked: !MATTERS.am.can()})
+        tmp.el.am_cost.setTxt(format(tmp.amCost,0))
+        tmp.el.am_step.setHTML(formatMult(am_eff.step))
+        tmp.el.am_eff.setTxt(formatMult(am_eff.eff))
+        tmp.el.am_mass.setTxt(formatMass(player.dark.matters.am_mass)+" "+player.dark.matters.am_mass.formatGain(tmp.am_mass_gain,true))
+        tmp.el.am_mass_eff.setHTML("x"+tmp.am_mass_eff.format())}
 
     if (tmp.tab == 7) {
         if (tmp.stab[7] == 0) {
@@ -344,6 +344,8 @@ function getDarkSave() {
             upg: [],
             unls: 3,
             final: E(0),
+            am_mass: E(0),
+            am: E(0),
         },
 
         c16: {

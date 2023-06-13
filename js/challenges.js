@@ -107,11 +107,13 @@ const CHALS = {
     },
     enter(ch=player.chal.choosed) {
         if (player.chal.active == 0) {
-            if (ch == 16) {
+            if (ch == 17) {
+                INF.doReset()
+        }
+            else if (ch == 16) {
                 player.dark.c16.first = true
                 tmp.c16active = true
             }
-
             player.chal.active = ch
             this.reset(ch, false)
         } else if (ch != player.chal.active) {
@@ -136,6 +138,7 @@ const CHALS = {
         else if (x < 9) return "Entering this challenge will force atom reset."
         else if (x < 13) return "Entering challenge will supernova reset."
         else if (x < 16) return "Entering challenge will force a Darkness reset."
+        else if (x < 20) return "Entering challenge will force a Infinity reset."
         return "Entering challenge will force an FSS reset."
     },
     getMax(i) {
@@ -436,9 +439,11 @@ const CHALS = {
         effect(x) {
             let ret = x.root(hasTree("chal4a")?3.5:4).mul(0.1).add(1)
             ret = ret.softcap(21,hasElement(8,1)?0.253:0.25,0)
-            return overflow(ret,5e8,0.5)
+            ret = overflow(ret,5e8,0.5)
+            ret = overflow(ret,1e12,0.15)
+            return ret
         },
-        effDesc(x) { return "^"+format(x)+softcapHTML(x,21) },
+        effDesc(x) { return "^"+format(x)+softcapHTML(x,21)+(x.gte(1e12)?"<span class='overflowed_text'></span>":"") },
     },
     10: {
         unl() { return hasTree("chal5") },
@@ -484,7 +489,7 @@ const CHALS = {
             ret = ret.softcap(50,0.5,0)
             return overflow(ret,1e68,0.5)
         },
-        effDesc(x) { return "+"+format(x)+softcapHTML(x,50) },
+        effDesc(x) { return "+"+format(x)+softcapHTML(x,50)+ (x.gte(1e68)?"<span class='overflowed_text'></span>":"") },
     },
     13: {
         unl() { return hasElement(132) },
@@ -526,7 +531,7 @@ const CHALS = {
         pow: E(2),
         start: uni('e2e7'),
         effect(x) {
-            let ret = x.add(1).pow(2)
+            let ret = x.add(1).pow(hasElement(267)?5:2)
             return ret
         },
         effDesc(x) { return "^"+format(x,2)+" later" },
@@ -554,7 +559,29 @@ const CHALS = {
         },
         effDesc(x) { return "^"+format(x) },
     },
-    cols: 16,
+    17: {
+        unl() { return hasElement(265) },
+        title: "Weaker Theorems",
+        desc: `
+        • Some elements will be [Overflowed].<br>
+        • You can't gain Rage Points, Dark Matters.<br>
+        • You are trapped in Mass Dilation and Dark Run with 50 all glyphs (5 slovak glyphs). Break Dilation is off.<br>
+        • Primordium particles are disabled.<br>
+        • Pre-Quantum global speed is always set to /1e9.<br>
+        `,
+        reward: `Improve Muonic Calcium.<br><span class="yellow">Get more Prestige Base.</span>`,
+        max: E(100),
+        inc: E('e1.25e30'),
+        pow: E(4),
+        start: E('e1.25e30'),
+        effect(x) {
+            let step = x.mul(2.15).pow(10.5).add(1).softcap(1e13,0.15,0)
+            let ret = x.mul(1.5).pow(0.25).add(1)
+            return {ret: ret, step: step}
+        },
+        effDesc(x) { return "x"+format(x.ret)+" to Muonic Calcium<br>x"+format(x.step)+" to Prestige Base" },
+    },
+    cols: 17,
 }
 
 /*
