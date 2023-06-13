@@ -1589,11 +1589,11 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Bitritrium-233 is better.`,
-            cost: E('e3e53'),
+            cost: E('e5e52'),
         },
         {
             desc: `C15 reward is better.`,
-            cost: E('e5e879'),
+            cost: E('e5e875'),
         },
         {
             dark: true,
