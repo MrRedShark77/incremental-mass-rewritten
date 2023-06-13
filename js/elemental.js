@@ -1523,7 +1523,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Unlock Valor.`,
-            cost: E('e9750000'),
+            cost: E('e9600000'),
         },
         {
             inf: true,
@@ -1532,7 +1532,7 @@ const ELEMENTS = {
         },
         {
             desc: `Biquadseptuim-247 applies to BH mass overflow^3.`,
-            cost: E('e3e786'),
+            cost: E('e3e783'),
         },
         {
             dark: true,
@@ -1544,7 +1544,7 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return "^"+format(x,0)+` later.${elemEffect(254).gte(hasElement(269)?1e300:1e22)?` <span class='soft'>(softcapped)</span>`:``}` },
-            cost: E('e9783000'),
+            cost: E('e9650000'),
         },
         {
             c16: true,
