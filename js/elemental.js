@@ -1598,7 +1598,7 @@ const ELEMENTS = {
         {
             dark: true,
             desc: `Unlock Anti-Matters.`,
-            cost: E('e11680000'),
+            cost: E('e11500000'),
         },
         {
             inf: true,
