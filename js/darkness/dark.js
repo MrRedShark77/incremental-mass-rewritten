@@ -238,7 +238,7 @@ function updateDarkHTML() {
     let inf_gs = tmp.preInfGlobalSpeed
 
     if (tmp.tab == 0 && tmp.stab[0] == 6){
-        let unl2 = hasElement(267)
+        let unl2 = hasElement(268)
         tmp.el.am_div.setDisplay(unl2);
         tmp.el.am_mass_div.setDisplay(unl2);
         let am_eff = tmp.amEffect
