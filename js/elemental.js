@@ -1389,7 +1389,7 @@ const ELEMENTS = {
         {
             c16: true,
             desc: `Dimensional Mass adds free C16 max completions.`,
-            cost: E('e1.6e35'),
+            cost: E('e1.6e34'),
             effect() {
                 let x = player.inf.dim_mass.div(100).log(10).log(2).add(1)
                 return x
