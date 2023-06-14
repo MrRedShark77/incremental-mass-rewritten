@@ -29,9 +29,10 @@ const ATOM = {
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
         if (hasElement(6)) x = x.mul(tmp.elements.effect[6])
         if (hasElement(42)) x = x.mul(tmp.elements.effect[42])
-        if (hasElement(67)) x = x.mul(tmp.elements.effect[67])
         if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
         x = x.mul(tmp.md.upgs[9].eff)
+
+        if (hasElement(67)) x = hasElement(236) ? x.pow(elemEffect(67)) : x.mul(tmp.elements.effect[67])
         if (hasElement(47)) x = x.pow(1.1)
         if (hasPrestige(1,7)) x = x.pow(prestigeEff(1,7))
 

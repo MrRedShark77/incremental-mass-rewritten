@@ -559,7 +559,11 @@ function getScalingPower(type, name) {
 	if (!tmp.c16active) if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
 	if (PreQ_SCALES.includes(name) && type<3) power = power.mul(getEnRewardEff(5))
-	if (hasPrestige(0,388) && ['prestige0','prestige1'].includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
+
+	let p = ['prestige0','prestige1']
+	if (hasPrestige(3,10)) p.push('prestige2')
+	if (hasPrestige(0,388) && p.includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
+
 	if (hasPrestige(1,66) && name=="fTier") power = power.mul(0.8)
 	return power.max(type==3?0.5:0)
 }

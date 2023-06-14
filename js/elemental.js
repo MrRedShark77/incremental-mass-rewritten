@@ -313,7 +313,7 @@ const ELEMENTS = {
             effect() {
                 let x = player.stars.points.add(1).pow(0.5)
                 let y = hasPrestige(0,190)?player.stars.points.add(1).log10().add(1).log10().add(1):E(1)
-                return [x.softcap('e4e66',0.95,2),y]
+                return [x.softcap('e4e66',0.95,2).min('eee3'),y]
             },
             effDesc(x) { return format(x[0])+"x"+(hasPrestige(0,190)?", ^"+format(x[1]):"") },
         },
@@ -474,10 +474,11 @@ const ELEMENTS = {
             desc: `Collapsed stars boost quarks gain.`,
             cost: E('e1.7e6'),
             effect() {
-                let x = player.stars.points.add(1)
-                return overflow(x.softcap('e3e15',0.85,2),'ee100',0.5)
+                let x
+                x = hasElement(236) ? Decimal.pow(1.1,player.stars.points.add(1).log10().add(1).log10()) : overflow(player.stars.points.add(1).softcap('e3e15',0.85,2),'ee100',0.5)
+                return x
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return hasElement(236) ? "^"+format(x) : format(x)+"x" },
         },
         {
             desc: `Meta-Tickspeed starts 2x later.`,
@@ -1342,6 +1343,21 @@ const ELEMENTS = {
             dark: true,
             desc: `Remove the softcap of abyssal blot’s seven reward.`,
             cost: E('e1800000'),
+        },{
+            inf: true,
+            desc: `Passively gain 1% of best IP gained on infinity. The softcap of theorem’s level starts +5 later again.`,
+            cost: E('5e22'),
+        },{
+            desc: `Holmium-67 now provides an exponential boost.`,
+            cost: E('ee613'),
+        },{
+            c16: true,
+            desc: `[ct5] is slightly stronger.`,
+            cost: E('e5e34'),
+        },{
+            dark: true,
+            desc: `Abyssal blot’s eighth reward is even stronger.`,
+            cost: E('e6e6'),
         },
     ],
     /*
@@ -1390,7 +1406,7 @@ const ELEMENTS = {
         }
 
         if (tmp.brokenInf) u += 12
-        if (tmp.tfUnl) u += 4
+        if (tmp.tfUnl) u += 8
 
         return u
     },

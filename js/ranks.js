@@ -445,12 +445,14 @@ const PRESTIGES = {
             "34": `Pions boost Kaons gain at a reduced rate.`,
             "40": `[ct4]'s effect is better.`,
             45: `Unstable BH affects mass of black hole overflow^2 starting.`,
+            58: `Exotic Atom's reward strength is increased by +5% per beyond-ranks' maximum tier.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
             "2": `Exotic Supernova starts x1.25 later every Renown.`,
             "4": `Corrupted shard gain is increased by +50% per Renown.`,
             "6": `Exotic Atoms boost their other resources.`,
+            10: `Prestige Level 388 also applies to Glory scaling.`,
         },
     ],
     rewardEff: [
@@ -481,7 +483,7 @@ const PRESTIGES = {
                 return x
             },x=>formatReduction(x)+" weaker"],
             "607": [()=>{
-                let x = tmp.prestiges.base.max(1).pow(1.5).softcap('e7500',0.1,0)
+                let x = tmp.prestiges.base.max(1).pow(1.5).softcap('e7500',0.1,0).min('e50000')
                 return x
             },x=>"x"+format(x)+softcapHTML(x,'e7500')],
             "1337": [()=>{
@@ -553,6 +555,10 @@ const PRESTIGES = {
                 if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
                 return overflow(x,1e100,0.5)
             },x=>"^"+format(x)+" later"],
+            58: [()=>{
+                let x = tmp.beyond_ranks.max_tier*0.05
+                return x
+            },x=>"+"+formatPercent(x)],
         },
         {
             "2": [()=>{
@@ -843,7 +849,7 @@ const BEYOND_RANKS = {
         4: {
             1: [
                 ()=>{
-                    let x = overflow(tmp.prim.eff[7].div(5),1e6,0.5)
+                    let x = overflow(tmp.prim.eff[7].div(5),1e6,0.5).softcap(1e7,1/3,0)
 
                     return x
                 },

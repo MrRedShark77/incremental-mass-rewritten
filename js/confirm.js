@@ -126,6 +126,8 @@ const CONFIRMS_FUNCTION = {
             player.inf.total = player.inf.total.add(tmp.IP_gain)
         }
 
+        player.inf.best = player.inf.best.max(tmp.IP_gain)
+
         if (tmp.inf_reached) player.inf.theorem = player.inf.theorem.add(1)
 
         updateInfTemp()

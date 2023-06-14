@@ -327,6 +327,18 @@ debug.addRandomTheorem = (level=1,power=1,max_chance=CORE_CHANCE_MIN) => {
     addTheorem(CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)],c,level,power,max_chance)
 }
 
+debug.changeCoreFromBestLevel = () => {
+    let lvl = Math.floor(tmp.core_lvl), power = Math.floor(getPowerMult(tmp.core_lvl)*100)/100+1
+    
+    for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i]) {
+        player.inf.core[i].level=lvl
+        player.inf.core[i].power=power
+    }
+
+    updateTheoremCore()
+    updateCoreHTML()
+}
+
 function theoremEff(t,i,def=1) { return tmp.core_eff[t][i]||def }
 
 // setInterval(debug.generateTheorem,1000)
@@ -401,7 +413,7 @@ function setupCoreHTML() {
 }
 
 function getCoreChance() { return 1-CORE_CHANCE_BASE**Math.floor(tmp.core_lvl)**0.4 }
-function getPowerMult() { return Math.floor(tmp.core_lvl-1)**0.5/100 }
+function getPowerMult(lvl=tmp.core_lvl) { return Math.floor(lvl-1)**0.5/100 }
 
 function updateCoreHTML() {
     let reached = player.inf.reached

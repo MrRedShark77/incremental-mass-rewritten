@@ -322,7 +322,7 @@ const UPGS = {
             },
             11: {
                 unl() { return player.chal.unl },
-                desc: "Black Hole mass's gain is boosted by Rage Point.",
+                desc: "Black Hole mass's gain is boosted by Rage Powers.",
                 cost: E(1e72),
                 effect() {
                     let ret = player.rp.points.add(1).root(10).softcap('e4000',0.1,0)
@@ -541,7 +541,7 @@ const UPGS = {
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
-                    return overflow(ret,'ee108',0.25).min('ee110')
+                    return overflow(ret,'ee108',0.25).min(tmp.c16active?'ee100':'ee110')
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"

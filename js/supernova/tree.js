@@ -1024,7 +1024,7 @@ const TREE_UPGS = {
             cost: E(100),
 
             effect() {
-                let x = overflow(tmp.qu.chroma_eff[2],10,0.5).root(3)
+                let x = hasElement(237) ? expMult(tmp.qu.chroma_eff[2],0.5) : overflow(tmp.qu.chroma_eff[2],10,0.5).root(3)
                 return x
             },
             effDesc(x) { return "x"+format(x) },

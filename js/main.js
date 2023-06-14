@@ -14,7 +14,7 @@ const ST_NAMES = [
 		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
 	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark']
+const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark', 'inf']
 
 const FORMS = {
     getPreInfGlobalSpeed() {
@@ -116,16 +116,21 @@ const FORMS = {
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
-        os = os.min(os2)
-
-        if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
-
         if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
 
         if (hasElement(231)) {
             let p = elemEffect(231)
             os = os.pow(p)
             os2 = os2.pow(p)
+        }
+
+        os = os.min(os2)
+
+        if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
+
+        if (hasElement(24,1)) {
+            op = op.pow(.95)
+            op2 = op2.pow(.95)
         }
 
         x = overflow(x,os,op)
@@ -566,6 +571,7 @@ const FORMS = {
                 if (hasBeyondRank(2,4)) pow = pow.pow(tmp.accelEffect.eff)
                 
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
+
                 return {pow: pow, eff: eff}
             },
             bonus() {

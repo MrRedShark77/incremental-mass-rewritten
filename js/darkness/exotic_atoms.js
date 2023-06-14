@@ -33,7 +33,7 @@ const MUONIC_ELEM = {
             desc: `Kaon & Pion are doubled every muonic element bought.`,
             cost: E(1e15),
             eff() {
-                let x = Decimal.pow(2,player.atom.muonic_el.length)
+                let x = Decimal.pow(hasElement(26,1)?3:2,player.atom.muonic_el.length)
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -96,7 +96,7 @@ const MUONIC_ELEM = {
             cost: E(1e111),
             eff() {
                 if (!tmp.chal) return E(1)
-                let x = overflow(tmp.chal.eff[15],10,0.5).pow(2)
+                let x = hasElement(26,1)?tmp.chal.eff[15].root(2):overflow(tmp.chal.eff[15],10,0.5).pow(2)
                 return x
             },
             effDesc: x=>"^"+format(x),
@@ -147,6 +147,23 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>formatMult(x),
+        },{
+            desc: `Remove the cap of [Strange]’s reward. It now applies to 4th Photon Upgrade again.`,
+            cost: E('e600'),
+        },{
+            desc: `Mass Overflows^1-2 are 5% weaker.`,
+            cost: E('e640'),
+        },{
+            desc: `Increase exotic atom’s reward strength by +1.25% per infinity theorem.`,
+            cost: E('e778').mul(7/9),
+            eff() {
+                let x = player.inf.theorem.mul(.0125).toNumber()
+                return x
+            },
+            effDesc: x=>"+"+formatPercent(x),
+        },{
+            desc: `The base of Muonic Boron-5 is increased by +1. Muonic Phosphorus-15 is even stronger.`,
+            cost: E('e830'),
         },
 
         /*
@@ -168,7 +185,7 @@ const MUONIC_ELEM = {
         if (hasInfUpgrade(9)) u += 3
 
         if (tmp.brokenInf) u += 2
-        if (tmp.tfUnl) u += 2
+        if (tmp.tfUnl) u += 6
 
         return u
     },
@@ -323,10 +340,17 @@ function updateExoticAtomsTemp() {
     tea.amount = EXOTIC_ATOM.getAmount()
     tea.gain = EXOTIC_ATOM.gain()
 
+    let s = 1
+
+    if (hasPrestige(2,58)) s += prestigeEff(2,58,0)
+    if (hasElement(25,1)) s += muElemEff(25,0)
+
+    tea.strength = s
+
     tea.eff = [[],[]]
     for (let i = 0; i < 2; i++) {
         let m = EXOTIC_ATOM.milestones[i]
-        let a = player.dark.exotic_atom.amount[i]
+        let a = player.dark.exotic_atom.amount[i].pow(s)
         for (let j = 0; j < m.length; j++) if (m[j] && j < Math.floor((t+1-i)/2)) tea.eff[i][j] = m[j][0](a)
     }
 }
@@ -348,6 +372,7 @@ function updateExoticAtomsHTML() {
         let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0].mul(inf_gs)),ea.amount[1].add(tea.gain[1].mul(inf_gs))).sub(tea.amount)
 
         tmp.el.ext_atom.setHTML(tea.amount.format(0)+" "+tea.amount.formatGain(g))
+        tmp.el.ea_strength.setHTML(formatPercent(tea.strength))
 
         for (let i = 0; i < 2; i++) {
             tmp.el['ea_amt'+i].setHTML(ea.amount[i].format(2)+" "+ea.amount[i].formatGain(tea.gain[i].mul(inf_gs)))

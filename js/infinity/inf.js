@@ -185,7 +185,8 @@ const INF = {
     goInf(limit=false) {
         if (player.mass.gte(this.req)) {
             if (limit || player.inf.pt_choosed >= 0) CONFIRMS_FUNCTION.inf(limit)
-            else createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
+            else if (player.confirms.inf) createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
+            else CONFIRMS_FUNCTION.inf(limit)
         }
     },
     level() {
@@ -413,6 +414,7 @@ function getInfSave() {
         theorem: E(0),
         total: E(0),
         points: E(0),
+        best: E(0),
         reached: false,
 
         core: [],
@@ -460,6 +462,7 @@ function updateInfTemp() {
     tmp.inf_level_ss = 5
 
     if (hasElement(222)) tmp.inf_level_ss += 5
+    if (hasElement(235)) tmp.inf_level_ss += 5
 
     tmp.IP_gain = INF.gain()
     tmp.inf_limit = INF.limit()
@@ -511,6 +514,13 @@ function calcInf(dt) {
         player.dark.c16.shard = player.dark.c16.shard.add(cs.mul(dt))
         player.dark.c16.totalS = player.dark.c16.totalS.add(cs.mul(dt))
     }
+
+    if (hasElement(235)) {
+        let ig = player.inf.best.div(1e2).mul(dt)
+
+        player.inf.points = player.inf.points.add(ig)
+        player.inf.total = player.inf.total.add(ig)
+    }
 }
 
 function setupInfHTML() {
@@ -547,7 +557,7 @@ function updateInfHTML() {
             tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")
         }
         else if (tmp.stab[8] == 2) {
-            tmp.el.ip_amt.setHTML(player.inf.points.format(0))
+            tmp.el.ip_amt.setHTML(player.inf.points.format(0) + (hasElement(235)?" "+player.inf.points.formatGain(player.inf.best.div(1e2)):""))
 
             for (let r in INF.upgs) {
                 r = parseInt(r)
