@@ -374,7 +374,7 @@ function getTheoremPreEffects(data,s,p,level) {
     let e = ""
     for (let i = 0; i < 4; i++) if (s[i]) e += CORE[t].preEff[i]+"<br>"
     e += `(Based on <b>${CORE[t].res}</b>)`
-    if (tmp.tfUnl) e += `<br class='line'><b>+${format(calcFragmentBase(data,s,p,level),0)}</b> fragment base`
+    if (tmp.tfUnl) e += `<br class='line'>Form into <b>+${format(calcFragmentBase(data,s,p,level),0)}</b> fragment base`
     return e
 }
 
