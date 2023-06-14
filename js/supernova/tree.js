@@ -659,7 +659,7 @@ const TREE_UPGS = {
             cost: E(100),
             effect() {
                 let x = tmp.tickspeedEffect?tmp.tickspeedEffect.eff_bottom.add(1).log10().add(1).log10().add(1).pow(3):E(1)
-                return x
+                return overflow(x,5e8,0.1)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -694,7 +694,7 @@ const TREE_UPGS = {
             cost: E(1e21),
             effect() {
                 let x = tmp.qu.qc_s_eff.max(1)
-                return x
+                return overflow(x,'1e2050',0.1)
             },
             effDesc(x) { return format(x,1)+"x" },
         },

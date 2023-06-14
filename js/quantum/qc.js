@@ -1,7 +1,7 @@
 const QCs = {
     active() { return player.qu.qc.active || player.qu.rip.active || CHALS.inChal(14) || CHALS.inChal(15) || tmp.c16active || player.dark.run.active },
     getMod(x) { return CHALS.inChal(15) ? [10,5,10,10,10,10,10,10][x] : tmp.c16active || player.dark.run.active ? 8 : CHALS.inChal(14) ? 5 : player.qu.rip.active ? BIG_RIP_QC[x] : player.qu.qc.mods[x] },
-    incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),10) },
+    incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),tmp.qu.qc_max)},
     enter() {
         if (!player.qu.qc.active) {
             let is_zero = true
@@ -14,39 +14,53 @@ const QCs = {
         if (player.qu.qc.active) CONFIRMS_FUNCTION.enterQC()
         else createConfirm("Are you sure to enter the Quantum Challenge? Entering it will force reset!",'qc',CONFIRMS_FUNCTION.enterQC)
     },
+    GetMaxModifications() {
+        let x = E(10)
+        if (hasElement(36,1)) x = x.add(muElemEff(36))
+        return x
+    },
     names: ["Black Dwarf","Time Anomaly","Hypertiered","Melted Interactions","Intense Catalyst","Ex-Challenge","Spatial Dilation","Extreme Scaling"],
     ctn: [
         {
             eff(i) {
-                return [1-0.03*i,2/(i+2)]
+                return [E(1-0.03*i).max(0),2/(i+2)]
             },
             effDesc(x) { return `<b>^${format(x[0])}</b> to exponent of all-star resources.<br><b>^${format(x[1])}</b> to strength of star generators.` },
         },{
             eff(i) {
+                if(i>=35)return E(2).pow(i**5/5000)
+				if(i>=11)return E(2).pow(i**5/1000)
                 let x = E(2).pow(i**2)
                 return x
             },
             effDesc(x) { return `<b>/${format(x,0)}</b> to pre-Quantum global speed.` },
         },{
             eff(i) {
+                if(i>=11)return i**3.5*0.15+1
                 let x = i**1.5*0.15+1
                 return x
             },
             effDesc(x) { return `<b>x${format(x)}</b> to requirements of any Fermions.` },
         },{
             eff(i) {
-                let x = 0.9**(i**1.25)
-                return x
+                if(i>=51)return 0.9**(i**6.25/8000)
+				if(i>=11)return 0.9**(i**3.25/100)
+                let x = E(0.9**(i**1.25))
+                return x.max(0)
             },
             effDesc(x) { return `<b>^${format(x)}</b> to multiplier from Bosonic & Radiation resources.` },
         },{
             eff(i) {
-                let x = 0.8**(i**1.25)
-                return x
+                if(i>=51)return 0.8**(i**3.25/800)
+				if(i>=11)return 0.8**(i**3.25/100)
+                let x = E(0.8**(i**1.25))
+                return x.max(0)
             },
             effDesc(x) { return `<b>^${format(x)}</b> to multiplier from pre-Supernova resources, except all star resources.` },
         },{
             eff(i) {
+                
+                if(i>=11)return Math.min(1.2**(i**4/10),1e300)
                 let x = 1.2**i
                 return x
             },
@@ -54,6 +68,7 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(163)) i /= 2
+                if(i>=11)return i**4.5/2000+1
                 let x = i**1.5/2+1
                 return x
             },
@@ -61,6 +76,8 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
+                if(i>=17)return [0.49,i**8/10000+1]
+				if(i>=11)return [0.49,i**4/10000+1]
                 let x = [1-0.05*i,i/10+1]
                 return x
             },
@@ -127,7 +144,7 @@ function setupQCHTML() {
         table += `
         <div style="margin: 5px;">
         <div style="margin: 5px" id='qc_tooltip${x}' class="tooltip" tooltip-html="${QCs.names[x]}"><img style="cursor: pointer" src="images/qcm${x}.png"></div>
-        <div><span id="qcm_mod${x}">0</span>/10</div>
+        <div><span id="qcm_mod${x}">0</span>/<span id='qcm_max${x}'>0</spam></div>
         <div id="qcm_btns${x}"><button onclick="QCs.incMod(${x},-1)">-</button><button onclick="QCs.incMod(${x},1)">+</button></div>
         </div>
         `
@@ -163,7 +180,6 @@ function updateQCModPresets() {
     tmp.el.QC_Presets_table.setHTML(table)
     setupTooltips()
 }
-
 function updateQCTemp() {
     tmp.qu.qc_s_b = E(2)
     if (hasTree("qf4")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
@@ -172,6 +188,7 @@ function updateQCTemp() {
     if (hasElement(146)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(elemEffect(146,0))
 
     if (hasElement(226)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.pow(elemEffect(226))
+    if (hasElement(35,1))tmp.qu.qc_s_b = tmp.qu.qc_s_b.mul(muElemEff(35))
     tmp.qu.qc_s_b = tmp.qu.qc_s_b.mul(exoticAEff(0,6))
 
     let weak = 1
@@ -189,6 +206,7 @@ function updateQCTemp() {
     }
     tmp.qu.qc_s = s
     tmp.qu.qc_s_bouns = bs
+    tmp.qu.qc_max = QCs.GetMaxModifications()
 }
 
 function updateQCHTML() {
@@ -205,7 +223,7 @@ function updateQCHTML() {
         for (let x = 0; x < QCs_len; x++) {
             tmp.el["qcm_mod"+x].setTxt(QCs.getMod(x))
             tmp.el["qcm_btns"+x].setDisplay(!QCs.active())
-
+            tmp.el["qcm_max"+x].setTxt(tmp.qu.qc_max)
             tmp.el['qc_tooltip'+x].setTooltip(
                 `
                 <h3>${QCs.names[x]}</h3>

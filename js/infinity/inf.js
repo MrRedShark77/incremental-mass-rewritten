@@ -20,7 +20,8 @@ const INF = {
         for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
 
         player.atom.elements = e
-        player.atom.muonic_el = []
+        if (hasElement(30,1)) player.atom.muonic_el = [30]
+       else player.atom.muonic_el = []
         for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)
         player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
         "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
@@ -371,10 +372,16 @@ const INF = {
             return x
         },
         effect() {
-            let x = player.inf.nm_base.add(1).log(15).div(300).softcap(0.15,0.1,0)
+            let x = player.inf.nm_base.add(1).log(15).div(300).softcap(tmp.nm_base_soft,0.1,0)
 
             return x//.softcap(10,0.5,0)
         },
+        soft() {
+            let soft = E(0.15)
+            if (hasElement(32,1)) soft = soft.add(muElemEff(32))
+            if (hasElement(272)) soft = soft.add(0.5)
+            return soft
+        }
     },
     pm_base: {
         gain() {
@@ -383,7 +390,7 @@ const INF = {
             return x
         },
         effect() {
-            let x = player.inf.pm_base.add(1).root(0.15).pow(2).add(1)
+            let x = player.inf.pm_base.add(1).root(0.15).pow(hasElement(271)?2.25:2).add(1)
 
             return x//.softcap(10,0.5,0)
         },
@@ -396,10 +403,15 @@ const INF = {
         },
         effect() {
             let x = player.inf.dm_base.add(1).root(3).add(1)
-            x = x.softcap(10000000,0.001,0)
+            x = x.softcap(tmp.dm_base_soft,0.001,0)
 
             return x//.softcap(10,0.5,0)
         },
+        soft() {
+            let soft = E(10000000)
+            if (hasElement(270)) soft = soft.pow(2)
+            return soft
+        }
     },
     pe: {
         cost(i) { return Decimal.pow(1.2,i.scaleEvery('pe')).mul(1000).floor() },
@@ -600,6 +612,8 @@ function updateInfTemp() {
     tmp.pm_base_eff = INF.pm_base.effect()
     tmp.dm_base_gain = INF.dm_base.gain()
     tmp.dm_base_eff = INF.dm_base.effect()
+    tmp.nm_base_soft = INF.nm_base.soft()
+    tmp.dm_base_soft = INF.dm_base.soft()
     for (let r in INF.upgs) {
         r = parseInt(r)
 
@@ -759,7 +773,7 @@ function updateInfHTML() {
     tmp.el.nm_step.setHTML(formatMult(nm_eff.step))
     tmp.el.nm_eff.setTxt(formatMult(nm_eff.eff))
     tmp.el.nm_base.setTxt(formatMass(player.inf.nm_base)+" "+player.inf.nm_base.formatGain(tmp.nm_base_gain,true))
-    tmp.el.nm_base_eff.setHTML("+"+tmp.nm_base_eff.format()+softcapHTML(0.15))
+    tmp.el.nm_base_eff.setHTML("+"+tmp.nm_base_eff.format()+(tmp.nm_base_eff.gte(tmp.nm_base_soft)?`<span class='soft'> (softcapped)`:'')+"</br><span class='infsoftcap_text'>Effect will be softcapped at "+format(tmp.nm_base_soft)+"</span>")
 
     let unl = hasElement(256)
     tmp.el.pm_div.setDisplay(unl);
@@ -785,7 +799,7 @@ function updateInfHTML() {
     tmp.el.dm_step.setHTML(formatMult(dm_eff.step))
     tmp.el.dm_eff.setTxt(formatMult(dm_eff.eff))
     tmp.el.dm_base.setTxt(formatMass(player.inf.dm_base)+" "+player.inf.dm_base.formatGain(tmp.dm_base_gain,true))
-    tmp.el.dm_base_eff.setHTML("x"+tmp.dm_base_eff.format()+softcapHTML(10000000))
+    tmp.el.dm_base_eff.setHTML("x"+tmp.dm_base_eff.format()+(tmp.dm_base_eff.gte(tmp.dm_base_soft)?"<span class='soft'>(softcapped)</span>":'')+"</br><span class='infsoftcap_text'>Effect will be softcapped at "+format(tmp.dm_base_soft)+"</span>")
 }
 
 function setupInfUpgradesHTML() {

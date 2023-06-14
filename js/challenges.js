@@ -569,7 +569,7 @@ const CHALS = {
         • Primordium particles are disabled.<br>
         • Pre-Quantum global speed is always set to /1e9.<br>
         `,
-        reward: `Improve Muonic Calcium.<br><span class="yellow">Get more Prestige Base.</span>`,
+        reward: `Improve Muonic Calcium. <span class="yellow">Get more Prestige Base.</span><br><span class='orange'>At 25 completions, unlock ???</span>`,
         max: E(100),
         inc: E('e1.25e30'),
         pow: E(4),

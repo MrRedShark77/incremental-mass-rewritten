@@ -21,6 +21,7 @@ const FORMS = {
         let x = E(1)
         
         if (tmp.inf_unl) x = x.mul(10).mul(theoremEff('time',0))
+        if (hasElement(29,1)) x = x.mul(muElemEff(29))
 
         return x
     },
@@ -136,6 +137,12 @@ const FORMS = {
         if (hasElement(258) && (!CHALS.inChal(16))|| CHALS.inChal(17)) {
             let p = elemEffect(258)
             os3 = os3.pow(p)
+        }
+        if (!CHALS.inChal(16)|| CHALS.inChal(17)) {
+            let p = exoticAEff(1,7)
+            os3 = os3.pow(p)
+            os2 = os2.pow(p)
+            os = os.pow(p)
         }
         x = overflow(x,os,op)
 
@@ -347,6 +354,7 @@ const FORMS = {
             step = step.mul(tmp.dark.abEff.accelPow||1)
             if (hasElement(205)) step = step.mul(elemEffect(205))
             if (hasUpgrade('bh',19)) step = step.mul(upgEffect(2,19))
+            if (hasElement(33,1)) step = step.add(muElemEff(33))
             let x = player.accelerator.mul(step).add(1)
             x = overflow(x,100,0.5)
             return {step: step, eff: x}

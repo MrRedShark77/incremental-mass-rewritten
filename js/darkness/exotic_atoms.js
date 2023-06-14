@@ -1,7 +1,9 @@
 const MUONIC_ELEM = {
     canBuy(x) {
+        let u = this.upgs[x]
+        let base = u.cs?player.dark.c16.shard:tmp.exotic_atom.amount
         if (player.atom.muonic_el.includes(x)) return false
-        return tmp.exotic_atom.amount.gte(this.upgs[x].cost||EINF)
+        return base.gte(this.upgs[x].cost||EINF)
     },
     buyUpg(x) {
         if (this.canBuy(x)) player.atom.muonic_el.push(x)
@@ -193,6 +195,84 @@ const MUONIC_ELEM = {
             desc: `Change [Master Infinity] effect (Max Theorem's Level => <b>Corrupted Shards</b>).`,
             cost: E('e870'),
         },
+        {
+            desc: `Reduce of Unstable BH effect in C16 will be weaker.`,
+            cost: E('e1100'),
+        },
+        {
+            desc: `Exotic Atoms boosts Pre-Infinity Global Speed.`,
+            eff() {
+                let x = E(1)
+                x = tmp.exotic_atom.amount.max(1).log10().log10().add(1)
+                return x.max(1)
+            },
+            effDesc: x=>"x"+format(x),
+            cost: E('e1170'),
+        },
+        {
+            desc: `Unlock Corrupted Muonic Elements (This element doesn't reset).`,
+            cost: E('e1190'),
+        },
+        {
+            cs: true,
+            desc: `Remove the softcap of last Abyssal Blot effect.`,
+            cost: E('e2990'),
+        },
+        {
+            cs: true,
+            desc: `Newton Fragments effect' softcap starts later based on Corrupted Shards.`,
+            eff() {
+                let x = E(1)
+                x = player.dark.c16.shard.max(1).log10().log10().div(100)
+                return x
+            },
+            effDesc: x=>"+"+format(x)+' later',
+            cost: E('e3005'),
+        },
+        {
+            cs: true,
+            desc: `Add more accelerator power based on Corrupted Shards.`,
+            eff() {
+                let x = E(1)
+                x = player.dark.c16.shard.max(1).log10().log10().div(10)
+                return x
+            },
+            effDesc: x=>"+"+format(x),
+            cost: E('e3050'),
+        },
+        {
+            cs: true,
+            desc: `Boost Dark Shadows first effect based on Corrupted Shards.`,
+            eff() {
+                let x = E(1)
+                x = player.dark.c16.shard.max(1).log10().log10().add(1)
+                return overflow(x,5,0.1)
+            },
+            effDesc: x=>"^"+format(x),
+            cost: E('e3070'),
+        },
+        {
+            cs: true,
+            desc: `Quantum Shards base is better based on Corrupted Shards.`,
+            eff() {
+                let x = E(1)
+                x = player.dark.c16.shard.max(1).log2().add(1)
+                return x.max(1)
+            },
+            effDesc: x=>"x"+format(x),
+            cost: E('e3111'),
+        },
+        {
+            cs: true,
+            desc: `Add +5 to max Quantum Challenge Modificatots per Fusion Tier.`,
+            eff() {
+                let x = E(1)
+                x = E(player.dark.exotic_atom.tier).max(1).mul(5).floor()
+                return x.max(1)
+            },
+            effDesc: x=>"+"+format(x),
+            cost: E('e3125'),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -211,13 +291,13 @@ const MUONIC_ELEM = {
         if (tmp.inf_unl) u += 4
         if (hasInfUpgrade(9)) u += 3
 
-        if (tmp.brokenInf) u += 9
+        if (tmp.brokenInf) u += 12
+        if (hasElement(30,1)) u+= 6
         return u
     },
 }
 
 function muElemEff(x,def=1) { return tmp.elements.mu_effect[x]||def }
-
 function changeElemLayer() {
     player.atom.elemLayer = (player.atom.elemLayer+1)%2
     updateMuonSymbol()
@@ -246,7 +326,7 @@ function updateMuonSymbol(start=false) {
 }
 
 const EXOTIC_ATOM = {
-    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490'),E('e628'),E('e650'),E('e850')],
+    requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321'),E('e490'),E('e628'),E('e650'),E('e850'),E('e1930')],
     req() {
         let t = player.dark.exotic_atom.tier
         let r = this.requirement[t]||EINF
@@ -365,6 +445,11 @@ const EXOTIC_ATOM = {
 else x = E(0)
                 return x.toNumber()
             },x=>`Reduce FSS requirement by <b>${formatReduction(x)}</b>. Req: 15th Tier.`],
+            [a=>{
+                if (player.dark.exotic_atom.tier >= 17) x = a.add(1).log(1.01).pow(16).add(1)
+else x = E(1)
+                return x.toNumber()
+            },x=>`Mass overflow^1-3 starts <b>^${format(x)} later</b>. Req: 17th Tier.`],
         ],
     ],
 }

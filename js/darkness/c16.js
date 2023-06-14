@@ -88,7 +88,7 @@ const UNSTABLE_BH = {
     effect() {
         let x = player.bh.unstable.add(1)
 
-        if (tmp.c16active) x = x.root(3)
+        if (tmp.c16active) x = x.root(hasElement(28,1)?2:3)
 
         x = overflow(x,10,0.5)
 
@@ -178,6 +178,7 @@ let x = Decimal.pow(10,overflow(bh.max(1).log10(),1e9,0.5).div(100).root(hasElem
 
     x = x.mul(exoticAEff(0,0))
     if (player.inf.pm) x = x.mul(tmp.pm_base_eff)
+    if (hasBeyondRank(6,27)) x=x.mul(beyondRankEffect(6,27))
 
     return x.floor()
 }

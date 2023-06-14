@@ -1605,6 +1605,20 @@ const ELEMENTS = {
             desc: `Remove 258 and 254th effects softcaps.`,
             cost: E('1e32'),
         },
+        {
+            dark: true,
+            desc: `Dalton Modificator softcap starts ^2 later.`,
+            cost: E('e13550000'),
+        },
+        {
+            desc: `Dalton Modificator's effect is better.`,
+            cost: E('e1e938'),
+        },
+        {
+            inf: true,
+            desc: `Add +0.5 to Newton Modificator's effect softcap.`,
+            cost: E('1e34'),
+        },
     ],
     /*
     {
@@ -1653,12 +1667,12 @@ const ELEMENTS = {
 
         if (tmp.brokenInf) u += 35
         if (hasElement(253)) u += 16
+        if (hasElement(269)) u += 3
         return u
     },
 }
 
 const MAX_ELEM_TIERS = 3
-
 const BR_ELEM = (()=>{
     let x = []
     for (let i in ELEMENTS.upgs) if (i>86&&i<=118 || i>0&&ELEMENTS.upgs[i].br) x.push(Number(i))
@@ -1823,7 +1837,7 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         let eu = elem_const.upgs[ch]
-        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks"," Exotic Atoms"][elayer]
+        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.cs?" Corrupted Shards":" Exotic Atoms"][elayer]
         let eff = tElem[["effect","mu_effect"][elayer]]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
@@ -1854,10 +1868,11 @@ function updateElementsHTML() {
                     upg.setVisible(unl2)
                     if (unl2) {
                         let eu = elem_const.upgs[x]
+                        let u = MUONIC_ELEM.upgs[x]
                         upg.setClasses(
                             c16 && isElemCorrupted(x,elayer) || (c17 && isElemOverflowed(x,elayer))
                             ?{elements: true, locked: true, corrupted: true,overflowed: true}
-                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf}
+                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, cs: elayer == 1&& u.cs, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf}
                         )
                     }
                 }

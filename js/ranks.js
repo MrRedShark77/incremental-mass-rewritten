@@ -778,6 +778,7 @@ const BEYOND_RANKS = {
         6: {
             1: `Boost Muonic Phosphorus effect by 3.00x per beyond-ranks' maximum tier.`,
             2: `Muonic Titanium is stronger based on mass (starts at e3e788).`,
+            27: `Best mass of black hole in C16 boosts Corrupted Shards gain.`,
         },
     },
 
@@ -911,6 +912,15 @@ const BEYOND_RANKS = {
                 ()=>{
                     let x = E(1)
                     if (player.mass.gte('e3e788')) x = player.mass.div('e3e788').max(1).log10().log10().log10().log2().div(3).add(1)
+
+                    return x
+                },
+                x=>"x"+format(x,3),
+            ],
+            27: [
+                ()=>{
+                    let x = E(1)
+                     x = player.dark.c16.bestBH.max(1).log10().div(3).add(1)
 
                     return x
                 },

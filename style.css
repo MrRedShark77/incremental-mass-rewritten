@@ -286,6 +286,9 @@ button {
 	color: white;
 	animation: overflowed_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
+.infsoftcap_text {
+	color: white;
+}
 @keyframes corrupted_text {
 	0%, 100% {
 		text-shadow: -2px -2px 0px #5555ff, 2px 2px 0px #ff5555;
@@ -530,7 +533,12 @@ button {
 	background-color: #f30;
 	box-shadow: 0 0 10px #f60;
 }
-
+.elements.cs.bought {
+	color: #ff4aa5;
+	border-color: #ff1f8e;
+	background-color: rgb(114, 4, 59);
+	box-shadow: 0 0 10px rgb(255, 0, 128);
+}
 #final_118 {
 	color: white;
 	text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
