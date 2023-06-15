@@ -68,7 +68,7 @@ function updateChalTemp() {
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
         let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:1
-        if (x == 9) q = q.min('e150')
+        if (x == 9) q = new Decimal('1e150').min(q)
         tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
