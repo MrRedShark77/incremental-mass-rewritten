@@ -148,6 +148,7 @@ function setupHTML() {
 	setupQuantumHTML()
 	setupDarkHTML()
 	setupInfHTML()
+	setupOrbHTML()
 
 	/*
 	function setupTestHTML() {
@@ -469,7 +470,6 @@ function updateOptionsHTML() {
 		tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
 		tmp.el.mass_dis.setTxt(["Default",'Always show g','Always show mlt','Important units only'][player.options.massDis])
 	
-		tmp.el.omega_badge.setDisplay(localStorage.getItem("imr_secret_badge1") == "1")
 	} else if (tmp.stab[9] == 1) {
 		updateResourcesHiderHTML()
 	}

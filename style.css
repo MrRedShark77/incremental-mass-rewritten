@@ -791,14 +791,18 @@ h4 {
 	color: black;
 }
 .orbUpg.locked {
-	border-color: #303030;
+	border-color: #444444;
 	cursor: default;
 }
-.orbUpg:not(.locked):hover {
+.orbUpg:not(.locked):not(.bought):hover {
 	border-color: #47ffff;
 	background-color: #00dbbe !important;
 	box-shadow: 2px 2px 6px #47fff0, 2px 2px 6px #47ffff inset, -2px -2px 6px white, -2px -2px 6px white inset;
 	color: black;
+}
+.orbUpg {
+	border-color: #47cbff;
+	background-color: #171717;
 }
 .btn.b_btn {
 	font-size: 11px;

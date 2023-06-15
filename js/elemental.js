@@ -1616,7 +1616,7 @@ const ELEMENTS = {
         },
         {
             inf: true,
-            desc: `Add +0.5 to Newton Modificator's effect softcap.`,
+            desc: `Add +0.3 to Newton Modificator's effect softcap.`,
             cost: E('1e34'),
         },
         {

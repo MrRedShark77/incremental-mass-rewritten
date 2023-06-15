@@ -113,10 +113,10 @@ const FORMS = {
         let op = E(.5)
         let os2 = tmp.c16active || CHALS.inChal(17)|| CHALS.inChal(18)? E('ee11') : E('ee279')
         let op2 = E(.25)
-
+let t = x
         let os3 = tmp.c16active|| CHALS.inChal(17)|| CHALS.inChal(18) ? E('ee25') : E('ee800')
         let op3 = E(.25)
-
+let ts = E('e1350')
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
@@ -267,7 +267,7 @@ const FORMS = {
     },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
-        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(18) && !CHALS.inChal(10)&& !CHALS.inChal(18) },
+        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && (!CHALS.inChal(18) || hasOrbUpg(1)) && !CHALS.inChal(10) },
         buy() {
             if (this.can()) {
                 if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost).max(0)
@@ -364,7 +364,8 @@ const FORMS = {
     },
     rp: {
         gain() {
-            if (tmp.c16active || CHALS.inChal(17)|| player.mass.lt(1e15) || CHALS.inChal(7) || CHALS.inChal(18)|| CHALS.inChal(10)) return E(0)
+            if (tmp.c16active || CHALS.inChal(17)|| player.mass.lt(1e15) || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
+            if (CHALS.inChal(18) && !hasOrbUpg(1)) return E(0)
             let gain = player.mass.div(1e15).root(3)
             if (player.ranks.rank.gte(14)) gain = gain.mul(2)
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
@@ -473,12 +474,12 @@ const FORMS = {
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || player.dark.run.active ? 5 : 100)
 
             let o = x
-            let os = tmp.c16active ? E('ee3') : E('ee69').pow(exoticAEff(1,1))
+            let os = tmp.c16active || CHALS.inChal(18)? E('ee3') : E('ee69').pow(exoticAEff(1,1))
             let op = E(0.5)
 
-            let os2 = tmp.c16active ? E('ee6') : E('ee249')
+            let os2 = tmp.c16active|| CHALS.inChal(18) ? E('ee6') : E('ee249')
             let op2 = E(0.25)
-            let os3 = tmp.c16active ? E('ee15') : E('ee1100')
+            let os3 = tmp.c16active || CHALS.inChal(18) ? E('ee15') : E('ee1100')
             let op3 = E(0.15)
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])

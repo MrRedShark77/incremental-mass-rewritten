@@ -242,6 +242,7 @@ const TOOLTIP_RES = {
            Start the 18th challenge. While you get ${formatMass(tmp.orbCost)} mass, you can get <b>Orb of Creations</b><br>
            • You are trapped in C1-C17 challenges<br>
            • You can't gain Dark Rays, But they're capped at 1e12<br>
+           • You can't enter Big Rip<br>
            </i>`
            return h
         }

@@ -90,7 +90,7 @@ const CONFIRMS_FUNCTION = {
         QUANTUM.doReset(player.qu.qc.active)
     },
     bigRip() {
-        if (tmp.c16active || player.dark.run.active) return
+        if (tmp.c16active || player.dark.run.active || CHALS.inChal(18)) return
         if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain)
         player.qu.qc.active = false
         player.qu.rip.first = true

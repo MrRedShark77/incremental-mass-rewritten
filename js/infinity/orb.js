@@ -5,6 +5,12 @@ const ORB = {
 
         return r
     },
+    unl() {
+        let x = E(0)
+        if (player.inf.c18.orb.gte(1)) x += 2
+        if (player.inf.c18.orb.gte(1)) x += 2
+        return x
+    },
     gain() {
         let x = E(0)
         if (player.mass.gte(tmp.orbCost) && (CHALS.inChal(18))) x = E(1)
@@ -22,29 +28,32 @@ const ORB = {
             addQuote(12)
         }
     },
-requirement: [E('e11000000000'),E('1e17000000000'),E('1e245000000000'),E('1e36000000000'),E('1e4000000000')],
+requirement: [E('e1.060e10'),E('e1.45e10'),E('e1.66e10'),E('e8e10'),E('e2e11'),E('e4e11')],
 canBuy(x) {
     let u = this.upgs[x]
     let res = player.inf.c18.orb
-    return res.gte(u.cost)
+    return res.gte(u.cost) && (!hasOrbUpg(x))
 },
 buyUpg(x) {
+    if (hasOrbUpg(i)) return;
     if (this.canBuy(x)) {
         let u = this.upgs[x]
         player.inf.c18.upgs.push(x)
     }
 },
 upgs: [
-    null,
+
     {
-        desc: `Unlock an ability to buy Rank in C18, up to 100.`,
-        unl() {return player.inf.c18.orb.gte(1)},
+        desc: `Unlock an ability to buy Ranks in C18.`,
         cost: E(1),
     },
     {
-        desc: `Hardened Challenge scaling is 25% weaker.`,
-        unl() {return player.inf.c18.orb.gte(2)},
+        desc: `Now you can get Rage Points and Buy Tickspeeds in C18.`,
         cost: E(2),
+    },
+    {
+        desc: `Each Fragment will boost each other.`,
+        cost: E(3),
     },
 ],
 }
@@ -52,7 +61,7 @@ function updateOrbTemp() {
     tmp.orbCost = ORB.req()
     tmp.orbGain = ORB.gain()
 }
-function setuoOrbHTML() {
+function setupOrbHTML() {
     let table = new Element('orbUpgs_table')
     let h = ``
 
@@ -60,7 +69,7 @@ function setuoOrbHTML() {
         let c = ORB.upgs[i]
 
         h += `
-        <button onclick="buyUpg(${i})" class="btn full orbUpg" id="orbUpg${i}_div" style="font-size: 12px;">
+        <button onclick="ORB.buyUpg(${i})" class="btn full orbUpg" id="orbUpg${i}_div" style="font-size: 12px;">
             <div id="orbUpg${i}_desc" style="min-height: 80px">${c.desc}</div>
             <div id="orbUpg${i}_cost"></div>
         </button>
@@ -68,19 +77,18 @@ function setuoOrbHTML() {
     }
     table.setHTML(h)
 }
+function hasOrbUpg(i) { return player.inf.c18.upgs.includes(i) }
 function updateOrbHTML() {
     
     for (let i in ORB.upgs) {
-    let c = ORB.upgs[x], id = 'orbUpg'+i
-    let unl = c.unl()
-    i = parseInt(i)
-    let el = tmp.el[id+`_div`]
-    if (el) {
-    tmp.el[id+"_div"].setDisplay(unl)
+        i = parseInt(i)
+    let c = ORB.upgs[i], id = 'orbUpg'+i
+    let unl = ORB.unl()
+    tmp.el[id+"_div"].setDisplay(i<unl)
     tmp.el[id+"_cost"].setHTML(`Cost: <b>${c.cost.format(0)}</b> Orbs of Creation.`)
+    tmp.el[id+'_cost'].setDisplay(!hasOrbUpg(i))
     tmp.el[id+"_desc"].setHTML(c.desc)
 
-    tmp.el[id+"_div"].setClasses({btn: true, full: true, orbUpg: true, locked:  player.inf.c18.orb.lt(c.cost)})
-    }
+    tmp.el[id+"_div"].setClasses({btn: true, full: true, orbUpg: true, locked:  player.inf.c18.orb.lt(c.cost)|| hasOrbUpg(i)})
 }
 }

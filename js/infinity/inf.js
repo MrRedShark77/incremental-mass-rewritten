@@ -361,6 +361,7 @@ dark.matters.am = E(0)
 
             let x = tmp.peEffect.eff||E(1)
             if (hasElement(23,1) && (!CHALS.inChal(16))) x = x.pow(muElemEff(23,1))
+            if (player.chal.comps[18].gte(1)) x = x.mul(player.chal.comps[18].mul(25).pow(10).add(1))
             return x
         },
         effect() {
@@ -373,6 +374,7 @@ dark.matters.am = E(0)
         gain() {
             if (!hasElement(253)) return E(0)
             let x = tmp.nmEffect.eff||E(1)
+            if (hasOrbUpg(2)) x = x.mul(tmp.nm_base_boost)
             return x
         },
         effect() {
@@ -383,20 +385,31 @@ dark.matters.am = E(0)
         soft() {
             let soft = E(0.15)
             if (hasElement(32,1)) soft = soft.add(muElemEff(32))
-            if (hasElement(272)) soft = soft.add(0.5)
+            if (hasElement(272)) soft = soft.add(0.3)
             return soft
-        }
+        },
+        boost() {
+            let x = E(1)
+            if (hasOrbUpg(2)) x = player.inf.pm_base.max(1).root(2).pow(1.6).add(1)
+            return overflow(x,1e60,0.01)
+        },
     },
     pm_base: {
         gain() {
             if (!hasElement(256)) return E(0)
             let x = tmp.pmEffect.eff||E(1)
+            if (hasOrbUpg(2)) x = x.mul(tmp.pm_base_boost)
             return x
         },
         effect() {
             let x = player.inf.pm_base.add(1).root(0.15).pow(hasElement(271)?2.25:2).add(1)
 
             return x//.softcap(10,0.5,0)
+        },
+        boost() {
+            let x = E(1)
+            if (hasOrbUpg(2)) x = player.inf.dm_base.max(1).root(1.5).pow(1.45).add(1)
+            return x.softcap(1e45,0.1,0)
         },
     },
     dm_base: {
@@ -622,6 +635,8 @@ function updateInfTemp() {
     tmp.dm_base_eff = INF.dm_base.effect()
     tmp.nm_base_soft = INF.nm_base.soft()
     tmp.dm_base_soft = INF.dm_base.soft()
+    tmp.nm_base_boost = INF.nm_base.boost()
+    tmp.pm_base_boost = INF.pm_base.boost()
     for (let r in INF.upgs) {
         r = parseInt(r)
 
@@ -773,6 +788,7 @@ function updateInfHTML() {
             }
         }
     }
+    let unlboost = hasOrbUpg(2)
     let nm_eff = tmp.nmEffect
     tmp.el.nm_scale.setTxt(getScalingName('nm'))
     tmp.el.nm_lvl.setTxt(format(player.inf.nm,0)+(nm_eff.bonus.gte(1)?" + "+format(nm_eff.bonus,0):""))
@@ -781,11 +797,14 @@ function updateInfHTML() {
     tmp.el.nm_step.setHTML(formatMult(nm_eff.step))
     tmp.el.nm_eff.setTxt(formatMult(nm_eff.eff))
     tmp.el.nm_base.setTxt(formatMass(player.inf.nm_base)+" "+player.inf.nm_base.formatGain(tmp.nm_base_gain,true))
+    tmp.el.nm_base_boost.setHTML(formatMult(tmp.nm_base_boost)+(tmp.nm_base_boost.gte(1e60)?` <span class='soft'>(softcapped)</span>`:``))
+    tmp.el.pm_base_boost.setHTML(formatMult(tmp.pm_base_boost)+(tmp.pm_base_boost.gte(1e45)?` <span class='soft'>(softcapped)</span>`:``))
     tmp.el.nm_base_eff.setHTML("+"+tmp.nm_base_eff.format()+(tmp.nm_base_eff.gte(tmp.nm_base_soft)?`<span class='soft'> (softcapped)`:'')+"</br><span class='infsoftcap_text'>Effect will be softcapped at "+format(tmp.nm_base_soft)+"</span>")
-
+    tmp.el.nm_base_boost_div.setDisplay(unlboost);
     let unl = hasElement(256)
     tmp.el.pm_div.setDisplay(unl);
     tmp.el.pm_base_div.setDisplay(unl);
+    tmp.el.pm_base_boost_div.setDisplay(unlboost);
     let pm_eff = tmp.pmEffect
     tmp.el.pm_scale.setTxt(getScalingName('nm'))
     tmp.el.pm_lvl.setTxt(format(player.inf.pm,0)+(pm_eff.bonus.gte(1)?" + "+format(pm_eff.bonus,0):""))

@@ -12,6 +12,10 @@ const BIG_RIP = {
         if (hasPrestige(0,2)) x = x.mul(4)
         if (player.md.break.upgs[6].gte(1)) x = x.mul(tmp.bd.upgs[6].eff?tmp.bd.upgs[6].eff[1]:1)
         if (hasUpgrade('br',13)) x = x.mul(upgEffect(4,13))
+        let o = x
+        let os = 'e66000'
+        let op = E(0.15)
+        x = overflow(x,os,op)
         return x.floor()
     },
 }

@@ -589,18 +589,18 @@ const CHALS = {
         desc: `
         • Some elements will be [Overflowed].<br>
         • You are trapped in C1-17, you can;t gain dark rays, but they're capped a 1e12.<br>
+        • You can't enter Big Rip<br>
         `,
-        reward: `Boost Infinity and Dimensional Mass gain. <br><span class="yellow">At 1 completions, unlock last modificators.</span><br><span class='orange'>At 100 completions, unlock ???</span>`,
+        reward: `Boost Dimensional Mass gain. <br><span class="yellow">At 6 completions, unlock last modificators.</span><br><span class='orange'>At 100 completions, unlock ???</span>`,
         max: E(100),
-        inc: E('e13000000000'),
-        pow: E(4),
-        start: E('e13000000000'),
+        inc: E('e11400000000'),
+        pow: E(2),
+        start: E('e11400000000'),
         effect(x) {
-            let step = x.mul(10).pow(1.15).add(1)
-            let ret = x.mul(25).pow(1.45).add(1)
-            return {ret: ret, step: step}
+            let ret = x.mul(25).pow(10).add(1)
+            return ret
         },
-        effDesc(x) { return "x"+format(x.ret)+" to Infinity<br>x"+format(x.step)+" to Dimensional Mass" },
+        effDesc(x) { return "x"+format(x)},
     },
     cols: 18,
 }

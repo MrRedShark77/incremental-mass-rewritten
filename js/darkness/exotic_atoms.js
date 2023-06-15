@@ -223,7 +223,8 @@ const MUONIC_ELEM = {
             desc: `Newton Fragments effect' softcap starts later based on Corrupted Shards.`,
             eff() {
                 let x = E(1)
-                x = player.dark.c16.shard.max(1).log10().log10().div(100)
+                if (player.dark.c16.shard.gte('e3005')) x = player.dark.c16.shard.max(1).log10().log10().div(100)
+                else x = E(0)
                 return x
             },
             effDesc: x=>"+"+format(x)+' later',
@@ -234,7 +235,8 @@ const MUONIC_ELEM = {
             desc: `Add more accelerator power based on Corrupted Shards.`,
             eff() {
                 let x = E(1)
-                x = player.dark.c16.shard.max(1).log10().log10().div(10)
+               if (player.dark.c16.shard.gte('e3050')) x = player.dark.c16.shard.max(1).log10().log10().div(10)
+               else x = E(0)
                 return x
             },
             effDesc: x=>"+"+format(x),
@@ -245,7 +247,8 @@ const MUONIC_ELEM = {
             desc: `Boost Dark Shadows first effect based on Corrupted Shards.`,
             eff() {
                 let x = E(1)
-                x = player.dark.c16.shard.max(1).log10().log10().add(1)
+                if (player.dark.c16.shard.gte('e3070'))   x = player.dark.c16.shard.max(1).log10().log10().add(1)
+                else x = E(1)
                 return overflow(x,5,0.1)
             },
             effDesc: x=>"^"+format(x),
