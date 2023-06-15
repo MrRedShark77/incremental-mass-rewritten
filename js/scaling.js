@@ -37,6 +37,7 @@ const SCALE_START = {
 		prestige0: E(80),
 		prestige1: E(60),
 		prestige2: E(60),
+massUpg4: E(200),
 		inf_theorem: E(35),
 	},
 	ultra: {
