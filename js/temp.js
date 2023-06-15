@@ -151,7 +151,15 @@ function resetTemp() {
             quark: E(1),
             stronger: E(1),
         },
-
+        tetraflow: {
+            mass: E(1),
+            dm: E(1),
+            bh: E(1),
+            star: E(1),
+            atomic: E(1),
+            quark: E(1),
+            stronger: E(1),
+        },
         overflowBefore: {
             dm: E(0),
             mass: E(0),
@@ -173,7 +181,13 @@ function resetTemp() {
             bh: E(0.5),
             stronger: E(.5),
         },
+        tetraflow_start: {
+            mass: E('ee1400'),
+        },
 
+        tetraflow_power: {
+            mass: E(.5),
+        },
         mass_glyph_msg: 0,
 
         glyph_upg_eff: [],

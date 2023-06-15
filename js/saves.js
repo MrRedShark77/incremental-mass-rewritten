@@ -73,7 +73,8 @@ function softcapHTML(x, start, invisible=false) { return !invisible&&E(x).gte(st
 Decimal.prototype.softcapHTML = function (start, invisible) { return softcapHTML(this.clone(), start, invisible) }
 
 function calcOverflow(x,y,s,inv=false) { return x.gte(s) ? x.max(1).log10().div(y.max(1).log10()).pow(inv?-1:1) : E(1) }
-
+function calcTetraflow(x,y,s,inv=false) {
+     return x.gte(s) ? x.max(1).slog(10).div(y.max(1).log(10)).pow(inv?-1:1) : E(1) }
 String.prototype.corrupt = function (active=true) { return active ? this.strike() + ` <span class='corrupted_text'>[Corrupted]</span>` : this }
 
 function calc(dt) {
@@ -604,9 +605,8 @@ function tetraflow(number,start,power) { // EXPERIMENTAL FUNCTION - x => 10^^((s
     if(isNaN(number.mag))return new Decimal(0);
 	start=E(start);
 	if(number.gte(start)){
-        let s = start.slog(10)
-        // Fun Fact: if 0 < number.slog(10) - start.slog(10) < 1, such like overflow(number,start,power,start.slog(10).sub(1).floor())
-		number=Decimal.tetrate(10,number.slog(10).sub(s).mul(power).add(s))
+		number=number.log(100).div(start.slog(10)).pow(power).mul(start.slog(10));
+		number=Decimal.pow(10,number);
 	}
     return number;
 }

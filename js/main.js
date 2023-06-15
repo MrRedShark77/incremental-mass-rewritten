@@ -116,7 +116,8 @@ const FORMS = {
 let t = x
         let os3 = tmp.c16active|| CHALS.inChal(17)|| CHALS.inChal(18) ? E('ee25') : E('ee800')
         let op3 = E(.25)
-let ts = E('e1350')
+let ts = E('ee1400')
+let tp = E(0.7)
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
@@ -149,10 +150,13 @@ let ts = E('e1350')
         x = overflow(x,os2,op2)
 
         x = overflow(x,os3,op3)
-
+        x = tetraflow(x,ts,tp)
         tmp.overflowBefore.mass = o
         tmp.overflow.mass = calcOverflow(o,x,os)
+        tmp.tetraflow.mass = calcTetraflow(o,x,ts)
         tmp.overflow_start.mass = [os,os2,os3]
+        tmp.tetraflow_start.mass = [ts]
+        tmp.tetraflow_power.mass = [tp]
         tmp.overflow_power.mass = [op,op2,op3]
 
         if (CHALS.inChal(13)|| CHALS.inChal(18)) x = x.max(1).log10().tetrate(1.5)
@@ -769,7 +773,7 @@ function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc)
 function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }
 
 function overflowFormat(x,inv=false) { return (inv?"raised":"rooted")+" by <b>"+format(x)+"</b>" }
-
+function tetraflowFormat(x,inv=false) { return (inv?"raised":"tetrated")+" by <b>"+format(x)+"</b>" }
 function capitalFirst(str) {
 	if (str=="" || str==" ") return str
 	return str
