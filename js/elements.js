@@ -567,6 +567,7 @@ function updateHTML() {
 				updateExoticAtomsHTML()
 			}
 		}
+		if (tmp.stab[8] == 4) updateOrbHTML()
 		else if (tmp.tab == 9) {
 			updateOptionsHTML()
 		}

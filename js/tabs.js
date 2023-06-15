@@ -32,7 +32,7 @@ const TABS = {
             { id: "Stars", unl() { return STARS.unlocked() }, style: "sn" },
             { id: "Indescribable Matter", unl() { return quUnl() }, style: "qu" },
             { id: "The Parallel", unl() { return hasInfUpgrade(9) }, style: "inf" },
-            { id: "Antimatter", unl() { return hasElement(267) }, style: "dark" },
+            { id: "Antimatter", unl() { return hasElement(268) }, style: "dark" },
         ],
         1: [
             { id: "Ranks Rewards" },
@@ -76,6 +76,7 @@ const TABS = {
             { id: "Core Effect" },
             { id: "Infinity Upgrades", style: "inf" },
             { id: "Modificators", unl() {return hasElement(253)} },
+            { id: "Orb Of Creation - Upgrades", unl() {return player.chal.comps[17].gte(50)} },
         ],
         9: [
             { id: "Options" },

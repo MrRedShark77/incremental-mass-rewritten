@@ -103,7 +103,7 @@ const RESOURCES_DIS = {
         icon: "corrupted",
         class: "corrupted_text",
 
-        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(245)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):"(+"+tmp.c16.shardGain.format(0)+")"),
+        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(245) && (!CHALS.inChal(18))?player.dark.c16.shard.formatGain(tmp.c16.shardGain):"(+"+tmp.c16.shardGain.format(0)+")"),
 
         resetBtn() { startC16() },
     },
@@ -123,7 +123,15 @@ const RESOURCES_DIS = {
 
         resetBtn() { INF.goInf() },
     },
+    orb: {
+        unl: ()=>player.chal.comps[17].gte(50),
+        icon: "oc",
+        class: "lightsky",
 
+        desc: (gs)=>player.inf.c18.orb.format(0)+"<br>(+"+format(tmp.orbGain,0)+")",
+
+        resetBtn() { ORB.getOrb() },
+    },
     /*
     mass: {
         unl: ()=>true,

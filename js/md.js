@@ -7,19 +7,19 @@ const MASS_DILATION = {
         return x
     },
     onactive() {
-        if (tmp.c16active || CHALS.inChal(17)|| player.dark.run.active) return
+        if (tmp.c16active || CHALS.inChal(18)|| CHALS.inChal(17)|| player.dark.run.active) return
         if (player.md.active) player.md.particles = player.md.particles.add(tmp.md.rp_gain)
         player.md.active = !player.md.active
         ATOM.doReset()
         updateMDTemp()
     },
     RPexpgain() {
-        let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
+        let x = E(2).add(tmp.md.upgs[5].eff).mul((tmp.chal && !CHALS.inChal(10)&& !CHALS.inChal(18))?tmp.chal.eff[10]:1)
         if (!player.md.active && hasTree("d1")) x = x.mul(1.25)
         if (FERMIONS.onActive("01")) x = x.div(10)
         if (QCs.active()) x = x.mul(tmp.qu.qc_eff[4])
         if (hasElement(24) && hasPrestige(0,40)) x = x.mul(tmp.elements.effect[24])
-        if (tmp.c16active|| player.dark.run.active) x = x.pow(mgEff(3))
+        if (tmp.c16active|| CHALS.inChal(18)|| player.dark.run.active) x = x.pow(mgEff(3))
         return x
     },
     RPmultgain() {
@@ -32,12 +32,12 @@ const MASS_DILATION = {
         return x
     },
     RPgain(m=player.mass) {
-        if (CHALS.inChal(11)) return E(0)
+        if (CHALS.inChal(11)|| CHALS.inChal(18)) return E(0)
         let x = m.div(1.50005e56).max(1).log10().div(40).sub(14).max(0).pow(tmp.md.rp_exp_gain).mul(tmp.md.rp_mult_gain)
         return x.sub(player.md.particles).max(0).floor()
     },
     massGain() {
-        if (CHALS.inChal(11)) return E(0)
+        if (CHALS.inChal(11)|| CHALS.inChal(18)) return E(0)
         let pow = E(2).add(tmp.bd.upgs[1].eff)
         let x = player.md.particles.pow(pow)
         x = x.mul(tmp.md.upgs[0].eff)
@@ -104,7 +104,7 @@ const MASS_DILATION = {
                 cost(x) { return tmp.md.bd3 ? E(10).pow(E(1.25).pow(x)).mul(100) : E(10).pow(x).mul(100) },
                 bulk() { return player.md.mass.gte(100)?(tmp.md.bd3 ? player.md.mass.div(100).max(1).log10().max(1).log(1.25).add(1).floor() : player.md.mass.div(100).max(1).log10().add(1).floor()):E(0) },
                 effect(x) {
-                    if (tmp.md.bd3) return x.mul(tmp.md.upgs[11].eff||1).root(player.qu.rip.active || tmp.c16active || player.dark.run.active ? 3 : 2).mul(player.qu.rip.active || tmp.c16active || player.dark.run.active ? 0.05 : 0.1).add(1)
+                    if (tmp.md.bd3) return x.mul(tmp.md.upgs[11].eff||1).root(player.qu.rip.active || tmp.c16active || player.dark.run.active ? 3 : 2).mul(player.qu.rip.active || tmp.c16active|| CHALS.inChal(18) || player.dark.run.active ? 0.05 : 0.1).add(1)
                     if (hasElement(83)) return expMult(x,2,1.5).add(1)
                     return player.md.upgs[7].gte(1)?x.mul(tmp.md.upgs[11].eff||1).root(1.5).mul(0.25).add(1):x.mul(tmp.md.upgs[11].eff||1).root(2).mul(0.15).add(1)
                 },
@@ -435,7 +435,7 @@ function updateMDTemp() {
         tmp.md.upgs = []
         for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) tmp.md.upgs[x] = {}
     }
-    tmp.md.bd3 = !tmp.c16active && player.md.break.upgs[2].gte(1)
+    tmp.md.bd3 = !tmp.c16active && !CHALS.inChal(18)&& player.md.break.upgs[2].gte(1)
     let mdub = 1
     if (hasElement(115)) mdub *= 1.05
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) {

@@ -120,8 +120,7 @@ const INF = {
 
         let dark = player.dark
         let darkSave = getDarkSave()
-
-        dark.rays = hasInfUpgrade(7)?E(1e12):E(0)
+        dark.rays = (hasInfUpgrade(7))?E(1e12):E(0)
         dark.shadow = E(0)
         dark.abyssalBlot = E(0)
 
@@ -136,7 +135,12 @@ const INF = {
             darkSave.c16.bestBH = dark.c16.bestBH
             darkSave.c16.charger = dark.c16.charger
         }
-
+if (hasElement(273)) {dark.matters.am_mass = dark.matters.am_mass
+dark.matters.am = dark.matters.am}
+else {
+    dark.matters.am_mass = E(dark.matters.am_mass)
+dark.matters.am = E(0)
+}
         dark.c16 = darkSave.c16
 
         if (hasInfUpgrade(8)) {
@@ -580,6 +584,10 @@ function getInfSave() {
         dm: E(0),
         pm: E(0),
         nm: E(0),
+        c18: {
+            orb: E(0),
+            upgs: [],
+        }
     }
     //for (let i = 0; i < 4; i++) s.pre_theorem.push(createPreTheorem())
     return s
@@ -632,7 +640,7 @@ function updateInfTemp() {
 
     tmp.inf_level_ss = 5
 
-    if (hasElement(222) && (!CHALS.inChal(17))) tmp.inf_level_ss += 5
+    if (hasElement(222) && (!CHALS.inChal(17))&& (!CHALS.inChal(18))) tmp.inf_level_ss += 5
     if (hasElement(230)) tmp.inf_level_ss += elemEffect(230)
     if (hasElement(233)) tmp.inf_level_ss += elemEffect(233)
     tmp.IP_gain = INF.gain()
@@ -672,7 +680,7 @@ function calcInf(dt) {
     }
     
     if (!player.inf.reached && player.mass.gte(INF.req)) player.inf.reached=true
-    if (hasElement(245) && (!CHALS.inChal(17))) {
+    if (hasElement(245) && (!CHALS.inChal(17))&& !(CHALS.inChal(18))) {
         let cs = tmp.c16.shardGain
 
         player.dark.c16.shard = player.dark.c16.shard.add(cs.mul(dt))
@@ -681,7 +689,7 @@ function calcInf(dt) {
     if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
     if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
 player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
-if (CHALS.inChal(17)) {
+if (CHALS.inChal(17)|| CHALS.inChal(18)) {
 player.inf.core[0].level = E(player.inf.theorem_max).floor()
 player.inf.core[1].level = E(player.inf.theorem_max).floor()
  player.inf.core[2].level = E(player.inf.theorem_max).floor()

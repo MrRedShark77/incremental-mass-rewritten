@@ -5,6 +5,7 @@ const DARK = {
         [1e120,1e180,'e345','e800','e2500','e56000','e125500','ee7'],
     ],
     gain() {
+        if (CHALS.inChal(18)) return E(0)
         let x = E(1)
 
         x = x.mul(tmp.dark.shadowEff.ray)
@@ -163,6 +164,45 @@ const DARK = {
 
         return x
     },
+    am: {
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('am')).mul(10).floor() },
+        can() { return player.dark.am_mass.gte(tmp.amCost) },
+        buy() {
+            if (this.can()) {
+                player.dark.am_mass = player.dark.am_mass.sub(tmp.amCost).max(0)
+                player.dark.am = player.dark.am.add(1)
+            }
+        },
+        buyMax() { 
+            if (this.can()) {
+                player.dark.am_mass = player.dark.am_mass.sub(this.cost(tmp.amBulk.sub(1))).max(0)
+                player.dark.am = tmp.amBulk
+            }
+        },
+        effect() {
+            let t = player.dark.am
+
+            let bonus = E(0)
+
+            let step = E(1.5)
+            
+            let eff = step.mul(t.add(bonus)).add(1)
+
+            return {step: step, eff: eff, bonus: bonus}
+        },
+    },
+    am_mass: {
+        gain() {
+            if (!hasElement(267)) return E(0)
+            let x = DARK.am.effect().eff
+            return x
+        },
+        effect() {
+            let x = player.dark.am_mass.add(1).log(4).root(3).div(10).add(1)
+
+            return x.softcap(1000000,0.1,0)
+        },
+    },
 }
 
 function calcDark(dt) {
@@ -170,7 +210,7 @@ function calcDark(dt) {
         player.dark.shadow = player.dark.shadow.add(tmp.dark.shadowGain.mul(dt))
 
         if (tmp.chal14comp) player.dark.abyssalBlot = player.dark.abyssalBlot.add(tmp.dark.abGain.mul(dt))
-if (hasElement(267)) player.dark.matters.am_mass = player.dark.matters.am_mass.add(tmp.am_mass_gain.mul(dt))
+if (hasElement(267)) player.dark.am_mass = player.dark.am_mass.add(tmp.am_mass_gain.mul(dt))
         if (tmp.dark.rayEff.passive) player.dark.rays = player.dark.rays.add(tmp.dark.gain.mul(dt).mul(tmp.dark.rayEff.passive))
 
         if (tmp.matterUnl) {
@@ -207,12 +247,12 @@ if (hasElement(267)) player.dark.matters.am_mass = player.dark.matters.am_mass.a
 
 function updateDarkTemp() {
     let dtmp = tmp.dark
-    tmp.am_mass_gain = MATTERS.am_mass.gain()
-    tmp.am_mass_eff = MATTERS.am_mass.effect()
-    tmp.amCost = MATTERS.am.cost(player.dark.matters.am)
+    tmp.am_mass_gain = DARK.am_mass.gain()
+    tmp.am_mass_eff = DARK.am_mass.effect()
+    tmp.amCost = DARK.am.cost(player.dark.am)
     tmp.amBulk = E(0)
-    if (player.dark.matters.am_mass.gte(10)) tmp.amBulk = player.dark.matters.am_mass.div(10).log(1.2).scaleEvery('am',true).add(1).floor()
-    tmp.amEffect = MATTERS.am.effect()
+    if (player.dark.am_mass.gte(10)) tmp.amBulk = player.dark.am_mass.div(10).log(1.2).scaleEvery('am',true).add(1).floor()
+    tmp.amEffect = DARK.am.effect()
     updateExoticAtomsTemp()
     updateMattersTemp()
     updateDarkRunTemp()
@@ -244,12 +284,12 @@ function updateDarkHTML() {
         tmp.el.am_mass_div.setDisplay(unl2);
         let am_eff = tmp.amEffect
         tmp.el.am_scale.setTxt(getScalingName('am'))
-        tmp.el.am_lvl.setTxt(format(player.dark.matters.am,0)+(am_eff.bonus.gte(1)?" + "+format(am_eff.bonus,0):""))
-        tmp.el.am_btn.setClasses({btn: true, locked: !MATTERS.am.can()})
+        tmp.el.am_lvl.setTxt(format(player.dark.am,0)+(am_eff.bonus.gte(1)?" + "+format(am_eff.bonus,0):""))
+        tmp.el.am_btn.setClasses({btn: true, locked: !DARK.am.can()})
         tmp.el.am_cost.setTxt(format(tmp.amCost,0))
         tmp.el.am_step.setHTML(formatMult(am_eff.step))
         tmp.el.am_eff.setTxt(formatMult(am_eff.eff))
-        tmp.el.am_mass.setTxt(formatMass(player.dark.matters.am_mass)+" "+player.dark.matters.am_mass.formatGain(tmp.am_mass_gain,true))
+        tmp.el.am_mass.setTxt(formatMass(player.dark.am_mass)+" "+player.dark.am_mass.formatGain(tmp.am_mass_gain,true))
         tmp.el.am_mass_eff.setHTML("x"+tmp.am_mass_eff.format())}
 
     if (tmp.tab == 7) {
@@ -331,6 +371,8 @@ function getDarkSave() {
         rays: E(0),
         shadow: E(0),
         abyssalBlot: E(0),
+        am_mass: E(0),
+        am: E(0),
 
         run: {
             active: false,
@@ -345,8 +387,6 @@ function getDarkSave() {
             upg: [],
             unls: 3,
             final: E(0),
-            am_mass: E(0),
-            am: E(0),
         },
 
         c16: {

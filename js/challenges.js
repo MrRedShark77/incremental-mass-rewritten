@@ -109,7 +109,7 @@ const CHALS = {
     },
     enter(ch=player.chal.choosed) {
         if (player.chal.active == 0) {
-            if (ch == 17) {
+            if (ch >= 17 && ch <= 20) {
                 INF.doReset()
         }
             else if (ch == 16) {
@@ -571,7 +571,7 @@ const CHALS = {
         • Primordium particles are disabled.<br>
         • Pre-Quantum global speed is always set to /1e9.<br>
         `,
-        reward: `Improve Muonic Calcium. <span class="yellow">Get more Prestige Base.</span><br><span class='orange'>At 100 completions, unlock ???</span>`,
+        reward: `Improve Muonic Calcium. <span class="yellow">Get more Prestige Base.</span><br><span class='orange'>At 50 completions, unlock C18</span>`,
         max: E(100),
         inc: E('e1.25e30'),
         pow: E(4),
@@ -583,7 +583,26 @@ const CHALS = {
         },
         effDesc(x) { return "x"+format(x.ret)+" to Muonic Calcium<br>x"+format(x.step)+" to Prestige Base" },
     },
-    cols: 17,
+    18: {
+        unl() { return player.chal.comps[17].gte(50)||player.chal.comps[18].gte(1) },
+        title: "Challenge Madness",
+        desc: `
+        • Some elements will be [Overflowed].<br>
+        • You are trapped in C1-17, you can;t gain dark rays, but they're capped a 1e12.<br>
+        `,
+        reward: `Boost Infinity and Dimensional Mass gain. <br><span class="yellow">At 1 completions, unlock last modificators.</span><br><span class='orange'>At 100 completions, unlock ???</span>`,
+        max: E(100),
+        inc: E('e13000000000'),
+        pow: E(4),
+        start: E('e13000000000'),
+        effect(x) {
+            let step = x.mul(10).pow(1.15).add(1)
+            let ret = x.mul(25).pow(1.45).add(1)
+            return {ret: ret, step: step}
+        },
+        effDesc(x) { return "x"+format(x.ret)+" to Infinity<br>x"+format(x.step)+" to Dimensional Mass" },
+    },
+    cols: 18,
 }
 
 /*

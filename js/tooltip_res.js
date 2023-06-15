@@ -233,6 +233,19 @@ const TOOLTIP_RES = {
             return h
         },
     },
+    orb: {
+        full: "Orb Of Creation",
+        desc() {
+           let h = `You have <b class='lightsky'>`+format(player.inf.c18.orb,0)+ `</b> Orbs of Creation<br>To collect next Orb, you need `+format(tmp.orbCost) + ` Mass in C18.
+           <br class='line'>
+           <i>
+           Start the 18th challenge. While you get ${formatMass(tmp.orbCost)} mass, you can get <b>Orb of Creations</b><br>
+           • You are trapped in C1-C17 challenges<br>
+           • You can't gain Dark Rays, But they're capped at 1e12<br>
+           </i>`
+           return h
+        }
+    },
 
     /**
      * desc() {

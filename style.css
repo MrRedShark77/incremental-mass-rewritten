@@ -254,7 +254,9 @@ button {
 .sky {
 	color: skyblue;
 }
-
+.lightsky {
+	color: rgb(0, 247, 247);
+}
 .cyan {
 	color: #07f;
 }
@@ -568,6 +570,7 @@ button {
 
 .elements.corrupted,
 .btn_tree.corrupted,
+.elements.overflowed,
 .elements.c16.bought {
 	border-color: white;
 	color: white;
@@ -581,6 +584,7 @@ button {
 	box-shadow: 3px 3px 3px #b1b1b1, -3px -3px 3px #646464, 3px 3px 3px #bebdbd inset, -3px -3px 3px #6d6d6d inset;
 	z-index: 1;
 	animation: overflowed_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+	transform: scale(1.1);
 }
 .elements.c16.bought {
 	background-color: #171717;
@@ -786,7 +790,16 @@ h4 {
 	box-shadow: 2px 2px 6px #47cbff, 2px 2px 6px #47cbff inset, -2px -2px 6px white, -2px -2px 6px white inset;
 	color: black;
 }
-
+.orbUpg.locked {
+	border-color: #303030;
+	cursor: default;
+}
+.orbUpg:not(.locked):hover {
+	border-color: #47ffff;
+	background-color: #00dbbe !important;
+	box-shadow: 2px 2px 6px #47fff0, 2px 2px 6px #47ffff inset, -2px -2px 6px white, -2px -2px 6px white inset;
+	color: black;
+}
 .btn.b_btn {
 	font-size: 11px;
 }

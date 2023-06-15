@@ -1104,9 +1104,9 @@ const TREE_UPGS = {
 
             effect() {
                 let x = player.dark.c16.bestBH.add(1).log10().add(1)
-                x = tmp.c16active ? x.root(4) : x.pow(3)
+                x = tmp.c16active|| CHALS.inChal(18) ? x.root(4) : x.pow(3)
                 x = overflow(x,10,0.5)
-                x = tmp.c16active ? x.root(3) : x.pow(2)
+                x = tmp.c16active|| CHALS.inChal(18) ? x.root(3) : x.pow(2)
                 return x
             },
             effDesc(x) { return "^"+format(x)+" later" },
@@ -1224,7 +1224,7 @@ const TREE_TYPES = (()=>{
     return t
 })()
 
-function hasTree(id) { return (player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)) && !(tmp.c16active && CORRUPTED_TREE.includes(id)) }
+function hasTree(id) { return (player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)) && !(tmp.c16active && CORRUPTED_TREE.includes(id))}
 
 function treeEff(id,def=1) { return tmp.supernova.tree_eff[id]||E(def) }
 

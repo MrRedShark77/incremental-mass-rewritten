@@ -25,7 +25,7 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
     <script src="js/debug.js"></script>
-
+    <script src="js/infinity/orb.js"></script>
     <script src="js/infinity/core.js"></script>
     <script src="js/infinity/inf.js"></script>
 
@@ -369,8 +369,8 @@
                                     <img src="images/am.png">
                                     <span style="margin-left: 5px; text-align: left;"><span id="am_scale"></span>Antimatter Generator [<span id="am_lvl">X</span>]</span>
                                 </div>
-                            </div><button id="am_btn" class="btn" style="width: 300px;" onclick="MATTERS.am.buy()">Cost: <span id="am_cost">X</span> Antimatter</button>
-                            <button class="btn" style="width: 120px;" onclick="MATTERS.am.buyMax()">Buy Max</button>
+                            </div><button id="am_btn" class="btn" style="width: 300px;" onclick="DARK.am.buy()">Cost: <span id="am_cost">X</span> Antimatter</button>
+                            <button class="btn" style="width: 120px;" onclick="DARK.am.buyMax()">Buy Max</button>
                             <button id="am_auto" class="btn" style="width: 80px; display: none;" onclick="">OFF</button>
                             <div style="margin-left: 5px; text-align: left; width: 400px">
                                 Antimatter Generator Power: <span id="am_step">X</span><br>
@@ -672,6 +672,9 @@
                                     Dalton Modificator Effect: <span id="dm_eff">X</span> to Dalton Fragments gain
                                 </div>
                             </div>
+                        </div><div id="stab_frame8_4">
+                            You must purchase corruption upgrades outside C18!<br><br>
+                            <div class="table_center"><div class="table_center" id="orbUpgs_table" style="width: 1000px;"></div></div>
                         </div>
                     </div><div id="tab_frame9">
                         <div id="stab_frame9_0">

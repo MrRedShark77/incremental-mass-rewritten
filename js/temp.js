@@ -365,7 +365,7 @@ function updateTemp() {
     tmp.brUnl = hasElement(208)
     tmp.eaUnl = hasCharger(5)
     tmp.brokenInf = hasInfUpgrade(16)
-
+    updateOrbTemp()
     updateInfTemp()
     updateC16Temp()
     updateDarkTemp()
