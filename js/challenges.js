@@ -489,7 +489,7 @@ const CHALS = {
         effect(x) {
             let ret = x.root(hasTree("chal7a")?1.5:2)
             ret = ret.softcap(50,0.5,0)
-ret = overflow(ret,1e68,0.5
+ret = overflow(ret,1e68,0.5)
             return overflow(ret,1e90,0.15)
         },
         effDesc(x) { return "+"+format(x)+softcapHTML(x,50)+ (x.gte(1e68)?"<span class='overflowed_text'></span>":"") },
