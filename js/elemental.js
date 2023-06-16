@@ -1623,8 +1623,12 @@ x = overflow(x,1e180,0.1)
         {
             dark: true,
             desc: `Keep Antimatter on Infinity Reset.`,
-            cost: E('e1700000'),
+            cost: E('e17000000'),
         },
+{
+desc: 'Mass Overflow^3 is 5% weaker',
+cost: E('ee1360'),
+}
     ],
     /*
     {
