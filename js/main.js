@@ -145,7 +145,10 @@ let op4 = E(0.7)
             os2 = os2.pow(p)
             os = os.pow(p)
         }
-if (hasElement(274)) op3 = op3.mul(1.05)
+if (hasElement(274)) {
+op = op.mul(1.05)
+op2 = op2.mul(1.05)
+op3 = op3.mul(1.05)}
         x = overflow(x,os,op)
 
         x = overflow(x,os2,op2)
