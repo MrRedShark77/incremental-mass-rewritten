@@ -55,6 +55,7 @@
     <script src="js/tabs.js"></script>
     <script src="js/scaling.js"></script>
     <script src="js/upgrades.js"></script>
+    <script src="js/ascensions.js"></script>
     <script src="js/ranks.js"></script>
     <script src="js/temp.js"></script>
 
@@ -183,6 +184,8 @@
                                     <button onclick="tmp.rank_tab = 0" class="btn_tab">Ranks</button>
                                 </div><div style="width: 145px">
                                     <button onclick="tmp.rank_tab = 1" class="btn_tab">Prestiges</button>
+                                </div><div style="width: 145px">
+                                    <button onclick="tmp.rank_tab = 2" class="btn_tab" id="asc_btn">Ascensions</button>
                                 </div>
                             </div>
                             <div id="rank_tab0">
@@ -205,8 +208,11 @@
                                     </div>
                                 </div>
                             </div><div id="rank_tab1">
-                                Your Prestige base is <span id="pres_base"></span> (based on product of Rank tiers)<br><br>
+                                Your Prestige base is <span id="pres_base"></span> (based on product of Rank tiers+1)<br><br>
                                 <div id="pres_table" class="table_center" style="min-height: 180px;"></div>
+                            </div><div id="rank_tab2">
+                                Your Ascension base is <span id="asc_base"></span> (based on product of ln[Prestige tiers+1]+1)<br><br>
+                                <div id="asc_table" class="table_center" style="min-height: 180px;"></div>
                             </div>
                             <br><br>
                             <div id="mass_upgs_table"></div><br><br>
@@ -369,6 +375,9 @@
                             <div id="pres_rewards_table"></div>
                         </div><div id="stab_frame1_3">
                             <div id="br_rewards_table"></div>
+                        </div><div id="stab_frame1_4">
+                            <div id="asc_reward_btn" class="table_center"></div><br>
+                            <div id="asc_rewards_table"></div>
                         </div>
                     </div><div id="tab_frame2">
                         <div id="main_upg_msg" style="min-height: 100px;"></div>
@@ -620,7 +629,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten v0.7.0.3 - made by MrRedShark77<br>
+                            Incremental Mass Rewritten v0.7.0.4 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                             Hint 1: Hover top image above tabs to show description...<br><br>

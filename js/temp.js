@@ -218,6 +218,14 @@ function resetTemp() {
         fragment_eff: {},
 
         iu_eff: [],
+
+        ascensions: {
+            req: [],
+            bulk: [],
+            eff: new Array(ASCENSIONS.names.length).fill({}),
+            baseExp: 1,
+            base: E(1),
+        },
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
@@ -367,6 +375,7 @@ function updateTemp() {
     tmp.eaUnl = hasCharger(5)
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.tfUnl = hasElement(230)
+    tmp.ascensions_unl = player.chal.comps[17].gte(4)
 
     updateInfTemp()
     updateC16Temp()

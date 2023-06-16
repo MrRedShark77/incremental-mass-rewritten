@@ -164,6 +164,17 @@ const MUONIC_ELEM = {
         },{
             desc: `The base of Muonic Boron-5 is increased by +1. Muonic Phosphorus-15 is even stronger.`,
             cost: E('e830'),
+        },{
+            desc: `Prestige Base multiplies stronger overflow^1-2 starting.`,
+            cost: E('e1050'),
+            eff() {
+                let x = overflow(tmp.prestiges.base.add(1),1e10,0.5,2)
+                return x
+            },
+            effDesc: x=>formatMult(x)+" later",
+        },{
+            desc: `Bibihexium-226 works thrice as effective.`,
+            cost: E('e1500'),
         },
 
         /*
@@ -186,6 +197,7 @@ const MUONIC_ELEM = {
 
         if (tmp.brokenInf) u += 2
         if (tmp.tfUnl) u += 6
+        if (tmp.ascensions_unl) u += 2
 
         return u
     },
@@ -223,8 +235,10 @@ function updateMuonSymbol(start=false) {
 const EXOTIC_ATOM = {
     requirement: [E(0),E(5e4),E(1e6),E(1e12),E(1e25),E(1e34),E(1e44),E(1e66),E(1e88),E(1e121),E(1e222),E('e321')],
     req() {
-        let t = player.dark.exotic_atom.tier
-        let r = this.requirement[t]||EINF
+        let t = player.dark.exotic_atom.tier, r = EINF
+
+        if (t < 12) r = this.requirement[t]
+        else r = Decimal.pow('e1000',Decimal.pow(1.25,t-12))
 
         return r
     },
@@ -340,7 +354,7 @@ function updateExoticAtomsTemp() {
     tea.amount = EXOTIC_ATOM.getAmount()
     tea.gain = EXOTIC_ATOM.gain()
 
-    let s = 1
+    let s = 1 + Math.max(t-12)*0.1
 
     if (hasPrestige(2,58)) s += prestigeEff(2,58,0)
     if (hasElement(25,1)) s += muElemEff(25,0)
@@ -363,6 +377,7 @@ function updateExoticAtomsHTML() {
 
     tmp.el.mcf_btn.setHTML(`
     Muon-Catalyzed Fusion Tier <b>${format(t,0)}</b><br>
+    ${t>=12?`Increase Reward Strength by +10%<br>`:''}
     Requirement: <b>${tea.req.format(0)}</b> Exotic Atoms
     `)
     tmp.el.mcf_btn.setClasses({btn: true, half_full: true, locked: tea.amount.lt(tea.req)})

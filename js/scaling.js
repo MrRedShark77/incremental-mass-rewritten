@@ -43,6 +43,7 @@ const SCALE_START = {
 		tier: E(1e5),
 		tetr: E(150),
 		pent: E(1200),
+		hex: E(2e12),
 		massUpg: E(1e11),
 		tickspeed: E(700),
 		bh_condenser: E(750),
@@ -119,6 +120,7 @@ const SCALE_POWER= {
 		tier: 4,
 		tetr: 6,
 		pent: 6,
+		hex: 8,
 		massUpg: 10,
 		tickspeed: 7,
 		bh_condenser: 4,
@@ -259,7 +261,7 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (!CHALS.inChal(14) && !player.dark.run.active && !tmp.c16active && !CHALS.inChal(15)) {
+	if (!CHALS.inChal(14) && !inDarkRun() && !tmp.c16active && !CHALS.inChal(15)) {
 		if (player.mainUpg.br.includes(2)) sqc8.push("massUpg","rank","tier","tetr","pent",'hex')
 		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
 	}
@@ -391,6 +393,9 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="prestige0") {
 			start = start.mul(exoticAEff(0,1))
+		}
+		else if (name=="fTier") {
+			if (hasAscension(0,2)) start = start.pow(2)
 		}
 	} else if (type==4) {
 		if (name=="rank") {
@@ -556,7 +561,7 @@ function getScalingPower(type, name) {
 	if (hasPrestige(2,4) && rps.includes(name) && type<4) power = power.mul(tmp.qu.chroma_eff[1][1])
 
 	let qf = tmp.qu.qc_eff[7][1]
-	if (!tmp.c16active) if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
+	if (!tmp.c16active) if (player.dark.run.upg[4] && inDarkRun() && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
 	if (PreQ_SCALES.includes(name) && type<3) power = power.mul(getEnRewardEff(5))
 
@@ -578,6 +583,9 @@ function noScalings(type,name) {
 	}
 	else if (name=="tetr") {
 		return hasCharger(8)
+	}
+	else if (name=="pent") {
+		return hasElement(243)
 	}
 	else if (name=="massUpg") {
 		if (hasBeyondRank(2,15)) return true

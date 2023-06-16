@@ -134,10 +134,14 @@ const CORE = {
             s => {
                 let x = s**0.25/10000
 
+                if (hasAscension(0,1)) x*=10
+
                 return x
             },
             s => {
                 let x = s**0.25/10000
+
+                if (hasAscension(0,1)) x*=10
 
                 return x
             },
@@ -327,10 +331,10 @@ debug.addRandomTheorem = (level=1,power=1,max_chance=CORE_CHANCE_MIN) => {
     addTheorem(CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)],c,level,power,max_chance)
 }
 
-debug.changeCoreFromBestLevel = () => {
-    let lvl = Math.floor(tmp.core_lvl), power = Math.floor(getPowerMult(tmp.core_lvl)*100)/100+1
+var changeCoreFromBestLevel = () => {
+    let lvl = Math.floor(tmp.core_lvl), power = Math.round(100+getPowerMult(tmp.core_lvl)*100)/100
     
-    for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i]) {
+    for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i] && lvl > player.inf.core[i].level) {
         player.inf.core[i].level=lvl
         player.inf.core[i].power=power
     }
@@ -648,4 +652,8 @@ function updateCoreTemp() {
 
         tmp.fragment_eff[i] = t.fragment[0](player.inf.fragment[i])
     }
+}
+
+function updateOneSec() {
+    if (hasElement(242)) changeCoreFromBestLevel()
 }

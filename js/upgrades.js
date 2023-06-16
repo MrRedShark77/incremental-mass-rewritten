@@ -72,7 +72,7 @@ const UPGS = {
                 let step = E(1)
                 if (player.ranks.rank.gte(3)) step = step.add(RANKS.effect.rank[3]())
                 step = step.mul(tmp.upgs.mass[2]?tmp.upgs.mass[2].eff.eff:1)
-                let ret = step.mul(x.add(tmp.upgs.mass[1].bonus))
+                let ret = step.mul(hasAscension(0,1)?x.add(1).mul(tmp.upgs.mass[1].bonus.add(1)):x.add(tmp.upgs.mass[1].bonus))
                 if (hasElement(209)) ret = ret.pow(elemEffect(209))
                 return {step: step, eff: ret}
             },
@@ -85,7 +85,7 @@ const UPGS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(1)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][1].effect:E(0))
-                if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.mass[2].bonus)
+                if (player.mainUpg.rp.includes(2)) x = hasAscension(0,1)?x.mul(tmp.upgs.mass[2].bonus.add(1)):x.add(tmp.upgs.mass[2].bonus)
                 x = x.mul(getEnRewardEff(4))
                 return x
             },
@@ -99,7 +99,7 @@ const UPGS = {
                 let step = E(2)
                 if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
                 step = step.pow(tmp.upgs.mass[3]?tmp.upgs.mass[3].eff.eff:1)
-                let ret = step.mul(x.add(tmp.upgs.mass[2].bonus)).add(1)//.softcap("ee14",0.95,2)
+                let ret = step.mul(hasAscension(0,1)?x.add(1).mul(tmp.upgs.mass[2].bonus.add(1)):x.add(tmp.upgs.mass[2].bonus)).add(1)//.softcap("ee14",0.95,2)
                 if (hasElement(203)) ret = ret.pow(elemEffect(203))
                 return {step: step, eff: ret}
             },
@@ -112,7 +112,7 @@ const UPGS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][2].effect:E(0))
-                if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.mass[3].bonus)
+                if (player.mainUpg.rp.includes(7)) x = hasAscension(0,1)?x.mul(tmp.upgs.mass[3].bonus.add(1)):x.add(tmp.upgs.mass[3].bonus)
                 x = x.mul(getEnRewardEff(4))
                 return x
             },
@@ -123,7 +123,7 @@ const UPGS = {
             start: E(1000),
             inc: E(9),
             effect(x) {
-                let xx = x.add(tmp.upgs.mass[3].bonus)
+                let xx = hasAscension(0,1)?x.add(1).mul(tmp.upgs.mass[3].bonus.add(1)):x.add(tmp.upgs.mass[3].bonus)
                 if (hasElement(81)) xx = xx.pow(1.1)
                 let ss = E(10)
                 if (player.ranks.rank.gte(34)) ss = ss.add(2)
@@ -164,6 +164,12 @@ const UPGS = {
                 let op = E(.5), op2 = E(0.25)
 
                 if (hasElement(210)) os = os.mul(elemEffect(210))
+
+                if (hasElement(27)) {
+                    let w = muElemEff(27)
+                    os = os.mul(w)
+                    os2 = os2.mul(w)
+                }
 
                 if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
@@ -292,8 +298,8 @@ const UPGS = {
                 desc: "For every 3 tickspeeds add Stronger.",
                 cost: E(1e7),
                 effect() {
-                    let ret = player.tickspeed.div(3).add(hasElement(38)?tmp.elements.effect[38]:0).floor()
-                    return ret
+                    let ret = hasAscension(0,1)?player.tickspeed.div(3).add(1).mul(hasElement(38)?tmp.elements.effect[38].add(1):1):player.tickspeed.div(3).add(hasElement(38)?tmp.elements.effect[38]:0)
+                    return ret.floor()
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Stronger"

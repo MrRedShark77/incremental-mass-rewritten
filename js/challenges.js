@@ -68,7 +68,7 @@ function updateChalTemp() {
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
         let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:1
-        if (x == 9) q = new Decimal('1e150').min(q)
+        if (x == 9) q = Decimal.min(q,'e150')
         tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
@@ -90,7 +90,8 @@ const CHALS = {
         else if (x < 9) ATOM.doReset(chal_reset)
         else if (x < 13) SUPERNOVA.reset(true, true)
         else if (x < 16) DARK.doReset(true)
-        else MATTERS.final_star_shard.reset(true)
+        else if (x == 16) MATTERS.final_star_shard.reset(true)
+        else INF.doReset()
     },
     exit(auto=false) {
         if (!player.chal.active == 0) {
@@ -138,41 +139,47 @@ const CHALS = {
         else if (x < 9) return "Entering this challenge will force atom reset."
         else if (x < 13) return "Entering challenge will supernova reset."
         else if (x < 16) return "Entering challenge will force a Darkness reset."
-        return "Entering challenge will force an FSS reset."
+        else if (x == 16) return "Entering challenge will force an FSS reset."
+        return "Entering challenge will force an Infinity reset."
     },
     getMax(i) {
         if (i <= 12 && hasPrestige(2,25)) return EINF 
         let x = this[i].max
         if (i==16 && hasElement(229)) x = E(100)
 
-        if (i <= 4 && !hasPrestige(2,25)) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
-        if (hasElement(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
-        if (hasElement(20) && (i==7)) x = x.add(50)
-        if (hasElement(41) && (i==7)) x = x.add(50)
-        if (hasElement(60) && (i==7)) x = x.add(100)
-        if (hasElement(33) && (i==8)) x = x.add(50)
-        if (hasElement(56) && (i==8)) x = x.add(200)
-        if (hasElement(65) && (i==7||i==8)) x = x.add(200)
-        if (hasElement(70) && (i==7||i==8)) x = x.add(200)
-        if (hasElement(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
-        if (hasTree("chal1") && (i==7||i==8))  x = x.add(100)
-        if (hasTree("chal4b") && (i==9))  x = x.add(100)
-        if (hasTree("chal8") && (i>=9 && i<=12))  x = x.add(200)
-        if (hasElement(104) && (i>=9 && i<=12))  x = x.add(200)
-        if (hasElement(125) && (i>=9 && i<=12))  x = x.add(elemEffect(125,0))
-        if (hasElement(151) && (i==13))  x = x.add(75)
-        if (hasElement(171) && (i==13||i==14))  x = x.add(100)
-        if (hasElement(186) && (i==13||i==14||i==15))  x = x.add(100)
-        if (hasElement(196) && (i==13||i==14))  x = x.add(200)
-        if (hasPrestige(1,46) && (i==13||i==14||i==15))  x = x.add(200)
-        if (i==13||i==14||i==15)  x = x.add(tmp.dark.rayEff.dChal||0)
+        if (i < 16) {
+            if (i <= 4 && !hasPrestige(2,25)) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
+            if (hasElement(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
+            if (hasElement(20) && (i==7)) x = x.add(50)
+            if (hasElement(41) && (i==7)) x = x.add(50)
+            if (hasElement(60) && (i==7)) x = x.add(100)
+            if (hasElement(33) && (i==8)) x = x.add(50)
+            if (hasElement(56) && (i==8)) x = x.add(200)
+            if (hasElement(65) && (i==7||i==8)) x = x.add(200)
+            if (hasElement(70) && (i==7||i==8)) x = x.add(200)
+            if (hasElement(73) && (i==5||i==6||i==8)) x = x.add(tmp.elements.effect[73])
+            if (hasTree("chal1") && (i==7||i==8))  x = x.add(100)
+            if (hasTree("chal4b") && (i==9))  x = x.add(100)
+            if (hasTree("chal8") && (i>=9 && i<=12))  x = x.add(200)
+            if (hasElement(104) && (i>=9 && i<=12))  x = x.add(200)
+            if (hasElement(125) && (i>=9 && i<=12))  x = x.add(elemEffect(125,0))
+            if (hasElement(151) && (i==13))  x = x.add(75)
+            if (hasElement(171) && (i==13||i==14))  x = x.add(100)
+            if (hasElement(186) && (i==13||i==14||i==15))  x = x.add(100)
+            if (hasElement(196) && (i==13||i==14))  x = x.add(200)
+            if (hasPrestige(1,46) && (i==13||i==14||i==15))  x = x.add(200)
+            if (i==13||i==14||i==15)  x = x.add(tmp.dark.rayEff.dChal||0)
+        }
+        
         return x.floor()
     },
     getScaleName(i) {
-        if (i < 16) {
+        if (i < 16 && i != 16) {
             if (player.chal.comps[i].gte(i==13?10:1000)) return " Impossible"
             if (player.chal.comps[i].gte(i==13?5:i==8?200:i>8&&i!=13&&i!=16?50:300)) return " Insane"
             if (player.chal.comps[i].gte(i==13?2:i>8&&i!=13&&i!=16?10:75)) return " Hardened"
+        } else {
+            if (player.chal.comps[i].gte(10)) return " Hardened"
         }
         return ""
     },
@@ -206,7 +213,10 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x], fp = 1, goal = EINF, bulk = E(0)
 
-        if (x == 16) {
+        if (x > 16) {
+            goal = chal.start.pow(Decimal.pow(chal.inc,lvl.scale(10,2,0).pow(chal.pow)))
+            if (res.gte(chal.start)) bulk = res.log(chal.start).log(chal.inc).root(chal.pow).scale(10,2,0,true).add(1).floor()
+        } else if (x == 16) {
             goal = lvl.gt(0) ? Decimal.pow('ee23',Decimal.pow(2,lvl.sub(1).pow(1.5))) : chal.start
             if (res.gte(chal.start)) bulk = res.log('ee23').max(1).log(2).root(1.5).add(1).floor()
             if (res.gte('ee23')) bulk = bulk.add(1)
@@ -549,7 +559,7 @@ const CHALS = {
         • Pre-Quantum global speed is always set to /100.<br>
         You can earn Corrupted Shards based on your mass of black hole, when exiting the challenge.
         `,
-        reward: `Improve Hybridized Uran-Astatine.<br><span class="yellow">On first completion, unlock ???</span>`,
+        reward: `Improve Hybridized Uran-Astatine.<br><span class="yellow">On first completion, unlock new prestige layer.</span>`,
         max: E(1),
         start: E('e1.25e11'),
         effect(x) {
@@ -558,7 +568,24 @@ const CHALS = {
         },
         effDesc(x) { return "^"+format(x) },
     },
-    cols: 16,
+    17: {
+        unl() { return hasElement(240) },
+        title: "Unnatural Tickspeed",
+        desc: `
+        Tickspeeds, Accelerators, BHC, FVM, Cosmic Rays, Star Boosters, and Cosmic Strings (including bonuses) don't work, they are unaffordable or unobtainable. Second neutron effect doesn't work until Atom Upgrade 18. Black Hole's effect doesn't work until Binilunium-201. You are stuck in dark run with 250 all glyphs (unaffected by weakness).
+        `,
+        reward: `Per completion, increase the softcap of theorem's level starting by +3.<br><span class="yellow">On 4th completion, unlock Ascensions and more elements.</span>`,
+        max: E(100),
+        start: E('ee92'),
+        inc: E(2),
+        pow: E(2),
+        effect(x) {
+            let ret = x.mul(3)
+            return ret.toNumber()
+        },
+        effDesc(x) { return "+"+format(x,0)+" later" },
+    },
+    cols: 17,
 }
 
 /*

@@ -296,7 +296,7 @@ const PRESTIGES = {
         x += 1
 
         if (hasBeyondRank(4,2)) x *= beyondRankEffect(4,2)
-        if (tmp.c16active || player.dark.run.active) x /= mgEff(5)
+        if (tmp.c16active || inDarkRun()) x /= mgEff(5)
 
         return x
     },
@@ -606,12 +606,12 @@ function updateRanksTemp() {
     if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',2))
     let fp2 = tmp.qu.chroma_eff[1][0]
 
-    let tetr_fp2 = hasCharger(8) ? 1 : fp2
+    let tetr_fp2 = !hasElement(243) && hasCharger(8) ? 1 : fp2
 
-    let rt_fp2 = hasPrestige(1,127) ? tmp.c16active ? 5e2 : 1 : fp2
+    let rt_fp2 = !hasElement(243) && hasPrestige(1,127) ? tmp.c16active ? 5e2 : 1 : fp2
     let ffp = E(1)
     let ffp2 = 1
-    if (tmp.c16active || player.dark.run.active) ffp2 /= mgEff(5)
+    if (tmp.c16active || inDarkRun()) ffp2 /= mgEff(5)
 
     let fp = RANKS.fp.rank().mul(ffp)
     tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ifp).div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
@@ -670,6 +670,10 @@ function updateRanksTemp() {
             if (PRESTIGES.rewardEff[x][y]) tmp.prestiges.eff[x][y] = PRESTIGES.rewardEff[x][y][0]()
         }
     }
+
+    // Ascension
+
+    updateAscensionsTemp()
 
     // Beyond
 
@@ -761,7 +765,8 @@ const BEYOND_RANKS = {
             7: `Remove pre-meta scalings from Prestige Level.`,
         },
         6: {
-            1: `'Self-Infinity' and 'Exotic Speed' upgrades use a formula with base 3 instead of base 2.`
+            1: `'Self-Infinity' and 'Exotic Speed' upgrades use a formula with base 3 instead of base 2.`,
+            12: `Bitriunium-231 is cubed.`,
         },
     },
 
@@ -921,7 +926,8 @@ function beyondRankEffect(x,y,def=1) {
 
 function updateRanksHTML() {
     tmp.el.rank_tabs.setDisplay(hasUpgrade('br',9))
-    for (let x = 0; x < 2; x++) {
+    tmp.el.asc_btn.setDisplay(tmp.ascensions_unl)
+    for (let x = 0; x < 3; x++) {
         tmp.el["rank_tab"+x].setDisplay(tmp.rank_tab == x)
     }
 
@@ -935,7 +941,7 @@ function updateRanksHTML() {
                 let desc = ""
                 for (let i = 0; i < keys.length; i++) {
                     if (player.ranks[rn].lt(keys[i])) {
-                        desc = ` At ${RANKS.fullNames[x]} ${format(keys[i],0)}, ${RANKS.desc[rn][keys[i]]}`
+                        desc = ` At ${RANKS.fullNames[x]} ${format(keys[i],0)} - ${RANKS.desc[rn][keys[i]]}`
                         break
                     }
                 }
@@ -1005,7 +1011,7 @@ function updateRanksHTML() {
             tmp.el.br_desc.setClasses({btn: true, reset: true, locked: player.ranks.hex.lt(tmp.beyond_ranks.req)})
         }
     }
-    if (tmp.rank_tab == 1) {
+    else if (tmp.rank_tab == 1) {
         tmp.el.pres_base.setHTML(`${tmp.prestiges.baseMul.format(0)}<sup>${format(tmp.prestiges.baseExp)}</sup> = ${tmp.prestiges.base.format(0)}`)
 
         for (let x = 0; x < PRES_LEN; x++) {
@@ -1019,7 +1025,7 @@ function updateRanksHTML() {
                 let desc = ""
                 for (let i = 0; i < keys.length; i++) {
                     if (p.lt(keys[i]) && (tmp.chal13comp || p.lte(PRES_BEFOREC13[x]||Infinity))) {
-                        desc = ` At ${PRESTIGES.fullNames[x]} ${format(keys[i],0)}, ${PRESTIGES.rewards[x][keys[i]]}`
+                        desc = ` At ${PRESTIGES.fullNames[x]} ${format(keys[i],0)} - ${PRESTIGES.rewards[x][keys[i]]}`
                         break
                     }
                 }
@@ -1033,6 +1039,9 @@ function updateRanksHTML() {
                 tmp.el["pres_auto_"+x].setTxt(player.auto_pres[x]?"ON":"OFF")
             }
         }
+    }
+    else if (tmp.rank_tab == 2) {
+        updateAscensionsHTML()
     }
 }
 

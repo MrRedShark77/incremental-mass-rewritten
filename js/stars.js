@@ -50,7 +50,7 @@ const STARS = {
         } else {
             let [p, pp] = [E(1), E(1)]
             if (hasElement(48)) p = p.mul(1.1)
-            if (hasElement(76)) [p, pp] = player.qu.rip.active || tmp.c16active || player.dark.run.active?[p.mul(1.1), pp.mul(1.1)]:[p.mul(1.25), pp.mul(1.25)]
+            if (hasElement(76)) [p, pp] = player.qu.rip.active || tmp.c16active || inDarkRun()?[p.mul(1.1), pp.mul(1.1)]:[p.mul(1.25), pp.mul(1.25)]
             let [s,r,t1,t2,t3] = [player.stars.points.mul(p)
                 ,player.ranks.rank.softcap(2.5e6,0.25,0).mul(p)
                 ,player.ranks.tier.softcap(1.5e5,0.25,0).mul(p)
@@ -59,7 +59,7 @@ const STARS = {
             x =
             s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1))))
             x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
-            if (player.qu.rip.active || tmp.c16active || player.dark.run.active) x = x.softcap('ee33',0.9,2)
+            if (player.qu.rip.active || tmp.c16active || inDarkRun()) x = x.softcap('ee33',0.9,2)
             x = x.softcap('ee70',0.91,2)//.min('ee70')
         }
 
@@ -127,6 +127,8 @@ function updateStarsTemp() {
     if (hasElement(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])
     if (hasUpgrade('br',5)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(upgEffect(4,5))
     tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.softcap(1e13,0.5,0)//.softcap(3e15,0.1,0)
+
+    if (CHALS.inChal(17)) tmp.stars.generator_boost_base = E(1)
 
     tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost.mul(tmp.chal?tmp.chal.eff[11]:1)).softcap('e3e18',0.95,2)
     for (let x = 0; x < 5; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)

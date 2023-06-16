@@ -7,7 +7,7 @@ const SUPERNOVA = {
         else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
     },
     doReset() {
-        let br = player.qu.rip.active || tmp.c16active || player.dark.run.active
+        let br = player.qu.rip.active || tmp.c16active || inDarkRun()
         tmp.supernova.time = 0
 
         player.atom.points = E(0)
@@ -72,7 +72,7 @@ const SUPERNOVA = {
     },
     req(x=player.supernova.times) {
         ff = tmp.dark.shadowEff.sn||1
-        if (tmp.c16active || player.dark.run.active) ff /= mgEff(4)[1]
+        if (tmp.c16active || inDarkRun()) ff /= mgEff(4)[1]
 
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
         maxlimit = E(1e20).pow(x.scaleEvery('supernova',false,[1,1,1,1,ff]).div(ml_fp).pow(1.25)).mul(1e90)

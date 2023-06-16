@@ -2,12 +2,12 @@ const PRIM = {
     unl() { return hasTree('unl2') },
     getTheorems() {
         let b = tmp.prim.t_base
-        let x = player.qu.bp.max(1).log(b).mul(2).mul(tmp.chal?tmp.chal.eff[14]:1).scale(150,2,true)
+        let x = player.qu.bp.max(1).log(b).mul(2).mul(tmp.chal?tmp.chal.eff[14]:1).scale(1e42,10,0,true)
         return x.floor()
     },
     getNextTheorem() {
         let b = tmp.prim.t_base
-        let x = E(b).pow(player.qu.prim.theorems.scale(150,2).div(tmp.chal?tmp.chal.eff[14]:1).div(2).add(1))
+        let x = E(b).pow(player.qu.prim.theorems.scale(1e42,10,0).div(tmp.chal?tmp.chal.eff[14]:1).div(2).add(1))
 
         return x
     },
@@ -52,7 +52,7 @@ const PRIM = {
                 return x
             },
             p=>{
-                let x = [p.root(3).div(10), p.root(3).pow(QCs.active()?2:1)]
+                let x = [p.root(3).div(10), p.root(3).pow(QCs.active()?2:1).overflow(1e11,1/3)]
                 return x
             },
             p=>{
@@ -166,7 +166,7 @@ function updatePrimordiumTemp() {
         }
         tp.parts[i] = pp
         tp.bonus[i] = b
-        if (player.qu.rip.active || tmp.c16active || player.dark.run.active) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
+        if (player.qu.rip.active || tmp.c16active || inDarkRun()) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
         tp.eff[i] = PRIM.particle.eff[i](pp.add(b).softcap(100,0.75,0).mul(pstr))
     }
 

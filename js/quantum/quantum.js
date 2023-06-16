@@ -107,6 +107,8 @@ const QUANTUM = {
             pow = pow.mul(tmp.dark.abEff.csp||1)
             pow = pow.pow(exoticAEff(1,3))
 
+            if (CHALS.inChal(17)) pow = E(1)
+
             let b = E(0)
 
             if (hasElement(19,1)) b = b.add(muElemEff(19,0))

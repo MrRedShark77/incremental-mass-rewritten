@@ -145,7 +145,7 @@ const INF = {
 
         dark.exotic_atom = darkSave.exotic_atom
 
-        player.bh.fvm = E(0)
+        if (!hasElement(242)) player.bh.fvm = E(0)
         player.bh.unstable = E(0)
 
         // Other
@@ -184,7 +184,7 @@ const INF = {
     },
     goInf(limit=false) {
         if (player.mass.gte(this.req)) {
-            if (limit || player.inf.pt_choosed >= 0) CONFIRMS_FUNCTION.inf(limit)
+            if (limit || player.inf.pt_choosed >= 0 || hasElement(239)) CONFIRMS_FUNCTION.inf(limit)
             else if (player.confirms.inf) createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
             else CONFIRMS_FUNCTION.inf(limit)
         }
@@ -342,10 +342,12 @@ const INF = {
 
             let x = tmp.peEffect.eff||E(1)
 
+            if (hasElement(244)) x = x.mul(elemEffect(244))
+
             return x
         },
         effect() {
-            let x = player.inf.dim_mass.add(1).log10().pow(2).div(10)
+            let x = player.inf.dim_mass.add(1).log10().pow(hasElement(244)?2.2:2).div(10)
 
             return x//.softcap(10,0.5,0)
         },
@@ -463,6 +465,7 @@ function updateInfTemp() {
 
     if (hasElement(222)) tmp.inf_level_ss += 5
     if (hasElement(235)) tmp.inf_level_ss += 5
+    if (tmp.chal) tmp.inf_level_ss += tmp.chal.eff[17]||0
 
     tmp.IP_gain = INF.gain()
     tmp.inf_limit = INF.limit()

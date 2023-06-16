@@ -9,7 +9,7 @@ const RADIATION = {
         
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
 
-        if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
         if (hasTree('ct8')) x = x.mul(treeEff('ct8'))
 
@@ -32,7 +32,7 @@ const RADIATION = {
         x = x.mul(tmp.radiation.bs.eff[3*i])
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
 
-        if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
         if (hasTree('ct8')) x = x.mul(treeEff('ct8'))
 

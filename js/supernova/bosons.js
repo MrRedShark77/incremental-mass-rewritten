@@ -9,7 +9,7 @@ const BOSONS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
             return x
         },
@@ -21,7 +21,7 @@ const BOSONS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
             return x
         },
@@ -32,7 +32,7 @@ const BOSONS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
             return x
         },
@@ -44,7 +44,7 @@ const BOSONS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
             return x
         },
@@ -56,7 +56,7 @@ const BOSONS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
             return x
         },
@@ -66,7 +66,7 @@ const BOSONS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
             return x
         },
@@ -77,7 +77,7 @@ const BOSONS = {
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
-            if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(4)[0])
+            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
 
             return x
         },

@@ -38,15 +38,27 @@ const CHROMA = {
         i => {
             let c = tmp.chal ? tmp.chal.eff[16] : 1
 
-            let x = E(1.01).pow(i.add(1).log10().max(0).pow(0.8))
-            if (hasUpgrade('br',7) && (player.qu.rip.active || hasElement(148))) x = x.pow(2)
-            if (hasUpgrade('br',10)) x = x.pow(1.1)
+            let x
+            
+            if (hasElement(243)) {
+                x = i.add(10).log10()
+
+                if (hasUpgrade('br',7) && (player.qu.rip.active || hasElement(148))) x = x.mul(2)
+                if (hasUpgrade('br',10)) x = x.mul(1.1)
+                
+                x = x.pow(c)
+            } else {
+                x = E(1.01).pow(i.add(1).log10().max(0).pow(0.8))
+                if (hasUpgrade('br',7) && (player.qu.rip.active || hasElement(148))) x = x.pow(2)
+                if (hasUpgrade('br',10)) x = x.pow(1.1)
+                x = x.pow(c).softcap(1e10,1/3,0)
+            }
             
             let y = hasPrestige(2,4)?i.add(1).log10().root(2).div(250).add(1).pow(-1):E(1)
             if (hasElement(207)) y = y.pow(1.5)
             if (hasBeyondRank(1,4)) y = y.pow(beyondRankEffect(1,4))
 
-            return [x.pow(c).softcap(1e10,1/3,0),y.pow(c)]
+            return [x,y.pow(c)]
         },
         i => {
             let x = E(1.1).pow(i.add(1).log10().max(0).pow(0.75))

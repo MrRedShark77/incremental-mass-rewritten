@@ -44,7 +44,7 @@ const CONFIRMS_FUNCTION = {
         }
     },
     qu(auto,force,rip,bd) {
-        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !CHALS.inChal(14) && !CHALS.inChal(15) && !player.dark.run.active && !tmp.c16active) {
+        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !CHALS.inChal(14) && !CHALS.inChal(15) && !inDarkRun() && !tmp.c16active) {
             player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
             player.qu.qc.active = false
         }
@@ -90,7 +90,7 @@ const CONFIRMS_FUNCTION = {
         QUANTUM.doReset(player.qu.qc.active)
     },
     bigRip() {
-        if (tmp.c16active || player.dark.run.active) return
+        if (tmp.c16active || inDarkRun()) return
         if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain)
         player.qu.qc.active = false
         player.qu.rip.first = true
@@ -115,7 +115,14 @@ const CONFIRMS_FUNCTION = {
 
                 addTheorem(td.type,td.star_c,Math.floor(tmp.core_lvl),td.power_m*getPowerMult()+1,getCoreChance())
             }
+        } else if (hasElement(239) && player.inf.pt_choosed < 0) {
+            let fl = Math.floor(tmp.core_lvl), pm = getPowerMult(), chance = getCoreChance()
+            for (let i in player.inf.pre_theorem) {
+                let t = player.inf.pre_theorem[i]
+                player.inf.fragment[t.type] = player.inf.fragment[t.type].add(calcFragmentBase(t,t.star_c.map(x => x < chance),Math.round(100+pm*t.power_m*100)/100,fl).div(4))
+            }
         }
+
 
         if (player.inf.theorem.eq(0)) {
             player.inf.points = player.inf.points.add(2)

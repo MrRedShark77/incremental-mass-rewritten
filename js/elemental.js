@@ -1298,8 +1298,9 @@ const ELEMENTS = {
             desc: `Quantum Shard’s base is boosted by FSS.`,
             cost: E('e640000'),
             effect() {
-                let x = player.dark.matters.final.div(10).add(1)
-                return x
+                let x = player.dark.matters.final.div(10)
+                if (hasElement(28)) x = x.pow(3)
+                return x.add(1)
             },
             effDesc(x) { return "^"+format(x,1) },
         },{
@@ -1329,6 +1330,7 @@ const ELEMENTS = {
             cost: E('e1e26'),
             effect() {
                 let x = player.bh.mass.add(10).log10().root(20)
+                if (hasBeyondRank(6,12)) x = x.pow(3)
                 return x
             },
             effDesc(x) { return "^"+format(x)+' later' },
@@ -1358,6 +1360,34 @@ const ELEMENTS = {
             dark: true,
             desc: `Abyssal blot’s eighth reward is even stronger.`,
             cost: E('e6e6'),
+        },{
+            inf: true,
+            desc: `Going infinity without any theorem selected will auto-fragment each theorem at 25% yield.`,
+            cost: E('1e24'),
+        },{
+            inf: true,
+            desc: `Unlock 17th Challenge.`,
+            cost: E('1e25'),
+        },{
+            c16: true,
+            desc: `[ct10] is twice as effective.`,
+            cost: E('ee38'),
+        },{
+            desc: `Current theorem’s level now automatically appends to theorems in core if it’s greater than their level. Keep FV Manipulators on infinity.`,
+            cost: E('ee888'),
+        },{
+            dark: true,
+            desc: `Remove all scalings from Pent. Hybridized Uran-Astatine’s first effect now works with Ranks, but it is now changed.`,
+            cost: E('e9.2e6'),
+        },{
+            desc: `Dimensional mass gain is boosted by infinity theorems. Its formula is slightly better.`,
+            cost: E('ee1155'),
+            effect() {
+                let x = player.inf.theorem.add(1).tetrate(1.75)
+                
+                return x
+            },
+            effDesc(x) { return formatMult(x) },
         },
     ],
     /*
@@ -1406,7 +1436,8 @@ const ELEMENTS = {
         }
 
         if (tmp.brokenInf) u += 12
-        if (tmp.tfUnl) u += 8
+        if (tmp.tfUnl) u += 12
+        if (tmp.ascensions_unl) u += 2
 
         return u
     },

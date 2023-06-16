@@ -173,6 +173,8 @@ function getPlayerData() {
         },
         auto_pres: [],
         prestiges: [],
+        auto_asc: [],
+        ascensions: new Array(ASCENSIONS.names.length).fill(E(0)),
         auto_mainUpg: {
             
         },
@@ -185,6 +187,7 @@ function getPlayerData() {
         },
         ranks_reward: 0,
         pres_reward: 0,
+        asc_reward: 0,
         scaling_ch: 0,
         rp: {
             points: E(0),
@@ -552,6 +555,7 @@ function loadGame(start=true, gotNaN=false) {
         treeCanvas()
         setInterval(drawTreeHTML, 10)
         setInterval(checkNaN,1000)
+        setInterval(updateOneSec,1000)
 
         setTimeout(()=>{
             tmp.start = true

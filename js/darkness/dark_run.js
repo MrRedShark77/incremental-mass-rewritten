@@ -2,7 +2,12 @@ const DARK_RUN = {
     mass_glyph_name: ['Cyrillic Glyph', 'Deutsch Glyph', 'Swedish Glyph', 'Chinese Glyph', 'Spanish Glyph', 'Slovak Glyph'],
 
     mass_glyph_eff(i) {
-        let x, g = (tmp.c16active ? i == 5 ? 10 : 100 : player.dark.run.glyphs[i]) / tmp.dark.glyph_weak
+        let x, g = player.dark.run.glyphs[i]
+
+        if (tmp.c16active) g = i == 5 ? 10 : 100
+        else if (CHALS.inChal(17)) g = 250
+
+        if (!CHALS.inChal(17)) g /= tmp.dark.glyph_weak
 
         if (i < 4) x = 1/(g**0.5/100+1)
         else if (i == 4) x = [1/(g**0.5/100+1),1.1**(g**0.75)]
@@ -154,6 +159,10 @@ function glyphButton(i) {
         player.dark.run.glyphs[i] += tmp.dark.mass_glyph_gain[i]
         darkRun()
     }
+}
+
+function inDarkRun() {
+    return player.dark.run.active || CHALS.inChal(17)
 }
 
 function darkRun() {

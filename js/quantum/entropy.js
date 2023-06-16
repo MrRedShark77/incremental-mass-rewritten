@@ -204,10 +204,10 @@ const ENTROPY = {
         return x
     },
     getRewardEffect(i) {
-        if ((player.qu.rip.active || tmp.c16active || player.dark.run.active) && !tmp.en.reward_br.includes(i)) return E(0)
+        if ((player.qu.rip.active || tmp.c16active || inDarkRun()) && !tmp.en.reward_br.includes(i)) return E(0)
         let x = player.qu.en.rewards[i]
 
-        if (hasElement(91) && (player.qu.rip.active || tmp.c16active || player.dark.run.active) && (i==1||i==4)) x = x.mul(0.1)
+        if (hasElement(91) && (player.qu.rip.active || tmp.c16active || inDarkRun()) && (i==1||i==4)) x = x.mul(0.1)
 
         return x
     },

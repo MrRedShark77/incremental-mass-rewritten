@@ -121,7 +121,7 @@ const DARK = {
         x.ray = hasElement(143) ? a.add(1).log2().add(1).pow(1.5) : a.add(1).log10().add(1)
         x.mass = hasCharger(4) ? overflow(a.add(1),10,0.25) : a.add(1).log10().add(1).root(2)
 
-        if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
+        if (a.gte(1e6)) x.bp = a.div(1e6).pow(10).overflow('e1e8',0.5,0)
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
@@ -161,7 +161,7 @@ const DARK = {
         }
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
         if (a.gte('ee7')) {
-            x.ea = a.div('ee7').log10().div(1e6).add(1).root(2).softcap(1.75,0.25,0)
+            x.ea = a.div('ee7').log10().div(1e6).add(1).root(2).softcap(1.75,0.25,0).softcap(8,0.1,0)
         }
 
         return x
