@@ -599,7 +599,7 @@ ret = overflow(ret,1e68,0.5)
         start: E('e11400000000'),
         effect(x) {
             let ret = x.mul(25).pow(10).add(1)
-            return ret
+            return overflow(ret,1e15,0.1)
         },
         effDesc(x) { return "x"+format(x)},
     },
