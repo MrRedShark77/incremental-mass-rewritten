@@ -1515,7 +1515,7 @@ const ELEMENTS = {
                 if (CHALS.inChal(17)|| CHALS.inChal(18)) x = E(1)
                 else x = player.inf.nm_base.max(1).root(.65).add(1).floor()
                 x = x.softcap(hasElement(269)?1e300:1e30,0.01,0)
-x = overflow(x.1e180,0.1)
+x = overflow(x,1e180,0.1)
                 return x
             },
             effDesc(x) { return "^"+format(x,0)+` later.${elemEffect(254).gte(hasElement(269)?1e300:1e30)?` <span class='soft'>(softcapped)</span>`:``}`},
