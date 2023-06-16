@@ -28,7 +28,7 @@ const ORB = {
             addQuote(12)
         }
     },
-requirement: [E('e1.060e10'),E('e1.45e10'),E('e1.63e10'),E('e8e10'),E('e2e11'),E('e4e11')],
+requirement: [E('e1.060e10'),E('e1.45e10'),E('e1.63e10')],
 canBuy(x) {
     let u = this.upgs[x]
     let res = player.inf.c18.orb
