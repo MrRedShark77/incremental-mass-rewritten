@@ -88,7 +88,7 @@ const BOSONS = {
             if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3).softcap(1e15,0.1,0))
             if (tmp.c16active) a = overflow(a,10,0.5)
             let b = expMult(x.add(1),2/3,2)
-a = overflow(a,'ee1300',0.05)
+a = overflow(a,'ee1800',0.05)
             return [a,b]
         },
         neg_w(x) {
