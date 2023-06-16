@@ -74,7 +74,7 @@ Decimal.prototype.softcapHTML = function (start, invisible) { return softcapHTML
 
 function calcOverflow(x,y,s,inv=false) { return x.gte(s) ? x.max(1).log10().div(y.max(1).log10()).pow(inv?-1:1) : E(1) }
 function calcTetraflow(x,y,s,inv=false) {
-     return x.gte(s) ? x.max(1).slog(10).div(y.max(1).log(10)).pow(inv?-1:1) : E(1) }
+     return x.gte(s) ? x.max(1).log(100).div(y.max(1).slog(10)).pow(inv?-1:1) : E(1) }
 String.prototype.corrupt = function (active=true) { return active ? this.strike() + ` <span class='corrupted_text'>[Corrupted]</span>` : this }
 
 function calc(dt) {

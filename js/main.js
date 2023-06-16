@@ -773,7 +773,7 @@ function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc)
 function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }
 
 function overflowFormat(x,inv=false) { return (inv?"raised":"rooted")+" by <b>"+format(x)+"</b>" }
-function tetraflowFormat(x,inv=false) { return (inv?"raised":"tetrated")+" by <b>"+format(x)+"</b>" }
+function tetraflowFormat(x,inv=false) { return (inv?"raised":"rooted")+" by <b>"+format(x)+"</b>" }
 function capitalFirst(str) {
 	if (str=="" || str==" ") return str
 	return str
