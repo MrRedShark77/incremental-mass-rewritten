@@ -166,7 +166,9 @@ function resetTemp() {
             bh: E(0),
             quark: E(0),
         },
-
+        tetraflowBefore: {
+            mass: E(0),
+        },
         overflow_start: {
             dm: E('ee30'),
             mass: E('ee69'),

@@ -116,8 +116,8 @@ const FORMS = {
 let t = x
         let os3 = tmp.c16active|| CHALS.inChal(17)|| CHALS.inChal(18) ? E('ee25') : E('ee800')
         let op3 = E(.25)
-let ts = E('ee1400')
-let tp = E(0.7)
+let os4 = E('ee1400')
+let op4 = E(0.7)
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
@@ -150,14 +150,11 @@ let tp = E(0.7)
         x = overflow(x,os2,op2)
 
         x = overflow(x,os3,op3)
-        x = tetraflow(x,ts,tp)
+        x =overflow(x,os4,op4)
         tmp.overflowBefore.mass = o
         tmp.overflow.mass = calcOverflow(o,x,os)
-        tmp.tetraflow.mass = calcTetraflow(o,x,ts)
-        tmp.overflow_start.mass = [os,os2,os3]
-        tmp.tetraflow_start.mass = [ts]
-        tmp.tetraflow_power.mass = [tp]
-        tmp.overflow_power.mass = [op,op2,op3]
+        tmp.overflow_start.mass = [os,os2,os3,os4]
+        tmp.overflow_power.mass = [op,op2,op3,op4]
 
         if (CHALS.inChal(13)|| CHALS.inChal(18)) x = x.max(1).log10().tetrate(1.5)
 

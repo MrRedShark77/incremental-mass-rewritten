@@ -527,8 +527,8 @@ function updateHTML() {
 				
 				tmp.el.massOverflow3.setDisplay(player.mass.gte(tmp.overflow_start.mass[2]))
     			tmp.el.massOverflow3.setHTML(`Because of mass overflow^3 at <b>${formatMass(tmp.overflow_start.mass[2])}</b>, your mass overflow is even stronger!`)
-				tmp.el.massTetraflow1.setDisplay(player.mass.gte(tmp.tetraflow_start.mass[0]))
-    			tmp.el.massTetraflow1.setHTML(`Because of mass tetraflow at <b>${formatMass(tmp.tetraflow_start.mass[0])}</b>, your mass gain is ${tetraflowFormat(tmp.tetraflow.mass||1)}!`)
+				tmp.el.massOverflow4.setDisplay(player.mass.gte(tmp.overflow_start.mass[3]))
+    			tmp.el.massOverflow4.setHTML(`Because of mass overflow^4 at <b>${formatMass(tmp.overflow_start.mass[3])}</b>, your mass overflow is even stronger!`)
 				tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[0]))
     			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger[0])}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
 			
