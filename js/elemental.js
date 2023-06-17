@@ -1299,7 +1299,7 @@ const ELEMENTS = {
             cost: E('e640000'),
             effect() {
                 let x = player.dark.matters.final.div(10)
-                if (hasElement(28)) x = x.pow(3)
+                if (hasElement(28,1)) x = x.pow(3)
                 return x.add(1)
             },
             effDesc(x) { return "^"+format(x,1) },
