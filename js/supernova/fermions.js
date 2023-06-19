@@ -122,11 +122,11 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
-                    let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1).softcap(5,0.75,0).softcap(449,0.25,0)
+                    let x = i.add(1).log10().pow(1.75).mul(t.pow(0.8)).div(100).add(1).softcap(hasElement(277)?'1e3000':5,0.75,0).softcap(hasElement(277)?'1e3000':449,0.25,0)
                     return x
                 },
                 desc(x) {
-                    return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+(x.gte(5)?" <span class='soft'>(softcapped)</span>":"")
+                    return `Z<sup>0</sup> Boson's first effect is ${format(x.sub(1).mul(100))}% stronger`+(x.gte(hasElement(277)?'1e3000':5)?" <span class='soft'>(softcapped)</span>":"")
                 },
                 inc: "Mass",
                 cons: "You are trapped in Mass Dilation, and it is twice as strong",

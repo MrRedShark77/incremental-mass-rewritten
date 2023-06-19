@@ -21,6 +21,7 @@ const DARK = {
         x = x.mul(glyphUpgEff(6))
 
         if (hasUpgrade('br',20)) x = x.mul(upgEffect(4,20))
+        if (tmp.inf_unl) x = x.mul(theoremEff('time',4))
 
         return x.floor()
     },
@@ -185,7 +186,7 @@ const DARK = {
             let bonus = E(0)
 
             let step = E(1.5)
-            
+            if (tmp.inf_unl) step = step.mul(theoremEff('proto',4))
             let eff = step.mul(t.add(bonus)).add(1)
 
             return {step: step, eff: eff, bonus: bonus}

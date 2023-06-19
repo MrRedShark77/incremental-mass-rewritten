@@ -87,8 +87,10 @@ const BOSONS = {
             let a = x.add(1).pow(2e4)
             if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3).softcap(1e15,0.1,0))
             if (tmp.c16active) a = overflow(a,10,0.5)
+            if (hasElement(276)) a = a.max(1).log2().add(1)
             let b = expMult(x.add(1),2/3,2)
 a = overflow(a,'ee2500',0.25)
+if (hasElement(276)) a = overflow(a,'e6200',0.05)
             return [a,b]
         },
         neg_w(x) {
@@ -271,7 +273,7 @@ function updateBosonsHTML() {
     let c16 = tmp.c16active
     tmp.el.w_boson1.setClasses({corrupted_text2: c16})
     tmp.el.higgs_bosons.setClasses({corrupted_text2: c16})
-
+ tmp.el.changeEff.setTxt(hasElement(276)?' exponents':" multiply")
     for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
         tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.bosons.gain[id].mul(tmp.preQUGlobalSpeed)))

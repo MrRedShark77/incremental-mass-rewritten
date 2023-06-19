@@ -204,6 +204,7 @@ const MUONIC_ELEM = {
             eff() {
                 let x = E(1)
                 x = tmp.exotic_atom.amount.max(1).log10().log10().add(1)
+                if (hasElement(278)) x = tmp.exotic_atom.amount.max(1).log2().pow(1.75).add(1)
                 return x.max(1)
             },
             effDesc: x=>"x"+format(x),
@@ -365,6 +366,7 @@ const EXOTIC_ATOM = {
         if (hasInfUpgrade(13)) xy = xy.mul(infUpgEffect(13))
         if (hasElement(237)) xy = xy.mul(elemEffect(237))
         if (player.inf.dm) xy = xy.mul(tmp.dm_base_eff)
+        if (tmp.inf_unl) xy = xy.mul(theoremEff('atom',4))
         
         let x = xy.div(10)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
@@ -425,7 +427,8 @@ const EXOTIC_ATOM = {
             },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier >= E(13)?`[Muonized]</span>`:`</span>`}`],
             [a=>{
                 let x = a.add(1).pow(3)
-                return x
+                return overflow(x,'1e200',0.5)
+
             },x=>`Black hole overflow starts <b>^${format(x)}</b> later`],
             [a=>{
                 let x = a.add(1).log10().div(80).add(1).root(2)   

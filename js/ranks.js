@@ -292,7 +292,6 @@ const PRESTIGES = {
         x += tmp.fermions.effs[1][6]||0
         x += glyphUpgEff(10,0)
         if (tmp.inf_unl) x += theoremEff('mass',3,0)
-
         x += 1
 
         if (hasBeyondRank(4,2)) x *= beyondRankEffect(4,2)
@@ -316,18 +315,20 @@ const PRESTIGES = {
     },
     req(i) {
         let x = EINF, fp = this.fp(i), y = player.prestiges[i]
+        let ifp = E(1)
+        if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',4))
         switch (i) {
             case 0:
-                x = Decimal.pow(1.1,y.scaleEvery('prestige0',false,[0,0,0,fp]).pow(1.1)).mul(2e13)
+                x = Decimal.pow(1.1,y.scaleEvery('prestige0',false,[0,0,0,fp]).pow(1.1)).mul(2e13).div(ifp)
                 break;
             case 1:
-                x = y.div(fp).scaleEvery('prestige1',false).pow(1.25).mul(3).add(4)
+                x = y.div(fp).scaleEvery('prestige1',false).pow(1.25).mul(3).add(4).div(ifp)
                 break;
             case 2:
-                x = hasElement(167)?y.div(fp).scaleEvery('prestige2',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
+                x = hasElement(167)?y.div(fp).scaleEvery('prestige2',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6).div(ifp)
                 break;
             case 3:
-                x = y.div(fp).scaleEvery('prestige3',false).pow(1.25).mul(3).add(9)
+                x = y.div(fp).scaleEvery('prestige3',false).pow(1.25).mul(3).add(9).div(ifp)
                 break;
                 case 4:
                     x = y.div(fp).scaleEvery('prestige4',false).pow(1.15).mul(6).add(14)
@@ -340,18 +341,20 @@ const PRESTIGES = {
     },
     bulk(i) {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
+        let ifp = E(1)
+        if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',4))
         switch (i) {
             case 0:
-                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true,[0,0,0,fp]).add(1)
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true,[0,0,0,fp]).add(1).mul(ifp)
                 break;
             case 1:
-                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1)
+                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1).mul(ifp)
                 break
             case 2:
-                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('prestige2',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
+                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('prestige2',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1).mul(ifp)
                 break
             case 3:
-                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true).mul(fp).add(1)
+                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true).mul(fp).add(1).mul(ifp)
                 break 
                 case 3:
                     if (y.gte(14)) x = y.sub(14).div(6).max(0).root(1.15).scaleEvery('prestige4',true).mul(fp).add(1)
@@ -387,7 +390,7 @@ const PRESTIGES = {
         ()=>tmp.chal14comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
-        ()=>player.prestiges[4].gte(7)
+        ()=>player.prestiges[4].gte(2)
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -563,7 +566,8 @@ const PRESTIGES = {
             45: [()=>{
                 let x = hasElement(224) ? Decimal.pow(1.1,player.bh.unstable.root(4)) : player.bh.unstable.add(1)
                 if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
-                return overflow(x,1e100,0.5)
+                x = overflow(x,1e100,0.5)
+                return overflow(x,'1e1000',0.5)
             },x=>"^"+format(x)+" later"],
         },
         {

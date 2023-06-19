@@ -749,7 +749,7 @@ function updateInfHTML() {
             let h = ``
             for (let t in CORE) {
                 let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
-                for (let i = 0; i < 4; i++) {
+                for (let i = 0; i < 5; i++) {
                     if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+ct.preEff[i]+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
                 }
                 if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p*100,0)}%)</b></h2><br>`+hh+'<br>'

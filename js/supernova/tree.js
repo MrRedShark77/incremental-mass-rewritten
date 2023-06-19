@@ -969,6 +969,7 @@ const TREE_UPGS = {
 
             effect() {
                 let x = player.dark.c16.bestBH.add(1).log10().add(1)
+                if (hasOrbUpg(3)) x = x.pow(2)
                 return overflow(x,10,0.5)
             },
             effDesc(x) { return "^"+format(x) },

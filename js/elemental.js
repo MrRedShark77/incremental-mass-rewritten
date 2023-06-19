@@ -1084,7 +1084,7 @@ const ELEMENTS = {
             effect() {
                 let x = Decimal.pow(2,tmp.prestiges.base.max(1).log10().root(2))
                 if (tmp.c16active) x = overflow(x,10,.5)
-                return x
+                return overflow(x,'1e500',0.5)
             },
             effDesc(x) { return "^"+format(x)+" later" },
         },{
@@ -1626,9 +1626,33 @@ x = overflow(x,1e180,0.1)
             cost: E('e17000000'),
         },
 {
-desc: 'Mass Overflow^3 is 5% weaker',
-cost: E('ee1360'),
-}
+desc: 'Mass Overflow^1-3 is 5% weaker.',
+cost: E('ee1290'),
+},
+{
+    inf: true,
+    desc: 'Unlock 5th dot to every Theorem.',
+    cost: E(5e36),
+    },
+    {
+    desc: 'W+ Boson first effect will now be exponential',
+    cost: E('ee1420'),
+    },
+    {
+        dark: true,
+        desc: `Uncap [Charm] effect.`,
+        cost: E('e46000000'),
+    },
+    {
+        c16: true,
+        desc: `Muonic Copper-29 is better.`,
+        cost: E('e2.15e74'),
+    },
+    {
+        inf: true,
+        desc: 'Add 1000 C17 max completions.',
+        cost: E(2e39),
+        },
     ],
     /*
     {

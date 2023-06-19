@@ -53,8 +53,8 @@ const FORMS = {
         if (!hasElement(162)) x = x.mul(tmp.stars.effect)
         if (hasTree("m1") && !hasElement(164)) x = x.mul(tmp.supernova.tree_eff.m1)
 
-        x = x.mul(tmp.bosons.effect.pos_w[0])
-
+       if (!hasElement(276)) x = x.mul(tmp.bosons.effect.pos_w[0])
+else x = x.pow(tmp.bosons.effect.pos_w[0])
         x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
 
         if (player.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
@@ -116,7 +116,7 @@ const FORMS = {
 let t = x
         let os3 = tmp.c16active|| CHALS.inChal(17)|| CHALS.inChal(18) ? E('ee25') : E('ee800')
         let op3 = E(.25)
-let os4 = E('ee1400')
+let os4 = E('ee1500')
 let op4 = E(0.7)
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
@@ -484,12 +484,13 @@ op3 = op3.mul(1.05)}
 
             let os2 = tmp.c16active|| CHALS.inChal(18) ? E('ee6') : E('ee249')
             let op2 = E(0.25)
-            let os3 = tmp.c16active || CHALS.inChal(18) ? E('ee15') : E('ee1100')
+            let os3 = tmp.c16active || CHALS.inChal(18) ? E('ee15') : E('ee1000')
             let op3 = E(0.15)
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
             if (hasTree('ct11')) os = os.pow(treeEff('ct11'))
-            if (tmp.inf_unl) os = os.pow(theoremEff('bh',1))
+            if (tmp.inf_unl){ os = os.pow(theoremEff('bh',1))
+                os3 = os3.pow(theoremEff('bh',4))}
 
             if (hasPrestige(2,45)) os2 = os2.pow(prestigeEff(2,45))
 

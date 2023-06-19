@@ -236,7 +236,7 @@ const TOOLTIP_RES = {
     orb: {
         full: "Orb Of Creation",
         desc() {
-           let h = `You have <b class='lightsky'>`+format(player.inf.c18.orb,0)+ `</b> Orbs of Creation<br>To collect next Orb, you need `+format(tmp.orbCost) + ` Mass in C18.
+           let h = `You have <b class='lightsky'>`+format(player.inf.c18.orb,0)+ `</b> Orbs of Creation<br>To collect next Orb, you need `+formatMass(tmp.orbCost) + ` Mass in C18.
            <br class='line'>
            <i>
            Start the 18th challenge. While you get ${formatMass(tmp.orbCost)} mass, you can get <b>Orb of Creations</b><br>
