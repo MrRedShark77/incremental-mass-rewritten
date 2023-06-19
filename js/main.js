@@ -484,7 +484,7 @@ op3 = op3.mul(1.05)}
 
             let os2 = tmp.c16active|| CHALS.inChal(18) ? E('ee6') : E('ee249')
             let op2 = E(0.25)
-            let os3 = tmp.c16active || CHALS.inChal(18) ? E('ee15') : E('ee1000')
+            let os3 = tmp.c16active || CHALS.inChal(18) ? E('ee15') : E('ee1200')
             let op3 = E(0.15)
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
