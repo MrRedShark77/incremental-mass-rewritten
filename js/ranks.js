@@ -356,10 +356,9 @@ const PRESTIGES = {
             case 3:
                 if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true).mul(fp).add(1).mul(ifp)
                 break 
-                case 4:
-                    if (y.gte(14)) x = y.sub(14).div(6).max(0).root(1.15).scaleEvery('prestige4',true).mul(fp).add(1)
-                    break 
-
+            case 4:
+                if (y.gte(14)) x = y.sub(14).div(6).max(0).root(1.15).scaleEvery('prestige4',true).mul(fp).add(1)
+                break 
             default:
                 x = E(0)
                 break;
@@ -385,7 +384,7 @@ const PRESTIGES = {
         ()=>tmp.chal13comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
-        ()=>false,
+        ()=>player.prestiges[4].gte(2),
     ],
     autoUnl: [
         ()=>tmp.chal13comp||tmp.inf_unl,
@@ -467,7 +466,7 @@ const PRESTIGES = {
         },
         {
             "1": `Increase Newton Modificator Power is 1.25x stronger per Valor.`,
-            "2": `Automate Valor.`,
+            "2": `Automate Valor and it doesnt reset anything.`,
         },
     ],
     rewardEff: [
