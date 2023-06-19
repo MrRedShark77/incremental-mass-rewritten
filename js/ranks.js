@@ -384,6 +384,7 @@ const PRESTIGES = {
         ()=>tmp.chal13comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
+        ()=>false,
     ],
     autoUnl: [
         ()=>tmp.chal13comp||tmp.inf_unl,
