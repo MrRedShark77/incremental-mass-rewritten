@@ -1239,7 +1239,7 @@ h4 {
 }
 
 .theorem_div > .c_type {
-	font-size: 48px;
+	font-size: 40px;
 	font-family: 'Times New Roman', Times, serif;
 	position: absolute;
 	top: 50%;
@@ -1272,7 +1272,24 @@ h4 {
 	bottom: 10px;
 	left: 10px;
 }
-
+.theorem_div > div > div:nth-child(5) {
+	top: 34px;
+	left: 10px;
+}
+.theorem_div > div > div:nth-child(6) {
+	bottom: 10px;
+	right: 5px;
+	left: 5px;
+}
+.theorem_div > div > div:nth-child(7) {
+	top: 34px;
+	right: 10px;
+}
+.theorem_div > div > div:nth-child(8) {
+	top: 10px;
+	right: 5px;
+	left: 5px;
+}
 .theorem_div * {
 	pointer-events: none;
 }

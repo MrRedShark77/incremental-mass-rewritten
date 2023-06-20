@@ -8,6 +8,9 @@ const CORE = {
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
             `Make Prestige Ranks cheaper.`,
+            `?.`,
+            `?.`,
+            `?.`,
         ],
         res: `Normal Mass`,
         boost() {return player.mass.add(1).log10().add(1).log10().add(1).log10().add(1).toNumber()},
@@ -36,12 +39,30 @@ const CORE = {
                 let x = Decimal.root(s**0.35/5+1,2)
                 return x
             },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
         ],
         effDesc: [
             x => "^"+format(x),
             x => "^"+format(x),
             x => formatMult(x),
             x => "+"+format(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
             x => formatMult(x),
         ],
     },
@@ -54,6 +75,9 @@ const CORE = {
             `Weaken unstable BH decreasing.`,
             `Boost FVM's power.`,
             `Boost BH mass overflow^2-3 starting (weaker in C16).`,
+            `?.`,
+            `?.`,
+            `?.`,
         ],
         res: `Mass of Black Hole`,
         boost() {return player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1).toNumber()},
@@ -95,6 +119,21 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
         ],
         effDesc: [
             x => "^"+format(x),
@@ -102,6 +141,9 @@ const CORE = {
             x => formatReduction(x),
             x => formatMult(x),
             x => "^"+format(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
         ],
     },
     atom: {
@@ -113,6 +155,9 @@ const CORE = {
             `Increase overpower's power.`,
             `Increase accelerator's power.`,
             `Boost Kaons & Pions gain.`,
+            `?.`,
+            `?.`,
+            `?.`,
         ],
         res: `Exotic Atom`,
         boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1).toNumber()},
@@ -148,6 +193,21 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
         ],
         effDesc: [
             x => "^"+format(x),
@@ -155,6 +215,9 @@ const CORE = {
             x => "+"+format(x),
             x => "+"+format(x),
             x => "x"+format(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
         ],
     },
     proto: {
@@ -166,6 +229,9 @@ const CORE = {
             `Weaken each “entropic” reward scaling.`,
             `Weaken QC modifications.`,
             `Antimatter Generator' power is better.`,
+            `?.`,
+            `?.`,
+            `?.`,
         ],
         res: `Quantum Foam`,
         boost() {return player.qu.points.add(1).log10().add(1).log10().add(1).toNumber()},
@@ -195,12 +261,30 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
         ],
         effDesc: [
             x => formatMult(x),
             x => formatPercent(x-1),
             x => formatReduction(x),
             x => formatReduction(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
             x => formatMult(x),
         ],
     },
@@ -213,6 +297,9 @@ const CORE = {
             `Boost dark shadow & abyssal blot gains.`,
             `Weaken each glyphic mass nerfing.`,
             `Boost dark ray gains.`,
+            `?.`,
+            `?.`,
+            `?.`,
         ],
         res: `Corrupted Shard`,
         boost() {return player.dark.c16.totalS.add(1).log10().add(1).log10().add(1).toNumber()},
@@ -242,12 +329,30 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
+            s => {
+                let x = E(1).pow(s)
+
+                return x
+            },
         ],
         effDesc: [
             x => formatMult(x),
             x => "^"+format(x),
             x => "^"+format(x),
             x => formatReduction(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
             x => formatMult(x),
         ],
     },
@@ -260,6 +365,7 @@ const CORE_TYPE = Object.keys(CORE)
 const MAX_CORE_LENGTH = 8
 const MIN_CORE_LENGTH = 4
 const MAX_INV_LENGTH = 100
+const MAX_DOTS_LENGTH = 4
 
 const MAX_CORE_FIT = 1
 
@@ -283,9 +389,11 @@ var t_choosed = "-"
 
 debug.generateTheorem = (chance=CORE_CHANCE_MIN) => {
     let c = []
+    let a = MAX_DOTS_LENGTH
+    if (hasElement(275)) a += 1
     while (c.length == 0) {
         let m = [], n = false
-        for (let i = 0; (hasElement(275)?5:4); i++) {
+        for (let i = 0; a; i++) {
             m[i] = Math.random()
             if (m[i] < chance) n = true
         }
@@ -294,7 +402,7 @@ debug.generateTheorem = (chance=CORE_CHANCE_MIN) => {
     let t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)], s = ""
     let p = 1+Math.random()/5
 
-    for (let i = 0; i < (hasElement(275)?5:4); i++) s += `<iconify-icon icon="${c[i]<chance?'ic:baseline-star':'ic:baseline-star-border'}" width="20"></iconify-icon>`
+    for (let i = 0; i < a; i++) s += `<iconify-icon icon="${c[i]<chance?'ic:baseline-star':'ic:baseline-star-border'}" width="18"></iconify-icon>`
 
     tmp.el.theorem_debug.setHTML(`
     <div class="theorem_div ${t}">
@@ -310,9 +418,11 @@ debug.generateTheorem = (chance=CORE_CHANCE_MIN) => {
 
 debug.addRandomTheorem = (level=1,power=1,max_chance=CORE_CHANCE_MIN) => {
     let c = []
+    let a = MAX_DOTS_LENGTH
+    if (hasElement(275)) a += 1
     while (c.length == 0) {
         let m = [], n = false
-        for (let i = 0; i < (hasElement(275)?5:4); i++) {
+        for (let i = 0; i < a; i++) {
             m[i] = Math.random()
             if (m[i] < max_chance) n = true
         }
@@ -328,14 +438,14 @@ function theoremEff(t,i,def=1) { return tmp.core_eff[t][i]||def }
 
 function getTheoremHTML(data,sub=false) {
     let s = ""
-    for (let i = 0; i < (hasElement(275)?6:4); i++) s += `<div>${data.star[i]?"◉":""}</div>`
+    let a = MAX_DOTS_LENGTH
+    if (hasElement(275)) a += 1
+    for (let i = 0; i < a; i++) s += `<div>${data.star[i]?"◉":""}</div>`
     let w = `
     <div class="c_type">${CORE[data.type].icon}</div>
     <div class="c_pow">${format(data.power*100,0)}%</div>
     <div class="c_lvl">${format(data.level,0)}</div>
-    <div>
-        ${s}
-    </div>
+    <div>${s}</div>
     `
     return sub?w:`
     <div class="theorem_div ${data.type} tooltip" tooltip-pos="bottom" tooltip-pos="bottom" tooltip-html="The J">
@@ -346,7 +456,9 @@ function getTheoremHTML(data,sub=false) {
 
 function getTheoremPreEffects(t,s) {
     let e = ""
-    for (let i = 0; i < (hasElement(275)?5:4); i++) if (s[i]) e += CORE[t].preEff[i]+"<br>"
+    let a = MAX_DOTS_LENGTH
+    if (hasElement(275)) a += 1
+    for (let i = 0; i < a; i++) if (s[i]) e += CORE[t].preEff[i]+"<br>"
     return e+`(Based on <b>${CORE[t].res}</b>)`
 }
 
@@ -435,9 +547,11 @@ function updateTheoremCore() {
         t.setHTML(p?getTheoremHTML(p,true):"")
 
         if (p) {
+            let a = MAX_DOTS_LENGTH
+            if (hasElement(275)) a += 1
             let type = p.type, l = p.level, s = p.star, ct = core_tmp[type]
             ct.total_p *= p.power
-            for (let i = 0; i < (hasElement(275)?5:4); i++) ct.total_s[i] += l * s[i]
+            for (let i = 0; i < a; i++) ct.total_s[i] += l * s[i]
 
             t.setTooltip(`
             <h3>${CORE[type].title}</h3>
@@ -486,9 +600,11 @@ function removeTheorem() {
 
 function createPreTheorem() {
     let c = [], t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)]
+    let a = MAX_DOTS_LENGTH
+    if (hasElement(275)) a += 1
     while (c.length == 0) {
         let m = [], n = false
-        for (let i = 0; i < (hasElement(275)?5:4); i++) {
+        for (let i = 0; i < a; i++) {
             m[i] = Math.random()
             if (m[i] < CORE_CHANCE_MIN) n = true
         }
@@ -561,8 +677,9 @@ function checkSwitchingCore(id1,id2) {
 
 function isTheoremHigher(t,t_target) {
     if (!t_target || t.type != t_target.type || t.level > t_target.level || Math.pow(t.level,t.power) > Math.pow(t_target.level,t_target.power)) return false
-
-    for (let i = 0; i < (hasElement(275)?5:4); i++) if (t.star[i] > t_target.star[i]) return false
+    let a = MAX_DOTS_LENGTH
+    if (hasElement(275)) a += 1
+    for (let i = 0; i < a; i++) if (t.star[i] > t_target.star[i]) return false
 
     return true
 }
@@ -593,8 +710,9 @@ function updateCoreTemp() {
         let t = CORE[i], s = tmp.core_score[i], eff = tmp.core_eff[i], ct = core_tmp[i]
 
         let boost = t.boost?t.boost():1
-
-        for (let j = 0; j < (hasElement(275)?5:4); j++) {
+        let a = MAX_DOTS_LENGTH
+        if (hasElement(275)) a += 1
+        for (let j = 0; j < a; j++) {
             let sc = Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
             sc = overflow(sc,1000,0.5)
             if (sc.gt(0)) sc = sc.add(tmp.dim_mass_eff)
