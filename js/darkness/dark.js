@@ -194,7 +194,7 @@ const DARK = {
     },
     am_mass: {
         gain() {
-            if (!hasElement(267)) return E(0)
+            if (!hasElement(268)) return E(0)
             let x = DARK.am.effect().eff
             return x
         },
