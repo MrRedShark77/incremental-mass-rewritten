@@ -88,7 +88,9 @@ const BOSONS = {
             if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3).softcap(1e15,0.1,0))
             if (tmp.c16active) a = overflow(a,10,0.5)
             let b = expMult(x.add(1),2/3,2)
-            return [a,b]
+            let c = E(1)
+            if (hasElement(250)) c = x.add(1).log10().add(1).root(10)
+            return [a,b,c]
         },
         neg_w(x) {
             let a = x.add(1).log10().add(1).root(3)
@@ -276,7 +278,10 @@ function updateBosonsHTML() {
     for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
         tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.bosons.gain[id].mul(tmp.preQUGlobalSpeed)))
-        if (tmp.bosons.effect[id]) for (let y in tmp.bosons.effect[id]) tmp.el[id+"_eff"+y].setTxt(format(tmp.bosons.effect[id][y]))
+        if (tmp.bosons.effect[id]) for (let y in tmp.bosons.effect[id]) {
+            if (y == '2' && id == 'pos_w') tmp.el[id+"_eff"+y].setHTML(hasElement(250) ? ',<br>and raise mass gain by ' + format(tmp.bosons.effect[id][y]) : '')
+            else tmp.el[id+"_eff"+y].setTxt(format(tmp.bosons.effect[id][y]))
+        }
 
         if (BOSONS.upgs.ids.includes(id)) for (let y in BOSONS.upgs[id]) {
             let id2 = id+"_upg"+y

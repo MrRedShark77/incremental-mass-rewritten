@@ -105,6 +105,8 @@ const FORMS = {
         if (tmp.inf_unl) x = x.pow(theoremEff('mass',0))
         if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[0])
 
+        x = x.pow(tmp.bosons.effect.pos_w[2]||1)
+
         if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(0))
 
         let o = x
@@ -545,6 +547,8 @@ const FORMS = {
             if (hasElement(201)) x = Decimal.pow(1.1+exoticAEff(0,5,0),x.max(1).log10().add(1).log10().pow(.8))
 
             if (hasUpgrade('bh',18)) x = x.pow(2.5)
+
+            if (hasElement(201)) x = x.overflow('e1000',0.5)
 
             return x//.softcap("ee14",0.95,2)
         },

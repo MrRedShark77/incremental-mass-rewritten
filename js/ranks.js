@@ -446,6 +446,7 @@ const PRESTIGES = {
             "40": `[ct4]'s effect is better.`,
             45: `Unstable BH affects mass of black hole overflow^2 starting.`,
             58: `Exotic Atom's reward strength is increased by +5% per beyond-ranks' maximum tier.`,
+            121: `Oct 1's reward is raised by 4.`,
         },
         {
             "1": `The requirements for previous prestiges are 10% lower.`,
@@ -551,9 +552,10 @@ const PRESTIGES = {
                 return x
             },x=>"x"+format(x)],
             45: [()=>{
-                let x = hasElement(224) ? Decimal.pow(1.1,player.bh.unstable.root(4)) : player.bh.unstable.add(1)
+                let y = player.bh.unstable//.overflow(1e24,0.5,0)
+                let x = hasElement(224) ? Decimal.pow(1.1,y.root(4)) : y.add(1)
                 if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
-                return overflow(x,1e100,0.5)
+                return overflow(x,1e100,0.5).min('e1750')
             },x=>"^"+format(x)+" later"],
             58: [()=>{
                 let x = tmp.beyond_ranks.max_tier*0.05
@@ -757,7 +759,7 @@ const BEYOND_RANKS = {
         },
         4: {
             1: `Beta Particles affect supercritical supernova starting at a reduced rate.`,
-            2: `Prestige base's exponent is increased by +20% per beyond-ranks' maximum tier, starting at Dec.`,
+            2: `Prestige base's exponent is increased by beyond-ranks' maximum tier, starting at Dec.`,
             40: `[Tau]'s reward is cubed.`,
         },
         5: {
@@ -800,9 +802,11 @@ const BEYOND_RANKS = {
         2: {
             1: [
                 ()=>{
-                    let x = player.ranks.beyond.pow(3).add(1)
+                    let x = player.ranks.beyond.pow(3)
 
-                    return x
+                    if (hasPrestige(2,121)) x = x.pow(4)
+
+                    return x.add(1)
                 },
                 x=>"x"+format(x),
             ],
@@ -866,7 +870,7 @@ const BEYOND_RANKS = {
 
                     return Math.max(1,x)
                 },
-                x=>"x"+format(x,1),
+                x=>"x"+format(x),
             ],
         },
         5: {

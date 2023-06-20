@@ -31,12 +31,36 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
         ],
         effDesc: [
             x => "^"+format(x),
             x => "^"+format(x),
             x => formatMult(x),
             x => "+"+format(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
         ],
 
         fragment: [
@@ -88,11 +112,35 @@ const CORE = {
 
                 return overflow(x,10,0.5)
             },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
         ],
         effDesc: [
             x => "^"+format(x),
             x => "^"+format(x),
             x => formatReduction(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
             x => formatMult(x),
         ],
 
@@ -145,12 +193,36 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
         ],
         effDesc: [
             x => "^"+format(x),
             x => "^"+format(x),
             x => "+"+format(x),
             x => "+"+format(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
         ],
 
         fragment: [
@@ -194,12 +266,36 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
         ],
         effDesc: [
             x => formatMult(x),
             x => formatPercent(x-1),
             x => formatReduction(x),
             x => formatReduction(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
         ],
 
         fragment: [
@@ -243,12 +339,36 @@ const CORE = {
 
                 return x
             },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
+            s => {
+                let x = E(0)
+
+                return x
+            },
         ],
         effDesc: [
             x => formatMult(x),
             x => "^"+format(x),
             x => "^"+format(x),
             x => formatReduction(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
+            x => formatMult(x),
         ],
 
         fragment: [
@@ -262,23 +382,30 @@ const CORE = {
     },
 }
 
-const CORE_CHANCE_MIN = 0.1
-const CORE_CHANCE_BASE = 1-CORE_CHANCE_MIN
-const CORE_TYPE = Object.keys(CORE)
+const MAX_STARS = 8
 
 const MAX_CORE_LENGTH = 8
 const MIN_CORE_LENGTH = 4
 const MAX_INV_LENGTH = 100
 
+const CORE_CHANCE_MIN = 0.1
+const CORE_TYPE = Object.keys(CORE)
+const MIN_STAR_CHANCES = [0.1,0.1,0.1,0.1,0.02,0.004,0.0008,0.00016] // new Array(MAX_STARS).fill(0.1)
+
 const MAX_CORE_FIT = 1
 
 var core_tmp = {}
 var core_weight = {}
+var core_star_chances = []
+
+function getCoreChance(i, lvl=tmp.core_lvl) { return 1-Math.pow(1-MIN_STAR_CHANCES[i],Math.floor(lvl)**0.4) }
+function getPowerMult(lvl=tmp.core_lvl) { return Math.floor(lvl-1)**0.5/100 }
+function chanceToBool(arr) { return arr.map((x,i) => x < core_star_chances[i]) }
 
 function resetCoreTemp() {
     for (let i in CORE) {
         core_tmp[i] = {
-            total_s: [0,0,0,0],
+            total_s: new Array(MAX_STARS).fill(0),
             total_p: 1,
         }
 
@@ -294,9 +421,9 @@ debug.generateTheorem = (chance=CORE_CHANCE_MIN) => {
     let c = []
     while (c.length == 0) {
         let m = [], n = false
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < MAX_STARS; i++) {
             m[i] = Math.random()
-            if (m[i] < chance) n = true
+            if (m[i] < chance && i < 4) n = true
         }
         if (n) c = m
     }
@@ -321,14 +448,14 @@ debug.addRandomTheorem = (level=1,power=1,max_chance=CORE_CHANCE_MIN) => {
     let c = []
     while (c.length == 0) {
         let m = [], n = false
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < MAX_STARS; i++) {
             m[i] = Math.random()
-            if (m[i] < max_chance) n = true
+            if (i < 4 && m[i] < max_chance) n = true
         }
         if (n) c = m
     }
 
-    addTheorem(CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)],c,level,power,max_chance)
+    addTheorem(CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)],c,level,power)
 }
 
 var changeCoreFromBestLevel = () => {
@@ -349,7 +476,7 @@ function theoremEff(t,i,def=1) { return tmp.core_eff[t][i]||def }
 
 function getTheoremHTML(data,sub=false) {
     let s = ""
-    for (let i = 0; i < 4; i++) s += `<div>${data.star[i]?"◉":""}</div>`
+    for (let i = 0; i < MAX_STARS; i++) s += `<div>${data.star[i]?"◉":""}</div>`
     let w = `
     <div class="c_type">${CORE[data.type].icon}</div>
     <div class="c_pow">${format(data.power*100,0)}%</div>
@@ -376,7 +503,7 @@ function getTheoremPreEffects(data,s,p,level) {
     let t = data.type
 
     let e = ""
-    for (let i = 0; i < 4; i++) if (s[i]) e += CORE[t].preEff[i]+"<br>"
+    for (let i = 0; i < MAX_STARS; i++) if (s[i]) e += (CORE[t].preEff[i]||'???.') + "<br>"
     e += `(Based on <b>${CORE[t].res}</b>)`
     if (tmp.tfUnl) e += `<br class='line'>Form into <b>+${format(calcFragmentBase(data,s,p,level),0)}</b> fragment base`
     return e
@@ -416,9 +543,6 @@ function setupCoreHTML() {
     new Element('theorem_inv_table').setHTML(h)
 }
 
-function getCoreChance() { return 1-CORE_CHANCE_BASE**Math.floor(tmp.core_lvl)**0.4 }
-function getPowerMult(lvl=tmp.core_lvl) { return Math.floor(lvl-1)**0.5/100 }
-
 function updateCoreHTML() {
     let reached = player.inf.reached
 
@@ -427,7 +551,7 @@ function updateCoreHTML() {
     let lvl = tmp.core_lvl, fl = Math.floor(lvl)
     tmp.el.pt_lvl.setHTML(`<b>${format(fl,0)}</b> (${formatPercent(lvl-fl)})`)
 
-    let chance = getCoreChance(), pm = getPowerMult()
+    let pm = getPowerMult()
 
     for (let i = 0; i < player.inf.pre_theorem.length; i++) {
         let pt = tmp.el['preT'+i]
@@ -435,7 +559,7 @@ function updateCoreHTML() {
 
         if (!reached) continue
 
-        let p = player.inf.pre_theorem[i], s = p.star_c.map(x => x < chance), power = Math.round(100+pm*p.power_m*100)/100
+        let p = player.inf.pre_theorem[i], s = chanceToBool(p.star_c), power = Math.round(100+pm*p.power_m*100)/100
         pt.setClasses({theorem_div:true, tooltip:true, [p.type]:true, choosed: player.inf.pt_choosed == i})
         pt.setHTML(getTheoremHTML({type: p.type, level: fl, power, star: s},true))
 
@@ -470,10 +594,11 @@ function updateTheoremCore() {
         if (p) {
             let type = p.type, l = p.level, s = p.star, ct = core_tmp[type]
             ct.total_p *= p.power
-            for (let i = 0; i < 4; i++) ct.total_s[i] += l * s[i]
+            for (let i = 0; i < MAX_STARS; i++) ct.total_s[i] += l * s[i]
 
             t.setTooltip(`
-            <h3>${CORE[type].title}</h3>
+            <h3>${CORE[type].title}</h3><br>
+            [Level ${format(p.level,0)}, Power: ${format(p.power*100,0)}%]
             <br class='line'>
             ${getTheoremPreEffects(p,p.star,p.power)}
             `)
@@ -493,7 +618,8 @@ function updateTheoremInv() {
         t.setHTML(p?getTheoremHTML(p,true):"")
 
         t.setTooltip(p?`
-        <h3>${CORE[p.type].title}</h3>
+        <h3>${CORE[p.type].title}</h3><br>
+        [Level ${format(p.level,0)}, Power: ${format(p.power*100,0)}%]
         <br class='line'>
         ${getTheoremPreEffects(p,p.star,p.power)}
         `:"")
@@ -530,7 +656,7 @@ function createPreTheorem() {
     let c = [], t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)]
     while (c.length == 0) {
         let m = [], n = false
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < MAX_STARS; i++) {
             m[i] = Math.random()
             if (m[i] < CORE_CHANCE_MIN) n = true
         }
@@ -543,10 +669,10 @@ function choosePreTheorem(i) {
     player.inf.pt_choosed = i
 }
 
-function addTheorem(type, star, level, power, chance=CORE_CHANCE_MIN) {
+function addTheorem(type, star, level, power) {
     let s = true
     for (let i = 0; i < MAX_INV_LENGTH; i++) if (!player.inf.inv[i]) {
-        player.inf.inv[i] = {type, star: star.map(x => x < chance), level, power: Math.round(power*100)/100}
+        player.inf.inv[i] = {type, star: chanceToBool(star), level, power: Math.round(power*100)/100}
         s = false
         break
     }
@@ -607,7 +733,7 @@ function checkSwitchingCore(id1,id2) {
 function isTheoremHigher(t,t_target) {
     if (!t_target || t.type != t_target.type || t.level > t_target.level || Math.pow(t.level,t.power) > Math.pow(t_target.level,t_target.power)) return false
 
-    for (let i = 0; i < 4; i++) if (t.star[i] > t_target.star[i]) return false
+    for (let i = 0; i < MAX_STARS; i++) if (t.star[i] > t_target.star[i]) return false
 
     return true
 }
@@ -630,6 +756,8 @@ function switchTheorems(id1,id2,force=false) {
 function updateCoreTemp() {
     tmp.min_core_len = MIN_CORE_LENGTH
 
+    for (let i = 0; i < MAX_STARS; i++) core_star_chances[i] = i < 4 ? getCoreChance(i) : 0
+
     if (player.inf.theorem.gte(6)) tmp.min_core_len++
 
     tmp.core_lvl = INF.level()
@@ -639,7 +767,7 @@ function updateCoreTemp() {
 
         let boost = t.boost?t.boost():1
 
-        for (let j = 0; j < 4; j++) {
+        for (let j = 0; j < MAX_STARS; j++) {
             let sc = Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
             sc = overflow(sc,1000,0.5)
             if (sc.gt(0)) sc = sc.add(tmp.dim_mass_eff)

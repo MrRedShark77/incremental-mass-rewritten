@@ -270,9 +270,13 @@ function updateAtomTemp() {
 
     let fp = tmp.fermions.effs[1][5]
 
-    tmp.atom.gamma_ray_cost = E(2).pow(player.atom.gamma_ray.scaleEvery("gamma_ray",false,[1,1,1,fp])).floor()
+    let fp2 = E(1)
+
+    if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
+
+    tmp.atom.gamma_ray_cost = E(2).pow(player.atom.gamma_ray.div(fp2).scaleEvery("gamma_ray",false,[1,1,1,fp])).floor()
     tmp.atom.gamma_ray_bulk = E(0)
-    if (player.atom.points.gte(1)) tmp.atom.gamma_ray_bulk = player.atom.points.max(1).log(2).scaleEvery("gamma_ray",true,[1,1,1,fp]).add(1).floor()
+    if (player.atom.points.gte(1)) tmp.atom.gamma_ray_bulk = player.atom.points.max(1).log(2).scaleEvery("gamma_ray",true,[1,1,1,fp]).mul(fp2).add(1).floor()
     tmp.atom.gamma_ray_can = player.atom.points.gte(tmp.atom.gamma_ray_cost)
     tmp.atom.gamma_ray_bonus = ATOM.gamma_ray.bonus()
     tmp.atom.gamma_ray_eff = ATOM.gamma_ray.effect()

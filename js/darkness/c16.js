@@ -86,7 +86,7 @@ const UNSTABLE_BH = {
 
         if (tmp.c16active) x = x.root(3)
 
-        x = overflow(x,10,0.5)
+        if (!hasAscension(0,3)) x = overflow(x,10,0.5)
 
         if (hasCharger(2)) x = x.pow(1.5)
 

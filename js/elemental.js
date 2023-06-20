@@ -1214,6 +1214,8 @@ const ELEMENTS = {
             effect() {
                 let m = player.massUpg[1]||E(0)
                 let x = m.add(10).log10().pow(0.8);
+
+                if (hasElement(245)) x = x.mul(Decimal.pow(1.1,m.max(1).log10()))
                 
 				return x
             },
@@ -1388,6 +1390,32 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return formatMult(x) },
+        },{
+            desc: `Binilennium-209 is overpowered.`,
+            cost: E('ee1291'),
+        },{
+            dark: true,
+            desc: `Super FSS starts +1 later per 2 infinity theorems.`,
+            cost: E('e4.15e7'),
+            effect() {
+                let x = player.inf.theorem.div(2).floor()
+                return x
+            },
+            effDesc(x) { return "+"+format(x,0)+' later' },
+        },{
+            c16: true,
+            desc: `FSS’s first reward in C16 is slightly stronger.`,
+            cost: E('e2e55'),
+        },{
+            desc: `Entropic Multiplier now cheapens instead of increasing starting.`,
+            cost: E('ee1680'),
+        },{
+            dark: true,
+            desc: `The first softcap of Abyssal Blot’s tenth reward is slightly weaker.`,
+            cost: E('e8.1e7'),
+        },{
+            desc: `W+ Boson now provides an exponential boost.`,
+            cost: E('ee2081'),
         },
     ],
     /*
@@ -1437,7 +1465,7 @@ const ELEMENTS = {
 
         if (tmp.brokenInf) u += 12
         if (tmp.tfUnl) u += 12
-        if (tmp.ascensions_unl) u += 2
+        if (tmp.ascensions_unl) u += 10 - 2
 
         return u
     },

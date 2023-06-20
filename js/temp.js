@@ -290,9 +290,14 @@ function updateMassTemp() {
 
 function updateTickspeedTemp() {
     tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : tmp.fermions.effs[1][2]
-    tmp.tickspeedCost = E(2).pow(player.tickspeed.scaleEvery('tickspeed')).floor()
+
+    let fp = E(1)
+
+    if (hasElement(248)) fp = fp.mul(getEnRewardEff(0))
+
+    tmp.tickspeedCost = E(2).pow(player.tickspeed.div(fp).scaleEvery('tickspeed')).floor()
     tmp.tickspeedBulk = E(0)
-    if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).add(1).floor()
+    if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).mul(fp).add(1).floor()
     tmp.tickspeedEffect = FORMS.tickspeed.effect()
 }
 
@@ -331,10 +336,14 @@ function updateBlackHoleTemp() {
     let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
     if (hasCharger(6) && tmp.c16active) fp *= 1e6
 
+    let fp2 = E(1)
+
+    if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
+
     t.condenser_bonus = FORMS.bh.condenser.bonus()
-    t.condenser_cost = E(1.75).pow(player.bh.condenser.scaleEvery('bh_condenser',false,[1,1,1,fp])).floor()
+    t.condenser_cost = E(1.75).pow(player.bh.condenser.div(fp2).scaleEvery('bh_condenser',false,[1,1,1,fp])).floor()
     t.condenser_bulk = E(0)
-    if (player.bh.dm.gte(1)) t.condenser_bulk = player.bh.dm.max(1).log(1.75).scaleEvery('bh_condenser',true,[1,1,1,fp]).add(1).floor()
+    if (player.bh.dm.gte(1)) t.condenser_bulk = player.bh.dm.max(1).log(1.75).scaleEvery('bh_condenser',true,[1,1,1,fp]).mul(fp2).add(1).floor()
     t.condenser_eff = FORMS.bh.condenser.effect()
 
     // Unstable
@@ -350,9 +359,9 @@ function updateBlackHoleTemp() {
     t.gain = UNSTABLE_BH.gain()
     t.effect = UNSTABLE_BH.effect()
 
-    t.fvm_cost = E(10).pow(player.bh.fvm.pow(p)).mul(1e300).floor()
+    t.fvm_cost = E(10).pow(player.bh.fvm.scale(1e11,10,0).pow(p)).mul(1e300).floor()
     t.fvm_bulk = E(0)
-    if (player.bh.dm.gte(10)) t.fvm_bulk = player.bh.dm.div(1e300).max(1).log(10).root(p).add(1).floor()
+    if (player.bh.dm.gte(10)) t.fvm_bulk = player.bh.dm.div(1e300).max(1).log(10).root(p).scale(1e11,10,0,true).add(1).floor()
     t.fvm_eff = UNSTABLE_BH.fvm.effect()
 }
 

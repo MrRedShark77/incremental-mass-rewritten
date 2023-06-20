@@ -550,8 +550,8 @@ function updateInfHTML() {
             let h = ``
             for (let t in CORE) {
                 let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
-                for (let i = 0; i < 4; i++) {
-                    if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+ct.preEff[i]+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
+                for (let i = 0; i < MAX_STARS; i++) {
+                    if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+(ct.preEff[i] || '???.')+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
                 }
                 let f = player.inf.fragment[t]
                 if (f.gt(0)) hh += `<br>${f.format(0)} ${ct.title.split(' ')[0]} Fragments | ${ct.fragment[1](tmp.fragment_eff[t])}<br>`

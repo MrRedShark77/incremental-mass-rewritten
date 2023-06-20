@@ -109,17 +109,17 @@ const CONFIRMS_FUNCTION = {
     },
     inf(limit) {
         if (limit || player.inf.pt_choosed >= 0) {
-            if (player.inf.theorem.eq(0)) addTheorem('mass',[0,1,1,1],1,1)
+            if (player.inf.theorem.eq(0)) addTheorem('mass',[0,1,1,1,1,1,1,1],1)
             else {
                 let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
 
-                addTheorem(td.type,td.star_c,Math.floor(tmp.core_lvl),td.power_m*getPowerMult()+1,getCoreChance())
+                addTheorem(td.type,td.star_c,Math.floor(tmp.core_lvl),td.power_m*getPowerMult()+1)
             }
         } else if (hasElement(239) && player.inf.pt_choosed < 0) {
-            let fl = Math.floor(tmp.core_lvl), pm = getPowerMult(), chance = getCoreChance()
+            let fl = Math.floor(tmp.core_lvl), pm = getPowerMult()
             for (let i in player.inf.pre_theorem) {
                 let t = player.inf.pre_theorem[i]
-                player.inf.fragment[t.type] = player.inf.fragment[t.type].add(calcFragmentBase(t,t.star_c.map(x => x < chance),Math.round(100+pm*t.power_m*100)/100,fl).div(4))
+                player.inf.fragment[t.type] = player.inf.fragment[t.type].add(calcFragmentBase(t,chanceToBool(t.star_c),Math.round(100+pm*t.power_m*100)/100,fl).div(4))
             }
         }
 

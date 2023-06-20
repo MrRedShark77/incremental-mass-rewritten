@@ -1165,20 +1165,22 @@ h4 {
 
 .theorem_div > .c_pow {
 	position: absolute;
-	top: 0;
+	bottom: 60px;
 	left: 50%;
 	transform: translateX(-50%);
+	font-size: 12px;
 }
 
 .theorem_div > .c_lvl {
 	position: absolute;
-	bottom: 0;
+	top: 60px;
 	left: 50%;
 	transform: translateX(-50%);
+	font-size: 12px;
 }
 
 .theorem_div > .c_type {
-	font-size: 48px;
+	font-size: 34px;
 	font-family: 'Times New Roman', Times, serif;
 	position: absolute;
 	top: 50%;
@@ -1189,27 +1191,50 @@ h4 {
 .theorem_div > div > div {
 	position: absolute;
 	z-index: 1;
-	font-size: 18px;
+	font-size: 14px;
+	font-family: 'Times New Roman', Times, serif;
+	width: 14px;
+	height: 14px;
 }
 
 .theorem_div > div > div:nth-child(1) {
-	top: 10px;
-	left: 10px;
+	top: 15px;
+	left: 2px;
 }
 
 .theorem_div > div > div:nth-child(2) {
-	top: 10px;
-	right: 10px;
+	top: 2px;
+	left: 15px;
 }
 
 .theorem_div > div > div:nth-child(3) {
-	bottom: 10px;
-	right: 10px;
+	top: 2px;
+	right: 15px;
 }
 
 .theorem_div > div > div:nth-child(4) {
-	bottom: 10px;
-	left: 10px;
+	top: 15px;
+	right: 2px;
+}
+
+.theorem_div > div > div:nth-child(5) {
+	bottom: 15px;
+	right: 2px;
+}
+
+.theorem_div > div > div:nth-child(6) {
+	bottom: 2px;
+	right: 15px;
+}
+
+.theorem_div > div > div:nth-child(7) {
+	bottom: 2px;
+	left: 15px;
+}
+
+.theorem_div > div > div:nth-child(8) {
+	bottom: 15px;
+	left: 2px;
 }
 
 .theorem_div * {

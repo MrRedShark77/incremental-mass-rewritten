@@ -61,11 +61,20 @@ const ASCENSIONS = {
         {
             1: `The bouns of tickspeed, each mass upgrade (except Overflow) now multiplies its level instead of adding. Dalton Theorem is even stronger.`,
             2: `Meta-Fermions start ^2 later.`,
+            3: `19th Big Rip upgrade is twice as effective, and remove the overflow from unstable BH's effect.`,
+            4: `Kaon & Pion gains are multiplied by 5 every Ascension.`,
         },
     ],
     rewardEff: [
         {
-            
+            4: [
+                ()=>{
+                    let x = Decimal.pow(5,player.ascensions[0])
+
+                    return x
+                },
+                x=>formatMult(x),
+            ],
         },
     ],
     reset(i, bulk = false) {
@@ -87,6 +96,7 @@ const ASCENSIONS = {
 }
 
 function hasAscension(i,x) { return player.ascensions[i].gte(x) }
+function ascensionEff(i,x,def=1) { return tmp.ascensions.eff[i][x]||def }
 
 function setupAscensionsHTML() {
     let new_table = new Element("asc_table")

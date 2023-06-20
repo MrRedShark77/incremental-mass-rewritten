@@ -2,7 +2,8 @@ const UPGS = {
     mass: {
         cols: 4,
         temp() {
-            tmp.massFP = 1;
+            tmp.massFP = E(1);
+            if (hasElement(248)) tmp.massFP = tmp.massFP.mul(getEnRewardEff(0))
             for (let x = this.cols; x >= 1; x--) {
                 let d = tmp.upgs.mass
                 let data = this.getData(x)
@@ -917,8 +918,9 @@ const UPGS = {
                 desc: `Red Matters reduce Pre-Renown requirements slightly.`,
                 cost: E('e463'),
                 effect() {
-                    let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).log10().div(60).add(1).toNumber()
-                    return x
+                    let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).log10().div(60).add(1)
+                    if (hasAscension(0,3)) x = x.pow(2)
+                    return x.toNumber()
                 },
                 effDesc(x=this.effect()) { return "x"+format(x)+" cheaper" },
             },
