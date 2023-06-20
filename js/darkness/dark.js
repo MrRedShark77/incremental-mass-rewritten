@@ -211,7 +211,7 @@ function calcDark(dt) {
         player.dark.shadow = player.dark.shadow.add(tmp.dark.shadowGain.mul(dt))
 
         if (tmp.chal14comp) player.dark.abyssalBlot = player.dark.abyssalBlot.add(tmp.dark.abGain.mul(dt))
-if (hasElement(267)) player.dark.am_mass = player.dark.am_mass.add(tmp.am_mass_gain.mul(dt))
+if (hasElement(268)) player.dark.am_mass = player.dark.am_mass.add(tmp.am_mass_gain.mul(dt))
         if (tmp.dark.rayEff.passive) player.dark.rays = player.dark.rays.add(tmp.dark.gain.mul(dt).mul(tmp.dark.rayEff.passive))
 
         if (tmp.matterUnl) {
@@ -290,7 +290,7 @@ function updateDarkHTML() {
         tmp.el.am_cost.setTxt(format(tmp.amCost,0))
         tmp.el.am_step.setHTML(formatMult(am_eff.step))
         tmp.el.am_eff.setTxt(formatMult(am_eff.eff))
-        tmp.el.am_mass.setTxt(formatMass(player.dark.am_mass)+" "+player.dark.am_mass.formatGain(tmp.am_mass_gain,true))
+        tmp.el.am_mass.setTxt(format(player.dark.am_mass)+" "+player.dark.am_mass.formatGain(tmp.am_mass_gain))
         tmp.el.am_mass_eff.setHTML("x"+tmp.am_mass_eff.format())}
 
     if (tmp.tab == 7) {
