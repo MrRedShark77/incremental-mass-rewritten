@@ -294,7 +294,7 @@ debug.generateTheorem = (chance=CORE_CHANCE_MIN) => {
     let t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)], s = ""
     let p = 1+Math.random()/5
 
-    for (let i = 0; i < (hasElement(275)?5:4); i++) s += `<iconify-icon icon="${c[i]<chance?'ic:baseline-star':'ic:baseline-star-border'}" width="10"></iconify-icon>`
+    for (let i = 0; i < (hasElement(275)?5:4); i++) s += `<iconify-icon icon="${c[i]<chance?'ic:baseline-star':'ic:baseline-star-border'}" width="20"></iconify-icon>`
 
     tmp.el.theorem_debug.setHTML(`
     <div class="theorem_div ${t}">
