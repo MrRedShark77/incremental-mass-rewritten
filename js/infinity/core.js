@@ -658,7 +658,7 @@ function createPreTheorem() {
         let m = [], n = false
         for (let i = 0; i < MAX_STARS; i++) {
             m[i] = Math.random()
-            if (m[i] < CORE_CHANCE_MIN) n = true
+            if (m[i] < CORE_CHANCE_MIN && i < 4) n = true
         }
         if (n) c = m
     }
