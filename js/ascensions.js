@@ -59,7 +59,7 @@ const ASCENSIONS = {
     autoSwitch(x) { player.auto_asc[x] = !player.auto_asc[x] },
     rewards: [
         {
-            1: `The bouns of tickspeed, each mass upgrade (except Overflow) now multiplies its level instead of adding. Dalton Theorem is even stronger.`,
+            1: `The bonus of tickspeed, each mass upgrade (except Overpower) now multiplies its level instead of adding. Dalton Theorem is even stronger.`,
             2: `Meta-Fermions start ^2 later.`,
             3: `19th Big Rip upgrade is twice as effective, and remove the overflow from unstable BH's effect.`,
             4: `Kaon & Pion gains are multiplied by 5 every Ascension.`,
