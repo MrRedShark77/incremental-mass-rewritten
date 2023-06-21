@@ -277,7 +277,14 @@ button {
 	color: white;
 	animation: corrupted_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
-
+.ascend_text {
+	color: white;
+	animation: ascend_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+.ascend_text_no_anim {
+	color: rgb(98, 255, 255);
+	text-shadow: -2px -2px 0px rgb(70, 157, 238);
+}
 .corrupted_text2::after {
 	content: " [Corrupted]";
 	color: white;
@@ -303,6 +310,20 @@ button {
 	}
 	75% {
 		text-shadow: 2px -2px 0px #5555ff, -2px 2px 0px #ff5555;
+	}
+}
+@keyframes ascend_text {
+	0%, 100% {
+		text-shadow: -2px -2px 0px #62fff7, 2px 2px 0px #558bff;
+	}
+	25% {
+		text-shadow: -2px 2px 0px #79f7f0, 2px -2px 0px #427cfa;
+	}
+	50% {
+		text-shadow: 2px 2px 0px #24c5bd, -2px -2px 0px #1e65ff;
+	}
+	75% {
+		text-shadow: 2px -2px 0px #28c4bc, -2px 2px 0px #88abf7;
 	}
 }
 @keyframes overflowed_text {

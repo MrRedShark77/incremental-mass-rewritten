@@ -114,6 +114,7 @@ const MATTERS = {
             let x = Decimal.pow(2,fss.pow(1.25))
 
             if (c16) x = x.log10().div(10).add(1)
+            if (hasElement(287)) x = x.pow(1.5)
 
             let y = fss.mul(.15).add(1)
 

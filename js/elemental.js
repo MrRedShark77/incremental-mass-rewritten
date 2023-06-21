@@ -1207,7 +1207,7 @@ const ELEMENTS = {
             cost: E('e1.4e112'),
             effect() {
                 let m = player.massUpg[1]||E(0)
-                let x = m.add(10).log10().pow(0.8);
+                let x = m.add(10).log(hasElement(286)?1.01:10).pow(hasElement(286)?15:0.8);
                 
 				return x
             },
@@ -1293,6 +1293,7 @@ const ELEMENTS = {
             cost: E('e640000'),
             effect() {
                 let x = player.dark.matters.final.div(10).add(1)
+                if (hasElement(288)) x = player.dark.matters.final.mul(3).add(1)
                 return x
             },
             effDesc(x) { return "^"+format(x,1) },
@@ -1636,12 +1637,12 @@ cost: E('ee1290'),
     },
     {
     desc: 'W+ Boson first effect will now be exponential',
-    cost: E('ee1420'),
+    cost: E('ee1425'),
     },
     {
         dark: true,
         desc: `Uncap [Charm] effect.`,
-        cost: E('e46000000'),
+        cost: E('e4700000'),
     },
     {
         c16: true,
@@ -1653,6 +1654,69 @@ cost: E('ee1290'),
         desc: 'Add 1000 C17 max completions.',
         cost: E(2e39),
         },
+        {
+            c16: true,
+            desc: `[Meta-Lepton] reward effect is better based on Infinity Points.<br>Reduce Meta-Prestige Level power based on Infinity Points.`,
+            effect() {let x = E(1)
+            x = player.inf.points.max(1).log10().log2().add(1)
+            let ret = E(1)
+            ret = Decimal.pow(0.35,player.inf.points.max(1).log10().log10())
+        return {eff: x, ret: ret}},
+        effDesc(x) { return "x"+format(x.eff,3)+" to [Meta-Lepton] effect. <br> " + formatReduction(1-x.ret) + " weaker" },
+            cost: E('e3.5e75'),
+        },
+        {
+            dark: true,
+            desc: `Unlock <span class='ascend_text_no_anim'>Ascensions</span>.<br>Keep Valor 2 reward on infinity reset.`,
+            cost: E('e64500000'),
+        },
+        {
+            desc: 'Unlock Exotic Fermions.',
+            cost: E('ee1812'),
+            },
+            {
+                inf: true,
+                desc: 'Unlock 6th dots for Theorems.',
+                cost: E(3e40),
+         },
+         {
+            desc: 'Muonized effects are even better.',
+            cost: E('ee2600'),
+    },
+    {
+        dark: true,
+        desc: `Softcap of [Top] will start at 3.00x`,
+        cost: E('e173000000'),
+    },
+    {
+        inf: true,
+        desc: 'Binilennium-209 is overpowered.',
+        cost: E(6e40),
+ },
+ {
+    dark: true,
+    desc: `FSS's first reward in C16 is slightly stronger.`,
+    cost: E('e212000000'),
+},
+{
+    desc: 'Bibihexium-226 is slightly better.',
+    cost: E('ee3050'),
+    },
+    {
+        c16: true,
+        desc: `Stronger overflow^1-2 starts later by Bipentquadium-254.`,
+        effect() {
+            x = E(elemEffect(254)).pow(1.15).max(1)
+            return x
+        },
+        effDesc(x) { return "^"+format(x,0)+' later' },
+        cost: E('e6e119'),
+    },
+    {
+        inf: true,
+        desc: 'Chromas gain are slightly better<br>Mass Overflow^4 starts slightly more later.',
+        cost: E(1e41),
+ },
     ],
     /*
     {
@@ -1701,7 +1765,7 @@ cost: E('ee1290'),
 
         if (tmp.brokenInf) u += 35
         if (hasElement(253)) u += 16
-        if (hasElement(269)) u += 10
+        if (hasElement(269)) u += 21
         return u
     },
 }

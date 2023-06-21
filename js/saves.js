@@ -174,6 +174,8 @@ function getPlayerData() {
         },
         auto_pres: [],
         prestiges: [],
+        auto_asc: [],
+        ascensions: new Array(ASCENSIONS.names.length).fill(E(0)),
         auto_mainUpg: {
             
         },
@@ -185,6 +187,7 @@ function getPlayerData() {
             
         },
         ranks_reward: 0,
+        asc_reward: 0,
         pres_reward: 0,
         scaling_ch: 0,
         rp: {
@@ -267,7 +270,7 @@ function getPlayerData() {
             fermions: {
                 unl: false,
                 points: [E(0),E(0)],
-                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0),E(0)]],
+                tiers: [[E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)],[E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]],
                 choosed: "",
             },
             radiation: {

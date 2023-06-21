@@ -384,14 +384,14 @@ const PRESTIGES = {
         ()=>tmp.chal13comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
-        ()=>player.prestiges[4].gte(2),
+        ()=>player.prestiges[4].gte(2)||tmp.ascensions_unl,
     ],
     autoUnl: [
         ()=>tmp.chal13comp||tmp.inf_unl,
         ()=>tmp.chal14comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
-        ()=>player.prestiges[4].gte(2)
+        ()=>player.prestiges[4].gte(2)||tmp.ascensions_unl
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -568,7 +568,8 @@ const PRESTIGES = {
                 let x = hasElement(224) ? Decimal.pow(1.1,player.bh.unstable.root(4)) : player.bh.unstable.add(1)
                 if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
                 x = overflow(x,1e100,0.5)
-                return overflow(x,'1e1000',0.5)
+                overflow(x,'1e1000',0.5)
+                return overflow(x,'1e1300',0.05)
             },x=>"^"+format(x)+" later"],
         },
         {
@@ -690,6 +691,7 @@ function updateRanksTemp() {
         }
     }
 
+    updateAscensionsTemp()
     // Beyond
 
     let p = 1
@@ -784,6 +786,14 @@ const BEYOND_RANKS = {
             1: `Boost Muonic Phosphorus effect by 3.00x per beyond-ranks' maximum tier.`,
             2: `Muonic Titanium is stronger based on mass (starts at e3e788).`,
             27: `Best mass of black hole in C16 boosts Corrupted Shards gain.`,
+        },
+        7: {
+            3: `Super Infinity Theorems starts +3 later per beyond-ranks' maximum tier (Starts at Dec).`,
+            42: `Stronger softcap^2 is 15% weaker.`,
+            78: `Overpower softcap^2 is 15% weaker.`,
+        },
+        8: {
+            2: `Super FSS starts +1 later per beyond-ranks' maximum tier (Starts at Dodec).`,
         },
     },
 
@@ -932,6 +942,26 @@ const BEYOND_RANKS = {
                 x=>"x"+format(x,3),
             ],
         },
+        7: {
+            3: [
+                ()=>{
+                    let x = (tmp.beyond_ranks.max_tier-3)*3
+
+                    return Math.max(1,x)
+                },
+                x=>"+"+format(x,0)+" later",
+            ],
+        },
+        8: {
+            2: [
+                ()=>{
+                    let x = (tmp.beyond_ranks.max_tier-4)
+
+                    return Math.max(1,x)
+                },
+                x=>"+"+format(x,0)+" later",
+            ],
+        },
     },
 }
 
@@ -979,7 +1009,8 @@ function beyondRankEffect(x,y,def=1) {
 
 function updateRanksHTML() {
     tmp.el.rank_tabs.setDisplay(hasUpgrade('br',9))
-    for (let x = 0; x < 2; x++) {
+    tmp.el.asc_btn.setDisplay(tmp.ascensions_unl)
+    for (let x = 0; x < 3; x++) {
         tmp.el["rank_tab"+x].setDisplay(tmp.rank_tab == x)
     }
 
@@ -1091,6 +1122,9 @@ function updateRanksHTML() {
                 tmp.el["pres_auto_"+x].setTxt(player.auto_pres[x]?"ON":"OFF")
             }
         }
+    }
+    if (tmp.rank_tab == 2) {
+        updateAscensionsHTML()
     }
 }
 

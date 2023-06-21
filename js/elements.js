@@ -49,7 +49,6 @@ function setupHTML() {
 		</div>`
 	}
 	pres_table.setHTML(table)
-
 	let mass_upgs_table = new Element("mass_upgs_table")
 	table = ""
 	for (let x = 1; x <= UPGS.mass.cols; x++) {
@@ -133,7 +132,7 @@ function setupHTML() {
 		table += `</div>`
 	}
 	scaling_table.setHTML(table)
-
+	setupAscensionsHTML()
 	setupStatsHTML()
 	setupResourcesHTML()
 	setupChalHTML()
@@ -270,7 +269,7 @@ function updateMassUpgradesHTML() {
 		tmp.el["massUpg_div_"+x].setDisplay(upg.unl())
 		if (upg.unl()) {
 			tmp.el["massUpg_scale_"+x].setTxt(x==4?getScalingName("massUpg4"):getScalingName("massUpg", x))
-			tmp.el["massUpg_lvl_"+x].setTxt(format(player.massUpg[x]||0,0)+(tmp.upgs.mass[x].bonus.gt(0)?" + "+format(tmp.upgs.mass[x].bonus,0):""))
+			tmp.el["massUpg_lvl_"+x].setTxt(format(player.massUpg[x]||0,0)+(tmp.upgs.mass[x].bonus.gt(0)?(hasAscension(0,1)&&x<=4?" × ":" + ")+format(tmp.upgs.mass[x].bonus,0):""))
 			tmp.el["massUpg_btn_"+x].setClasses({btn: true, locked: player.mass.lt(tmp.upgs.mass[x].cost)})
 			tmp.el["massUpg_cost_"+x].setTxt(formatMass(tmp.upgs.mass[x].cost))
 			tmp.el["massUpg_step_"+x].setTxt(tmp.upgs.mass[x].effDesc.step)
@@ -287,7 +286,7 @@ function updateTickspeedHTML() {
 	if (unl) {
 		let teff = tmp.tickspeedEffect
 		tmp.el.tickspeed_scale.setTxt(getScalingName('tickspeed'))
-		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(teff.bonus.gte(1)?" + "+format(teff.bonus,0):""))
+		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(teff.bonus.gte(1)?(hasAscension(0,1)?" × ":" + ")+format(teff.bonus,0):""))
 		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
 		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
 		tmp.el.tickspeed_step.setHTML((teff.step.gte(10)?format(teff.step)+"x":format(teff.step.sub(1).mul(100))+"%")
@@ -552,6 +551,7 @@ function updateHTML() {
 			else if (tmp.stab[1] == 1) updateScalingHTML()
 			else if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
 			else if (tmp.stab[1] == 3) updateBeyondRanksRewardHTML()
+			else if (tmp.stab[1] == 4) updateAscensionsRewardHTML()
 		}
 		else if (tmp.tab == 2) {
 			updateMainUpgradesHTML()

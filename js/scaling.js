@@ -332,6 +332,7 @@ function getScalingStart(type, name) {
 		else if (name=="FSS") {
 			if (hasBeyondRank(3,2)) start = start.add(1)
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
+			if (hasBeyondRank(8,2)) start = start.add(beyondRankEffect(8,2))
 		}
 		else if (name='pe') {
 if (hasElement(252)) start = start.add(elemEffect(252))
@@ -400,6 +401,7 @@ if (hasElement(252)) start = start.add(elemEffect(252))
 		}
 		else if (name=="prestige0") {
 			start = start.mul(exoticAEff(0,1))
+			if (hasAscension(0,2)) start = start.pow(ascensionEff(0,2))
 		}
 	} else if (type==4) {
 		if (name=="rank") {
@@ -411,6 +413,9 @@ if (hasElement(252)) start = start.add(elemEffect(252))
 			if (hasPrestige(0,552)) start = start.mul(1.25)
 			if (hasPrestige(3,2)) start = start.mul(prestigeEff(3,2))
 			if (hasBeyondRank(2,17)) start = start.mul(beyondRankEffect(2,17)[1])
+		}
+		else if (name='fTier' && type == 4) {
+			start = start.pow(tmp.fermions.effs[0][7])
 		}
 	} else if (type==5) {
 		if (name=="rank") {
@@ -549,6 +554,7 @@ function getScalingPower(type, name) {
 		}
 		else if (name='prestige0') {
 			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
+			if (hasElement(280)) power = power.mul(elemEffect(280).ret)
 		}
  	}
 	else if (type==4) {

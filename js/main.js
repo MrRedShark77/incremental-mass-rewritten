@@ -149,6 +149,9 @@ if (hasElement(274)) {
 op = op.mul(1.05)
 op2 = op2.mul(1.05)
 op3 = op3.mul(1.05)}
+if (hasElement(280) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18))){ 
+    os3 = os3.pow('1e300')
+    os4 = os4.pow('1e1000')}
         x = overflow(x,os,op)
 
         x = overflow(x,os2,op2)
@@ -319,7 +322,8 @@ op3 = op3.mul(1.05)}
 
             if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])
             
-            let eff = step.pow(t.add(bonus).mul(hasElement(80)?25:1))
+           let eff = step.pow((hasAscension(0,1)?t.add(1).mul(bonus.add(1)):t.add(bonus)).mul(hasElement(80)?25:1))
+            
 
             if (!hasElement(199) || CHALS.inChal(15)) {
                 if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])

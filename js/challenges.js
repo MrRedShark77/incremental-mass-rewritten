@@ -174,6 +174,7 @@ const CHALS = {
         if (hasElement(251) && i==16) x = x.add(1000)
         if (hasElement(259) && i==15) x = x.add(1000000)
         if (hasElement(279) && i==17) x = x.add(1000)
+        if (tmp.inf_unl && i==17) x = x.add(Math.min(theoremEff('mass',5)))
         return x.floor()
     },
     getScaleName(i) {
@@ -594,7 +595,7 @@ ret = overflow(ret,1e68,0.5)
         • You are trapped in C1-17, you can;t gain dark rays, but they're capped a 1e12.<br>
         • You can't enter Big Rip<br>
         `,
-        reward: `Boost Dimensional Mass gain. <br><span class="yellow">At 6 completions, unlock last modificators.</span><br><span class='orange'>At 100 completions, unlock ???</span>`,
+        reward: `Boost Dimensional Mass gain.<br><span class='orange'>At 100 completions, unlock ???</span>`,
         max: E(100),
         inc: E('e11400000000'),
         pow: E(2),

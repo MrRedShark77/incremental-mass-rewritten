@@ -740,7 +740,7 @@ const TREE_UPGS = {
             qf: true,
             branch: ["qu_qol1"],
             req() {
-                for (let x = 0; x < 6; x++) if (player.supernova.fermions.tiers[0][x].gte(1)) return false
+                for (let x = 0; x < 7; x++) if (player.supernova.fermions.tiers[0][x].gte(1)) return false
                 return player.supernova.times.gte(81)
             },
             reqDesc: `Become 81 Supernovas without getting tiers from U-Quark in Quantum run.`,
@@ -779,7 +779,7 @@ const TREE_UPGS = {
             qf: true,
             branch: ["qu_qol1"],
             req() {
-                for (let x = 0; x < 6; x++) if (player.supernova.fermions.tiers[1][x].gte(1)) return false
+                for (let x = 0; x < 7; x++) if (player.supernova.fermions.tiers[1][x].gte(1)) return false
                 return player.supernova.times.gte(42)
             },
             reqDesc: `Become 42 Supernovas without getting tiers from U-Lepton in Quantum run.`,

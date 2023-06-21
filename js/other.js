@@ -439,6 +439,13 @@ function setupStatsHTML() {
     }
 
     new Element("pres_reward_btn").setHTML(h)
+
+    h = ""
+    for (let i in ASCENSIONS.names) {
+        h += `<div id="stats_${ASCENSIONS.names[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.asc_reward = ${i}">${ASCENSIONS.fullNames[i]}</button></div>`
+    }
+
+    new Element("asc_reward_btn").setHTML(h)
 }
 
 /*
@@ -456,5 +463,8 @@ function updateStatsHTML() {
     }
     else if (tmp.stab[1] == 2) for (let i in PRESTIGES.names) {
         tmp.el[`stats_${PRESTIGES.names[i]}_btn`].setDisplay(player.prestiges[i].gt(0))
+    }
+    else if (tmp.stab[1] == 4) for (let i in ASCENSIONS.names) {
+        tmp.el[`stats_${ASCENSIONS.names[i]}_btn`].setDisplay(player.ascensions[i].gt(0))
     }
 }

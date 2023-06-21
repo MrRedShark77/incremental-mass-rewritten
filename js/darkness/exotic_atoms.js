@@ -385,7 +385,7 @@ const EXOTIC_ATOM = {
         [
             [a=>{
                 let x = overflow(a.add(1).root(2),100,0.5)
-                if (player.dark.exotic_atom.tier >= E(14)) x = overflow(a.add(1).root(0.05),10,0.75)
+                if (player.dark.exotic_atom.tier >= E(14)) x = overflow(a.add(1).root(0.05),10,hasElement(284)?1.05:0.75)
                 return x
             },x=>`Boosts corrupted shard gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier >= E(14)?`[Muonized]</span>`:`</span>`}`],
             [a=>{
@@ -421,7 +421,7 @@ const EXOTIC_ATOM = {
         ],[
             [a=>{
                 let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
-                if (player.dark.exotic_atom.tier >= E(13)) x = hasElement(12,1) ? expMult(a.add(1),3) : a.add(1).pow(3)
+                if (player.dark.exotic_atom.tier >= E(13)) x = hasElement(12,1) ? expMult(a.add(1),hasElement(284)?10:3) : a.add(1).pow(3)
                 x = x.softcap('e700000000',0.5,0)
                 return x
             },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b> <span style='color: orange'>${player.dark.exotic_atom.tier >= E(13)?`[Muonized]</span>`:`</span>`}`],

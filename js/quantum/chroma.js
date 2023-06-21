@@ -17,6 +17,7 @@ const CHROMA = {
         if (hasElement(190)) x = x.pow(1.1)
         if (hasGlyphUpg(13) && i == 1) x = x.pow(2)
         if (hasBeyondRank(2,4)) x = x.pow(1.1)
+        if (hasElement(290)) x = x.pow(1.1)
 
         return x
     },

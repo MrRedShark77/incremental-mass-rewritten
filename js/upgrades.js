@@ -85,7 +85,7 @@ const UPGS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(1)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][1].effect:E(0))
-                if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.mass[2].bonus)
+                if (player.mainUpg.rp.includes(2)) x = hasAscension(0,1)?x.mul(tmp.upgs.mass[2].bonus.add(1)):x.add(tmp.upgs.mass[2].bonus)
                 x = x.mul(getEnRewardEff(4))
                 return x
             },
@@ -112,7 +112,7 @@ const UPGS = {
             bonus() {
                 let x = E(0)
                 if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][2].effect:E(0))
-                if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.mass[3].bonus)
+                if (player.mainUpg.rp.includes(7)) x = hasAscension(0,1)?x.mul(tmp.upgs.mass[3].bonus.add(1)):x.add(tmp.upgs.mass[3].bonus)
                 x = x.mul(getEnRewardEff(4))
                 return x
             },
@@ -123,7 +123,7 @@ const UPGS = {
             start: E(1000),
             inc: E(9),
             effect(x) {
-                let xx = x.add(tmp.upgs.mass[3].bonus)
+                let xx = hasAscension(0,1)?x.add(1).mul(tmp.upgs.mass[3].bonus.add(1)):x.add(tmp.upgs.mass[3].bonus)
                 if (hasElement(81)) xx = xx.pow(1.1)
                 let ss = E(10)
                 if (player.ranks.rank.gte(34)) ss = ss.add(2)
@@ -141,6 +141,7 @@ const UPGS = {
                 if (player.ranks.tier.gte(30)) sp *= 1.1
                 let sp2 = 0.1
                 let ss2 = E(5e15)
+                if (hasBeyondRank(7,42)) ss2 = ss2.mul(1.15)
                 let sp3 = hasPrestige(0,12)?0.525:0.5
                 if (hasElement(85)) {
                     sp2 **= 0.9
@@ -166,6 +167,10 @@ const UPGS = {
                 if (hasElement(210)) os = os.mul(elemEffect(210))
 
                 if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
+                if (hasElement(289)) {
+                    os = os.mul(elemEffect(289))
+                    os2 = os2.mul(elemEffect(289))
+                }
 
                 ret = overflow(ret,os,op)
 
@@ -195,7 +200,7 @@ const UPGS = {
             start: E(1e100),
             inc: E(1.5),
             effect(i) {
-                let xx = i.add(tmp.upgs.mass[4].bonus)
+                let xx = hasAscension(0,1)?i.add(1).mul(tmp.upgs.mass[4].bonus.add(1)):i.add(tmp.upgs.mass[4].bonus)
                 
                 let step = E(.005)
                 if (hasUpgrade('rp',17)) step = step.add(.005)
@@ -204,20 +209,23 @@ const UPGS = {
                 if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
                 if (player.inf.nm) step = step.add(tmp.nm_base_eff)
                 let ss = E(10)
+                let ss2 = E(50)
+                if (hasBeyondRank(7,78)) ss2 = ss2.mul(1.15)
 
-                let x = step.mul(xx).add(1).softcap(ss,0.5,0)
+                let x = step.mul(xx).add(1).softcap(ss,0.5,0).softcap(ss2,0.15,0)
                 
-                return {step: step, eff: x, ss: ss}
+                return {step: step, eff: x, ss: ss, ss2: ss2}
             },
             effDesc(eff) {
                 return {
                     step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Stronger Power"+eff.eff.softcapHTML(eff.ss)
+                    eff: "^"+format(eff.eff)+" to Stronger Power"+(eff.eff.gte(eff.ss)?` <span class='soft'>(softcapped${eff.eff.gte(eff.ss2)?"^2":""})</span>`:"")
                 }
             },
             bonus() {
                 let x = E(0)
                 if (hasUpgrade('atom',20)) x = x.add(upgEffect(3,20))
+                if (tmp.inf_unl) x =x.add(theoremEff('proto',5))
                 return x
             },
         },
@@ -291,7 +299,7 @@ const UPGS = {
                 desc: "For every 3 tickspeeds add Stronger.",
                 cost: E(1e7),
                 effect() {
-                    let ret = player.tickspeed.div(3).add(hasElement(38)?tmp.elements.effect[38]:0).floor()
+                    let ret = hasAscension(0,1)?player.tickspeed.div(3).add(1).mul(hasElement(38)?tmp.elements.effect[38].add(1):1):player.tickspeed.div(3).add(hasElement(38)?tmp.elements.effect[38]:0)
                     return ret
                 },
                 effDesc(x=this.effect()) {

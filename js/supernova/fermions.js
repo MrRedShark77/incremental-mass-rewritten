@@ -1,7 +1,7 @@
 const FERMIONS = {
     onActive(id) {
         let i = player.supernova.fermions.choosed
-        return i == id || (i[1] == '6' && i[0] == id[0])
+        return i == id || (i[1] == '6' && i[0] == id[0])|| (i[1] == '7' && i[0] == id[0])
     },
     gain(i) {
         if (!player.supernova.fermions.unl) return E(0)
@@ -64,10 +64,11 @@ const FERMIONS = {
         if (hasTree("fn7")) u++
         if (hasTree("fn8")) u++
         if (hasTree("fn13")) u++
+        if (hasElement(282)) u++
         return u
     },
     names: ['quark', 'lepton'],
-    sub_names: [["Up","Down","Charm","Strange","Top","Bottom",'Meta-Quark'],["Electron","Muon","Tau","Neutrino","Neut-Muon","Neut-Tau",'Meta-Lepton']],
+    sub_names: [["Up","Down","Charm","Strange","Top","Bottom",'Meta-Quark','Exotic-Quark'],["Electron","Muon","Tau","Neutrino","Neut-Muon","Neut-Tau",'Meta-Lepton','Exotic-Lepton']],
     types: [
         [
             {
@@ -177,7 +178,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().div(500).mul(t.root(2)).add(1)
-                    return x.softcap(1.15,0.5,0).softcap(1.8,1/3,0).min(2)//.softcap(2,0.1,0)
+                    return x.softcap(1.15,0.5,0).softcap(1.8,1/3,0).min(hasElement(285)?3:2)//.softcap(2,0.1,0)
                 },
                 desc(x) {
                     return `Radiation Boosters are ${format(x)}x cheaper`+(x.gte(1.15)?" <span class='soft'>(softcapped)</span>":"")
@@ -236,6 +237,28 @@ const FERMIONS = {
                 },
                 inc: "product of above u-quarks",
                 cons: "All u-quarks at once, and force quantum reset.",
+            },
+            {
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x,false,true)
+                    return E('ee525').pow(t.pow(7)).mul(uni("ee525"))
+                },
+                calcTier() {
+                    let res = player.mass
+                    if (res.lt(uni("ee525"))) return E(0)
+                    let x = res.div(uni("ee525")).max(1).log('ee525').max(0).root(7)
+                    return FERMIONS.getTierScaling(x, true,true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().add(1).log10().add(1).log2().div(10000).mul(t.pow(0.15)).add(1)
+
+                    return x
+                },
+                desc(x) {
+                    return `Meta-Fermions starts ^${x.format()} later`
+                },
+                inc: "mass",
+                cons: "Max Theorem's level is 0 and all u-quarks at once, and force infinity reset.",
             },
 
         ],[
@@ -402,6 +425,7 @@ const FERMIONS = {
                 eff(i, t) {
                     let x = i.add(1).log10().add(1).log10().div(2000).mul(t.softcap(8,0.5,0))
                     if (hasBeyondRank(2,2)) x = x.mul(8)
+                    if (hasElement(280)) x = x.mul(elemEffect(280).eff)
                     return x.softcap(20,hasPrestige(1,300)?0.55:0.5,0).toNumber()
                 },
                 desc(x) {
@@ -409,6 +433,26 @@ const FERMIONS = {
                 },
                 inc: "product of above u-leptons",
                 cons: "All u-leptons at once, and force quantum reset.",
+            },{
+                nextTierAt(x) {
+                    let t = FERMIONS.getTierScaling(x,false,true)
+                    return Decimal.pow(1.5,t).mul(1e42)
+                },
+                calcTier() {
+                    let res = tmp.fermions.prod[1]
+                    if (res.lt(1e42)) return E(0)
+                    let x = res.div(1e42).max(1).log(1.5).max(0)
+                    return FERMIONS.getTierScaling(x, true, true)
+                },
+                eff(i, t) {
+                    let x = i.add(1).log10().add(1).log10().add(1).log10().div(20000).mul(t.pow(0.175))
+                    return x.softcap(1.5,0.5,0).toNumber()
+                },
+                desc(x) {
+                    return `Increase Ascension base's exponent by ${format(x)}`
+                },
+                inc: "product of above u-leptons",
+                cons: "You are trapped in dark run with all 100k glyphs and all u-leptons at once, and force infinity reset.",
             },
 
             /*
@@ -436,7 +480,7 @@ const FERMIONS = {
     ],
     productF(i) {
         let s = E(1)
-        for (let x = 0; x < 6; x++) s = s.mul(player.supernova.fermions.tiers[i][x].add(1))
+        for (let x = 0; x < 7; x++) s = s.mul(player.supernova.fermions.tiers[i][x].add(1))
         return s
     },
 }
@@ -487,8 +531,8 @@ function updateFermionsTemp() {
 
 function updateFermionsHTML() {
     let r = [
-        [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff_bottom, tmp.fermions.prod[0]],
-        [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, tmp.tickspeedEffect.step, tmp.fermions.prod[1]]
+        [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff_bottom, tmp.fermions.prod[0],player.mass],
+        [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, tmp.tickspeedEffect.step, tmp.fermions.prod[1],tmp.fermions.prod[1]]
     ]
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))

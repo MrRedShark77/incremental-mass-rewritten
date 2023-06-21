@@ -28,7 +28,7 @@ const ORB = {
             addQuote(12)
         }
     },
-requirement: [E('e1.060e10'),E('e1.45e10'),E('e1.63e10'),mlt(159000),mlt(1200000),mlt(1e9)],
+requirement: [E('e1.060e10'),E('e1.45e10'),E('e1.63e10'),mlt(159000),mlt(1100000),mlt(1e9)],
 canBuy(x) {
     let u = this.upgs[x]
     let res = player.inf.c18.orb
@@ -58,6 +58,10 @@ upgs: [
     {
         desc: `[ct1] is much more better.`,
         cost: E(4),
+    },
+    {
+        desc: `Unlock Last Modificators [ENDGAME].`,
+        cost: E(5),
     },
 ],
 }

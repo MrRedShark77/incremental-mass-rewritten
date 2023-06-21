@@ -56,7 +56,6 @@ const INF = {
         player.md.particles = E(0)
         player.md.mass = E(0)
         for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
-
         player.stars.unls = 0
         player.stars.generators = [E(0),E(0),E(0),E(0),E(0)]
         player.stars.points = E(0)
@@ -453,6 +452,7 @@ dark.matters.am = E(0)
             let step = E(2).add(exoticAEff(1,4,0))
 
             if (hasElement(225)) step = step.add(elemEffect(225,0))
+            if (tmp.inf_unl) step=step.mul(theoremEff('bh',5))
             
             let eff = step.pow(t.add(bonus))
 
@@ -658,6 +658,7 @@ function updateInfTemp() {
     if (hasElement(222) && (!CHALS.inChal(17))&& (!CHALS.inChal(18))) tmp.inf_level_ss += 5
     if (hasElement(230)) tmp.inf_level_ss += elemEffect(230)
     if (hasElement(233)) tmp.inf_level_ss += elemEffect(233)
+    if (hasBeyondRank(7,3)) tmp.inf_level_ss += beyondRankEffect(7,3)
     tmp.IP_gain = INF.gain()
     tmp.inf_limit = INF.limit()
     tmp.inf_reached = player.mass.gte(tmp.inf_limit)
@@ -704,6 +705,9 @@ function calcInf(dt) {
     if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
     if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
 player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
+if (FERMIONS.onActive('07')) {
+        player.inf.theorem_max = E(1)
+    }
 if (CHALS.inChal(17)|| CHALS.inChal(18)) {
 player.inf.core[0].level = E(player.inf.theorem_max).floor()
 player.inf.core[1].level = E(player.inf.theorem_max).floor()
@@ -712,7 +716,6 @@ player.inf.core[3].level = E(player.inf.theorem_max).floor()
 player.inf.core[4].level = E(player.inf.theorem_max).floor()
     player.inf.theorem_max = E(tmp.core_lvl)
 }
-
 
 if (hasElement(229) && player.inf.core[0].type == 'mass') player.inf.core[0].level = E(player.inf.theorem_max).floor()
 if (hasElement(249) && player.inf.core[1].type == 'proto') player.inf.core[1].level = E(player.inf.theorem_max).floor()
@@ -749,7 +752,7 @@ function updateInfHTML() {
             let h = ``
             for (let t in CORE) {
                 let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < 6; i++) {
                     if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+ct.preEff[i]+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
                 }
                 if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p*100,0)}%)</b></h2><br>`+hh+'<br>'

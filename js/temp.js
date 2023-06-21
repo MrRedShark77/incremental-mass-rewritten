@@ -217,7 +217,13 @@ function resetTemp() {
         },
 
         prevSave: "",
-
+        ascensions: {
+            req: [],
+            bulk: [],
+            eff: new Array(ASCENSIONS.names.length).fill({}),
+            baseExp: 1,
+            base: E(1),
+        },
         april: d.getDate() == 1 && d.getMonth() == 3,
         aprilEnabled: false,
 
@@ -381,6 +387,7 @@ function updateTemp() {
     tmp.brUnl = hasElement(208)
     tmp.eaUnl = hasCharger(5)
     tmp.brokenInf = hasInfUpgrade(16)
+    tmp.ascensions_unl = hasElement(281)
     updateOrbTemp()
     updateInfTemp()
     updateC16Temp()

@@ -8,7 +8,7 @@ const CORE = {
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
             `Make Prestige Ranks cheaper.`,
-            `?.`,
+            `Add more C17 completions.`,
             `?.`,
             `?.`,
         ],
@@ -37,12 +37,12 @@ const CORE = {
             },
             s => {
                 let x = Decimal.root(s**0.35/5+1,2)
-                return x
+                return x.max(1)
             },
             s => {
-                let x = E(1).pow(s)
+                let x = s**0.85
 
-                return x
+                return Math.floor(x)
             },
             s => {
                 let x = E(1).pow(s)
@@ -61,7 +61,7 @@ const CORE = {
             x => formatMult(x),
             x => "+"+format(x),
             x => formatMult(x),
-            x => formatMult(x),
+            x => "+"+format(x),
             x => formatMult(x),
             x => formatMult(x),
         ],
@@ -75,7 +75,7 @@ const CORE = {
             `Weaken unstable BH decreasing.`,
             `Boost FVM's power.`,
             `Boost BH mass overflow^2-3 starting (weaker in C16).`,
-            `?.`,
+            `Boost Parallel Extruder's power.`,
             `?.`,
             `?.`,
         ],
@@ -120,7 +120,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(1).pow(s)
+                let x = Decimal.pow(1.05,Math.log10(s+1))
 
                 return x
             },
@@ -155,7 +155,7 @@ const CORE = {
             `Increase overpower's power.`,
             `Increase accelerator's power.`,
             `Boost Kaons & Pions gain.`,
-            `?.`,
+            `Increase Ascension base.`,
             `?.`,
             `?.`,
         ],
@@ -194,7 +194,9 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(1).pow(s)
+                let x = Decimal.pow(s-1,s**0.05*0.025).div(30)
+
+                x = overflow(x,100,0.5)
 
                 return x
             },
@@ -215,7 +217,7 @@ const CORE = {
             x => "+"+format(x),
             x => "+"+format(x),
             x => "x"+format(x),
-            x => formatMult(x),
+            x => "+"+format(x),
             x => formatMult(x),
             x => formatMult(x),
         ],
@@ -229,7 +231,7 @@ const CORE = {
             `Weaken each “entropic” reward scaling.`,
             `Weaken QC modifications.`,
             `Antimatter Generator' power is better.`,
-            `?.`,
+            `Add free Overpower levels.`,
             `?.`,
             `?.`,
         ],
@@ -262,9 +264,9 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(1).pow(s)
+                let x = Math.log10(s+3)/2+1
 
-                return x
+                return Math.floor(x)
             },
             s => {
                 let x = E(1).pow(s)
@@ -283,7 +285,7 @@ const CORE = {
             x => formatReduction(x),
             x => formatReduction(x),
             x => formatMult(x),
-            x => formatMult(x),
+            x => "+"+format(x),
             x => formatMult(x),
             x => formatMult(x),
         ],
@@ -375,7 +377,7 @@ var core_weight = {}
 function resetCoreTemp() {
     for (let i in CORE) {
         core_tmp[i] = {
-            total_s: [0,0,0,0,0],
+            total_s: [0,0,0,0,0,0],
             total_p: 1,
         }
 
@@ -391,6 +393,7 @@ debug.generateTheorem = (chance=CORE_CHANCE_MIN) => {
     let c = []
     let a = MAX_DOTS_LENGTH
     if (hasElement(275)) a += 1
+    if (hasElement(283)) a += 1
     while (c.length == 0) {
         let m = [], n = false
         for (let i = 0; a; i++) {
@@ -420,6 +423,7 @@ debug.addRandomTheorem = (level=1,power=1,max_chance=CORE_CHANCE_MIN) => {
     let c = []
     let a = MAX_DOTS_LENGTH
     if (hasElement(275)) a += 1
+    if (hasElement(283)) a += 1
     while (c.length == 0) {
         let m = [], n = false
         for (let i = 0; i < a; i++) {
@@ -440,6 +444,7 @@ function getTheoremHTML(data,sub=false) {
     let s = ""
     let a = MAX_DOTS_LENGTH
     if (hasElement(275)) a += 1
+    if (hasElement(283)) a += 1
     for (let i = 0; i < a; i++) s += `<div>${data.star[i]?"◉":""}</div>`
     let w = `
     <div class="c_type">${CORE[data.type].icon}</div>
@@ -458,6 +463,7 @@ function getTheoremPreEffects(t,s) {
     let e = ""
     let a = MAX_DOTS_LENGTH
     if (hasElement(275)) a += 1
+    if (hasElement(283)) a += 1
     for (let i = 0; i < a; i++) if (s[i]) e += CORE[t].preEff[i]+"<br>"
     return e+`(Based on <b>${CORE[t].res}</b>)`
 }
@@ -497,7 +503,7 @@ function setupCoreHTML() {
 }
 
 function getCoreChance() { return 1-CORE_CHANCE_BASE**Math.floor(tmp.core_lvl)**0.4 }
-function getPowerMult() { return Math.floor(tmp.core_lvl-1)**0.5/100 }
+function getPowerMult() { return E(Math.floor(tmp.core_lvl-1)**0.5/100).add(ascensionEff(0,6)) }
 
 function updateCoreHTML() {
     let reached = player.inf.reached
@@ -549,6 +555,7 @@ function updateTheoremCore() {
         if (p) {
             let a = MAX_DOTS_LENGTH
             if (hasElement(275)) a += 1
+            if (hasElement(283)) a += 1
             let type = p.type, l = p.level, s = p.star, ct = core_tmp[type]
             ct.total_p *= p.power
             for (let i = 0; i < a; i++) ct.total_s[i] += l * s[i]
@@ -602,6 +609,7 @@ function createPreTheorem() {
     let c = [], t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)]
     let a = MAX_DOTS_LENGTH
     if (hasElement(275)) a += 1
+    if (hasElement(283)) a += 1
     while (c.length == 0) {
         let m = [], n = false
         for (let i = 0; i < a; i++) {
@@ -679,6 +687,7 @@ function isTheoremHigher(t,t_target) {
     if (!t_target || t.type != t_target.type || t.level > t_target.level || Math.pow(t.level,t.power) > Math.pow(t_target.level,t_target.power)) return false
     let a = MAX_DOTS_LENGTH
     if (hasElement(275)) a += 1
+    if (hasElement(283)) a += 1
     for (let i = 0; i < a; i++) if (t.star[i] > t_target.star[i]) return false
 
     return true
@@ -712,6 +721,7 @@ function updateCoreTemp() {
         let boost = t.boost?t.boost():1
         let a = MAX_DOTS_LENGTH
         if (hasElement(275)) a += 1
+        if (hasElement(283)) a += 1
         for (let j = 0; j < a; j++) {
             let sc = Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
             sc = overflow(sc,1000,0.5)
