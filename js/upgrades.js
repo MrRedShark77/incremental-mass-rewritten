@@ -166,7 +166,7 @@ const UPGS = {
 
                 if (hasElement(210)) os = os.mul(elemEffect(210))
 
-                if (hasElement(27)) {
+                if (hasElement(27,1)) {
                     let w = muElemEff(27)
                     os = os.mul(w)
                     os2 = os2.mul(w)
