@@ -199,7 +199,7 @@ function updateDarkRunHTML() {
     tmp.el.mg_max_gain.setTxt(format(player.dark.run.gamount,0))
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         tmp.el["mass_glyph"+x].setHTML(
-            c16|| CHALS.inChal(17) || FERMIONS.onActive('17')? x == 5 ? FERMIONS.onActive("17")?100000:10 : FERMIONS.onActive("17")?100000:100 : player.dark.run.glyphs[x]
+            tmp.c16active || CHALS.inChal(17) || FERMIONS.onActive("17")? i == 5 ? hasCharger(10)?5:FERMIONS.onActive("17")?100000:10 : hasCharger(10)?50:FERMIONS.onActive("17")?100000:10 : player.dark.run.glyphs[x]
             + (dra ? " (+" + format(tmp.dark.mass_glyph_gain[x],0) + ")" : dtmp.mg_passive[x]>0 ? " ["+format(dtmp.mg_passive[x],0)+"]" : ""))
         tmp.el["mass_glyph_tooltip"+x].setTooltip("<h3>"+DARK_RUN.mass_glyph_name[x]+"</h3><br class='line'>"+DARK_RUN.mass_glyph_effDesc[x](tmp.dark.mass_glyph_eff[x]))
     }
