@@ -1736,12 +1736,12 @@ cost: E('ee1290'),
             return x
         },
         effDesc(x) { return formatReduction(x)+' weaker' },
-        cost: E('e2e186'),
+        cost: E('e1e182'),
     },
     {
         inf: true,
         desc: 'Unlock Beyond-Prestiges.',
-        cost: E(1e45),
+        cost: E(5e43),
  },
     ],
     /*
