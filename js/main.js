@@ -149,7 +149,7 @@ if (hasElement(274)) {
 op = op.mul(1.05)
 op2 = op2.mul(1.05)
 op3 = op3.mul(1.05)}
-if (hasElement(280) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18))){ 
+if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18))){ 
     os3 = os3.pow('1e300')
     os4 = os4.pow('1e1000')}
         x = overflow(x,os,op)
