@@ -332,7 +332,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = Decimal.pow(1.01,Math.log10(s-1))
+                let x = Math.log10(s+1)/100+1
 
                 return x
             },
