@@ -1726,7 +1726,7 @@ cost: E('ee1290'),
 },
 {
     desc: 'Xenon-54 now provides an exponential boost.',
-    cost: E('ee4385'),
+    cost: E('ee4050'),
     },
     {
         c16: true,
