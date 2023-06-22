@@ -43,6 +43,11 @@ function resetTemp() {
             tier_power: 0.8,
             eff: {},
         },
+        beyond_pres: {
+            max_tier: 1,
+            tier_power: 0.8,
+            eff: {},
+        },
 
         bd: {
             upgs: [],
@@ -242,6 +247,7 @@ function resetTemp() {
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
+    for (let x in BEYOND_PRES.rewardEff) tmp.beyond_pres.eff[x] = {}
     for (let x = UPGS.mass.cols; x >= 1; x--) tmp.upgs.mass[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs.main[x] = {}
     for (let j = 0; j < TREE_TAB.length; j++) {
@@ -388,6 +394,7 @@ function updateTemp() {
     tmp.eaUnl = hasCharger(5)
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.ascensions_unl = hasElement(281)
+    tmp.bpUnl = hasElement(294)
     updateOrbTemp()
     updateInfTemp()
     updateC16Temp()

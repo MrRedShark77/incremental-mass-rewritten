@@ -106,7 +106,17 @@ function setupHTML() {
 		table += '<br>'
 	}
 	br_rewards_table.setHTML(table)
-
+	table = ''
+	let bp_rewards_table = new Element("bp_rewards_table")
+	for (let x in BEYOND_PRES.rewards) {
+		x = Number(x)
+		let ee = BEYOND_PRES.rewardEff[x]
+		for (let y in BEYOND_PRES.rewards[x]) {
+			table += `<span id="br_reward_${x}_${y}"><b>${getPresTierName(x+5)} ${format(y,0)}:</b> ${BEYOND_PRES.rewards[x][y]}${ee&&BEYOND_PRES.rewardEff[x][y]?` Currently: <span id='bp_eff_${x}_${y}'></span>`:""}</span><br>`
+		}
+		table += '<br>'
+	}
+	bp_rewards_table.setHTML(table)
 	let main_upgs_table = new Element("main_upgs_table")
 	table = ""
 	for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -373,7 +383,28 @@ function updateBeyondRanksRewardHTML() {
 		}
 	}
 }
+function updateBeyondPresRewardHTML() {
+	let t = tmp.beyond_pres.max_tier, lt = tmp.beyond_pres.latestRank, c16 = tmp.c16active, c16_cr = {
+		1: [7],
+	}
+	for (let x in BEYOND_PRES.rewards) {
+		x = parseInt(x)
 
+		for (let y in BEYOND_PRES.rewards[x]) {
+			y = parseInt(y)
+
+			let unl = t > x || t == x && lt.gte(y)
+			tmp.el["bp_reward_"+x+"_"+y].setDisplay(unl)
+			if (unl) {
+				tmp.el["bp_reward_"+x+"_"+y].setClasses({corrupted_text2: c16&&c16_cr[x]&&c16_cr[x].includes(y)})
+				if (tmp.el["bp_eff_"+x+"_"+y]) {
+					let eff = BEYOND_PRES.rewardEff[x][y]
+					tmp.el["bp_eff_"+x+"_"+y].setHTML(eff[1](tmp.beyond_pres.eff[x][y]))
+				}
+			}
+		}
+	}
+}
 function updateMainUpgradesHTML() {
 	if (player.main_upg_msg[0] != 0) {
 		let upg1 = UPGS.main[player.main_upg_msg[0]]
@@ -552,6 +583,8 @@ function updateHTML() {
 			else if (tmp.stab[1] == 2) updatePrestigesRewardHTML()
 			else if (tmp.stab[1] == 3) updateBeyondRanksRewardHTML()
 			else if (tmp.stab[1] == 4) updateAscensionsRewardHTML()
+			else if (tmp.stab[1] == 5) updateBeyondPresRewardHTML()
+
 		}
 		else if (tmp.tab == 2) {
 			updateMainUpgradesHTML()

@@ -6,7 +6,7 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mrredshark77.github.io/incremental-mass-rewritten/" />
-    <meta property="og:title" content="IMR:NP [Re:] v0.7.0.9" />
+    <meta property="og:title" content="IMR:NP [Re:] v0.7.0.95" />
     <meta property="og:description" content="IMR:NP made by Seder3214, based on Incremental Mass Rewritten made by MrRedShark77." />
     <meta property="og:image" content="https://mrredshark77.github.io/incremental-mass-rewritten//images/thumbail.jpg" />
 
@@ -29,6 +29,7 @@
     <script src="js/infinity/orb.js"></script>
     <script src="js/infinity/core.js"></script>
     <script src="js/infinity/inf.js"></script>
+    <script src="js/beyond_pres.js"></script>
 
     <script src="js/darkness/exotic_atoms.js"></script>
     <script src="js/darkness/c16.js"></script>
@@ -209,8 +210,23 @@
                                 </div>
                             </div><div id="rank_tab1">
                                 Your Prestige base is <span id="pres_base"></span> (based on product of Rank tiers)<br><br>
-                                <div id="pres_table" class="table_center" style="min-height: 180px;"></div>
-                            </div><div id="rank_tab2">
+                                <div class="table_center" style="min-height: 180px;">
+                                <div style="width: 400px; display: none;" id="pre_beyond_pres"></div>
+                                <div id="pres_table" class="table_center"></div>
+                                <div style="width: 400px; display: none;" id="beyond_pres">
+                                    <div class="table_center" style="align-items: center;">
+                                        <button id="bp_auto" class="btn" style="width: 80px;" onclick="PRESTIGES.autoSwitch('beyond')">OFF</button>
+                                        <div style="margin-left: 5px; text-align: left;" id="bp_amt">
+                                            Merit 0
+                                        </div>
+                                    </div>
+                                <br>
+                                <button onclick="BEYOND_PRES.reset()" class="btn reset" style="max-width: 380px;" id="bp_desc">
+                                    Reset your Valors (and force a infinity reset) but Merit/Excellence/Royalty etc. up.<br>
+                                    To Merit up, require Valor ???<br>
+                                    To Excellence up, require Merit ???
+                                </button>
+                            </div></div></div><div id="rank_tab2">
                                 Your Ascension base is <span id="asc_base"></span> (based on product of ln[Prestige tiers+1]+1)<br><br>
                                 <div id="asc_table" class="table_center" style="min-height: 180px;"></div>
                             </div>
@@ -399,6 +415,9 @@
                         </div><div id="stab_frame1_4">
                             <div id="asc_reward_btn" class="table_center"></div><br>
                             <div id="asc_rewards_table"></div>
+                            <div id="stab_frame1_5">
+                                <div id="bp_rewards_table"></div>
+                            </div>
                         </div>
                     </div><div id="tab_frame2">
                         <div id="main_upg_msg" style="min-height: 100px;"></div>
@@ -670,6 +689,7 @@
                             </div>
                             <div id='dm_base_div'><br>
                                 You have <h4 id="dm_base">X</h4> of Dalton Fragments<br>
+                                That are boosted by <span id="dm_base_boost">0</span> based on Einstein Fragments
                                 <div class="green">Which boosts Kaons & Pions gains by <h4 id="dm_base_eff">X</h4></div><br>
                             </div><br>
                             <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="dm_div">
@@ -684,6 +704,44 @@
                                 <div style="margin-left: 5px; text-align: left; width: 400px">
                                     Dalton Modificator Power: <span id="dm_step">X</span><br>
                                     Dalton Modificator Effect: <span id="dm_eff">X</span> to Dalton Fragments gain
+                                </div>
+                            </div><br>
+                            <div id='em_base_div'>
+                                You have <h4 id="em_base">X</h4> of Einstein Fragments<br>  <div id='em_base_boost_div'>
+                                    That are boosted by <span id="em_base_boost">0</span> based on Hawking Fragments
+                                </div>
+                            </div><br>
+                            <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="em_div">
+                                <div style="width: 300px">
+                                    <div class="resources">
+                                        <img src="images/em.png">
+                                        <span style="margin-left: 5px; text-align: left;"><span id="em_scale"></span>Einstein Modificator [<span id="em_lvl">X</span>]</span>
+                                    </div>
+                                </div><button id="em_btn" class="btn" style="width: 300px;" onclick="INF.em.buy()">Cost: <span id="em_cost">X</span> Infinity Points</button>
+                                <button class="btn" style="width: 120px;" onclick="INF.em.buyMax()">Buy Max</button>
+                                <button id="em_auto" class="btn" style="width: 80px; display: none;" onclick="">OFF</button>
+                                <div style="margin-left: 5px; text-align: left; width: 400px">
+                                    Einstein Modificator Power: <span id="em_step">X</span><br>
+                                    Einstein Modificator Effect: <span id="em_eff">X</span> to Einstein Fragments gain
+                                </div>
+                            </div><br>
+                            <div id='hm_base_div'>
+                                You have <h4 id="hm_base">X</h4> of Hawking Fragments<br>  <div id='hm_base_boost_div'>
+                                    That are boosting infinity gain by <span id="hm_base_boost">0</span> based on Hawking Fragments.
+                                </div>
+                            </div><br>
+                            <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="hm_div">
+                                <div style="width: 300px">
+                                    <div class="resources">
+                                        <img src="images/hm.png">
+                                        <span style="margin-left: 5px; text-align: left;"><span id="hm_scale"></span>Hawking Modificator [<span id="hm_lvl">X</span>]</span>
+                                    </div>
+                                </div><button id="hm_btn" class="btn" style="width: 300px;" onclick="INF.hm.buy()">Cost: <span id="hm_cost">X</span> Infinity Points</button>
+                                <button class="btn" style="width: 120px;" onclick="INF.hm.buyMax()">Buy Max</button>
+                                <button id="hm_auto" class="btn" style="width: 80px; display: none;" onclick="">OFF</button>
+                                <div style="margin-left: 5px; text-align: left; width: 400px">
+                                    Hawking Modificator Power: <span id="hm_step">X</span><br>
+                                    Hawking Modificator Effect: <span id="hm_eff">X</span> to Hawking Fragments gain
                                 </div>
                             </div>
                         </div><div id="stab_frame8_4">
@@ -709,7 +767,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten: New Path [Re:] - v0.7.0.9 - made by Seder3214<br>
+                            Incremental Mass Rewritten: New Path [Re:] - v0.7.0.95 - made by Seder3214<br>
                             Based on Incremental Mass Rewritten -  v0.7.0.1 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>

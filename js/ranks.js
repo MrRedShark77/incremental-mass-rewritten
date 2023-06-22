@@ -319,19 +319,19 @@ const PRESTIGES = {
         if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',4))
         switch (i) {
             case 0:
-                x = Decimal.pow(1.1,y.scaleEvery('prestige0',false,[0,0,0,fp]).pow(1.1)).mul(2e13).div(ifp)
+                x = Decimal.pow(1.1,y.scaleEvery('prestige',false,[0,0,0,fp]).pow(1.1)).mul(2e13)
                 break;
             case 1:
-                x = y.div(fp).scaleEvery('prestige1',false).pow(1.25).mul(3).add(4).div(ifp)
+                x = y.div(fp).scaleEvery('honor',false).pow(1.25).mul(3).add(4)
                 break;
             case 2:
-                x = hasElement(167)?y.div(fp).scaleEvery('prestige2',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6).div(ifp)
+                x = hasElement(167)?y.div(fp).scaleEvery('glory',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6).div(ifp)
                 break;
             case 3:
-                x = y.div(fp).scaleEvery('prestige3',false).pow(1.25).mul(3).add(9).div(ifp)
+                x = y.div(fp).scaleEvery('renown',false).pow(1.25).mul(3).add(9).div(ifp)
                 break;
                 case 4:
-                    x = y.div(fp).scaleEvery('prestige4',false).pow(1.15).mul(6).add(14)
+                    x = y.div(fp).scaleEvery('valor',false).pow(1.15).mul(6).add(14)
                     break;
             default:
                 x = EINF
@@ -345,19 +345,19 @@ const PRESTIGES = {
         if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',4))
         switch (i) {
             case 0:
-                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true,[0,0,0,fp]).add(1).mul(ifp)
+                if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige',true,[0,0,0,fp]).add(1)
                 break;
             case 1:
-                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1).mul(ifp)
+                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('honor',true).mul(fp).add(1).mul(ifp)
                 break
             case 2:
-                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('prestige2',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1).mul(ifp)
+                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('glory',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1).mul(ifp)
                 break
             case 3:
-                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true).mul(fp).add(1).mul(ifp)
+                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('renown',true).mul(fp).add(1).mul(ifp)
                 break 
             case 4:
-                if (y.gte(14)) x = y.sub(14).div(6).max(0).root(1.15).scaleEvery('prestige4',true).mul(fp).add(1)
+                if (y.gte(14)) x = y.sub(14).div(6).max(0).root(1.15).scaleEvery('valor',true).mul(fp).add(1)
                 break 
             default:
                 x = E(0)
@@ -693,7 +693,7 @@ function updateRanksTemp() {
 
     updateAscensionsTemp()
     // Beyond
-
+updateBeyondPresTemp()
     let p = 1
 
     if (hasElement(221)) p /= 0.95
@@ -1100,7 +1100,7 @@ function updateRanksHTML() {
         for (let x = 0; x < PRES_LEN; x++) {
             let unl = PRESTIGES.unl[x]?PRESTIGES.unl[x]():true
 
-            tmp.el["pres_div_"+x].setDisplay(unl)
+            tmp.el["pres_div_"+x].setDisplay(unl && (!tmp.bpUnl || x > 3))
 
             if (unl) {
                 let p = player.prestiges[x] || E(0)
@@ -1113,7 +1113,7 @@ function updateRanksHTML() {
                     }
                 }
 
-                tmp.el["pres_scale_"+x].setTxt(getScalingName("prestige"+x))
+                tmp.el["pres_scale_"+x].setTxt(getScalingName(PRESTIGES.names[x]))
                 tmp.el["pres_amt_"+x].setTxt(format(p,0))
                 tmp.el["pres_"+x].setClasses({btn: true, reset: true, locked: x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
                 tmp.el["pres_desc_"+x].setTxt(desc)
@@ -1122,6 +1122,7 @@ function updateRanksHTML() {
                 tmp.el["pres_auto_"+x].setTxt(player.auto_pres[x]?"ON":"OFF")
             }
         }
+        updateBeyondPresHTML()
     }
     if (tmp.rank_tab == 2) {
         updateAscensionsHTML()

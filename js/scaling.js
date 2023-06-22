@@ -12,11 +12,11 @@ const SCALE_START = {
 		supernova: E(15),
 		fTier: E(10),
 		cosmic_str: E(15),
-		prestige0: E(15),
-		prestige1: E(7),
-		prestige2: E(30),
-		prestige3: E(8),
-		prestige4: E(2),
+		prestige: E(15),
+		honor: E(7),
+		glory: E(30),
+		renown: E(8),
+		valor: E(2),
 		massUpg4: E(50),
 		FSS: E(5),
 		pe: E(25),
@@ -35,9 +35,9 @@ const SCALE_START = {
 		supernova: E(35),
 		fTier: E(50),
 		cosmic_str: E(90),
-		prestige0: E(80),
-		prestige1: E(60),
-		prestige2: E(60),
+		prestige: E(80),
+		honor: E(60),
+		glory: E(60),
 massUpg4: E(200),
 		inf_theorem: E(35),
 	},
@@ -52,8 +52,8 @@ massUpg4: E(200),
 		gamma_ray: E(800),
 		supernova: E(60),
 		fTier: E(100),
-		prestige0: E(320),
-		prestige1: E(200),
+		prestige: E(320),
+		honor: E(200),
 	},
 	meta: {
 		rank: E(1e4),
@@ -64,12 +64,13 @@ massUpg4: E(200),
 		gamma_ray: E(1e6),
 		supernova: E(100),
 		fTier: E(1.25e4),
-		prestige0: E(3500),
-		prestige1: E(3500),
+		prestige: E(3500),
+		honor: E(3500),
 	},
 	exotic: {
 		rank: E(1e16),
 		tier: E(1e25),
+		prestige: E(1000000),
 		supernova: E(2e5),
 	},
 	supercritical: {
@@ -92,11 +93,11 @@ const SCALE_POWER= {
 		supernova: 3,
 		fTier: 2.5,
 		cosmic_str: 2,
-		prestige0: 1.5,
-		prestige1: 1.5,
-		prestige2: 2,
-		prestige3: 2,
-		prestige4: 2,
+		prestige: 1.5,
+		honor: 1.5,
+		glory: 2,
+		renown: 2,
+		valor: 2,
 		massUpg4: 3,
 		FSS: 2,
 		pe: 2,
@@ -115,9 +116,9 @@ const SCALE_POWER= {
 		supernova: 3,
 		fTier: 4,
 		cosmic_str: 4,
-		prestige0: 2,
-		prestige1: 2,
-		prestige2: 3,
+		prestige: 2,
+		honor: 2,
+		glory: 3,
 		inf_theorem: 10,
 	},
 	ultra: {
@@ -131,8 +132,8 @@ const SCALE_POWER= {
 		gamma_ray: 6,
 		supernova: 5,
 		fTier: 6,
-		prestige0: 3,
-		prestige1: 3,
+		prestige: 3,
+		honor: 3,
 	},
 	meta: {
 		rank: 1.0025,
@@ -143,11 +144,12 @@ const SCALE_POWER= {
 		gamma_ray: 1.001,
 		supernova: 1.025,
 		fTier: 1.001,
-		prestige0: 1.0025,
-		prestige1: 1.0025,
+		prestige: 1.0025,
+		honor: 1.0025,
 	},
 	exotic: {
 		rank: 15,
+		prestige: 50,
 		tier: 20,
 		supernova: 20,
 	},
@@ -179,11 +181,11 @@ const SCALING_RES = {
 	supernova(x=0) { return player.supernova.times },
 	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
 	cosmic_str(x=0) { return player.qu.cosmic_str },
-	prestige0() { return player.prestiges[0] },
-	prestige1() { return player.prestiges[1] },
-	prestige2() { return player.prestiges[2] },
-	prestige3() { return player.prestiges[3] },
-	prestige4() { return player.prestiges[4] },
+	prestige() { return player.prestiges[0] },
+	honor() { return player.prestiges[1] },
+	glory() { return player.prestiges[2] },
+	renown() { return player.prestiges[3] },
+	valor() { return player.prestiges[4] },
 	massUpg4() { return E(player.massUpg[4]||0) },
 	FSS() { return player.dark.matters.final },
 	pe() { return player.inf.pe},
@@ -203,11 +205,11 @@ const NAME_FROM_RES = {
 	supernova: "Supernova",
 	fTier: "Fermion Tier",
 	cosmic_str: "Cosmic String",
-	prestige0: "Prestige Level",
-	prestige1: "Honor",
-	prestige2: "Glory",
-	prestige3: "Renown",
-	prestige4: "Valor",
+	prestige: "prestige",
+	honor: "Honor",
+	glory: "Glory",
+	renown: "Renown",
+	valor: "Valor",
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
 	pe: "Parallel Extruder",
@@ -324,7 +326,7 @@ function getScalingStart(type, name) {
 		else if (name=='tickspeed') {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
 		}
-		else if (name=="prestige0") {
+		else if (name=="prestige") {
 			if (player.md.break.upgs[9].gte(1)) start = start.add(10)
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
@@ -346,7 +348,7 @@ if (hasElement(252)) start = start.add(elemEffect(252))
 		else if (name=="rank") {
 			if (player.mainUpg.atom.includes(10)) start = start.add(tmp.upgs?tmp.upgs.main?tmp.upgs.main[3][10].effect:0:0)
 		}
-		else if (name=="prestige0") {
+		else if (name=="prestige") {
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
 		}
@@ -364,7 +366,7 @@ if (hasElement(252)) start = start.add(elemEffect(252))
 		else if (name=="massUpg") {
 			if (hasElement(189)) start = start.pow(1.5)
 		}
-		else if (name=="prestige0") {
+		else if (name=="prestige") {
 			start = start.mul(exoticAEff(0,1))
 		}
 	}
@@ -399,9 +401,10 @@ if (hasElement(252)) start = start.add(elemEffect(252))
 		else if (name=='tetr') {
 			if (hasElement(211)) start = start.mul(elemEffect(211))
 		}
-		else if (name=="prestige0") {
+		else if (name=="prestige") {
 			start = start.mul(exoticAEff(0,1))
 			if (hasAscension(0,2)) start = start.pow(ascensionEff(0,2))
+			if (tmp.inf_unl) start = start.pow(theoremEff('time',5))
 		}
 	} else if (type==4) {
 		if (name=="rank") {
@@ -479,7 +482,7 @@ function getScalingPower(type, name) {
 			if (hasElement(137)) power = power.mul(0.75)
 			if (hasPrestige(1,15)) power = power.mul(prestigeEff(1,15,1))
 		}
-		else if (name=="prestige0" || name=="prestige1") {
+		else if (name=="prestige" || name=="honor") {
 			if (hasElement(134)) power = power.mul(0.95)
 		}
 		else if (name=="massUpg4") {
@@ -515,10 +518,10 @@ function getScalingPower(type, name) {
 			if (hasElement(137)) power = power.mul(0.75)
 			if (hasPrestige(1,15)) power = power.mul(prestigeEff(1,15,1))
 		}
-		else if (name=="prestige0") {
+		else if (name=="prestige") {
 			if (hasElement(154)) power = power.mul(0.9)
 		}
-		else if (name =='prestige1'){
+		else if (name =='honor'){
 			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
 		}
 		else if (name=="tetr") {
@@ -543,7 +546,7 @@ function getScalingPower(type, name) {
 		else if (name=='gamma_ray') {
 			if (hasElement(55)) power = power.mul(0.75)
 		}
-		else if (name=='prestige0') {
+		else if (name=='prestige') {
 			if (hasElement(197)) power = power.mul(0.9)
 			if (tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
 		}
@@ -552,7 +555,7 @@ function getScalingPower(type, name) {
 		if (name=='supernova') {
 			if (hasElement(78)) power = power.mul(0.8)
 		}
-		else if (name='prestige0') {
+		else if (name='prestige') {
 			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
 			if (hasElement(280)) power = power.mul(elemEffect(280).ret)
 		}
@@ -580,7 +583,7 @@ function getScalingPower(type, name) {
 	if (!tmp.c16active) if (player.dark.run.upg[4] && player.dark.run.active && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name)) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
 	if (PreQ_SCALES.includes(name) && type<3) power = power.mul(getEnRewardEff(5))
-	if (hasPrestige(0,388) && ['prestige0','prestige1'].includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
+	if (hasPrestige(0,388) && ['prestige','honor'].includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
 	if (hasPrestige(1,66) && name=="fTier") power = power.mul(0.8)
 	return power.max(type==3?0.5:0)
 }
@@ -614,7 +617,7 @@ function noScalings(type,name) {
 	else if (name=="gamma_ray") {
 		if (hasCharger(7)) return true
 	}
-	else if (name=="prestige0") {
+	else if (name=="prestige") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
 	}
 	else if (name=="pent") {

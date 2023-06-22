@@ -424,6 +424,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().add(1).log10().div(2000).mul(t.softcap(8,0.5,0))
+                    if (hasElement(291)) x = i.add(1).log10().add(1).log10().div(2000).mul(t.softcap(8,0.55,0))
                     if (hasBeyondRank(2,2)) x = x.mul(8)
                     if (hasElement(280)) x = x.mul(elemEffect(280).eff)
                     return x.softcap(20,hasPrestige(1,300)?0.55:0.5,0).toNumber()

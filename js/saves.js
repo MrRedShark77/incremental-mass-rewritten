@@ -174,6 +174,9 @@ function getPlayerData() {
         },
         auto_pres: [],
         prestiges: [],
+        pres: {
+            beyond: E(0),
+        },
         auto_asc: [],
         ascensions: new Array(ASCENSIONS.names.length).fill(E(0)),
         auto_mainUpg: {

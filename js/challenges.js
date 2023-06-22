@@ -206,6 +206,7 @@ const CHALS = {
         if (i == 16) return x
         if (hasElement(120)) x = x.mul(0.75)
         if (hasElement(180) && i <= 12) x = x.mul(.7)
+        if (hasElement(293)) x = x.mul(elemEffect(293))
         return x
     },
     getChalData(x, r=E(-1)) {

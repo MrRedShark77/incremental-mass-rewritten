@@ -397,9 +397,11 @@ const ELEMENTS = {
             cost: E('e5200'),
             effect() {
                 let x = player.mass.max(1).log10().root(2)
+                if (hasElement(292)) x = player.mass.max(1).log(8).root(1.5)
                 return x
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { if (hasElement(292)) return "^"+format(x)
+                else return format(x)+"x" },
         },
         {
             desc: `Hyper/Ultra BH Condenser & Cosmic Ray scale 25% weaker.`,
@@ -1642,7 +1644,7 @@ cost: E('ee1290'),
     {
         dark: true,
         desc: `Uncap [Charm] effect.`,
-        cost: E('e4700000'),
+        cost: E('e47000000'),
     },
     {
         c16: true,
@@ -1717,6 +1719,30 @@ cost: E('ee1290'),
         desc: 'Chromas gain are slightly better<br>Mass Overflow^4 starts slightly more later.',
         cost: E(1e41),
  },
+ {
+    dark: true,
+    desc: `[Meta-Lepton] effect is even better.`,
+    cost: E('e246000000'),
+},
+{
+    desc: 'Xenon-54 now provides an exponential boost.',
+    cost: E('ee4385'),
+    },
+    {
+        c16: true,
+        desc: `Impossible Challenge scaling is weaker based on Ascension Base.`,
+        effect() {
+            x = Decimal.pow(0.75,tmp.ascensions.base.max(1).log10().root(10))
+            return x
+        },
+        effDesc(x) { return formatReduction(x)+' weaker' },
+        cost: E('e2e186'),
+    },
+    {
+        inf: true,
+        desc: 'Unlock Beyond-Prestiges.',
+        cost: E(1e45),
+ },
     ],
     /*
     {
@@ -1765,7 +1791,8 @@ cost: E('ee1290'),
 
         if (tmp.brokenInf) u += 35
         if (hasElement(253)) u += 16
-        if (hasElement(269)) u += 21
+        if (hasElement(269)) u += 23
+        if (hasElement(292)) u += 2
         return u
     },
 }

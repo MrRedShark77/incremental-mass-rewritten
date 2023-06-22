@@ -7,7 +7,7 @@ const CORE = {
             `Boost normal mass overflow starting.`,
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
-            `Make Prestige Ranks cheaper.`,
+            `Make Prestige Ranks cheaper (Except: Prestige Level and Valor).`,
             `Add more C17 completions.`,
             `?.`,
             `?.`,
@@ -299,7 +299,7 @@ const CORE = {
             `Boost dark shadow & abyssal blot gains.`,
             `Weaken each glyphic mass nerfing.`,
             `Boost dark ray gains.`,
-            `?.`,
+            `Meta-Prestige Level starts later.`,
             `?.`,
             `?.`,
         ],
@@ -332,7 +332,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(1).pow(s)
+                let x = Decimal.pow(1.01,Math.log10(s-1))
 
                 return x
             },
@@ -353,7 +353,7 @@ const CORE = {
             x => "^"+format(x),
             x => formatReduction(x),
             x => formatMult(x),
-            x => formatMult(x),
+            x => "^"+format(x),
             x => formatMult(x),
             x => formatMult(x),
         ],
