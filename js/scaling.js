@@ -344,7 +344,7 @@ function getScalingStart(type, name) {
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 			if (hasBeyondRank(8,2)) start = start.add(beyondRankEffect(8,2))
 		}
-if (hasElement(252) && name !== ( 'FSS' || 'inf_theorem','galaxy')) start = start.add(elemEffect(252))
+if (hasElement(252) && (name !== 'FSS') && (name !== 'inf_theorem') && (name !== 'galaxy')) start = start.add(elemEffect(252))
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {
