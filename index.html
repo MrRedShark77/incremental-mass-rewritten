@@ -25,6 +25,9 @@
     <script src="js/saves.js"></script>
     <script src="js/challenges.js"></script>
     <script src="js/debug.js"></script>
+
+    <script src="js/galaxy/galaxy.js"></script>
+
     <script src="js/ascensions.js"></script>
     <script src="js/infinity/orb.js"></script>
     <script src="js/infinity/core.js"></script>
@@ -98,6 +101,8 @@
             You have reached the limit of lifting where only gods withstand... You need to condense all your progress to evolve!<br><br>
             <button class="btn" onclick="infButton()">Get Infinity Theorem</button>
         </div>
+    </div>
+    <div id="gal_popup" style='display: none;'>
     </div>
     <div id='app' style='display: none;'>
         <div id="star"></div>
@@ -343,6 +348,7 @@
                         </div><div id="stab_frame0_3">
                             You collapsed <h4 id="stars_Amt">X</h4> stars, which multiplies mass gain based on all rank types.<br>
                             <span class="green">Currently: <h4 id="stars_Eff">X</h4></span><br><br>
+                            <span id="stars_Gal"></span><br>
                             <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
                             <div id="stars_table" class="table_center"></div><br><br>
                             <span id="starSoft1" class="red">After <b id="starSoftStart1">X</b> Collapsed stars gain, Collapsed stars gain will be softcap!</span><br>
@@ -399,7 +405,11 @@
                                 Antimatter Generator Power: <span id="am_step">X</span><br>
                                 Antimatter Generator Effect: <span id="am_eff">X</span> to Antimatter gain
                             </div>
-                        </div></div>
+                        </div></div><div id="stab_frame0_7">
+                           You have <h4 id="stars_amt">0</h4>  <h4 id="stars_gain">0</h4> Galaxy Particles<br>
+                           <span class='green'>Which boosts all-star resources gain by x<span id="stars_eff"></span></span><br>
+                            <button class="btn half_full tooltip" id="gen_btn" tooltip-html="Tiering will result in forcing Supernova Reset." onclick="GALAXY.tier()"></button><br>
+                        </div>
                     </div><div id="tab_frame1">
                         <div id="stab_frame1_0">
                             <div id="ranks_reward_btn" class="table_center"></div><br>
@@ -415,11 +425,12 @@
                         </div><div id="stab_frame1_4">
                             <div id="asc_reward_btn" class="table_center"></div><br>
                             <div id="asc_rewards_table"></div>
+                        </div>
                             <div id="stab_frame1_5">
                                 <div id="bp_rewards_table"></div>
                             </div>
                         </div>
-                    </div><div id="tab_frame2">
+                    <div id="tab_frame2">
                         <div id="main_upg_msg" style="min-height: 100px;"></div>
                         <div id="main_upgs_table" class="table_center"></div>
                     </div><div id="tab_frame3">

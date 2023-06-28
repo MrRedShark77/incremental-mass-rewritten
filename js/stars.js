@@ -95,6 +95,7 @@ const STARS = {
             x = x.mul(tmp.stars.generator_boost_eff)
             x = hasElement(213) ? x.pow(tmp.bosons.upgs.photon[3].effect) : x.mul(tmp.bosons.upgs.photon[3].effect)
             if (hasPrestige(1,1)) x = x.pow(2)
+            if (player.galaxy.stars.gte(1)) x = x.mul(tmp.galaxy.eff)
 
             if (QCs.active()) x = expMult(x,tmp.qu.qc_eff[0][0])
             return x
@@ -180,6 +181,7 @@ function updateStarsHTML() {
     tmp.el.starSoft1.setDisplay(tmp.stars.gain.gte(tmp.stars.softGain))
 	tmp.el.starSoftStart1.setTxt(format(tmp.stars.softGain))
     tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.supernova.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.preQUGlobalSpeed)))
+    tmp.el.stars_Gal.setTxt("To Collapse everything to a Galaxy, you need "+format(tmp.supernova.maxlimitGal,2)+" Stars.")
     tmp.el.stars_Eff.setTxt((hasElement(162)?"^":"×")+format(tmp.stars.effect))
     tmp.el.stars_Eff.setClasses({corrupted_text2: tmp.c16active})
 

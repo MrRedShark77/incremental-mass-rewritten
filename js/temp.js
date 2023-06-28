@@ -92,7 +92,9 @@ function resetTemp() {
             tree_afford: {},
             tree_afford2: [],
         },
-    
+        galaxy: {
+            maxlimit: E('1e100')
+        },
         radiation: {
             unl: false,
             ds_gain: [],
@@ -400,6 +402,7 @@ function updateTemp() {
     updateC16Temp()
     updateDarkTemp()
     updateQuantumTemp()
+    updateGalaxiesTemp()
 
     updateRadiationTemp()
     updateFermionsTemp()

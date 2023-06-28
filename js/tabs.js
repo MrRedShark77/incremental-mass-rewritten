@@ -33,6 +33,7 @@ const TABS = {
             { id: "Indescribable Matter", unl() { return quUnl() }, style: "qu" },
             { id: "The Parallel", unl() { return hasInfUpgrade(9) }, style: "inf" },
             { id: "Antimatter", unl() { return hasElement(268) }, style: "dark" },
+            { id: "Galaxy Particles", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
         ],
         1: [
             { id: "Ranks Rewards" },
@@ -40,6 +41,7 @@ const TABS = {
             { id: "Prestige Rewards", unl() { return hasUpgrade("br",9) } },
             { id: "Beyond-Ranks Rewards", unl() { return tmp.brUnl } },
             { id: "Ascension Rewards", unl() { return tmp.ascensions_unl } },
+            { id: "Beyond-Prestiges Rewards", unl() { return tmp.bpUnl } },
         ],
         3: [
             { id: "Challenges" },

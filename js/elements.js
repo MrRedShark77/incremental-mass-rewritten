@@ -112,7 +112,7 @@ function setupHTML() {
 		x = Number(x)
 		let ee = BEYOND_PRES.rewardEff[x]
 		for (let y in BEYOND_PRES.rewards[x]) {
-			table += `<span id="br_reward_${x}_${y}"><b>${getPresTierName(x+5)} ${format(y,0)}:</b> ${BEYOND_PRES.rewards[x][y]}${ee&&BEYOND_PRES.rewardEff[x][y]?` Currently: <span id='bp_eff_${x}_${y}'></span>`:""}</span><br>`
+			table += `<span id="bp_reward_${x}_${y}"><b>${getPresTierName(x+5)} ${format(y,0)}:</b> ${BEYOND_PRES.rewards[x][y]}${ee&&BEYOND_PRES.rewardEff[x][y]?` Currently: <span id='bp_eff_${x}_${y}'></span>`:""}</span><br>`
 		}
 		table += '<br>'
 	}
@@ -130,7 +130,6 @@ function setupHTML() {
 		table += `</div><br><button id="main_upg_${x}_auto" class="btn" style="width: 80px;" onclick="player.auto_mainUpg.${id} = !player.auto_mainUpg.${id}">OFF</button></div>`
 	}
 	main_upgs_table.setHTML(table)
-
 	let scaling_table = new Element("scaling_table")
 	table = ""
 	for (let x = 0; x < SCALE_TYPE.length; x++) {
@@ -384,9 +383,8 @@ function updateBeyondRanksRewardHTML() {
 	}
 }
 function updateBeyondPresRewardHTML() {
-	let t = tmp.beyond_pres.max_tier, lt = tmp.beyond_pres.latestRank, c16 = tmp.c16active, c16_cr = {
-		1: [7],
-	}
+	let t = tmp.beyond_pres.max_tier, lt = tmp.beyond_pres.latestRank, c16 = tmp.c16active
+	// tmp.el["asc_reward_name"].setTxt(ASCENSIONS.fullNames[player.asc_reward])
 	for (let x in BEYOND_PRES.rewards) {
 		x = parseInt(x)
 
@@ -396,7 +394,7 @@ function updateBeyondPresRewardHTML() {
 			let unl = t > x || t == x && lt.gte(y)
 			tmp.el["bp_reward_"+x+"_"+y].setDisplay(unl)
 			if (unl) {
-				tmp.el["bp_reward_"+x+"_"+y].setClasses({corrupted_text2: c16&&c16_cr[x]&&c16_cr[x].includes(y)})
+				tmp.el["bp_reward_"+x+"_"+y].setClasses({corrupted_text2: false})
 				if (tmp.el["bp_eff_"+x+"_"+y]) {
 					let eff = BEYOND_PRES.rewardEff[x][y]
 					tmp.el["bp_eff_"+x+"_"+y].setHTML(eff[1](tmp.beyond_pres.eff[x][y]))
@@ -524,6 +522,7 @@ function updateHTML() {
 	if (tmp.start && (!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()
 		updateDarkHTML()
+		updateGalaxiesHTML()
 		updateInfHTML()
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {

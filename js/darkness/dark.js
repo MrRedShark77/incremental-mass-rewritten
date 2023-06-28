@@ -22,7 +22,7 @@ const DARK = {
 
         if (hasUpgrade('br',20)) x = x.mul(upgEffect(4,20))
         if (tmp.inf_unl) x = x.mul(theoremEff('time',4))
-
+        if (hasTree('glx2')) x = x.mul(treeEff('glx2'))
         return x.floor()
     },
     rayEffect() {

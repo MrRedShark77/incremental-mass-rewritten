@@ -303,14 +303,17 @@ const PRESTIGES = {
 
         for (let i = 0; i < RANKS.names.length; i++) {
             let r = player.ranks[RANKS.names[i]]
+            let br = E(tmp.beyond_ranks.max_tier)
+            if (hasBeyondPres(0,2)) x = x.add(br).mul(r.add(1))
             if (hasPrestige(0,18) && i == 0) r = r.mul(2)
-            x = x.mul(r.add(1))
+           else x = x.mul(r.add(1))
         }
 
         if (tmp.dark.abEff.pb) x = x.mul(tmp.dark.abEff.pb)
 
         if (hasBeyondRank(2,1)) x = x.mul(beyondRankEffect(2,1))
-        if (player.chal.comps[17].gte(1)) x=x.mul(player.chal.comps[17].mul(2.15).pow(10.5).add(1).softcap(1e13,0.15,0))
+        if (player.chal.comps[17].gte(1)) x=hasTree('glx4')?x.mul(player.chal.comps[17].mul(5.15).pow(10.5).add(1)):x.mul(player.chal.comps[17].mul(2.15).pow(10.5).add(1).softcap(1e13,0.15,0))
+
         return x.sub(1)
     },
     req(i) {
@@ -325,10 +328,10 @@ const PRESTIGES = {
                 x = y.div(fp).scaleEvery('honor',false).pow(1.25).mul(3).add(4)
                 break;
             case 2:
-                x = hasElement(167)?y.div(fp).scaleEvery('glory',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6).div(ifp)
+                x = hasElement(167)?y.div(fp).scaleEvery('glory',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
                 break;
             case 3:
-                x = y.div(fp).scaleEvery('renown',false).pow(1.25).mul(3).add(9).div(ifp)
+                x = y.div(fp).scaleEvery('renown',false).pow(1.25).mul(3).add(9)
                 break;
                 case 4:
                     x = y.div(fp).scaleEvery('valor',false).pow(1.15).mul(6).add(14)
@@ -342,19 +345,18 @@ const PRESTIGES = {
     bulk(i) {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
         let ifp = E(1)
-        if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',4))
         switch (i) {
             case 0:
                 if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige',true,[0,0,0,fp]).add(1)
                 break;
             case 1:
-                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('honor',true).mul(fp).add(1).mul(ifp)
+                if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('honor',true).mul(fp).add(1)
                 break
             case 2:
-                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('glory',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1).mul(ifp)
+                if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('glory',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
                 break
             case 3:
-                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('renown',true).mul(fp).add(1).mul(ifp)
+                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('renown',true).mul(fp).add(1)
                 break 
             case 4:
                 if (y.gte(14)) x = y.sub(14).div(6).max(0).root(1.15).scaleEvery('valor',true).mul(fp).add(1)
@@ -370,6 +372,7 @@ const PRESTIGES = {
         if (player.prestiges[2].gte(1) && i < 2) fp *= 1.15
         if (player.prestiges[3].gte(1) && i < 3) fp *= 1.1
         if (hasUpgrade('br',19) && i < 3) fp *= upgEffect(4,19)
+        if (tmp.inf_unl) fp *=(theoremEff('mass',4))
         return fp
     },
     unl: [
@@ -467,6 +470,7 @@ const PRESTIGES = {
         {
             "1": `Increase Newton Modificator Power is 1.25x stronger per Valor.`,
             "2": `Automate Valor and it doesnt reset anything.`,
+            131: 'Hyper-Glory is 50% weaker.',
         },
     ],
     rewardEff: [
@@ -574,7 +578,9 @@ const PRESTIGES = {
         },
         {
             "2": [()=>{
-                let x = Decimal.pow(1.25,player.prestiges[3])
+                let base = 1.25
+                if (hasBeyondPres(0,1)) base += beyondPresEff(0,1)
+                let x = Decimal.pow(base,player.prestiges[3])
                 return x
             },x=>"x"+x.format()+" later"],
             "4": [()=>{
@@ -1100,7 +1106,7 @@ function updateRanksHTML() {
         for (let x = 0; x < PRES_LEN; x++) {
             let unl = PRESTIGES.unl[x]?PRESTIGES.unl[x]():true
 
-            tmp.el["pres_div_"+x].setDisplay(unl && (!tmp.bpUnl || x > 3))
+            tmp.el["pres_div_"+x].setDisplay(unl && (!tmp.bpUnl || x > 1))
 
             if (unl) {
                 let p = player.prestiges[x] || E(0)

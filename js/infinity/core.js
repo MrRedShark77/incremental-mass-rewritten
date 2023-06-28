@@ -304,7 +304,9 @@ const CORE = {
             `?.`,
         ],
         res: `Corrupted Shard`,
-        boost() {return player.dark.c16.totalS.add(1).log10().add(1).log10().add(1).toNumber()},
+        boost() {let x = player.dark.c16.totalS.add(1).log10().add(1).log10().add(1).toNumber()
+            if (hasElement(296)) x = player.dark.c16.totalS.log(1.1).add(1).toNumber()
+            return x},
         eff: [
             s => {
                 let x = s+1

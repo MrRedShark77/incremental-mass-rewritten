@@ -1,10 +1,10 @@
 const BEYOND_PRES = {
     req() {
-        let x = player.pres.beyond.pow(1.25).mul(10).add(8).ceil()
+        let x = player.pres.beyond.pow(1.25).mul(10).add(125).ceil()
         return x
     },
     bulk() {
-        let x = player.prestiges[4].gte(8)?player.prestiges[4].sub(8).div(10).max(0).root(1.25).add(1).floor():E(0)
+        let x = player.prestiges[4].gte(8)?player.prestiges[4].sub(125).div(10).max(0).root(1.25).add(1).floor():E(0)
         return x
     },
     getTier() {
@@ -32,38 +32,21 @@ const BEYOND_PRES = {
 
     rewards: {
         1: {
-            1: `Add 0.5 to matter exponents.`,
-            2: `All matter upgrades are stronger based on dark ray.`,
-            4: `Hybridized Uran-Astatine's second effect is stronger based on FSS.`,
-            7: `Matters gain is boosted by Hept.`,
+            1: `Boost [Renown 2] reward's base per beyond-prestiges max tier.`,
+            2: `Beyond-Prestiges's max tier applies to Ascension Base and Beyond-Ranks's max tier applies to Prestige Base`,
+            3: `Graviton effect's formula is even better.`
         },
     },
 
     rewardEff: {
         1: {
-            2: [
+            1: [
                 ()=>{
-                    let x = player.dark.rays.add(1).log10().root(2).softcap(10,0.25,0).toNumber()/100+1
+                    let x = tmp.beyond_pres.max_tier/2.25
 
                     return x
                 },
-                x=>formatPercent(x-1)+" stronger"+softcapHTML(x,1.1),
-            ],
-            4: [
-                ()=>{
-                    let x = player.dark.matters.final.pow(.75).div(10).add(1)
-
-                    return x
-                },
-                x=>formatPercent(x-1)+" stronger",
-            ],
-            7: [
-                ()=>{
-                    let x = player.pres.beyond.add(1).root(2)
-
-                    return x
-                },
-                x=>"^"+format(x),
+                x=>"+"+format(x),
             ],
         },
     },
@@ -92,22 +75,17 @@ const BPNS2 = [
             i += 1
             let m = ''
             let h = Math.floor(i / 100) % 10, d = Math.floor(i / 10) % 10, o = i % 10, p = Math.floor(i / 1000) % 10, x = Math.floor(i / 10000) % 10, l = Math.floor(i / 100000) % 10, e = Math.floor(i/600000)
-            if (e > 0) m+= BPNS[6][e]
-           else if (l > 0) m += BPNS[5][l]+BPNS[4][x]+ BPNS[3][p]+ BPNS[2][h]+ BPNS[1][d]+ BPNS[0][o]
-            else if (x > 0) m += BPNS[4][x]+ BPNS[3][p]+ BPNS[2][h]+ BPNS[1][d]+ BPNS[0][o]
-           else if (p > 0) m += BPNS[3][p]+ BPNS[2][h]+ BPNS[1][d]+ BPNS[0][o]
-           else if (h >= 1) m += BPNS[2][h]+ BPNS[1][d]+ BPNS[0][o]
-            else if (d > 0) m += BPNS[1][d] + BPNS[0][o]
+            m +=BPNS[6][e] + BPNS[5][l]+BPNS[4][x]+ BPNS[3][p]+ BPNS[2][h]+ BPNS[1][d]+ BPNS[0][o]
             return capitalFirst(m)
         }
     }
 
-function hasBeyondRank(x,y) {
+function hasBeyondPres(x,y) {
     let t = tmp.beyond_pres.max_tier, lt = tmp.beyond_pres.latestRank||E(0)
     return t > x || t == x && lt.gte(y)
 }
 
-function beyondRankEffect(x,y,def=1) {
+function beyondPresEff(x,y,def=1) {
     let e = tmp.beyond_pres.eff[x]
     return e?e[y]||def:def
 }
@@ -145,7 +123,7 @@ if (unl) {
 
     // Beyond Rank
 
-    tmp.el.bp_auto.setDisplay(hasBeyondRank(2,1)||hasInfUpgrade(10))
+    tmp.el.bp_auto.setDisplay(hasElement(300))
     tmp.el.bp_auto.setTxt(player.auto_ranks.beyond?"ON":"OFF")
 
     let t = tmp.beyond_pres.max_tier

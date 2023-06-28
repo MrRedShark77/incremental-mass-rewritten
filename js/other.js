@@ -213,6 +213,10 @@ const QUOTES = [
     <h2>Chapter 12: Broken Infinity</h2><br>
     <img class='quote' src='images/quotes/12.png'><br>
     Your omnipotence ascends as you surpass Infinity.
+    `,`
+    <h2>Chapter 13: Galaxies</h2><br>
+    <img class='quote' src='images/quotes/13.png'><br>
+    You got insane amount of stars... Time to collapse it!
     `,
 ]
 

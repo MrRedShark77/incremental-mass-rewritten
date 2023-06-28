@@ -131,6 +131,7 @@ function calc(dt) {
         calcQuantum(dt)
         calcDark(inf_gs)
         calcInf(dt)
+        calcGalaxy(dt)
 
         if (hasTree("qu_qol4")) player.supernova.times = player.supernova.times.max(tmp.supernova.bulk)
 
@@ -142,6 +143,7 @@ function calc(dt) {
             if (hasElement(122)) for (let x = 9; x <= 11; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
             if (hasElement(131)) player.chal.comps[12] = player.chal.comps[12].max(tmp.chal.bulk[12].min(tmp.chal.max[12]))
             if (hasInfUpgrade(12)) for (let x = 13; x <= 15; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
+            if (hasElement(295)) for (let x = 16; x <= 17; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
         }
     }
 
@@ -252,6 +254,7 @@ function getPlayerData() {
             times: E(0),
             post_10: false,
             stars: E(0),
+            galaxy: E(0),
             tree: [],
             chal: {
                 noTick: true,
@@ -281,6 +284,12 @@ function getPlayerData() {
                 ds: [],
                 bs: [],
             },
+        },
+        galaxy: {
+            points: E(0),
+            times: E(0),
+            stars: E(0),
+            generator: E(0),
         },
         reset_msg: "",
         main_upg_msg: [0,0],

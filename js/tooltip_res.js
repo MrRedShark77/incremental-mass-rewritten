@@ -128,6 +128,16 @@ const TOOLTIP_RES = {
             return h
         },
     },
+    glx: {
+        full: "Galaxy",
+        desc() {
+           let h = `You have <b class='galcolor'>`+format(player.galaxy.times,0)+ `</b> Galaxies<br>To collect next Galaxy, you need `+format(tmp.supernova.maxlimitGal) + ` Stars.
+           <br class='line'>
+           <i>
+           </i>`
+           return h
+        }
+    },
     qu: {
         full: "Quantum Foam",
         desc() {

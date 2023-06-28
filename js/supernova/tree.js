@@ -5,6 +5,7 @@ const TREE_TAB = [
     {title: "Post-Supernova", unl() { return player.supernova.post_10 } },
     {title: "Quantum", unl() { return quUnl() } },
     {title: "Corruption", unl() { return player.dark.c16.first || hasInfUpgrade(8) } },
+    {title: 'Galaxy', unl() {return player.galaxy.times.gte(1)}},
 ]
 
 const CORRUPTED_TREE = ['s1']
@@ -17,6 +18,7 @@ const TREE_IDS = [
         ['bs4','bs1','','qf1','','rad1'],
         ['qu0'],
         ['ct1'],
+        ['glx1'],
     ],[
         ['s1','m1','rp1','bh1','sn1'],
         ['qol2','qol3','qol4','qu_qol2','qu_qol3','qu_qol4','qu_qol5','qu_qol6'],
@@ -24,6 +26,7 @@ const TREE_IDS = [
         ['bs5','bs2','fn1','bs3','qf2','qf3','rad2','rad3'],
         ['qu1','qu2','qu3'],
         ['ct2','ct3','ct4','ct5','ct6'],
+        ['glx2','glx4','glx3'],
     ],[
         ['s2','m2','t1','d1','bh2','gr1','sn2'],
         ['qol5','qol6','qol7','','','qu_qol7','',''],
@@ -31,6 +34,7 @@ const TREE_IDS = [
         ['fn4','fn3','fn9','fn2','fn5','qf4','rad4','rad5'],
         ['prim3','prim2','prim1','qu4','qc1','qc2','qc3'],
         ['ct8','ct9','ct10','ct7','ct11'],
+        ['glx5','glx7','','glx8','glx6'],
     ],[
         ['s3','m3','gr2','sn3'],
         ['qol9','unl1','qol8','unl2','unl3','qu_qol8','qu_qol9','unl4'],
@@ -38,6 +42,7 @@ const TREE_IDS = [
         ['fn12','fn11','fn6','fn10','rad6',""],
         ['en1','qu5','br1'],
         ['ct15','ct12','ct16','ct13','ct14'],
+        ['glx9','glx12','','glx21','','glx11','glx10'],
     ],[
         ['s4','sn5','sn4'],
         ['','','','qu_qol8a'],
@@ -45,6 +50,7 @@ const TREE_IDS = [
         ['','fn7','fn8','fn13'],
         ['qu6','qu7','qu8','qu9','qu10','qu11'],
         [],
+        ['glx13','glx16','','glx15','glx14'],
     ],[
         [],
         ['qu_qol10','qu_qol11','qu_qol12'],
@@ -52,6 +58,16 @@ const TREE_IDS = [
         [],
         [],
         [],
+        ['glx17','glx19','glx18'],
+    ],
+    [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        ['glx20'],
     ],
 ]
 
@@ -60,7 +76,11 @@ const CS_TREE = (()=>{
     for (let i in TREE_IDS) t.push(...TREE_IDS[i][5])
     return t
 })()
-
+const GLX_TREE = (()=>{
+    let t = []
+    for (let i in TREE_IDS) t.push(...TREE_IDS[i][6])
+    return t
+})()
 var tree_canvas,tree_ctx,tree_update=true
 
 const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
@@ -68,13 +88,14 @@ const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
 'c','s2','s3','s4','sn3',
 'sn4','t1','bh2','gr1','chal1',
 'chal2','chal3','bs1','fn2','fn3',
-'fn5','fn6','fn10']
+'fn5','fn6','fn10',]
 
 const TREE_UPGS = {
     buy(x, auto=false) {
         if ((tmp.supernova.tree_choosed == x || auto) && tmp.supernova.tree_afford[x]) {
             if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
             else if (this.ids[x].cs) player.dark.c16.shard = player.dark.c16.shard.sub(this.ids[x].cost).max(0)
+            else if (this.ids[x].glx) player.galaxy.stars = player.galaxy.stars .sub(this.ids[x].cost).max(0)
             else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
             
             if (CS_TREE.includes(x)) player.dark.c16.tree.push(x)
@@ -1177,7 +1198,125 @@ const TREE_UPGS = {
             },
             effDesc(x) { return "x"+format(x) },
         },
+        // Galaxy
+        glx1: {
 
+            desc: `Galaxies boosts Galaxy Particles Generator effect' exponential base.`,
+            cost: E(1e5),
+
+            effect() {
+                let x = player.galaxy.times.add(1).pow(0.65).mul(1.15)
+                return x
+            },
+            effDesc(x) { return "x"+format(x) },
+        },
+        glx2: {
+            branch: ['glx1'],
+            desc: `Galaxy Particles boosts Dark Rays gain.`,
+            effect() {
+                let x = player.galaxy.stars.add(1).pow(565).mul(1.15)
+                return x.softcap('1e15000',0.5,0)
+            },
+            effDesc(x) { return "x"+format(x) },
+            cost: E(1e6),
+        },
+        glx3: {
+            branch: ['glx1'],
+            desc: `Auto-complete Exotic Fermions outside of them.`,
+            cost: E(1e7),
+        },
+        glx4: {
+            req() {return (CHALS.inChal(17) && FERMIONS.onActive('07') && (player.supernova.times.gte(10650000)))},
+            reqDesc() {return "Get 10650000 Supernovas in C17 while in 'Exotic-Quark'."},
+            branch: ['glx1'],
+            desc: `C17's second reward is much better based on Galaxies.`,
+            cost: E(1e8),
+        },
+        glx5: {
+            branch: ['glx2'],
+            desc: `Placeholder.`,
+            cost: E(1.25e11),
+        },
+        glx6: {
+            branch: ['glx3'],
+            desc: `Placeholder.`,
+            cost: E(7.8e11),
+        },
+        glx7: {
+            branch: ['glx4'],
+            desc: `Placeholder.`,
+            cost: E(1e15),
+        },
+        glx8: {
+            branch: ['glx4'],
+            desc: `Placeholder.`,
+            cost: E(1.75e16),
+        },
+        glx9: {
+            branch: ['glx5'],
+            desc: `Placeholder.`,
+            cost: E(3e18),
+        },
+        glx10: {
+            branch: ['glx6'],
+            desc: `Placeholder.`,
+            cost: E(1e19),
+        },
+        glx11: {
+            branch: ['glx8'],
+            desc: `Placeholder.`,
+            cost: E(1e21),
+        },
+        glx12: {
+            branch: ['glx7'],
+            desc: `Placeholder.`,
+            cost: E(3.5e22),
+        },
+        glx13: {
+            branch: ['glx9'],
+            desc: `Placeholder.`,
+            cost: E(7e23),
+        },
+        glx14: {
+            branch: ['glx10'],
+            desc: `Placeholder.`,
+            cost: E(1e28),
+        },
+        glx15: {
+            branch: ['glx11'],
+            desc: `Placeholder.`,
+            cost: E(1e31),
+        },
+        glx16: {
+            branch: ['glx12'],
+            desc: `Placeholder.`,
+            cost: E(1e33),
+        },
+        glx17: {
+            branch: ['glx13'],
+            desc: `Placeholder.`,
+            cost: E(8.5e35),
+        },
+        glx18: {
+            branch: ['glx14'],
+            desc: `Placeholder.`,
+            cost: E(1e37),
+        },
+        glx19: {
+            branch: ['glx16','glx15'],
+            desc: `Placeholder.`,
+            cost: E(1e40),
+        },
+        glx20: {
+            branch: ['glx18','glx17'],
+            desc: `Placeholder.`,
+            cost: E(1e50),
+        },
+        glx21: {
+            branch: ['glx4','glx11','glx12','glx19'],
+            desc: 'Placeholder',
+            cost: E(1e100),
+        },
         /*
         x: {
             unl() { return true },
@@ -1195,7 +1334,20 @@ const TREE_UPGS = {
         */
     },
 }
-
+for (let i in GLX_TREE) {
+    let u = TREE_UPGS.ids[GLX_TREE[i]]
+    if (!u) TREE_UPGS.ids[GLX_TREE[i]] = {
+        icon: `placeholder`,
+        glx: true,
+        desc: `Placeholder.`,
+        cost: EINF,
+    }
+    else {
+        u.desc = u.desc||`Placeholder.`
+        u.glx = true
+        u.cost = u.cost||EINF
+    }
+}
 for (let i in CS_TREE) {
     let u = TREE_UPGS.ids[CS_TREE[i]]
     if (!u) TREE_UPGS.ids[CS_TREE[i]] = {
@@ -1216,10 +1368,12 @@ const TREE_TYPES = (()=>{
         normal: [],
         qu: [],
         cs: [],
+        glx: [],
     }
     for (let x in TREE_UPGS.ids) {
         if (TREE_UPGS.ids[x].qf) t.qu.push(x)
         else if (TREE_UPGS.ids[x].cs) t.cs.push(x)
+        else if (TREE_UPGS.ids[x].glx) t.glx.push(x)
         else t.normal.push(x)
     }
     return t
@@ -1318,8 +1472,8 @@ function drawTreeBranch(num1, num2) {
     var y2 = end.top + (end.height / 2) - (window.innerHeight-tree_canvas.height);
     tree_ctx.lineWidth=10;
     tree_ctx.beginPath();
-    let color = TREE_UPGS.ids[num2].qf?"#39FF49":"#00520b"
-    let color2 = TREE_UPGS.ids[num2].qf?"#009C15":"#fff"
+    let color = TREE_UPGS.ids[num2].qf?"#39FF49":TREE_UPGS.ids[num2].glx?"#548f92":"#00520b"
+    let color2 = TREE_UPGS.ids[num2].qf?"#009C15":TREE_UPGS.ids[num2].glx?"#3e696b":"#fff"
     tree_ctx.strokeStyle = player.supernova.tree.includes(num2)||player.dark.c16.tree.includes(num2)?color:tmp.supernova.tree_afford[num2]?"#fff":"#333";
     tree_ctx.moveTo(x1, y1);
     tree_ctx.lineTo(x2, y2);
@@ -1357,7 +1511,7 @@ function updateTreeHTML() {
         tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
         : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
         ${`<span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${t_ch.desc}</span>`.corrupt(c16 && CORRUPTED_TREE.includes(tmp.supernova.tree_choosed))}<br>
-        <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':t_ch.cs?'<span class="corrupted_text">Corrupted Shard</span>':'Neutron star'}</span><br>
+        <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':t_ch.cs?'<span class="corrupted_text">Corrupted Shard</span>':t_ch.glx?" Galaxy Particles":' Neutron Star'}</span><br>
         <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
         `
     )
@@ -1371,7 +1525,7 @@ function updateTreeHTML() {
             let unl = tmp.supernova.tree_unlocked[id]
             tmp.el["treeUpg_"+id].setVisible(unl)
             let bought = player.supernova.tree.includes(id)
-            if (unl) tmp.el["treeUpg_"+id].setClasses(player.dark.c16.tree.includes(id) || c16 && CORRUPTED_TREE.includes(id) ? {btn_tree: true, corrupted: true, choosed: id == tmp.supernova.tree_choosed} : {btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, locked: !tmp.supernova.tree_afford[id], bought: bought, choosed: id == tmp.supernova.tree_choosed})
+            if (unl) tmp.el["treeUpg_"+id].setClasses(player.dark.c16.tree.includes(id) || c16 && CORRUPTED_TREE.includes(id) ? {btn_tree: true, corrupted: true, choosed: id == tmp.supernova.tree_choosed} : {btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, glx_tree: TREE_UPGS.ids[id].glx, locked: !tmp.supernova.tree_afford[id], bought: bought, choosed: id == tmp.supernova.tree_choosed})
         }
     }
 }

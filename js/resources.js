@@ -63,6 +63,15 @@ const RESOURCES_DIS = {
 
         resetBtn() { if (player.supernova.post_10) SUPERNOVA.reset(false,false,true) },
     },
+    glx: {
+        unl: ()=>hasElement(297) || player.galaxy.times.gt(0),
+        icon: "glx",
+        class: "galcolor",
+
+        desc: (gs)=>format(player.galaxy.times,0)+"<br>(+"+format(tmp.supernova.bulkGal.sub(player.galaxy.times).max(0),0)+")",
+
+        resetBtn() { CONFIRMS_FUNCTION.glx() },
+    },
     qu: {
         unl: ()=>quUnl() || player.chal.comps[12].gte(1),
         icon: "qu",

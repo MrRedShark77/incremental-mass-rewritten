@@ -23,9 +23,12 @@ const INF = {
         if (hasElement(30,1)) player.atom.muonic_el = [30]
        else player.atom.muonic_el = []
         for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)
-        player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
+        let keep = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
         "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
-
+        for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].glx) keep.push(tmp.supernova.tree_had[x])
+        let save_keep = []
+        for (let x in keep) if (hasTree(keep[x])) save_keep.push(keep[x])
+        player.supernova.tree = save_keep
         player.ranks.beyond = E(0)
         for (let x = 0; x < PRESTIGES.names.length; x++) player.prestiges[x] = E(0)
 
@@ -208,6 +211,7 @@ dark.matters.am = E(0)
         if (hasElement(17,1)) x = x.mul(muElemEff(17))
         if (hasElement(20,1)) x = x.mul(muElemEff(20))
         if (hasElement(235)) x = x.mul(elemEffect(235))
+        x = x.mul(tmp.hm_base_boost)
         return x.max(1).floor()
     },
 
@@ -460,7 +464,7 @@ dark.matters.am = E(0)
         },
         boost() {
             let x = E(1)
-            if (hasOrbUpg(2)) x = player.inf.hm_base.max(1).root(5).pow(0.35).add(1)
+            if (hasOrbUpg(2)) x = player.inf.hm_base.max(1).root(7).pow(0.15).add(1)
             return x.softcap(1e45,0.1,0)
         },
     },

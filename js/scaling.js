@@ -21,6 +21,7 @@ const SCALE_START = {
 		FSS: E(5),
 		pe: E(25),
 		inf_theorem: E(10),
+		galaxy: E(10),
     },
 	hyper: {
 		rank: E(120),
@@ -38,8 +39,9 @@ const SCALE_START = {
 		prestige: E(80),
 		honor: E(60),
 		glory: E(60),
+		pe: E(210),
 massUpg4: E(200),
-		inf_theorem: E(35),
+		inf_theorem: E(16),
 	},
 	ultra: {
 		rank: E(600),
@@ -102,6 +104,7 @@ const SCALE_POWER= {
 		FSS: 2,
 		pe: 2,
 		inf_theorem: 2,
+		galaxy: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -119,7 +122,8 @@ const SCALE_POWER= {
 		prestige: 2,
 		honor: 2,
 		glory: 3,
-		inf_theorem: 10,
+		pe: 3,
+		inf_theorem: 1.55,
 	},
 	ultra: {
 		rank: 4,
@@ -190,6 +194,7 @@ const SCALING_RES = {
 	FSS() { return player.dark.matters.final },
 	pe() { return player.inf.pe},
 	inf_theorem() { return player.inf.theorem},
+	galaxy() {return player.galaxy.times},
 }
 
 const NAME_FROM_RES = {
@@ -214,6 +219,7 @@ const NAME_FROM_RES = {
 	FSS: "Final Star Shard",
 	pe: "Parallel Extruder",
 	inf_theorem: "Infinity Theorem",
+	galaxy: " Galaxy",
 }
 
 function updateScalingHTML() {
@@ -619,6 +625,9 @@ function noScalings(type,name) {
 	}
 	else if (name=="prestige") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
+	}
+	else if (name == 'glory'){
+		if (hasPrestige(4,131) && type == 0) return true
 	}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true
