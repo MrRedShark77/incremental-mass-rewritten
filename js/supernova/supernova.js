@@ -75,10 +75,10 @@ const SUPERNOVA = {
 
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
         maxlimit = E(1e20).pow(x.scaleEvery('supernova',false,[1,1,1,1,ff]).div(ml_fp).pow(1.25)).mul(1e90)
-        maxlimitGal = E('ee26000').pow(player.galaxy.times.scaleEvery('galaxy',false).pow(5000)).mul('ee24500')
+        maxlimitGal = E('ee26000').pow(player.galaxy.times.scaleEvery('galaxy',false).pow(15000)).mul('ee24500')
         bulk = E(0)
         bulkGal = E(0)
-        if (player.stars.points.div('ee24500').gte(1)) bulkGal = player.stars.points.div('ee24500').max(1).log('ee26000').max(0).root(5000).scaleEvery('galaxy',true).add(1).floor()
+        if (player.stars.points.div('ee24500').gte(1)) bulkGal = player.stars.points.div('ee24500').max(1).log('ee26000').max(0).root(15000).scaleEvery('galaxy',true).add(1).floor()
         if (player.stars.points.div(1e90).gte(1)) bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).mul(ml_fp).scaleEvery('supernova',true,[1,1,1,1,ff]).add(1).floor()
         return {maxlimit: maxlimit, bulk: bulk, maxlimitGal: maxlimitGal,bulkGal: bulkGal}
     },
@@ -147,7 +147,7 @@ function updateSupernovaTemp() {
             let branch = t.branch||""
             let unl = !t.unl||t.unl()
             let req = !t.req||t.req()
-            let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id) || player.galaxy.tree.includes(id)
+            let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)
             if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
             if (no_req1 && !CS_TREE.includes(id) && !GLX_TREE.includes(id)) req = true
             let can = (t.qf?player.qu.points:t.cs?player.dark.c16.shard:t.glx?player.galaxy.stars:player.supernova.stars).gte(t.cost) && !bought && req

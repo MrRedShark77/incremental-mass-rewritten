@@ -1,7 +1,9 @@
 const GALAXY = {
     req() {
-        let x = Decimal.pow(1e100,player.galaxy.points**0.25)
-        return x.max(1e100)
+        maxlimitGal = E('ee26000').pow(player.galaxy.times.scaleEvery('galaxy',false).pow(15000)).mul('ee24500')
+        bulkGal = E(0)
+        if (player.stars.points.div('ee24500').gte(1)) bulkGal = player.stars.points.div('ee24500').max(1).log('ee26000').max(0).root(15000).scaleEvery('galaxy',true).add(1).floor()
+        return { maxlimitGal: maxlimitGal,bulkGal: bulkGal}
     },
     gain() {
         let x = E(1)
@@ -38,7 +40,8 @@ if (player.galaxy.times.gt(0)) player.galaxy.stars = player.galaxy.stars.add(tmp
 }
 function updateGalaxiesTemp() {
 tmp.galaxy.req = GALAXY.cost()
-tmp.galaxy.maxlimit = GALAXY.req()
+tmp.galaxy.maxlimitGal = GALAXY.req().maxlimitGal
+tmp.galaxy.bulkGal = GALAXY.req().bulkGal
 tmp.galaxy.gain = GALAXY.gain()
 tmp.galaxy.bulk = GALAXY.getGalaxy()
 tmp.galaxy.genEff = GALAXY.genEff()
