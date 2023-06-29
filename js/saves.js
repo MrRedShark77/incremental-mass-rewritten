@@ -540,7 +540,7 @@ function loadGame(start=true, gotNaN=false) {
     setupHTML()
     setupTooltips()
     updateQCModPresets()
-if (player.beta.testers == '') {
+if (player.beta.testers == undefined) {
     createPrompt("To enter beta, type your beta tester id!",'import',loadbeta=>{
         let st = ''
         if (loadbeta == tester1) {
