@@ -260,9 +260,7 @@ button {
 .cyan {
 	color: #07f;
 }
-.galcolor {
-	color: #71c2bb;
-}
+
 .magenta {
 	color: magenta;
 }
@@ -446,10 +444,7 @@ button {
 	color: #ff009d;
 	border-color: #ff009d;
 }
-.btn_tab.glx {
-	color: #5a9994;
-	border-color: #386864;
-}
+
 .btn_tab.sn:hover {
 	background-color: #500031;
 }
@@ -567,12 +562,6 @@ button {
 	background-color: rgb(114, 4, 59);
 	box-shadow: 0 0 10px rgb(255, 0, 128);
 }
-.elements.sn.bought {
-	color: #ff6bb5;
-	border-color: #f83f9b;
-	background-color: rgb(131, 29, 80);
-	box-shadow: 0 0 10px rgb(250, 70, 160);
-}
 #final_118 {
 	color: white;
 	text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
@@ -588,11 +577,6 @@ button {
 .btn_tree:not(.qu_tree).bought {
 	border-color: #00520b;
 }
-.btn_tree.glx_tree.bought {
-	border-color:  #b69852;
-	box-shadow: 0px 0px 20px 0px #3e696b;
-}
-
 
 .btn_tree.choosed {
 	transform: scale(1.25) !important;
@@ -1217,16 +1201,14 @@ h4 {
 	color: black;
 	font-size: 16px;
 }
-#gal_popup {
-	color: rgb(255, 255, 255);
-	font-size: 16px;
-}
+
 @keyframes inf_reset_1 {
 	0% {transform:scale(1); filter:blur(0px); opacity: 1;}
 	80% {transform:scale(3,0); filter:blur(5px); opacity: 0; background-color: orange;}
 	90% {transform:scale(1); filter:blur(0px); opacity: 0; background-color: orange;}
 	100% {opacity: 1; background-color: orange;}
 }
+
 @keyframes inf_reset_2 {
 	0% {opacity: 1; background-color: orange;}
 	50% {opacity: 0; background-color: orange;}

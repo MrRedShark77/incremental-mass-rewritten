@@ -139,7 +139,7 @@ const CONFIRMS_FUNCTION = {
         addQuote(11)
     },
     glx() {
-        player.galaxy.times = player.galaxy.times.max(tmp.galaxy.bulkGal)
+        player.galaxy.times = player.galaxy.times.max(tmp.supernova.bulkGal)
       addQuote(13)
     },
     t_switch() {

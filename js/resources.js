@@ -68,7 +68,7 @@ const RESOURCES_DIS = {
         icon: "glx",
         class: "galcolor",
 
-        desc: (gs)=>format(player.galaxy.times,0)+"<br>(+"+format(tmp.galaxy.bulkGal.sub(player.galaxy.times).max(0),0)+")",
+        desc: (gs)=>format(player.galaxy.times,0)+"<br>(+"+format(tmp.supernova.bulkGal.sub(player.galaxy.times).max(0),0)+")",
 
         resetBtn() { CONFIRMS_FUNCTION.glx() },
     },

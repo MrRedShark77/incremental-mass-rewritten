@@ -38,7 +38,7 @@ const ELEMENTS = {
     canBuy(x) {
         if (tmp.c16active && isElemCorrupted(x)) return false
         let u = this.upgs[x]
-        let res = u.inf ? player.inf.points : u.dark ? player.dark.shadow : player.atom.quarks
+        let res = u.sn? player.supernova.times : u.inf ? player.inf.points : u.dark ? player.dark.shadow : player.atom.quarks
         return res.gte(u.cost) && !hasElement(x) && (hasInfUpgrade(6) && x <= 218 || player.qu.rip.active || !BR_ELEM.includes(x)) && (tmp.c16active || !C16_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118) && !(CHALS.inChal(18) && x < 118)
     },
     buyUpg(x) {
@@ -1041,7 +1041,8 @@ const ELEMENTS = {
             desc: `Entropy's cap is increased by 25% every prestige level. Entropic Evaporation^2 is slightly weaker.`,
             cost: E("e4.4e76"),
             effect() {
-                let x = Decimal.pow(1.25,player.prestiges[0])
+                if (hasElement(298)) x = Decimal.pow(1.25,player.ranks.hex.root(2.6))
+                else x = Decimal.pow(1.25,player.prestiges[0])
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -1395,6 +1396,7 @@ const ELEMENTS = {
             cost: E('e1.6e34'),
             effect() {
                 let x = player.inf.dim_mass.div(100).log(10).log(2).add(1)
+                if (hasElement(295)) x = player.inf.dim_mass.div(20).log(1.1).add(1)
                 return x
             },
             effDesc(x) { return "+"+format(x,3) },
@@ -1736,13 +1738,37 @@ cost: E('ee1290'),
             return x
         },
         effDesc(x) { return formatReduction(x)+' weaker' },
-        cost: E('e1e182'),
+        cost: E('e1e184'),
     },
     {
         inf: true,
         desc: 'Unlock Beyond-Prestiges.',
-        cost: E(1e44),
+        cost: E(5e43),
  },
+ {
+    c16: true,
+    desc: `Automatically complete C16 and C17 challenges outside of them.<br>Bitriennium-239 effect formula is much more better.`,
+    cost: E('e5e186'),
+},
+{
+    desc: 'Einstein Theorem is better.',
+    cost: E('ee6050'),
+    },
+    {
+        sn: true,
+        desc: 'Unlock Galaxies.',
+        cost: E('7.77e15'),
+        },
+        {
+            dark: true,
+            desc: `Unseptennium-179 is even better (Per Prestige Level - 1.25x => <b>Per log3(Hex) - 1.25x</b>).`,
+            cost: E('e605000000'),
+        },
+        {
+            c16: true,
+            desc: `Galaxy Particles gain formula is better..`,
+            cost: E('e1e200'),
+        },
     ],
     /*
     {
@@ -1792,7 +1818,7 @@ cost: E('ee1290'),
         if (tmp.brokenInf) u += 35
         if (hasElement(253)) u += 16
         if (hasElement(269)) u += 23
-        if (hasElement(292)) u += 2
+        if (hasElement(292)) u += 15
         return u
     },
 }
@@ -1807,6 +1833,11 @@ const BR_ELEM = (()=>{
 const C16_ELEM = (()=>{
     let x = []
     for (let i in ELEMENTS.upgs) if (i>0&&ELEMENTS.upgs[i].c16) x.push(Number(i))
+    return x
+})()
+const SN_ELEM = (()=>{
+    let x = []
+    for (let i in ELEMENTS.upgs) if (i>0&&ELEMENTS.upgs[i].sn) x.push(Number(i))
     return x
 })()
 function getElementId(x) {
@@ -1962,7 +1993,7 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         let eu = elem_const.upgs[ch]
-        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.cs?" Corrupted Shards":" Exotic Atoms"][elayer]
+        let res = [eu.sn? " Supernovas" :eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.cs?" Corrupted Shards":" Exotic Atoms"][elayer]
         let eff = tElem[["effect","mu_effect"][elayer]]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
@@ -1996,7 +2027,7 @@ function updateElementsHTML() {
                         let u = MUONIC_ELEM.upgs[x]
                        if ((c16 || c18) && isElemCorrupted(x,elayer)) upg.setClasses({elements: true, locked: true, corrupted: true})
                           else if ((c17 || c18) && isElemOverflowed(x,elayer))upg.setClasses({elements: true, locked: true,overflowed: true})
-                          else upg.setClasses({elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, cs: elayer == 1&& u.cs, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf})
+                          else upg.setClasses({elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, cs: elayer == 1&& u.cs, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf,sn: elayer == 0 && SN_ELEM.includes(x)})
                         
                     }
                 }

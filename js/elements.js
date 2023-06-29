@@ -511,7 +511,7 @@ function updateHTML() {
 	tmp.mobile = window.innerWidth < 1200
 
 	let displayMainTab = true
-	tmp.el.betaId.setHTML(player.beta.testers)
+	
 	tmp.el.loading.setDisplay(!tmp.start)
     tmp.el.app.setDisplay(tmp.inf_time != 2 && tmp.inf_time != 3 && tmp.start && (player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab)
 	updateSupernovaEndingHTML()

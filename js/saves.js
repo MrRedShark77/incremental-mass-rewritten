@@ -293,9 +293,6 @@ function getPlayerData() {
             stars: E(0),
             generator: E(0),
         },
-        beta: {
-            tester: '',
-        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
@@ -483,15 +480,7 @@ function export_copy() {
     copyText.style.visibility = "hidden"
     addNotify("Copied to Clipboard")
 }
-function enterBeta() {
-    createPrompt("To enter beta, type your beta tester id!",'import',loadbeta=>{
-        let st = ''
-        if (loadbeta == (tester1 || tester2 || tester3)) {
-            window.location.replace("https://raw.githack.com/Seder3214/imr-inf/dev/index.html");
-        }
-        else return
-    })
-}
+
 function importy() {
     createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
         let st = ""

@@ -21,7 +21,7 @@ const SCALE_START = {
 		FSS: E(5),
 		pe: E(25),
 		inf_theorem: E(10),
-		galaxy: E(5),
+		galaxy: E(10),
     },
 	hyper: {
 		rank: E(120),
@@ -41,7 +41,7 @@ const SCALE_START = {
 		glory: E(60),
 		pe: E(210),
 massUpg4: E(200),
-		galaxy: E(5),
+		inf_theorem: E(16),
 	},
 	ultra: {
 		rank: E(600),
@@ -103,10 +103,9 @@ const SCALE_POWER= {
 		massUpg4: 3,
 		FSS: 2,
 		pe: 2,
-		inf_theorem: 1.25,
+		inf_theorem: 2,
 		galaxy: 2,
     },
-
 	hyper: {
 		rank: 2.5,
 		tier: 2.5,
@@ -124,6 +123,7 @@ const SCALE_POWER= {
 		honor: 2,
 		glory: 3,
 		pe: 3,
+		inf_theorem: 1.55,
 	},
 	ultra: {
 		rank: 4,
@@ -219,7 +219,7 @@ const NAME_FROM_RES = {
 	FSS: "Final Star Shard",
 	pe: "Parallel Extruder",
 	inf_theorem: "Infinity Theorem",
-	galaxy: "Galaxy",
+	galaxy: " Galaxy",
 }
 
 function updateScalingHTML() {
@@ -342,7 +342,9 @@ function getScalingStart(type, name) {
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 			if (hasBeyondRank(8,2)) start = start.add(beyondRankEffect(8,2))
 		}
-if (hasElement(252) && (name !== 'FSS') && (name !== 'inf_theorem') && (name !== 'galaxy')) start = start.add(elemEffect(252))
+		else if (name='pe') {
+if (hasElement(252)) start = start.add(elemEffect(252))
+		}
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {
