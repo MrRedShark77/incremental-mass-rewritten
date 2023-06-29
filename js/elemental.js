@@ -1738,7 +1738,7 @@ cost: E('ee1290'),
             return x
         },
         effDesc(x) { return formatReduction(x)+' weaker' },
-        cost: E('e1e160'),
+        cost: E('e1e172'),
     },
     {
         inf: true,
@@ -1748,7 +1748,7 @@ cost: E('ee1290'),
  {
     c16: true,
     desc: `Automatically complete C16 and C17 challenges outside of them.<br>Bitriennium-239 effect formula is much more better.`,
-    cost: E('e5e165'),
+    cost: E('e5e174'),
 },
 {
     desc: 'Einstein Theorem is better.',
@@ -1767,7 +1767,7 @@ cost: E('ee1290'),
         {
             c16: true,
             desc: `Galaxy Particles gain formula is better..`,
-            cost: E('e1e170'),
+            cost: E('e1e180'),
         },
     ],
     /*
