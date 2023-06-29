@@ -1757,7 +1757,7 @@ cost: E('ee1290'),
     {
         sn: true,
         desc: 'Unlock Galaxies.',
-        cost: E('1e16'),
+        cost: E('7.5e15'),
         },
         {
             dark: true,
