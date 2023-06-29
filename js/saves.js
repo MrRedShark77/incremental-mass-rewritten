@@ -540,6 +540,7 @@ function loadGame(start=true, gotNaN=false) {
     setupHTML()
     setupTooltips()
     updateQCModPresets()
+if (player.beta.testers == '') {
     createPrompt("To enter beta, type your beta tester id!",'import',loadbeta=>{
         let st = ''
         if (loadbeta == tester1) {
@@ -557,6 +558,7 @@ function loadGame(start=true, gotNaN=false) {
 else if (loadbeta == tester5) {
 player.beta.testers = 'Random person - 632892 '}
     })
+}
     if (start) {
         setInterval(save,60000)
         for (let x = 0; x < 5; x++) updateTemp()
