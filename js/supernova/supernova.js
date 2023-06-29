@@ -147,7 +147,7 @@ function updateSupernovaTemp() {
             let branch = t.branch||""
             let unl = !t.unl||t.unl()
             let req = !t.req||t.req()
-            let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id) || player.galaxy.tree.includes(id)
+            let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)
             if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
             if (no_req1 && !CS_TREE.includes(id) && !GLX_TREE.includes(id)) req = true
             let can = (t.qf?player.qu.points:t.cs?player.dark.c16.shard:t.glx?player.galaxy.stars:player.supernova.stars).gte(t.cost) && !bought && req

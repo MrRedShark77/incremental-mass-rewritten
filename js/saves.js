@@ -2,7 +2,9 @@ function E(x){return new Decimal(x)};
 
 const EINF = Decimal.dInf
 const FPS = 20
-
+let tester1 = btoa(JSON.stringify('256815'))
+let tester2 = btoa(JSON.stringify('472638'))
+let tester3 = btoa(JSON.stringify('364173'))
 function uni(x) { return E(1.5e56).mul(x) }
 function mlt(x) { return uni("ee9").pow(x) }
 
@@ -291,6 +293,9 @@ function getPlayerData() {
             stars: E(0),
             generator: E(0),
         },
+        beta: {
+            tester: '',
+        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
@@ -478,7 +483,15 @@ function export_copy() {
     copyText.style.visibility = "hidden"
     addNotify("Copied to Clipboard")
 }
-
+function enterBeta() {
+    createPrompt("To enter beta, type your beta tester id!",'import',loadbeta=>{
+        let st = ''
+        if (loadbeta == (tester1 || tester2 || tester3)) {
+            window.location.replace("https://raw.githack.com/Seder3214/imr-inf/dev/index.html");
+        }
+        else return
+    })
+}
 function importy() {
     createPrompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE",'import',loadgame=>{
         let st = ""
@@ -525,7 +538,18 @@ function loadGame(start=true, gotNaN=false) {
     setupHTML()
     setupTooltips()
     updateQCModPresets()
-    
+    createPrompt("To enter beta, type your beta tester id!",'import',loadbeta=>{
+        let st = ''
+        if (loadbeta == tester1) {
+            player.beta.testers = 'MrBezierShark90 - 256815'
+        }
+        else if (loadbeta == tester2) {
+            player.beta.testers = 'Zygorg - 472638'
+        }
+        else if (loadbeta == tester3) {
+            player.beta.testers = 'Tomek-123 - 364173'
+        }
+    })
     if (start) {
         setInterval(save,60000)
         for (let x = 0; x < 5; x++) updateTemp()
