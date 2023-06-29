@@ -107,6 +107,7 @@
     <div id='app' style='display: none;'>
         <div id="star"></div>
         <div class="table_center" style="height: 100%; width: 100%;">
+            <div style="position: absolute; bottom: 1; left: 0; user-select: all;">v0.7.1.02</div>
             <div id="tabs">
             </div>
             <div id="main_app" style="width: calc(100% - 450px); height: 100%; overflow-y: auto; overflow-x: hidden; position: relative;">
@@ -774,6 +775,7 @@
                             <button class="btn" onclick="createPopup(POPUP_GROUPS.notations.html,'notations')">Notations</button>
                             <button class="btn" id="tree_anim_btn" onclick="changeTreeAnimation()">Tree Animation: <span id="tree_anim">ON</span></button>
                             <button class="btn" onclick="player.options.massDis = (player.options.massDis + 1) % 4">Mass Format Display: <span id="mass_dis">Default</span></button>
+                            <button class="btn" onclick="enterBeta()">ENTER BETA</button>
                             <br><br>
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>

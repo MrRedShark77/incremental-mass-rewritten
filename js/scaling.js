@@ -41,7 +41,6 @@ const SCALE_START = {
 		glory: E(60),
 		pe: E(210),
 massUpg4: E(200),
-		inf_theorem: E(16),
 		galaxy: E(5),
 	},
 	ultra: {
@@ -104,7 +103,7 @@ const SCALE_POWER= {
 		massUpg4: 3,
 		FSS: 2,
 		pe: 2,
-		inf_theorem: 2,
+		inf_theorem: 1.25,
 		galaxy: 2,
     },
 
@@ -125,7 +124,6 @@ const SCALE_POWER= {
 		honor: 2,
 		glory: 3,
 		pe: 3,
-		inf_theorem: 1.55,
 	},
 	ultra: {
 		rank: 4,
