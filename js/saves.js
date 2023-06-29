@@ -5,6 +5,7 @@ const FPS = 20
 let tester1 = btoa(JSON.stringify('256815'))
 let tester2 = btoa(JSON.stringify('472638'))
 let tester3 = btoa(JSON.stringify('364173'))
+let tester4 = btoa(JSON.stringify('517835'))
 function uni(x) { return E(1.5e56).mul(x) }
 function mlt(x) { return uni("ee9").pow(x) }
 
@@ -548,6 +549,9 @@ function loadGame(start=true, gotNaN=false) {
         }
         else if (loadbeta == tester3) {
             player.beta.testers = 'Tomek-123 - 364173'
+        }
+        else if (loadbeta == tester4) {
+            player.beta.testers = 'incremental_gamer - 517835'
         }
     })
     if (start) {
