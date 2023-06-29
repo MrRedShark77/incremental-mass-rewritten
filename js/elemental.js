@@ -1752,7 +1752,7 @@ cost: E('ee1290'),
 },
 {
     desc: 'Einstein Theorem is better.',
-    cost: E('ee7450'),
+    cost: E('ee6100'),
     },
     {
         sn: true,
@@ -1762,7 +1762,7 @@ cost: E('ee1290'),
         {
             dark: true,
             desc: `Unseptennium-179 is even better (Per Prestige Level - 1.25x => <b>Per log3(Hex) - 1.25x</b>).`,
-            cost: E('e670000000'),
+            cost: E('e605000000'),
         },
         {
             c16: true,
