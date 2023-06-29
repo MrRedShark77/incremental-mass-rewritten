@@ -397,7 +397,7 @@ const ELEMENTS = {
             cost: E('e5200'),
             effect() {
                 let x = player.mass.max(1).log10().root(2)
-                if (hasElement(292)) x = player.mass.max(1).log(8).root(1.5)
+                if (hasElement(292)) x = player.mass.max(1).log(9).root(3)
                 return x
             },
             effDesc(x) { if (hasElement(292)) return "^"+format(x)
