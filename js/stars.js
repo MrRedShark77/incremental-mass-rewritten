@@ -181,7 +181,6 @@ function updateStarsHTML() {
     tmp.el.starSoft1.setDisplay(tmp.stars.gain.gte(tmp.stars.softGain))
 	tmp.el.starSoftStart1.setTxt(format(tmp.stars.softGain))
     tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+" / "+format(tmp.supernova.maxlimit,2)+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.preQUGlobalSpeed)))
-    tmp.el.stars_Gal.setTxt("To Collapse everything to a Galaxy, you need "+format(tmp.supernova.maxlimitGal,2)+" Stars.")
     tmp.el.stars_Eff.setTxt((hasElement(162)?"^":"×")+format(tmp.stars.effect))
     tmp.el.stars_Eff.setClasses({corrupted_text2: tmp.c16active})
 

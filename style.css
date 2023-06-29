@@ -97,7 +97,13 @@
 	src: url('fonts/SourceSerifPro-Regular.ttf');
 	size-adjust: 110%;
 }
-
+.galcolor {
+	color: #71c2bb;
+}
+.btn_tab.glx {
+	color: #5a9994;
+	border-color: #386864;
+}
 * {
 	font-family: var(--font);
     table-align: center;

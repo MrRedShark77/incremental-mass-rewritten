@@ -21,7 +21,7 @@ const SCALE_START = {
 		FSS: E(5),
 		pe: E(25),
 		inf_theorem: E(10),
-		galaxy: E(10),
+		galaxy: E(5),
     },
 	hyper: {
 		rank: E(120),
@@ -342,9 +342,7 @@ function getScalingStart(type, name) {
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 			if (hasBeyondRank(8,2)) start = start.add(beyondRankEffect(8,2))
 		}
-		else if (name='pe') {
-if (hasElement(252)) start = start.add(elemEffect(252))
-		}
+		if (hasElement(252) && name !=='FSS' && name !=='inf_theorem' && name !=='galaxy') start = start.add(elemEffect(252))
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {
