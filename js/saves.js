@@ -4,6 +4,7 @@ const EINF = Decimal.dInf
 const FPS = 20
 let tester1 = btoa(JSON.stringify('256815'))
 let tester2 = btoa(JSON.stringify('472638'))
+let tester3 = btoa(JSON.stringify('364173'))
 function uni(x) { return E(1.5e56).mul(x) }
 function mlt(x) { return uni("ee9").pow(x) }
 
@@ -485,7 +486,7 @@ function export_copy() {
 function enterBeta() {
     createPrompt("To enter beta, type your beta tester id!",'import',loadbeta=>{
         let st = ''
-        if (loadbeta == (tester1 || tester2)) {
+        if (loadbeta == (tester1 || tester2 || tester3)) {
             window.location.replace("https://raw.githack.com/Seder3214/imr-inf/dev/index.html");
         }
         else return
@@ -544,6 +545,9 @@ function loadGame(start=true, gotNaN=false) {
         }
         else if (loadbeta == tester2) {
             player.beta.testers = 'Zygorg - 472638'
+        }
+        else if (loadbeta == tester3) {
+            player.beta.testers = 'Tomek-123 - 364173'
         }
     })
     if (start) {
