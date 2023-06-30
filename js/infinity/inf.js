@@ -18,7 +18,7 @@ const INF = {
         if (iu15) e.push(218)
         if (player.galaxy.times.gte(1)) e.push(275,283,229,249,260)
 
-        for (let i = 0; i < player.atom.elements.length; i++) if ((player.atom.elements[i] > 218) && (hasInfUpgrade(16))) e.push(player.atom.elements[i])
+ for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
 
         player.atom.elements = e
         if (hasElement(30,1)) player.atom.muonic_el = [30]
@@ -781,7 +781,24 @@ function updateInfTemp() {
 }
 
 function infButton() {
-    if (tmp.inf_time == 2) {
+    if (tmp.inf_time == 1 && player.galaxy.times.gte(1)) {
+        tmp.inf_time += 1
+
+        INF.goInf(true)
+
+        document.body.style.animation = "inf_reset_2 2s 1"
+
+        setTimeout(()=>{
+            tmp.inf_time += 1
+            tmp.el.inf_popup.setDisplay(false)
+
+            setTimeout(()=>{
+                tmp.inf_time = 0
+                document.body.style.backgroundColor = 'hsl(0, 0%, 7%)'
+            },1000)
+        },1000)
+    }
+   else if (tmp.inf_time == 2) {
         tmp.inf_time += 1
 
         INF.goInf(true)
@@ -801,7 +818,16 @@ function infButton() {
 }
 
 function calcInf(dt) {
-    if (!tmp.brokenInf && tmp.inf_reached && tmp.inf_time == 0) {
+    if (player.galaxy.times.gte(1)&& tmp.inf_reached && tmp.inf_time == 0) {
+        tmp.inf_time += 1
+        document.body.style.animation = "inf_reset_1 5s 1"
+        setTimeout(()=>{
+            tmp.inf_time += 1
+            document.body.style.backgroundColor = 'orange'
+            tmp.el.inf_popup.setDisplay(true)
+        },4250)
+    }
+   else if (!tmp.brokenInf && tmp.inf_reached && tmp.inf_time == 0) {
         tmp.inf_time += 1
         document.body.style.animation = "inf_reset_1 10s 1"
         setTimeout(()=>{

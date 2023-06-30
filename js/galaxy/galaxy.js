@@ -33,6 +33,8 @@ const GALAXY = {
         player.galaxy.stars = E(0)}
     },
     doReset() {
+                let e = [275,283,229,249,260]
+        player.atom.elements = e
         player.galaxy.times = player.galaxy.times.max(tmp.supernova.bulkGal)
         for (let x = 1; x <= 18; x++) player.chal.comps[x] = E(0)
         let save_keep = [6,8,10,0,11,13,15]
@@ -56,7 +58,7 @@ const GALAXY = {
         player.inf.theorem_max = E(5),
         
  player.inf.upg = save_keep
-        INF.doReset()
+ INF.doReset()
     }
 }
 function calcGalaxy(dt) {
