@@ -1,10 +1,18 @@
 const MUONIC_ELEM = {
     canBuy(x) {
         if (player.atom.muonic_el.includes(x)) return false
-        return tmp.exotic_atom.amount.gte(this.upgs[x].cost||EINF)
+        let upg = this.upgs[x], amt = upg.cs ? player.inf.cs_amount : tmp.exotic_atom.amount
+
+        return amt.gte(upg.cost||EINF)
     },
     buyUpg(x) {
-        if (this.canBuy(x)) player.atom.muonic_el.push(x)
+        if (this.canBuy(x)) {
+            let upg = this.upgs[x]
+
+            if (upg.cs) player.inf.cs_amount = player.inf.cs_amount.sub(upg.cost)
+
+            player.atom.muonic_el.push(x)
+        }
     },
     upgs: [
         null,
@@ -187,6 +195,42 @@ const MUONIC_ELEM = {
         },{
             desc: `Kaon’s first reward is better.`,
             cost: E('e2200'),
+        },{
+            desc: `Corrupted Star’s speed is increased by pre-Infinity global speed at a reduced rate.`,
+            cost: E('e2600'),
+            eff() {
+                let x = tmp.preInfGlobalSpeed.max(1).log10().add(1).pow(2)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },{
+            cs: true,
+            desc: `Muon-Catalyzed Fusion speeds Corrupted Star.`,
+            cost: E('e20'),
+            eff() {
+                let x = Decimal.pow(1.5,player.dark.exotic_atom.tier)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },{
+            desc: `Increase the base of C17’s reward by 1.`,
+            cost: E('e3000'),
+        },{
+            cs: true,
+            desc: `Supernova no longer has requirement with collapsed stars. Instead, they can produce supernovas passively.`,
+            cost: E('e34'),
+        },{
+            desc: `The growth reductions of corrupted stars start later based on supernovas.`,
+            cost: E('e3500'),
+            eff() {
+                let x = player.supernova.times.add(1).overflow(10,0.5)
+                return x
+            },
+            effDesc: x=>formatMult(x)+' later',
+        },{
+            cs: true,
+            desc: `Unlock a new effect of corrupted star.`,
+            cost: E('e56'),
         },
 
         /*
@@ -209,7 +253,8 @@ const MUONIC_ELEM = {
 
         if (tmp.brokenInf) u += 2
         if (tmp.tfUnl) u += 6
-        if (tmp.ascensions_unl) u += 10 - 4
+        if (tmp.ascensions_unl) u += 6
+        if (tmp.CS_unl) u += 6
 
         return u
     },

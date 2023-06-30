@@ -80,6 +80,13 @@ const SUPERNOVA = {
         if (player.stars.points.div(1e90).gte(1)) bulk = player.stars.points.div(1e90).max(1).log(1e20).max(0).root(1.25).mul(ml_fp).scaleEvery('supernova',true,[1,1,1,1,ff]).add(1).floor()
         return {maxlimit: maxlimit, bulk: bulk}
     },
+    passiveGain() {
+        let x = player.stars.points.add(1e10).log10().log10().pow(3).sub(1)
+
+        x = x.mul(tmp.cs_effect.sn_speed||1)
+
+        return x
+    },
 }
 
 function calcSupernova(dt) {
@@ -129,11 +136,19 @@ function calcSupernova(dt) {
 }
 
 function updateSupernovaTemp() {
-    let req_data = SUPERNOVA.req(), c16 = tmp.c16active
-    tmp.supernova.maxlimit = req_data.maxlimit
-    tmp.supernova.bulk = req_data.bulk
+    let c16 = tmp.c16active
 
-    tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
+    if (tmp.SN_passive) {
+        tmp.supernova.reached = false
+
+        tmp.supernova.passive = SUPERNOVA.passiveGain()
+    } else {
+        let req_data = SUPERNOVA.req()
+        tmp.supernova.maxlimit = req_data.maxlimit
+        tmp.supernova.bulk = req_data.bulk
+
+        tmp.supernova.reached = tmp.stars?player.stars.points.gte(tmp.supernova.maxlimit):false;
+    }
 
     let no_req1 = hasInfUpgrade(0)
 

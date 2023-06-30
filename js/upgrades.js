@@ -572,7 +572,7 @@ const UPGS = {
                 cost: E('e5e101'),
                 effect() {
                     let x = tmp.matters.upg[0].eff.max(1).pow(0.75)
-                    return x
+                    return x.overflow('e1000',0.5)
                 },
                 effDesc(x=this.effect()) {
                     return "^"+format(x)

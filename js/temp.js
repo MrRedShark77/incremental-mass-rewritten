@@ -226,6 +226,8 @@ function resetTemp() {
             baseExp: 1,
             base: E(1),
         },
+
+        cs_effect: {},
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
@@ -385,6 +387,9 @@ function updateTemp() {
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.tfUnl = hasElement(230)
     tmp.ascensions_unl = player.chal.comps[17].gte(4)
+    tmp.CS_unl = hasElement(251)
+
+    tmp.SN_passive = hasElement(36,1)
 
     updateInfTemp()
     updateC16Temp()

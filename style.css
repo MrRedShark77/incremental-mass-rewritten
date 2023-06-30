@@ -514,6 +514,13 @@ button {
 	box-shadow: 0 0 10px #f60;
 }
 
+.elements.cs.bought {
+	color: #f0f;
+	border-color: #a0f;
+	background-color: #6000b4;
+	box-shadow: 0 0 10px #a0f;
+}
+
 #final_118 {
 	color: white;
 	text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;

@@ -331,6 +331,7 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="pe") {
 			if (hasElement(233)) start = start.add(25)
+			if (hasElement(255)) start = start.add(elemEffect(255))
 		}
 	}
 	else if (type==1) {
@@ -594,7 +595,7 @@ function noScalings(type,name) {
 		if (hasBeyondRank(2,15)) return true
 	}
 	else if (name=="supernova") {
-		if (type<3 && hasCharger(3)) return true
+		return tmp.SN_passive || type<3 && hasCharger(3)
 	}
 	else if (name=="tickspeed") {
 		if (hasCharger(4)) return true

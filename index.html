@@ -28,6 +28,7 @@
 
     <script src="js/infinity/core.js"></script>
     <script src="js/infinity/inf.js"></script>
+    <script src="js/infinity/corrupted_star.js"></script>
 
     <script src="js/darkness/exotic_atoms.js"></script>
     <script src="js/darkness/c16.js"></script>
@@ -303,6 +304,7 @@
                                 </span><br>
                                 <span id="bhOverflow"></span>
                                 <div id="bhOverflow2" style="color: rgb(255, 197, 215)"></div>
+                                <br><div id="bhcEffectOverflow" style="color: rgb(194, 177, 255)"></div>
                             </div>
                         </div><div id="stab_frame0_2">
                             You have <h4 id="atomicAmt">X</h4> Atomic Power<br>
@@ -325,7 +327,7 @@
                             </div>
                         </div><div id="stab_frame0_3">
                             You collapsed <h4 id="stars_Amt">X</h4> stars, which multiplies mass gain based on all rank types.<br>
-                            <span class="green">Currently: <h4 id="stars_Eff">X</h4></span><br><br>
+                            <span class="green">Currently: <span id="stars_Eff">X</span></span><br><br>
                             <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
                             <div id="stars_table" class="table_center"></div><br><br>
                             <span id="starSoft1" class="red">After <b id="starSoftStart1">X</b> Collapsed stars gain, Collapsed stars gain will be softcap!</span><br>
@@ -564,7 +566,7 @@
                             <div id="glyph_upg_msg"></div>
                         </div><div id="stab_frame7_2">
                             <div>
-                                10<sup>lg(lg(x))<sup id="matter_exponent">2</sup></sup> to each matter gain by previous matter.
+                                <span id="matter_formula">10<sup>lg(lg(x))<sup id="matter_exponent">2</sup></sup></span> to each matter gain by previous matter.
                                 <div id="matter_req_div">Tip: Reach <span id="matter_req">???</span> of current matter to unlock next matter!</div>
                                 <div id="FSS_eff1"></div><br>
                                 <button class="btn" onclick="buyMaxMatters()">Max All Upgrades</button>
@@ -591,8 +593,10 @@
                                 </div>
                                 -->
                             </div>
-                            <h2 class="tooltip" tooltip-html="Click any theorem to select. Selected theorem will be added in Inventory after going Infinity.">Theorem Selection</h2> (hover)
-                            <div id="pre_theorem" class="table_center"></div>
+                            <div id="pt_selector">
+                                <h2 class="tooltip" tooltip-html="Click any theorem to select. Selected theorem will be added in Inventory after going Infinity.">Theorem Selection</h2> (hover)
+                                <div id="pre_theorem" class="table_center"></div>
+                            </div>
                             Any Theorem's Level is <span id="pt_lvl" class="tooltip" tooltip-html="Based on normal mass, best mass of black hole in C16">???</span><br>
                             <div class="table_center">
                                 <div style="width: 50%; min-width: 500px;">
@@ -611,6 +615,21 @@
                         </div><div id="stab_frame8_2">
                             <p>You have <b id="ip_amt">???</b> Infinity Points. Hover any upgrade to see its description.</p>
                             <div id="inf_upg_table"></div>
+                        </div><div id="stab_frame8_3">
+                            <div class="table_center">
+                                <div style="width: 50%; min-width: 500px;">
+                                    You have <h4 id="cs_amount">0</h4> Corrupted Stars.<br>
+                                    The speed of the corrupted star is <b id="cs_speed">X</b>.
+                                    <br><br>
+                                    <button id="cs_upg1" class="btn full" onclick="buyCSUpg(0)">X</button>
+                                    <button id="cs_upg2" class="btn full" onclick="buyCSUpg(1)">X</button>
+                                    <br><br>
+                                    <div id="cs_overflow" style="color: red"></div>
+                                </div><div style="width: 50%; min-width: 500px;">
+                                    <h2>Corrupted Star Effects:</h2>
+                                    <div id="cs_effect" class="sky"></div>
+                                </div>
+                            </div>
                         </div>
                     </div><div id="tab_frame9">
                         <div id="stab_frame9_0">
@@ -631,7 +650,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten v0.7.0.5 - made by MrRedShark77<br>
+                            Incremental Mass Rewritten v0.7.1 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`frfrfr<br><img src="https://5.imimg.com/data5/HO/DK/MY-8155364/lemon-500x500.jpg" style="width:100%">`)'>Lemon</span>, 16777216 & Aarex (Artists)<br><br><br>
                             Hint 1: Hover top image above tabs to show description...<br><br>

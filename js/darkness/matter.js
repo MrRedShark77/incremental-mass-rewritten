@@ -20,7 +20,10 @@ const MATTERS = {
 
         if (x.lt(1)) return x
 
-        if (i < MATTERS_LEN-1) x = c16 ? x.mul(tmp.matters.upg[i+1].eff) : x.pow(tmp.matters.upg[i+1].eff)
+        if (i < MATTERS_LEN-1) {
+            x = c16 ? x.mul(tmp.matters.upg[i+1].eff) : x.pow(tmp.matters.upg[i+1].eff)
+            if (hasElement(256)) x = c16 ? x.mul(player.dark.matters.amt[i+1].add(1)) : x.pow(player.dark.matters.amt[i+1].max(1).log10().add(1))
+        }
 
         if (!c16) {
             x = x.pow(tmp.dark.abEff.mexp||1)
@@ -52,6 +55,8 @@ const MATTERS = {
         if (!c16) lvl = lvl.mul(tmp.matters.str)
 
         let eff = c16?Decimal.pow(base,lvl):i==0?hasElement(21,1)?Decimal.pow(base,lvl.root(5)):lvl.add(1):Decimal.pow(base,lvl)
+
+        if (i==0) eff = eff.overflow('e2500',0.5)
 
         return {cost: cost, bulk: bulk, eff: eff}
     },
@@ -147,7 +152,9 @@ function updateMattersHTML() {
     let c16 = tmp.c16active
     let inf_gs = tmp.preInfGlobalSpeed
 
-    tmp.el.matter_exponent.setTxt(format(tmp.matters.exponent))
+    let h = `10<sup>lg(lg(x))<sup>${format(tmp.matters.exponent)}</sup>`
+    if (hasElement(256)) h += c16 ? `</sup>×(next matter)` : `×lg(next matter)</sup>`
+    tmp.el.matter_formula.setHTML(h)
     tmp.el.matter_req_div.setDisplay(player.dark.matters.unls<14)
     if (player.dark.matters.unls<14) tmp.el.matter_req.setTxt(format(tmp.matters.req_unl))
 

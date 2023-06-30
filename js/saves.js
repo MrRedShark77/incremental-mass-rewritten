@@ -72,7 +72,7 @@ function softcapHTML(x, start, invisible=false) { return !invisible&&E(x).gte(st
 
 Decimal.prototype.softcapHTML = function (start, invisible) { return softcapHTML(this.clone(), start, invisible) }
 
-function calcOverflow(x,y,s,inv=false) { return x.gte(s) ? x.max(1).log10().div(y.max(1).log10()).pow(inv?-1:1) : E(1) }
+function calcOverflow(x,y,s,height=1) { return x.gte(s) ? x.max(1).iteratedlog(10,height).div(y.max(1).iteratedlog(10,height)) : E(1) }
 
 String.prototype.corrupt = function (active=true) { return active ? this.strike() + ` <span class='corrupted_text'>[Corrupted]</span>` : this }
 
@@ -131,7 +131,8 @@ function calc(dt) {
         calcDark(inf_gs)
         calcInf(dt)
 
-        if (hasTree("qu_qol4")) player.supernova.times = player.supernova.times.max(tmp.supernova.bulk)
+        if (tmp.SN_passive) player.supernova.times = player.supernova.times.add(tmp.supernova.passive.mul(dt))
+        else if (hasTree("qu_qol4")) player.supernova.times = player.supernova.times.max(tmp.supernova.bulk)
 
         if (hasTree("qol6")) CHALS.exit(true)
 

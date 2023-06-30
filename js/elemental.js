@@ -55,6 +55,11 @@ const ELEMENTS = {
                 updateTheoremInv()
             }
 
+            if (x==251) {
+                tmp.tab=8
+                tmp.stab[8]=3
+            }
+
             tmp.pass = 2
         }
     },
@@ -620,7 +625,7 @@ const ELEMENTS = {
             desc: `Death Shard gain is increased by 10% for every supernova.`,
             cost: E("e32000"),
             effect() {
-                let s = player.supernova.times
+                let s = player.supernova.times.overflow(1e8,0.5)
                 if (!player.qu.rip.active) s = s.root(1.5)
                 let x = E(1.1).pow(s)
                 return x.softcap(player.qu.rip.active?'1e130':'1e308',0.01,0)
@@ -1416,6 +1421,43 @@ const ELEMENTS = {
         },{
             desc: `W+ Boson now provides an exponential boost.`,
             cost: E('ee2081'),
+        },{
+            inf: true,
+            desc: `Unlock the Corrupted Star.`,
+            cost: E('e35'),
+        },{
+            desc: `Black Hole’s Mass Overflow^2 starts ^1.5 later to exponent.`,
+            cost: E('ee2256'),
+        },{
+            inf: true,
+            desc: `Passively gain 1% of fragment formed from theorem in the core.`,
+            cost: E('e41'),
+        },{
+            c16: true,
+            desc: `De-corrupt Unhexbium-162.`,
+            cost: E('e1e77'),
+        },{
+            dark: true,
+            desc: `C17’s completions boost Super Parallel Extruder.`,
+            cost: E('e1.9e8'),
+            effect() {
+                let x = (player.chal.comps[17]||E(0)).pow(2).div(4).floor()
+                return x
+            },
+            effDesc(x) { return "+"+format(x,0)+' later' },
+        },{
+            c16: true,
+            desc: `The formula of each matter production is better.`,
+            cost: E('e1e92'),
+        },{
+            desc: `Fading Matters boost mass overflow^2 starting.`,
+            cost: E('e3e3003'),
+            effect() {
+                let x = overflow(tmp.matters.upg[12].eff.max(1),'ee3',0.5).root(4)
+                if (tmp.c16active) x = x.log10().add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x)+' later' },
         },
     ],
     /*
@@ -1465,7 +1507,8 @@ const ELEMENTS = {
 
         if (tmp.brokenInf) u += 12
         if (tmp.tfUnl) u += 12
-        if (tmp.ascensions_unl) u += 10 - 2
+        if (tmp.ascensions_unl) u += 9
+        if (tmp.CS_unl) u += 6
 
         return u
     },
@@ -1638,7 +1681,7 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         let eu = elem_const.upgs[ch]
-        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks"," Exotic Atoms"][elayer]
+        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.cs?" Corrupted Stars":" Exotic Atoms"][elayer]
         let eff = tElem[["effect","mu_effect"][elayer]]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
@@ -1672,7 +1715,7 @@ function updateElementsHTML() {
                         upg.setClasses(
                             c16 && isElemCorrupted(x,elayer)
                             ?{elements: true, locked: true, corrupted: true}
-                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf}
+                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf, cs: elayer == 1 && eu.cs}
                         )
                     }
                 }
@@ -1694,6 +1737,7 @@ function updateElementsTemp() {
     let decor = []
     if (hasElement(10,1)) decor.push(187)
     if (hasCharger(9)) decor.push(40,64,67,150,199,200,204)
+    if (hasElement(254)) decor.push(162)
     tElem.deCorrupt = decor
 
     let cannot = []

@@ -427,6 +427,10 @@ function updateBlackHoleHTML() {
 
 	tmp.el.bhOverflow2.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[1]))
     tmp.el.bhOverflow2.setHTML(`Because of black hole mass overflow^2 at <b>${formatMass(tmp.overflow_start.bh[1])}</b>, your black hole mass overflow is even stronger!`)
+	
+	tmp.el.bhcEffectOverflow.setDisplay(tmp.bh.condenser_eff.eff.gte(tmp.overflow_start.BHCEffect[0]))
+    tmp.el.bhcEffectOverflow.setHTML(`Because of BH Condenser siltation at <b>${format(tmp.overflow_start.BHCEffect[0])}</b>, the exponent of BH Condenser's effect is ${overflowFormat(tmp.overflow.BHCEffect||1)}!`)
+	
 	// Unstable 
 
 	let unl = hasCharger(1)

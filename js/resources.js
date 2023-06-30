@@ -60,7 +60,7 @@ const RESOURCES_DIS = {
         class: "magenta",
 
         desc: (gs)=>{
-            let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
+            let g = tmp.SN_passive ? tmp.supernova.passive.div(FPS) : tmp.supernova.bulk.sub(player.supernova.times).max(0)
             let h = tmp.inf_unl?format(g.mul(FPS),0)+"/sec":format(g,0)
             return format(player.supernova.times,0)+(player.supernova.post_10?"<br>(+"+h+")":"")
         },

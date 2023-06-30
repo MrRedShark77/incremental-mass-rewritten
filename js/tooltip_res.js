@@ -120,7 +120,9 @@ const TOOLTIP_RES = {
             <br class='line'>
             You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.<br>
             You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
-            <br class='line'>
+            `
+
+            if (!tmp.SN_passive) h += `<br class='line'>
             <i>
             ${"Reach over <b>"+format(tmp.supernova.maxlimit)+"</b> collapsed stars to go Supernova"}.
             </i>`

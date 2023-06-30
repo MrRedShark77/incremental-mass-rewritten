@@ -585,7 +585,11 @@ const CHALS = {
         inc: E(2),
         pow: E(2),
         effect(x) {
-            let ret = x.mul(3)
+            let b = 3
+            if (hasElement(35,1)) b++
+
+            let ret = x.mul(b)
+            
             return ret.toNumber()
         },
         effDesc(x) { return "+"+format(x,0)+" later" },

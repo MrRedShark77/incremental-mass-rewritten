@@ -770,6 +770,9 @@ const BEYOND_RANKS = {
             1: `'Self-Infinity' and 'Exotic Speed' upgrades use a formula with base 3 instead of base 2.`,
             12: `Bitriunium-231 is cubed.`,
         },
+        8: {
+            1: `Infinity Points gain is doubled every highest beyond-rank tier you reached.`,
+        },
     },
 
     rewardEff: {
@@ -881,6 +884,16 @@ const BEYOND_RANKS = {
                     return Math.max(1,x)
                 },
                 x=>"+"+format(x,0)+" later",
+            ],
+        },
+        8: {
+            1: [
+                ()=>{
+                    let x = Decimal.pow(2,tmp.beyond_ranks.max_tier)
+
+                    return x
+                },
+                x=>formatMult(x),
             ],
         },
     },

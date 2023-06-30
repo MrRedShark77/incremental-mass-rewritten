@@ -75,6 +75,7 @@ const TABS = {
             { id: "Core" },
             { id: "Core Effect" },
             { id: "Infinity Upgrades", style: "inf" },
+            { id: "Corrupted Star", unl() { return tmp.CS_unl } },
         ],
         9: [
             { id: "Options" },

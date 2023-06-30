@@ -20,7 +20,12 @@ const INF = {
         for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
 
         player.atom.elements = e
-        player.atom.muonic_el = []
+
+        e = []
+        
+        for (let i = 0; i < player.atom.muonic_el.length; i++) if (MUONIC_ELEM.upgs[player.atom.muonic_el[i]].cs) e.push(player.atom.muonic_el[i])
+
+        player.atom.muonic_el = e
         for (let x = 1; x <= (hasElement(229) ? 15 : 16); x++) player.chal.comps[x] = E(0)
         player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
         "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
@@ -165,6 +170,7 @@ const INF = {
         // Infinity
 
         player.inf.dim_mass = E(0)
+        player.inf.cs_amount = E(0)
 
         updateMuonSymbol()
 
@@ -205,6 +211,8 @@ const INF = {
         if (hasInfUpgrade(5)) x = x.mul(infUpgEffect(5))
         if (hasElement(17,1)) x = x.mul(muElemEff(17))
         if (hasElement(20,1)) x = x.mul(muElemEff(20))
+
+        if (hasBeyondRank(8,1)) x = x.mul(beyondRankEffect(8,1))
 
         return x.max(1).floor()
     },
@@ -428,6 +436,9 @@ function getInfSave() {
 
         dim_mass: E(0),
         pe: E(0),
+
+        cs_amount: E(0),
+        cs_double: [E(0),E(0)],
     }
     for (let i in CORE) s.fragment[i] = E(0)
     //for (let i = 0; i < 4; i++) s.pre_theorem.push(createPreTheorem())
@@ -437,6 +448,8 @@ function getInfSave() {
 function infUpgEffect(i,def=1) { return tmp.iu_eff[i] || def }
 
 function updateInfTemp() {
+    updateCSTemp()
+
     tmp.peCost = INF.pe.cost(player.inf.pe)
     tmp.peBulk = E(0)
     if (player.inf.points.gte(100)) tmp.peBulk = player.inf.points.div(1000).log(1.2).scaleEvery('pe',true).add(1).floor()
@@ -519,10 +532,23 @@ function calcInf(dt) {
     }
 
     if (hasElement(235)) {
-        let ig = player.inf.best.div(1e2).mul(dt)
+        let ig = player.inf.best.div(1e2).mul(tmp.cs_effect.inf_speed).mul(dt)
 
         player.inf.points = player.inf.points.add(ig)
         player.inf.total = player.inf.total.add(ig)
+    }
+
+    if (tmp.CS_unl) {
+        player.inf.cs_amount = CORRUPTED_STAR.calcNextGain(player.inf.cs_amount,tmp.cs_speed.mul(dt))
+    }
+
+    if (hasElement(253)) {
+        for (let i in player.inf.core) {
+            let p = player.inf.core[i]
+            if (p) {
+                player.inf.fragment[p.type]=player.inf.fragment[p.type].add(calcFragmentBase(p,p.star,p.power).mul(dt/100))
+            }
+        }
     }
 }
 
@@ -560,7 +586,7 @@ function updateInfHTML() {
             tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")
         }
         else if (tmp.stab[8] == 2) {
-            tmp.el.ip_amt.setHTML(player.inf.points.format(0) + (hasElement(235)?" "+player.inf.points.formatGain(player.inf.best.div(1e2)):""))
+            tmp.el.ip_amt.setHTML(player.inf.points.format(0) + (hasElement(235)?" "+player.inf.points.formatGain(player.inf.best.div(1e2).mul(tmp.cs_effect.inf_speed)):""))
 
             for (let r in INF.upgs) {
                 r = parseInt(r)
@@ -590,6 +616,7 @@ function updateInfHTML() {
                 }
             }
         }
+        else if (tmp.stab[8] == 3) updateCSHTML()
     }
 }
 

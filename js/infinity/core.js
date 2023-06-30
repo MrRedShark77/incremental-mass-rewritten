@@ -396,10 +396,11 @@ const MAX_CORE_FIT = 1
 
 var core_tmp = {}
 var core_weight = {}
+var core_star_luck = []
 var core_star_chances = []
 
-function getCoreChance(i, lvl=tmp.core_lvl) { return 1-Math.pow(1-MIN_STAR_CHANCES[i],Math.floor(lvl)**0.4) }
-function getPowerMult(lvl=tmp.core_lvl) { return Math.floor(lvl-1)**0.5/100 }
+function getCoreChance(i, lvl=tmp.core_lvl) { return 1-Math.pow(1-MIN_STAR_CHANCES[i]**(1/core_star_luck[i]),Math.floor(lvl)**0.4) }
+function getPowerMult(lvl=tmp.core_lvl) { return Math.floor(lvl-1)**0.5/100 * tmp.cs_effect.power_mult }
 function chanceToBool(arr) { return arr.map((x,i) => x < core_star_chances[i]) }
 
 function resetCoreTemp() {
@@ -461,9 +462,9 @@ debug.addRandomTheorem = (level=1,power=1,max_chance=CORE_CHANCE_MIN) => {
 var changeCoreFromBestLevel = () => {
     let lvl = Math.floor(tmp.core_lvl), power = Math.round(100+getPowerMult(tmp.core_lvl)*100)/100
     
-    for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i] && lvl > player.inf.core[i].level) {
-        player.inf.core[i].level=lvl
-        player.inf.core[i].power=power
+    for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i]) {
+        if (lvl > player.inf.core[i].level) player.inf.core[i].level=lvl
+        if (power > player.inf.core[i].power) player.inf.core[i].power=power
     }
 
     updateTheoremCore()
@@ -548,29 +549,33 @@ function updateCoreHTML() {
 
     tmp.el.preTReq.setDisplay(!reached)
 
+    tmp.el.pt_selector.setDisplay(TS_visible)
+
     let lvl = tmp.core_lvl, fl = Math.floor(lvl)
     tmp.el.pt_lvl.setHTML(`<b>${format(fl,0)}</b> (${formatPercent(lvl-fl)})`)
 
-    let pm = getPowerMult()
+    if (TS_visible) {
+        let pm = getPowerMult()
 
-    for (let i = 0; i < player.inf.pre_theorem.length; i++) {
-        let pt = tmp.el['preT'+i]
-        pt.setDisplay(reached)
+        for (let i = 0; i < player.inf.pre_theorem.length; i++) {
+            let pt = tmp.el['preT'+i]
+            pt.setDisplay(reached)
 
-        if (!reached) continue
+            if (!reached) continue
 
-        let p = player.inf.pre_theorem[i], s = chanceToBool(p.star_c), power = Math.round(100+pm*p.power_m*100)/100
-        pt.setClasses({theorem_div:true, tooltip:true, [p.type]:true, choosed: player.inf.pt_choosed == i})
-        pt.setHTML(getTheoremHTML({type: p.type, level: fl, power, star: s},true))
+            let p = player.inf.pre_theorem[i], s = chanceToBool(p.star_c), power = Math.round(100+pm*p.power_m*100)/100
+            pt.setClasses({theorem_div:true, tooltip:true, [p.type]:true, choosed: player.inf.pt_choosed == i})
+            pt.setHTML(getTheoremHTML({type: p.type, level: fl, power, star: s},true))
 
-        pt.setTooltip(`
-        <h3>${CORE[p.type].title}</h3>
-        <br class='line'>
-        ${getTheoremPreEffects(p,s,power,fl)}
-        `)
+            pt.setTooltip(`
+            <h3>${CORE[p.type].title}</h3>
+            <br class='line'>
+            ${getTheoremPreEffects(p,s,power,fl)}
+            `)
+        }
+        
+        tmp.el.preTReq.setHTML(`Reach over <b>${formatMass(INF.req)}</b> of normal mass to show theorems that you will choose.`)
     }
-    
-    tmp.el.preTReq.setHTML(`Reach over <b>${formatMass(INF.req)}</b> of normal mass to show theorems that you will choose.`)
 
     tmp.el.formTBtn.setDisplay(tmp.tfUnl)
 }
@@ -756,7 +761,14 @@ function switchTheorems(id1,id2,force=false) {
 function updateCoreTemp() {
     tmp.min_core_len = MIN_CORE_LENGTH
 
-    for (let i = 0; i < MAX_STARS; i++) core_star_chances[i] = i < 4 ? getCoreChance(i) : 0
+    for (let i = 0; i < MAX_STARS; i++) {
+        let l = 1
+
+        if (i < 4) l *= tmp.cs_effect.theorem_luck
+
+        core_star_luck[i] = l
+        core_star_chances[i] = i < 4 ? getCoreChance(i) : 0
+    }
 
     if (player.inf.theorem.gte(6)) tmp.min_core_len++
 
@@ -782,6 +794,14 @@ function updateCoreTemp() {
     }
 }
 
+var TS_visible = true
+
 function updateOneSec() {
     if (hasElement(242)) changeCoreFromBestLevel()
+
+    if (false) {
+        let p = true
+        for (let i in player.inf.core) p &&= player.inf.core[i]
+        TS_visible = !p
+    }
 }
