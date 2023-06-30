@@ -601,7 +601,7 @@ function updateHTML() {
 			}
 		}
 		if (tmp.stab[8] == 4) updateOrbHTML()
-		else if (tmp.tab == 9) {
+		else if (tmp.tab == 10) {
 			updateOptionsHTML()
 		}
 	}

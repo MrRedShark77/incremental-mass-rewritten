@@ -35,7 +35,7 @@ const GALAXY = {
     doReset() {
         player.galaxy.times = player.galaxy.times.max(tmp.supernova.bulkGal)
         for (let x = 1; x <= 18; x++) player.chal.comps[x] = E(0)
-        let save_keep = [6,8,10,0,11,13,15,16]
+        let save_keep = [6,8,10,0,11,13,15]
         player.inf.points = E(0)
         player.inf.total = E(0)
         player.inf.nm = E(0)
@@ -52,10 +52,6 @@ const GALAXY = {
         player.inf.core[1].star = [true,true,true,true,true,true]
         player.inf.core[2].star = [true,true,true,true,true,true]
         player.inf.core[3].star = [true,true,true,true,true,true]
-        player.inf.core[0].power = E(1)
-        player.inf.core[1].power = E(1)
-        player.inf.core[2].power = E(1)
-        player.inf.core[3].power = E(1)
         player.inf.theorem = E(5)
         player.inf.theorem_max = E(5),
         
