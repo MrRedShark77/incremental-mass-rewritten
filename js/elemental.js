@@ -1395,7 +1395,7 @@ const ELEMENTS = {
             desc: `Dimensional Mass adds free C16 max completions.`,
             cost: E('e1.6e34'),
             effect() {
-                let x = player.inf.dim_mass.div(100).log(10).log(2).add(1)
+                let x = player.inf.dim_mass.div(100).add(1).log(10).log(2).add(1)
                 if (hasElement(295)) x = player.inf.dim_mass.div(20).log(1.1).add(1)
                 return x
             },
@@ -1410,7 +1410,7 @@ const ELEMENTS = {
             desc: `Boost Dark Rays 4th effect by Infinity Points.`,
             cost: E('e1e640'),
             effect() {
-                let x = player.inf.points.log10().log(2).div(10).add(1)
+                let x = player.inf.points.add(1).log10().add(1).log(2).div(10).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1490,7 +1490,7 @@ const ELEMENTS = {
             desc: `Bitrinilium-230 effect is better based on Infinity Points.`,
             cost: E('e7990000'),
             effect() {
-                let x = player.inf.points.max(1).root(10).log10().div(3).add(1)
+                let x = player.inf.points.max(1).root(10).add(1).log10().div(3).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1576,7 +1576,7 @@ x = overflow(x,1e180,0.1)
             desc: `Infinity Points boosts mass overflow^3 in C16.`,
             effect() {
                 if (CHALS.inChal(17)|| CHALS.inChal(18)) x = E(1)
-                else x = player.inf.points.max(1).log(1.1).pow(2).add(1).floor()
+                else x = player.inf.points.add(1).log(1.1).pow(2).add(1).floor()
                 return x
             },
             effDesc(x) { return "^"+format(x,0)+' later' },
@@ -1662,7 +1662,7 @@ cost: E('ee1290'),
             c16: true,
             desc: `[Meta-Lepton] reward effect is better based on Infinity Points.<br>Reduce Meta-Prestige Level power based on Infinity Points.`,
             effect() {let x = E(1)
-            x = player.inf.points.max(1).log10().log2().add(1)
+            x = player.inf.points.add(1).log10().log2().add(1)
             let ret = E(1)
             ret = Decimal.pow(0.35,player.inf.points.max(1).log10().log10())
         return {eff: x, ret: ret}},
@@ -1734,7 +1734,7 @@ cost: E('ee1290'),
         c16: true,
         desc: `Impossible Challenge scaling is weaker based on Ascension Base.`,
         effect() {
-            x = Decimal.pow(0.75,tmp.ascensions.base.max(1).log10().root(10))
+            x = Decimal.pow(0.75,tmp.ascensions.base.add(1).log10().root(10))
             return x
         },
         effDesc(x) { return formatReduction(x)+' weaker' },
