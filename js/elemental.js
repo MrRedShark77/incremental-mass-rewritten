@@ -1365,7 +1365,7 @@ const ELEMENTS = {
             desc: `Max Theorem's Level boosts Infinity Points.`,
             cost: E('e4e487'),
             effect() {
-                let x = player.inf.theorem_max.div(2).log(1.1).add(1)
+                let x = player.inf.theorem_max.div(2).add(1).log(1.1).add(1)
                 if (hasPrestige(1,950)) x = x.pow(1.25)
                 return x
             },
