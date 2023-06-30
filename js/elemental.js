@@ -1381,7 +1381,7 @@ const ELEMENTS = {
             desc: `Infinity Points boosts Exotic Atoms.`,
             cost: E('e1670000'),
             effect() {
-                let x = player.inf.points.log(1.1).add(1)
+                let x = player.inf.points.add(1).log(1.1).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
