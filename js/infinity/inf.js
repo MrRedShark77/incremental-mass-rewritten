@@ -16,11 +16,13 @@ const INF = {
         if (hasInfUpgrade(2)) e.push(202)
         if (hasInfUpgrade(3)) e.push(161)
         if (iu15) e.push(218)
+        if (player.galaxy.times.gte(1)) e.push(275,283,229,249,260)
 
-        for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
+        for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218 && iu15) e.push(player.atom.elements[i])
 
         player.atom.elements = e
         if (hasElement(30,1)) player.atom.muonic_el = [30]
+        if (player.galaxy.times.gte(1)) player.atom.muonic_el = [1,2,3,4,5,6,7,8,9,10]
        else player.atom.muonic_el = []
         for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)
         let keep = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
@@ -671,7 +673,7 @@ function buyInfUpgrade(r,c) {
 function getInfSave() {
     let s = {
         theorem: E(0),
-        theorem_max: E(),
+        theorem_max: E(0),
         total: E(0),
         points: E(0),
         reached: false,
