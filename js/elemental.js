@@ -1752,7 +1752,7 @@ cost: E('ee1290'),
 },
 {
     desc: 'Einstein Theorem is better.',
-    cost: E('ee6100'),
+    cost: E('ee5450'),
     },
     {
         sn: true,

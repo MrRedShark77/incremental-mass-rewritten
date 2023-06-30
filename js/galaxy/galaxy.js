@@ -29,8 +29,8 @@ const GALAXY = {
         return x
     },
     tier() {
-        if (player.galaxy.stars.gte(tmp.galaxy.req)) player.galaxy.generator = player.galaxy.generator.add(1)
-        player.galaxy.stars = E(0)
+        if (player.galaxy.stars.gte(tmp.galaxy.req)){ player.galaxy.generator = player.galaxy.generator.add(1)
+        player.galaxy.stars = E(0)}
     },
 }
 function calcGalaxy(dt) {
