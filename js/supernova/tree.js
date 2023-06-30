@@ -1234,8 +1234,8 @@ const TREE_UPGS = {
         },
         glx5: {
             branch: ['glx2'],
-            desc: `Placeholder.`,
-            cost: E(1.25e11),
+            desc: `Automaticaly buy Elements 219-300.`,
+            cost: E(1e7),
         },
         glx6: {
             branch: ['glx3'],

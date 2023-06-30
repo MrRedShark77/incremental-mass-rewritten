@@ -63,6 +63,7 @@ const GALAXY = {
 }
 function calcGalaxy(dt) {
 if (player.galaxy.times.gt(0)) player.galaxy.stars = player.galaxy.stars.add(tmp.galaxy.gain.mul(dt))
+if (hasTree('glx5')) for (let x = 219;x <= 300; x++) buyElement(x,0)
 }
 function updateGalaxiesTemp() {
 tmp.galaxy.req = GALAXY.cost()

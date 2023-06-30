@@ -845,7 +845,7 @@ function calcInf(dt) {
         player.dark.c16.totalS = player.dark.c16.totalS.add(cs.mul(dt))
     }
     if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
-    if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
+ if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
 player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
 player.inf.total = player.inf.total.max(player.inf.points)
 if (FERMIONS.onActive('07')) {
