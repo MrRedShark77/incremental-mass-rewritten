@@ -1738,17 +1738,17 @@ cost: E('ee1290'),
             return x
         },
         effDesc(x) { return formatReduction(x)+' weaker' },
-        cost: E('e1e172'),
+        cost: E('e1e158'),
     },
     {
         inf: true,
         desc: 'Unlock Beyond-Prestiges.',
-        cost: E(5e43),
+        cost: E(1e43),
  },
  {
     c16: true,
     desc: `Automatically complete C16 and C17 challenges outside of them.<br>Bitriennium-239 effect formula is much more better.`,
-    cost: E('e5e174'),
+    cost: E('e1e159'),
 },
 {
     desc: 'Einstein Theorem is better.',
@@ -1762,12 +1762,12 @@ cost: E('ee1290'),
         {
             dark: true,
             desc: `Unseptennium-179 is even better (Per Prestige Level - 1.25x => <b>Per log3(Hex) - 1.25x</b>).`,
-            cost: E('e525000000'),
+            cost: E('e590000000'),
         },
         {
             c16: true,
             desc: `Galaxy Particles gain formula is better..`,
-            cost: E('e1e180'),
+            cost: E('e1e165'),
         },
     ],
     /*
