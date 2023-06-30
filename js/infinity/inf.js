@@ -818,7 +818,7 @@ function infButton() {
 }
 
 function calcInf(dt) {
-    if (player.galaxy.times.gte(1)&& tmp.inf_reached && tmp.inf_time == 0) {
+    if (!tmp.brokenInf && player.galaxy.times.gte(1)&& tmp.inf_reached && tmp.inf_time == 0) {
         tmp.inf_time += 1
         document.body.style.animation = "inf_reset_1 5s 1"
         setTimeout(()=>{
