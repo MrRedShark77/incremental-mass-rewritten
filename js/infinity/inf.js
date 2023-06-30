@@ -366,7 +366,7 @@ dark.matters.am = E(0)
 
             let x = tmp.peEffect.eff||E(1)
             if (hasElement(23,1) && (!CHALS.inChal(16))) x = x.pow(muElemEff(23,1))
-            if (player.chal.comps[18].gte(1)) x = x.mul(player.chal.comps[18].mul(25).pow(10).add(1))
+            if (player.chal.comps[18].gte(1)) x = x.mul(player.chal.comps[18].mul(25).pow(10).add(1)).max(1)
             return x
         },
         effect() {
@@ -851,14 +851,6 @@ player.inf.total = player.inf.total.max(player.inf.points)
 if (FERMIONS.onActive('07')) {
         player.inf.theorem_max = E(1)
     }
-if (CHALS.inChal(17)|| CHALS.inChal(18)) {
-player.inf.core[0].level = E(player.inf.theorem_max).floor()
-player.inf.core[1].level = E(player.inf.theorem_max).floor()
- player.inf.core[2].level = E(player.inf.theorem_max).floor()
-player.inf.core[3].level = E(player.inf.theorem_max).floor()
-player.inf.core[4].level = E(player.inf.theorem_max).floor()
-    player.inf.theorem_max = E(tmp.core_lvl)
-}
 
 if (hasElement(229) && player.inf.core[0].type == 'mass') player.inf.core[0].level = E(player.inf.theorem_max).floor()
 if (hasElement(249) && player.inf.core[1].type == 'proto') player.inf.core[1].level = E(player.inf.theorem_max).floor()
