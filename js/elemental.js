@@ -628,7 +628,7 @@ const ELEMENTS = {
                 let s = player.supernova.times.overflow(1e8,0.5)
                 if (!player.qu.rip.active) s = s.root(1.5)
                 let x = E(1.1).pow(s)
-                return x.softcap(player.qu.rip.active?'1e130':'1e308',0.01,0)
+                return x.softcap(player.qu.rip.active?'1e130':'1e308',0.01,0).min('e2e4')
             },
             effDesc(x) { return "x"+x.format() },
         },

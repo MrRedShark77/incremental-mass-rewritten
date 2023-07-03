@@ -874,7 +874,7 @@ const UPGS = {
                 cost: E(1e17),
                 effect() {
                     let x = (tmp.prestiges.base||E(1)).add(1).log10().tetrate(1.5).add(1)
-                    return x
+                    return x.min('e2.5e4')
                 },
                 effDesc(x=this.effect()) { return "x"+format(x) },
             },
