@@ -157,7 +157,7 @@ function setupHTML() {
 	setupDarkHTML()
 	setupInfHTML()
 	setupOrbHTML()
-
+setupGradeHTML()
 	/*
 	function setupTestHTML() {
 		let test_table = new Element("test_table")

@@ -290,6 +290,10 @@ function getPlayerData() {
             times: E(0),
             stars: E(0),
             generator: E(0),
+            grade: {
+                type: [E(0),E(0),E(0)],
+                theorems: E(0),
+            },
         },
         reset_msg: "",
         main_upg_msg: [0,0],

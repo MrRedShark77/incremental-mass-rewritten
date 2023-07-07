@@ -107,7 +107,30 @@
 p {
 	line-height: 0.6;
 }
-
+.grade_color1 {
+	color: #CD7F32
+}
+.grade_color2 {
+	color: #C0C0C0
+}
+.grade_color3 {
+	color: #FFD700
+}
+.grade_color4 {
+	color:  #E5E4E2
+}
+.grade_color5 {
+	color: #878681
+}
+.grade_color6 {
+	color: #e3340e
+}
+.grade_color7 {
+	color: #0a546a
+}
+.grade_color8 {
+	color: #0ee3d8
+}
 body {
     color: white;
     background-color: hsl(0, 0%, 7%);
