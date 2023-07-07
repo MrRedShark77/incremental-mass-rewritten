@@ -4,20 +4,29 @@ const GALAXY = {
         return x.max(1e100)
     },
     gain() {
-        let x = E(0.1)
+        let x = E(0.5)
  x = x.mul(tmp.galaxy.genEff)
+ if (player.galaxy.grade.type[0].gte(1)) x = x.mul(tmp.grade.eff[0][0])
         return x
     },
     cost() {
  let t = E(10).pow(player.galaxy.generator.mul(1.25).max(1))
         return t
     },
+    genBonus() {
+        let bonus = E(0)
+        if (hasTree("glx7")) bonus = bonus.add(treeEff('glx7'))
+        return bonus
+    },
     genEff() {
         let x = E(1)
         let pow = E(1.25)
+        let bonus = E(0)
+        if (hasTree("glx7")) bonus = bonus.add(treeEff('glx7'))
+        if (player.galaxy.grade.type[2].gte(1)) pow = pow.add(tmp.grade.eff[2][0])
         if (hasTree('glx1')) pow = pow.mul(treeEff('glx1'))
-        if (hasElement(299)) x = player.galaxy.generator.add(1).pow(pow).mul(player.galaxy.stars.add(1).root(5).max(1)).max(1)
-       else x = player.galaxy.generator.add(1).pow(pow).mul(player.galaxy.stars.add(1).log(1.15).max(1)).max(1)
+        if (hasElement(299)) x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).root(5).max(1)).max(1)
+       else x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).log(1.15).max(1)).max(1)
         return x
     },
     effect() {
@@ -76,6 +85,7 @@ tmp.galaxy.gain = GALAXY.gain()
 tmp.galaxy.bulk = GALAXY.getGalaxy()
 tmp.galaxy.genEff = GALAXY.genEff()
 tmp.galaxy.eff = GALAXY.effect()
+tmp.galaxy.bonus = GALAXY.genBonus()
 }
 function setupGradeHTML() {
     new_table = new Element("grade_table")
@@ -97,10 +107,11 @@ function setupGradeHTML() {
 }
 function updateGalaxiesHTML() {
     let ea = player.galaxy, t = ea.generator
+    let e = tmp.galaxy.genEff
     tmp.el.gen_btn.setHTML(`
-    <b>[Galaxy Particles Generator]</b> <b>[${format(t,0)}]</b><br>
+    <b>[Galaxy Particles Generator]</b> <b>[${format(t,0)} + ${format(tmp.galaxy.bonus,0)}]</b><br>
     Requirement: <b>${tmp.galaxy.req.format(0)}</b> Galaxy Particles<br>
-    Effect: <b>Boosts Galaxy Particles gain by x${tmp.galaxy.genEff.format(4)} (Based on Galaxy Particles)</b>
+    Effect: <b>Boosts Galaxy Particles gain by x${e.format(4)} (Based on Galaxy Particles)</b>
     `)
     tmp.el.gen_btn.setClasses({btn: true, half_full: true, locked: player.galaxy.stars.lt(tmp.galaxy.req)})
     tmp.el.stars_amt.setHTML(format(player.galaxy.stars))

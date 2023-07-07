@@ -212,6 +212,7 @@ dark.matters.am = E(0)
         if (hasElement(20,1)) x = x.mul(muElemEff(20))
         if (hasElement(235)) x = x.mul(elemEffect(235))
         x = x.mul(tmp.hm_base_boost)
+        if (player.galaxy.grade.type[1].gte(1)) x = x.mul(tmp.grade.eff[1][0])
         return x.max(1).floor()
     },
 

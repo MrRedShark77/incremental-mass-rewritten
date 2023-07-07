@@ -1230,27 +1230,37 @@ const TREE_UPGS = {
             reqDesc() {return "Get 10650000 Supernovas in C17 while in 'Exotic-Quark'."},
             branch: ['glx1'],
             desc: `C17's second reward is much better based on Galaxies.`,
-            cost: E(100000),
+            cost: E(50000),
         },
         glx5: {
             branch: ['glx2'],
             desc: `Unlock Gradings.`,
-            cost: E(268000),
+            cost: E(100000),
         },
         glx6: {
             branch: ['glx3'],
-            desc: `Placeholder.`,
-            cost: E(7.8e11),
+            desc: `Increase the chance to get Spiral Galaxy.`,
+            cost: E(1850000),
         },
         glx7: {
             branch: ['glx4'],
-            desc: `Placeholder.`,
-            cost: E(1e15),
+            desc: `Add free Galaxy particle generator levels by Spiral Galaxy effect at boosted rate.`,
+            effect() {
+                let x = tmp.grade.eff[2][0].mul(15).max(1)
+                return x.floor()
+            },
+            effDesc(x) { return "+"+format(x) },
+            cost: E(15000000),
         },
         glx8: {
             branch: ['glx4'],
-            desc: `Placeholder.`,
-            cost: E(1.75e16),
+            desc: `Dalton Theorem's Meta-score is boosted by Galaxy Partivles.`,
+            effect() {
+                let x = player.galaxy.stars.add(1).pow(.15)
+                return x.softcap('1e15000',0.5,0)
+            },
+            effDesc(x) { return "x"+format(x) },
+            cost: E(100000000),
         },
         glx9: {
             branch: ['glx5'],

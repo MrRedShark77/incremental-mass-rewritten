@@ -44,21 +44,22 @@ power: [
             p=>{
                 for (let i = 0; i < player.galaxy.grade.type.length; i++) {
                 let pow = tmp.grade.power[i]
-                let x = [p.add(1).root(2).pow(pow),p.add(1).root(15).pow(pow)]
+                let x = [p.add(1).root(2).pow(pow),p.add(1).pow(1.75).pow(pow)]
                 return x
                 }
             },
             p=>{
                 for (let i = 0; i < player.galaxy.grade.type.length; i++) {
                 let pow = tmp.grade.power[i]
-                let x = [p.add(1).root(2).pow(pow),p.add(1).root(15).pow(pow)]
+                
+                let x = [p.add(1).pow(4.35).pow(pow),p.add(1).root(10).pow(pow)]
                 return x
                 }
             },
             p=>{
                 for (let i = 0; i < player.galaxy.grade.type.length; i++) {
                 let pow = tmp.grade.power[i]
-                let x = [p.add(1).root(2).pow(pow),p.add(1).root(15).pow(pow)]
+                let x = [p.add(1).pow(1.5).div(10).pow(pow)]
                 return x
                 }
             },
@@ -66,7 +67,7 @@ power: [
         effDesc: [
             x=>{ return `Boost Galaxy Particles gain. <b class='sky'>(x${format(x[0])})</b><br> Boost 4th Dark Shadow effect. <b class='sky'>(x${format(x[1])})</b>` },
             x=>{ return `Boost Infinity gain. <b class='sky'>(x${format(x[0])})</b><br> Increase the Power of theorems. <b class='sky'>(${formatPercent(x[1]-1)})</b>` },
-            x=>{ return `Boost Galaxy Particles generator base exponent. <b class='sky'>(+${format(x)})</b>` },
+            x=>{ return `Boost Galaxy Particles generator base exponent. <b class='sky'>(+${format(x[0])})</b>` },
         ],
         effPow: [
             pow=>{ return `Effects Power: <b class='sky'>(${formatPercent(pow)})</b>` },
@@ -101,12 +102,15 @@ function giveRandomPGrading(v, max=false) {
 function respecPGrading() {
     createConfirm("Are you sure you want to respec all Gradings?",'respectPGs',()=>{
         for (let i =0; i < 3; i++) player.galaxy.grade.type[i] = E(0)
-        GALAXY.doReset()
     })
 }
 
 function calcGradeChances() {
     var sum = 0
+    if (hasTree('glx6')) {GRADE.particle.weight[2] = 3
+        tmp.grade.w[2] = 3
+    GRADE.particle.total_w = 13
+tmp.grade.total_w = 13}
     for (let x in GRADE.particle.names) {
         sum += tmp.grade.w[x]
         GRADE.particle.chance[x] = sum / tmp.grade.total_w
@@ -115,7 +119,6 @@ function calcGradeChances() {
 
 function updateGradeTemp() {
     let tp = tmp.grade
-
     tp.parts = []
     tp.bonus = []
     tp.t_base = E(2680)
@@ -142,7 +145,7 @@ function updateGradeTemp() {
 
     calcGradeChances()
 }
-
+function gradeEffect(x,y,def=1) { return tmp.grade.eff[x][y]||def }
 function updateGradeHTML() {
     tmp.el.grade_btns.setDisplay(true)
     tmp.el.grade_theorem.setTxt(format(tmp.grade.unspent,0)+" / "+format(player.galaxy.grade.theorems,0))

@@ -932,7 +932,7 @@ const BEYOND_RANKS = {
             2: [
                 ()=>{
                     let x = E(1)
-                    if (player.mass.gte('e3e788')) x = player.mass.div('e3e788').max(1).log10().log10().log10().log2().div(3).add(1)
+                    if (player.mass.gte('e3e788')) x = player.mass.div('e3e788').max(1).log10().add(1).log10().add(1).log10().add(1).log2().div(3).add(1)
 
                     return x
                 },

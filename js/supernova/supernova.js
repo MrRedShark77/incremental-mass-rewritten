@@ -75,7 +75,7 @@ const SUPERNOVA = {
 
         ml_fp = E(1).mul(tmp.bosons.upgs.gluon[3].effect)
         maxlimit = E(1e20).pow(x.scaleEvery('supernova',false,[1,1,1,1,ff]).div(ml_fp).pow(1.25)).mul(1e90)
-        maxlimitGal = E('ee28000').pow(player.galaxy.times.scaleEvery('galaxy',false).pow(5000)).mul('ee28000')
+        maxlimitGal = E('ee35000').pow(player.galaxy.times.scaleEvery('galaxy',false).pow(5000)).mul('ee28000')
         bulk = E(0)
         bulkGal = E(0)
         if (player.stars.points.div('ee28000').gte(1)) bulkGal = player.stars.points.div('ee28000').max(1).log('ee35000').max(0).root(5000).scaleEvery('galaxy',true).add(1).floor()

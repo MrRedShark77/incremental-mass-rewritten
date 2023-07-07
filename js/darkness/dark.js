@@ -125,7 +125,7 @@ const DARK = {
         if (hasElement(34,1)) x.mass = x.mass.pow(muElemEff(34))
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10)
-        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1)).softcap(600000,0.25,0)
+        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1)).mul(player.galaxy.grade.type[0].gte(1)?gradeEffect(0,1):1).softcap(600000,0.25,0)
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
         if (!tmp.c16active && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)

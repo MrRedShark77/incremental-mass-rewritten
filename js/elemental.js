@@ -1295,7 +1295,7 @@ const ELEMENTS = {
             desc: `Quantum Shard’s base is boosted by FSS.`,
             cost: E('e640000'),
             effect() {
-                let x = player.dark.matters.final.div(10).add(1)
+                let x = player.dark.matters.final.max(1).div(10).add(1)
                 if (hasElement(288)) x = player.dark.matters.final.mul(3).add(1)
                 return x
             },
@@ -1365,7 +1365,7 @@ const ELEMENTS = {
             desc: `Max Theorem's Level boosts Infinity Points.`,
             cost: E('e4e487'),
             effect() {
-                let x = player.inf.theorem_max.div(2).log(1.1).add(1)
+                let x = player.inf.theorem_max.div(2).max(1).log(1.1).add(1)
                 if (hasPrestige(1,950)) x = x.pow(1.25)
                 return x
             },
@@ -1381,7 +1381,7 @@ const ELEMENTS = {
             desc: `Infinity Points boosts Exotic Atoms.`,
             cost: E('e1670000'),
             effect() {
-                let x = player.inf.points.log(1.1).add(1)
+                let x = player.inf.points.add(1).log(1.1).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1395,8 +1395,8 @@ const ELEMENTS = {
             desc: `Dimensional Mass adds free C16 max completions.`,
             cost: E('e1.6e34'),
             effect() {
-                let x = player.inf.dim_mass.div(100).log(10).log(2).add(1)
-                if (hasElement(295)) x = player.inf.dim_mass.div(20).log(1.1).add(1)
+                let x = player.inf.dim_mass.div(100).max(1).log(10).add(1).log(2).add(1)
+                if (hasElement(295)) x = player.inf.dim_mass.div(20).max(1).log(1.1).add(1)
                 return x
             },
             effDesc(x) { return "+"+format(x,3) },
@@ -1410,7 +1410,7 @@ const ELEMENTS = {
             desc: `Boost Dark Rays 4th effect by Infinity Points.`,
             cost: E('e1e640'),
             effect() {
-                let x = player.inf.points.log10().log(2).div(10).add(1)
+                let x = player.inf.points.add(1).log10().log(2).div(10).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1440,7 +1440,7 @@ const ELEMENTS = {
             cost: E('e1e37'),
             effect() {
                 if (CHALS.inChal(17)|| CHALS.inChal(18)) x = E(0)
-                else x = player.inf.dim_mass.root(2.25).add(1)
+                else x = player.inf.dim_mass.add(1).root(2.25).add(1)
                 return x
             },
             effDesc(x) { return "+"+format(x,3) },
@@ -1767,7 +1767,7 @@ cost: E('ee1290'),
         {
             c16: true,
             desc: `Galaxy Particles gain formula is better..`,
-            cost: E('e1e210'),
+            cost: E('e1e198'),
         },
     ],
     /*
