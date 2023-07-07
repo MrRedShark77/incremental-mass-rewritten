@@ -605,7 +605,8 @@ ret = overflow(ret,1e68,0.5)
         title: "Challenge Madness",
         desc: `
         • Some elements will be [Overflowed].<br>
-        • You are trapped in C1-17, you can;t gain dark rays, but they're capped a 1e12.<br>
+        • You are trapped in C1-17.<br>
+        • Your dark rays are capped at 1e12.<br>
         • You can't enter Big Rip<br>
         `,
         reward: `Boost Dimensional Mass gain.<br><span class='orange'>At 100 completions, unlock ???</span>`,

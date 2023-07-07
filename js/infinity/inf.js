@@ -587,7 +587,7 @@ dark.matters.am = E(0)
         },
     },
     em: {
-        cost(i) { return Decimal.pow(1.2,i.scaleEvery('em')).mul(1e42).floor() },
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('em')).mul(1e38).floor() },
         can() { return player.inf.points.gte(tmp.emCost) },
         buy() {
             if (this.can()) {
@@ -614,7 +614,7 @@ dark.matters.am = E(0)
         },
     },
     hm: {
-        cost(i) { return Decimal.pow(1.2,i.scaleEvery('hm')).mul(1e42).floor() },
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('hm')).mul(1e38).floor() },
         can() { return player.inf.points.gte(tmp.hmCost) },
         buy() {
             if (this.can()) {
@@ -725,12 +725,12 @@ function updateInfTemp() {
 
     tmp.emCost = INF.em.cost(player.inf.em)
     tmp.emBulk = E(0)
-    if (player.inf.points.gte(100)) tmp.emBulk = player.inf.points.div(1e42).log(1.2).scaleEvery('em',true).add(1).floor()
+    if (player.inf.points.gte(100)) tmp.emBulk = player.inf.points.div(1e38).log(1.2).scaleEvery('em',true).add(1).floor()
     tmp.emEffect = INF.em.effect()
 
     tmp.hmCost = INF.hm.cost(player.inf.hm)
     tmp.hmBulk = E(0)
-    if (player.inf.points.gte(100)) tmp.hmBulk = player.inf.points.div(1e42).log(1.2).scaleEvery('hm',true).add(1).floor()
+    if (player.inf.points.gte(100)) tmp.hmBulk = player.inf.points.div(1e38).log(1.2).scaleEvery('hm',true).add(1).floor()
     tmp.hmEffect = INF.hm.effect()
     tmp.dim_mass_gain = INF.dim_mass.gain()
     tmp.dim_mass_eff = INF.dim_mass.effect()
