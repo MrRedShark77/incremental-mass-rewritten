@@ -809,8 +809,18 @@ function calcInf(dt) {
             tmp.el.inf_popup.setDisplay(true)
         },8500)
     }
-    
-    if (!player.inf.reached && player.mass.gte(INF.req)) player.inf.reached=true
+    if (tmp.inf_reached && hasTree('glx9')) {
+        player.inf.theorem = player.inf.theorem.add(1)
+        if (player.inf.theorem.eq(0)) {
+            player.inf.points = player.inf.points.add(2)
+            player.inf.total = player.inf.total.add(2)
+        }
+        else {
+            player.inf.points = player.inf.points.add(tmp.IP_gain)
+            player.inf.total = player.inf.total.add(tmp.IP_gain)
+        }
+    }
+     if (!player.inf.reached && player.mass.gte(INF.req)) player.inf.reached=true
     if (hasElement(245) && (!CHALS.inChal(17))&& !(CHALS.inChal(18))) {
         let cs = tmp.c16.shardGain
 
@@ -823,6 +833,10 @@ player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
 player.inf.total = player.inf.total.max(player.inf.points)
 if (FERMIONS.onActive('07')) {
         player.inf.theorem_max = E(1)
+    }
+    power = Math.round(100+getPowerMult(tmp.core_lvl)*100)/100
+    for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i] && hasElement(300)) {
+        if (power > player.inf.core[i].power) player.inf.core[i].power=power
     }
 if (CHALS.inChal(17)|| CHALS.inChal(18)) {
 player.inf.core[0].level = E(player.inf.theorem_max).floor()

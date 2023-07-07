@@ -1256,7 +1256,7 @@ const TREE_UPGS = {
             branch: ['glx4'],
             desc: `Dalton Theorem's Meta-score is boosted by Galaxy Partivles.`,
             effect() {
-                let x = player.galaxy.stars.add(1).pow(.15)
+                let x = player.galaxy.stars.add(1).log10().add(1).log(2).div(2)
                 return x.softcap('1e15000',0.5,0)
             },
             effDesc(x) { return "x"+format(x) },
@@ -1264,8 +1264,8 @@ const TREE_UPGS = {
         },
         glx9: {
             branch: ['glx5'],
-            desc: `Placeholder.`,
-            cost: E(3e18),
+            desc: `Automatically get Infinity Theorem without once you get to its limit of mass.<br>Getting Infinity Theorem automatically dont reset, but you will gain IP on current Infinity.`,
+            cost: E(1e11),
         },
         glx10: {
             branch: ['glx6'],

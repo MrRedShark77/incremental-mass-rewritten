@@ -160,20 +160,20 @@ const CORE = {
             `?.`,
         ],
         res: `Exotic Atom`,
-        boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1).toNumber()},
+        boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1).mul(hasTree('glx8')?treeEff('glx8'):1).toNumber()},
         eff: [
             s => {
                 let x = Decimal.pow(s+1,s**0.5)
                 
                 x = overflow(x,100,0.5)
-
+                x = overflow(x,'1e120',0.25)
                 return x
             },
             s => {
                 let x = Decimal.pow(s+1,s**0.5*2)
 
                 x = overflow(x,100,0.5)
-
+                x = overflow(x,'1e120',0.25)
                 return x
             },
             s => {
@@ -196,8 +196,7 @@ const CORE = {
             s => {
                 let x = Decimal.pow(s-1,s**0.05*0.025).div(30)
 
-                x = overflow(x,100,0.5)
-
+                x = overflow(x,0.05,0.5)
                 return x
             },
             s => {
@@ -334,8 +333,8 @@ const CORE = {
                 return x
             },
             s => {
-                let x = Math.log10(s+1)/100+1
-
+                let x = E(Math.log10(s+1)/100+1)
+                x = overflow(x,1.125,0.5)
                 return x
             },
             s => {
@@ -505,7 +504,7 @@ function setupCoreHTML() {
 }
 
 function getCoreChance() { return 1-CORE_CHANCE_BASE**Math.floor(tmp.core_lvl)**0.4 }
-function getPowerMult() { if (hasAscension(0,6)) return E(Math.floor(tmp.core_lvl-1)**0.5/100).add(ascensionEff(0,6)) 
+function getPowerMult() { if (hasAscension(0,6)) return Math.floor(tmp.core_lvl-1)**0.5/100 * (ascensionEff(0,6) * tmp.grade.eff[1][1]) 
 else return Math.floor(tmp.core_lvl-1)**0.5/100}
 
 function updateCoreHTML() {

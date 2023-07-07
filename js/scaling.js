@@ -337,6 +337,9 @@ function getScalingStart(type, name) {
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
 		}
+		else if (name == 'glory'){
+			if (hasPrestige(4,131)) start= start.pow(1.25)
+		}
 		else if (name=="FSS") {
 			if (hasBeyondRank(3,2)) start = start.add(1)
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
@@ -625,9 +628,6 @@ function noScalings(type,name) {
 	}
 	else if (name=="prestige") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
-	}
-	else if (name == 'glory'){
-		if (hasPrestige(4,131) && type == 0) return true
 	}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true

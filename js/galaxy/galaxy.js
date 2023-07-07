@@ -25,9 +25,9 @@ const GALAXY = {
         if (hasTree("glx7")) bonus = bonus.add(treeEff('glx7'))
         if (player.galaxy.grade.type[2].gte(1)) pow = pow.add(tmp.grade.eff[2][0])
         if (hasTree('glx1')) pow = pow.mul(treeEff('glx1'))
-        if (hasElement(299)) x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).root(5).max(1)).max(1)
+        if (hasElement(299)) x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).root(2).max(1)).max(1)
        else x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).log(1.15).max(1)).max(1)
-        return x
+        return x = overflow(x,E(1e9),0.25)
     },
     effect() {
         let x = E(1)
