@@ -21,7 +21,7 @@ const SCALE_START = {
 		FSS: E(5),
 		pe: E(25),
 		inf_theorem: E(10),
-		galaxy: E(5),
+		galaxy: E(10),
     },
 	hyper: {
 		rank: E(120),
@@ -41,7 +41,7 @@ const SCALE_START = {
 		glory: E(60),
 		pe: E(210),
 massUpg4: E(200),
-		inf_theorem: E(30),
+		inf_theorem: E(16),
 	},
 	ultra: {
 		rank: E(600),
@@ -103,8 +103,8 @@ const SCALE_POWER= {
 		massUpg4: 3,
 		FSS: 2,
 		pe: 2,
-		inf_theorem: 1.25,
-		galaxy: 20,
+		inf_theorem: 2,
+		galaxy: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -166,6 +166,7 @@ const SCALE_POWER= {
 const SCALE_FP = {
 	tickspeed() { return [1,1,1,tmp.tickspeedFP] },
 }
+
 const QCM8_SCALES = ['rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic', 'supercritical'] // super, hyper, ultra, meta, exotic
@@ -341,7 +342,7 @@ function getScalingStart(type, name) {
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 			if (hasBeyondRank(8,2)) start = start.add(beyondRankEffect(8,2))
 		}
-		else if (name!=='FSS' && name!=='inf_theorem' && name!=='galaxy') {
+		else if (name='pe') {
 if (hasElement(252)) start = start.add(elemEffect(252))
 		}
 	}
@@ -529,9 +530,6 @@ function getScalingPower(type, name) {
 		else if (name =='honor'){
 			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
 		}
-		else if (name='glory') {
-			if (hasPrestige(2,131)) power = power.mul(0.9)
-		}
 		else if (name=="tetr") {
 			if (hasElement(154)) power = power.mul(0.9)
 		}
@@ -627,6 +625,9 @@ function noScalings(type,name) {
 	}
 	else if (name=="prestige") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
+	}
+	else if (name == 'glory'){
+		if (hasPrestige(4,131) && type == 0) return true
 	}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true

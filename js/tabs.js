@@ -22,7 +22,6 @@ const TABS = {
         { id: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu" },
         { id: "Darkness", icon: "ic:baseline-remove-red-eye", color: "grey", unl() { return player.dark.unl }, style: "dark" },
         { id: "Infinity", icon: "game-icons:infinity", color: "orange", unl() { return tmp.inf_unl }, style: "inf" },
-        { id: "Galaxy", icon: "solar:star-rings-broken", color: "white", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
         { id: "Options", icon: "mdi:gear" },
     ],
     2: {
@@ -34,6 +33,7 @@ const TABS = {
             { id: "Indescribable Matter", unl() { return quUnl() }, style: "qu" },
             { id: "The Parallel", unl() { return hasInfUpgrade(9) }, style: "inf" },
             { id: "Antimatter", unl() { return hasElement(268) }, style: "dark" },
+            { id: "Galaxy Particles", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
         ],
         1: [
             { id: "Ranks Rewards" },
@@ -82,10 +82,6 @@ const TABS = {
             { id: "Orb Of Creation - Upgrades", unl() {return player.chal.comps[17].gte(50)} },
         ],
         9: [
-            { id: "Galaxy Particles", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
-            { id: "Grading", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
-        ],
-        10: [
             { id: "Options" },
             { id: "Resource Hider" },
         ],

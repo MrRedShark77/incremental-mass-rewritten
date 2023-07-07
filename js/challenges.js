@@ -214,8 +214,8 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x], fp = 1, goal = EINF, bulk = E(0)
         if (x == 17 && (hasElement(295) && (!CHALS.inChal(17)))) {
-            goal = lvl.gt(0) ? Decimal.pow('ee1000',Decimal.pow(1.01,lvl.sub(1).pow(1.15))) : chal.start
-            if (res.gte(chal.start)) bulk = res.log('ee1000').max(1).log(1.01).root(1.15).add(1).floor()
+            goal = lvl.gt(0) ? Decimal.pow('ee1000',Decimal.pow(1.01,lvl.sub(1).pow(1.25))) : chal.start
+            if (res.gte(chal.start)) bulk = res.log('ee1000').max(1).log(1.01).root(1.25).add(1).floor()
             if (res.gte('ee1000')) bulk = bulk.add(1)
         }
         else if (x == 16 && (hasElement(295) && (!CHALS.inChal(16)))) {

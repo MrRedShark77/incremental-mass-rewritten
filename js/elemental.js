@@ -397,7 +397,7 @@ const ELEMENTS = {
             cost: E('e5200'),
             effect() {
                 let x = player.mass.max(1).log10().root(2)
-                if (hasElement(292)) x = player.mass.max(1).log(9).root(3)
+                if (hasElement(292)) x = player.mass.max(1).log(8).root(1.5)
                 return x
             },
             effDesc(x) { if (hasElement(292)) return "^"+format(x)
@@ -1041,7 +1041,7 @@ const ELEMENTS = {
             desc: `Entropy's cap is increased by 25% every prestige level. Entropic Evaporation^2 is slightly weaker.`,
             cost: E("e4.4e76"),
             effect() {
-                if (hasElement(298)) x = Decimal.pow(1.25,player.ranks.hex)
+                if (hasElement(298)) x = Decimal.pow(1.25,player.ranks.hex.root(2.6))
                 else x = Decimal.pow(1.25,player.prestiges[0])
                 return x
             },
@@ -1365,7 +1365,7 @@ const ELEMENTS = {
             desc: `Max Theorem's Level boosts Infinity Points.`,
             cost: E('e4e487'),
             effect() {
-                let x = player.inf.theorem_max.div(2).add(1).log(1.1).add(1)
+                let x = player.inf.theorem_max.div(2).log(1.1).add(1)
                 if (hasPrestige(1,950)) x = x.pow(1.25)
                 return x
             },
@@ -1381,7 +1381,7 @@ const ELEMENTS = {
             desc: `Infinity Points boosts Exotic Atoms.`,
             cost: E('e1670000'),
             effect() {
-                let x = player.inf.points.add(1).log(1.1).add(1)
+                let x = player.inf.points.log(1.1).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1395,7 +1395,7 @@ const ELEMENTS = {
             desc: `Dimensional Mass adds free C16 max completions.`,
             cost: E('e1.6e34'),
             effect() {
-                let x = player.inf.dim_mass.div(100).add(1).log(10).log(2).add(1)
+                let x = player.inf.dim_mass.div(100).log(10).log(2).add(1)
                 if (hasElement(295)) x = player.inf.dim_mass.div(20).log(1.1).add(1)
                 return x
             },
@@ -1410,7 +1410,7 @@ const ELEMENTS = {
             desc: `Boost Dark Rays 4th effect by Infinity Points.`,
             cost: E('e1e640'),
             effect() {
-                let x = player.inf.points.add(1).log10().add(1).log(2).div(10).add(1)
+                let x = player.inf.points.log10().log(2).div(10).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1490,7 +1490,7 @@ const ELEMENTS = {
             desc: `Bitrinilium-230 effect is better based on Infinity Points.`,
             cost: E('e7990000'),
             effect() {
-                let x = player.inf.points.max(1).root(10).add(1).log10().div(3).add(1)
+                let x = player.inf.points.max(1).root(10).log10().div(3).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1576,7 +1576,7 @@ x = overflow(x,1e180,0.1)
             desc: `Infinity Points boosts mass overflow^3 in C16.`,
             effect() {
                 if (CHALS.inChal(17)|| CHALS.inChal(18)) x = E(1)
-                else x = player.inf.points.add(1).log(1.1).pow(2).add(1).floor()
+                else x = player.inf.points.max(1).log(1.1).pow(2).add(1).floor()
                 return x
             },
             effDesc(x) { return "^"+format(x,0)+' later' },
@@ -1662,7 +1662,7 @@ cost: E('ee1290'),
             c16: true,
             desc: `[Meta-Lepton] reward effect is better based on Infinity Points.<br>Reduce Meta-Prestige Level power based on Infinity Points.`,
             effect() {let x = E(1)
-            x = player.inf.points.add(1).log10().log2().add(1)
+            x = player.inf.points.max(1).log10().log2().add(1)
             let ret = E(1)
             ret = Decimal.pow(0.35,player.inf.points.max(1).log10().log10())
         return {eff: x, ret: ret}},
@@ -1734,40 +1734,40 @@ cost: E('ee1290'),
         c16: true,
         desc: `Impossible Challenge scaling is weaker based on Ascension Base.`,
         effect() {
-            x = Decimal.pow(0.75,tmp.ascensions.base.add(1).log10().root(10))
+            x = Decimal.pow(0.75,tmp.ascensions.base.max(1).log10().root(10))
             return x
         },
         effDesc(x) { return formatReduction(x)+' weaker' },
-        cost: E('e1e158'),
+        cost: E('e1e184'),
     },
     {
         inf: true,
         desc: 'Unlock Beyond-Prestiges.',
-        cost: E(1e43),
+        cost: E(5e43),
  },
  {
     c16: true,
     desc: `Automatically complete C16 and C17 challenges outside of them.<br>Bitriennium-239 effect formula is much more better.`,
-    cost: E('e1e159'),
+    cost: E('e5e186'),
 },
 {
     desc: 'Einstein Theorem is better.',
-    cost: E('ee5450'),
+    cost: E('ee6050'),
     },
     {
         sn: true,
         desc: 'Unlock Galaxies.',
-        cost: E('6.5e15'),
+        cost: E('7.77e15'),
         },
         {
             dark: true,
             desc: `Unseptennium-179 is even better (Per Prestige Level - 1.25x => <b>Per log3(Hex) - 1.25x</b>).`,
-            cost: E('e590000000'),
+            cost: E('e605000000'),
         },
         {
             c16: true,
             desc: `Galaxy Particles gain formula is better..`,
-            cost: E('e1e165'),
+            cost: E('e1e200'),
         },
     ],
     /*

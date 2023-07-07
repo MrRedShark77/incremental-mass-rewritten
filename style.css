@@ -951,30 +951,7 @@ h4 {
 	margin-bottom: 10px;
 	align-items: center;
 }
-.grade_color1 {
-	color: #CD7F32
-}
-.grade_color2 {
-	color: #C0C0C0
-}
-.grade_color3 {
-	color: #FFD700
-}
-.grade_color4 {
-	color:  #E5E4E2
-}
-.grade_color5 {
-	color: #878681
-}
-.grade_color6 {
-	color: #e3340e
-}
-.grade_color7 {
-	color: #0a546a
-}
-.grade_color8 {
-	color: #0ee3d8
-}
+
 .btn.rad {
 	width: 200px;
 	height: 60px;
@@ -989,15 +966,8 @@ h4 {
 	width: 100%;
 	align-items: center;
 }
-.grade {
-	width: 100%;
-	align-items: center;
-	background-color: hsla(163, 37%, 22%, 0.212);
-}
+
 .primordium > div {
-	text-align: left;
-}
-.grade > div {
 	text-align: left;
 }
 

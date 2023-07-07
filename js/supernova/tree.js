@@ -1202,7 +1202,7 @@ const TREE_UPGS = {
         glx1: {
 
             desc: `Galaxies boosts Galaxy Particles Generator effect' exponential base.`,
-            cost: E(1000),
+            cost: E(1e5),
 
             effect() {
                 let x = player.galaxy.times.add(1).pow(0.65).mul(1.15)
@@ -1218,24 +1218,24 @@ const TREE_UPGS = {
                 return x.softcap('1e15000',0.5,0)
             },
             effDesc(x) { return "x"+format(x) },
-            cost: E(7500),
+            cost: E(1e6),
         },
         glx3: {
             branch: ['glx1'],
             desc: `Auto-complete Exotic Fermions outside of them.`,
-            cost: E(75000),
+            cost: E(1e7),
         },
         glx4: {
             req() {return (CHALS.inChal(17) && FERMIONS.onActive('07') && (player.supernova.times.gte(10650000)))},
             reqDesc() {return "Get 10650000 Supernovas in C17 while in 'Exotic-Quark'."},
             branch: ['glx1'],
             desc: `C17's second reward is much better based on Galaxies.`,
-            cost: E(1000000),
+            cost: E(1e8),
         },
         glx5: {
             branch: ['glx2'],
-            desc: `Unlock Grading.`,
-            cost: E(2680000),
+            desc: `Placeholder.`,
+            cost: E(1.25e11),
         },
         glx6: {
             branch: ['glx3'],

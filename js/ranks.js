@@ -304,8 +304,8 @@ const PRESTIGES = {
         for (let i = 0; i < RANKS.names.length; i++) {
             let r = player.ranks[RANKS.names[i]]
             let br = E(tmp.beyond_ranks.max_tier)
-        if (hasPrestige(0,18) && i == 0) r = r.mul(2)
-        if (hasBeyondPres(1,2)) x = x.add(br).mul(r.add(1))
+            if (hasBeyondPres(0,2)) x = x.add(br).mul(r.add(1))
+            if (hasPrestige(0,18) && i == 0) r = r.mul(2)
            else x = x.mul(r.add(1))
         }
 
@@ -470,7 +470,7 @@ const PRESTIGES = {
         {
             "1": `Increase Newton Modificator Power is 1.25x stronger per Valor.`,
             "2": `Automate Valor and it doesnt reset anything.`,
-            131: 'Hyper-Glory is 10% weaker.',
+            131: 'Hyper-Glory is 50% weaker.',
         },
     ],
     rewardEff: [
@@ -579,7 +579,7 @@ const PRESTIGES = {
         {
             "2": [()=>{
                 let base = 1.25
-                if (hasBeyondPres(1,1)) base += beyondPresEff(1,1)
+                if (hasBeyondPres(0,1)) base += beyondPresEff(0,1)
                 let x = Decimal.pow(base,player.prestiges[3])
                 return x
             },x=>"x"+x.format()+" later"],
@@ -1106,7 +1106,7 @@ function updateRanksHTML() {
         for (let x = 0; x < PRES_LEN; x++) {
             let unl = PRESTIGES.unl[x]?PRESTIGES.unl[x]():true
 
-            tmp.el["pres_div_"+x].setDisplay(unl && (!tmp.bpUnl || x > 3))
+            tmp.el["pres_div_"+x].setDisplay(unl && (!tmp.bpUnl || x > 1))
 
             if (unl) {
                 let p = player.prestiges[x] || E(0)

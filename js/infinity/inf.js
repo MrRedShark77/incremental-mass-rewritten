@@ -16,13 +16,11 @@ const INF = {
         if (hasInfUpgrade(2)) e.push(202)
         if (hasInfUpgrade(3)) e.push(161)
         if (iu15) e.push(218)
-        if (player.galaxy.times.gte(1)) e.push(275,283,229,249,260)
 
- for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
+        for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
 
         player.atom.elements = e
         if (hasElement(30,1)) player.atom.muonic_el = [30]
-        if (player.galaxy.times.gte(1)) player.atom.muonic_el = [1,2,3,4,5,6,7,8,9,10]
        else player.atom.muonic_el = []
         for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)
         let keep = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
@@ -340,10 +338,10 @@ dark.matters.am = E(0)
                 desc: "Now you can passively gain Infinity Points based on Max Theorem's Level",
                 cost: E(5e19),
                 effect() {
-                    if (hasElement(27,1)) x = player.dark.c16.shard.add(1).root(10).log2().add(1).max(2)
+                    if (hasElement(27,1)) x = player.dark.c16.shard.root(10).log2().add(1)
                     else x = player.inf.theorem_max.max(1).log10().add(1)
 
-                    return x.max(2)
+                    return x
                 },
                 effectDesc:
                  x => (hasElement(27,1)?'Based on Corrupted Shards - ':`Based on Max Theorem's Level - `) + formatPercent(x-1),
@@ -366,7 +364,7 @@ dark.matters.am = E(0)
 
             let x = tmp.peEffect.eff||E(1)
             if (hasElement(23,1) && (!CHALS.inChal(16))) x = x.pow(muElemEff(23,1))
-            if (player.chal.comps[18].gte(1)) x = x.mul(player.chal.comps[18].mul(25).pow(10).add(1)).max(1)
+            if (player.chal.comps[18].gte(1)) x = x.mul(player.chal.comps[18].mul(25).pow(10).add(1))
             return x
         },
         effect() {
@@ -589,7 +587,7 @@ dark.matters.am = E(0)
         },
     },
     em: {
-        cost(i) { return Decimal.pow(1.2,i.scaleEvery('em')).mul(1e38).floor() },
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('em')).mul(1e42).floor() },
         can() { return player.inf.points.gte(tmp.emCost) },
         buy() {
             if (this.can()) {
@@ -616,7 +614,7 @@ dark.matters.am = E(0)
         },
     },
     hm: {
-        cost(i) { return Decimal.pow(1.2,i.scaleEvery('hm')).mul(1e38).floor() },
+        cost(i) { return Decimal.pow(1.2,i.scaleEvery('hm')).mul(1e42).floor() },
         can() { return player.inf.points.gte(tmp.hmCost) },
         buy() {
             if (this.can()) {
@@ -673,7 +671,7 @@ function buyInfUpgrade(r,c) {
 function getInfSave() {
     let s = {
         theorem: E(0),
-        theorem_max: E(0),
+        theorem_max: E(),
         total: E(0),
         points: E(0),
         reached: false,
@@ -727,12 +725,12 @@ function updateInfTemp() {
 
     tmp.emCost = INF.em.cost(player.inf.em)
     tmp.emBulk = E(0)
-    if (player.inf.points.gte(100)) tmp.emBulk = player.inf.points.div(1e38).log(1.2).scaleEvery('em',true).add(1).floor()
+    if (player.inf.points.gte(100)) tmp.emBulk = player.inf.points.div(1e42).log(1.2).scaleEvery('em',true).add(1).floor()
     tmp.emEffect = INF.em.effect()
 
     tmp.hmCost = INF.hm.cost(player.inf.hm)
     tmp.hmBulk = E(0)
-    if (player.inf.points.gte(100)) tmp.hmBulk = player.inf.points.div(1e38).log(1.2).scaleEvery('hm',true).add(1).floor()
+    if (player.inf.points.gte(100)) tmp.hmBulk = player.inf.points.div(1e42).log(1.2).scaleEvery('hm',true).add(1).floor()
     tmp.hmEffect = INF.hm.effect()
     tmp.dim_mass_gain = INF.dim_mass.gain()
     tmp.dim_mass_eff = INF.dim_mass.effect()
@@ -781,24 +779,7 @@ function updateInfTemp() {
 }
 
 function infButton() {
-    if (tmp.inf_time == 1 && player.galaxy.times.gte(1)) {
-        tmp.inf_time += 1
-
-        INF.goInf(true)
-
-        document.body.style.animation = "inf_reset_2 2s 1"
-
-        setTimeout(()=>{
-            tmp.inf_time += 1
-            tmp.el.inf_popup.setDisplay(false)
-
-            setTimeout(()=>{
-                tmp.inf_time = 0
-                document.body.style.backgroundColor = 'hsl(0, 0%, 7%)'
-            },1000)
-        },1000)
-    }
-   else if (tmp.inf_time == 2) {
+    if (tmp.inf_time == 2) {
         tmp.inf_time += 1
 
         INF.goInf(true)
@@ -818,16 +799,7 @@ function infButton() {
 }
 
 function calcInf(dt) {
-    if (!tmp.brokenInf && player.galaxy.times.gte(1)&& tmp.inf_reached && tmp.inf_time == 0) {
-        tmp.inf_time += 1
-        document.body.style.animation = "inf_reset_1 5s 1"
-        setTimeout(()=>{
-            tmp.inf_time += 1
-            document.body.style.backgroundColor = 'orange'
-            tmp.el.inf_popup.setDisplay(true)
-        },4250)
-    }
-   else if (!tmp.brokenInf && tmp.inf_reached && tmp.inf_time == 0) {
+    if (!tmp.brokenInf && tmp.inf_reached && tmp.inf_time == 0) {
         tmp.inf_time += 1
         document.body.style.animation = "inf_reset_1 10s 1"
         setTimeout(()=>{
@@ -845,12 +817,20 @@ function calcInf(dt) {
         player.dark.c16.totalS = player.dark.c16.totalS.add(cs.mul(dt))
     }
     if (hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.qu.length; x++) TREE_UPGS.buy(TREE_TYPES.qu[x], true)
- if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
+    if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
 player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
 player.inf.total = player.inf.total.max(player.inf.points)
 if (FERMIONS.onActive('07')) {
         player.inf.theorem_max = E(1)
     }
+if (CHALS.inChal(17)|| CHALS.inChal(18)) {
+player.inf.core[0].level = E(player.inf.theorem_max).floor()
+player.inf.core[1].level = E(player.inf.theorem_max).floor()
+ player.inf.core[2].level = E(player.inf.theorem_max).floor()
+player.inf.core[3].level = E(player.inf.theorem_max).floor()
+player.inf.core[4].level = E(player.inf.theorem_max).floor()
+    player.inf.theorem_max = E(tmp.core_lvl)
+}
 
 if (hasElement(229) && player.inf.core[0].type == 'mass') player.inf.core[0].level = E(player.inf.theorem_max).floor()
 if (hasElement(249) && player.inf.core[1].type == 'proto') player.inf.core[1].level = E(player.inf.theorem_max).floor()

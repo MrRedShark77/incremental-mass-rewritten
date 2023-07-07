@@ -16,7 +16,8 @@ x += tmp.fermions.effs[1][7]
         for (let i = 0; i < PRESTIGES.names.length; i++) {
             let r = player.prestiges[i]
             let br = E(tmp.beyond_pres.max_tier)
-        x = x.add(hasBeyondPres(1,2)?br:0).mul(r.add(1).add(1).ln().add(1))
+                if (hasBeyondPres(0,2)) x = x.add(br).mul(r.add(1).add(1).ln().add(1))
+           else x = x.mul(r.add(1).add(1).ln().add(1))
         }
 
         return x.sub(1)
@@ -63,7 +64,7 @@ x += tmp.fermions.effs[1][7]
         {
             1: `The bonus of tickspeed, each mass upgrade (except Overflow) now multiplies its level instead of adding. Dalton Theorem is even stronger.`,
             2: `Meta-Prestige Level starts ^1.025 later per Ascension.`,
-            6: `Add +1.00x to Theorem's Power formula per Ascension.`,
+            6: `Add +5% to Theorem's Power formula per Ascension.`,
         },
     ],
     rewardEff: [
@@ -80,11 +81,11 @@ x += tmp.fermions.effs[1][7]
             6: [
                 ()=>{
 
-                    let x = E(1).add(player.ascensions[0].mul(10).div(10))
+                    let x = E(1).add(player.ascensions[0].mul(5).div(100))
 
                     return x
                 },
-                x=>"x"+format(x),
+                x=>"+"+formatPercent(x-1),
             ],
         },
     ],

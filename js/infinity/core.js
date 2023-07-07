@@ -505,7 +505,7 @@ function setupCoreHTML() {
 }
 
 function getCoreChance() { return 1-CORE_CHANCE_BASE**Math.floor(tmp.core_lvl)**0.4 }
-function getPowerMult() { if (hasAscension(0,6)) return Math.floor(tmp.core_lvl-1)**0.5/100 * (ascensionEff(0,6)) 
+function getPowerMult() { if (hasAscension(0,6)) return E(Math.floor(tmp.core_lvl-1)**0.5/100).add(ascensionEff(0,6)) 
 else return Math.floor(tmp.core_lvl-1)**0.5/100}
 
 function updateCoreHTML() {
