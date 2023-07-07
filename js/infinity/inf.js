@@ -338,10 +338,10 @@ dark.matters.am = E(0)
                 desc: "Now you can passively gain Infinity Points based on Max Theorem's Level",
                 cost: E(5e19),
                 effect() {
-                    if (hasElement(27,1)) x = player.dark.c16.shard.root(10).log2().add(1)
+                    if (hasElement(27,1)) x = player.dark.c16.shard.add(1).root(10).log2().add(1)
                     else x = player.inf.theorem_max.max(1).log10().add(1)
 
-                    return x
+                    return x.max(1)
                 },
                 effectDesc:
                  x => (hasElement(27,1)?'Based on Corrupted Shards - ':`Based on Max Theorem's Level - `) + formatPercent(x-1),

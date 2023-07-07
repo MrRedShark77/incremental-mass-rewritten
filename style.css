@@ -990,10 +990,17 @@ h4 {
 	align-items: center;
 }
 
+.grade {
+	width: 100%;
+	align-items: center;
+	background-color: hsla(163, 37%, 22%, 0.212);
+}
 .primordium > div {
 	text-align: left;
 }
-
+.grade > div {
+	text-align: left;
+}
 #omega_badge {
     transition-duration: 0.25s;
     cursor: pointer;

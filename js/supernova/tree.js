@@ -1218,24 +1218,24 @@ const TREE_UPGS = {
                 return x.softcap('1e15000',0.5,0)
             },
             effDesc(x) { return "x"+format(x) },
-            cost: E(1e6),
+            cost: E(5000),
         },
         glx3: {
             branch: ['glx1'],
             desc: `Auto-complete Exotic Fermions outside of them.`,
-            cost: E(1e7),
+            cost: E(25000),
         },
         glx4: {
             req() {return (CHALS.inChal(17) && FERMIONS.onActive('07') && (player.supernova.times.gte(10650000)))},
             reqDesc() {return "Get 10650000 Supernovas in C17 while in 'Exotic-Quark'."},
             branch: ['glx1'],
             desc: `C17's second reward is much better based on Galaxies.`,
-            cost: E(1e8),
+            cost: E(1000000),
         },
         glx5: {
             branch: ['glx2'],
-            desc: `Placeholder.`,
-            cost: E(1.25e11),
+            desc: `Unlock Gradings.`,
+            cost: E(2680000),
         },
         glx6: {
             branch: ['glx3'],
