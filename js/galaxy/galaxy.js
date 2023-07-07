@@ -33,6 +33,34 @@ const GALAXY = {
         if (player.galaxy.stars.gte(tmp.galaxy.req)) player.galaxy.generator = player.galaxy.generator.add(1)
         player.galaxy.stars = E(0)
     },
+    doReset() {
+        let e = [275,283,229,249,260]
+player.atom.elements = e
+player.galaxy.times = player.galaxy.times.max(tmp.supernova.bulkGal)
+for (let x = 1; x <= 18; x++) player.chal.comps[x] = E(0)
+let save_keep = [6,8,10,0,11,13,15,16]
+player.inf.points = E(0)
+player.inf.total = E(0)
+player.inf.nm = E(0)
+player.inf.pm = E(0)
+player.inf.dm = E(0)
+player.inf.hm = E(0)
+player.inf.em = E(0)
+player.inf.nm_base = E(0)
+player.inf.pm_base = E(0)
+player.inf.dm_base = E(0)
+player.inf.hm_base = E(0)
+player.inf.em_base = E(0)
+player.inf.core[0].star = [true,true,true,true,true,true]
+player.inf.core[1].star = [true,true,true,true,true,true]
+player.inf.core[2].star = [true,true,true,true,true,true]
+player.inf.core[3].star = [true,true,true,true,true,true]
+player.inf.theorem = E(6)
+player.inf.theorem_max = E(5),
+
+player.inf.upg = save_keep
+INF.doReset()
+}
 }
 function calcGalaxy(dt) {
 if (player.galaxy.times.gt(0)) player.galaxy.stars = player.galaxy.stars.add(tmp.galaxy.gain.mul(dt))
