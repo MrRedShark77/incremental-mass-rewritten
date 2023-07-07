@@ -166,7 +166,6 @@ const SCALE_POWER= {
 const SCALE_FP = {
 	tickspeed() { return [1,1,1,tmp.tickspeedFP] },
 }
-
 const QCM8_SCALES = ['rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic', 'supercritical'] // super, hyper, ultra, meta, exotic
@@ -530,6 +529,9 @@ function getScalingPower(type, name) {
 		else if (name =='honor'){
 			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
 		}
+		else if (name='glory') {
+			if (hasPrestige(2,131)) power = power.mul(0.9)
+		}
 		else if (name=="tetr") {
 			if (hasElement(154)) power = power.mul(0.9)
 		}
@@ -625,9 +627,6 @@ function noScalings(type,name) {
 	}
 	else if (name=="prestige") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
-	}
-	else if (name == 'glory'){
-		if (hasPrestige(4,131) && type == 0) return true
 	}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true

@@ -294,6 +294,10 @@ function getPlayerData() {
             times: E(0),
             stars: E(0),
             generator: E(0),
+            grade: {
+                theorems: E(0),
+                type: [E(0),E(0),E(0)],
+            },
         },
         beta: {
             tester: '',

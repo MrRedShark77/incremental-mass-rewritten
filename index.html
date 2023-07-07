@@ -27,6 +27,7 @@
     <script src="js/debug.js"></script>
 
     <script src="js/galaxy/galaxy.js"></script>
+    <script src="js/galaxy/grading.js"></script>
 
     <script src="js/ascensions.js"></script>
     <script src="js/infinity/orb.js"></script>
@@ -761,7 +762,17 @@
                             You have <h4 id="stars_amt">0</h4>  <h4 id="stars_gain">0</h4> Galaxy Particles<br>
                             <span class='green'>Which boosts all-star resources gain by x<span id="stars_eff"></span></span><br>
                              <button class="btn half_full tooltip" id="gen_btn" tooltip-html="Tiering will result in forcing Supernova Reset." onclick="GALAXY.tier()"></button><br>
-                         </div>
+                         </div><div id="stab_frame9_1">
+                            You have <span id="grade_theorem">0</span> Unspent Gradings (based on Galaxy Particles)<br>
+                            (+1 at <span id="grade_next_theorem">X</span>)<br><br>
+                            <div id="grade_btns">
+                                <button class="btn" onclick="giveRandomPGrading(1)">Give a random Grading</button>
+                                <button class="btn" onclick="giveRandomPGrading(1,true)">Give all random Gradings</button>
+                                <button class="btn" onclick="respecPGrading()">Respec all Gradings</button>
+                                <br><br>
+                            </div>
+                            <div id="grade_table"></div>
+                        </div>
                     </div><div id="tab_frame10">
                         <div id="stab_frame10_0">
                             <button class="btn" onclick="save()">Save</button>

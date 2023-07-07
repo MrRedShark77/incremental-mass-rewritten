@@ -157,6 +157,7 @@ function setupHTML() {
 	setupDarkHTML()
 	setupInfHTML()
 	setupOrbHTML()
+	setupGradeHTML()
 
 	/*
 	function setupTestHTML() {

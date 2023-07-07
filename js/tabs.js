@@ -83,6 +83,7 @@ const TABS = {
         ],
         9: [
             { id: "Galaxy Particles", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
+            { id: "Grading", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
         ],
         10: [
             { id: "Options" },

@@ -470,7 +470,7 @@ const PRESTIGES = {
         {
             "1": `Increase Newton Modificator Power is 1.25x stronger per Valor.`,
             "2": `Automate Valor and it doesnt reset anything.`,
-            131: 'Hyper-Glory is 50% weaker.',
+            131: 'Hyper-Glory is 10% weaker.',
         },
     ],
     rewardEff: [

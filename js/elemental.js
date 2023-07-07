@@ -1041,7 +1041,7 @@ const ELEMENTS = {
             desc: `Entropy's cap is increased by 25% every prestige level. Entropic Evaporation^2 is slightly weaker.`,
             cost: E("e4.4e76"),
             effect() {
-                if (hasElement(298)) x = Decimal.pow(1.25,player.ranks.hex.root(2.6))
+                if (hasElement(298)) x = Decimal.pow(1.25,player.ranks.hex)
                 else x = Decimal.pow(1.25,player.prestiges[0])
                 return x
             },
@@ -1757,7 +1757,7 @@ cost: E('ee1290'),
     {
         sn: true,
         desc: 'Unlock Galaxies.',
-        cost: E('7.5e15'),
+        cost: E('6.5e15'),
         },
         {
             dark: true,

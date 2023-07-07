@@ -93,7 +93,12 @@ function resetTemp() {
             tree_afford2: [],
         },
         galaxy: {
-            maxlimit: E('1e100')
+            maxlimit: E('1e100'),
+        },
+        grade: {
+            eff: [],
+            power: [],
+            w: [6,4,2],
         },
         radiation: {
             unl: false,
