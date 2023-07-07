@@ -42,20 +42,26 @@ power: [
 ],
         eff: [
             p=>{
-                let pow = E(1).mul(p.gte(100)?3:p.gte(90)?2.8:p.gte(80)?2.6:p.gte(70)?2.4:p.gte(60)?2.2:p.gte(50)?2:p.gte(40)?1.8:p.gte(30)?1.6:p.gte(20)?1.4:p.gte(10)?1.2:1)
+                for (let i = 0; i < player.galaxy.grade.type.length; i++) {
+                let pow = tmp.grade.power[i]
                 let x = [p.add(1).root(2).pow(pow),p.add(1).root(15).pow(pow)]
                 return x
+                }
             },
             p=>{
-                let pow = E(1).mul(p.gte(100)?3:p.gte(90)?2.8:p.gte(80)?2.6:p.gte(70)?2.4:p.gte(60)?2.2:p.gte(50)?2:p.gte(40)?1.8:p.gte(30)?1.6:p.gte(20)?1.4:p.gte(10)?1.2:1)
-                let x = [p.add(1).root(1.5).pow(pow),p.add(1).root(12.5).pow(pow)]
+                for (let i = 0; i < player.galaxy.grade.type.length; i++) {
+                let pow = tmp.grade.power[i]
+                let x = [p.add(1).root(2).pow(pow),p.add(1).root(15).pow(pow)]
                 return x
+                }
             },
             p=>{
-                let pow = E(1).mul(p.gte(100)?3:p.gte(90)?2.8:p.gte(80)?2.6:p.gte(70)?2.4:p.gte(60)?2.2:p.gte(50)?2:p.gte(40)?1.8:p.gte(30)?1.6:p.gte(20)?1.4:p.gte(10)?1.2:1)
-                let x = p.root(3).div(100).pow(pow)
+                for (let i = 0; i < player.galaxy.grade.type.length; i++) {
+                let pow = tmp.grade.power[i]
+                let x = [p.add(1).root(2).pow(pow),p.add(1).root(15).pow(pow)]
                 return x
-            }
+                }
+            },
         ],
         effDesc: [
             x=>{ return `Boost Galaxy Particles gain. <b class='sky'>(x${format(x[0])})</b><br> Boost 4th Dark Shadow effect. <b class='sky'>(x${format(x[1])})</b>` },
