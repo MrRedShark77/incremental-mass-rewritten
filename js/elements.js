@@ -308,7 +308,7 @@ function updateTickspeedHTML() {
 		tmp.el.accel_btn.setClasses({btn: true, locked: !FORMS.accel.can()})
 		tmp.el.accel_cost.setTxt(format(tmp.accelCost,0))
 		tmp.el.accel_step.setHTML("+^"+format(eff.step))
-		tmp.el.accel_eff.setHTML("^"+format(eff.eff)+" to Tickspeed Effect")
+		tmp.el.accel_eff.setHTML("^"+format(eff.eff)+" to Tickspeed Effect"+eff.eff.softcapHTML(eff.ss))
 
 		tmp.el.accel_auto.setDisplay(FORMS.accel.autoUnl())
 		tmp.el.accel_auto.setTxt(player.autoAccel?"ON":"OFF")

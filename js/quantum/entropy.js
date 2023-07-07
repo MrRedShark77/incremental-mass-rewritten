@@ -23,6 +23,8 @@ const ENTROPY = {
 
         x = x.pow(exoticAEff(0,2))
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('proto',4))
+
         if (hasElement(185)) x = overflow(x,tmp.en.cap.max(10),0.25)
 
         return x
@@ -31,6 +33,7 @@ const ENTROPY = {
         let x = tmp.en.eff.hr
         if (hasElement(177)) x = x.mul(elemEffect(177))
         if (hasElement(179)) x = x.mul(elemEffect(179))
+        if (tmp.inf_unl) x = x.pow(theoremEff('proto',4))
         return x
     },
     evaPow(i) {
@@ -88,7 +91,7 @@ const ENTROPY = {
                 let b = 3
                 if (hasElement(97)) b++
                 let x = Decimal.pow(b,i)
-                return x
+                return x.overflow('ee5',0.5)
             },
             desc(x) { return `Make evaporated resources gain <b>${x.format(1)}x</b> faster.` },
         },{

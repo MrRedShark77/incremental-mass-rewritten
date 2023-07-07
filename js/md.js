@@ -59,6 +59,8 @@ const MASS_DILATION = {
         if (hasUpgrade('atom',19)) os = os.pow(upgEffect(3,19))
         if (hasTree('ct14')) os = os.pow(treeEff('ct14'))
 
+        if (hasAscension(0,7)) os = EINF
+
         x = overflow(x,os,0.5)
 
         tmp.overflowBefore.dm = o
@@ -96,9 +98,9 @@ const MASS_DILATION = {
                 effect(x) {
                     let b = 2
                     if (hasElement(25)) b++
-                    return E(b).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap('e1.2e4',0.96,2)//.softcap('e2e4',0.92,2)
+                    return E(b).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap('e1.2e4',0.96,2).overflow('ee11000',0.5,2)
                 },
-                effDesc(x) { return format(x,0)+"x"+(x.gte('e1.2e4')?` <span class='soft'>(softcapped${x.gte('e2e400')?"^2":""})</span>`:"")},
+                effDesc(x) { return format(x,0)+"x"+(x.gte('e1.2e4')?` <span class='soft'>(softcapped)</span>`:"")},
             },{
                 desc: `Make dilated mass effect stronger.`,
                 cost(x) { return tmp.md.bd3 ? E(10).pow(E(1.25).pow(x)).mul(100) : E(10).pow(x).mul(100) },
@@ -137,7 +139,7 @@ const MASS_DILATION = {
                     let s = E(0.25).add(tmp.md.upgs[10].eff||1)
                     let x = i.mul(s)
                     if (hasElement(53)) x = x.mul(1.75)
-                    return x.softcap(1e3,0.6,0)//.softcap(1e23,0.1,0)
+                    return x.softcap(1e3,0.6,0)//.overflow('e4000',0.5)
                 },
                 effDesc(x) { return "+^"+format(x)+(x.gte(1e3)?" <span class='soft'>(softcapped)</span>":"") },
             },{
@@ -186,7 +188,7 @@ const MASS_DILATION = {
                 cost(x) { return E(1e100).pow(x.pow(2)).mul('1.5e8056') },
                 bulk() { return player.md.mass.gte('1.5e8056')?player.md.mass.div('1.5e8056').max(1).log(1e100).max(0).root(2).add(1).floor():E(0) },
                 effect(x) {
-                    return x.pow(0.5).softcap(3.5,0.5,0).div(100).add(1)
+                    return x.pow(0.5).softcap(3.5,0.5,0).div(100).add(1)//.overflow('ee3',0.5)
                 },
                 effDesc(x) { return "+"+format(x.sub(1).mul(100))+"% stronger" },
             },

@@ -43,7 +43,9 @@ const ATOM = {
         if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
 
         let o = x
-        let os = tmp.c16active ? E('ee6') : E('ee90').pow(tmp.dark.abEff.ApQ_Overflow||1).pow(treeEff('ct13')?tmp.chal.eff[15]:1)
+        let os = tmp.c16active ? E('ee6') : E('ee90').pow(treeEff('ct13')?tmp.chal.eff[15]:1)
+
+        os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
 
         if (hasUpgrade('atom',16)) os = os.pow(10)
         if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
@@ -91,7 +93,9 @@ const ATOM = {
             if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
 
             let o = x
-            let os = tmp.c16active ? E('e500') : E('ee82').pow(tmp.dark.abEff.ApQ_Overflow||1).pow(treeEff('ct13')?tmp.chal.eff[15]:1)
+            let os = tmp.c16active ? E('e500') : E('ee82').pow(treeEff('ct13')?tmp.chal.eff[15]:1)
+
+            os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
 
             if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
 

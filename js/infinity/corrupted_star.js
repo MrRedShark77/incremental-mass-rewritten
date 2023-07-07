@@ -52,6 +52,13 @@ function updateCSTemp() {
         tmp.cs_reduce_start2 = tmp.cs_reduce_start1.mul(x)
     }
 
+    if (hasElement(40,1)) {
+        let x = muElemEff(40)
+
+        tmp.cs_reduce_start1 = tmp.cs_reduce_start1.mul(x)
+        tmp.cs_reduce_start2 = tmp.cs_reduce_start1.mul(x)
+    }
+
     let s = Decimal.pow(2,player.inf.cs_double[0].add(player.inf.cs_double[1]))
 
     if (hasElement(33,1)) s = s.mul(muElemEff(33))

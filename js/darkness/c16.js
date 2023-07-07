@@ -66,9 +66,12 @@ const UNSTABLE_BH = {
     gain() {
         let x = tmp.unstable_bh.fvm_eff.eff||E(1)
 
-        x = x.mul(exoticAEff(1,0))
+        let ea=exoticAEff(1,0)
+
+        x = x.mul(ea[0])
 
         x = x.pow(getFragmentEffect('bh'))
+        if (hasElement(39,1)) x = x.pow(ea[1])
 
         return x
     },
@@ -87,6 +90,8 @@ const UNSTABLE_BH = {
         if (tmp.c16active) x = x.root(3)
 
         if (!hasAscension(0,3)) x = overflow(x,10,0.5)
+
+        x = x.pow(theoremEff('bh',4))
 
         if (hasCharger(2)) x = x.pow(1.5)
 

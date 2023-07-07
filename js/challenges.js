@@ -145,9 +145,11 @@ const CHALS = {
     getMax(i) {
         if (i <= 12 && hasPrestige(2,25)) return EINF 
         let x = this[i].max
-        if (i==16 && hasElement(229)) x = E(100)
-
-        if (i < 16) {
+        if (i = 16) {
+            if (hasElement(229)) x = E(100)
+            if (hasElement(261)) x = x.add(100)
+        }
+        else if (i < 16) {
             if (i <= 4 && !hasPrestige(2,25)) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
             if (hasElement(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
             if (hasElement(20) && (i==7)) x = x.add(50)
@@ -453,11 +455,12 @@ const CHALS = {
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
             let ret = x.root(hasTree("chal4a")?3.5:4).mul(0.1).add(1)
-            ret = ret.softcap(21,hasElement(8,1)?0.253:0.25,0)
+            
+            if (!hasElement(41,1)) ret = ret.softcap(21,hasElement(8,1)?0.253:0.25,0)
 
             if (hasElement(31,1) && tmp.chal) ret = ret.pow(tmp.chal.eff[16]||1)
 
-            ret = overflow(ret,5e8,0.5)
+            ret = overflow(ret,5e8,0.5).softcap(1e12,0.1,0)
 
             return ret
         },
@@ -568,6 +571,7 @@ const CHALS = {
         max: E(1),
         start: E('e1.25e11'),
         effect(x) {
+            x = x.mul(tmp.chal.eff[18])
             let ret = x.root(3).mul(0.05).add(1)
             return ret
         },
@@ -594,7 +598,25 @@ const CHALS = {
         },
         effDesc(x) { return "+"+format(x,0)+" later" },
     },
-    cols: 17,
+    18: {
+        unl() { return hasElement(258) },
+        title: "Reinforced Scaling",
+        desc: `
+        You cannot weaken nor remove pre-Infinity scalings. You are stuck in dark run with 500 all glyphs (unaffected by weakness).
+        `,
+        reward: `Hybridized Uran-Astatine applies to Exotic scalings, and strengthen C16's reward.<br><span class="yellow">On 4th completion, unlock fifth star in the theorem and more features.</span>`,
+        max: E(100),
+        start: E('ee340'),
+        inc: E(10),
+        pow: E(3),
+        effect(x) {
+            let ret = x.pow(1.5).div(2).add(1)
+            
+            return ret
+        },
+        effDesc(x) { return formatPercent(x.sub(1))+' stronger' },
+    },
+    cols: 18,
 }
 
 /*

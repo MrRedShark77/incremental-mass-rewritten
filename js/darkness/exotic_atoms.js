@@ -184,13 +184,13 @@ const MUONIC_ELEM = {
             desc: `Bibihexium-226 works thrice as effective.`,
             cost: E('e1500'),
         },{
-            desc: `Exotic Atom’s Reward Strength appends to Matter Upgrades at a reduced rate.`,
+            desc: `Exotic Atom’s Reward Strength applies to Matter Upgrades at a reduced rate.`,
             cost: E('e1600'),
         },{
             desc: `Muonic Hydrogen-1 also applies to Kaon gain.`,
             cost: E('e1750'),
         },{
-            desc: `16th Challenge’s reward also appends to 9th Challenge’s reward.`,
+            desc: `16th Challenge’s reward also applies to 9th Challenge’s reward.`,
             cost: E('e1970'),
         },{
             desc: `Kaon’s first reward is better.`,
@@ -231,6 +231,22 @@ const MUONIC_ELEM = {
             cs: true,
             desc: `Unlock a new effect of corrupted star.`,
             cost: E('e56'),
+        },{
+            desc: `Pion’s first reward now provides an exponential boost.`,
+            cost: E('e7300'),
+        },{
+            cs: true,
+            desc: `Collapsed Stars boost starting of the growth reductions of corrupted stars.`,
+            cost: E('e72'),
+            eff() {
+                let x = player.stars.points.add(1).log10().add(1).log10().add(1)
+                return x
+            },
+            effDesc: x=>formatMult(x)+' later',
+        },{
+            cs: true,
+            desc: `Remove first softcap of C9’s reward.`,
+            cost: E('e110'),
         },
 
         /*
@@ -255,6 +271,7 @@ const MUONIC_ELEM = {
         if (tmp.tfUnl) u += 6
         if (tmp.ascensions_unl) u += 6
         if (tmp.CS_unl) u += 6
+        if (tmp.c18reward) u += 10
 
         return u
     },
@@ -317,6 +334,8 @@ const EXOTIC_ATOM = {
 
         x = x.pow(tmp.dark.abEff.ea||1)
 
+        if (tmp.inf_unl) x = x.pow(theoremEff('atom',4))
+
         return x
     },
     gain() {
@@ -356,7 +375,7 @@ const EXOTIC_ATOM = {
                 return x
             },x=>`Ultra & Meta-Prestige Levels start <b>${formatMult(x)}</b> later`],
             [a=>{
-                let x = a.add(1).log10().div(5).add(1).root(2)
+                let x = a.add(1).log10().div(5).add(1).root(2).softcap(10,0.25,0)
                 return x
             },x=>`Boosts entropy gain by <b>^${format(x)}</b>`],
             [a=>{
@@ -373,9 +392,10 @@ const EXOTIC_ATOM = {
             },x=>`Increase the base of Prestige Level 382 for Collapsed Star's effect, the base of Binilunium-201 for BH's effect by <b>+${format(x)}</b>`],
         ],[
             [a=>{
-                let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2)
-                return x
-            },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x)}</b>`],
+                let x = hasElement(12,1) ? expMult(a.add(1),2.5) : a.add(1).pow(2), y = E(1)
+                if (hasElement(39,1)) y = a.add(1).log10().add(1).root(3)
+                return [x,y]
+            },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x[0])}</b>`+(hasElement(39,1)?`, <b>^${format(x[1])}</b>`:'')],
             [a=>{
                 let x = a.add(1).pow(3)
                 return x
@@ -413,10 +433,12 @@ function updateExoticAtomsTemp() {
     tea.amount = EXOTIC_ATOM.getAmount()
     tea.gain = EXOTIC_ATOM.gain()
 
-    let s = 1 + Math.max(t-12)*0.1
+    let s = Decimal.add(1,Math.max(t-12,0)*0.1)
 
-    if (hasPrestige(2,58)) s += prestigeEff(2,58,0)
-    if (hasElement(25,1)) s += muElemEff(25,0)
+    if (hasPrestige(2,58)) s = s.add(prestigeEff(2,58,0))
+    if (hasElement(25,1)) s = s.add(muElemEff(25,0))
+
+    if (tmp.inf_unl) s = s.add(theoremEff('time',4))
 
     tea.strength = s
 

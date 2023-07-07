@@ -286,19 +286,21 @@ const PRESTIGES = {
     names: ['prestige','honor','glory','renown'],
     fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown'],
     baseExponent() {
-        let x = 0
-        if (hasElement(100)) x += tmp.elements.effect[100]
-        if (hasPrestige(0,32)) x += prestigeEff(0,32,0)
-        x += tmp.fermions.effs[1][6]||0
-        x += glyphUpgEff(10,0)
-        if (tmp.inf_unl) x += theoremEff('mass',3,0)
+        let x = E(0)
 
-        x += 1
+        if (hasElement(100)) x = x.add(tmp.elements.effect[100])
+        if (hasPrestige(0,32)) x = x.add(prestigeEff(0,32,0))
+        x = x.add(tmp.fermions.effs[1][6]||0).add(glyphUpgEff(10,0))
+        if (tmp.inf_unl) x = x.add(theoremEff('mass',3,0))
 
-        if (hasBeyondRank(4,2)) x *= beyondRankEffect(4,2)
-        if (tmp.c16active || inDarkRun()) x /= mgEff(5)
+        x = x.add(1)
 
-        return x
+        if (hasBeyondRank(4,2)) x = x.mul(beyondRankEffect(4,2))
+        if (hasAscension(1,1)) x = x.mul(2)
+
+        if (tmp.c16active || inDarkRun()) x = x.div(mgEff(5))
+
+        return x.overflow(2e4,0.5)
     },
     base() {
         let x = E(1)
@@ -361,7 +363,7 @@ const PRESTIGES = {
         let fp = 1
         if (player.prestiges[2].gte(1) && i < 2) fp *= 1.15
         if (player.prestiges[3].gte(1) && i < 3) fp *= 1.1
-        if (hasUpgrade('br',19) && i < 3) fp *= upgEffect(4,19)
+        if (hasUpgrade('br',19) && i < (hasAscension(1,1) ? 4 : 3)) fp *= upgEffect(4,19)
         return fp
     },
     unl: [
@@ -772,6 +774,9 @@ const BEYOND_RANKS = {
         },
         8: {
             1: `Infinity Points gain is doubled every highest beyond-rank tier you reached.`,
+        },
+        11: {
+            1: `Remove all scalings from Honor & Glory.`,
         },
     },
 

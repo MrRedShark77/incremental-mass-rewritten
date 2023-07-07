@@ -521,7 +521,7 @@ const UPGS = {
                 cost: E(1e33),
                 effect() {
                     let ret = E(2).pow(player.bh.dm.add(1).log10().softcap(11600,0.5,0))
-                    return ret
+                    return ret.min('ee7000')
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"+(x.max(1).log2().gte(11600)?" <span class='soft'>(softcapped)</span>":"")

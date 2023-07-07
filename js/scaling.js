@@ -37,6 +37,7 @@ const SCALE_START = {
 		prestige0: E(80),
 		prestige1: E(60),
 		prestige2: E(60),
+		massUpg4: E(250),
 		FSS: E(32),
 	},
 	ultra: {
@@ -115,6 +116,7 @@ const SCALE_POWER= {
 		prestige0: 2,
 		prestige1: 2,
 		prestige2: 3,
+		massUpg4: 8,
 		FSS: 3,
 	},
 	ultra: {
@@ -209,6 +211,11 @@ const NAME_FROM_RES = {
 	inf_theorem: "Infinity Theorem",
 }
 
+const C18_SCALING = [
+	'rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier',
+	'cosmic_str','prestige0','prestige1','prestige2','prestige3','massUpg4','FSS'
+]
+
 function updateScalingHTML() {
 	let s = SCALE_TYPE[player.scaling_ch]
 	// tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
@@ -294,6 +301,8 @@ function getScalingStart(type, name) {
 	let c16 = tmp.c16active
 
 	let start = SCALE_START[SCALE_TYPE[type]][name]
+
+	if (tmp.c18active && C18_SCALING.includes(name)) return start
 
 	if (type==0) {
 		if (name=="rank") {
@@ -434,6 +443,8 @@ function getScalingStart(type, name) {
 }
 
 function getScalingPower(type, name) {
+	if (tmp.c18active && C18_SCALING.includes(name)) return E(1)
+
 	let power = E(1)
 	if (name == "supernova" && (hasCharger(3)?type<5:type<3)) {
 		power = power.mul(tmp.fermions.effs[1][4])
@@ -482,6 +493,9 @@ function getScalingPower(type, name) {
 		}
 		else if (name=='FSS') {
 			if (hasBeyondRank(3,18)) power = power.mul(beyondRankEffect(3,18))
+		}
+		else if (name=='inf_theorem') {
+			if (hasAscension(1,2)) power = power.mul(0.9)
 		}
 	}
 	else if (type==1) {
@@ -562,7 +576,7 @@ function getScalingPower(type, name) {
 
 	let rps = ['rank','tier','tetr','pent']
 	if (hasElement(207)) rps.push('hex')
-	if (hasPrestige(2,4) && rps.includes(name) && (name=='hex'?type<2:type<4)) power = power.mul(tmp.qu.chroma_eff[1][1])
+	if (hasPrestige(2,4) && rps.includes(name) && (name=='hex'?type<2:player.chal.comps[18].gte(1)?type<5:type<4)) power = power.mul(tmp.qu.chroma_eff[1][1])
 
 	let qf = tmp.qu.qc_eff[7][1]
 	if (!tmp.c16active) if (player.dark.run.upg[4] && inDarkRun() && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
@@ -578,6 +592,8 @@ function getScalingPower(type, name) {
 }
 
 function noScalings(type,name) {
+	if (tmp.c18active && C18_SCALING.includes(name)) return false
+
 	if (name=="rank") {
 		if (type<4 && hasPrestige(1,127)) return true
 		// else if (type == 4) return true
@@ -612,7 +628,9 @@ function noScalings(type,name) {
 	else if (name=="prestige0") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
 	}
-	
+	else if (name=="prestige1" || name=="prestige2") {
+		if (type < 3 && hasBeyondRank(11,1)) return true
+	}
 
 	return false
 }

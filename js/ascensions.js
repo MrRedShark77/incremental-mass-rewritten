@@ -1,7 +1,7 @@
 const ASCENSIONS = {
-    names: ['ascension'],
-    fullNames: ["Ascension"],
-    resetName: ['Ascend'],
+    names: ['ascension','transcension'],
+    fullNames: ["Ascension",'Transcension'],
+    resetName: ['Ascend','Transcend'],
     baseExponent() {
         let x = 0
 
@@ -25,6 +25,9 @@ const ASCENSIONS = {
             case 0:
                 x = Decimal.pow(1.1,y.div(fp).pow(1.1)).mul(1600)
                 break;
+            case 1:
+                x = y.div(fp).pow(1.1).mul(2).add(6)
+                break;
             default:
                 x = EINF
                 break;
@@ -36,6 +39,9 @@ const ASCENSIONS = {
         switch (i) {
             case 0:
                 if (y.gte(1600)) x = y.div(1600).max(1).log(1.1).max(0).root(1.1).mul(fp).add(1)
+                break;
+            case 1:
+                if (y.gte(6)) x = y.sub(6).div(2).root(1.1).mul(fp).add(1)
                 break;
             default:
                 x = E(0)
@@ -49,11 +55,14 @@ const ASCENSIONS = {
     },
     unl: [
         ()=>true,
+        ()=>tmp.c18reward,
     ],
     noReset: [
         ()=>false,
+        ()=>false,
     ],
     autoUnl: [
+        ()=>false,
         ()=>false,
     ],
     autoSwitch(x) { player.auto_asc[x] = !player.auto_asc[x] },
@@ -63,6 +72,10 @@ const ASCENSIONS = {
             2: `Meta-Fermions start ^2 later.`,
             3: `19th Big Rip upgrade is twice as effective, and remove the overflow from unstable BH's effect.`,
             4: `Kaon & Pion gains are multiplied by 5 every Ascension.`,
+            7: `Remove dilated mass's overflow.`,
+        },{
+            1: `Prestige Base Exponent is doubled. Big Rip Upgrade 19 now affects Renown.`,
+            2: `Super Infinity Theorem is 10% weaker.`,
         },
     ],
     rewardEff: [
@@ -75,6 +88,8 @@ const ASCENSIONS = {
                 },
                 x=>formatMult(x),
             ],
+        },{
+            
         },
     ],
     reset(i, bulk = false) {

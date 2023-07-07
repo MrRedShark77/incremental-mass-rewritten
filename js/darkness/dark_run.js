@@ -5,9 +5,11 @@ const DARK_RUN = {
         let x, g = player.dark.run.glyphs[i]
 
         if (tmp.c16active) g = i == 5 ? 10 : 100
-        else if (CHALS.inChal(17)) g = 250
 
-        if (!CHALS.inChal(17)) g /= tmp.dark.glyph_weak
+        g /= tmp.dark.glyph_weak
+
+        if (CHALS.inChal(17)) g = 250
+        else if (CHALS.inChal(18)) g = 500
 
         if (i < 4) x = 1/(g**0.5/100+1)
         else if (i == 4) x = [1/(g**0.5/100+1),1.1**(g**0.75)]
@@ -162,7 +164,7 @@ function glyphButton(i) {
 }
 
 function inDarkRun() {
-    return player.dark.run.active || CHALS.inChal(17)
+    return player.dark.run.active || CHALS.inChal(17) || CHALS.inChal(18)
 }
 
 function darkRun() {

@@ -372,6 +372,7 @@ function updateTemp() {
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
 
     tmp.c16active = CHALS.inChal(16)
+    tmp.c18active = CHALS.inChal(18)
 
     tmp.inf_unl = player.inf.theorem.gte(1)
 
@@ -388,6 +389,7 @@ function updateTemp() {
     tmp.tfUnl = hasElement(230)
     tmp.ascensions_unl = player.chal.comps[17].gte(4)
     tmp.CS_unl = hasElement(251)
+    tmp.c18reward = player.chal.comps[18].gte(4)
 
     tmp.SN_passive = hasElement(36,1)
 

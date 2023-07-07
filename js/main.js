@@ -114,11 +114,14 @@ const FORMS = {
         let op = E(.5)
         let os2 = tmp.c16active ? E('ee11') : E('ee279')
         let op2 = E(.25)
+        let os3 = E('eee4')
+        let op3 = E(.15)
 
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
         if (tmp.inf_unl) os = os.pow(theoremEff('mass',1))
 
         if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
+        if (tmp.inf_unl) os2 = os2.pow(theoremEff('mass',4))
 
         if (hasElement(231)) {
             let p = elemEffect(231)
@@ -130,6 +133,7 @@ const FORMS = {
 
         if (CHALS.inChal(17)) os = E('ee95')
 
+        os2 = os2.min(os3)
         os = os.min(os2)
 
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
@@ -143,10 +147,12 @@ const FORMS = {
 
         x = overflow(x,os2,op2)
 
+        x = overflow(x,os3,op3)
+
         tmp.overflowBefore.mass = o
         tmp.overflow.mass = calcOverflow(o,x,os)
-        tmp.overflow_start.mass = [os,os2]
-        tmp.overflow_power.mass = [op,op2]
+        tmp.overflow_start.mass = [os,os2,os3]
+        tmp.overflow_power.mass = [op,op2,op3]
 
         if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
 
@@ -354,9 +360,13 @@ const FORMS = {
 
             if (CHALS.inChal(17)) step = E(0)
 
+            let ss = E(100), sp = 0.5
+
+            if (hasElement(259)) sp = 0.56
+
             let x = player.accelerator.mul(step).add(1)
-            x = overflow(x,100,0.5)
-            return {step: step, eff: x}
+            x = overflow(x,ss,sp)
+            return {step: step, eff: x, ss}
         },
         autoUnl() { return true },
         autoSwitch() { player.autoAccel = !player.autoAccel },

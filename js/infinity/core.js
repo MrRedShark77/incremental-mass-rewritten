@@ -7,34 +7,35 @@ const CORE = {
             `Boost normal mass overflow starting.`,
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
+            `Boost normal mass overflow^2 starting.`,
         ],
         res: `Normal Mass`,
-        boost() {return player.mass.add(1).log10().add(1).log10().add(1).log10().add(1).toNumber()},
+        boost() {return player.mass.add(1).log10().add(1).log10().add(1).log10().add(1)},
         eff: [
             s => {
-                let x = Decimal.pow(s+1,s**0.5)
+                let x = s.add(1).pow(s.root(2))
 
                 return overflow(x,100,0.5)
             },
             s => {
-                let x = Decimal.pow(s+1,s**0.5*2)
+                let x = s.add(1).pow(s.root(2).mul(2))
 
                 return overflow(x,100,0.5)
             },
             s => {
-                let x = Decimal.root(s**0.5/10+1,2)
+                let x = s.root(2).div(10).add(1).root(2)
 
                 return x
             },
             s => {
-                let x = s**0.5
+                let x = s.root(2)
 
                 return x
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).pow(s.root(1.5))
 
-                return x
+                return overflow(x,100,0.5)
             },
             s => {
                 let x = E(0)
@@ -57,7 +58,7 @@ const CORE = {
             x => "^"+format(x),
             x => formatMult(x),
             x => "+"+format(x),
-            x => formatMult(x),
+            x => "^"+format(x),
             x => formatMult(x),
             x => formatMult(x),
             x => formatMult(x),
@@ -80,12 +81,13 @@ const CORE = {
             `Boost BH mass overflow starting (weaker in C16).`,
             `Weaken unstable BH decreasing.`,
             `Boost FVM's power.`,
+            `Boost the effect of Unstable BH.`,
         ],
         res: `Mass of Black Hole`,
-        boost() {return player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1).toNumber()},
+        boost() {return player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1)},
         eff: [
             s => {
-                let x = Decimal.pow(s+1,s**0.5)
+                let x = s.add(1).pow(s.root(2))
                 
                 x = overflow(x,100,0.5)
 
@@ -94,7 +96,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = Decimal.pow(s+1,s**0.5*2)
+                let x = s.add(1).pow(s.root(2).mul(2))
 
                 x = overflow(x,100,0.5)
 
@@ -103,17 +105,17 @@ const CORE = {
                 return x
             },
             s => {
-                let x = Math.pow(1+Math.log10(s+1)/100,-1)
+                let x = s.add(1).log10().div(100).add(1).pow(-1) // Math.pow(1+Math.log10(s+1)/100,-1)
 
                 return x
             },
             s => {
-                let x = Decimal.root(s+1,2)
+                let x = s.add(1).root(2)
 
                 return overflow(x,10,0.5)
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).log10().div(10).add(1)
 
                 return x
             },
@@ -138,7 +140,7 @@ const CORE = {
             x => "^"+format(x),
             x => formatReduction(x),
             x => formatMult(x),
-            x => formatMult(x),
+            x => "^"+format(x),
             x => formatMult(x),
             x => formatMult(x),
             x => formatMult(x),
@@ -161,40 +163,41 @@ const CORE = {
             `Boost quark & atomic power overflows starting.`,
             `Increase overpower's power.`,
             `Increase accelerator's power.`,
+            `Boost Exotic Atom gain.`,
         ],
         res: `Exotic Atom`,
-        boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1).toNumber()},
+        boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1)},
         eff: [
             s => {
-                let x = Decimal.pow(s+1,s**0.5)
+                let x = s.add(1).pow(s.root(2))
                 
                 x = overflow(x,100,0.5)
 
                 return x
             },
             s => {
-                let x = Decimal.pow(s+1,s**0.5*2)
+                let x = s.add(1).pow(s.root(2).mul(2))
 
                 x = overflow(x,100,0.5)
 
                 return x
             },
             s => {
-                let x = s**0.25/10000
+                let x = s.root(4).div(1e4)
 
-                if (hasAscension(0,1)) x*=10
-
-                return x
-            },
-            s => {
-                let x = s**0.25/10000
-
-                if (hasAscension(0,1)) x*=10
+                if (hasAscension(0,1)) x = x.mul(10)
 
                 return x
             },
             s => {
-                let x = E(0)
+                let x = s.root(4).div(1e4)
+
+                if (hasAscension(0,1)) x = x.mul(10)
+
+                return x
+            },
+            s => {
+                let x = s.add(1).log10().root(2).div(10).add(1)
 
                 return x
             },
@@ -219,7 +222,7 @@ const CORE = {
             x => "^"+format(x),
             x => "+"+format(x),
             x => "+"+format(x),
-            x => formatMult(x),
+            x => "^"+format(x),
             x => formatMult(x),
             x => formatMult(x),
             x => formatMult(x),
@@ -242,32 +245,33 @@ const CORE = {
             `Strengthen primordium particles.`,
             `Weaken each “entropic” reward scaling.`,
             `Weaken QC modifications.`,
+            `Boost Entropy gain and cap.`,
         ],
         res: `Quantum Foam`,
-        boost() {return player.qu.points.add(1).log10().add(1).log10().add(1).toNumber()},
+        boost() {return player.qu.points.add(1).log10().add(1).log10().add(1)},
         eff: [
             s => {
-                let x = Math.log10(s+1)/2+1
+                let x = s.add(1).log10().div(2).add(1) // Math.log10(s+1)/2+1
 
                 return x
             },
             s => {
-                let x = Decimal.pow(1.25,Math.log10(s+1))
+                let x = Decimal.pow(1.25,s.add(1).log10())
 
                 return x
             },
             s => {
-                let x = Math.pow(1+Math.log10(s+1)/100,-1)
+                let x = s.add(1).log10().div(100).add(1).pow(-1) // Math.pow(1+Math.log10(s+1)/100,-1)
 
                 return x
             },
             s => {
-                let x = Math.pow(1+Math.log10(s+1)/10,-1)
+                let x = s.add(1).log10().div(10).add(1).pow(-1) //  Math.pow(1+Math.log10(s+1)/10,-1)
 
                 return x
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).log10().root(3).div(10).add(1)
 
                 return x
             },
@@ -289,10 +293,10 @@ const CORE = {
         ],
         effDesc: [
             x => formatMult(x),
-            x => formatPercent(x-1),
+            x => formatPercent(x.sub(1)),
             x => formatReduction(x),
             x => formatReduction(x),
-            x => formatMult(x),
+            x => "^"+format(x),
             x => formatMult(x),
             x => formatMult(x),
             x => formatMult(x),
@@ -315,32 +319,33 @@ const CORE = {
             `Boost pre-quantum global speed.`,
             `Boost dark shadow & abyssal blot gains.`,
             `Weaken each glyphic mass nerfing.`,
+            `Boost Exotic Atom Reward Strength.`,
         ],
         res: `Corrupted Shard`,
-        boost() {return player.dark.c16.totalS.add(1).log10().add(1).log10().add(1).toNumber()},
+        boost() {return player.dark.c16.totalS.add(1).log10().add(1).log10().add(1)},
         eff: [
             s => {
-                let x = s+1
+                let x = s.add(1)
 
                 return x
             },
             s => {
-                let x = Math.log10(s+1)**0.5/100+1
+                let x = s.add(1).log10().root(2).div(100).add(1) // Math.log10(s+1)**0.5/100+1
 
                 return x
             },
             s => {
-                let x = Math.log10(s+1)/100+1
+                let x = s.add(1).log10().div(100).add(1) // Math.log10(s+1)/100+1
 
                 return x
             },
             s => {
-                let x = Math.pow(1+Math.log10(s+1)/100,-1)
+                let x = s.add(1).log10().div(100).add(1).pow(-1) // Math.pow(1+Math.log10(s+1)/100,-1)
 
                 return x
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).log10().root(2).div(5)
 
                 return x
             },
@@ -365,7 +370,7 @@ const CORE = {
             x => "^"+format(x),
             x => "^"+format(x),
             x => formatReduction(x),
-            x => formatMult(x),
+            x => "+"+formatPercent(x),
             x => formatMult(x),
             x => formatMult(x),
             x => formatMult(x),
@@ -373,7 +378,7 @@ const CORE = {
 
         fragment: [
             f=>{
-                let x = f.add(1).log10().root(2).div(50).add(1).pow(-1)
+                let x = f.overflow(1e100,0.5).add(1).log10().root(2).div(50).add(1).pow(-1)
 
                 return x.toNumber()
             },
@@ -390,7 +395,7 @@ const MAX_INV_LENGTH = 100
 
 const CORE_CHANCE_MIN = 0.1
 const CORE_TYPE = Object.keys(CORE)
-const MIN_STAR_CHANCES = [0.1,0.1,0.1,0.1,0.02,0.004,0.0008,0.00016] // new Array(MAX_STARS).fill(0.1)
+const MIN_STAR_CHANCES = [0.1,0.1,0.1,0.1,0.01,0.001,0.0001,0.00001] // new Array(MAX_STARS).fill(0.1)
 
 const MAX_CORE_FIT = 1
 
@@ -761,13 +766,16 @@ function switchTheorems(id1,id2,force=false) {
 function updateCoreTemp() {
     tmp.min_core_len = MIN_CORE_LENGTH
 
+    let t = 4
+    if (tmp.c18reward) t++
+
     for (let i = 0; i < MAX_STARS; i++) {
         let l = 1
 
         if (i < 4) l *= tmp.cs_effect.theorem_luck
 
         core_star_luck[i] = l
-        core_star_chances[i] = i < 4 ? getCoreChance(i) : 0
+        core_star_chances[i] = i < t ? getCoreChance(i) : 0
     }
 
     if (player.inf.theorem.gte(6)) tmp.min_core_len++
@@ -783,8 +791,6 @@ function updateCoreTemp() {
             let sc = Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
             sc = overflow(sc,1000,0.5)
             if (sc.gt(0)) sc = sc.add(tmp.dim_mass_eff)
-
-            sc = sc.toNumber()
 
             s[j] = sc
             eff[j] = t.eff[j](sc)

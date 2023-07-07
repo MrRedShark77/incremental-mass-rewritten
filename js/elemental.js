@@ -204,7 +204,7 @@ const ELEMENTS = {
             cost: E(1e61),
             effect() {
                 let x = E(1.25).pow(player.tickspeed.pow(0.55))
-                return x
+                return x.min('ee11000')
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -658,7 +658,7 @@ const ELEMENTS = {
             effect() {
                 let pent = player.ranks.pent
                 let x = hasElement(195) ? pent.softcap(2e5,0.25,0).root(1.5).div(400) : pent.root(2).div(1e3)
-                return x.toNumber()
+                return x.min(1e4)
             },
             effDesc(x) { return "+^"+format(x) },
         },
@@ -1070,7 +1070,7 @@ const ELEMENTS = {
             cost: E("e9.5e80"),
             effect() {
                 let x = Decimal.pow(1.1,player.qu.en.amt.add(1).log10().pow(.9))
-                return x
+                return x.overflow('ee5',0.5,0)
             },
             effDesc(x) { return "x"+format(x) },
         },{
@@ -1458,6 +1458,21 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return "^"+format(x)+' later' },
+        },{
+            inf: true,
+            desc: `Unlock 18th Challenge.`,
+            cost: E('e45'),
+        },{
+            desc: `The softcap of accelerator’s effect is slightly weaker.`,
+            cost: E('ee6366'),
+        },{
+            dark: true,
+            desc: `Abyssal Blot’s eighth reward is now works in C16.`,
+            cost: E('e1.3e10'),
+        },{
+            c16: true,
+            desc: `Add 100 more C16’s max completions.`,
+            cost: E('ee219'),
         },
     ],
     /*
@@ -1508,7 +1523,8 @@ const ELEMENTS = {
         if (tmp.brokenInf) u += 12
         if (tmp.tfUnl) u += 12
         if (tmp.ascensions_unl) u += 9
-        if (tmp.CS_unl) u += 6
+        if (tmp.CS_unl) u += 7
+        if (tmp.c18reward) u += 10
 
         return u
     },
@@ -1669,6 +1685,7 @@ function setupElementsHTML() {
 function updateElementsHTML() {
     let tElem = tmp.elements, c16 = tmp.c16active
     let et = player.atom.elemTier, elayer = player.atom.elemLayer
+    let infU7 = hasInfUpgrade(6)
 
     tmp.el.elemLayer.setDisplay(tmp.eaUnl)
     tmp.el.elemLayer.setHTML("Elements' Layer: "+["Normal","Muonic"][elayer])
@@ -1686,7 +1703,7 @@ function updateElementsHTML() {
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
         tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer)})
-        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(eu.c16?" in Challenge 16":BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
+        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(eu.c16?" in Challenge 16":!infU7&&BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(eff[ch]):"")
     }
 
@@ -1715,7 +1732,7 @@ function updateElementsHTML() {
                         upg.setClasses(
                             c16 && isElemCorrupted(x,elayer)
                             ?{elements: true, locked: true, corrupted: true}
-                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf, cs: elayer == 1 && eu.cs}
+                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: !infU7 && elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf, cs: elayer == 1 && eu.cs}
                         )
                     }
                 }

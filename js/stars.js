@@ -47,6 +47,8 @@ const STARS = {
 
                 x = x.add(1)
             }
+
+            x = x.overflow('e3000',0.5)
         } else {
             let [p, pp] = [E(1), E(1)]
             if (hasElement(48)) p = p.mul(1.1)
