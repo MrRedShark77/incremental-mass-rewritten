@@ -145,7 +145,7 @@ const CHALS = {
     getMax(i) {
         if (i <= 12 && hasPrestige(2,25)) return EINF 
         let x = this[i].max
-        if (i = 16) {
+        if (i == 16) {
             if (hasElement(229)) x = E(100)
             if (hasElement(261)) x = x.add(100)
         }
