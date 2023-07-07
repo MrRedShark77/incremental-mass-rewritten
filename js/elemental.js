@@ -1395,9 +1395,9 @@ const ELEMENTS = {
             desc: `Dimensional Mass adds free C16 max completions.`,
             cost: E('e1.6e34'),
             effect() {
-                let x = player.inf.dim_mass.div(100).max(1).log(10).add(1).log(2).add(1)
-                if (hasElement(295)) x = player.inf.dim_mass.div(20).max(1).log(1.1).add(1)
-                return x
+                let x = player.inf.dim_mass.div(100).add(1).log(10).add(1).log(2).add(1)
+                if (hasElement(295)) x = player.inf.dim_mass.div(20).add(1).log(1.1).add(1)
+                return x.max(1)
             },
             effDesc(x) { return "+"+format(x,3) },
         },
@@ -1410,7 +1410,7 @@ const ELEMENTS = {
             desc: `Boost Dark Rays 4th effect by Infinity Points.`,
             cost: E('e1e640'),
             effect() {
-                let x = player.inf.points.add(1).log10().log(2).div(10).add(1)
+                let x = player.inf.points.add(1).log10().max(1).log(2).div(10).add(1)
                 return x
             },
             effDesc(x) { return "x"+format(x,3) },
@@ -1420,8 +1420,8 @@ const ELEMENTS = {
             desc: `Add 5 C16 max completions per Muon-Catalyzed Fusion Tier (starts at 12).`,
             cost: E('e4230000'),
             effect() {
-                let x = (player.dark.exotic_atom.tier-12)*5
-                return x
+                let x = E(player.dark.exotic_atom.tier-12).mul(5)
+                return x.max(0)
             },
             effDesc(x) { return "+"+format(x,0) },
         },

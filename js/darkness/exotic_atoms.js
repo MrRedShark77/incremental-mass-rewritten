@@ -88,7 +88,7 @@ const MUONIC_ELEM = {
             desc: `Final Star Shards increase Matter formula.`,
             cost: E(1e100),
             eff() {
-                let x = player.dark.matters.final.root(2).div(5)
+                let x = player.dark.matters.final.max(1).root(2).div(5)
                 return x.toNumber()
             },
             effDesc: x=>"+"+format(x),
@@ -144,7 +144,7 @@ const MUONIC_ELEM = {
             desc: `Boost 4th Dark Ray's effect by Exotic Atoms.`,
             cost: E('e325'),
             eff() {
-                let x = tmp.exotic_atom.amount.max(1).log10().log10().div(1.25).add(1)
+                let x = tmp.exotic_atom.amount.max(1).log10().max(1).log10().div(1.25).add(1)
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -172,7 +172,7 @@ const MUONIC_ELEM = {
             desc: `227-Bibiseptium is better based on Exotic Atoms.`,
             cost: E('e630'),
             eff() {
-                let x = tmp.exotic_atom.amount.max(1).log10().log10().div(20).add(1)
+                let x = tmp.exotic_atom.amount.max(1).log10().max(1).log10().div(20).add(1)
                 return x
             },
             effDesc: x=>"x"+format(x),
@@ -186,7 +186,7 @@ const MUONIC_ELEM = {
             cost: E('e830'),
             eff() {
                 let x = E(1)
-                if (tmp.exotic_atom.amount.gte('1e830')) x = tmp.exotic_atom.amount.max(1).div('1e830').log10().log10().add(1).softcap(2,0.01,0)
+                if (tmp.exotic_atom.amount.gte('1e830')) x = tmp.exotic_atom.amount.max(1).div('1e830').max(1).log10().max(1).log10().add(1).softcap(2,0.01,0)
                 return x.max(1)
             },
             effDesc: x=>"x"+format(x),
@@ -203,7 +203,7 @@ const MUONIC_ELEM = {
             desc: `Exotic Atoms boosts Pre-Infinity Global Speed.`,
             eff() {
                 let x = E(1)
-                x = tmp.exotic_atom.amount.max(1).log10().log10().add(1)
+                x = tmp.exotic_atom.amount.max(1).log10().max(1).log10().add(1)
                 if (hasElement(278)) x = tmp.exotic_atom.amount.max(1).log2().pow(1.75).add(1)
                 return x.max(1)
             },
