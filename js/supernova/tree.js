@@ -1226,8 +1226,8 @@ const TREE_UPGS = {
             cost: E(25000),
         },
         glx4: {
-            req() {return (CHALS.inChal(17) && FERMIONS.onActive('07') && (player.supernova.times.gte(10650000)))},
-            reqDesc() {return "Get 10650000 Supernovas in C17 while in 'Exotic-Quark'."},
+            req() {return (CHALS.inChal(17) && FERMIONS.onActive('07') && (player.supernova.times.gte(10600000)))},
+            reqDesc() {return "Get 10600000 Supernovas in C17 while in 'Exotic-Quark'."},
             branch: ['glx1'],
             desc: `C17's second reward is much better based on Galaxies.`,
             cost: E(50000),
