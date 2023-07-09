@@ -1,10 +1,10 @@
 const BEYOND_PRES = {
     req() {
-        let x = player.pres.beyond.pow(1.5).mul(10).add(120).ceil()
+        let x = player.pres.beyond.pow(1.5).mul(10).add(100).ceil()
         return x
     },
     bulk() {
-        let x = player.prestiges[4].gte(8)?player.prestiges[4].sub(120).div(10).max(0).root(1.5).add(1).floor():E(0)
+        let x = player.prestiges[4].gte(8)?player.prestiges[4].sub(100).div(10).max(0).root(1.5).add(1).floor():E(0)
         return x
     },
     getTier() {
