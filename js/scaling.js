@@ -20,8 +20,8 @@ const SCALE_START = {
 		massUpg4: E(50),
 		FSS: E(5),
 		pe: E(25),
-		inf_theorem: E(10),
-		galaxy: E(10),
+		inf_theorem: E(15),
+		galaxy: E(5),
     },
 	hyper: {
 		rank: E(120),
@@ -42,7 +42,7 @@ const SCALE_START = {
 		pe: E(210),
 renown: E(350),
 massUpg4: E(200),
-		inf_theorem: E(16),
+		inf_theorem: E(25),
 	},
 	ultra: {
 		rank: E(600),
@@ -104,8 +104,8 @@ const SCALE_POWER= {
 		massUpg4: 3,
 		FSS: 2,
 		pe: 2,
-		inf_theorem: 2,
-		galaxy: 2,
+		inf_theorem: 3,
+		galaxy: 10,
     },
 	hyper: {
 		rank: 2.5,
@@ -123,7 +123,7 @@ const SCALE_POWER= {
 		prestige: 2,
 		honor: 2,
 		glory: 3,
-renown: 3,
+        renown: 40,
 		pe: 3,
 		inf_theorem: 1.55,
 	},
@@ -339,17 +339,14 @@ function getScalingStart(type, name) {
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
 		}
-		else if (name == 'glory'){
-			if (hasPrestige(4,131)) start= start.pow(1.25)
-		}
 		else if (name=="FSS") {
 			if (hasBeyondRank(3,2)) start = start.add(1)
 			if (hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 			if (hasBeyondRank(8,2)) start = start.add(beyondRankEffect(8,2))
 		}
-		else if (name='pe') {
-if (hasElement(252)) start = start.add(elemEffect(252))
-		}
+		else if (name!=='FSS' && name!=='inf_theorem' && name!=='galaxy') {
+			if (hasElement(252)) start = start.add(elemEffect(252))
+					}
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {
@@ -416,6 +413,9 @@ if (hasElement(252)) start = start.add(elemEffect(252))
 			start = start.mul(exoticAEff(0,1))
 			if (hasAscension(0,2)) start = start.pow(ascensionEff(0,2))
 			if (tmp.inf_unl) start = start.pow(theoremEff('time',5))
+		}
+		else if (name == 'honor'){
+			if (hasBeyondPres(1,6)) start= start.mul(beyondPresEff(1,7))
 		}
 	} else if (type==4) {
 		if (name=="rank") {
@@ -633,7 +633,7 @@ function noScalings(type,name) {
 	else if (name=="prestige") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
 	}
-else if (name=='renown') {
+else if (name=='glory') {
 if (type == 0 && hasAscension(0,10)) return true}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true

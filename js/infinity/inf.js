@@ -361,8 +361,7 @@ dark.matters.am = E(0)
 
     dim_mass: {
         gain() {
-            if (!hasInfUpgrade(9)) return E(0)
-
+            if (!hasInfUpgrade(9) || CHALS.inChal(19)) return E(0)
             let x = tmp.peEffect.eff||E(1)
             if (hasElement(23,1) && (!CHALS.inChal(16))) x = x.pow(muElemEff(23,1))
             if (player.chal.comps[18].gte(1)) x = x.mul(player.chal.comps[18].mul(25).pow(10).add(1))
@@ -831,12 +830,12 @@ function calcInf(dt) {
     if (hasInfUpgrade(6)) for (let x = 119; x <= 218; x++) buyElement(x,0)
 player.inf.theorem_max = player.inf.theorem_max.max(tmp.core_lvl).floor()
 player.inf.total = player.inf.total.max(player.inf.points)
-if (FERMIONS.onActive('07')) {
+if (FERMIONS.onActive('07')|| CHALS.inChal(19)) {
         player.inf.theorem_max = E(1)
     }
     power = Math.round(100+getPowerMult(tmp.core_lvl)*100)/100
     for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i] && hasElement(300)) {
-        if (power > player.inf.core[i].power) player.inf.core[i].power=power
+     player.inf.core[i].power=power
     }
 if (CHALS.inChal(17)|| CHALS.inChal(18)) {
 player.inf.core[0].level = E(player.inf.theorem_max).floor()
@@ -852,12 +851,13 @@ if (hasElement(249) && player.inf.core[1].type == 'proto') player.inf.core[1].le
 if (hasElement(249) && player.inf.core[2].type == 'time') player.inf.core[2].level = E(player.inf.theorem_max).floor()
 if (hasElement(260) && player.inf.core[3].type == 'atom') player.inf.core[3].level = E(player.inf.theorem_max).floor()
 if (hasElement(260) && player.inf.core[4].type == 'bh') player.inf.core[4].level = E(player.inf.theorem_max).floor()
-    player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
+   if (!CHALS.inChal(19)) { player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
     player.inf.nm_base = player.inf.nm_base.add(tmp.nm_base_gain.mul(dt))
     player.inf.pm_base = player.inf.pm_base.add(tmp.pm_base_gain.mul(dt))
     player.inf.dm_base = player.inf.dm_base.add(tmp.dm_base_gain.mul(dt))
     player.inf.em_base = player.inf.em_base.add(tmp.em_base_gain.mul(dt))
     player.inf.hm_base = player.inf.hm_base.add(tmp.hm_base_gain.mul(dt))
+   }
     if (hasInfUpgrade(20)) player.inf.points = player.inf.points.add(tmp.IP_gain.mul(dt).mul(infUpgEffect(20)))
 }
 function setupInfHTML() {

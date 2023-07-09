@@ -5,7 +5,7 @@ const DARK = {
         [1e120,1e180,'e345','e800','e2500','e56000','e125500','ee7'],
     ],
     gain() {
-        if (CHALS.inChal(18)) return E(0)
+        if (CHALS.inChal(18) ||CHALS.inChal(19)) return E(0)
         let x = E(1)
 
         x = x.mul(tmp.dark.shadowEff.ray)

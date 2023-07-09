@@ -225,7 +225,8 @@ const RANKS = {
                 let hex = player.ranks.hex
                 let ret = hex.mul(.2).add(1)
                 if (hex.gte(43)) ret = ret.pow(hex.div(10).add(1).root(2))
-                return overflow(ret,1e11,0.5)
+                ret = overflow(ret,1e11,0.5)
+                return overflow(ret,'e300000',0.15)
             },
         },
     },
@@ -320,6 +321,7 @@ const PRESTIGES = {
         let x = EINF, fp = this.fp(i), y = player.prestiges[i]
         let ifp = E(1)
         if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',4))
+        if (!CHALS.inChal(19)) {
         switch (i) {
             case 0:
                 x = Decimal.pow(1.1,y.scaleEvery('prestige',false,[0,0,0,fp]).pow(1.1)).mul(2e13)
@@ -341,10 +343,13 @@ const PRESTIGES = {
                 break;
         }
         return x.ceil()
+    }
+    else return E('ee100')
     },
     bulk(i) {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
         let ifp = E(1)
+       if (!CHALS.inChal(19)) {
         switch (i) {
             case 0:
                 if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige',true,[0,0,0,fp]).add(1)
@@ -366,6 +371,8 @@ const PRESTIGES = {
                 break;
         }
         return x.floor()
+    }
+    else return E('ee100')
     },
     fp(i) {
         let fp = 1
@@ -470,7 +477,7 @@ const PRESTIGES = {
         {
             "1": `Increase Newton Modificator Power is 1.25x stronger per Valor.`,
             "2": `Automate Valor and it doesnt reset anything.`,
-            118: 'Hyper-Glory is 25% weaker.',
+            118: 'Hyper-Glory is 40% weaker.',
         },
     ],
     rewardEff: [
@@ -643,7 +650,7 @@ function updateRanksTemp() {
     tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ifp).div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = E(0)
     if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2]).mul(ffp2).mul(ifp).add(1).floor();
-    tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03") && (!CHALS.inChal(18) || hasOrbUpg(0))
+    tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03") && (!CHALS.inChal(18) || hasOrbUpg(0))&& !CHALS.inChal(19)
 
     fp = RANKS.fp.tier().mul(ffp)
     tmp.ranks.tier.req = player.ranks.tier.div(ifp).div(ffp2).scaleEvery('tier',false,[1,1,1,rt_fp2]).div(fp).add(2).pow(2).floor()
@@ -684,7 +691,6 @@ function updateRanksTemp() {
             tmp.ranks[rn].can = player.ranks[RANKS.names[x-1]].gte(tmp.ranks[rn].req)
         }
     }
-
     // Prestige
 
     tmp.prestiges.baseMul = PRESTIGES.base()
@@ -801,6 +807,9 @@ const BEYOND_RANKS = {
         8: {
             2: `Super FSS starts +1 later per beyond-ranks' maximum tier (Starts at Dodec).`,
         },
+        9: {
+            20: `Raise [Dec 2] reward by 3.5`,
+        },
     },
 
     rewardEff: {
@@ -897,7 +906,7 @@ const BEYOND_RANKS = {
                 ()=>{
                     let x = (tmp.beyond_ranks.max_tier-3)**0.2*0.2+1
 
-                    return Math.max(1,x)
+                    return Math.max(1,x)**(hasBeyondRank(9,20)?3.5:1)
                 },
                 x=>"x"+format(x,1),
             ],
@@ -1121,7 +1130,7 @@ function updateRanksHTML() {
 
                 tmp.el["pres_scale_"+x].setTxt(getScalingName(PRESTIGES.names[x]))
                 tmp.el["pres_amt_"+x].setTxt(format(p,0))
-                tmp.el["pres_"+x].setClasses({btn: true, reset: true, locked: x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
+                tmp.el["pres_"+x].setClasses({btn: true, reset: true, locked: CHALS.inChal(19) || x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
                 tmp.el["pres_desc_"+x].setTxt(desc)
                 tmp.el["pres_req_"+x].setTxt(x==0?format(tmp.prestiges.req[x],0)+" of Prestige Base":PRESTIGES.fullNames[x-1]+" "+format(tmp.prestiges.req[x],0))
                 tmp.el["pres_auto_"+x].setDisplay(PRESTIGES.autoUnl[x]())

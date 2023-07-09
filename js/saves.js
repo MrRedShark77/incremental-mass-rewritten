@@ -96,6 +96,7 @@ function calc(dt) {
             let rn = RANKS.names[x]
             if (tmp.brUnl && x < 4 || RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
         }
+        if (player.auto_pres.beyond && (hasBeyondPres(2,1))) BEYOND_PRES.reset(true)
         if (player.auto_ranks.beyond && (hasBeyondRank(2,1)||hasInfUpgrade(10))) BEYOND_RANKS.reset(true)
         for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -174,7 +175,9 @@ function getPlayerData() {
             rank: false,
             tier: false,
         },
-        auto_pres: [],
+        auto_pres: {
+            beyond: false,
+        },
         prestiges: [],
         pres: {
             beyond: E(0),

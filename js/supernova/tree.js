@@ -1269,8 +1269,8 @@ const TREE_UPGS = {
         },
         glx10: {
             branch: ['glx6'],
-            desc: `Placeholder.`,
-            cost: E(1e19),
+            desc: `Keep all Infinity upgrades on Galaxy Reset.`,
+            cost: E(1e12),
         },
         glx11: {
             branch: ['glx8'],

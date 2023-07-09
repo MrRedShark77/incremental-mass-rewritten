@@ -167,6 +167,7 @@ const CORE = {
                 
                 x = overflow(x,100,0.5)
                 x = overflow(x,'1e120',0.25)
+                x = overflow(x,'1e170',0.25)
                 return x
             },
             s => {
@@ -174,6 +175,7 @@ const CORE = {
 
                 x = overflow(x,100,0.5)
                 x = overflow(x,'1e120',0.25)
+                x = overflow(x,'1e170',0.25)
                 return x
             },
             s => {
@@ -334,7 +336,7 @@ const CORE = {
             },
             s => {
                 let x = E(Math.log10(s+1)/100+1)
-                x = overflow(x,1.125,0.5)
+                x = overflow(x,1.125,0.05)
                 return x
             },
             s => {

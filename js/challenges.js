@@ -110,7 +110,10 @@ const CHALS = {
     },
     enter(ch=player.chal.choosed) {
         if (player.chal.active == 0) {
-            if (ch >= 17 && ch <= 20) {
+            if (ch >= 19 && ch <= 20) {
+                GALAXY.doReset()
+        }
+            if (ch >= 17 && ch <= 18) {
                 INF.doReset()
         }
             else if (ch == 16) {
@@ -141,7 +144,8 @@ const CHALS = {
         else if (x < 9) return "Entering this challenge will force atom reset."
         else if (x < 13) return "Entering challenge will supernova reset."
         else if (x < 16) return "Entering challenge will force a Darkness reset."
-        else if (x < 20) return "Entering challenge will force a Infinity reset."
+        else if (x < 19) return "Entering challenge will force a Infinity reset."
+        else if (x < 20) return "Entering challenge will force a Galaxy reset."
         return "Entering challenge will force an FSS reset."
     },
     getMax(i) {
@@ -214,9 +218,11 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x], fp = 1, goal = EINF, bulk = E(0)
         if (x == 17 && (hasElement(295) && (!CHALS.inChal(17)))) {
-            goal = lvl.gt(0) ? Decimal.pow('ee1000',Decimal.pow(1.01,lvl.sub(1).pow(1.25))) : chal.start
-            if (res.gte(chal.start)) bulk = res.log('ee1000').max(1).log(1.01).root(1.25).add(1).floor()
-            if (res.gte('ee1000')) bulk = bulk.add(1)
+            if (hasOrbUpg(5)) goal = lvl.gt(0) ? Decimal.pow('1e10',Decimal.pow(1.01,lvl.sub(1).pow(1.05))) : chal.start
+           else goal = lvl.gt(0) ? Decimal.pow('ee1000',Decimal.pow(1.01,lvl.sub(1).pow(1.25))) : chal.start
+           if (hasOrbUpg(5) && res.gte(chal.start)) bulk = res.log('1e10').max(1).log(1.01).root(1.05).add(1).floor()
+           else if (res.gte(chal.start)) bulk = res.log('ee1000').max(1).log(1.01).root(1.25).add(1).floor()
+            if (res.gte(hasOrbUpg(5)?'1e10':'ee1000')) bulk = bulk.add(1)
         }
         else if (x == 16 && (hasElement(295) && (!CHALS.inChal(16)))) {
             goal = lvl.gt(0) ? Decimal.pow('ee300',Decimal.pow(1.15,lvl.sub(1).pow(1.15))) : chal.start
@@ -578,7 +584,7 @@ ret = overflow(ret,1e68,0.5)
         effDesc(x) { return "^"+format(x) },
     },
     17: {
-        unl() { return hasElement(265) },
+        unl() { return hasElement(265)||player.chal.comps[18].gte(1)||player.chal.comps[19].gte(1) },
         title: "Weaker Theorems",
         desc: `
         • Some elements will be [Overflowed].<br>
@@ -601,7 +607,7 @@ ret = overflow(ret,1e68,0.5)
         effDesc(x) { return "x"+format(x.ret)+" to Muonic Calcium<br>x"+format(x.step)+" to Prestige Base" },
     },
     18: {
-        unl() { return player.chal.comps[17].gte(50)||player.chal.comps[18].gte(1) },
+        unl() { return player.chal.comps[17].gte(50)||player.chal.comps[18].gte(1)||player.chal.comps[19].gte(1) },
         title: "Challenge Madness",
         desc: `
         • Some elements will be [Overflowed].<br>
@@ -609,7 +615,7 @@ ret = overflow(ret,1e68,0.5)
         • Your dark rays are capped at 1e12.<br>
         • You can't enter Big Rip<br>
         `,
-        reward: `Boost Dimensional Mass gain.<br><span class='orange'>At 100 completions, unlock ???</span>`,
+        reward: `Boost Dimensional Mass gain.<br><span class='orange'>At 100 completions, unlock C19</span>`,
         max: E(100),
         inc: E('e11400000000'),
         pow: E(2),
@@ -620,7 +626,30 @@ ret = overflow(ret,1e68,0.5)
         },
         effDesc(x) { return "x"+format(x)},
     },
-    cols: 18,
+19: {
+    unl() { return player.chal.comps[18].gte(100)||player.chal.comps[19].gte(1) },
+    title: "Galactic Black Hole",
+    desc: `
+    • You can't buy elements.<br>
+    • You are trapped in Exotic-Quark and Exotic-Lepton.<br>
+    • Your dark rays are capped at 1e12.<br>
+    • You can't gain Rage Points, Dark Matters.<br>
+    • Parallel Extruder and Every Modificators are useless.<br>
+    • Pre-Infinity Global Speed is set to 1.00x.<br>
+    • You can't buy Prestige Level and Rank.<br>
+    `,
+    reward: `Grading cost formula is weaker.<br><span class='orange'>At 100 completions, unlock C20</span>`,
+    max: E(100),
+    inc: E('e1e72'),
+    pow: E(10),
+    start: E('e1e72'),
+    effect(x) {
+        let ret = x.root(12).div(5).add(1)
+        return ret
+    },
+    effDesc(x) { return formatMult(x)},
+},
+cols: 19,
 }
 
 /*

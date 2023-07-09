@@ -39,8 +39,9 @@ const GALAXY = {
         return x
     },
     tier() {
-        if (player.galaxy.stars.gte(tmp.galaxy.req)) player.galaxy.generator = player.galaxy.generator.add(1)
+        if (player.galaxy.stars.gte(tmp.galaxy.req)){ player.galaxy.generator = player.galaxy.generator.add(1)
         player.galaxy.stars = E(0)
+        }
     },
     doReset() {
         let e = [275,283,229,249,260]
@@ -48,6 +49,7 @@ player.atom.elements = e
 player.galaxy.times = player.galaxy.times.max(tmp.supernova.bulkGal)
 for (let x = 1; x <= 18; x++) player.chal.comps[x] = E(0)
 let save_keep = [6,8,10,0,11,13,15,16]
+if (hasTree('glx10')) save_keep=[1,2,3,4,5,6,7,8,9,10,0,11,12,13,14,15,16,17]
 player.inf.points = E(0)
 player.inf.total = E(0)
 player.inf.nm = E(0)

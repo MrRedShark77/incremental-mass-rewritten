@@ -39,7 +39,7 @@ const ELEMENTS = {
         if (tmp.c16active && isElemCorrupted(x)) return false
         let u = this.upgs[x]
         let res = u.sn? player.supernova.times : u.inf ? player.inf.points : u.dark ? player.dark.shadow : player.atom.quarks
-        return res.gte(u.cost) && !hasElement(x) && (hasInfUpgrade(6) && x <= 218 || player.qu.rip.active || !BR_ELEM.includes(x)) && (tmp.c16active || !C16_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118) && !(CHALS.inChal(18) && x < 118)
+        return res.gte(u.cost) && !hasElement(x) && (hasInfUpgrade(6) && x <= 218 || player.qu.rip.active || !BR_ELEM.includes(x)) && (tmp.c16active || !C16_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118) && !(CHALS.inChal(18) && x < 118)&& !(CHALS.inChal(19) && x < 362)
     },
     buyUpg(x) {
         if (this.canBuy(x)) {
@@ -1773,6 +1773,11 @@ cost: E('ee1290'),
             desc: 'Every Theorem in Core power will be equivalent to the highest power possible.',
             cost: E('ee9000'),
             },
+            {
+                inf: true,
+                desc: `<span class='red'>Remove</span> Mass Overflow^3-4.`,
+                cost: E(1e48),
+         },
     ],
     /*
     {
