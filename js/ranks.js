@@ -579,7 +579,7 @@ const PRESTIGES = {
         {
             "2": [()=>{
                 let base = 1.25
-                if (hasBeyondPres(0,1)) base += beyondPresEff(0,1)
+                if (hasBeyondPres(1,1)) base += beyondPresEff(1,1)
                 let x = Decimal.pow(base,player.prestiges[3])
                 return x
             },x=>"x"+x.format()+" later"],
