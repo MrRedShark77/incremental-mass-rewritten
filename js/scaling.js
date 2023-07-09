@@ -123,7 +123,7 @@ const SCALE_POWER= {
 		prestige: 2,
 		honor: 2,
 		glory: 3,
-renown: 1.5
+renown: 1.5,
 		pe: 3,
 		inf_theorem: 1.55,
 	},
