@@ -1264,7 +1264,7 @@ const TREE_UPGS = {
         },
         glx9: {
             branch: ['glx5'],
-            desc: `Automatically get Infinity Theorem without once you get to its limit of mass.<br>Getting Infinity Theorem automatically dont reset, but you will gain IP on current Infinity.`,
+            desc: `Automatically get Infinity Theorem once you get to its limit of mass.<br>Getting Infinity Theorem automatically dont reset, but you will gain IP on current Infinity.`,
             cost: E(1e11),
         },
         glx10: {
