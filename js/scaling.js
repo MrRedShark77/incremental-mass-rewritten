@@ -631,6 +631,8 @@ function noScalings(type,name) {
 	else if (name=="prestige") {
 		if (type < 3 && hasBeyondRank(5,7)) return true
 	}
+else if (name=='renown') {
+if (type == 0 && hasAscension (0,10)) return true}
 	else if (name=="pent") {
 		if (type < 2 && hasBeyondRank(5,11)) return true
 		if (type = 2 && hasElement(240)) return true
