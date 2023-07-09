@@ -304,7 +304,7 @@ const PRESTIGES = {
         for (let i = 0; i < RANKS.names.length; i++) {
             let r = player.ranks[RANKS.names[i]]
             let br = E(tmp.beyond_ranks.max_tier)
-            if (hasBeyondPres(0,2)) x = x.add(br).mul(r.add(1))
+            if (hasBeyondPres(1,2)) x = x.add(br).mul(r.add(1))
             if (hasPrestige(0,18) && i == 0) r = r.mul(2)
            else x = x.mul(r.add(1))
         }
