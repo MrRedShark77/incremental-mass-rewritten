@@ -40,6 +40,7 @@ const SCALE_START = {
 		honor: E(60),
 		glory: E(60),
 		pe: E(210),
+renown: E(350),
 massUpg4: E(200),
 		inf_theorem: E(16),
 	},
@@ -122,6 +123,7 @@ const SCALE_POWER= {
 		prestige: 2,
 		honor: 2,
 		glory: 3,
+renown: 1.5
 		pe: 3,
 		inf_theorem: 1.55,
 	},
