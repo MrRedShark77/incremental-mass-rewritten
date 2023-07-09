@@ -106,7 +106,7 @@ if (hasElement(276)) a = overflow(a,'e6200',0.05)
         },
         graviton(x) {
             let a = expMult(x.add(1),0.5).pow(tmp.bosons.effect.hb?tmp.bosons.effect.hb[0]:1)
-            if (hasBeyondPres(0,3)) a = expMult(x.add(1),0.6).pow(tmp.bosons.effect.hb?tmp.bosons.effect.hb[0]:1)
+            if (hasBeyondPres(1,3)) a = expMult(x.add(1),0.6).pow(tmp.bosons.effect.hb?tmp.bosons.effect.hb[0]:1)
             return [a]
         },
         hb(x) {
