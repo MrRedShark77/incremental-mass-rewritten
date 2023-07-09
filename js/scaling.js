@@ -533,6 +533,8 @@ function getScalingPower(type, name) {
 		else if (name =='honor'){
 			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
 		}
+else if (name=='glory') {
+if (hasPrestige(3,118) power = power.mul(0.75)}
 		else if (name=="tetr") {
 			if (hasElement(154)) power = power.mul(0.9)
 		}
