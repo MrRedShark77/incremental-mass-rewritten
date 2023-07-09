@@ -49,7 +49,7 @@ const UPGS = {
                 if (hasInfUpgrade(2)) start = E(1e10)
                 let pow = 1.5
                 cost = Decimal.pow(10,Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
-                if (player.mass.gte('ee100')) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
+                if (player.mass.gte(Decimal.pow(10,start))) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
             } else {
                 fp = tmp.massFP
                 
