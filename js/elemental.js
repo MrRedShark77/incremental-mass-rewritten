@@ -1767,7 +1767,7 @@ cost: E('ee1290'),
         {
             c16: true,
             desc: `Galaxy Particles gain formula is better.`,
-            cost: E('e5e220'),
+            cost: E('e5e200'),
         },
         {
             desc: 'Every Theorem in Core power will be equivalent to the highest power possible.',
