@@ -1786,17 +1786,17 @@ cost: E('ee1290'),
         },
         {
             desc: 'Add 10000 C17 completions.',
-            cost: E('ee19600'),
+            cost: E('ee18500'),
             },
             {
                 c16: true,
                 desc: `[Exotic-Lepton] effect is better.`,
-                cost: E('e1.75e550'),
+                cost: E('e1.75e540'),
             },
             {
                 inf: true,
                 desc: `[glx1] effect is better and remove first softcap of Galaxy Particle Generator's effect.`,
-                cost: E(5e62),
+                cost: E(5e61),
          },
     ],
     /*
