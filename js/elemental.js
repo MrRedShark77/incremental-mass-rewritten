@@ -1791,7 +1791,7 @@ cost: E('ee1290'),
             {
                 c16: true,
                 desc: `[Exotic-Lepton] effect is better.`,
-                cost: E('e1.75e540'),
+                cost: E('e1.75e513'),
             },
             {
                 inf: true,
