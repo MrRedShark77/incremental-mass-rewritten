@@ -1782,7 +1782,7 @@ cost: E('ee1290'),
          {
             dark: true,
             desc: `Galaxy Particles gain formula is better again, and Unlock More Muonic Elements.`,
-            cost: E('e4.5e9'),
+            cost: E('e4e9'),
         },
         {
             desc: 'Add 10000 C17 completions.',
