@@ -1205,7 +1205,8 @@ const TREE_UPGS = {
             cost: E(5000),
 
             effect() {
-                let x = player.galaxy.times.add(1).pow(0.65).mul(1.15)
+                if (hasElement(305)) x = player.galaxy.times.add(1).pow(1.25).mul(3.15)
+                else x = player.galaxy.times.add(1).pow(0.65).mul(1.15)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -1274,13 +1275,13 @@ const TREE_UPGS = {
         },
         glx11: {
             branch: ['glx8'],
-            desc: `Placeholder.`,
-            cost: E(1e21),
+            desc: `Now you'll be able to get Nebula Galaxy.`,
+            cost: E(1e18),
         },
         glx12: {
             branch: ['glx7'],
-            desc: `Placeholder.`,
-            cost: E(3.5e22),
+            desc: `.`,
+            cost: E(1e20),
         },
         glx13: {
             branch: ['glx9'],

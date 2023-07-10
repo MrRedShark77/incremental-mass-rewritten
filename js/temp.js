@@ -98,7 +98,7 @@ function resetTemp() {
         grade: {
             eff: [],
             power: [],
-            w: [6,4,2],
+            w: [6,4,2,0],
         },
         radiation: {
             unl: false,

@@ -29,6 +29,7 @@ const BEYOND_PRES = {
             INF.doReset()
         }
     },
+    autoSwitch() { player.auto_beyond_pres = !player.auto_beyond_pres },
 
     rewards: {
         1: {
@@ -36,6 +37,7 @@ const BEYOND_PRES = {
             2: `Beyond-Prestiges's max tier applies to Ascension Base and Beyond-Ranks's max tier applies to Prestige Base`,
             3: `Graviton effect's formula is even better.`,
             7: `Meta-Honor starts 1.5x later per Beyond-Prestige's max tier.`,
+            16: `Keep Element Tier 3 on Galaxy reset.`,
         },
         2: {    
      1: `Automatically Beyond-Prestige up.`,
@@ -137,7 +139,7 @@ if (unl) {
     // Beyond Rank
 
     tmp.el.bp_auto.setDisplay(hasBeyondPres(2,1))
-    tmp.el.bp_auto.setTxt(player.auto_pres.beyond?"ON":"OFF")
+    tmp.el.bp_auto.setTxt(player.auto_beyond_pres?"ON":"OFF")
 
     let t = tmp.beyond_pres.max_tier
     h = ''

@@ -446,7 +446,8 @@ const FERMIONS = {
                     return FERMIONS.getTierScaling(x, true, true)
                 },
                 eff(i, t) {
-                    let x = i.add(1).log10().add(1).log10().add(1).log10().div(20000).mul(t.pow(0.175))
+                    if (hasElement(304)) x = i.add(1).log10().add(1).log10().add(1).log10().div(10000).mul(t.pow(0.185))
+                    else x = i.add(1).log10().add(1).log10().add(1).log10().div(20000).mul(t.pow(0.175))
                     return x.softcap(1.5,0.5,0).toNumber()
                 },
                 desc(x) {

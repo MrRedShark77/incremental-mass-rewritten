@@ -211,7 +211,7 @@ const UPGS = {
                 let ss = E(10)
                 let ss2 = E(50)
                 if (hasBeyondRank(7,78)) ss2 = ss2.mul(1.15)
-
+                if (hasBeyondRank(10,1)) ss2 = ss2.mul(beyondRankEffect(10,1))
                 let x = step.mul(xx).add(1).softcap(ss,0.5,0).softcap(ss2,0.15,0)
                 
                 return {step: step, eff: x, ss: ss, ss2: ss2}

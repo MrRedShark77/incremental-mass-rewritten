@@ -709,7 +709,6 @@ updateBeyondPresTemp()
     let p = 1
 
     if (hasElement(221)) p /= 0.95
-
     tmp.beyond_ranks.tier_power = p
 
     tmp.beyond_ranks.max_tier = BEYOND_RANKS.getTier()
@@ -723,15 +722,28 @@ updateBeyondPresTemp()
             if (BEYOND_RANKS.rewardEff[x][y]) tmp.beyond_ranks.eff[x][y] = BEYOND_RANKS.rewardEff[x][y][0]()
         }
     }
+    tmp.beyond_ranks.broke = BEYOND_RANKS.broke()
 }
 
 const BEYOND_RANKS = {
+    broke() {
+        let x = E(1)
+        if (tmp.beyond_ranks.max_tier > 9) {
+            x = player.ranks.hex.max(1).log10().max(1).log10().div(1.15)
+            return x
+        }
+        else return
+    },
     req() {
-        let x = player.ranks.beyond.pow(1.25).mul(10).add(180).ceil()
+        let p = E(1)
+        if (tmp.beyond_ranks.max_tier > 9) p *= tmp.beyond_ranks.broke
+        let x = player.ranks.beyond.pow(1.25).mul(10).add(180).div(p).ceil()
         return x
     },
     bulk() {
-        let x = player.ranks.hex.gte(180)?player.ranks.hex.sub(180).div(10).max(0).root(1.25).add(1).floor():E(0)
+        let p = E(1)
+        if (tmp.beyond_ranks.max_tier > 9) p *= tmp.beyond_ranks.broke
+        let x = player.ranks.hex.gte(180)?player.ranks.hex.sub(180).div(10).max(0).root(1.25).div(p).add(1).floor():E(0)
         return x
     },
     getTier() {
@@ -809,6 +821,9 @@ const BEYOND_RANKS = {
         },
         9: {
             20: `Raise [Dec 2] reward by 3.5`,
+        },
+        10: {
+            1: `Overpower softcap^2 starts 1.25x later per beyond-ranks' maximum tier (Starts at Pentadec).`
         },
     },
 
@@ -977,6 +992,17 @@ const BEYOND_RANKS = {
                 x=>"+"+format(x,0)+" later",
             ],
         },
+        9: {},
+        10: {
+            1: [
+                ()=>{
+                    let x = Decimal.pow(1.25,(tmp.beyond_ranks.max_tier-8))
+
+                    return Math.max(1,x)
+                },
+                x=>"x"+format(x,2)+" later",
+            ],
+        },
     },
 }
 
@@ -1104,8 +1130,10 @@ function updateRanksHTML() {
                 }.<br>
                 To ${getRankTierName(t+6)} up, require ${getRankTierName(t+5)} ${BEYOND_RANKS.getRequirementFromTier(1,0).format(0)}.
             `
-
+let tier = tmp.beyond_ranks.max_tier
             tmp.el.br_desc.setHTML(h)
+            tmp.el.br_broke.setDisplay(tier>=10)
+            tmp.el.br_broke.setHTML(format(tmp.beyond_ranks.broke))
             tmp.el.br_desc.setClasses({btn: true, reset: true, locked: player.ranks.hex.lt(tmp.beyond_ranks.req)})
         }
     }

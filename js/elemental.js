@@ -1397,6 +1397,7 @@ const ELEMENTS = {
             effect() {
                 let x = player.inf.dim_mass.div(100).add(1).log(10).add(1).log(2).add(1)
                 if (hasElement(295)) x = player.inf.dim_mass.div(20).add(1).log(1.1).add(1)
+                if (hasElement(38,1)) x = x.mul(muElemEff(38,1))
                 return x.max(1)
             },
             effDesc(x) { return "+"+format(x,3) },
@@ -1777,6 +1778,25 @@ cost: E('ee1290'),
                 inf: true,
                 desc: `<span class='red'>Remove</span> Mass Overflow^3-4.`,
                 cost: E(1e48),
+         },
+         {
+            dark: true,
+            desc: `Galaxy Particles gain formula is better again, and Unlock More Muonic Elements.`,
+            cost: E('e4.5e9'),
+        },
+        {
+            desc: 'Add 10000 C17 completions.',
+            cost: E('ee19600'),
+            },
+            {
+                c16: true,
+                desc: `[Exotic-Lepton] effect is better.`,
+                cost: E('e1.75e550'),
+            },
+            {
+                inf: true,
+                desc: `[glx1] effect is better and remove first softcap of Galaxy Particle Generator's effect.`,
+                cost: E(5e62),
          },
     ],
     /*

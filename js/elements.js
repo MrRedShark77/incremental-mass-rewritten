@@ -547,6 +547,9 @@ function updateHTML() {
 				tmp.el.massSoft9.setDisplay(tmp.massGain.gte(tmp.massSoftGain8))
 				tmp.el.massSoftStart9.setTxt(formatMass(tmp.massSoftGain8))
 
+			
+            tmp.el.br_broke.setDisplay(tmp.beyond_ranks.max_tier > 9)
+            tmp.el.br_broke.setHTML(`Because of Broken Beyond-Ranks at Hexadec 1 base Beyond-Ranks cost will be raised by ${format(tmp.beyond_ranks.broke)}!`)
 				tmp.el.massOverflow.setDisplay(player.mass.gte(tmp.overflow_start.mass[0]))
     			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass[0])}</b>, your mass gain is ${overflowFormat(tmp.overflow.mass||1)}!`)
 

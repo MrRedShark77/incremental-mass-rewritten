@@ -179,6 +179,7 @@ const CHALS = {
         if (hasElement(259) && i==15) x = x.add(1000000)
         if (hasElement(279) && i==17) x = x.add(1000)
         if (tmp.inf_unl && i==17) x = x.add(Math.min(theoremEff('mass',5)))
+        if (hasElement(303) && i==18) x = x.add(10000)
         return x.floor()
     },
     getScaleName(i) {

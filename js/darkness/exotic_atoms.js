@@ -277,6 +277,28 @@ const MUONIC_ELEM = {
             effDesc: x=>"+"+format(x),
             cost: E('e3125'),
         },
+        {
+            cs: true,
+            desc: `Galaxy Particles raises Newton Modificator Power.`,
+            eff() {
+                let x = E(1)
+                x = player.galaxy.stars.add(1).log10().max(1).log10()
+                return x.max(1)
+            },
+            effDesc: x=>"^"+format(x),
+            cost: E('e51000'),
+        },
+        {
+            cs: true,
+            desc: `Automatically buy Galaxy Particle Generators, and Bitriennium-239 effect is better based on Galaxy Particle Generators.`,
+            eff() {
+                let x = E(1)
+                x = player.galaxy.generator.root(3).add(1)
+                return x.max(1)
+            },
+            effDesc: x=>"x"+format(x),
+            cost: E('e51500'),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -297,6 +319,7 @@ const MUONIC_ELEM = {
 
         if (tmp.brokenInf) u += 12
         if (hasElement(30,1)) u+= 6
+        if (hasElement(302)) u+= 5
         return u
     },
 }

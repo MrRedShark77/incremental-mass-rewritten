@@ -389,6 +389,7 @@ dark.matters.am = E(0)
             let soft = E(0.15)
             if (hasElement(32,1)) soft = soft.add(muElemEff(32))
             if (hasElement(272)) soft = soft.add(0.3)
+            if (player.galaxy.grade.type[3].gte(1)) soft = soft.add(gradeEffect(3,0))
             return soft
         },
         boost() {
@@ -526,7 +527,10 @@ dark.matters.am = E(0)
                 let p = muElemEff(26,1)
                 step = step.mul(p)
             }
-            
+            if (hasElement(37,1)) {
+                let p = muElemEff(37,1)
+                step = step.pow(p)
+            }
             let eff = step.pow(t.add(bonus))
 
             return {step: step, eff: eff, bonus: bonus}

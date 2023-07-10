@@ -22,8 +22,8 @@ const GRADE = {
         return x
     },
     particle: {
-        names: ["Elliptical","Barred","Spiral"],
-        weight: [6,4,2],
+        names: ["Elliptical","Barred","Spiral",'Nebula'],
+        weight: [6,4,2,0],
         total_w: 12,
         chance: [],
 power: [
@@ -38,7 +38,11 @@ power: [
     p=>{
         let pow = E(1).mul(p.gte(100)?3:p.gte(90)?2.8:p.gte(80)?2.6:p.gte(70)?2.4:p.gte(60)?2.2:p.gte(50)?2:p.gte(40)?1.8:p.gte(30)?1.6:p.gte(20)?1.4:p.gte(10)?1.2:1)
         return pow
-    }
+    },
+    p=>{
+        let pow = E(1).mul(p.gte(100)?3:p.gte(90)?2.8:p.gte(80)?2.6:p.gte(70)?2.4:p.gte(60)?2.2:p.gte(50)?2:p.gte(40)?1.8:p.gte(30)?1.6:p.gte(20)?1.4:p.gte(10)?1.2:1)
+        return pow
+    },
 ],
         eff: [
             p=>{
@@ -63,13 +67,22 @@ power: [
                 return x
                 }
             },
+            p=>{
+                for (let i = 0; i < player.galaxy.grade.type.length; i++) {
+                let pow = tmp.grade.power[i]
+                let x = [p.pow(0.5).div(10).pow(pow)]
+                return x
+                }
+            },
         ],
         effDesc: [
             x=>{ return `Boost Galaxy Particles gain. <b class='sky'>(x${format(x[0])})</b><br> Boost 4th Dark Shadow effect. <b class='sky'>(x${format(x[1])})</b>` },
             x=>{ return `Boost Infinity gain. <b class='sky'>(x${format(x[0])})</b><br> Increase the Power of theorems. <b class='sky'>(${formatPercent(x[1]-1)})</b>` },
             x=>{ return `Boost Galaxy Particles generator base exponent. <b class='sky'>(+${format(x[0])})</b>` },
+            x=>{ return `Newton Modificator effect softcap starts later. <b class='sky'>(+${format(x[0])})</b>` },
         ],
         effPow: [
+            pow=>{ return `Effects Power: <b class='sky'>(${formatPercent(pow)})</b>` },
             pow=>{ return `Effects Power: <b class='sky'>(${formatPercent(pow)})</b>` },
             pow=>{ return `Effects Power: <b class='sky'>(${formatPercent(pow)})</b>` },
             pow=>{ return `Effects Power: <b class='sky'>(${formatPercent(pow)})</b>` },
@@ -101,16 +114,23 @@ function giveRandomPGrading(v, max=false) {
 
 function respecPGrading() {
     createConfirm("Are you sure you want to respec all Gradings?",'respectPGs',()=>{
-        for (let i =0; i < 3; i++) player.galaxy.grade.type[i] = E(0)
+        for (let i =0; i < 4; i++) player.galaxy.grade.type[i] = E(0)
     })
 }
 
 function calcGradeChances() {
     var sum = 0
+    if (hasTree('glx11')) {
+        GRADE.particle.weight[3] = 3
+        tmp.grade.w[3] = 3
+    GRADE.particle.total_w = 14
+tmp.grade.total_w = 14
+    }
     if (hasTree('glx6')) {GRADE.particle.weight[2] = 3
         tmp.grade.w[2] = 3
     GRADE.particle.total_w = 13
 tmp.grade.total_w = 13}
+
     for (let x in GRADE.particle.names) {
         sum += tmp.grade.w[x]
         GRADE.particle.chance[x] = sum / tmp.grade.total_w

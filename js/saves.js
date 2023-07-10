@@ -96,9 +96,10 @@ function calc(dt) {
             let rn = RANKS.names[x]
             if (tmp.brUnl && x < 4 || RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
         }
-        if (player.auto_pres.beyond && (hasBeyondPres(2,1))) BEYOND_PRES.reset(true)
+        if (player.auto_beyond_pres  && (hasBeyondPres(2,1))) BEYOND_PRES.reset(true)
         if (player.auto_ranks.beyond && (hasBeyondRank(2,1)||hasInfUpgrade(10))) BEYOND_RANKS.reset(true)
         for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
+        for (let x = 0; x < ASCENSIONS.fullNames.length; x++) if (ASCENSIONS.autoUnl[x]() && player.auto_asc[x]) ASCENSIONS.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
             let id = UPGS.main.ids[x]
             let upg = UPGS.main[x]
@@ -117,6 +118,7 @@ function calc(dt) {
             for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(du_gs))
         }
         if (hasTree("qol1")) for (let x = 1; x <= (player.dark.unl?118:117); x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
+        if (hasBeyondPres(1,16)) for (let x = 1; x <= 362; x++) if (x<=tmp.elements.upg_length) ELEMENTS.buyUpg(x)
         player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(du_gs))
         if (hasTree("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
         if (hasTree("qol4")) STARS.generators.unl(true)
@@ -126,6 +128,7 @@ function calc(dt) {
                 for (let y = 0; y < BOSONS.upgs[id].length; y++) BOSONS.upgs.buy(id,y)
             }
         }
+        if (hasElement(38,1)) GALAXY.tier()
         RADIATION.autoBuyBoosts()
         calcStars(du_gs)
         calcSupernova(dt)
@@ -175,9 +178,8 @@ function getPlayerData() {
             rank: false,
             tier: false,
         },
-        auto_pres: {
-            beyond: false,
-        },
+        auto_beyond_pres: false,
+        auto_pres: [],
         prestiges: [],
         pres: {
             beyond: E(0),
@@ -294,7 +296,7 @@ function getPlayerData() {
             stars: E(0),
             generator: E(0),
             grade: {
-                type: [E(0),E(0),E(0)],
+                type: [E(0),E(0),E(0),E(0)],
                 theorems: E(0),
             },
         },
