@@ -286,7 +286,7 @@ const MUONIC_ELEM = {
                 return x.max(1)
             },
             effDesc: x=>"^"+format(x),
-            cost: E('e51000'),
+            cost: E('e48000'),
         },
         {
             cs: true,
@@ -297,7 +297,7 @@ const MUONIC_ELEM = {
                 return x.max(1)
             },
             effDesc: x=>"x"+format(x),
-            cost: E('e51500'),
+            cost: E('e48500'),
         },
         /*
         {
