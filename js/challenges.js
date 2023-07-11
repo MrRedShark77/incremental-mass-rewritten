@@ -324,7 +324,7 @@ const CHALS = {
             let rank = c?E(0):x.softcap(20,4,1).floor()
             let tick = c?E(1):E(0.96).pow(x.root(2))
             let scrank = x.add(1).log10().div(10).add(1).root(3)
-            let over = Decimal.pow(0.99,x.add(1).log10().root(2))
+            let over = Decimal.pow(0.99,x.add(1).log10().root(2)).max(.5)
             return {rank: rank, tick: tick, scrank, over}
         },
         effDesc(x) { return hasBeyondRank(2,20)?formatMult(x.scrank)+" later to Supercritical Rank & All Fermions starting, "+formatReduction(x.over)+" weaker to Super Overpower scaling":"+"+format(x.rank,0)+" later to Super Rank starting, "+format(E(1).sub(x.tick).mul(100))+"% weaker to Super Tickspeed scaling" },
