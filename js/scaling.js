@@ -416,6 +416,7 @@ function getScalingStart(type, name) {
 		}
 		else if (name == 'honor'){
 			if (hasBeyondPres(1,6)) start= start.mul(beyondPresEff(1,7))
+			if (hasElement(306)) start = start.mul(1.5)
 		}
 	} else if (type==4) {
 		if (name=="rank") {
@@ -536,7 +537,9 @@ function getScalingPower(type, name) {
 			if (player.dark.exotic_atom.tier >= 16) power = power.mul(exoticAEff(0,7))
 		}
 else if (name=='glory') {
-if (hasPrestige(3,118)) power = power.mul(0.75)}
+if (hasPrestige(3,118)) power = power.mul(0.75)
+if (hasElement(311)) power = power.mul(0.7)
+}
 		else if (name=="tetr") {
 			if (hasElement(154)) power = power.mul(0.9)
 		}

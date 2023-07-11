@@ -220,8 +220,8 @@ const RADIATION = {
             title: `Meta-Boost II`,
             eff(b) {
                 if (hasTree('rad4')) b = b.pow(2)
-                let x = b.root(2.5).div(1.75)
-                return x
+                let x = b.root(2.5).div(1.75).pow(hasElement(307)?1.25:1)
+                return x = overflow(x,1e104,0.25)
             },
             desc(x) { return `Add ${format(x)} levels to all above boosts` },
         },{

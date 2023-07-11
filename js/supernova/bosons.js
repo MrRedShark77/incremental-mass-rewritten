@@ -164,7 +164,7 @@ if (hasElement(276)) a = overflow(a,'e6200',0.05)
                 effect(i) {
                     let x
                     if (hasElement(213)) {
-                        x = player.supernova.bosons.photon.add(1).log10().add(10).log10().mul(i.add(10).log10()).pow(0.75)
+                        x = player.supernova.bosons.photon.add(1).log10().add(10).log10().mul(i.add(10).log10()).pow(0.75).mul(hasTree('glx12')?tmp.fermions.effs[0][3]:1)
                     } else {
                         x = player.supernova.bosons.photon.add(1).log10().add(1).pow(i.softcap(8000,0.1,0).pow(tmp.fermions.effs[0][3]).mul(0.5)).softcap("ee11",0.8,2).softcap("e4e14",hasElement(99)?0.785:0.75,2)
                         if (!hasElement(99)) x = x.softcap("e4e15",0.5,2)

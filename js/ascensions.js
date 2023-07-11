@@ -1,6 +1,6 @@
 const ASCENSIONS = {
     names: ['ascension','transcension'],
-    fullNames: ["Ascension","Ascension"],
+    fullNames: ["Ascension","Transcension"],
     resetName: ['Ascend',"Transcend"],
     baseExponent() {
         let x = 0

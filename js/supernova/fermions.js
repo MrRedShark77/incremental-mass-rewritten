@@ -152,6 +152,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.max(1).log10().add(1).mul(t).pow(0.9).div(100).add(1).softcap(1.5,0.5,0).softcap(5,1/3,0).min(6.5)
+                    if (hasTree('glx12')) x = i.max(1).log10().add(1).log10().add(1).log10().mul(t).pow(0.9).div(100).add(1).softcap(1e8,1/3,0)
                     return x
                 },
                 desc(x) {
@@ -178,7 +179,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().div(500).mul(t.root(2)).add(1)
-                    return x.softcap(1.15,0.5,0).softcap(1.8,1/3,0).min(hasElement(285)?3:2)//.softcap(2,0.1,0)
+                     return x.softcap(1.15,0.5,0).softcap(1.8,1/3,0).min(hasElement(285)?3:2)//.softcap(2,0.1,0)
                 },
                 desc(x) {
                     return `Radiation Boosters are ${format(x)}x cheaper`+(x.gte(1.15)?" <span class='soft'>(softcapped)</span>":"")

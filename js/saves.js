@@ -129,6 +129,18 @@ function calc(dt) {
             }
         }
         if (hasElement(38,1)) GALAXY.tier()
+        if (hasBeyondPres(2,2)) {
+            DARK.am.buyMax()
+         INF.nm.buyMax()
+         INF.dm.buyMax()
+         INF.pm.buyMax()
+         INF.em.buyMax()
+         INF.hm.buyMax()
+         INF.pe.buyMax()
+        }
+        if (hasTree('glx18') && (tmp.supernova.bulkGal.sub(player.galaxy.times).gte(1))) {
+            GALAXY.doReset()
+        }
         RADIATION.autoBuyBoosts()
         calcStars(du_gs)
         calcSupernova(dt)

@@ -20,9 +20,11 @@ const INF = {
         for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
 
         player.atom.elements = e
-        if (hasElement(30,1)) player.atom.muonic_el = [30]
-       else player.atom.muonic_el = []
-        for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)
+        let me = []
+        if (hasElement(40,1)) for (let i = 0; i < player.atom.muonic_el.length; i++) me.push(i)
+        if (hasElement(30,1)) me.push(30)
+       else player.atom.muonic_el = me
+       if (!hasTree('glx14')) for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)
         let keep = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
         "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
         for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].glx) keep.push(tmp.supernova.tree_had[x])
@@ -370,7 +372,7 @@ dark.matters.am = E(0)
         effect() {
             let x = player.inf.dim_mass.add(1).log10().pow(2).div(10)
 
-            return x//.softcap(10,0.5,0)
+            return x.softcap(15000,0.25,0)
         },
     },
     nm_base: {
@@ -480,7 +482,7 @@ dark.matters.am = E(0)
         },
         buyMax() { 
             if (this.can()) {
-                player.inf.points = player.inf.points.sub(this.cost(tmp.peBulk.sub(1))).max(0)
+                if (!hasBeyondPres(2,2))  player.inf.points = player.inf.points.sub(this.cost(tmp.peBulk.sub(1))).max(0)
                 player.inf.pe = tmp.peBulk
             }
         },
@@ -493,6 +495,7 @@ dark.matters.am = E(0)
 
             if (hasElement(225)) step = step.add(elemEffect(225,0))
             if (tmp.inf_unl) step=step.mul(theoremEff('bh',5))
+            if (hasTree('glx17')) step = step.add(treeEff('glx17'))
             
             let eff = step.pow(t.add(bonus))
 
@@ -512,7 +515,7 @@ dark.matters.am = E(0)
         },
         buyMax() { 
             if (this.can()) {
-                player.inf.points = player.inf.points.sub(this.cost(tmp.nmBulk.sub(1))).max(0)
+                if (!hasBeyondPres(2,2))  player.inf.points = player.inf.points.sub(this.cost(tmp.nmBulk.sub(1))).max(0)
                 player.inf.nm = tmp.nmBulk
             }
         },
@@ -547,7 +550,7 @@ dark.matters.am = E(0)
         },
         buyMax() { 
             if (this.can()) {
-                player.inf.points = player.inf.points.sub(this.cost(tmp.pmBulk.sub(1))).max(0)
+                if (!hasBeyondPres(2,2)) player.inf.points = player.inf.points.sub(this.cost(tmp.pmBulk.sub(1))).max(0)
                 player.inf.pm = tmp.pmBulk
             }
         },
@@ -568,13 +571,13 @@ dark.matters.am = E(0)
         can() { return player.inf.points.gte(tmp.dmCost) },
         buy() {
             if (this.can()) {
-                player.inf.points = player.inf.points.sub(tmp.dmCost).max(0)
+                if (!hasBeyondPres(2,2))  player.inf.points = player.inf.points.sub(tmp.dmCost).max(0)
                 player.inf.dm = player.inf.dm.add(1)
             }
         },
         buyMax() { 
             if (this.can()) {
-                player.inf.points = player.inf.points.sub(this.cost(tmp.dmBulk.sub(1))).max(0)
+                if (!hasBeyondPres(2,2)) player.inf.points = player.inf.points.sub(this.cost(tmp.dmBulk.sub(1))).max(0)
                 player.inf.dm = tmp.dmBulk
             }
         },
@@ -601,7 +604,7 @@ dark.matters.am = E(0)
         },
         buyMax() { 
             if (this.can()) {
-                player.inf.points = player.inf.points.sub(this.cost(tmp.emBulk.sub(1))).max(0)
+                if (!hasBeyondPres(2,2)) player.inf.points = player.inf.points.sub(this.cost(tmp.emBulk.sub(1))).max(0)
                 player.inf.em = tmp.emBulk
             }
         },
@@ -628,7 +631,7 @@ dark.matters.am = E(0)
         },
         buyMax() { 
             if (this.can()) {
-                player.inf.points = player.inf.points.sub(this.cost(tmp.hmBulk.sub(1))).max(0)
+                if (!hasBeyondPres(2,2))  player.inf.points = player.inf.points.sub(this.cost(tmp.hmBulk.sub(1))).max(0)
                 player.inf.hm = tmp.hmBulk
             }
         },

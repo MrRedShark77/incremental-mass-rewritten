@@ -823,7 +823,7 @@ const BEYOND_RANKS = {
             20: `Raise [Dec 2] reward by 3.5`,
         },
         10: {
-            1: `Overpower softcap^2 starts 1.25x later per beyond-ranks' maximum tier (Starts at Pentadec).`
+            1: `Overpower softcap^2 starts 1.25x later per beyond-ranks' maximum tier (Starts at Pentadec).`,
         },
     },
 

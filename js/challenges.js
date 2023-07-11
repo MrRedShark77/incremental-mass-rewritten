@@ -219,15 +219,15 @@ const CHALS = {
         let lvl = r.lt(0)?player.chal.comps[x]:r
         let chal = this[x], fp = 1, goal = EINF, bulk = E(0)
         if (x == 17 && (hasElement(295) && (!CHALS.inChal(17)))) {
-            if (hasOrbUpg(5)) goal = lvl.gt(0) ? Decimal.pow('1e10',Decimal.pow(1.01,lvl.sub(1).pow(1.05))) : chal.start
+            if (hasOrbUpg(5)) goal = lvl.gt(0) ? Decimal.pow('1e10',Decimal.pow(1.01,lvl.sub(1).pow(hasTree('glx16')?0.95:1.05))) : chal.start
            else goal = lvl.gt(0) ? Decimal.pow('ee1000',Decimal.pow(1.01,lvl.sub(1).pow(1.25))) : chal.start
-           if (hasOrbUpg(5) && res.gte(chal.start)) bulk = res.log('1e10').max(1).log(1.01).root(1.05).add(1).floor()
+           if (hasOrbUpg(5) && res.gte(chal.start)) bulk = res.log('1e10').max(1).log(1.01).root(hasTree('glx16')?0.95:1.05).add(1).floor()
            else if (res.gte(chal.start)) bulk = res.log('ee1000').max(1).log(1.01).root(1.25).add(1).floor()
             if (res.gte(hasOrbUpg(5)?'1e10':'ee1000')) bulk = bulk.add(1)
         }
         else if (x == 16 && (hasElement(295) && (!CHALS.inChal(16)))) {
-            goal = lvl.gt(0) ? Decimal.pow('ee300',Decimal.pow(1.15,lvl.sub(1).pow(1.15))) : chal.start
-            if (res.gte(chal.start)) bulk = res.log('ee300').max(1).log(1.15).root(1.15).add(1).floor()
+            goal = lvl.gt(0) ? Decimal.pow('ee300',Decimal.pow(1.05,lvl.sub(1).pow(1.15))) : chal.start
+            if (res.gte(chal.start)) bulk = res.log('ee300').max(1).log(1.05).root(1.15).add(1).floor()
             if (res.gte('ee300')) bulk = bulk.add(1)
         } else {
             if (QCs.active() && x <= 12) fp /= tmp.qu.qc_eff[5]

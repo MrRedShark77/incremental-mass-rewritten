@@ -1502,10 +1502,10 @@ const ELEMENTS = {
             cost: E('e1e38'),
         },
         {
-            desc: `Scale Super Parallel Extruder later by Max Theorem's level.`,
+            desc: `Scale Super Scaling later by Max Theorem's level.`,
             cost: E('e1e743'),
             effect() {
-                let x = player.inf.theorem_max.max(1).root(1.25).add(1).floor()
+                let x = player.inf.theorem_max.max(1).root(hasElement(308)?1.15:1.25).add(1).floor()
                 return x
             },
             effDesc(x) { return "+"+format(x,0)+' later' },
@@ -1798,6 +1798,68 @@ cost: E('ee1290'),
                 desc: `[glx1] effect is better and remove first softcap of Galaxy Particle Generator's effect.`,
                 cost: E(5e61),
          },
+         {
+            dark: true,
+            desc: `Meta-Honor starts x1.5 later.`,
+            cost: E('e7.4e9'),
+        },
+        {
+            desc: '[Meta-boost II] is ^1.25 stronger.',
+            cost: E('ee26450'),
+            },
+            {
+                inf: true,
+                desc: `Bipentbium-252 is better.`,
+                cost: E(1e48),
+         },
+         {
+            dark: true,
+            desc: `Galaxy Particles gain is boosted by Infinity Points.`,
+            cost: E('e1.1e10'),
+            effect() {let x = E(1)
+                if (hasElement(313)) x = player.inf.points.max(1).root(10).add(1)
+                else x = player.inf.points.max(1).log10().add(1)
+            return x},
+            effDesc(x) { return "x"+format(x,3)+"" },
+        },
+        {
+            desc: 'Pre-Infinity Global Speed reduces Galaxy Requirement.',
+            cost: E('ee27000'),
+            effect() {let x = E(1)
+                x = tmp.preInfGlobalSpeed.max(1).log10().add(1).log10()
+            return x},
+            effDesc(x) { return "rooted by "+format(x,3)+"" },
+            
+            },
+            {
+                c16: true,
+                desc: `Hyper-Glory is 30% weaker.`,
+                cost: E('e1e600'),
+            },
+            {
+                inf: true,
+                desc: `Boost last Abyssal Blot effect by Galaxy Particle Generators amount.`,
+                effect() {
+                    let x = E(1)
+                    x = player.galaxy.generator.root(5).add(1)
+                    return x
+                },
+                effDesc: x=>"+"+format(x),
+                cost: E(1e66),
+         },
+         {
+            desc: 'Trinilennium-309 formula is better.',
+            cost: E('ee28000'),
+            },
+            {
+                dark: true,
+                desc: `Apply C18's reward to Galaxy Particles gain at reduced rate.`,
+                cost: E('e1.9e10'),
+                effect() {let x = E(1)
+                   x = (player.chal.comps[18].mul(25).pow(10).add(1)).log(1.1)
+                return x},
+                effDesc(x) { return "x"+format(x,3)+"" },
+            },
     ],
     /*
     {
@@ -1847,7 +1909,7 @@ cost: E('ee1290'),
         if (tmp.brokenInf) u += 35
         if (hasElement(253)) u += 16
         if (hasElement(269)) u += 23
-        if (hasElement(292)) u += 15
+        if (hasElement(292)) u += 22
         return u
     },
 }

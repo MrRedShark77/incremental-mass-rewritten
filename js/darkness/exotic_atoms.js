@@ -299,6 +299,21 @@ const MUONIC_ELEM = {
             effDesc: x=>"x"+format(x),
             cost: E('e48500'),
         },
+        {
+            cs: true,
+            desc: `Pre-Infinity Global Speed is better based on Galaxy Particles.`,
+            eff() {
+                let x = E(1)
+                x = player.galaxy.stars.root(3).add(1)
+                return x.max(1)
+            },
+            effDesc: x=>"x"+format(x),
+            cost: E('e73500'),
+        },
+        {
+            desc: `Keep Muonic Elements on any reset.`,
+            cost: E('e25000'),
+        },
         /*
         {
             desc: `Placeholder.`,
@@ -319,7 +334,7 @@ const MUONIC_ELEM = {
 
         if (tmp.brokenInf) u += 12
         if (hasElement(30,1)) u+= 6
-        if (hasElement(302)) u+= 5
+        if (hasElement(302)) u+= 4
         return u
     },
 }

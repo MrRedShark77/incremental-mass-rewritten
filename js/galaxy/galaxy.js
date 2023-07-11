@@ -7,6 +7,8 @@ const GALAXY = {
         let x = E(0.5)
  x = x.mul(tmp.galaxy.genEff)
  if (player.galaxy.grade.type[0].gte(1)) x = x.mul(tmp.grade.eff[0][0])
+ if (hasElement(309)) x = x.mul(elemEffect(309))
+ if (hasElement(314)) x = x.mul(elemEffect(314))
         return x
     },
     cost() {
@@ -29,8 +31,8 @@ const GALAXY = {
        else if (hasElement(299)) x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).root(2).max(1)).max(1)
        else x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).log(1.15).max(1)).max(1)
 
-       x = overflow(x,E(1e9),hasElement(305)?0.5:0.25)
-        return x = overflow(x,E(1e15),0.25)
+       x = overflow(x,E(1e9).pow(hasTree('glx13')?treeEff('glx13'):1),hasElement(305)?0.5:0.25)
+        return x = overflow(x,E(1e15).pow(hasTree('glx19')?treeEff('glx19'):1),0.25)
     },
     effect() {
         let x = E(1)
@@ -50,11 +52,12 @@ const GALAXY = {
         let e = [275,283,229,249,260]
 player.atom.elements = e
 player.galaxy.times = player.galaxy.times.max(tmp.supernova.bulkGal)
-for (let x = 1; x <= 18; x++) player.chal.comps[x] = E(0)
+if (!hasTree('glx14')) for (let x = 1; x <= 18; x++) player.chal.comps[x] = E(0)
 let save_keep = [6,8,10,0,11,13,15,16]
-if (hasTree('glx10')) save_keep=[1,2,3,4,5,6,7,8,9,10,0,11,12,13,14,15,16,17]
+if (hasTree('glx10')) save_keep=[1,2,3,4,5,6,7,8,9,10,0,11,12,13,14,15,16,20]
 player.inf.points = E(0)
 player.inf.total = E(0)
+if (!hasTree('glx15')) {
 player.inf.nm = E(0)
 player.inf.pm = E(0)
 player.inf.dm = E(0)
@@ -65,6 +68,7 @@ player.inf.pm_base = E(0)
 player.inf.dm_base = E(0)
 player.inf.hm_base = E(0)
 player.inf.em_base = E(0)
+}
 player.inf.core[0].star = [true,true,true,true,true,true]
 player.inf.core[1].star = [true,true,true,true,true,true]
 player.inf.core[2].star = [true,true,true,true,true,true]

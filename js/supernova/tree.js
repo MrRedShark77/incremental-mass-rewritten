@@ -1255,7 +1255,7 @@ const TREE_UPGS = {
         },
         glx8: {
             branch: ['glx4'],
-            desc: `Dalton Theorem's Meta-score is boosted by Galaxy Partivles.`,
+            desc: `Dalton Theorem's Meta-score is boosted by Galaxy Particles.`,
             effect() {
                 let x = player.galaxy.stars.add(1).log10().add(1).log(2).div(2)
                 return x.softcap('1e15000',0.5,0)
@@ -1274,59 +1274,77 @@ const TREE_UPGS = {
             cost: E(1e12),
         },
         glx11: {
-            branch: ['glx8'],
+            branch: ['glx8','glx10'],
             desc: `Now you'll be able to get Nebula Galaxy.`,
             cost: E(1e18),
         },
         glx12: {
-            branch: ['glx7'],
-            desc: `.`,
+            branch: ['glx7','glx9'],
+            desc: `Unhardcap [Strange] effect, but the effect will be weaker<br>[Strange] will be applied to Exponential 4th Photon upgrade effect.`,
             cost: E(1e20),
         },
         glx13: {
+            req() {return player.galaxy.times.gte(8)},
+            reqDesc() {return "Get 8 Galaxies."},
             branch: ['glx9'],
-            desc: `Placeholder.`,
-            cost: E(7e23),
+            desc: `Galaxies scales Galaxy Particle Generator's softcap.`,
+            
+            effect() {
+                x = player.galaxy.times.add(1).pow(0.25).mul(1.15)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
+            cost: E(5e20),
         },
         glx14: {
             branch: ['glx10'],
-            desc: `Placeholder.`,
-            cost: E(1e28),
+            desc: `Keep pre-C19 challenges completions.`,
+            cost: E(1e23),
         },
         glx15: {
             branch: ['glx11'],
-            desc: `Placeholder.`,
-            cost: E(1e31),
+            desc: `Keep every Modificators and its Fragments on Galaxy Reset.`,
+            cost: E(1e25),
         },
         glx16: {
             branch: ['glx12'],
-            desc: `Placeholder.`,
-            cost: E(1e33),
+            desc: `C17's goal scaling is even more weaker.`,
+            cost: E(5e26),
         },
         glx17: {
             branch: ['glx13'],
-            desc: `Placeholder.`,
-            cost: E(8.5e35),
+            desc: `C18's reward also affects Parallel Extruder Power.`,
+            effect() {
+                x = (player.chal.comps[18].mul(25).pow(10)).add(1).log10().add(1).log10().sub(1)
+                return x
+            },
+            effDesc(x) { return "+"+format(x) },
+            cost: E(1e32),
         },
         glx18: {
             branch: ['glx14'],
-            desc: `Placeholder.`,
-            cost: E(1e37),
+            desc: `Automatically buy Galaxies.`,
+            cost: E(1e33),
         },
         glx19: {
-            branch: ['glx16','glx15'],
-            desc: `Placeholder.`,
-            cost: E(1e40),
+            branch: ['glx16','glx15','glx19'],
+            desc: `Apply [glx13] effect to Galaxy Particle Generator's softcap^2 at reduced rate.`,
+            effect() {
+                x = player.galaxy.times.add(1).pow(0.05)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
+            cost: E(1e37),
         },
         glx20: {
-            branch: ['glx18','glx17'],
-            desc: `Placeholder.`,
-            cost: E(1e50),
+            branch: ['glx18','glx17','glx19'],
+            desc: `Unlock more elements [ENDGAME].`,
+            cost: E(1e41),
         },
         glx21: {
             branch: ['glx4','glx11','glx12','glx19'],
-            desc: 'Placeholder',
-            cost: E(1e100),
+            desc: 'Unlock ???',
+            cost: Infinity,
         },
         /*
         x: {

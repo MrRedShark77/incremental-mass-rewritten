@@ -23,6 +23,7 @@ const FORMS = {
         
         if (tmp.inf_unl) x = x.mul(10).mul(theoremEff('time',0))
         if (hasElement(29,1)) x = x.mul(muElemEff(29))
+        if (hasElement(39,1)) x = x.mul(elemEffect(39,1))
 
         return x
     },

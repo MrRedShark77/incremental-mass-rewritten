@@ -160,7 +160,7 @@ const DARK = {
         if (a.gte('e56000') && !tmp.c16active) x.ApQ_Overflow = Decimal.pow(10,a.div('e56000').log10().add(1).log10())
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
         if (a.gte('ee7')) {
-            x.ea = a.div('ee7').log10().div(1e6).add(1).root(2).softcap(hasElement(31,1)?3:1.75,0.25,0)
+            x.ea = a.div('ee7').log10().div(1e6).add(1).root(2).softcap(hasElement(31,1)?3:1.75,0.25,0).add(hasElement(312)?elemEffect(312):0)
         }
 
         return x
@@ -176,7 +176,7 @@ const DARK = {
         },
         buyMax() { 
             if (this.can()) {
-                player.dark.am_mass = player.dark.am_mass.sub(this.cost(tmp.amBulk.sub(1))).max(0)
+                if (!hasBeyondPres(2,2)) player.dark.am_mass = player.dark.am_mass.sub(this.cost(tmp.amBulk.sub(1))).max(0)
                 player.dark.am = tmp.amBulk
             }
         },

@@ -41,6 +41,7 @@ const BEYOND_PRES = {
         },
         2: {    
      1: `Automatically Beyond-Prestige up.`,
+     2: `Auto-buy Antimatter Generator, every Modificators and Parallel Extruder.<br>They cost nothing.`,
     },
     },
 
