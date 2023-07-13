@@ -225,21 +225,21 @@ function calcEntropy(dt) {
 		let s1 = Decimal.pow(4,player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));
-        if (isNaN(s1)) s1=E(0)
+        if (isNaN(s1.mag)) s1=E(0)
 		if(player.qu.en.eth[2].lt(s1))player.qu.en.eth[2] = s1;
         
 		s1 = Decimal.pow(4,player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));
         s1 = s1.mul(tmp.dark.abEff.hr||1)
-        if (isNaN(s1)) s1=E(0)
+        if (isNaN(s1.mag)) s1=E(0)
 		if(player.qu.en.hr[2].lt(s1))player.qu.en.hr[2] = s1;
 	}
     if (player.qu.en.eth[0]) {
         player.qu.en.eth[3] += dt
         player.qu.en.eth[1] = player.qu.en.eth[1].add(tmp.en.gain.eth.mul(dt))
         let s = player.supernova.radiation.hz.div(player.supernova.radiation.hz.max(1).pow(dt).pow(player.qu.en.eth[3]**(2/3))).sub(1)
-        if (isNaN(s)) s=E(1)
+        if (isNaN(s.mag)) s=E(1)
         if (s.lt(1)) ENTROPY.switch(0)
         else player.supernova.radiation.hz = s
     }
@@ -247,7 +247,7 @@ function calcEntropy(dt) {
         player.qu.en.hr[3] += dt
         player.qu.en.hr[1] = player.qu.en.hr[1].add(tmp.en.gain.hr.mul(dt))
         let s = player.bh.mass.div(player.bh.mass.max(1).pow(dt).pow(player.qu.en.hr[3]**(2/3))).sub(1)
-        if (isNaN(s)) s=E(1)
+        if (isNaN(s.mag)) s=E(1)
         if (s.lt(1)) ENTROPY.switch(1)
         else player.bh.mass = s
     }

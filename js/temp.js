@@ -174,6 +174,8 @@ function resetTemp() {
             stronger: E(.5),
         },
 
+        rank_collapse: { start: E('1e14'), power: E(2), reduction: E(1) },
+
         mass_glyph_msg: 0,
 
         glyph_upg_eff: [],

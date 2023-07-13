@@ -703,24 +703,37 @@ function updateRanksTemp() {
 
 const BEYOND_RANKS = {
     req() {
-        let x = player.ranks.beyond.pow(1.25).mul(10).add(180).ceil()
-        return x
+        let p = player.ranks.beyond, rc = tmp.rank_collapse
+
+        let x = p.scale(rc.start,rc.power,2).pow(1.25).mul(10).add(180)
+
+        rc.reduction = p.gte(rc.start) ? x.log(p.pow(1.25).mul(10).add(180)) : E(1)
+
+        return x.ceil()
     },
     bulk() {
-        let x = player.ranks.hex.gte(180)?player.ranks.hex.sub(180).div(10).max(0).root(1.25).add(1).floor():E(0)
+        let rc = tmp.rank_collapse
+
+        let x = player.ranks.hex.gte(180)?player.ranks.hex.sub(180).div(10).max(0).root(1.25).scale(rc.start,rc.power,2,true).add(1).floor():E(0)
+
         return x
     },
-    getTier() {
-        let x = player.ranks.beyond.gt(0)?player.ranks.beyond.log10().max(0).pow(.8).mul(tmp.beyond_ranks.tier_power).add(1).floor().toNumber():1
+    getTier(r=player.ranks.beyond) {
+        let x = r.gt(0)?r.log10().max(0).pow(.8).mul(tmp.beyond_ranks.tier_power).add(1).floor().toNumber():1
         return x
     },
-    getRankFromTier(i) {
+    getRankFromTier(i,r=player.ranks.beyond) {
         let hp = Decimal.pow(10,Math.pow((i-1)/tmp.beyond_ranks.tier_power,1/.8)).ceil()
 
-        return player.ranks.beyond.div(hp).floor()
+        return r.div(hp).floor()
     },
     getRequirementFromTier(i,t=tmp.beyond_ranks.latestRank,mt=tmp.beyond_ranks.max_tier) {
         return Decimal.pow(10,Math.pow(mt/tmp.beyond_ranks.tier_power,1/.8)-Math.pow((mt-i)/tmp.beyond_ranks.tier_power,1/.8)).mul(Decimal.add(t,1)).ceil()
+    },
+    getRankDisplayFromValue(r) {
+        let tier = this.getTier(r), current = this.getRankFromTier(tier,r);
+
+        return getRankTierName(tier+5) + ' ' + current.format(0)
     },
 
     reset(auto=false) {
@@ -1032,6 +1045,11 @@ function updateRanksHTML() {
             tmp.el.br_desc.setHTML(h)
             tmp.el.br_desc.setClasses({btn: true, reset: true, locked: player.ranks.hex.lt(tmp.beyond_ranks.req)})
         }
+
+        let rc = tmp.rank_collapse
+
+        tmp.el.rankCollapse.setDisplay(player.ranks.beyond.gte(rc.start))
+        tmp.el.rankCollapse.setHTML(`Because of Rank Collapse at <b>${BEYOND_RANKS.getRankDisplayFromValue(rc.start)}</b>, Hept's requirement is raised by <b>${rc.reduction.format()}</b>!`)
     }
     else if (tmp.rank_tab == 1) {
         tmp.el.pres_base.setHTML(`${tmp.prestiges.baseMul.format(0)}<sup>${format(tmp.prestiges.baseExp)}</sup> = ${tmp.prestiges.base.format(0)}`)

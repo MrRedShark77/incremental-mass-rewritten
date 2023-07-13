@@ -99,6 +99,8 @@ const ATOM = {
 
             if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
 
+            if (false) os = EINF
+
             x = overflow(x,os,0.25)
 
             tmp.overflow.atomic = calcOverflow(o,x,os)
