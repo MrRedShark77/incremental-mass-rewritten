@@ -60,6 +60,12 @@ const ELEMENTS = {
                 tmp.stab[8]=3
             }
 
+            if (x==262) {
+                tmp.tab=0
+                tmp.stab[0]=0
+                tmp.rank_tab=1
+            }
+
             tmp.pass = 2
         }
     },
@@ -334,7 +340,7 @@ const ELEMENTS = {
 
                 x = overflow(x,'ee112',0.5)
 
-                return x
+                return x.min('ee3000')
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -1473,6 +1479,27 @@ const ELEMENTS = {
             c16: true,
             desc: `Add 100 more C16’s max completions.`,
             cost: E('ee219'),
+        },{
+            inf: true,
+            desc: `Unlock Galactic Prestige.`,
+            cost: E('e59'),
+        },{
+            desc: `Galactic Prestige’s resources are affected by pre-infinity global speed.`,
+            cost: E('ee7676'),
+            effect() {
+                let x = tmp.preInfGlobalSpeed.max(1).root(2)
+                return x
+            },
+            effDesc(x) { return formatMult(x) },
+        },{
+            c16: true,
+            desc: `Prestige mass’s effect now affects stronger overflow^1-2 at a reduced rate.`,
+            cost: E('ee294'),
+            effect() {
+                let x = GPEffect(1,E(1)).root(2)
+                return x
+            },
+            effDesc(x) { return formatReduction(x) + ' weaker' },
         },
     ],
     /*

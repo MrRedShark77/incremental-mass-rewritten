@@ -128,7 +128,7 @@ button {
 	color: white;
     font-size: 14px;
 	cursor: pointer;
-	transition-property: background-color, border, transform;
+	transition-property: background-color, border, transform, box-shadow;
 	transition-duration: 0.15s;
 }
 
@@ -457,7 +457,7 @@ button {
 
 .btn_tree:not(.locked):not(.bought):hover,
 .elements:not(.locked):not(.bought):not(.final):hover,
-.btn:not(.locked):not(.md):hover,
+.btn:not(.locked):not(.md):not(.galactic):hover,
 .img_btn:not(.locked):not(.bought):hover {
 	background-color: #555
 }
@@ -1376,6 +1376,80 @@ h4 {
 	width: 200px;
 	height: 200px;
 	image-rendering: pixelated;
+}
+
+.galactic {
+	position: relative;
+	border-color: #0098a3;
+	background-color: #0000;
+	text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black;
+	width: 300px;
+	height: 120px;
+	max-width: 300px;
+	max-height: 120px;
+}
+
+.galactic * {
+	pointer-events: none;
+}
+
+.galactic:before {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	content: " ";
+	display: block;
+	width: 100%;
+	height: 100%;
+	background-image: url('images/galactic_texture.png');
+	animation: gal_spin-1 30s cubic-bezier(.42,0,.58,1) infinite, gal_spin-2 10s cubic-bezier(.42,0,.58,1) infinite;
+	z-index: -1;
+}
+
+.galactic.locked {
+	border-color: #444;
+}
+
+.galactic:before.locked {
+	opacity: 0;
+}
+
+.galactic:not(.locked):hover {
+	border-color: #6ff5ff;
+	box-shadow: 0 0 10px #6ff5ff;
+}
+
+@keyframes gal_spin-1 {
+	0% {
+		background-position: 0px 0px;
+	}
+	20% {
+		background-position: -450px -150px;
+	}
+	45% {
+		background-position: 180px -70px;
+	}
+	65% {
+		background-position: 120px 270px;
+	}
+	90% {
+		background-position: -330px 60px;
+	}
+	100% {
+		background-position: 150px -100px;
+	}
+}
+
+@keyframes gal_spin-2 {
+	0%, 100% {
+		background-size: 50px;
+	}
+	25%, 75% {
+		background-size: 30px;
+	}
+	50% {
+		background-size: 80px;
+	}
 }
 
 @keyframes f_spin {

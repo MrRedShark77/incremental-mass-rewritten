@@ -224,7 +224,7 @@ const RANKS = {
             '4'() {
                 let hex = player.ranks.hex
                 let ret = hex.mul(.2).add(1)
-                if (hex.gte(43)) ret = ret.pow(hex.div(10).add(1).root(2))
+                if (hex.gte(43)) ret = ret.pow(hex.min(1e18).div(10).add(1).root(2))
                 return overflow(ret,1e11,0.5)
             },
         },
@@ -283,8 +283,8 @@ const CORRUPTED_PRES = [
 ]
 
 const PRESTIGES = {
-    names: ['prestige','honor','glory','renown'],
-    fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown'],
+    names: ['prestige','honor','glory','renown','valor'],
+    fullNames: ["Prestige Level", "Honor", 'Glory', 'Renown', 'Valor'],
     baseExponent() {
         let x = E(0)
 
@@ -330,7 +330,10 @@ const PRESTIGES = {
                 x = hasElement(167)?y.div(fp).scaleEvery('prestige2',false).pow(1.25).mul(3.5).add(5):y.pow(1.3).mul(4).add(6)
                 break;
             case 3:
-                x = y.div(fp).scaleEvery('prestige3',false).pow(1.25).mul(3).add(9)
+                x = y.scaleEvery('prestige3',false,[0,fp]).pow(1.25).mul(3).add(9)
+                break;
+            case 4:
+                x = y.div(fp).scaleEvery('prestige4',false).pow(1.25).mul(3).add(12)
                 break;
             default:
                 x = EINF
@@ -351,7 +354,10 @@ const PRESTIGES = {
                 if (y.gte(6)) x = hasElement(167)?y.sub(5).div(3.5).max(0).root(1.25).scaleEvery('prestige2',true).mul(fp).add(1):y.sub(6).div(4).max(0).root(1.3).mul(fp).add(1)
                 break
             case 3:
-                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true).mul(fp).add(1)
+                if (y.gte(9)) x = y.sub(9).div(3).max(0).root(1.25).scaleEvery('prestige3',true,[0,fp]).add(1)
+                break 
+            case 4:
+                if (y.gte(12)) x = y.sub(12).div(3).max(0).root(1.25).scaleEvery('prestige4',true).mul(fp).add(1)
                 break 
             default:
                 x = E(0)
@@ -371,18 +377,21 @@ const PRESTIGES = {
         ()=>true,
         ()=>tmp.chal14comp||tmp.inf_unl,
         ()=>tmp.brUnl||tmp.inf_unl,
+        ()=>false,
     ],
     noReset: [
         ()=>hasUpgrade('br',11)||tmp.inf_unl,
         ()=>tmp.chal13comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
+        ()=>false,
     ],
     autoUnl: [
         ()=>tmp.chal13comp||tmp.inf_unl,
         ()=>tmp.chal14comp||tmp.inf_unl,
         ()=>tmp.chal15comp||tmp.inf_unl,
         ()=>tmp.inf_unl,
+        ()=>false,
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -456,6 +465,9 @@ const PRESTIGES = {
             "4": `Corrupted shard gain is increased by +50% per Renown.`,
             "6": `Exotic Atoms boost their other resources.`,
             10: `Prestige Level 388 also applies to Glory scaling.`,
+        },
+        {
+            1: ':3',
         },
     ],
     rewardEff: [
@@ -577,6 +589,9 @@ const PRESTIGES = {
                 let x = tmp.exotic_atom.amount.add(1).log10().add(1)
                 return x
             },x=>"x"+x.format()],
+        },
+        {
+
         },
     ],
     reset(i, bulk = false) {
@@ -999,7 +1014,7 @@ function updateRanksHTML() {
             let h = ''
             for (let x = 0; x < 4; x++) {
                 let rn = RANKS.names[x]
-                h += '<div>' + getScalingName(rn) + RANKS.fullNames[x] + ' ' + format(player.ranks[rn],0) + '</div>'
+                h += '<div>' + getScalingName(rn) + RANKS.fullNames[x] + ' <h4>' + format(player.ranks[rn],0) + '</h4></div>'
             }
             tmp.el.pre_beyond_ranks.setHTML(h)
 
@@ -1012,7 +1027,7 @@ function updateRanksHTML() {
             h = ''
 
             for (let x = Math.min(3,t)-1; x >= 0; x--) {
-                h += getRankTierName(t+5-x) + " " + (x == 0 ? tmp.beyond_ranks.latestRank.format(0) : BEYOND_RANKS.getRankFromTier(t-x).format(0)) + (x>0?'<br>':"")
+                h += getRankTierName(t+5-x) + " <h4>" + (x == 0 ? tmp.beyond_ranks.latestRank.format(0) : BEYOND_RANKS.getRankFromTier(t-x).format(0)) + '</h4>' + (x>0?'<br>':"")
             }
 
             tmp.el.br_amt.setHTML(h)
@@ -1079,6 +1094,8 @@ function updateRanksHTML() {
                 tmp.el["pres_auto_"+x].setTxt(player.auto_pres[x]?"ON":"OFF")
             }
         }
+
+        updateGPHTML()
     }
     else if (tmp.rank_tab == 2) {
         updateAscensionsHTML()
@@ -1086,3 +1103,91 @@ function updateRanksHTML() {
 }
 
 const PRES_BEFOREC13 = [40,7]
+
+const GAL_PRESTIGE = {
+    req() {
+        let x = Decimal.pow(10,player.gal_prestige.pow(1.5)).mul(1e17)
+
+        return x
+    },
+    reset() {
+        if (player.supernova.times.gte(tmp.gp.req)) {
+            player.gal_prestige = player.gal_prestige.add(1)
+
+            INF.doReset()
+        }
+    },
+    gain(i) {
+        let x = E(0), gp = player.gal_prestige
+
+        switch (i) {
+            case 0:
+                if (gp.gte(1)) {
+                    x = player.stars.points.add(1).log10().add(1).log10().add(1).pow(gp.root(1.5))
+                }
+            break;
+            case 1:
+                if (gp.gte(2)) {
+                    x = tmp.prestiges.base.add(1).log10().add(1).pow(gp.sub(1).root(1.5))
+                }
+            break;
+        }
+
+        if (hasElement(263)) x = x.mul(elemEffect(263))
+
+        return x
+    },
+    effect(i) {
+        let x, res = player.gp_resources[i]
+
+        switch (i) {
+            case 0:
+                x = res.add(1).log10().root(2).div(20).add(1)
+            break;
+            case 1:
+                x = Decimal.pow(0.97,res.add(1).log10().overflow(10,0.5).root(2))
+            break;
+        }
+
+        return x
+    },
+    res_length: 2,
+}
+
+function GPEffect(i,def=1) { return tmp.gp.res_effect[i]||def }
+
+function updateGPTemp() {
+    tmp.gp.req = GAL_PRESTIGE.req()
+
+    for (let i = 0; i < GAL_PRESTIGE.res_length; i++) {
+        tmp.gp.res_gain[i] = GAL_PRESTIGE.gain(i)
+        tmp.gp.res_effect[i] = GAL_PRESTIGE.effect(i)
+    }
+}
+
+function updateGPHTML() {
+    let unl = hasElement(262)
+
+    tmp.el.galactic_prestige_div.setDisplay(unl)
+
+    if (unl) {
+        let gp = player.gal_prestige
+
+        tmp.el.gal_prestige.setHTML(gp.format(0))
+        tmp.el.gp_btn.setHTML(`
+        Reset Supernovas (force an Infinity reset), but Galactic Prestige up. Next Galactic Prestige reveals its treasure or happens nothing.<br><br>
+        Require: <b>${tmp.gp.req.format()}</b> Supernovas
+        `)
+        tmp.el.gp_btn.setClasses({btn: true, galactic: true, locked: player.supernova.times.lt(tmp.gp.req)})
+
+        let h = '', res = player.gp_resources, res_gain = tmp.gp.res_gain, res_effect = tmp.gp.res_effect
+
+        if (gp.gte(1)) h += `You have <h4>${res[0].format(0)}</h4> ${res[0].formatGain(res_gain[0])} Galactic Stars (based on collapsed stars and galactic prestige), 
+        which strengthen star generators by <h4>${formatPercent(res_effect[0].sub(1))}</h4> exponentially.<br>`
+
+        if (gp.gte(2)) h += `You have <h4>${formatMass(res[1])}</h4> ${res[1].formatGain(res_gain[1],true)} of Prestige Mass (based on prestige base and galactic prestige), 
+        which weaken mass overflow^1-2 by <h4>${formatReduction(res_effect[1])}</h4>.<br>`
+
+        tmp.el.gp_rewards.setHTML(h)
+    }
+}

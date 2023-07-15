@@ -247,6 +247,29 @@ const MUONIC_ELEM = {
             cs: true,
             desc: `Remove first softcap of C9’s reward.`,
             cost: E('e110'),
+        },{
+            desc: `Double corrupted star’s speed per infinity theorem.`,
+            cost: E('e8100'),
+            eff() {
+                let x = Decimal.pow(2,player.inf.theorem)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },{
+            cs: true,
+            desc: `Unlock a new effect of corrupted star.`,
+            cost: E('e130'),
+        },{
+            desc: `The exponent of ascension base is increased by Renown at a reduced rate.`,
+            cost: E('e8600'),
+            eff() {
+                let x = player.prestiges[3].root(2).div(100)
+                return x
+            },
+            effDesc: x=>"+^"+format(x),
+        },{
+            desc: `Quark overflow is 25% weaker.`,
+            cost: E('e9200'),
         },
 
         /*
@@ -439,6 +462,7 @@ function updateExoticAtomsTemp() {
     if (hasElement(25,1)) s = s.add(muElemEff(25,0))
 
     if (tmp.inf_unl) s = s.add(theoremEff('time',4))
+    s = s.add(tmp.cs_effect.ea_reward||0)
 
     tea.strength = s
 

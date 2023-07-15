@@ -174,6 +174,12 @@ const UPGS = {
 
                 if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
+                if (hasElement(264)) {
+                    let w = elemEffect(264)
+                    op = op.pow(w)
+                    op2 = op2.pow(w)
+                }
+
                 ret = overflow(ret,os,op)
 
                 ret = overflow(ret,os2,op2)
@@ -613,7 +619,7 @@ const UPGS = {
                 cost: E('e1e273'),
                 effect() {
                     let x = player.dark.c16.totalS.add(1)
-                    return overflow(x,10,0.5).pow(3)
+                    return overflow(x,10,0.5).pow(3).overflow(x,'e3500',0.25)
                 },
                 effDesc(x=this.effect()) {
                     return "^"+format(x)

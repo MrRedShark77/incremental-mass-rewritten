@@ -143,6 +143,10 @@ const FORMS = {
             op2 = op2.pow(.95)
         }
 
+        let pp = GPEffect(1)
+        op = op.pow(pp)
+        op2 = op2.pow(pp)
+
         x = overflow(x,os,op)
 
         x = overflow(x,os2,op2)
@@ -728,6 +732,7 @@ function formatARV(ex,gain=false,set_mlt=false) {
     let mlt = ex.div(1.5e56).log10().div(1e9)
     if (set_mlt) return format(mlt)+" mlt"
     let arv = mlt.log10().div(15).floor()
+    if(arv.add(2).gte(1000))return format(mlt.log10().div(15).add(2))+" arvs";
     return format(mlt.div(Decimal.pow(1e15,arv))) + " " + (arv.gte(8)?"arv^"+format(arv.add(2),0):ARV[arv.toNumber()])
 }
 
@@ -737,7 +742,7 @@ function formatMass(ex) {
     if (md == 1) return format(ex) + ' g'
     else if (md == 2) return format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt'
     else if (md == 3) {
-        return ex.gte('1.5e1000000056') ? format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt' : format(ex) + ' g'
+        return  ex.gte('ee14979') ? formatARV(ex) : ex.gte('1.5e1000000056') ? format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt' : format(ex) + ' g'
     }
 
     if (ex.gte(E(1.5e56).mul('ee9'))) return formatARV(ex)

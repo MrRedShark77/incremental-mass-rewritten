@@ -27,7 +27,7 @@ function setupHTML() {
 		let rn = RANKS.names[x]
 		table += `<div style="width: 300px" id="ranks_div_${x}">
 			<button id="ranks_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('${rn}')">OFF</button>
-			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <span id="ranks_amt_${x}">X</span><br><br>
+			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <h4 id="ranks_amt_${x}">X</h4><br><br>
 			<button onclick="RANKS.reset('${rn}')" class="btn reset" id="ranks_${x}">
 				Reset your ${x>0?RANKS.fullNames[x-1]+"s":'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
 				Req: <span id="ranks_req_${x}">X</span>
@@ -41,7 +41,7 @@ function setupHTML() {
 	for (let x = 0; x < PRES_LEN; x++) {
 		table += `<div style="width: 300px" id="pres_div_${x}">
 			<button id="pres_auto_${x}" class="btn" style="width: 80px;" onclick="PRESTIGES.autoSwitch(${x})">OFF</button>
-			<span id="pres_scale_${x}""></span>${PRESTIGES.fullNames[x]} <span id="pres_amt_${x}">X</span><br><br>
+			<span id="pres_scale_${x}""></span>${PRESTIGES.fullNames[x]} <h4 id="pres_amt_${x}">X</h4><br><br>
 			<button onclick="PRESTIGES.reset(${x})" class="btn reset" id="pres_${x}">
 				${x>0?"Reset your "+PRESTIGES.fullNames[x-1]+"s":'Force a Quantum reset'}, but ${PRESTIGES.fullNames[x]} up.<span id="pres_desc_${x}"></span><br>
 				Req: <span id="pres_req_${x}">X</span>
@@ -502,37 +502,40 @@ function updateHTML() {
 		if (tmp.tab == 0) {
 			if (tmp.stab[0] == 0) {
 				updateRanksHTML()
-				updateMassUpgradesHTML()
-				updateTickspeedHTML()
 				
-				tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
-				tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
-				tmp.el.massSoft3.setDisplay(tmp.massGain.gte(tmp.massSoftGain2))
-				tmp.el.massSoftStart3.setTxt(formatMass(tmp.massSoftGain2))
-				tmp.el.massSoft4.setDisplay(tmp.massGain.gte(tmp.massSoftGain3))
-				tmp.el.massSoftStart4.setTxt(formatMass(tmp.massSoftGain3))
-				tmp.el.massSoft5.setDisplay(tmp.massGain.gte(tmp.massSoftGain4))
-				tmp.el.massSoftStart5.setTxt(formatMass(tmp.massSoftGain4))
-				tmp.el.massSoft6.setDisplay(tmp.massGain.gte(tmp.massSoftGain5))
-				tmp.el.massSoftStart6.setTxt(formatMass(tmp.massSoftGain5))
-				tmp.el.massSoft7.setDisplay(tmp.massGain.gte(tmp.massSoftGain6))
-				tmp.el.massSoftStart7.setTxt(formatMass(tmp.massSoftGain6))
-				tmp.el.massSoft8.setDisplay(tmp.massGain.gte(tmp.massSoftGain7))
-				tmp.el.massSoftStart8.setTxt(formatMass(tmp.massSoftGain7))
-				tmp.el.massSoft9.setDisplay(tmp.massGain.gte(tmp.massSoftGain8))
-				tmp.el.massSoftStart9.setTxt(formatMass(tmp.massSoftGain8))
+				if (tmp.rank_tab == 0) {
+					updateMassUpgradesHTML()
+					updateTickspeedHTML()
 
-				tmp.el.massOverflow.setDisplay(player.mass.gte(tmp.overflow_start.mass[0]))
-    			tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass[0])}</b>, your mass gain is ${overflowFormat(tmp.overflow.mass||1)}!`)
+					tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
+					tmp.el.massSoftStart1.setTxt(formatMass(tmp.massSoftGain))
+					tmp.el.massSoft3.setDisplay(tmp.massGain.gte(tmp.massSoftGain2))
+					tmp.el.massSoftStart3.setTxt(formatMass(tmp.massSoftGain2))
+					tmp.el.massSoft4.setDisplay(tmp.massGain.gte(tmp.massSoftGain3))
+					tmp.el.massSoftStart4.setTxt(formatMass(tmp.massSoftGain3))
+					tmp.el.massSoft5.setDisplay(tmp.massGain.gte(tmp.massSoftGain4))
+					tmp.el.massSoftStart5.setTxt(formatMass(tmp.massSoftGain4))
+					tmp.el.massSoft6.setDisplay(tmp.massGain.gte(tmp.massSoftGain5))
+					tmp.el.massSoftStart6.setTxt(formatMass(tmp.massSoftGain5))
+					tmp.el.massSoft7.setDisplay(tmp.massGain.gte(tmp.massSoftGain6))
+					tmp.el.massSoftStart7.setTxt(formatMass(tmp.massSoftGain6))
+					tmp.el.massSoft8.setDisplay(tmp.massGain.gte(tmp.massSoftGain7))
+					tmp.el.massSoftStart8.setTxt(formatMass(tmp.massSoftGain7))
+					tmp.el.massSoft9.setDisplay(tmp.massGain.gte(tmp.massSoftGain8))
+					tmp.el.massSoftStart9.setTxt(formatMass(tmp.massSoftGain8))
 
-				tmp.el.massOverflow2.setDisplay(player.mass.gte(tmp.overflow_start.mass[1]))
-    			tmp.el.massOverflow2.setHTML(`Because of mass overflow^2 at <b>${formatMass(tmp.overflow_start.mass[1])}</b>, your mass overflow is even stronger!`)
+					tmp.el.massOverflow.setDisplay(player.mass.gte(tmp.overflow_start.mass[0]))
+					tmp.el.massOverflow.setHTML(`Because of mass overflow at <b>${formatMass(tmp.overflow_start.mass[0])}</b>, your mass gain is ${overflowFormat(tmp.overflow.mass||1)}!`)
 
-				tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[0]))
-    			tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger[0])}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
-			
-				tmp.el.strongerOverflow2.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[1]))
-    			tmp.el.strongerOverflow2.setHTML(`Because of stronger overflow^2 at <b>${format(tmp.overflow_start.stronger[1])}</b>, your stronger overflow is even stronger!`)
+					tmp.el.massOverflow2.setDisplay(player.mass.gte(tmp.overflow_start.mass[1]))
+					tmp.el.massOverflow2.setHTML(`Because of mass overflow^2 at <b>${formatMass(tmp.overflow_start.mass[1])}</b>, your mass overflow is even stronger!`)
+
+					tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[0]))
+					tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger[0])}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
+				
+					tmp.el.strongerOverflow2.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[1]))
+					tmp.el.strongerOverflow2.setHTML(`Because of stronger overflow^2 at <b>${format(tmp.overflow_start.stronger[1])}</b>, your stronger overflow is even stronger!`)
+				}
 			}
 			else if (tmp.stab[0] == 1) {
 				updateBlackHoleHTML()

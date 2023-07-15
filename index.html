@@ -210,55 +210,66 @@
                                         </button>
                                     </div>
                                 </div>
+                                <br><br>
+                                <div id="mass_upgs_table"></div><br><br>
+                                <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="tickspeed_div">
+                                    <div style="width: 300px">
+                                        <div class="resources">
+                                            <img src="images/tickspeed.png">
+                                            <span style="margin-left: 5px; text-align: left;"><span id="tickspeed_scale"></span>Tickspeeds [<span id="tickspeed_lvl">X</span>]</span>
+                                        </div>
+                                    </div><button id="tickspeed_btn" class="btn" style="width: 300px;" onclick="FORMS.tickspeed.buy()">Cost: <span id="tickspeed_cost">X</span> Rage Power</button>
+                                    <button class="btn" style="width: 120px;" onclick="FORMS.tickspeed.buyMax()">Buy Max</button>
+                                    <button id="tickspeed_auto" class="btn" style="width: 80px;" onclick="FORMS.tickspeed.autoSwitch()">OFF</button>
+                                    <div style="margin-left: 5px; text-align: left; width: 400px">
+                                        Tickspeed Power: <span id="tickspeed_step">X</span><br>
+                                        Tickspeed Effect: <span id="tickspeed_eff">X</span> to mass gain
+                                    </div>
+                                </div><div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="accel_div">
+                                    <div style="width: 300px">
+                                        <div class="resources">
+                                            <img src="images/accelerator.png">
+                                            <span style="margin-left: 5px; text-align: left;"><span id="accel_scale"></span>Accelerators [<span id="accel_lvl">X</span>]</span>
+                                        </div>
+                                    </div><button id="accel_btn" class="btn" style="width: 300px;" onclick="FORMS.accel.buy()">Cost: <span id="accel_cost">X</span> Rage Power</button>
+                                    <button class="btn" style="width: 120px;" onclick="FORMS.accel.buyMax()">Buy Max</button>
+                                    <button id="accel_auto" class="btn" style="width: 80px;" onclick="FORMS.accel.autoSwitch()">OFF</button>
+                                    <div style="margin-left: 5px; text-align: left; width: 400px">
+                                        Accelerator Power: <span id="accel_step">X</span><br>
+                                        Accelerator Effect: <span id="accel_eff">X</span>
+                                    </div>
+                                </div><br><div>
+                                    <span id="massSoft1" class="red">After <b id="massSoftStart1">X</b> of mass gain, mass gain will be softcapped!<br></span>
+                                    <span id="massSoft3" style="color: rgb(121, 0, 0)">After <b id="massSoftStart3">X</b> of mass gain will softcap^2 mass gain!<br></span>
+                                    <span id="massSoft4" style="color: rgb(122, 0, 86)">After <b id="massSoftStart4">X</b> of mass gain will softcap^3 mass gain!<br></span>
+                                    <span id="massSoft5" style="color: rgb(255, 94, 0)">After <b id="massSoftStart5">X</b> of mass gain will softcap^4 mass gain!<br></span>
+                                    <span id="massSoft6" style="color: rgb(255, 238, 0)">After <b id="massSoftStart6">X</b> of mass gain will softcap^5 mass gain!<br></span>
+                                    <span id="massSoft7" style="color: rgb(166, 255, 0)">After <b id="massSoftStart7">X</b> of mass gain will softcap^6 mass gain!<br></span>
+                                    <span id="massSoft8" style="color: rgb(0, 255, 149)">After <b id="massSoftStart8">X</b> of mass gain will softcap^7 mass gain!<br></span>
+                                    <span id="massSoft9" style="color: rgb(0, 225, 255)">After <b id="massSoftStart9">X</b> of mass gain will softcap^8 mass gain!</span>
+                                    <div id="massOverflow"></div>
+                                    <div id="massOverflow2" style="color: rgb(255, 197, 215)"></div>
+                                    <div id="strongerOverflow"></div>
+                                    <div id="strongerOverflow2" style="color: rgb(255, 197, 215)"></div>
+                                    <div id="rankCollapse"></div>
+                                </div>
                             </div><div id="rank_tab1">
                                 Your Prestige base is <span id="pres_base"></span> (based on product of Rank tiers+1)<br><br>
                                 <div id="pres_table" class="table_center" style="min-height: 180px;"></div>
+                                <br><br>
+                                <div id="galactic_prestige_div">
+                                    <div>
+                                        Galactic Prestige <h4 id="gal_prestige">0</h4><br>
+                                        <button id="gp_btn" class="btn galactic" onclick="GAL_PRESTIGE.reset()">Reset Supernova for that what do you mean?</button>
+                                    </div>
+                                    <br>
+                                    <div id="gp_rewards">
+                                        
+                                    </div>
+                                </div>
                             </div><div id="rank_tab2">
                                 Your Ascension base is <span id="asc_base"></span> (based on product of ln[Prestige tiers+1]+1)<br><br>
                                 <div id="asc_table" class="table_center" style="min-height: 180px;"></div>
-                            </div>
-                            <br><br>
-                            <div id="mass_upgs_table"></div><br><br>
-                            <div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="tickspeed_div">
-                                <div style="width: 300px">
-                                    <div class="resources">
-                                        <img src="images/tickspeed.png">
-                                        <span style="margin-left: 5px; text-align: left;"><span id="tickspeed_scale"></span>Tickspeeds [<span id="tickspeed_lvl">X</span>]</span>
-                                    </div>
-                                </div><button id="tickspeed_btn" class="btn" style="width: 300px;" onclick="FORMS.tickspeed.buy()">Cost: <span id="tickspeed_cost">X</span> Rage Power</button>
-                                <button class="btn" style="width: 120px;" onclick="FORMS.tickspeed.buyMax()">Buy Max</button>
-                                <button id="tickspeed_auto" class="btn" style="width: 80px;" onclick="FORMS.tickspeed.autoSwitch()">OFF</button>
-                                <div style="margin-left: 5px; text-align: left; width: 400px">
-                                    Tickspeed Power: <span id="tickspeed_step">X</span><br>
-                                    Tickspeed Effect: <span id="tickspeed_eff">X</span> to mass gain
-                                </div>
-                            </div><div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="accel_div">
-                                <div style="width: 300px">
-                                    <div class="resources">
-                                        <img src="images/accelerator.png">
-                                        <span style="margin-left: 5px; text-align: left;"><span id="accel_scale"></span>Accelerators [<span id="accel_lvl">X</span>]</span>
-                                    </div>
-                                </div><button id="accel_btn" class="btn" style="width: 300px;" onclick="FORMS.accel.buy()">Cost: <span id="accel_cost">X</span> Rage Power</button>
-                                <button class="btn" style="width: 120px;" onclick="FORMS.accel.buyMax()">Buy Max</button>
-                                <button id="accel_auto" class="btn" style="width: 80px;" onclick="FORMS.accel.autoSwitch()">OFF</button>
-                                <div style="margin-left: 5px; text-align: left; width: 400px">
-                                    Accelerator Power: <span id="accel_step">X</span><br>
-                                    Accelerator Effect: <span id="accel_eff">X</span>
-                                </div>
-                            </div><br><div>
-                                <span id="massSoft1" class="red">After <b id="massSoftStart1">X</b> of mass gain, mass gain will be softcapped!<br></span>
-                                <span id="massSoft3" style="color: rgb(121, 0, 0)">After <b id="massSoftStart3">X</b> of mass gain will softcap^2 mass gain!<br></span>
-                                <span id="massSoft4" style="color: rgb(122, 0, 86)">After <b id="massSoftStart4">X</b> of mass gain will softcap^3 mass gain!<br></span>
-                                <span id="massSoft5" style="color: rgb(255, 94, 0)">After <b id="massSoftStart5">X</b> of mass gain will softcap^4 mass gain!<br></span>
-                                <span id="massSoft6" style="color: rgb(255, 238, 0)">After <b id="massSoftStart6">X</b> of mass gain will softcap^5 mass gain!<br></span>
-                                <span id="massSoft7" style="color: rgb(166, 255, 0)">After <b id="massSoftStart7">X</b> of mass gain will softcap^6 mass gain!<br></span>
-                                <span id="massSoft8" style="color: rgb(0, 255, 149)">After <b id="massSoftStart8">X</b> of mass gain will softcap^7 mass gain!<br></span>
-                                <span id="massSoft9" style="color: rgb(0, 225, 255)">After <b id="massSoftStart9">X</b> of mass gain will softcap^8 mass gain!</span>
-                                <div id="massOverflow"></div>
-                                <div id="massOverflow2" style="color: rgb(255, 197, 215)"></div>
-                                <div id="strongerOverflow"></div>
-                                <div id="strongerOverflow2" style="color: rgb(255, 197, 215)"></div>
-                                <div id="rankCollapse"></div>
                             </div>
                         </div><div id="stab_frame0_1">
                             <div class="table_center">
@@ -329,7 +340,8 @@
                         </div><div id="stab_frame0_3">
                             You collapsed <h4 id="stars_Amt">X</h4> stars, which multiplies mass gain based on all rank types.<br>
                             <span class="green">Currently: <span id="stars_Eff">X</span></span><br><br>
-                            <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button><br><br>
+                            <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button>
+                            <br><br>
                             <div id="stars_table" class="table_center"></div><br><br>
                             <span id="starSoft1" class="red">After <b id="starSoftStart1">X</b> Collapsed stars gain, Collapsed stars gain will be softcap!</span><br>
                         </div><div id="stab_frame0_4">
@@ -651,7 +663,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten v0.7.1.1 - made by MrRedShark77<br>
+                            Incremental Mass Rewritten v0.7.1.2 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`where lemon<br><img src="https://i.imgflip.com/57cc98.jpg" style="width:100%">`)'>Bézier</span>, 16777216 & Aarex (Artists)<br><br><br>
                             Hint 1: Hover top image above tabs to show description...<br><br>

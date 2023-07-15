@@ -128,6 +128,9 @@ function calc(dt) {
                 for (let y = 0; y < BOSONS.upgs[id].length; y++) BOSONS.upgs.buy(id,y)
             }
         }
+
+        for (let i = 0; i < GAL_PRESTIGE.res_length; i++) player.gp_resources[i] = player.gp_resources[i].add(tmp.gp.res_gain[i].mul(dt))
+
         RADIATION.autoBuyBoosts()
         calcStars(du_gs)
         calcSupernova(dt)
@@ -180,6 +183,8 @@ function getPlayerData() {
         prestiges: [],
         auto_asc: [],
         ascensions: new Array(ASCENSIONS.names.length).fill(E(0)),
+        gal_prestige: E(0),
+        gp_resources: new Array(GAL_PRESTIGE.res_length).fill(E(0)),
         auto_mainUpg: {
             
         },

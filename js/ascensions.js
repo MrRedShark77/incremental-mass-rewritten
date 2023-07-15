@@ -3,9 +3,11 @@ const ASCENSIONS = {
     fullNames: ["Ascension",'Transcension'],
     resetName: ['Ascend','Transcend'],
     baseExponent() {
-        let x = 0
+        let x = E(0)
 
-        x += 1
+        if (hasElement(44,1)) x = x.add(muElemEff(44,0))
+
+        x = x.add(1)
 
         return x
     },
@@ -73,9 +75,13 @@ const ASCENSIONS = {
             3: `19th Big Rip upgrade is twice as effective, and remove the overflow from unstable BH's effect.`,
             4: `Kaon & Pion gains are multiplied by 5 every Ascension.`,
             7: `Remove dilated mass's overflow.`,
+            13: `Remove atomic power's overflow.`,
+            15: `Remove Exotic Rank & Tier, Super & Hyper Hex.`,
         },{
             1: `Prestige Base Exponent is doubled. Big Rip Upgrade 19 now affects Renown.`,
             2: `Super Infinity Theorem is 10% weaker.`,
+            3: `Super and Hyper Overpower starts +50 later.`,
+            4: `Meta-Prestige Level starts 2x later.`,
         },
     ],
     rewardEff: [
@@ -89,7 +95,7 @@ const ASCENSIONS = {
                 x=>formatMult(x),
             ],
         },{
-            
+
         },
     ],
     reset(i, bulk = false) {
@@ -119,7 +125,7 @@ function setupAscensionsHTML() {
 	for (let x = 0; x < ASCENSIONS.names.length; x++) {
 		table += `<div style="width: 300px" id="asc_div_${x}">
 			<button id="asc_auto_${x}" class="btn" style="width: 80px;" onclick="ASCENSIONS.autoSwitch(${x})">OFF</button>
-			<span id="asc_scale_${x}""></span>${ASCENSIONS.fullNames[x]} <span id="asc_amt_${x}">X</span><br><br>
+			<span id="asc_scale_${x}""></span>${ASCENSIONS.fullNames[x]} <h4 id="asc_amt_${x}">X</h4><br><br>
 			<button onclick="ASCENSIONS.reset(${x})" class="btn reset" id="asc_${x}">
 				${ASCENSIONS.resetName[x]} (force an Infinity reset), but ${ASCENSIONS.fullNames[x]} up.<span id="asc_desc_${x}"></span><br>
 				Req: <span id="asc_req_${x}">X</span>
@@ -172,7 +178,7 @@ function updateAscensionsTemp() {
     tmp.ascensions.baseMul = ASCENSIONS.base()
     tmp.ascensions.baseExp = ASCENSIONS.baseExponent()
     tmp.ascensions.base = tmp.ascensions.baseMul.pow(tmp.ascensions.baseExp)
-    for (let x = 0; x < PRES_LEN; x++) {
+    for (let x = 0; x < ASCENSIONS.names.length; x++) {
         tmp.ascensions.req[x] = ASCENSIONS.req(x)
         for (let y in ASCENSIONS.rewardEff[x]) {
             if (ASCENSIONS.rewardEff[x][y]) tmp.ascensions.eff[x][y] = ASCENSIONS.rewardEff[x][y][0]()

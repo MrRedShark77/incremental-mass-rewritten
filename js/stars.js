@@ -98,6 +98,7 @@ const STARS = {
             x = hasElement(213) ? x.pow(tmp.bosons.upgs.photon[3].effect) : x.mul(tmp.bosons.upgs.photon[3].effect)
             if (hasPrestige(1,1)) x = x.pow(2)
 
+            x = expMult(x,GPEffect(0))
             if (QCs.active()) x = expMult(x,tmp.qu.qc_eff[0][0])
             return x
         },

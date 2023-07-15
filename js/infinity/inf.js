@@ -180,6 +180,8 @@ const INF = {
 
         generatePreTheorems()
 
+        for (let i = 0; i < GAL_PRESTIGE.res_length; i++) player.gp_resources[i] = E(0)
+
         tmp.pass = 2
     },
     req: Decimal.pow(10,Number.MAX_VALUE),

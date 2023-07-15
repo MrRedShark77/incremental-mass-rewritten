@@ -37,6 +37,7 @@ const SCALE_START = {
 		prestige0: E(80),
 		prestige1: E(60),
 		prestige2: E(60),
+		prestige3: E(55),
 		massUpg4: E(250),
 		FSS: E(32),
 	},
@@ -116,6 +117,7 @@ const SCALE_POWER= {
 		prestige0: 2,
 		prestige1: 2,
 		prestige2: 3,
+		prestige3: 3,
 		massUpg4: 8,
 		FSS: 3,
 	},
@@ -342,6 +344,9 @@ function getScalingStart(type, name) {
 			if (hasElement(233)) start = start.add(25)
 			if (hasElement(255)) start = start.add(elemEffect(255))
 		}
+		else if (name=="massUpg4") {
+			if (hasAscension(1,3)) start = start.add(50)
+		}
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {
@@ -357,6 +362,9 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="hex") {
 			if (hasPrestige(0,651)) start = start.mul(4/3)
+		}
+		else if (name=="massUpg4") {
+			if (hasAscension(1,3)) start = start.add(50)
 		}
 	}
 	else if (type==2) {
@@ -406,6 +414,7 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="prestige0") {
 			start = start.mul(exoticAEff(0,1))
+			if (hasAscension(1,4)) start = start.mul(2)
 		}
 		else if (name=="fTier") {
 			if (hasAscension(0,2)) start = start.pow(2)
@@ -596,16 +605,20 @@ function noScalings(type,name) {
 
 	if (name=="rank") {
 		if (type<4 && hasPrestige(1,127)) return true
-		// else if (type == 4) return true
+		else if (type == 4 && hasAscension(0,15)) return true
 	}
 	else if (name=="tier") {
 		if (type<4 && hasPrestige(1,127)) return true
+		else if (type == 4 && hasAscension(0,15)) return true
 	}
 	else if (name=="tetr") {
 		return hasCharger(8)
 	}
 	else if (name=="pent") {
 		return hasElement(243)
+	}
+	else if (name=="hex") {
+		if (type<2 && hasAscension(0,15)) return true
 	}
 	else if (name=="massUpg") {
 		if (hasBeyondRank(2,15)) return true
