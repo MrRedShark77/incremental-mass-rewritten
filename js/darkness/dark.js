@@ -161,7 +161,7 @@ const DARK = {
         }
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
         if (a.gte('ee7')) {
-            x.ea = a.div('ee7').log10().div(1e6).add(1).root(2).softcap(1.75,hasElement(249)?0.4:0.25,0).softcap(8,0.1,0)
+            x.ea = a.div('ee7').log10().div(1e6).add(1).root(2).softcap(1.75,hasElement(249)?0.4:0.25,0).softcap(8,hasElement(266)?0.2:0.1,0)
         }
 
         return x

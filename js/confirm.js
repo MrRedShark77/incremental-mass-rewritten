@@ -109,7 +109,7 @@ const CONFIRMS_FUNCTION = {
     },
     inf(limit) {
         if (limit || player.inf.pt_choosed >= 0) {
-            if (player.inf.theorem.eq(0)) addTheorem('mass',[0,1,1,1,1,1,1,1],1)
+            if (player.inf.theorem.eq(0)) addTheorem('mass',[0,1,1,1,1,1,1,1],1,1)
             else {
                 let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
 

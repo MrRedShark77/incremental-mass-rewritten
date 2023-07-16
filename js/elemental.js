@@ -1500,6 +1500,14 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return formatReduction(x) + ' weaker' },
+        },{
+            inf: true,
+            desc: `Automatically update best IP gained.`,
+            cost: E('e65'),
+        },{
+            dark: true,
+            desc: `The softcap of abyssal blot’s tenth reward is slightly weaker.`,
+            cost: E('e1.7e10'),
         },
     ],
     /*

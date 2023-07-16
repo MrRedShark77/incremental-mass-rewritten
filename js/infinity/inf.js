@@ -533,6 +533,8 @@ function calcInf(dt) {
         player.dark.c16.totalS = player.dark.c16.totalS.add(cs.mul(dt))
     }
 
+    if (hasElement(265)) player.inf.best = player.inf.best.max(tmp.IP_gain)
+
     if (hasElement(235)) {
         let ig = player.inf.best.div(1e2).mul(tmp.cs_effect.inf_speed).mul(dt)
 
