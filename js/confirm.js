@@ -113,7 +113,7 @@ const CONFIRMS_FUNCTION = {
             else {
                 let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
 
-                addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),td.power_m.mul(getPowerMult()).add(1))
+                addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),getPowerMult().mul(td.power_m).add(1))
             }
         } else if (hasElement(239) && player.inf.pt_choosed < 0) {
             let fl = Decimal.floor(tmp.core_lvl), pm = getPowerMult()
