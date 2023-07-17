@@ -190,7 +190,7 @@ function buyGlyphUpgrade(i) {
     let max = u.max||Infinity
     let cost = u.cost(ua)
 
-    if (isAffordGlyphCost(cost) && ua.lt(max)) {
+    if (isAffordGlyphCost(cost) && ua < max) {
         upgs[i] = upgs[i] ? upgs[i] + 1 : 1
 
         for (let c in cost) if (tmp.dark.mg_passive[c]<=0) player.dark.run.glyphs[c] -= cost[c]
