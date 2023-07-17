@@ -101,6 +101,7 @@ function calc(dt) {
         }
         if (player.auto_ranks.beyond && (hasBeyondRank(2,1)||hasInfUpgrade(10))) BEYOND_RANKS.reset(true)
         for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
+        for (let x = 0; x < ASCENSIONS.names.length; x++) if (ASCENSIONS.autoUnl[x]() && player.auto_asc[x]) ASCENSIONS.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
             let id = UPGS.main.ids[x]
             let upg = UPGS.main[x]
@@ -424,6 +425,25 @@ function convertStringToDecimal() {
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) player.md.break.upgs[x] = E(player.md.break.upgs[x]||0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
+
+    for (let x in player.inf.core) {
+        let c = player.inf.core[x]
+        if (c) {
+            c.level = E(c.level)
+            c.power = E(c.power)
+        }
+    }
+    for (let x in player.inf.inv) {
+        let c = player.inf.inv[x]
+        if (c) {
+            c.level = E(c.level)
+            c.power = E(c.power)
+        }
+    }
+    for (let x = 0; x < 4; x++) {
+        let t = player.inf.pre_theorem[x]
+        if (t) t.power_m = E(t.power_m)
+    }
 }
 
 function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) && !quUnl() || tmp.inf_reached && !hasInfUpgrade(16) }
@@ -519,11 +539,12 @@ function loadGame(start=true, gotNaN=false) {
     if (!gotNaN) tmp.prevSave = localStorage.getItem("testSave")
     wipe()
     load(tmp.prevSave)
-    setupHTML()
-    setupTooltips()
-    updateQCModPresets()
     
     if (start) {
+        setupHTML()
+        setupTooltips()
+        updateQCModPresets()
+
         setInterval(save,60000)
         for (let x = 0; x < 5; x++) updateTemp()
 
@@ -582,32 +603,46 @@ function loadGame(start=true, gotNaN=false) {
 }
 
 function checkNaN() {
-    if (findNaN(player)) {
-        addNotify("Game Data got NaNed")
+    let naned = findNaN(player)
+
+    if (naned) {
+        console.log(naned)
+
+        addNotify("Game Data got NaNed because of "+naned.bold())
+
+        return
 
         resetTemp()
+        tmp.start = true
         loadGame(false, true)
+        for (let x = 0; x < 5; x++) updateTemp()
     }
 }
 
-function findNaN(obj, str=false, data=getPlayerData()) {
+function isNaNed(val) {
+    return typeof val == "number" ? isNaN(val) : Object.getPrototypeOf(val).constructor.name == "Decimal" ? isNaN(val.mag) : false
+}
+
+function findNaN(obj, str=false, data=getPlayerData(), node='player') {
     if (str ? typeof obj == "string" : false) obj = JSON.parse(atob(obj))
-    for (let x = 0; x < Object.keys(obj).length; x++) {
-        let k = Object.keys(obj)[x]
-        if (typeof obj[k] == "number") if (isNaN(obj[k])) return true
+    for (let k in obj) {
+        if (typeof obj[k] == "number") if (isNaNed(obj[k])) return node+'.'+k
         if (str) {
-            if (typeof obj[k] == "string") if (data[k] == null || data[k] == undefined ? false : Object.getPrototypeOf(data[k]).constructor.name == "Decimal") if (isNaN(E(obj[k]).mag)) return true
+            if (typeof obj[k] == "string") if (data[k] == null || data[k] == undefined ? false : Object.getPrototypeOf(data[k]).constructor.name == "Decimal") if (isNaN(E(obj[k]).mag)) return node+'.'+k
         } else {
-            if (obj[k] == null || obj[k] == undefined ? false : Object.getPrototypeOf(obj[k]).constructor.name == "Decimal") if (isNaN(E(obj[k]).mag)) return true
+            if (obj[k] == null || obj[k] == undefined ? false : Object.getPrototypeOf(obj[k]).constructor.name == "Decimal") if (isNaN(E(obj[k]).mag)) return node+'.'+k
         }
-        if (typeof obj[k] == "object") return findNaN(obj[k], str, data[k])
+        if (typeof obj[k] == "object") {
+            let node2 = findNaN(obj[k], str, data[k], (node?node+'.':'')+k)
+            if (node2) return node2
+        }
     }
     return false
 }
 
 function overflow(number, start, power, meta=1){
 	if(isNaN(number.mag))return new Decimal(0);
-	start=E(start);
+	start=Decimal.iteratedexp(10,meta-1,1.0001).max(start);
 	if(number.gte(start)){
         let s = start.iteratedlog(10,meta)
 		number=Decimal.iteratedexp(10,meta,number.iteratedlog(10,meta).div(s).pow(power).mul(s));
@@ -626,6 +661,11 @@ function tetraflow(number,start,power) { // EXPERIMENTAL FUNCTION - x => 10^^((s
 		number=Decimal.tetrate(10,number.slog(10).sub(s).mul(power).add(s))
 	}
 	return number;
+}
+
+Decimal.prototype.addTP = function (val) {
+    var e = this.clone()
+    return Decimal.tetrate(10, e.slog(10).add(val))
 }
 
 function simulateTime(sec) {

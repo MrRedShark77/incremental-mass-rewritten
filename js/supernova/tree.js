@@ -1013,7 +1013,7 @@ const TREE_UPGS = {
                 let p = hasPrestige(2,40), c = tmp.c16active
                 let x = player.dark.c16.bestBH.add(1).log10().add(1).log10().div(c?8:30)
                 if (p) x = x.mul(c?3:1.2)
-                return x.toNumber()
+                return x
             },
             effDesc(x) { return "+"+format(x) },
         },

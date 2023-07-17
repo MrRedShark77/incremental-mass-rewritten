@@ -69,7 +69,7 @@ const INF = {
         player.supernova.chal.noTick = true
         player.supernova.chal.noBHC = true
 
-        player.supernova.times = E(0)
+        if (!hasElement(47,1)) player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
         player.supernova.bosons = {
@@ -131,7 +131,7 @@ const INF = {
         dark.abyssalBlot = E(0)
 
         dark.run.active = false
-        dark.run.glyphs = [0,0,0,0,0,0]
+        dark.run.glyphs = [E(0),E(0),E(0),E(0),E(0),E(0)]
         if (!hasInfUpgrade(3)) dark.run.upg = []
 
         dark.matters = darkSave.matters
@@ -203,7 +203,7 @@ const INF = {
 
         if (hasElement(16,1)) s = s.mul(player.inf.dim_mass.add(1).log(1e6).add(1))
 
-        return s.max(1).root(2).softcap(tmp.inf_level_ss,1/3,0).toNumber()
+        return s.max(1).root(2).softcap(tmp.inf_level_ss,1/3,0)
     },
     gain() {
         if (player.mass.lt(this.req)) return E(0)
@@ -476,11 +476,11 @@ function updateInfTemp() {
 
     updateCoreTemp()
 
-    tmp.inf_level_ss = 5
+    tmp.inf_level_ss = E(5)
 
-    if (hasElement(222)) tmp.inf_level_ss += 5
-    if (hasElement(235)) tmp.inf_level_ss += 5
-    if (tmp.chal) tmp.inf_level_ss += tmp.chal.eff[17]||0
+    if (hasElement(222)) tmp.inf_level_ss = tmp.inf_level_ss.add(5)
+    if (hasElement(235)) tmp.inf_level_ss = tmp.inf_level_ss.add(5)
+    if (tmp.chal) tmp.inf_level_ss = tmp.inf_level_ss.add(tmp.chal.eff[17]||0)
 
     tmp.IP_gain = INF.gain()
     tmp.inf_limit = INF.limit()
@@ -581,11 +581,11 @@ function updateInfHTML() {
             for (let t in CORE) {
                 let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
                 for (let i = 0; i < MAX_STARS; i++) {
-                    if (s[i] > 0) hh += "Meta-Score "+format(s[i],2)+" | "+(ct.preEff[i] || '???.')+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
+                    if (s[i].gt(0)) hh += "Meta-Score "+format(s[i],2)+" | "+(ct.preEff[i] || '???.')+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
                 }
                 let f = player.inf.fragment[t]
                 if (f.gt(0)) hh += `<br>${f.format(0)} ${ct.title.split(' ')[0]} Fragments | ${ct.fragment[1](tmp.fragment_eff[t])}<br>`
-                if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p*100,0)}%)</b></h2><br>`+hh+'<br>'
+                if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p.mul(100),0)}%)</b></h2><br>`+hh+'<br>'
             }
             tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")
         }

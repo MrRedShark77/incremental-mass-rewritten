@@ -744,7 +744,7 @@ const ELEMENTS = {
             desc: `Prestige Base boosts Relativistic Energy gain.`,
             cost: E('e1e14'),
             effect() {
-                let x = (tmp.prestiges.base||E(1)).add(1).root(3)
+                let x = tmp.prestiges.base.add(1).root(3)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -888,7 +888,7 @@ const ELEMENTS = {
             desc: `Prestige Base boosts dark rays earned.`,
             cost: E("e1.7e31"),
             effect() {
-                let pb = tmp.prestiges.base||E(1)
+                let pb = tmp.prestiges.base
                 let x = hasPrestige(0,218) ? Decimal.pow(10,pb.add(1).log10().root(2)) : pb.add(1).log10().add(1)
                 return x.softcap(1e12,0.25,0)
             },
@@ -933,7 +933,7 @@ const ELEMENTS = {
             desc: `Prestige base exponent boosts Abyssal Blot gain.`,
             cost: E("e6e47"),
             effect() {
-                let x = Decimal.max(1,tmp.prestiges.baseExp**1.5)
+                let x = Decimal.max(1,tmp.prestiges.baseExp.pow(1.5))
                 return overflow(x,400,0.5)
             },
             effDesc(x) { return "^"+format(x)+x.softcapHTML(400) },
@@ -1209,7 +1209,7 @@ const ELEMENTS = {
             effect() {
                 let x = player.bh.dm.add(1).log10().add(1).log10().add(1).log10().div(10)
                 
-				return x.toNumber()
+				return x
             },
             effDesc(x) { return "+^"+format(x) },
         },{
@@ -1321,9 +1321,9 @@ const ELEMENTS = {
             desc: `Matter exponent boosts matters gain outside C16 (changed during C16).`,
             cost: E('e1e25'),
             effect() {
-                let x = Math.log10(tmp.matters.exponent+1)/20
-                if (tmp.c16active) x *= 5
-                return x+1
+                let x = tmp.matters.exponent.add(1).log10().div(20)
+                if (tmp.c16active) x = x.mul(5)
+                return x.add(1)
             },
             effDesc(x) { return "^"+format(x)+(tmp.c16active?'':' to exponent') },
         },{
@@ -1508,6 +1508,13 @@ const ELEMENTS = {
             dark: true,
             desc: `The softcap of abyssal blot’s tenth reward is slightly weaker.`,
             cost: E('e1.7e10'),
+        },{
+            c16: true,
+            desc: `Unlock Valor, and automate Ascension.`,
+            cost: E('ee347'),
+        },{
+            desc: `Newton, Hawking, and Dalton Theorems are GREATLY improved.`,
+            cost: E('ee7773'),
         },
     ],
     /*

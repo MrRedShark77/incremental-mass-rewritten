@@ -29,7 +29,7 @@ const QUANTUM = {
     doReset(force=false, dark=false, metaF=false) {
         let c16 = tmp.c16active
 
-        player.supernova.times = E(0)
+        if (!hasElement(47,1)) player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
         if (!hasTree('ct8')) {
@@ -257,9 +257,9 @@ function updateQuantumTemp() {
     tmp.qu.theories = player.qu.times.sub(player.qu.chr_get.length).max(0).min(3).toNumber()
     tmp.qu.pick_chr = tmp.qu.theories > 0
 
-    let fp = 1
+    let fp = E(1)
 
-    if (tmp.inf_unl) fp *= theoremEff('proto',0)
+    if (tmp.inf_unl) fp = fp.mul(theoremEff('proto',0))
 
     tmp.qu.cosmic_str_cost = E(2).pow(player.qu.cosmic_str.div(fp).scaleEvery("cosmic_str").add(1)).floor()
     tmp.qu.cosmic_str_bulk = player.qu.points.max(1).log(2).scaleEvery("cosmic_str",true).mul(fp).add(scalingActive('cosmic_str',player.qu.cosmic_str.max(tmp.qu.cosmic_str_bulk),'super')?1:0).floor()

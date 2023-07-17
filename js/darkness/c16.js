@@ -77,7 +77,7 @@ const UNSTABLE_BH = {
     },
     getProduction(x,gain) {
 
-        return Decimal.pow(10,x.max(0).root(2*tmp.unstable_bh.p)).add(gain).log(10).pow(2*tmp.unstable_bh.p)
+        return Decimal.pow(10,x.max(0).root(tmp.unstable_bh.p.mul(2))).add(gain).log(10).pow(tmp.unstable_bh.p.mul(2))
     },
     calcProduction() {
         let bh = player.bh.unstable

@@ -25,7 +25,7 @@ const ASCENSIONS = {
         let x = EINF, fp = this.fp(i), y = player.ascensions[i]
         switch (i) {
             case 0:
-                x = Decimal.pow(1.1,y.div(fp).pow(1.1)).mul(1600)
+                x = Decimal.pow(1.1,y.div(fp).scaleEvery('ascension0',false).pow(1.1)).mul(1600)
                 break;
             case 1:
                 x = y.div(fp).pow(1.1).mul(2).add(6)
@@ -40,7 +40,7 @@ const ASCENSIONS = {
         let x = E(0), y = i==0?tmp.ascensions.base:player.ascensions[i-1], fp = this.fp(i)
         switch (i) {
             case 0:
-                if (y.gte(1600)) x = y.div(1600).max(1).log(1.1).max(0).root(1.1).mul(fp).add(1)
+                if (y.gte(1600)) x = y.div(1600).max(1).log(1.1).max(0).root(1.1).scaleEvery('ascension0',true).mul(fp).add(1)
                 break;
             case 1:
                 if (y.gte(6)) x = y.sub(6).div(2).root(1.1).mul(fp).add(1)
@@ -60,11 +60,11 @@ const ASCENSIONS = {
         ()=>tmp.c18reward,
     ],
     noReset: [
-        ()=>false,
+        ()=>hasElement(267),
         ()=>false,
     ],
     autoUnl: [
-        ()=>false,
+        ()=>hasElement(267),
         ()=>false,
     ],
     autoSwitch(x) { player.auto_asc[x] = !player.auto_asc[x] },
@@ -77,11 +77,13 @@ const ASCENSIONS = {
             7: `Remove dilated mass's overflow.`,
             13: `Remove atomic power's overflow.`,
             15: `Remove Exotic Rank & Tier, Super & Hyper Hex.`,
+            22: `Challenge 5's reward is changed again.`,
         },{
             1: `Prestige Base Exponent is doubled. Big Rip Upgrade 19 now affects Renown.`,
             2: `Super Infinity Theorem is 10% weaker.`,
             3: `Super and Hyper Overpower starts +50 later.`,
             4: `Meta-Prestige Level starts 2x later.`,
+            7: `MCF tier requirements are reduced by 10%.`,
         },
     ],
     rewardEff: [
@@ -169,7 +171,7 @@ function updateAscensionsHTML() {
             tmp.el["asc_desc_"+x].setTxt(desc)
             tmp.el["asc_req_"+x].setTxt(x==0?format(tmp.ascensions.req[x],0)+" of Ascension Base":ASCENSIONS.fullNames[x-1]+" "+format(tmp.ascensions.req[x],0))
             tmp.el["asc_auto_"+x].setDisplay(ASCENSIONS.autoUnl[x]())
-            tmp.el["asc_auto_"+x].setTxt(player.auto_pres[x]?"ON":"OFF")
+            tmp.el["asc_auto_"+x].setTxt(player.auto_asc[x]?"ON":"OFF")
         }
     }
 }

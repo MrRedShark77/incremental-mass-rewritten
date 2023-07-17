@@ -228,13 +228,13 @@ const CHALS = {
             let s2 = 300
             if (x == 8) s2 = 200
             if (x > 8) s2 = 50
-            let s3 = 1000
+            let s3 = E(1000)
             if (x == 13 || x == 16) {
                 s1 = 2
                 s2 = 5
-                s3 = 10
+                s3 = E(10)
             }
-            if (x <= 12) s3 *= exoticAEff(0,3)
+            if (x <= 12) s3 = s3.mul(exoticAEff(0,3))
             let pow = chal.pow
             if (hasElement(10) && (x==3||x==4)) pow = pow.mul(0.95)
             chal.pow = chal.pow.max(1)
@@ -383,7 +383,7 @@ const CHALS = {
         unl() { return player.atom.unl },
         title: "No Rank",
         desc: "You cannot rank up.",
-        reward: ()=> hasCharger(3)?`Exotic Rank & Tier, Ultra Prestige Level scale weaker based on completions.`:`Rank requirement is weaker based on completions.`,
+        reward: ()=>hasAscension(0,22)?`Supercritical Rank, Ultra Hex scale weaker based on completions.`:hasCharger(3)?`Exotic Rank & Tier, Ultra Prestige Level scale weaker based on completions.`:`Rank requirement is weaker based on completions.`,
         max: E(50),
         inc: E(50),
         pow: E(1.25),
@@ -392,6 +392,7 @@ const CHALS = {
             let c = hasCharger(3)
             if (!c && hasPrestige(1,127)) return E(1)
             let ret = c?Decimal.pow(0.97,x.add(1).log10().root(4)):E(0.97).pow(x.root(2).softcap(5,0.5,0))
+            if (hasAscension(0,22)) ret = ret.root(2)
             return ret
         },
         effDesc(x) { return hasCharger(3)?formatReduction(x)+" weaker":format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
@@ -571,11 +572,13 @@ const CHALS = {
         max: E(1),
         start: E('e1.25e11'),
         effect(x) {
+            if (hasBeyondRank(12,1)) x = x.mul(beyondRankEffect(12,1))
+
             x = x.mul(tmp.chal.eff[18])
             let ret = x.root(3).mul(0.05).add(1)
-            return ret
+            return ret.softcap(3,0.5,0)
         },
-        effDesc(x) { return "^"+format(x) },
+        effDesc(x) { return "^"+format(x)+x.softcapHTML(3) },
     },
     17: {
         unl() { return hasElement(240) },
@@ -594,7 +597,7 @@ const CHALS = {
 
             let ret = x.mul(b)
             
-            return ret.toNumber()
+            return ret
         },
         effDesc(x) { return "+"+format(x,0)+" later" },
     },

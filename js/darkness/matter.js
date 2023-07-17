@@ -48,9 +48,9 @@ const MATTERS = {
 
         let bulk = (c16?player.dark.matters.amt[i].max(1).log(100).root(pow):player.dark.matters.amt[i].max(1).log(1e10).root(pow).sub(1).scale(i>0?25:50,1.05,1,true).add(1)).floor()
 
-        let base = c16?3:4/3
+        let base = Decimal.add(c16?3:4/3,GPEffect(2))
 
-        if (hasTree('ct4')) base += treeEff('ct4')
+        if (hasTree('ct4')) base = base.add(treeEff('ct4'))
 
         if (!c16) lvl = lvl.mul(tmp.matters.str)
 
@@ -205,18 +205,21 @@ function updateMattersTemp() {
     tmp.matters.FSS_req = MATTERS.final_star_shard.req()
     tmp.matters.FSS_eff = MATTERS.final_star_shard.effect()
 
-    tmp.matters.str = 1
-    if (hasBeyondRank(1,2)) tmp.matters.str *= beyondRankEffect(1,2)
+    tmp.matters.str = E(1)
+    if (hasBeyondRank(1,2)) tmp.matters.str = tmp.matters.str.mul(beyondRankEffect(1,2))
 
-    if (hasElement(29,1)) tmp.matters.str *= Math.max(1,tmp.exotic_atom.strength**0.5)
+    if (hasElement(29,1)) tmp.matters.str = tmp.matters.str.mul(Decimal.max(1,tmp.exotic_atom.strength.root(2)))
 
-    tmp.matters.exponent = 2 + glyphUpgEff(11,0) + exoticAEff(1,5,0)
-    if (hasPrestige(0,382)) tmp.matters.exponent += prestigeEff(0,382,0)
-    if (player.ranks.hex.gte(91)) tmp.matters.exponent += .15
-    if (hasElement(206)) tmp.matters.exponent += elemEffect(206,0)
-    if (hasBeyondRank(1,1)) tmp.matters.exponent += .5
-    if (hasPrestige(0,1337)) tmp.matters.exponent += prestigeEff(0,1337,0)
-    if (hasElement(14,1)) tmp.matters.exponent += muElemEff(14,0)
+    let e = Decimal.add(2,glyphUpgEff(11,0)).add(exoticAEff(1,5,0))
+
+    if (hasPrestige(0,382)) e = e.add(prestigeEff(0,382,0))
+    if (player.ranks.hex.gte(91)) e = e.add(.15)
+    if (hasElement(206)) e = e.add(elemEffect(206,0))
+    if (hasBeyondRank(1,1)) e = e.add(.5)
+    if (hasPrestige(0,1337)) e = e.add(prestigeEff(0,1337,0))
+    if (hasElement(14,1)) e = e.add(muElemEff(14,0))
+
+    tmp.matters.exponent = e
     
     tmp.matters.req_unl = Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))
 

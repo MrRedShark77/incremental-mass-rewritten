@@ -95,7 +95,7 @@ const MUONIC_ELEM = {
             cost: E(1e100),
             eff() {
                 let x = player.dark.matters.final.root(2).div(5)
-                return x.toNumber()
+                return x
             },
             effDesc: x=>"+"+format(x),
         },
@@ -165,7 +165,7 @@ const MUONIC_ELEM = {
             desc: `Increase exotic atom’s reward strength by +1.25% per infinity theorem.`,
             cost: E('e778').mul(7/9),
             eff() {
-                let x = player.inf.theorem.mul(.0125).toNumber()
+                let x = player.inf.theorem.mul(.0125)
                 return x
             },
             effDesc: x=>"+"+formatPercent(x),
@@ -270,6 +270,23 @@ const MUONIC_ELEM = {
         },{
             desc: `Quark overflow is 25% weaker.`,
             cost: E('e9200'),
+        },{
+            desc: `Boost Supernova Generation based on beyond-ranks' maximum tier.`,
+            cost: E('e12100'),
+            eff() {
+                let x = Decimal.pow(2.5,tmp.beyond_ranks.max_tier)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },{
+            cs: true,
+            desc: `Corrupted star boosts its speed at a reduced rate. Keep Supernovas on Infinity.`,
+            cost: E('e150'),
+            eff() {
+                let x = player.inf.cs_amount.add(1).overflow(10,0.5)
+                return x
+            },
+            effDesc: x=>formatMult(x),
         },
 
         /*
@@ -334,14 +351,14 @@ const EXOTIC_ATOM = {
     req() {
         let t = player.dark.exotic_atom.tier, r = EINF
 
-        if (t < 12) r = this.requirement[t]
-        else r = Decimal.pow('e1000',Decimal.pow(1.25,t-12))
+        if (t.lt(12)) r = this.requirement[t.toNumber()]
+        else r = Decimal.pow('e1000',Decimal.pow(1.25,t.sub(12).div(tmp.exotic_atom.req_fp)))
 
         return r
     },
     tier() {
         if (tmp.exotic_atom.amount.gte(tmp.exotic_atom.req)) {
-            player.dark.exotic_atom.tier++
+            player.dark.exotic_atom.tier = player.dark.exotic_atom.tier.add(1)
 
             if (!hasElement(225)) {
                 player.dark.exotic_atom.amount = [E(0),E(0)]
@@ -403,7 +420,7 @@ const EXOTIC_ATOM = {
             },x=>`Boosts entropy gain by <b>^${format(x)}</b>`],
             [a=>{
                 let x = a.add(1).log10().add(1).pow(2)
-                return x.toNumber()
+                return x
             },x=>`Impossible Challenges 1-12 start <b>${formatMult(x)}</b> later`],
             [a=>{
                 let x = Decimal.pow(0.8725,a.add(1).log10().softcap(20,0.25,0).root(2))
@@ -411,7 +428,7 @@ const EXOTIC_ATOM = {
             },x=>`Weaken softcaps of atomic power's effect by <b>${formatReduction(x)}</b>`],
             [a=>{
                 let x = a.add(10).log10().pow(2).sub(1).div(5e3)
-                return x.toNumber()
+                return x
             },x=>`Increase the base of Prestige Level 382 for Collapsed Star's effect, the base of Binilunium-201 for BH's effect by <b>+${format(x)}</b>`],
         ],[
             [a=>{
@@ -437,7 +454,7 @@ const EXOTIC_ATOM = {
             },x=>`Increase parallel extruder's power by <b>+${format(x)}</b>`],
             [a=>{
                 let x = a.add(1).log10().div(50)
-                return x.toNumber()
+                return x
             },x=>`Increase matter exponent by <b>+${format(x)}</b>`],
         ],
     ],
@@ -451,12 +468,18 @@ function updateExoticAtomsTemp() {
         if (u.eff) tmp.elements.mu_effect[i] = u.eff()
     }
 
+    let fp = E(1)
+
+    if (hasAscension(1,7)) fp = fp.div(0.9)
+
+    tea.req_fp = fp
+
     tea.req = EXOTIC_ATOM.req()
 
     tea.amount = EXOTIC_ATOM.getAmount()
     tea.gain = EXOTIC_ATOM.gain()
 
-    let s = Decimal.add(1,Math.max(t-12,0)*0.1)
+    let s = Decimal.add(1,Math.max(t.sub(12),0)*0.1)
 
     if (hasPrestige(2,58)) s = s.add(prestigeEff(2,58,0))
     if (hasElement(25,1)) s = s.add(muElemEff(25,0))
@@ -466,11 +489,13 @@ function updateExoticAtomsTemp() {
 
     tea.strength = s
 
+    let tt = t.min(12).toNumber()
+
     tea.eff = [[],[]]
     for (let i = 0; i < 2; i++) {
         let m = EXOTIC_ATOM.milestones[i]
         let a = player.dark.exotic_atom.amount[i].pow(s)
-        for (let j = 0; j < m.length; j++) if (m[j] && j < Math.floor((t+1-i)/2)) tea.eff[i][j] = m[j][0](a)
+        for (let j = 0; j < m.length; j++) if (m[j] && j < Math.floor((tt+1-i)/2)) tea.eff[i][j] = m[j][0](a)
     }
 }
 
@@ -482,14 +507,14 @@ function updateExoticAtomsHTML() {
 
     tmp.el.mcf_btn.setHTML(`
     Muon-Catalyzed Fusion Tier <b>${format(t,0)}</b><br>
-    ${t>=12?`Increase Reward Strength by +10%<br>`:''}
+    ${t.gte(12)?`Increase Reward Strength by +10%<br>`:''}
     Requirement: <b>${tea.req.format(0)}</b> Exotic Atoms
     `)
     tmp.el.mcf_btn.setClasses({btn: true, half_full: true, locked: tea.amount.lt(tea.req)})
 
-    tmp.el.ea_div.setDisplay(t>0)
-    if (t>0) {
-        let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0].mul(inf_gs)),ea.amount[1].add(tea.gain[1].mul(inf_gs))).sub(tea.amount)
+    tmp.el.ea_div.setDisplay(t.gt(0))
+    if (t.gt(0)) {
+        let g = EXOTIC_ATOM.getAmount(ea.amount[0].add(tea.gain[0].mul(inf_gs)),ea.amount[1].add(tea.gain[1].mul(inf_gs))).sub(tea.amount), tt = t.min(12).toNumber()
 
         tmp.el.ext_atom.setHTML(tea.amount.format(0)+" "+tea.amount.formatGain(g))
         tmp.el.ea_strength.setHTML(formatPercent(tea.strength))
@@ -499,7 +524,7 @@ function updateExoticAtomsHTML() {
 
             let h = ""
 
-            for (let j = 0; j < Math.floor((t+1-i)/2); j++) {
+            for (let j = 0; j < Math.floor((tt+1-i)/2); j++) {
                 let m = EXOTIC_ATOM.milestones[i][j]
                 if (m) h += (j>0?"<br>":"") + m[1](exoticAEff(i,j))
             }

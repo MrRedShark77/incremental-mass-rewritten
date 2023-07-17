@@ -435,8 +435,8 @@ function updateMDTemp() {
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) {
         let upg = MASS_DILATION.upgs.ids[x]
         tmp.md.upgs[x].cost = upg.cost(player.md.upgs[x])
-        tmp.md.upgs[x].bulk = upg.bulk().min(upg.maxLvl||1/0)
-        tmp.md.upgs[x].can = player.md.mass.gte(tmp.md.upgs[x].cost) && player.md.upgs[x].lt(upg.maxLvl||1/0)
+        tmp.md.upgs[x].bulk = upg.bulk().min(upg.maxLvl||EINF)
+        tmp.md.upgs[x].can = player.md.mass.gte(tmp.md.upgs[x].cost) && player.md.upgs[x].lt(upg.maxLvl||EINF)
         if (upg.effect) tmp.md.upgs[x].eff = upg.effect(player.md.upgs[x].mul(mdub))
     }
     tmp.md.pen = MASS_DILATION.penalty()
@@ -461,8 +461,8 @@ function updateBDTemp() {
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) {
         let upg = MASS_DILATION.break.upgs.ids[x]
         bd.upgs[x].cost = upg.cost(player.md.break.upgs[x])
-        bd.upgs[x].bulk = upg.bulk().min(upg.maxLvl||1/0)
-        bd.upgs[x].can = player.md.break.mass.gte(bd.upgs[x].cost) && player.md.break.upgs[x].lt(upg.maxLvl||1/0)
+        bd.upgs[x].bulk = upg.bulk().min(upg.maxLvl||EINF)
+        bd.upgs[x].can = player.md.break.mass.gte(bd.upgs[x].cost) && player.md.break.upgs[x].lt(upg.maxLvl||EINF)
         if (upg.effect) bd.upgs[x].eff = upg.effect(player.md.break.upgs[x])
     }
 }
@@ -485,7 +485,7 @@ function updateMDHTML() {
             if (upg.effDesc) {
                 tmp.el["md_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.md.upgs[x].eff))
             }
-            tmp.el["md_upg"+x+"_cost"].setTxt(player.md.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.md.upgs[x].cost):"")
+            tmp.el["md_upg"+x+"_cost"].setTxt(player.md.upgs[x].lt(upg.maxLvl||EINF)?"Cost: "+formatMass(tmp.md.upgs[x].cost):"")
         }
     }
 
@@ -514,7 +514,7 @@ function updateBDHTML() {
             tmp.el["bd_upg"+x+"_div"].setClasses({btn: true, full: true, bd: true, locked: !tmp.bd.upgs[x].can, corrupted_text2: x == 2 && c16})
             if ((upg.maxLvl||1/0) > 1) tmp.el["bd_upg"+x+"_lvl"].setTxt(format(bd.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
             if (upg.effDesc) tmp.el["bd_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.bd.upgs[x].eff))
-            tmp.el["bd_upg"+x+"_cost"].setTxt(bd.upgs[x].lt(upg.maxLvl||1/0)?"Cost: "+formatMass(tmp.bd.upgs[x].cost):"")
+            tmp.el["bd_upg"+x+"_cost"].setTxt(bd.upgs[x].lt(upg.maxLvl||EINF)?"Cost: "+formatMass(tmp.bd.upgs[x].cost):"")
         }
     }
 }

@@ -85,6 +85,8 @@ const SUPERNOVA = {
 
         x = x.mul(tmp.cs_effect.sn_speed||1)
 
+        if (hasElement(46,1)) x = x.mul(muElemEff(46))
+
         return x
     },
 }

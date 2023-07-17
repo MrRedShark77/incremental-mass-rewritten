@@ -30,7 +30,7 @@ const DARK = {
         x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1)).overflow('ee10',0.5)
 
         if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
-        if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1).toNumber()
+        if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1)
         if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0,hasBeyondRank(3,12)).floor()
 
         return x
@@ -159,7 +159,7 @@ const DARK = {
             if (hasElement(238)) e = e.pow(2)
             x.ApQ_Overflow = Decimal.pow(10,e)
         }
-        if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1).toNumber()
+        if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1)
         if (a.gte('ee7')) {
             x.ea = a.div('ee7').log10().div(1e6).add(1).root(2).softcap(1.75,hasElement(249)?0.4:0.25,0).softcap(8,hasElement(266)?0.2:0.1,0)
         }
@@ -202,7 +202,7 @@ function calcDark(dt) {
             EXOTIC_ATOM.tier()
         }
 
-        if (player.dark.exotic_atom.tier>0) {
+        if (player.dark.exotic_atom.tier.gt(0)) {
             for (let i = 0; i < 2; i++) player.dark.exotic_atom.amount[i] = player.dark.exotic_atom.amount[i].add(tmp.exotic_atom.gain[i].mul(dt))
         }
     }
@@ -338,7 +338,7 @@ function getDarkSave() {
 
         run: {
             active: false,
-            glyphs: [0,0,0,0,0,0],
+            glyphs: [E(0),E(0),E(0),E(0),E(0),E(0)],
             gmode: 0,
             gamount: 1,
             upg: [],
@@ -361,7 +361,7 @@ function getDarkSave() {
         },
 
         exotic_atom: {
-            tier: 0,
+            tier: E(0),
             amount: [E(0),E(0)],
         },
     }

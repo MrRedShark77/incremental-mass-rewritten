@@ -421,7 +421,7 @@ const UPGS = {
                 },
             },
             20: {
-                unl() { return player.dark.exotic_atom.tier>0 || tmp.inf_unl },
+                unl() { return player.dark.exotic_atom.tier.gt(0) || tmp.inf_unl },
                 desc: `Corrupted Shards boost normal mass gain.`,
                 cost: E('e2e357'),
                 effect() {
@@ -926,7 +926,7 @@ const UPGS = {
                 effect() {
                     let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).log10().div(60).add(1)
                     if (hasAscension(0,3)) x = x.pow(2)
-                    return x.toNumber()
+                    return x
                 },
                 effDesc(x=this.effect()) { return "x"+format(x)+" cheaper" },
             },

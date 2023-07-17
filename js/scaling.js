@@ -20,6 +20,7 @@ const SCALE_START = {
 		FSS: E(5),
 		pe: E(25),
 		inf_theorem: E(10),
+		ascension0: E(20),
     },
 	hyper: {
 		rank: E(120),
@@ -100,6 +101,7 @@ const SCALE_POWER= {
 		FSS: 2,
 		pe: 2,
 		inf_theorem: 2,
+		ascension0: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -188,6 +190,7 @@ const SCALING_RES = {
 	FSS() { return player.dark.matters.final },
 	pe() { return player.inf.pe},
 	inf_theorem() { return player.inf.theorem},
+	ascension0() { return player.ascensions[0] },
 }
 
 const NAME_FROM_RES = {
@@ -211,6 +214,7 @@ const NAME_FROM_RES = {
 	FSS: "Final Star Shard",
 	pe: "Parallel Extruder",
 	inf_theorem: "Infinity Theorem",
+	ascension0: "Ascension",
 }
 
 const C18_SCALING = [
@@ -506,6 +510,9 @@ function getScalingPower(type, name) {
 		else if (name=='inf_theorem') {
 			if (hasAscension(1,2)) power = power.mul(0.9)
 		}
+		else if (name=="prestige3") {
+			if (hasPrestige(4,1)) power = power.mul(0.75)
+		}
 	}
 	else if (type==1) {
 		if (name=="rank") {
@@ -548,6 +555,9 @@ function getScalingPower(type, name) {
 			if (hasElement(27)) power = power.mul(0.75)
 			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
 		}
+		if (name=="hex") {
+			if (tmp.chal && hasAscension(0,22)) power = power.mul(tmp.chal.eff[5])
+		}
 		else if (name=='tickspeed') {
 			if (hasElement(27)) power = power.mul(0.75)
 			if (hasElement(58)) power = power.mul(tmp.elements.effect[58])
@@ -560,7 +570,7 @@ function getScalingPower(type, name) {
 		}
 		else if (name=='prestige0') {
 			if (hasElement(197)) power = power.mul(0.9)
-			if (tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
+			if (!hasAscension(0,22) && tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
 		}
 	}
 	else if (type==3) {
@@ -571,13 +581,18 @@ function getScalingPower(type, name) {
 	else if (type==4) {
 		if (name=='rank') {
 			if (hasElement(197)) power = power.mul(0.9)
-			if (tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
+			if (!hasAscension(0,22) && tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
 		}
 		else if (name=="tier") {
-			if (tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
+			if (!hasAscension(0,22) && tmp.chal && hasCharger(3)) power = power.mul(tmp.chal.eff[5])
 		}
 		else if (name=="supernova") {
 			if (hasElement(212)) power = power.mul(0.75)
+		}
+	}
+	else if (type==5) {
+		if (name=='rank') {
+			if (tmp.chal && hasAscension(0,22)) power = power.mul(tmp.chal.eff[5])
 		}
 	}
 	if (hasUpgrade("atom",15) && name == "gamma_ray") power = power.mul(0.8)
@@ -597,6 +612,7 @@ function getScalingPower(type, name) {
 	if (hasPrestige(0,388) && p.includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
 
 	if (hasPrestige(1,66) && name=="fTier") power = power.mul(0.8)
+
 	return power.max(type==3?0.5:0)
 }
 

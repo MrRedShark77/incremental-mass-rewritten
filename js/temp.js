@@ -34,12 +34,12 @@ function resetTemp() {
             req: [],
             bulk: [],
             eff: [],
-            baseExp: 1,
+            baseExp: E(1),
             base: E(1),
         },
 
         beyond_ranks: {
-            max_tier: 1,
+            max_tier: E(1),
             tier_power: 0.8,
             eff: {},
         },
@@ -214,7 +214,7 @@ function resetTemp() {
         inf_unl: false,
 
         core_chance: CORE_CHANCE_MIN,
-        core_lvl: 1,
+        core_lvl: E(1),
         core_score: {},
         core_eff: {},
         fragment_eff: {},
@@ -360,8 +360,8 @@ function updateBlackHoleTemp() {
 
     t = tmp.unstable_bh
     
-    t.p = 1
-    if (tmp.inf_unl) t.p /= theoremEff('bh',2)
+    t.p = E(1)
+    if (tmp.inf_unl) t.p = t.p.div(theoremEff('bh',2))
 
     let p = 1.5
     if (hasBeyondRank(1,137)) p **= 0.8
@@ -400,6 +400,8 @@ function updateTemp() {
     tmp.c18reward = player.chal.comps[18].gte(4)
 
     tmp.SN_passive = hasElement(36,1)
+
+    tmp.NHDimprove = hasElement(268)
 
     updateGPTemp()
 

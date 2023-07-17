@@ -31,8 +31,8 @@ const CORRUPTED_STAR = {
     eff() {
         let x = {}, cs = player.inf.cs_amount
 
-        x.power_mult = cs.add(1).log10().add(1).overflow(10,0.5).root(2).toNumber()
-        x.theorem_luck = cs.add(1).log10().root(2).div(10).add(1).toNumber()
+        x.power_mult = cs.add(1).log10().add(1).overflow(10,0.5).root(2)
+        x.theorem_luck = cs.add(1).log10().root(2).div(10).add(1)
         x.inf_speed = cs.add(1).log10().add(1)
 
         if (hasElement(38,1)) x.sn_speed = cs.add(1).log10().add(1).pow(1.5)
@@ -65,8 +65,13 @@ function updateCSTemp() {
     if (hasElement(33,1)) s = s.mul(muElemEff(33))
     if (hasElement(34,1)) s = s.mul(muElemEff(34))
     if (hasElement(42,1)) s = s.mul(muElemEff(42))
+    if (hasElement(47,1)) s = s.mul(muElemEff(47))
 
     tmp.cs_speed = s
+
+    tmp.csu_div = E(1)
+
+    if (hasPrestige(4,7)) tmp.csu_div = tmp.csu_div.mul(1e10)
 
     tmp.cs_effect = CORRUPTED_STAR.eff()
 }
@@ -76,19 +81,19 @@ function buyCSUpg(i) {
 
     switch (i) {
         case 0:
-            if (player.inf.cs_amount.gte(Decimal.pow(1e3, player.inf.cs_double[0].add(1)))) {
-                bulk = player.inf.cs_amount.log(1e3).floor().max(player.inf.cs_double[0])
+            if (player.inf.cs_amount.gte(Decimal.pow(1e3, player.inf.cs_double[0].add(1)).div(tmp.csu_div))) {
+                bulk = player.inf.cs_amount.mul(tmp.csu_div).log(1e3).floor().max(player.inf.cs_double[0])
                 player.inf.cs_double[0] = bulk
 
-                player.inf.cs_amount = player.inf.cs_amount.sub(Decimal.pow(1e3, bulk)).max(0)
+                player.inf.cs_amount = player.inf.cs_amount.sub(Decimal.pow(1e3, bulk).div(tmp.csu_div)).max(0)
             }
         break;
         case 1:
-            if (player.inf.points.gte(Decimal.pow(10, player.inf.cs_double[1]).mul(1e36))) {
-                bulk = player.inf.points.div(1e35).max(1).log(10).floor().max(player.inf.cs_double[1])
+            if (player.inf.points.gte(Decimal.pow(10, player.inf.cs_double[1]).mul(1e36).div(tmp.csu_div))) {
+                bulk = player.inf.points.mul(tmp.csu_div).div(1e35).max(1).log(10).floor().max(player.inf.cs_double[1])
                 player.inf.cs_double[1] = bulk
 
-                player.inf.points = player.inf.points.sub(Decimal.pow(10, bulk.sub(1)).mul(1e36)).max(0)
+                player.inf.points = player.inf.points.sub(Decimal.pow(10, bulk.sub(1)).mul(1e36).div(tmp.csu_div)).max(0)
             }
         break;
     }
@@ -100,7 +105,7 @@ function updateCSHTML() {
     tmp.el.cs_amount.setHTML(cs.format(2) + (cs.gt(1) ? ` (×${cs_growth.format()}/sec)` : ''))
     tmp.el.cs_speed.setHTML(formatMult(tmp.cs_speed))
 
-    let cost = [Decimal.pow(1e3, player.inf.cs_double[0].add(1)),Decimal.pow(10, player.inf.cs_double[1]).mul(1e36)]
+    let cost = [Decimal.pow(1e3, player.inf.cs_double[0].add(1)).div(tmp.csu_div),Decimal.pow(10, player.inf.cs_double[1]).mul(1e36).div(tmp.csu_div)]
 
     tmp.el.cs_upg1.setHTML(`
     Double corrupted star's speed. (${player.inf.cs_double[0].format(0)})
