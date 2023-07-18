@@ -1,7 +1,7 @@
 {
   "name": "Incremental Mass Rewritten",
   "short_name": "IMR",
-  "start_url": "/index.html",
+  "start_url": "/incremental-mass-rewritten",
   "display": "standalone",
   "background_color": "#121212",
   "description": "An Incremental Game. Made by MrRedShark77.",
