@@ -68,7 +68,8 @@ const UNSTABLE_BH = {
 
         let ea=exoticAEff(1,0)
 
-        x = x.mul(ea[0])
+        if (Array.isArray(ea)) x = x.mul(ea[0])
+        else                   x = x.mul(ea)
 
         x = x.pow(getFragmentEffect('bh'))
         if (hasElement(39,1)) x = x.pow(ea[1])
