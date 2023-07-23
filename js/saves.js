@@ -35,18 +35,19 @@ Decimal.prototype.scale = function (s, p, mode, rev=false) {
             let s10 = s.log10()
             x = rev ? Decimal.pow(10,x.log10().div(s10).root(p).mul(s10)) : Decimal.pow(10,x.log10().div(s10).pow(p).mul(s10))
         }
+        if ([3, "alt_exp"].includes(mode)) x = rev ? x.div(s).max(1).log(p).add(1).mul(s) : Decimal.pow(p,x.div(s).sub(1)).mul(s)
     }
     return x
 }
 
-Decimal.prototype.scaleName = function (type, id, rev=false) {
+Decimal.prototype.scaleName = function (type, id, rev=false, type_index) {
     var x = this.clone()
     if (SCALE_START[type][id] && SCALE_POWER[type][id]) {
         let s = tmp.scaling_start[type][id]
         let p = tmp.scaling_power[type][id]
         let e = Decimal.pow(SCALE_POWER[type][id],p)
         
-        x = x.scale(s,e,type=="meta"?1:0,rev)
+        x = x.scale(s,e,type_index%4==3?type_index>=7?3:1:type_index>=6?2:0,rev)
     }
     return x
 }
@@ -63,7 +64,7 @@ Decimal.prototype.scaleEvery = function (id, rev=false, fp=SCALE_FP[id]?SCALE_FP
 
         // if (tmp.no_scalings[sc].includes(id)) continue
 
-        x = tmp.no_scalings[sc].includes(id) ? rev?x.mul(f):x.div(f) : rev?x.mul(f).scaleName(sc,id,rev):x.scaleName(sc,id,rev).div(f)
+        x = tmp.no_scalings[sc].includes(id) ? rev?x.mul(f):x.div(f) : rev?x.mul(f).scaleName(sc,id,rev,s):x.scaleName(sc,id,rev,s).div(f)
     }
     return x
 }

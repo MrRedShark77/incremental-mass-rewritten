@@ -78,6 +78,7 @@ const ASCENSIONS = {
             13: `Remove atomic power's overflow.`,
             15: `Remove Exotic Rank & Tier, Super & Hyper Hex.`,
             22: `Challenge 5's reward is changed again.`,
+            23: `The bonus of any radiation boost now multiplies its strengthness at an reduced rate.`,
         },{
             1: `Prestige Base Exponent is doubled. Big Rip Upgrade 19 now affects Renown.`,
             2: `Super Infinity Theorem is 10% weaker.`,

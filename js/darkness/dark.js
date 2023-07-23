@@ -20,6 +20,7 @@ const DARK = {
         x = x.mul(glyphUpgEff(6))
 
         if (hasUpgrade('br',20)) x = x.mul(upgEffect(4,20))
+        if (hasUpgrade('rp',21)) x = x.mul(upgEffect(1,21))
 
         return x.floor()
     },

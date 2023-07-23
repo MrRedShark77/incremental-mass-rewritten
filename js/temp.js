@@ -398,6 +398,7 @@ function updateTemp() {
     tmp.ascensions_unl = player.chal.comps[17].gte(4)
     tmp.CS_unl = hasElement(251)
     tmp.c18reward = player.chal.comps[18].gte(4)
+    tmp.fifthRowUnl = hasElement(270)
 
     tmp.SN_passive = hasElement(36,1)
 

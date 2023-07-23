@@ -207,7 +207,8 @@ const ATOM = {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)
             if (player.mainUpg.atom.includes(7)) x = x.mul(tmp.upgs.main?tmp.upgs.main[3][7].effect:E(1))
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-            return x
+            if (hasUpgrade('atom',21)) x = expMult(x,5)
+            return x//.addTP(0.005)
         },
         powerEffect: [
             x=>{

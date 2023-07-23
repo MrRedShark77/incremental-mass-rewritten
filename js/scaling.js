@@ -77,6 +77,12 @@ const SCALE_START = {
 		rank: E(1e37),
 		supernova: E(1e7),
 	},
+	instant: {
+		rank: E('e400'),
+	},
+	mega: {
+		
+	},
 }
 
 const SCALE_POWER= {
@@ -158,6 +164,12 @@ const SCALE_POWER= {
 		rank: 50,
 		supernova: 75,
 	},
+	instant: {
+		rank: 3,
+	},
+	mega: {
+
+	},
 }
 
 const SCALE_FP = {
@@ -166,8 +178,8 @@ const SCALE_FP = {
 
 const QCM8_SCALES = ['rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
-const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic', 'supercritical'] // super, hyper, ultra, meta, exotic
-const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta', 'Exotic', 'Supercritical']
+const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic', 'supercritical', 'instant', 'mega'] // super, hyper, ultra, meta, exotic
+const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta', 'Exotic', 'Supercritical', 'Instant', 'Mega']
 
 const SCALING_RES = {
     rank(x=0) { return player.ranks.rank },
@@ -227,15 +239,16 @@ function updateScalingHTML() {
 	// tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
 	if (!tmp.scaling) return
 	for (let x = 0; x < SCALE_TYPE.length; x++) {
+		let type = SCALE_TYPE[x]
 		tmp.el["scaling_div_"+x].setDisplay(player.scaling_ch == x)
 		if (player.scaling_ch == x) {
-			let key = Object.keys(SCALE_START[SCALE_TYPE[x]])
-			for (let y = 0; y < key.length; y++) {
-				let have = tmp.scaling[SCALE_TYPE[x]].includes(key[y])
-				tmp.el['scaling_'+x+'_'+key[y]+'_div'].setDisplay(have)
+			for (let key in SCALE_START[type]) {
+				let have = tmp.scaling[type].includes(key)
+				tmp.el['scaling_'+x+'_'+key+'_div'].setDisplay(have)
 				if (have) {
-					tmp.el['scaling_'+x+'_'+key[y]+'_power'].setTxt(format(tmp.scaling_power[SCALE_TYPE[x]][key[y]].mul(100))+"%")
-					tmp.el['scaling_'+x+'_'+key[y]+'_start'].setTxt(format(tmp.scaling_start[SCALE_TYPE[x]][key[y]],0))
+					let p = tmp.scaling_power[type][key], q = Decimal.pow(SCALE_POWER[type][key],p)
+					tmp.el['scaling_'+x+'_'+key+'_power'].setTxt(format(p.mul(100))+"%, "+(x%4==3?q.format()+"^":"^"+q.format()+(x>=6?" to exponent":"")))
+					tmp.el['scaling_'+x+'_'+key+'_start'].setTxt(format(tmp.scaling_start[type][key],0))
 				}
 			}
 		}
@@ -298,7 +311,7 @@ function getScalingName(name, x=0, y=0) {
 	let amt = SCALING_RES[name](x,y);
 	for (let n = cap - 1; n >= 0; n--) {
 		if (scalingActive(name, amt, Object.keys(SCALE_START)[n]))
-			return capitalFirst(Object.keys(SCALE_START)[n]) + (n==3?"-":" ");
+			return capitalFirst(Object.keys(SCALE_START)[n]) + (n%4==3?"-":" ");
 	}
 	return current;
 }
@@ -419,6 +432,7 @@ function getScalingStart(type, name) {
 		else if (name=="prestige0") {
 			start = start.mul(exoticAEff(0,1))
 			if (hasAscension(1,4)) start = start.mul(2)
+			if (hasBeyondRank(14,1)) start = start.mul(beyondRankEffect(14,1))
 		}
 		else if (name=="fTier") {
 			if (hasAscension(0,2)) start = start.pow(2)

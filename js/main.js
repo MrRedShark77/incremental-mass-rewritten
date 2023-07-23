@@ -22,6 +22,8 @@ const FORMS = {
         
         if (tmp.inf_unl) x = x.mul(10).mul(theoremEff('time',0))
 
+        if (hasUpgrade('br',21)) x = x.pow(upgEffect(4,21))
+
         return x
     },
     getPreQUGlobalSpeed() {
@@ -498,6 +500,8 @@ const FORMS = {
             if (tmp.inf_unl) os = os.pow(theoremEff('bh',1))
 
             if (hasPrestige(2,45)) os2 = os2.pow(prestigeEff(2,45))
+            if (hasElement(269)) os2 = os2.pow(elemEffect(269))
+
             if (hasElement(252)) os2 = expMult(os2,1.5)
 
             os = os.min(os2)
@@ -567,6 +571,8 @@ const FORMS = {
 
             if (hasElement(201)) x = x.overflow('e1000',0.5)
 
+            if (hasElement(48,1)) x = x.pow(theoremEff('bh',4))
+
             return x//.softcap("ee14",0.95,2)
         },
         condenser: {
@@ -606,6 +612,8 @@ const FORMS = {
                 let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
 
                 let os = tmp.c16active ? E('ee150') : E('ee10000'), op = E(0.5)
+
+                if (hasUpgrade('bh',21)) os = expMult(os, 2)
 
                 let o = eff
 

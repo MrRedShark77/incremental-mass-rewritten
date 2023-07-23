@@ -287,6 +287,26 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>formatMult(x),
+        },{
+            desc: `Hawking Theorem’s fifth star now affects black hole’s effect.`,
+            cost: E('e14900'),
+        },{
+            desc: `Pre-Infinity global speed now affects supernova generation.`,
+            cost: E('e15900'),
+            eff() {
+                let x = expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },{
+            cs: true,
+            desc: `Corrupted star boosts its reductions starting at a reduced rate.`,
+            cost: E('e230'),
+            eff() {
+                let x = player.inf.cs_amount.add(1).log10().add(1).pow(3)
+                return x
+            },
+            effDesc: x=>formatMult(x),
         },
 
         /*
@@ -312,6 +332,7 @@ const MUONIC_ELEM = {
         if (tmp.ascensions_unl) u += 6
         if (tmp.CS_unl) u += 6
         if (tmp.c18reward) u += 10
+        if (tmp.fifthRowUnl) u += 10
 
         return u
     },

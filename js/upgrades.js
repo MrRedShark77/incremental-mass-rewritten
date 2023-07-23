@@ -262,7 +262,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return player.mainUpg.bh.includes(5) || tmp.inf_unl },
-            lens: 20,
+            lens: 25,
             1: {
                 desc: "Boosters add Musclers.",
                 cost: E(1),
@@ -432,6 +432,70 @@ const UPGS = {
                     return "^"+format(x)
                 },
             },
+            21: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Rage points boost dark rays gain.`,
+                cost: E('ee32200'),
+                effect() {
+                    let x = player.rp.points.add(10).log10()
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+            },
+            22: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            23: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            24: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            25: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
         },
         2: {
             title: "Black Hole Upgrades",
@@ -446,7 +510,7 @@ const UPGS = {
                     player.mainUpg.bh.push(x)
                 }
             },
-            lens: 20,
+            lens: 25,
             1: {
                 desc: "Mass Upgardes no longer spend mass.",
                 cost: E(1),
@@ -619,11 +683,68 @@ const UPGS = {
                 cost: E('e1e273'),
                 effect() {
                     let x = player.dark.c16.totalS.add(1)
-                    return overflow(x,10,0.5).pow(3).overflow(x,'e3500',0.25)
+                    return overflow(x,10,0.5).pow(3).overflow('e12000',0.25)
                 },
                 effDesc(x=this.effect()) {
                     return "^"+format(x)
                 },
+            },
+            21: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `BH Condenser Siltation starts ^2 later to exponent.`,
+                cost: E('ee52500'),
+            },
+            22: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            23: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            24: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            25: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
             },
         },
         3: {
@@ -639,7 +760,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasTree("qol1") || tmp.inf_unl },
-            lens: 20,
+            lens: 25,
             1: {
                 desc: "Start with Mass upgrades unlocked.",
                 cost: E(1),
@@ -793,6 +914,63 @@ const UPGS = {
                     return "+"+format(x,0)
                 },
             },
+            21: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `The exponent of any particle powers is raised by 5.`,
+                cost: E('ee13950'),
+            },
+            22: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            23: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            24: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            25: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
         },
         4: {
             title: "Big Rip Upgrades",
@@ -807,7 +985,7 @@ const UPGS = {
                 }
             },
             auto_unl() { return hasElement(132) || tmp.inf_unl },
-            lens: 20,
+            lens: 25,
             1: {
                 desc: `Start with Hydrogen-1 unlocked in Big Rip.`,
                 cost: E(5),
@@ -941,6 +1119,68 @@ const UPGS = {
                 effDesc(x=this.effect()) {
                     return "x"+format(x)
                 },
+            },
+            21: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Pre-Infinity Global Speed is raised based on Death Shards at an extremely reduced rate (before division).`,
+                cost: E(50),
+                effect() {
+                    let x = player.qu.rip.amt.add(1).log10().root(3).div(100).add(1)
+                    return x
+                },
+                effDesc(x=this.effect()) { return "^"+format(x) },
+            },
+            22: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            23: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            24: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
+            },
+            25: {
+                unl() { return tmp.fifthRowUnl },
+                desc: `Placeholder.`,
+                cost: EINF,
+                effect() {
+                    let x = E(1)
+                    return x
+                },
+                effDesc(x=this.effect()) {
+                    return formatMult(x)
+                },
+                noImage: true,
             },
         },
     },

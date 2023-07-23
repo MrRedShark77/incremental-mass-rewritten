@@ -1515,6 +1515,23 @@ const ELEMENTS = {
         },{
             desc: `Newton, Hawking, and Dalton Theorems are GREATLY improved.`,
             cost: E('ee7773'),
+        },{
+            c16: true,
+            desc: `Newton Theorem’s fifth star now affects black hole overflow^2, but weaker in C16.`,
+            cost: E('ee1745'),
+            effect() {
+                let x = theoremEff('mass',4)
+                if (tmp.c16active) x = x.max(1).log10().add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x)+' later' },
+        },{
+            desc: `Unlock fifth row of main upgrades.`,
+            cost: E('ee10333'),
+        },{
+            dark: true,
+            desc: `Add 300 more C16’s max completions.`,
+            cost: E('e2.5e10'),
         },
     ],
     /*
@@ -1566,7 +1583,8 @@ const ELEMENTS = {
         if (tmp.tfUnl) u += 12
         if (tmp.ascensions_unl) u += 9
         if (tmp.CS_unl) u += 7
-        if (tmp.c18reward) u += 10
+        if (tmp.c18reward) u += 12
+        if (tmp.fifthRowUnl) u += 10
 
         return u
     },

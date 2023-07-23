@@ -633,10 +633,12 @@ function updateRanksTemp() {
     let ffp2 = 1
     if (tmp.c16active || inDarkRun()) ffp2 /= mgEff(5)
 
+    let rooted_fp = GPEffect(3)
+
     let fp = RANKS.fp.rank().mul(ffp)
-    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ifp).div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2]).div(fp).pow(1.15)).mul(10)
+    tmp.ranks.rank.req = E(10).pow(player.ranks.rank.div(ffp2).scaleEvery('rank',false,[1,1,1,1,rt_fp2,1,ifp]).pow(rooted_fp).div(fp).pow(1.15)).mul(10)
     tmp.ranks.rank.bulk = E(0)
-    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2]).mul(ffp2).mul(ifp).add(1).floor();
+    if (player.mass.gte(10)) tmp.ranks.rank.bulk = player.mass.div(10).max(1).log10().root(1.15).mul(fp).root(rooted_fp).scaleEvery('rank',true,[1,1,1,1,rt_fp2,1,ifp]).mul(ffp2).add(1).floor();
     tmp.ranks.rank.can = player.mass.gte(tmp.ranks.rank.req) && !CHALS.inChal(5) && !CHALS.inChal(10) && !FERMIONS.onActive("03")
 
     fp = RANKS.fp.tier().mul(ffp)
@@ -811,6 +813,9 @@ const BEYOND_RANKS = {
         12: {
             1: `Neutronium-0 now affects C16's reward at an extremely reduced rate.`,
         },
+        14: {
+            1: `The formula of Dec 2's effect is better. Meta-Prestige Level starts later based on beyond-ranks' maximum tier, starting at Icos.`,
+        },
     },
 
     rewardEff: {
@@ -907,7 +912,7 @@ const BEYOND_RANKS = {
             ],
             2: [
                 ()=>{
-                    let x = tmp.beyond_ranks.max_tier.sub(3).pow(.2).mul(.2).add(1) // (tmp.beyond_ranks.max_tier-3)**0.2*0.2+1
+                    let x = tmp.beyond_ranks.max_tier.sub(3).pow(hasBeyondRank(14,1) ? 1 : .2).mul(.2).add(1) // (tmp.beyond_ranks.max_tier-3)**0.2*0.2+1
 
                     return Decimal.max(1,x)
                 },
@@ -942,6 +947,16 @@ const BEYOND_RANKS = {
                     return x
                 },
                 x=>formatMult(x),
+            ],
+        },
+        14: {
+            1: [
+                ()=>{
+                    let x = Decimal.pow(1.25,tmp.beyond_ranks.max_tier.sub(13).max(0).root(2))
+
+                    return x
+                },
+                x=>formatMult(x)+" later",
             ],
         },
     },
@@ -1153,6 +1168,11 @@ const GAL_PRESTIGE = {
                     x = player.dark.matters.amt[12].add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(3).root(1.5))
                 }
             break;
+            case 3:
+                if (gp.gte(6)) {
+                    x = player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5))
+                }
+            break;
         }
 
         if (hasElement(263)) x = x.mul(elemEffect(263))
@@ -1172,11 +1192,14 @@ const GAL_PRESTIGE = {
             case 2:
                 x = res.add(1).log10().root(3).div(2)
             break;
+            case 3:
+                x = Decimal.pow(0.9,res.add(10).log10().log10().add(1).pow(2).sub(1))
+            break;
         }
 
         return x
     },
-    res_length: 3,
+    res_length: 4,
 }
 
 function GPEffect(i,def=1) { return tmp.gp.res_effect[i]||def }
@@ -1213,8 +1236,11 @@ function updateGPHTML() {
         if (gp.gte(2)) h += `You have <h4>${formatMass(res[1])}</h4> ${res[1].formatGain(res_gain[1],true)} of Prestige Mass (based on prestige base and galactic prestige), 
         which weakens mass overflow^1-2 by <h4>${formatReduction(res_effect[1])}</h4>.<br>`
 
-        if (gp.gte(4)) h += `You have <h4>${formatMass(res[2])}</h4> ${res[1].formatGain(res_gain[2],true)} of Galactic Matter (based on fading matter and galactic prestige), 
+        if (gp.gte(4)) h += `You have <h4>${res[2].format(0)}</h4> ${res[2].formatGain(res_gain[2])} Galactic Matter (based on fading matter and galactic prestige), 
         which increases to the base of all Matter upgrades by <h4>+${format(res_effect[2])}</h4>.<br>`
+
+        if (gp.gte(6)) h += `You have <h4>${res[3].format(0)}</h4> ${res[3].formatGain(res_gain[3])} Redshift (based on frequency and galactic prestige), 
+        which reduces Rank requirement by <h4>^${format(res_effect[3],5)}</h4>.<br>`
 
         tmp.el.gp_rewards.setHTML(h)
     }

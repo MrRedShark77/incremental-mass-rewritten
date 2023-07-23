@@ -43,22 +43,31 @@ const CORRUPTED_STAR = {
 }
 
 function updateCSTemp() {
-    tmp.cs_reduce_start1 = E(1e3)
-    tmp.cs_reduce_start2 = E(1e10)
+    let ss1 = E(1e3), ss2 = E(1e10)
 
     if (hasElement(37,1)) {
         let x = muElemEff(37)
 
-        tmp.cs_reduce_start1 = tmp.cs_reduce_start1.mul(x)
-        tmp.cs_reduce_start2 = tmp.cs_reduce_start1.mul(x)
+        ss1 = ss1.mul(x)
+        ss2 = ss2.mul(x)
     }
 
     if (hasElement(40,1)) {
         let x = muElemEff(40)
 
-        tmp.cs_reduce_start1 = tmp.cs_reduce_start1.mul(x)
-        tmp.cs_reduce_start2 = tmp.cs_reduce_start1.mul(x)
+        ss1 = ss1.mul(x)
+        ss2 = ss2.mul(x)
     }
+
+    if (hasElement(50,1)) {
+        let x = muElemEff(50)
+
+        ss1 = ss1.mul(x)
+        ss2 = ss2.mul(x)
+    }
+
+    tmp.cs_reduce_start1 = ss1
+    tmp.cs_reduce_start2 = ss2
 
     let s = Decimal.pow(2,player.inf.cs_double[0].add(player.inf.cs_double[1]))
 
@@ -81,22 +90,56 @@ function buyCSUpg(i) {
 
     switch (i) {
         case 0:
-            if (player.inf.cs_amount.gte(Decimal.pow(1e3, player.inf.cs_double[0].add(1)).div(tmp.csu_div))) {
-                bulk = player.inf.cs_amount.mul(tmp.csu_div).log(1e3).floor().max(player.inf.cs_double[0])
+            if (player.inf.cs_amount.gte(getCSUpgRequirement(0))) {
+                bulk = bulkCSUpgRequirement(0,player.inf.cs_amount).max(player.inf.cs_double[0])
                 player.inf.cs_double[0] = bulk
 
-                player.inf.cs_amount = player.inf.cs_amount.sub(Decimal.pow(1e3, bulk).div(tmp.csu_div)).max(0)
+                player.inf.cs_amount = player.inf.cs_amount.sub(getCSUpgRequirement(0,bulk.sub(1))).max(0)
             }
         break;
         case 1:
-            if (player.inf.points.gte(Decimal.pow(10, player.inf.cs_double[1]).mul(1e36).div(tmp.csu_div))) {
-                bulk = player.inf.points.mul(tmp.csu_div).div(1e35).max(1).log(10).floor().max(player.inf.cs_double[1])
+            if (player.inf.points.gte(getCSUpgRequirement(1))) {
+                bulk = bulkCSUpgRequirement(1,player.inf.points).max(player.inf.cs_double[1])
                 player.inf.cs_double[1] = bulk
 
-                player.inf.points = player.inf.points.sub(Decimal.pow(10, bulk.sub(1)).mul(1e36).div(tmp.csu_div)).max(0)
+                player.inf.points = player.inf.points.sub(getCSUpgRequirement(1,bulk.sub(1))).max(0)
             }
         break;
     }
+}
+
+function getCSUpgRequirement(i, lvl=player.inf.cs_double[i]) {
+    let x = EINF
+
+    lvl = lvl.scale(100,2,0)
+
+    switch (i) {
+        case 0:
+            x = Decimal.pow(1e3, lvl.add(1)).div(tmp.csu_div)
+        break;
+        case 1:
+            x = Decimal.pow(10, lvl).mul(1e36).div(tmp.csu_div)
+        break;
+    }
+
+    return x
+}
+
+function bulkCSUpgRequirement(i, amt) {
+    let x = E(0)
+
+    switch (i) {
+        case 0:
+            x = amt.mul(tmp.csu_div).log(1e3).sub(1)
+        break;
+        case 1:
+            x = amt.mul(tmp.csu_div).div(1e36).max(1).log(10)
+        break;
+    }
+
+    x = x.scale(100,2,0,true)
+
+    return x.add(1).floor()
 }
 
 function updateCSHTML() {
@@ -105,7 +148,7 @@ function updateCSHTML() {
     tmp.el.cs_amount.setHTML(cs.format(2) + (cs.gt(1) ? ` (×${cs_growth.format()}/sec)` : ''))
     tmp.el.cs_speed.setHTML(formatMult(tmp.cs_speed))
 
-    let cost = [Decimal.pow(1e3, player.inf.cs_double[0].add(1)).div(tmp.csu_div),Decimal.pow(10, player.inf.cs_double[1]).mul(1e36).div(tmp.csu_div)]
+    let cost = [getCSUpgRequirement(0),getCSUpgRequirement(1)]
 
     tmp.el.cs_upg1.setHTML(`
     Double corrupted star's speed. (${player.inf.cs_double[0].format(0)})

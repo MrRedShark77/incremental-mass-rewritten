@@ -148,6 +148,7 @@ const CHALS = {
         if (i == 16) {
             if (hasElement(229)) x = E(100)
             if (hasElement(261)) x = x.add(100)
+            if (hasElement(271)) x = x.add(300)
         }
         else if (i < 16) {
             if (i <= 4 && !hasPrestige(2,25)) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
