@@ -434,7 +434,7 @@ const UPGS = {
             },
             21: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Rage points boost dark rays gain.`,
+                desc: `Rage powers boost dark rays gain.`,
                 cost: E('ee32200'),
                 effect() {
                     let x = player.rp.points.add(10).log10()
