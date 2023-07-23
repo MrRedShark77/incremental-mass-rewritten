@@ -1123,7 +1123,7 @@ const UPGS = {
             21: {
                 unl() { return tmp.fifthRowUnl },
                 desc: `Pre-Infinity Global Speed is raised based on Death Shards at an extremely reduced rate (before division).`,
-                cost: E(50),
+                cost: E('e67800'),
                 effect() {
                     let x = player.qu.rip.amt.add(1).log10().root(3).div(100).add(1)
                     return x
