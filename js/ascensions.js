@@ -7,6 +7,8 @@ const ASCENSIONS = {
 
         if (hasElement(44,1)) x = x.add(muElemEff(44,0))
 
+        if (hasBeyondRank(16,1)) x = x.add(beyondRankEffect(16,1,0))
+
         x = x.add(1)
 
         return x

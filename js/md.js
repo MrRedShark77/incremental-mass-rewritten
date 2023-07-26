@@ -160,7 +160,7 @@ const MASS_DILATION = {
                 maxLvl: 1,
                 cost(x) { return E(1.5e296) },
                 bulk() { return player.md.mass.gte(1.5e296)?E(1):E(0) },
-                effect(x) { return player.tickspeed.add(1).pow(2/3) },
+                effect(x) { return player.build.tickspeed.amt.add(1).pow(2/3) },
                 effDesc(x) { return format(x)+"x" },
             },{
                 unl() { return STARS.unlocked() || player.supernova.times.gte(1) },

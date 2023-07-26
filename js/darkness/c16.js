@@ -64,7 +64,7 @@ const CHARGERS = [
 
 const UNSTABLE_BH = {
     gain() {
-        let x = tmp.unstable_bh.fvm_eff.eff||E(1)
+        let x = BUILDINGS.eff('fvm')
 
         let ea=exoticAEff(1,0)
 
@@ -175,7 +175,7 @@ function corruptedShardGain() {
     if (hasElement(232)) bh = player.dark.c16.bestBH.max('e100')
     else if (!tmp.c16active || bh.lt('e100')) return E(0)
 
-    let x = Decimal.pow(10,overflow(bh.max(1).log10(),1e9,0.5).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))
+    let x = Decimal.pow(10,bh.max(1).log10().overflow(1e70,1/3).overflow(1e9,0.5).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))
 
     if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 

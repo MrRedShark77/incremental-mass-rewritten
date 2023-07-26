@@ -2,8 +2,6 @@ const UPGS = {
     mass: {
         cols: 4,
         temp() {
-            tmp.massFP = E(1);
-            if (hasElement(248)) tmp.massFP = tmp.massFP.mul(getEnRewardEff(0))
             for (let x = this.cols; x >= 1; x--) {
                 let d = tmp.upgs.mass
                 let data = this.getData(x)
@@ -267,7 +265,7 @@ const UPGS = {
                 desc: "Boosters add Musclers.",
                 cost: E(1),
                 effect() {
-                    let ret = E(player.massUpg[2]||0)
+                    let ret = player.build.mass_2.amt
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -278,7 +276,7 @@ const UPGS = {
                 desc: "Strongers add Boosters.",
                 cost: E(10),
                 effect() {
-                    let ret = E(player.massUpg[3]||0)
+                    let ret = player.build.mass_3.amt
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -305,7 +303,7 @@ const UPGS = {
                 desc: "For every 3 tickspeeds add Stronger.",
                 cost: E(1e7),
                 effect() {
-                    let ret = hasAscension(0,1)?player.tickspeed.div(3).add(1).mul(hasElement(38)?tmp.elements.effect[38].add(1):1):player.tickspeed.div(3).add(hasElement(38)?tmp.elements.effect[38]:0)
+                    let ret = hasAscension(0,1)?player.build.tickspeed.amt.div(3).add(1).mul(hasElement(38)?tmp.elements.effect[38].add(1):1):player.build.tickspeed.amt.div(3).add(hasElement(38)?tmp.elements.effect[38]:0)
                     return ret.floor()
                 },
                 effDesc(x=this.effect()) {
@@ -426,7 +424,7 @@ const UPGS = {
                 cost: E('e2e357'),
                 effect() {
                     let x = player.dark.c16.totalS.add(1)
-                    return overflow(x,10,0.5).pow(2)
+                    return overflow(x,10,0.5).pow(2).overflow('e15000',0.25)
                 },
                 effDesc(x=this.effect()) {
                     return "^"+format(x)
@@ -446,16 +444,15 @@ const UPGS = {
             },
             22: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
+                desc: `Rank Collapse starts later based on rage powers at an extremely reduced rate.`,
+                cost: E('ee36000'),
                 effect() {
-                    let x = E(1)
+                    let x = player.rp.points.add(1).log10().add(1).log10().add(1)
                     return x
                 },
                 effDesc(x=this.effect()) {
-                    return formatMult(x)
+                    return formatMult(x)+" later"
                 },
-                noImage: true,
             },
             23: {
                 unl() { return tmp.fifthRowUnl },
@@ -519,7 +516,7 @@ const UPGS = {
                 desc: "Tickspeeds boost BH Condenser Power.",
                 cost: E(10),
                 effect() {
-                    let ret = player.tickspeed.add(1).root(8)
+                    let ret = player.build.tickspeed.amt.add(1).root(8)
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -696,16 +693,15 @@ const UPGS = {
             },
             22: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
+                desc: `Electron Powers boost Atomic Powers gain.`,
+                cost: E('ee75000'),
                 effect() {
-                    let x = E(1)
+                    let x = player.atom.powers[2].add(1).log10().add(1).log10().add(1).pow(1000)
                     return x
                 },
                 effDesc(x=this.effect()) {
-                    return formatMult(x)
+                    return "^"+format(x)
                 },
-                noImage: true,
             },
             23: {
                 unl() { return tmp.fifthRowUnl },
@@ -777,7 +773,7 @@ const UPGS = {
                 desc: "Keep challenges 1-4 on reset. BH Condensers add Cosmic Rays Power at a reduced rate.",
                 cost: E(1e10),
                 effect() {
-                    let ret = player.bh.condenser.pow(0.8).mul(0.01)
+                    let ret = player.build.bhc.amt.pow(0.8).mul(0.01)
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -803,7 +799,7 @@ const UPGS = {
                 desc: "Tickspeed boosts each particle powers gain.",
                 cost: E(1e25),
                 effect() {
-                    let ret = E(1.025).pow(player.tickspeed)
+                    let ret = E(1.025).pow(player.build.tickspeed.amt)
                     return ret
                 },
                 effDesc(x=this.effect()) {
@@ -921,16 +917,8 @@ const UPGS = {
             },
             22: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Remove the softcaps of Star Booster's power and effect.`,
+                cost: E('ee19750'),
             },
             23: {
                 unl() { return tmp.fifthRowUnl },
@@ -1132,16 +1120,8 @@ const UPGS = {
             },
             22: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Beta Particles's effect is now changed.`,
+                cost: E('e74000'),
             },
             23: {
                 unl() { return tmp.fifthRowUnl },

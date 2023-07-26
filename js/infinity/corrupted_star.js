@@ -6,13 +6,15 @@ const CORRUPTED_STAR = {
             amt = amt.add(w).min(1)
         }
 
+        let b = Decimal.pow(2,tmp.cs_reduce_power)
+
         if (amt.gte(1)) {
             amt = amt.log(2)
 
             let rss1 = tmp.cs_reduce_start1.log(2), rss2 = tmp.cs_reduce_start2.log(2)
 
             let rs1 = amt.gte(rss1), rs2 = amt.gte(rss2)
-            if (rs2) amt = amt.div(rss2).pow(2).mul(rss2)
+            if (rs2) amt = amt.div(rss2).pow(b).mul(rss2)
             if (rs1) amt = Decimal.pow(2,amt.div(rss1)).sub(1).mul(rss1)
 
             amt = amt.add(tick)
@@ -21,7 +23,7 @@ const CORRUPTED_STAR = {
             if (rs1) amt = amt.div(rss1).add(1).log(2).mul(rss1)
 
             rs2 = rs2 || amt.gte(rss2)
-            if (rs2) amt = amt.div(rss2).root(2).mul(rss2)
+            if (rs2) amt = amt.div(rss2).root(b).mul(rss2)
 
             amt = Decimal.pow(2,amt)
         }
@@ -76,11 +78,14 @@ function updateCSTemp() {
     if (hasElement(42,1)) s = s.mul(muElemEff(42))
     if (hasElement(47,1)) s = s.mul(muElemEff(47))
 
+    tmp.cs_reduce_power = GPEffect(4,1)
+
     tmp.cs_speed = s
 
     tmp.csu_div = E(1)
 
     if (hasPrestige(4,7)) tmp.csu_div = tmp.csu_div.mul(1e10)
+    if (hasElement(53,1)) tmp.csu_div = tmp.csu_div.mul(muElemEff(53))
 
     tmp.cs_effect = CORRUPTED_STAR.eff()
 }

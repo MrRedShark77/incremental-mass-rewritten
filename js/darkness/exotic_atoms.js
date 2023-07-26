@@ -123,7 +123,7 @@ const MUONIC_ELEM = {
             desc: `Accelerators raise the Argon-18's effect at an extremely reduced rate (after first overflow).`,
             cost: E(1e170),
             eff() {
-                let x = player.accelerator.add(10).log10()
+                let x = player.build.accelerator.amt.add(10).log10()
                 return x
             },
             effDesc: x=>"^"+format(x),
@@ -307,6 +307,31 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>formatMult(x),
+        },{
+            desc: `Pion’s second reward now affects black hole overflow^2 at a reduced rate.`,
+            cost: E('e20400'),
+            eff() {
+                let x = exoticAEff(1,1,E(1)).root(5)
+                if (tmp.c16active) x = x.max(1).log10().add(1)
+                return x
+            },
+            effDesc: x=>"^"+format(x),
+        },{
+            desc: `Pion’s third reward is 50% stronger.`,
+            cost: E('e23400'),
+        },{
+            cs: true,
+            desc: `Supernova divides Corrupted Star upgrade 1 and 2 costs.`,
+            cost: E('e440'),
+            eff() {
+                let x = player.supernova.times.add(1)
+                return x
+            },
+            effDesc: x=>"/"+format(x),
+        },{
+            cs: true,
+            desc: `You can unlock sixth star type.`,
+            cost: E('e625'),
         },
 
         /*
@@ -459,10 +484,11 @@ const EXOTIC_ATOM = {
             },x=>`Boosts mass of unstable BH gain by <b>${formatMult(x[0])}</b>`+(hasElement(39,1)?`, <b>^${format(x[1])}</b>`:'')],
             [a=>{
                 let x = a.add(1).pow(3)
-                return x
+                return x.overflow('1e10000',0.5)
             },x=>`Black hole overflow starts <b>^${format(x)}</b> later`],
             [a=>{
                 let x = a.add(1).log10().div(80).add(1).root(2)
+                if (hasElement(52,1)) x = x.pow(1.5)
                 return x
             },x=>`FSS's base is raised by <b>${format(x)}</b>`],
             [a=>{

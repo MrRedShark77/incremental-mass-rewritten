@@ -40,6 +40,11 @@
 }
 
 @font-face {
+	font-family: 'Lunasima';
+	src: url('fonts/Lunasima-Regular.ttf');
+}
+
+@font-face {
 	font-family: 'Monospace-Typewritter';
 	src: url('fonts/MonospaceTypewriter.ttf');
 	size-adjust: 85%;
@@ -96,6 +101,12 @@
 	font-family: 'Source Serif Pro';
 	src: url('fonts/SourceSerifPro-Regular.ttf');
 	size-adjust: 110%;
+}
+
+@font-face {
+	font-family: 'Wingding';
+	src: url('fonts/wingding.ttf');
+	size-adjust: 90%;
 }
 
 * {

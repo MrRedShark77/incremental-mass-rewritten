@@ -89,12 +89,6 @@ function calc(dt) {
         player.mass = player.mass.add(tmp.massGain.mul(du_gs))
         if (!tmp.brokenInf) player.mass = player.mass.min(tmp.inf_limit)
         
-        if (player.mainUpg.rp.includes(3)) for (let x = 1; x <= UPGS.mass.cols; x++) if (player.autoMassUpg[x] && (player.ranks.rank.gte(x) || player.mainUpg.atom.includes(1))) UPGS.mass.buyMax(x)
-        if (FORMS.tickspeed.autoUnl() && player.autoTickspeed) FORMS.tickspeed.buyMax()
-        if (FORMS.accel.autoUnl() && player.autoAccel) FORMS.accel.buyMax()
-        if (FORMS.bh.condenser.autoUnl() && player.bh.autoCondenser) FORMS.bh.condenser.buyMax()
-        if (player.bh.autoFVM) UNSTABLE_BH.fvm.buyMax()
-        if (hasElement(18) && player.atom.auto_gr) ATOM.gamma_ray.buyMax()
         if (player.mass.gte(1.5e136)) player.chal.unl = true
         for (let x = 0; x < RANKS.names.length; x++) {
             let rn = RANKS.names[x]
@@ -139,6 +133,8 @@ function calc(dt) {
         calcQuantum(dt)
         calcDark(inf_gs)
         calcInf(dt)
+
+        BUILDINGS.tick()
 
         if (tmp.SN_passive) player.supernova.times = player.supernova.times.add(tmp.supernova.passive.mul(dt))
         else if (hasTree("qu_qol4")) player.supernova.times = player.supernova.times.max(tmp.supernova.bulk)
@@ -187,20 +183,13 @@ function getPlayerData() {
         ascensions: new Array(ASCENSIONS.names.length).fill(E(0)),
         gal_prestige: E(0),
         gp_resources: new Array(GAL_PRESTIGE.res_length).fill(E(0)),
-        auto_mainUpg: {
-            
-        },
-        massUpg: {},
-        autoMassUpg: [null,false,false,false],
-        autoTickspeed: false,
-        autoAccel: false,
-        mainUpg: {
-            
-        },
+        auto_mainUpg: {},
+        mainUpg: {},
         ranks_reward: 0,
         pres_reward: 0,
         asc_reward: 0,
         scaling_ch: 0,
+        build: {},
         rp: {
             points: E(0),
             unl: false,
@@ -210,10 +199,6 @@ function getPlayerData() {
             dm: E(0),
             mass: E(0),
             unstable: E(0),
-            condenser: E(0),
-            autoCondenser: false,
-            fvm: E(0),
-            autoFVM: false,
         },
         chal: {
             unl: false,
@@ -225,8 +210,6 @@ function getPlayerData() {
             unl: false,
             points: E(0),
             atomic: E(0),
-            auto_gr: false,
-            gamma_ray: E(0),
             quarks: E(0),
             particles: [E(0), E(0), E(0)],
             powers: [E(0), E(0), E(0)],
@@ -252,9 +235,8 @@ function getPlayerData() {
         },
         stars: {
             unls: 0,
-            boost: E(0),
             points: E(0),
-            generators: [E(0),E(0),E(0),E(0),E(0)],
+            generators: [E(0),E(0),E(0),E(0),E(0),E(0)],
         },
         supernova: {
             times: E(0),
@@ -312,6 +294,12 @@ function getPlayerData() {
         quotes: [],
         time: 0,
     }
+
+    for (let x in BUILDINGS_DATA) s.build[x] = {
+        amt: E(0),
+        auto: false,
+    }
+
     for (let x = 0; x < PRES_LEN; x++) s.prestiges.push(E(0))
     for (let x = 1; x <= UPGS.main.cols; x++) {
         s.auto_mainUpg[UPGS.main.ids[x]] = false
@@ -336,8 +324,7 @@ function wipe(reload=false) {
     if (reload) {
         wipe()
         save()
-        resetTemp()
-        loadGame(false)
+        location.reload()
     }
     else player = getPlayerData()
 }
@@ -378,6 +365,8 @@ function loadPlayer(load) {
             tt[t]--
         }
     }
+
+    checkBuildings()
 }
 
 function clonePlayer(obj,data) {
@@ -421,7 +410,6 @@ function deepUndefinedAndDecimal(obj, data) {
 }
 
 function convertStringToDecimal() {
-    for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) player.md.break.upgs[x] = E(player.md.break.upgs[x]||0)
@@ -506,12 +494,17 @@ function importy() {
             addNotify('monke<br><img style="width: 100%; height: 100%" src="https://i.kym-cdn.com/photos/images/original/001/132/314/cbc.jpg">')
             return
         }
-        if (st == 'p4H)pb{v2y5?g!') {
+        else if (st == 'p4H)pb{v2y5?g!') {
             addNotify('2+2=5<br><img src="https://cdn2.penguin.com.au/authors/400/106175au.jpg">')
             return
         }
-        if (st == 'L5{W*oI.NhA-lE)C1#e') {
+        else if (st == 'L5{W*oI.NhA-lE)C1#e') {
             addNotify('<img src="https://steamuserimages-a.akamaihd.net/ugc/83721257582613769/22687C6536A50ADB3489A721A264E0EF506A89B3/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false">',6)
+            return
+        }
+        else if (st == 'a+F4gro<?/Sd') {
+            addNotify('YOU ARE CURSED FOREVER!!!')
+            player.options.font = 'Wingding'
             return
         }
         if (loadgame != null) {
@@ -610,8 +603,6 @@ function checkNaN() {
         console.log(naned)
 
         addNotify("Game Data got NaNed because of "+naned.bold())
-
-        return
 
         resetTemp()
         tmp.start = true

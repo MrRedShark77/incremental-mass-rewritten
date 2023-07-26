@@ -103,7 +103,7 @@ const ENTROPY = {
             eff(i) {
                 if (tmp.c16active) return [E(0),E(1)]
                 let x = i.div(QCs.active()?100:5).softcap(2,0.5,0)
-                let y = tmp.tickspeedEffect?tmp.tickspeedEffect.step.pow(x):E(1)
+                let y = BUILDINGS.eff('tickspeed','power').pow(x)
                 return [x,y]
             },
             desc(x) { return `Tickspeed Power gives <b>^${x[0].format(2)}</b> boost to BHC & Cosmic Ray Powers.<br>Currently: <b>${x[1].format()}x</b>`.corrupt(tmp.c16active) },

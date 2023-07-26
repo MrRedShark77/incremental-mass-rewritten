@@ -95,7 +95,7 @@ const TREE_UPGS = {
             desc: `Tickspeed affects Neutron Star gain at a reduced rate.`,
             cost: E(10),
             effect() {
-                let x = player.tickspeed.add(1).pow(0.25)
+                let x = player.build.tickspeed.amt.add(1).pow(0.25)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -252,7 +252,7 @@ const TREE_UPGS = {
             branch: ["s3"],
             req() { return player.supernova.times.gte(6) },
             reqDesc: `6 Supernovas.`,
-            desc: `After getting all 5 star types, star unlocker will transform into star boosters.`,
+            desc: `Unlock Star Booster.`,
             cost: E(1e5),
         },
         qol1: {
@@ -397,7 +397,7 @@ const TREE_UPGS = {
             reqDesc: `7 Supernovas.`,
             cost: E(1e6),
             effect() {
-                let x = tmp.bh?tmp.bh.condenser_eff.pow.max(1).root(3):E(1)
+                let x = BUILDINGS.eff('bhc','power').max(1).root(3)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -415,7 +415,7 @@ const TREE_UPGS = {
             desc: `Tickspeed affects Higgs Boson gain at a reduced rate.`,
             cost: E(1e13),
             effect() {
-                let x = player.tickspeed.add(1).pow(0.6)
+                let x = player.build.tickspeed.amt.add(1).pow(0.6)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -459,7 +459,7 @@ const TREE_UPGS = {
             desc: `Tickspeed affects Fermions gain at a reduced rate.`,
             cost: E(1e27),
             effect() {
-                let x = E(1.25).pow(player.tickspeed.softcap(1e24,0.5,2).pow(0.4))
+                let x = E(1.25).pow(player.build.tickspeed.amt.softcap(1e24,0.5,2).pow(0.4))
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -658,7 +658,7 @@ const TREE_UPGS = {
             desc: `Blueprint Particles & Chromas are affected by Tickspeed Effect at a reduced rate.`,
             cost: E(100),
             effect() {
-                let x = tmp.tickspeedEffect?tmp.tickspeedEffect.eff_bottom.add(1).log10().add(1).log10().add(1).pow(3):E(1)
+                let x = BUILDINGS.eff('tickspeed','eff_bottom').add(1).log10().add(1).log10().add(1).pow(3)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -1071,7 +1071,7 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free radiation boosts.`,
             cost: E(5000),
 
-            req() { return tmp.c16active && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('1e400') && player.bh.condenser.lte(0) },
+            req() { return tmp.c16active && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('1e400') && player.build.bhc.amt.lte(0) },
             reqDesc() { return `Reach ${formatMass('1e400')} of black hole during C16 & [Meta-Lepton] without buying BH Condensers.` },
 
             effect() {
@@ -1117,7 +1117,7 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free primordium particles.`,
             cost: E(5e7),
 
-            req() { return tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.bh.condenser.lte(0) },
+            req() { return tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.build.bhc.amt.lte(0) },
             reqDesc() { return `Reach ${formatMass('1e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
 
             effect() {

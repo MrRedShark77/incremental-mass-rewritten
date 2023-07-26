@@ -71,7 +71,7 @@ const ATOM = {
     doReset(chal_reset=true) {
         player.atom.atomic = E(0)
         player.bh.dm = E(0)
-        player.bh.condenser = E(0)
+        BUILDINGS.reset('bhc')
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         player.mainUpg.bh = keep
@@ -80,7 +80,7 @@ const ATOM = {
     },
     atomic: {
         gain() {
-            let greff = tmp.atom.gamma_ray_eff||{eff: E(1),exp: E(1)}
+            let greff = {eff: BUILDINGS.eff('cosmic_ray'),exp: BUILDINGS.eff('cosmic_ray', 'exp')}
 
             let x = greff.eff
             if (hasElement(3)) x = x.mul(tmp.elements.effect[3])
@@ -92,6 +92,8 @@ const ATOM = {
             if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
 
             if (hasGlyphUpg(12)) x = x.pow(greff.exp)
+
+            if (hasUpgrade('bh',22)) x = x.pow(upgEffect(2,22))
 
             if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
 
@@ -153,7 +155,7 @@ const ATOM = {
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
             pow = pow//.softcap('e3e12',0.9,2)
 
-            if (hasBeyondRank(2,4)) pow = pow.pow(tmp.accelEffect.eff)
+            if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
 
             let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
 
@@ -278,6 +280,7 @@ function updateAtomTemp() {
     tmp.atom.atomicGain = ATOM.atomic.gain()
     tmp.atom.atomicEff = ATOM.atomic.effect()
 
+    /*
     let fp = tmp.fermions.effs[1][5]
 
     let fp2 = E(1)
@@ -290,6 +293,7 @@ function updateAtomTemp() {
     tmp.atom.gamma_ray_can = player.atom.points.gte(tmp.atom.gamma_ray_cost)
     tmp.atom.gamma_ray_bonus = ATOM.gamma_ray.bonus()
     tmp.atom.gamma_ray_eff = ATOM.gamma_ray.effect()
+    */
 
     for (let x = 0; x < ATOM.particles.names.length; x++) {
         tmp.atom.particles[x] = {
@@ -321,6 +325,9 @@ function updateAtomicHTML() {
     tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain.mul(tmp.preQUGlobalSpeed)))
 	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(5e4)?" <span class='soft'>(softcapped)</span>":""))
 
+    BUILDINGS.update('cosmic_ray')
+
+    /*
 	tmp.el.gamma_ray_lvl.setTxt(format(player.atom.gamma_ray,0)+(tmp.atom.gamma_ray_bonus.gte(1)?" + "+format(tmp.atom.gamma_ray_bonus,0):""))
 	tmp.el.gamma_ray_btn.setClasses({btn: true, locked: !tmp.atom.gamma_ray_can})
 	tmp.el.gamma_ray_scale.setTxt(getScalingName('gamma_ray'))
@@ -329,6 +336,7 @@ function updateAtomicHTML() {
 	tmp.el.gamma_ray_eff.setHTML(format(tmp.atom.gamma_ray_eff.eff)+"x"+(hasGlyphUpg(12)?", ^"+format(tmp.atom.gamma_ray_eff.exp):""))
     tmp.el.gamma_ray_auto.setDisplay(hasElement(18))
 	tmp.el.gamma_ray_auto.setTxt(player.atom.auto_gr?"ON":"OFF")
+    */
 
     tmp.el.atomicOverflow.setDisplay(player.atom.atomic.gte(tmp.overflow_start.atomic))
     tmp.el.atomicOverflow.setHTML(`Because of atomic power overflow at <b>${format(tmp.overflow_start.atomic)}</b>, your atomic power gain is ${overflowFormat(tmp.overflow.atomic||1)}!`)

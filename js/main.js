@@ -46,7 +46,7 @@ const FORMS = {
     },
     massGain() {
         let x = E(1)
-        x = x.add(tmp.upgs.mass[1]?tmp.upgs.mass[1].eff.eff:1)
+        x = x.add(BUILDINGS.eff('mass_1'))
         if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
@@ -63,8 +63,8 @@ const FORMS = {
         if (!hasElement(105)) x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
         else x = x.pow(tmp.atom.particles[0].powerEffect.eff1)
 
-        if (!hasElement(199) || CHALS.inChal(15)) x = x.mul(tmp.tickspeedEffect.eff||E(1))
-        else x = x.pow(tmp.tickspeedEffect.eff||E(1))
+        if (!hasElement(199) || CHALS.inChal(15)) x = x.mul(BUILDINGS.eff('tickspeed'))
+        else x = x.pow(BUILDINGS.eff('tickspeed'))
 
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
@@ -455,8 +455,7 @@ const FORMS = {
             return x
         },
         massGain() {
-            let x = tmp.bh.f
-            .mul(this.condenser.effect().eff)
+            let x = tmp.bh.f.mul(BUILDINGS.eff('bhc'))
             if (player.mainUpg.rp.includes(11)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][11].effect:E(1))
             if (player.mainUpg.bh.includes(14)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][14].effect:E(1))
             if (hasElement(46) && !hasElement(162)) x = x.mul(tmp.elements.effect[46])
@@ -501,6 +500,7 @@ const FORMS = {
 
             if (hasPrestige(2,45)) os2 = os2.pow(prestigeEff(2,45))
             if (hasElement(269)) os2 = os2.pow(elemEffect(269))
+            if (hasElement(51,1)) os2 = os2.pow(muElemEff(51))
 
             if (hasElement(252)) os2 = expMult(os2,1.5)
 
@@ -554,8 +554,8 @@ const FORMS = {
             for (let x = 0; x < player.mainUpg.rp.length; x++) if ([3,5,6].includes(player.mainUpg.rp[x])) keep.push(player.mainUpg.rp[x])
             player.mainUpg.rp = keep
             player.rp.points = E(0)
-            player.tickspeed = E(0)
-            player.accelerator = E(0)
+            BUILDINGS.reset('tickspeed')
+            BUILDINGS.reset('accelerator')
             player.bh.mass = E(0)
             FORMS.rp.doReset()
         },
@@ -605,7 +605,7 @@ const FORMS = {
                     if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                     if (hasTree("bh2")) pow = pow.pow(1.15)
                 if (hasElement(129)) pow = pow.pow(elemEffect(18))
-                if (hasBeyondRank(2,4)) pow = pow.pow(tmp.accelEffect.eff)
+                if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
                 
                 if (CHALS.inChal(17)) pow = E(1)
                 

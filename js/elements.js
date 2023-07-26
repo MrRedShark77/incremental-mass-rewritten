@@ -52,6 +52,9 @@ function setupHTML() {
 
 	setupAscensionsHTML()
 
+	BUILDINGS.setup()
+
+	/*
 	let mass_upgs_table = new Element("mass_upgs_table")
 	table = ""
 	for (let x = 1; x <= UPGS.mass.cols; x++) {
@@ -72,6 +75,7 @@ function setupHTML() {
 		</div>`
 	}
 	mass_upgs_table.setHTML(table)
+	*/
 
 	let ranks_rewards_table = new Element("ranks_rewards_table")
 	table = ""
@@ -266,6 +270,11 @@ function updateUpperHTML() {
 }
 
 function updateMassUpgradesHTML() {
+	for (let x = 1; x <= 4; x++) {
+		BUILDINGS.update('mass_'+x)
+	}
+
+	/*
 	for (let x = 1; x <= UPGS.mass.cols; x++) {
 		let upg = UPGS.mass[x]
 		tmp.el["massUpg_div_"+x].setDisplay(upg.unl())
@@ -280,10 +289,15 @@ function updateMassUpgradesHTML() {
 			tmp.el["massUpg_auto_"+x].setTxt(player.autoMassUpg[x]?"ON":"OFF")
 		}
 	}
+	*/
 }
 
 function updateTickspeedHTML() {
+	BUILDINGS.update('tickspeed')
+	BUILDINGS.update('accelerator')
+	/*
 	let unl = player.rp.unl
+
 	tmp.el.tickspeed_div.setDisplay(unl)
 	if (unl) {
 		let teff = tmp.tickspeedEffect
@@ -300,8 +314,9 @@ function updateTickspeedHTML() {
 		tmp.el.tickspeed_auto.setDisplay(FORMS.tickspeed.autoUnl())
 		tmp.el.tickspeed_auto.setTxt(player.autoTickspeed?"ON":"OFF")
 	}
+
 	tmp.el.accel_div.setDisplay(unl && hasElement(199));
-	if(hasElement(199)){
+	if(unl && hasElement(199)){
 		let eff = tmp.accelEffect
 		//tmp.el.accel_scale.setTxt(getScalingName('accel'))
 		tmp.el.accel_lvl.setTxt(format(player.accelerator,0))
@@ -313,6 +328,7 @@ function updateTickspeedHTML() {
 		tmp.el.accel_auto.setDisplay(FORMS.accel.autoUnl())
 		tmp.el.accel_auto.setTxt(player.autoAccel?"ON":"OFF")
 	}
+	*/
 }
 
 function updateRanksRewardHTML() {
@@ -412,15 +428,22 @@ function updateBlackHoleHTML() {
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 
 	tmp.el.bhEffect.setTxt(hasElement(201)?"^"+format(tmp.bh.effect):format(tmp.bh.effect)+"x")
+	tmp.el.bhCondenserEffect.setHTML(format(BUILDINGS.eff('bhc')))
 
+	BUILDINGS.update('bhc')
+	BUILDINGS.update('fvm')
+
+	/*
 	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0)+(tmp.bh.condenser_bonus.gte(1)?" + "+format(tmp.bh.condenser_bonus,0):""))
 	tmp.el.bhCondenser_btn.setClasses({btn: true, locked: !FORMS.bh.condenser.can()})
 	tmp.el.bhCondenser_scale.setTxt(getScalingName('bh_condenser'))
 	tmp.el.bhCondenser_cost.setTxt(format(tmp.bh.condenser_cost,0))
 	tmp.el.bhCondenser_pow.setTxt(format(tmp.bh.condenser_eff.pow))
-	tmp.el.bhCondenserEffect.setHTML(format(tmp.bh.condenser_eff.eff))
 	tmp.el.bhCondenser_auto.setDisplay(FORMS.bh.condenser.autoUnl())
 	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
+	*/
+
+	
 
 	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[0]))
     tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh[0])}</b>, your mass of black hole gain is ${overflowFormat(tmp.overflow.bh||1)}!`)
@@ -428,7 +451,7 @@ function updateBlackHoleHTML() {
 	tmp.el.bhOverflow2.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[1]))
     tmp.el.bhOverflow2.setHTML(`Because of black hole mass overflow^2 at <b>${formatMass(tmp.overflow_start.bh[1])}</b>, your black hole mass overflow is even stronger!`)
 	
-	tmp.el.bhcEffectOverflow.setDisplay(tmp.bh.condenser_eff.eff.gte(tmp.overflow_start.BHCEffect[0]))
+	tmp.el.bhcEffectOverflow.setDisplay(BUILDINGS.eff('bhc').gte(tmp.overflow_start.BHCEffect[0]))
     tmp.el.bhcEffectOverflow.setHTML(`Because of BH Condenser siltation at <b>${format(tmp.overflow_start.BHCEffect[0])}</b>, the exponent of BH Condenser's effect is ${overflowFormat(tmp.overflow.BHCEffect||1)}!`)
 	
 	// Unstable 
@@ -436,17 +459,19 @@ function updateBlackHoleHTML() {
 	let unl = hasCharger(1)
 
 	tmp.el.unstable_bhUnl.setDisplay(unl)
-	tmp.el.falseVacuumDiv.setDisplay(unl)
+	// tmp.el.falseVacuumDiv.setDisplay(unl)
 	if (unl) {
 		tmp.el.bhUnstable.setHTML(formatMass(player.bh.unstable)+" "+formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true))
 		tmp.el.bhUnstableEffect.setHTML("^"+format(tmp.unstable_bh.effect))
 
+		/*
 		tmp.el.fvm_lvl.setTxt(format(player.bh.fvm,0))
 		tmp.el.fvm_btn.setClasses({btn: true, locked: !UNSTABLE_BH.fvm.can()})
 		tmp.el.fvm_cost.setTxt(format(tmp.unstable_bh.fvm_cost,0))
 		tmp.el.fvm_pow.setTxt(format(tmp.unstable_bh.fvm_eff.pow))
 		tmp.el.fvm_eff.setHTML(format(tmp.unstable_bh.fvm_eff.eff))
 		tmp.el.fvm_auto.setTxt(player.bh.autoFVM?"ON":"OFF")
+		*/
 	}
 }
 
@@ -530,10 +555,10 @@ function updateHTML() {
 					tmp.el.massOverflow2.setDisplay(player.mass.gte(tmp.overflow_start.mass[1]))
 					tmp.el.massOverflow2.setHTML(`Because of mass overflow^2 at <b>${formatMass(tmp.overflow_start.mass[1])}</b>, your mass overflow is even stronger!`)
 
-					tmp.el.strongerOverflow.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[0]))
+					tmp.el.strongerOverflow.setDisplay(BUILDINGS.eff('mass_3').gte(tmp.overflow_start.stronger[0]))
 					tmp.el.strongerOverflow.setHTML(`Because of stronger overflow at <b>${format(tmp.overflow_start.stronger[0])}</b>, your stronger effect is ${overflowFormat(tmp.overflow.stronger||1)}!`)
 				
-					tmp.el.strongerOverflow2.setDisplay(tmp.upgs.mass[3].eff.eff.gte(tmp.overflow_start.stronger[1]))
+					tmp.el.strongerOverflow2.setDisplay(BUILDINGS.eff('mass_3').gte(tmp.overflow_start.stronger[1]))
 					tmp.el.strongerOverflow2.setHTML(`Because of stronger overflow^2 at <b>${format(tmp.overflow_start.stronger[1])}</b>, your stronger overflow is even stronger!`)
 				}
 			}

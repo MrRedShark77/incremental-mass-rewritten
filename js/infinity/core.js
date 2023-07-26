@@ -807,6 +807,12 @@ function updateCoreTemp() {
 
     tmp.core_lvl = INF.level()
 
+    let ss = E(1e3)
+
+    if (hasElement(272)) ss = ss.mul(elemEffect(272))
+
+    tmp.meta_score_ss = ss
+
     for (let i in CORE) {
         let t = CORE[i], s = tmp.core_score[i], eff = tmp.core_eff[i], ct = core_tmp[i]
 
@@ -814,7 +820,7 @@ function updateCoreTemp() {
 
         for (let j = 0; j < MAX_STARS; j++) {
             let sc = Decimal.pow(ct.total_s[j].mul(Decimal.pow(boost, ct.total_s[j].add(1).log10().add(1))),ct.total_p) // Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
-            sc = overflow(sc,1000,0.5)
+            sc = overflow(sc,ss,0.5)
             if (sc.gt(0)) sc = sc.add(tmp.dim_mass_eff)
 
             s[j] = sc

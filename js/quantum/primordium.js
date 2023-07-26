@@ -61,8 +61,8 @@ const PRIM = {
             },
             p=>{
                 if (hasElement(107)) p = p.mul(2)
-                let x = p.pow(0.9).mul(2)
-                return x.softcap(1500,0.5,0)
+                let x = hasUpgrade('br',22) ? p.add(1).root(10) : p.pow(0.9).mul(2).softcap(1500,0.5,0)
+                return x
             },
         ],
         effDesc: [
@@ -73,7 +73,7 @@ const PRIM = {
             x=>{ return `Boost Higgs Boson's effect by ${format(x)}x` },
             x=>{ return `Add ${format(x[0])} to base from Fermions gain ` + (hasTree("prim3") ? ` /<br> Add ${format(x[1])} free tiers to Fermions` : "") },
             x=>{ return `Boost all Radiations gains by ${format(x[0])}x` + (hasTree("prim2") ? ` /<br> Make all Radiations effects ${format(x[1])}x stronger` : "") },
-            x=>{ return `Make ${player.dark.unl ? "pre-exotic" : "all"} Supernova's scalings start ${format(x)} later` + x.softcapHTML(1500) },
+            x=>{ return hasUpgrade('br',22) ? `Increase supernova generation by ${formatMult(x)}` : `Make ${player.dark.unl ? "pre-exotic" : "all"} Supernova's scalings start ${format(x)} later` + x.softcapHTML(1500) },
         ],
     },
 }

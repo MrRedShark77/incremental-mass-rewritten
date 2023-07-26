@@ -51,7 +51,7 @@ const DARK = {
         qu.points = E(0)
         qu.bp = E(0)
         qu.chroma = [E(0),E(0),E(0)]
-        qu.cosmic_str = E(0)
+        BUILDINGS.reset('cosmic_string')
 
         qu.prim.theorems = E(0)
         qu.prim.particles = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]

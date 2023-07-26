@@ -18,6 +18,7 @@ const SCALE_START = {
 		prestige3: E(8),
 		massUpg4: E(50),
 		FSS: E(5),
+		fvm: E(1e11),
 		pe: E(25),
 		inf_theorem: E(10),
 		ascension0: E(20),
@@ -105,6 +106,7 @@ const SCALE_POWER= {
 		prestige3: 2,
 		massUpg4: 3,
 		FSS: 2,
+		fvm: 10,
 		pe: 2,
 		inf_theorem: 2,
 		ascension0: 2,
@@ -187,21 +189,22 @@ const SCALING_RES = {
 	tetr(x=0) { return player.ranks.tetr },
 	pent(x=0) { return player.ranks.pent },
 	hex(x=0) { return player.ranks.hex },
-	tickspeed(x=0) { return player.tickspeed },
-    massUpg(x=1) { return E(player.massUpg[x]||0) },
-	bh_condenser(x=0) { return player.bh.condenser },
-	gamma_ray(x=0) { return player.atom.gamma_ray },
+	tickspeed(x=0) { return player.build.tickspeed.amt },
+    massUpg(x=1) { return player.build["mass_"+(x+1)].amt },
+	bh_condenser(x=0) { return player.build.bhc.amt },
+	gamma_ray(x=0) { return player.build.cosmic_ray.amt },
 	supernova(x=0) { return player.supernova.times },
 	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
-	cosmic_str(x=0) { return player.qu.cosmic_str },
+	cosmic_str(x=0) { return player.build.cosmic_string.amt },
 	prestige0() { return player.prestiges[0] },
 	prestige1() { return player.prestiges[1] },
 	prestige2() { return player.prestiges[2] },
 	prestige3() { return player.prestiges[3] },
-	massUpg4() { return E(player.massUpg[4]||0) },
+	massUpg4() { return player.build.mass_4.amt },
 	FSS() { return player.dark.matters.final },
-	pe() { return player.inf.pe},
-	inf_theorem() { return player.inf.theorem},
+	fvm() { return player.build.fvm.amt },
+	pe() { return player.build.pe.amt },
+	inf_theorem() { return player.inf.theorem },
 	ascension0() { return player.ascensions[0] },
 }
 
@@ -224,6 +227,7 @@ const NAME_FROM_RES = {
 	prestige3: "Renown",
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
+	fvm: "False Vacuum Manipulator",
 	pe: "Parallel Extruder",
 	inf_theorem: "Infinity Theorem",
 	ascension0: "Ascension",
@@ -231,7 +235,7 @@ const NAME_FROM_RES = {
 
 const C18_SCALING = [
 	'rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier',
-	'cosmic_str','prestige0','prestige1','prestige2','prestige3','massUpg4','FSS'
+	'cosmic_str','prestige0','prestige1','prestige2','prestige3','massUpg4','FSS','fvm'
 ]
 
 function updateScalingHTML() {
@@ -272,7 +276,7 @@ function updateScalingTemp() {
 			ss[sn] = getScalingStart(x,sn)
 			if (noScalings(x,sn)) ns.push(sn)
 			else {
-				if (sn == "massUpg") for (let i = 0; i < UPGS.mass.cols; i++) {
+				if (sn == "massUpg") for (let i = 0; i < 3; i++) {
 					if (scalingActive(sn, SCALING_RES[sn](i), st)) {
 						tmp.scaling[st].push(sn)
 						break
@@ -304,7 +308,7 @@ function scalingActive(name, amt, type) {
 function scaleStart(type,name) { return tmp.scaling_start[type][name]||SCALE_START[type][name] }
 
 function getScalingName(name, x=0, y=0) {
-	if (!NAME_FROM_RES[name]) return
+	if (!NAME_FROM_RES[name]) return ''
 
 	let cap = Object.keys(SCALE_START).length;
 	let current = "";
@@ -456,7 +460,7 @@ function getScalingStart(type, name) {
 			if (hasBeyondRank(4,1)) start = start.add(beyondRankEffect(4,1,0))
 		}
 	}
-	if (name=='supernova' && type < 4) {
+	if (name=='supernova' && type < 4 && !hasUpgrade('br',22)) {
 		start = start.add(tmp.prim.eff[7])
 	}
 	if (name=="fTier" && type < 4) {
@@ -526,6 +530,9 @@ function getScalingPower(type, name) {
 		}
 		else if (name=="prestige3") {
 			if (hasPrestige(4,1)) power = power.mul(0.75)
+		}
+		else if (name=="fvm") {
+			if (hasElement(275)) power = power.mul(0.5)
 		}
 	}
 	else if (type==1) {

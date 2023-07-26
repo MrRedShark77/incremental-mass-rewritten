@@ -198,7 +198,7 @@ const FERMIONS = {
                     return E('e5e8').pow(t.pow(2)).mul('e6e9')
                 },
                 calcTier() {
-                    let res = tmp.tickspeedEffect && !tmp.pass?tmp.tickspeedEffect.eff_bottom:E(1)
+                    let res = !tmp.pass?BUILDINGS.eff('tickspeed','eff_bottom'):E(1)
                     if (res.lt('e6e9')) return E(0)
                     let x = res.div('e6e9').max(1).log('e5e8').max(0).root(2)
                     return FERMIONS.getTierScaling(x, true)
@@ -372,7 +372,7 @@ const FERMIONS = {
                     return E('10').pow(t.pow(1.5)).mul('e80')
                 },
                 calcTier() {
-                    let res = tmp.tickspeedEffect && !tmp.pass?tmp.tickspeedEffect.step:E(1)
+                    let res = !tmp.pass?BUILDINGS.eff('tickspeed','power'):E(1)
                     if (res.lt('e80')) return E(0)
                     let x = res.div('e80').max(1).log('10').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)
@@ -487,8 +487,8 @@ function updateFermionsTemp() {
 
 function updateFermionsHTML() {
     let r = [
-        [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, tmp.tickspeedEffect.eff_bottom, tmp.fermions.prod[0]],
-        [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, tmp.tickspeedEffect.step, tmp.fermions.prod[1]]
+        [player.atom.atomic, player.md.particles, player.mass, player.rp.points, player.md.mass, BUILDINGS.eff('tickspeed','eff_bottom'), tmp.fermions.prod[0]],
+        [player.atom.quarks, player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, BUILDINGS.eff('tickspeed','power'), tmp.fermions.prod[1]]
     ]
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))

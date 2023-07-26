@@ -15,7 +15,7 @@ const SUPERNOVA = {
         player.atom.particles = [E(0),E(0),E(0)]
         player.atom.powers = [E(0),E(0),E(0)]
         player.atom.atomic = E(0)
-        player.atom.gamma_ray = E(0)
+        BUILDINGS.reset('cosmic_ray')
         
         let list_keep = [2,5]
         if (hasTree("qol2")) list_keep.push(6)
@@ -40,9 +40,9 @@ const SUPERNOVA = {
         for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
 
         player.stars.unls = 0
-        player.stars.generators = [E(0),E(0),E(0),E(0),E(0)]
+        player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0)]
         player.stars.points = E(0)
-        player.stars.boost = E(0)
+        BUILDINGS.reset('star_booster')
 
         if (!hasTree("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
 
@@ -87,6 +87,8 @@ const SUPERNOVA = {
 
         if (hasElement(46,1)) x = x.mul(muElemEff(46))
         if (hasElement(49,1)) x = x.mul(muElemEff(49))
+        if (hasElement(274)) x = x.mul(elemEffect(274))
+        if (hasUpgrade('br',22)) x = x.mul(tmp.prim.eff[7])
 
         return x
     },
@@ -96,8 +98,8 @@ function calcSupernova(dt) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
     let su = player.supernova
 
-    if (player.tickspeed.gte(1)) su.chal.noTick = false
-    if (player.bh.condenser.gte(1)) su.chal.noBHC = false
+    if (player.build.tickspeed.amt.gte(1)) su.chal.noTick = false
+    if (player.build.bhc.amt.gte(1)) su.chal.noBHC = false
 
     if (tmp.supernova.reached && (tmp.start || su.times.gte(1)) && !su.post_10) {
         if (su.times.lte(0)) tmp.supernova.time += dt
