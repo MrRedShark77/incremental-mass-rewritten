@@ -97,7 +97,10 @@
 	src: url('fonts/SourceSerifPro-Regular.ttf');
 	size-adjust: 110%;
 }
-
+wind {
+	font-family: Wingdings;
+	transform: scale(-1, -1) !important;
+}
 * {
 	font-family: var(--font);
     table-align: center;
@@ -129,7 +132,51 @@ p {
 	color: #0a546a
 }
 .grade_color8 {
+	color: #28fc0d
+}
+.grade_color9 {
+	color: #fbff00
+}
+.grade_color10 {
 	color: #0ee3d8
+}
+.grade_tier_color1 {
+	color: #ff0055
+}
+.grade_tier_color2 {
+	color: #ff00aa
+}
+.grade_tier_color3 {
+	color: #ae00ff
+}
+.grade_tier_color4 {
+	color: #0400ff
+}
+.grade_tier_color5 {
+	color: #0077ff
+}
+.grade_tier_color6 {
+	color: #00fff2
+}
+.grade_tier_color7 {
+	color: #00ff62
+}
+.grade_tier_color8 {
+	color: #83fc65
+}
+.grade_tier_color9 {
+	color: #e0fc65
+}
+.grade_tier_color10 {
+	color: #f9fc65
+}
+.grade_tier_color11 {
+	color: white;
+	animation: grade_tier_color 6s cubic-bezier(0.37, 0, 0.63, 1) infinite
+}
+.grade_tier_color11::after {
+	color: white;
+	animation: grade_tier_color 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
 body {
     color: white;
@@ -303,6 +350,7 @@ button {
 	animation: corrupted_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
 .ascend_text {
+	content: " Ascensions";
 	color: white;
 	animation: ascend_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
@@ -394,7 +442,17 @@ button {
 		color: limegreen;
 	}
 }
-
+@keyframes grade_tier_color {
+	0%, 100% {
+		color: red;
+	}
+	33.3% {
+		color: blue;
+	}
+	66.7% {
+		color: limegreen;
+	}
+}
 .sml {
 	margin-bottom: 3px;
 }

@@ -380,7 +380,7 @@ var core_weight = {}
 function resetCoreTemp() {
     for (let i in CORE) {
         core_tmp[i] = {
-            total_s: [0,0,0,0,0,0],
+            total_s: [0,0,0,0,0,0,0,0],
             total_p: 1,
         }
 

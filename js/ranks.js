@@ -321,7 +321,7 @@ const PRESTIGES = {
         let x = EINF, fp = this.fp(i), y = player.prestiges[i]
         let ifp = E(1)
         if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',4))
-        if (!CHALS.inChal(19)) {
+        if (!CHALS.inChal(19) && !(CHALS.inChal(20))) {
         switch (i) {
             case 0:
                 x = Decimal.pow(1.1,y.scaleEvery('prestige',false,[0,0,0,fp]).pow(1.1)).mul(2e13)
@@ -349,7 +349,7 @@ const PRESTIGES = {
     bulk(i) {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
         let ifp = E(1)
-       if (!CHALS.inChal(19)) {
+       if (!CHALS.inChal(19) && !(CHALS.inChal(20))) {
         switch (i) {
             case 0:
                 if (y.gte(2e13)) x = y.div(2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige',true,[0,0,0,fp]).add(1)
@@ -1158,8 +1158,8 @@ let tier = tmp.beyond_ranks.max_tier
 
                 tmp.el["pres_scale_"+x].setTxt(getScalingName(PRESTIGES.names[x]))
                 tmp.el["pres_amt_"+x].setTxt(format(p,0))
-                tmp.el["pres_"+x].setClasses({btn: true, reset: true, locked: CHALS.inChal(19) || x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
-                tmp.el["pres_desc_"+x].setTxt(desc)
+                tmp.el["pres_"+x].setClasses({presButton: true,reset: true, locked: CHALS.inChal(19)|| x==0?tmp.prestiges.base.lt(tmp.prestiges.req[x]):player.prestiges[x-1].lt(tmp.prestiges.req[x])})
+                tmp.el["pres_desc_"+x].setHTML(desc)
                 tmp.el["pres_req_"+x].setTxt(x==0?format(tmp.prestiges.req[x],0)+" of Prestige Base":PRESTIGES.fullNames[x-1]+" "+format(tmp.prestiges.req[x],0))
                 tmp.el["pres_auto_"+x].setDisplay(PRESTIGES.autoUnl[x]())
                 tmp.el["pres_auto_"+x].setTxt(player.auto_pres[x]?"ON":"OFF")

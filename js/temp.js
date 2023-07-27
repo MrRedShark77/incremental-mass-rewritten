@@ -285,7 +285,7 @@ function resetTemp() {
     }
     for (let x = 0; x < MATTERS_LEN; x++) tmp.matters.upg[x] = {} 
     for (let i in CORE) {
-        tmp.core_score[i] = [0,0,0,0]
+        tmp.core_score[i] = [0,0,0,0,0,0,0,0]
         tmp.core_eff[i] = []
     }
     tmp.el = keep[0]

@@ -29,7 +29,7 @@ function updateChalHTML() {
         tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
         if (player.chal.choosed != 0) {
             let chal = CHALS[player.chal.choosed]
-            tmp.el.chal_ch_title.setTxt(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${format(player.chal.comps[player.chal.choosed],0)+(tmp.chal.max[player.chal.choosed].gte(EINF)?"":"/"+format(tmp.chal.max[player.chal.choosed],0))} Completions]`)
+            tmp.el.chal_ch_title.setHTML(`[${player.chal.choosed}]${CHALS.getScaleName(player.chal.choosed)} ${chal.title} [${format(player.chal.comps[player.chal.choosed],0)+(tmp.chal.max[player.chal.choosed].gte(EINF)?"":"/"+format(tmp.chal.max[player.chal.choosed],0))} Completions]`)
             tmp.el.chal_ch_desc.setHTML(chal.desc)
             tmp.el.chal_ch_reset.setTxt(CHALS.getReset(player.chal.choosed))
             tmp.el.chal_ch_goal.setTxt("Goal: "+CHALS.getFormat(player.chal.choosed)(tmp.chal.goal[player.chal.choosed])+CHALS.getResName(player.chal.choosed))
@@ -91,6 +91,9 @@ const CHALS = {
         else if (x < 13) SUPERNOVA.reset(true, true)
         else if (x < 16) DARK.doReset(true)
         else if (x > 16) INF.doReset(true)
+        else if (x >= 19)  {
+            GALAXY.doReset()
+        }
         else MATTERS.final_star_shard.reset(true)
     },
     exit(auto=false) {
@@ -145,8 +148,8 @@ const CHALS = {
         else if (x < 13) return "Entering challenge will supernova reset."
         else if (x < 16) return "Entering challenge will force a Darkness reset."
         else if (x < 19) return "Entering challenge will force a Infinity reset."
-        else if (x < 20) return "Entering challenge will force a Galaxy reset."
-        return "Entering challenge will force an FSS reset."
+        else if (x <= 20) return "Entering challenge will force a Galaxy reset."
+        else return "Entering challenge will force an FSS reset."
     },
     getMax(i) {
         if (i <= 12 && hasPrestige(2,25)) return EINF 
@@ -637,7 +640,6 @@ ret = overflow(ret,1e68,0.5)
     • You can't gain Rage Points, Dark Matters.<br>
     • Parallel Extruder and Every Modificators are useless.<br>
     • Pre-Infinity Global Speed is set to 1.00x.<br>
-    • You can't buy Prestige Level and Rank.<br>
     `,
     reward: `Grading cost formula is weaker.<br><span class='orange'>At 100 completions, unlock C20</span>`,
     max: E(100),
@@ -650,7 +652,33 @@ ret = overflow(ret,1e68,0.5)
     },
     effDesc(x) { return formatMult(x)},
 },
-cols: 19,
+20: {
+    unl() { return true },
+    title: "The <wind>Reality</wind> III",
+    desc: `
+    • You can't buy elements.<br>
+    • You are trapped in Exotic-Quark and Exotic-Lepton.<br>
+    • Your dark rays are capped at 1e12.<br>
+    • Parallel Extruder and Every Modificators are useless.<br>
+    • You can't buy Prestige Level and Rank.<br>
+    • You are trapped in Quantum challenge with [95,75,95,95,75,95,95,75] modificators.<br>
+    • Ascension 6 reward is weaker.<br>
+    • Quarks gain is massively reduced.<br>
+    • Pre-Infinity Global Speed is much more weaker, but it applies to Pre-Quantum Global Speed exponentially<br>
+    • You are trapped in Mass Dilation.
+    `,
+    reward: `Boosts Galaxy Particles gain.<br><span class='orange'>At 10 completions, unlock Multiverse Fragments</span>`,
+    max: E(10),
+    inc: E('e7.5e347'),
+    pow: E(200),
+    start: E('e7.5e347'),
+    effect(x) {
+        let ret = x.mul(25).pow(5).add(1)
+        return ret
+    },
+    effDesc(x) { return formatMult(x)},
+},
+cols: 20,
 }
 
 /*

@@ -1,5 +1,6 @@
 const FULL_GRADE_NAME = [
-    ['','Bronze','Silver','Gold','Platinum','Titanium','Palladuim','Mythril','Diamond']
+    ['','Bronze','Silver','Gold','Platinum','Titanium','Palladuim','Mythril','Emerald','Topaz'],
+    ['','Tier I','Tier II','Tier III','Tier IV','Tier V','Tier VI','Tier VII','Tier VIII','Tier IX','Tier X','Beyond-Reality Tier'],
 ]
 const GRADE = {
     unl() { return hasTree('glx5') },
@@ -173,7 +174,8 @@ function updateGradeHTML() {
     for (let i = 0; i < player.galaxy.grade.type.length; i++) {
         let pp = player.galaxy.grade.type[i]
         let h = Math.floor(pp / 10) % 10
-tmp.el['grade_scale'+i].setHTML(`<span class='grade_color${h}'>${FULL_GRADE_NAME[0][h]}</span`)
+        let x = Math.floor(pp / 100) % 100
+tmp.el['grade_scale'+i].setHTML(`<span class='grade_color${h}'>${FULL_GRADE_NAME[0][h]}</span>`+`<span class='grade_tier_color${x}'>${FULL_GRADE_NAME[1][x]}</span>`)
         tmp.el["grade_part"+i].setTxt(format(tmp.grade.parts[i],0)+(tmp.grade.bonus[i].gt(0)?" + "+tmp.grade.bonus[i].format(0):""))
         tmp.el["grade_part_pow"+i].setHTML(GRADE.particle.effPow[i](tmp.grade.power[i]))
         tmp.el["grade_part_eff"+i].setHTML(GRADE.particle.effDesc[i](tmp.grade.eff[i]))

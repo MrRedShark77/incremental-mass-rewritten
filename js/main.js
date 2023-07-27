@@ -29,6 +29,7 @@ const FORMS = {
     },
     getPreQUGlobalSpeed() {
         let x = E(1), inf = tmp.preInfGlobalSpeed
+
         if (tmp.c16active && (hasElement(236))) return inf.mul(10000)
         if (tmp.c16active && (!hasElement(236))) return inf.div(100)
         if (CHALS.inChal(17)|| CHALS.inChal(18)) return inf.div(1e9)
@@ -38,12 +39,11 @@ const FORMS = {
 
         if (player.mainUpg.br.includes(3)) x = x.pow(tmp.upgs.main[4][3].effect)
         if (hasPrestige(0,5)) x = x.pow(2)
-
+        if (CHALS.inChal(20)) x = x.pow(inf)
         if (tmp.inf_unl) x = x.pow(theoremEff('time',1))
 
         if (QCs.active()) x = x.div(tmp.qu.qc_eff[1])
-
-        return x.mul(inf)
+        return x.mul(CHALS.inChal(20)?inf:1)
     },
     massGain() {
         let x = E(1)
@@ -111,12 +111,12 @@ else x = x.pow(tmp.bosons.effect.pos_w[0])
         if (tmp.c16active || player.dark.run.active) x = expMult(x,mgEff(0))
 
         let o = x
-        let os = tmp.c16active || CHALS.inChal(17)|| CHALS.inChal(18)|| CHALS.inChal(18)? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
+        let os = tmp.c16active || CHALS.inChal(17)|| CHALS.inChal(18)? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
         let op = E(.5)
-        let os2 = tmp.c16active || CHALS.inChal(17)|| CHALS.inChal(18)|| CHALS.inChal(18)? E('ee11') : E('ee279')
+        let os2 = tmp.c16active || CHALS.inChal(17)|| CHALS.inChal(18)? E('ee11') : E('ee279')
         let op2 = E(.25)
 let t = x
-        let os3 = tmp.c16active|| CHALS.inChal(17)|| CHALS.inChal(18)|| CHALS.inChal(18) ? E('ee25') : E('ee800')
+        let os3 = tmp.c16active|| CHALS.inChal(17)|| CHALS.inChal(18) ? E('ee25') : E('ee800')
         let op3 = E(.25)
 let os4 = E('ee1500')
 let op4 = E(0.7)
@@ -128,21 +128,21 @@ let op4 = E(0.7)
         if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
 
         if (hasElement(15,1)) os2 = os2.pow(muElemEff(15))
-        if (hasElement(247) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18)|| CHALS.inChal(18))) {
+        if (hasElement(247) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18))) {
             let p = elemEffect(247)
             os = os.pow(p)
             os2 = os2.pow(p)
         }
-        if (hasElement(254) && !(CHALS.inChal(16) || CHALS.inChal(17)|| CHALS.inChal(18)|| CHALS.inChal(18))) {
+        if (hasElement(254) && !(CHALS.inChal(16) || CHALS.inChal(17)|| CHALS.inChal(18))) {
             let p = elemEffect(254)
             os3 = os3.pow(p)
         }
-        if (hasElement(258) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18)|| CHALS.inChal(18))) {
+        if (hasElement(258) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18))) {
             let p = elemEffect(258)
             os3 = os3.pow(p)
         }
             let p = elemEffect(258)
-        if (!(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18)|| CHALS.inChal(18))) {
+        if (!(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(18))) {
             let p = exoticAEff(1,7)
             os3 = os3.pow(p)
             os2 = os2.pow(p)
@@ -152,7 +152,7 @@ if (hasElement(274)) {
 op = op.mul(1.05)
 op2 = op2.mul(1.05)
 op3 = op3.mul(1.05)}
-if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|| CHALS.inChal(18))){ 
+if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19) || CHALS.inChal(20)|| CHALS.inChal(18))){ 
     os3 = os3.pow('1e300')
     os4 = os4.pow('1e1000')}
     if (hasElement(301)) {os3 = E('eeee10000')
@@ -175,8 +175,8 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
     massSoftGain() {
         if (player.ranks.hex.gte(6)) return EINF
         let s = E(1.5e156)
-        if (CHALS.inChal(3) || CHALS.inChal(18)|| CHALS.inChal(19)|| CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e150)
-        if (CHALS.inChal(4)|| CHALS.inChal(18) || CHALS.inChal(19)|| CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e100)
+        if (CHALS.inChal(3) || CHALS.inChal(18)|| CHALS.inChal(19) || CHALS.inChal(20)|| CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e150)
+        if (CHALS.inChal(4)|| CHALS.inChal(18) || CHALS.inChal(19) || CHALS.inChal(20)|| CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e100)
         if (player.mainUpg.bh.includes(7)) s = s.mul(tmp.upgs.main?tmp.upgs.main[2][7].effect:E(1))
         if (player.mainUpg.rp.includes(13)) s = s.mul(tmp.upgs.main?tmp.upgs.main[1][13].effect:E(1))
         if (hasPrestige(0,1)) s = s.pow(10)
@@ -185,7 +185,7 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
     massSoftPower() {
         let p = E(1/3)
         if (CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) p = p.mul(4)
-        if (CHALS.inChal(7)|| CHALS.inChal(18) || CHALS.inChal(19)|| CHALS.inChal(10)) p = p.mul(6)
+        if (CHALS.inChal(7)|| CHALS.inChal(18) || CHALS.inChal(19) || CHALS.inChal(20)|| CHALS.inChal(10)) p = p.mul(6)
         if (player.mainUpg.bh.includes(11)) p = p.mul(0.9)
         if (player.ranks.rank.gte(800)) p = p.mul(RANKS.effect.rank[800]())
         return E(1).div(p.add(1))
@@ -280,7 +280,7 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
     },
     tickspeed: {
         cost(x=player.tickspeed) { return E(2).pow(x).floor() },
-        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && (!CHALS.inChal(18) || hasOrbUpg(1)) && !CHALS.inChal(10) && !CHALS.inChal(19) },
+        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && (!CHALS.inChal(18) || hasOrbUpg(1)) && !CHALS.inChal(10) && !CHALS.inChal(19)&& !CHALS.inChal(20)},
         buy() {
             if (this.can()) {
                 if (!player.mainUpg.atom.includes(2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost).max(0)
@@ -392,11 +392,11 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
 
             if (player.mainUpg.bh.includes(8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
-            if (CHALS.inChal(4) || CHALS.inChal(19)||CHALS.inChal(18)|| CHALS.inChal(10) || FERMIONS.onActive("03")) gain = gain.root(10)
+            if (CHALS.inChal(4) || CHALS.inChal(19) ||CHALS.inChal(18)|| CHALS.inChal(10) || FERMIONS.onActive("03")) gain = gain.root(10)
             gain = gain.pow(tmp.prim.eff[1][0])
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
-            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+            if (tmp.c16active || player.md.active || CHALS.inChal(10) || CHALS.inChal(20)|| FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
             if (hasElement(165)) gain = gain.pow(tmp.supernova.tree_eff.rp1)
             if (hasUpgrade('rp',18)) gain = gain.pow(upgEffect(1,18))
@@ -422,22 +422,22 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
             if (tmp.c16active) return player.dark.matters.amt[0]
             if (CHALS.inChal(18)|| CHALS.inChal(19)) return E(0)
             let gain = player.rp.points.div(1e20)
-            if (CHALS.inChal(7) || CHALS.inChal(18)|| CHALS.inChal(19)|| CHALS.inChal(10)) gain = player.mass.div(1e180)
+            if (CHALS.inChal(7) || CHALS.inChal(18)|| CHALS.inChal(19)|| CHALS.inChal(20) || CHALS.inChal(10)) gain = player.mass.div(1e180)
             if (gain.lt(1)) return E(0)
             gain = gain.root(4)
 
             if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(tmp.supernova.tree_eff.bh1)
             if (!hasElement(204)) gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
 
-            if (CHALS.inChal(7) || CHALS.inChal(18)|| CHALS.inChal(19)|| CHALS.inChal(10)) gain = gain.root(6)
+            if (CHALS.inChal(7) || CHALS.inChal(18)|| CHALS.inChal(19) || CHALS.inChal(10)) gain = gain.root(6)
             if (!hasElement(105)) gain = gain.mul(tmp.atom.particles[2].powerEffect.eff1)
             else gain = gain.pow(tmp.atom.particles[2].powerEffect.eff1)
-            if (CHALS.inChal(8)|| CHALS.inChal(18)|| CHALS.inChal(19) || CHALS.inChal(10) || FERMIONS.onActive("12")) gain = gain.root(8)
+            if (CHALS.inChal(8)|| CHALS.inChal(18)|| CHALS.inChal(19)  || CHALS.inChal(10) || FERMIONS.onActive("12")) gain = gain.root(8)
             gain = gain.pow(tmp.chal.eff[8])
             gain = gain.pow(tmp.prim.eff[2][0])
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
-            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+            if (tmp.c16active || player.md.active || CHALS.inChal(10)|| CHALS.inChal(20) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
             if (hasElement(204)) gain = gain.pow(tmp.bosons.upgs.photon[0].effect)
             if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
@@ -465,7 +465,7 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
             x = x.pow(tmp.chal.eff[8])
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || CHALS.inChal(20) ||FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
 
             x = x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),1/3,0)
 
@@ -488,12 +488,12 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || player.dark.run.active ? 5 : 100)
 
             let o = x
-            let os = tmp.c16active || CHALS.inChal(18)|| CHALS.inChal(19)? E('ee3') : E('ee69').pow(exoticAEff(1,1))
+            let os = tmp.c16active || CHALS.inChal(18)|| CHALS.inChal(19) || CHALS.inChal(20)? E('ee3') : E('ee69').pow(exoticAEff(1,1))
             let op = E(0.5)
 
-            let os2 = tmp.c16active|| CHALS.inChal(18) || CHALS.inChal(19)? E('ee6') : E('ee249')
+            let os2 = tmp.c16active|| CHALS.inChal(18) || CHALS.inChal(19) || CHALS.inChal(20)? E('ee6') : E('ee249')
             let op2 = E(0.25)
-            let os3 = tmp.c16active || CHALS.inChal(18)|| CHALS.inChal(19) ? E('ee15') : E('ee1200')
+            let os3 = tmp.c16active || CHALS.inChal(18)|| CHALS.inChal(19) || CHALS.inChal(20) ? E('ee15') : E('ee1200')
             let op3 = E(0.15)
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
@@ -519,7 +519,7 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
             tmp.overflow_start.bh = [os,os2,os3]
             tmp.overflow_power.bh = [op,op2,op3]
 
-            if (CHALS.inChal(13)|| CHALS.inChal(18)|| CHALS.inChal(19)) x = x.max(1).log10().tetrate(1.5)
+            if (CHALS.inChal(13)|| CHALS.inChal(18)|| CHALS.inChal(19) || CHALS.inChal(20) || CHALS.inChal(20)) x = x.max(1).log10().tetrate(1.5)
             return x
         },
         f() {
@@ -575,7 +575,7 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19)|
         condenser: {
             autoSwitch() { player.bh.autoCondenser = !player.bh.autoCondenser },
             autoUnl() { return player.mainUpg.atom.includes(2) },
-            can() { return player.bh.dm.gte(tmp.bh.condenser_cost) && !CHALS.inChal(6) && !CHALS.inChal(18)&& !CHALS.inChal(19) && !CHALS.inChal(10) },
+            can() { return player.bh.dm.gte(tmp.bh.condenser_cost) && !CHALS.inChal(6) && !CHALS.inChal(18)&& !CHALS.inChal(19)&& !CHALS.inChal(20) && !CHALS.inChal(10) },
             buy() {
                 if (this.can()) {
                     player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost).max(0)

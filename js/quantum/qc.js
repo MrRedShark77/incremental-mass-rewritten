@@ -1,6 +1,6 @@
 const QCs = {
-    active() { return player.qu.qc.active || player.qu.rip.active || CHALS.inChal(14) || CHALS.inChal(18)|| CHALS.inChal(15) || tmp.c16active || player.dark.run.active },
-    getMod(x) { return CHALS.inChal(15) || CHALS.inChal(18)? [10,5,10,10,10,10,10,10][x] : tmp.c16active || player.dark.run.active ? 8 : CHALS.inChal(14) ? 5 : player.qu.rip.active ? BIG_RIP_QC[x] : player.qu.qc.mods[x] },
+    active() { return player.qu.qc.active || player.qu.rip.active || CHALS.inChal(14) || CHALS.inChal(18)|| CHALS.inChal(15) || CHALS.inChal(20) || tmp.c16active || player.dark.run.active },
+    getMod(x) { return CHALS.inChal(20)?[95,75,95,95,50,95,95,75][x]:CHALS.inChal(15) || CHALS.inChal(18)? [10,5,10,10,10,10,10,10][x] : tmp.c16active || player.dark.run.active ? 8 : CHALS.inChal(14) ? 5 : player.qu.rip.active ? BIG_RIP_QC[x] : player.qu.qc.mods[x] },
     incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),tmp.qu.qc_max)},
     enter() {
         if (!player.qu.qc.active) {
@@ -51,16 +51,15 @@ const QCs = {
             effDesc(x) { return `<b>^${format(x)}</b> to multiplier from Bosonic & Radiation resources.` },
         },{
             eff(i) {
-                if(i>=51)return 0.8**(i**3.25/800)
-				if(i>=11)return 0.8**(i**3.25/100)
+                if(i>=51)return 0.8**(i**2.5/100)
+				if(i>=11)return 0.8**(i**2/100)
                 let x = E(0.8**(i**1.25))
                 return x.max(0)
             },
             effDesc(x) { return `<b>^${format(x)}</b> to multiplier from pre-Supernova resources, except all star resources.` },
         },{
             eff(i) {
-                
-                if(i>=11)return Math.min(1.2**(i**4/10),1e300)
+                if(i>=11)return Math.min(1.2**(i**1.5/10),1e300)
                 let x = 1.2**i
                 return x
             },
@@ -76,8 +75,8 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
-                if(i>=17)return [0.49,i**8/10000+1]
-				if(i>=11)return [0.49,i**4/10000+1]
+                if(i>=17)return [0.49,i**3/5000+1]
+				if(i>=11)return [0.49,i**2/1000+1]
                 let x = [1-0.05*i,i/10+1]
                 return x
             },
