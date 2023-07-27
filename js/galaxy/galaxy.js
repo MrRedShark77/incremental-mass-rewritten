@@ -48,22 +48,15 @@ const GALAXY = {
         player.galaxy.stars = E(0)
         }
     },
-    doReset() {
+    doReset(force=false) {
 player.galaxy.times = player.galaxy.times.max(tmp.supernova.bulkGal)
-if (player.chal.choosed == 20) {
-     for (let x = 1; x <= 18; x++) player.chal.comps[x] = E(0)
-     let e = [275,283,229,249,260,281,284]
-     if (hasElement(322)) e.push(322)
-     if (hasElement(300)) e.push(300)
- player.atom.elements = e
-}
-else if (player.chal.choosed >= 19) {
+ if (force) {
     let e = [275,283,229,249,260,281,284]
     if (hasElement(322)) e.push(322)
     if (hasElement(300)) e.push(300)
 player.atom.elements = e
 }
-if (!hasTree('glx18')) {
+else if (!hasTree('glx18')) {
     let e = [275,283,229,249,260,281,284]
     if (hasElement(300)) e.push(300)
 player.atom.elements = e

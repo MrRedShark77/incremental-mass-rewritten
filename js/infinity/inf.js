@@ -17,11 +17,11 @@ const INF = {
         if (hasInfUpgrade(3)) e.push(161)
         if (iu15) e.push(218)
 
-        if (player.chal.active != 19){ for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
-        }
-        player.atom.elements = e
-        let me = []
-        if (hasElement(40,1)) for (let i = 0; i < player.atom.muonic_el.length; i++) me.push(i)
+           for (let i = 0; i < player.atom.elements.length; i++) if (player.atom.elements[i] > 218) e.push(player.atom.elements[i])
+
+     player.atom.elements = e
+let me = []
+        if (hasElement(40,1)) for (let i = 0; i < player.atom.muonic_el.length; i++) me.push(player.atom.muonic_el[i])
         if (hasElement(30,1)) me.push(30)
        else player.atom.muonic_el = me
        if (!hasTree('glx14')) for (let x = 1; x <= 16; x++) player.chal.comps[x] = E(0)

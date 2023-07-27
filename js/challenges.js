@@ -91,7 +91,7 @@ const CHALS = {
         else if (x < 13) SUPERNOVA.reset(true, true)
         else if (x < 16) DARK.doReset(true)
         else if (x > 16) INF.doReset(true)
-        else if (x >= 19)  {
+        else if (x > 18)  {
             GALAXY.doReset()
         }
         else MATTERS.final_star_shard.reset(true)
@@ -113,8 +113,8 @@ const CHALS = {
     },
     enter(ch=player.chal.choosed) {
         if (player.chal.active == 0) {
-            if (ch >= 19 && ch <= 20) {
-                GALAXY.doReset()
+            if (ch > 18 && ch <= 20) {
+                GALAXY.doReset(force=true)
         }
             if (ch >= 17 && ch <= 18) {
                 INF.doReset()
