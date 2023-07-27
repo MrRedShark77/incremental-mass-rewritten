@@ -586,6 +586,8 @@ button {
 
 .btn_tree:not(.locked):not(.bought):hover,
 .elements:not(.locked):not(.bought):not(.final):hover,
+.elements:hover {
+transform: scale(1.25)}
 .btn:not(.locked):not(.md):hover,
 .img_btn:not(.locked):not(.bought):hover {
 	background-color: #555
@@ -624,17 +626,29 @@ button {
 .elements.dark.bought {
 	color: #666;
 	border-color: #666;
-	background-color: #222;
+	background-color: none;
+	background: radial-gradient(circle, #222 0%,#222 50%, rgb(44, 44, 44) 100%);
 	box-shadow: 0 0 10px #666;
 }
 
 .elements.inf.bought {
 	color: black;
 	border-color: orange;
-	background-color: none;
-	background: radial-gradient(circle, yellow 0%, orange 50%, yellow 100%);
-	box-shadow: 0 0 10px yellow;
+	background: linear-gradient(135deg,yellow 0%, orange 75%, orange 100%);
+	box-shadow: 0 0 10px rgba(255, 255, 0, 0.699);
+    animation: gradient 3s infinite linear;
 }
+@keyframes gradient {
+	0% {
+	  background-position: 0% 75%;
+	}
+	75% {
+	  background-position: 100% 75%;
+	}
+	100% {
+	  background-position: 0% 75%;
+	}
+  }
 
 .elements.muon.bought {
 	color: #fc0;
@@ -765,7 +779,44 @@ button {
 	padding: 7px 25px;
 	text-decoration: none;
 }
-
+.presButton {
+	cursor: pointer;
+	background-color: #ffee00;
+	border-color: rgb(253, 187, 3);
+	color:#000;
+	font-size: 12px;
+	max-width: 250px;
+	padding: 7px 25px;
+	text-decoration: none;
+}
+.presButton.locked {
+	cursor: default;
+	color:#ffffff;
+	background-color: #29260183;
+	font-size: 12px;
+	max-width: 250px;
+	padding: 7px 25px;
+	text-decoration: none;
+}
+.ascButton {
+	cursor: pointer;
+	background-color: #00ffff;
+	border-color: rgb(3, 215, 253);
+	color:#000;
+	font-size: 12px;
+	max-width: 250px;
+	padding: 7px 25px;
+	text-decoration: none;
+}
+.ascButton.locked {
+	cursor: default;
+	color:#ffffff;
+	background-color: #01292981;
+	font-size: 12px;
+	max-width: 250px;
+	padding: 7px 25px;
+	text-decoration: none;
+}
 .btn.full {
 	width: 250px;
 	height: 120px;

@@ -177,6 +177,6 @@ if (unl) {
     `
 
     tmp.el.bp_desc.setHTML(h)
-    tmp.el.bp_desc.setClasses({btn: true, reset: true, locked: player.prestiges[4].lt(tmp.beyond_pres.req)})
+    tmp.el.bp_desc.setClasses({presButton: true, reset: true, locked: player.prestiges[4].lt(tmp.beyond_pres.req)})
 }
 }
