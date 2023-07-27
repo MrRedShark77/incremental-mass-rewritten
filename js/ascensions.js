@@ -131,10 +131,10 @@ function setupAscensionsHTML() {
 	for (let x = 0; x < ASCENSIONS.names.length; x++) {
 		table += `<div style="width: 300px" id="asc_div_${x}">
 			<button id="asc_auto_${x}" class="btn" style="width: 80px;" onclick="ASCENSIONS.autoSwitch(${x})">OFF</button>
-			<span id="asc_scale_${x}""></span>${ASCENSIONS.fullNames[x]} <span id="asc_amt_${x}">X</span><br><br>
+			<span id="asc_scale_${x}""></span>${ASCENSIONS.fullNames[x]} <h3 id="asc_amt_${x}">X</h3><br><br>
 			<button onclick="ASCENSIONS.reset(${x})" class="btn reset" id="asc_${x}">
-				${ASCENSIONS.resetName[x]} (force an Infinity reset), but ${ASCENSIONS.fullNames[x]} up.<span id="asc_desc_${x}"></span><br>
-				Req: <span id="asc_req_${x}">X</span>
+				${ASCENSIONS.resetName[x]} (force an Infinity reset), but ${ASCENSIONS.fullNames[x]} up.<br>
+(<b>Requires</b> <span id="asc_req_${x}">X</span>)<hr><span id="asc_desc_${x}"></span><br>
 			</button>
 		</div>`
 	}
