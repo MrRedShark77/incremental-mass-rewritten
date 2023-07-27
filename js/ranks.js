@@ -1062,10 +1062,10 @@ function updateRanksHTML() {
             tmp.el["ranks_div_"+x].setDisplay(unl)
             if (unl) {
                 let keys = Object.keys(RANKS.desc[rn])
-                let desc = ""
+                let desc = "No rewards available..."
                 for (let i = 0; i < keys.length; i++) {
                     if (player.ranks[rn].lt(keys[i])) {
-                        desc = ` At ${RANKS.fullNames[x]} ${format(keys[i],0)}, ${RANKS.desc[rn][keys[i]]}`
+                        desc = `Next Reward: <br> ${RANKS.fullNames[x]} ${format(keys[i],0)} - <b>${RANKS.desc[rn][keys[i]]}</b>`
                         break
                     }
                 }
@@ -1073,7 +1073,7 @@ function updateRanksHTML() {
                 tmp.el["ranks_scale_"+x].setTxt(getScalingName(rn))
                 tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0))
                 tmp.el["ranks_"+x].setClasses({btn: true, reset: true, locked: !tmp.ranks[rn].can})
-                tmp.el["ranks_desc_"+x].setTxt(desc)
+                tmp.el["ranks_desc_"+x].setHTML(desc)
                 tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0))
                 tmp.el["ranks_auto_"+x].setDisplay(RANKS.autoUnl[rn]())
                 tmp.el["ranks_auto_"+x].setTxt(player.auto_ranks[rn]?"ON":"OFF")
@@ -1148,10 +1148,10 @@ let tier = tmp.beyond_ranks.max_tier
             if (unl) {
                 let p = player.prestiges[x] || E(0)
                 let keys = Object.keys(PRESTIGES.rewards[x])
-                let desc = ""
+                let desc = "No rewards available..."
                 for (let i = 0; i < keys.length; i++) {
                     if (p.lt(keys[i]) && (tmp.chal13comp || p.lte(PRES_BEFOREC13[x]||Infinity))) {
-                        desc = ` At ${PRESTIGES.fullNames[x]} ${format(keys[i],0)}, ${PRESTIGES.rewards[x][keys[i]]}`
+                        desc = `Next Reward: <br> ${PRESTIGES.fullNames[x]} ${format(keys[i],0)} - <b>${PRESTIGES.rewards[x][keys[i]]}</b>`
                         break
                     }
                 }

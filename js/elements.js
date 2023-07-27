@@ -27,10 +27,10 @@ function setupHTML() {
 		let rn = RANKS.names[x]
 		table += `<div style="width: 300px" id="ranks_div_${x}">
 			<button id="ranks_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('${rn}')">OFF</button>
-			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <span id="ranks_amt_${x}">X</span><br><br>
+			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <h3 id="ranks_amt_${x}">X</h3><br><br>
 			<button onclick="RANKS.reset('${rn}')" class="btn reset" id="ranks_${x}">
-				Reset your ${x>0?RANKS.fullNames[x-1]+"s":'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
-				Req: <span id="ranks_req_${x}">X</span>
+				Reset your ${x>0?RANKS.fullNames[x-1]+"s":'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<br>
+(<b>Requires </b> <span id="ranks_req_${x}">X</span>)<hr><span id="ranks_desc_${x}">No rewards available...</span><br>
 			</button>
 		</div>`
 	}
@@ -41,10 +41,11 @@ function setupHTML() {
 	for (let x = 0; x < PRES_LEN; x++) {
 		table += `<div style="width: 300px" id="pres_div_${x}">
 			<button id="pres_auto_${x}" class="btn" style="width: 80px;" onclick="PRESTIGES.autoSwitch(${x})">OFF</button>
-			<span id="pres_scale_${x}""></span>${PRESTIGES.fullNames[x]} <span id="pres_amt_${x}">X</span><br><br>
+			<span id="pres_scale_${x}""></span>${PRESTIGES.fullNames[x]} <h3 id="pres_amt_${x}">X</h3><br><br>
 			<button onclick="PRESTIGES.reset(${x})" class="btn reset" id="pres_${x}">
-				${x>0?"Reset your "+PRESTIGES.fullNames[x-1]+"s":'Force a Quantum reset'}, but ${PRESTIGES.fullNames[x]} up.<span id="pres_desc_${x}"></span><br>
-				Req: <span id="pres_req_${x}">X</span>
+				${x>0?"Reset your "+PRESTIGES.fullNames[x-1]+"s":'Force a Quantum reset'}, but ${PRESTIGES.fullNames[x]} up.
+(<b>Requires</b> <span id="pres_req_${x}">X</span>)<hr><span id="pres_desc_${x}">No rewards available...</span><br>
+				
 			</button>
 		</div>`
 	}
