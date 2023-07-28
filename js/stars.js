@@ -11,13 +11,15 @@ const STARS = {
 
         if (hasUpgrade('bh',17)) x = x.pow(upgEffect(2,17))
 
-        /*
+        let os = E('eee5'), op = E(0.5)
+        
         let o = x
 
-        x = overflow(x,'ee55',0.5)
+        x = overflow(x,os,op,2)
 
-        tmp.overflow.star = calcOverflow(o,x,'ee55')
-        */
+        tmp.overflow.star = calcOverflow(o,x,os,2)
+        tmp.overflow_start.star = [os]
+        tmp.overflow_power.star = [op]
 
         return x
     },
@@ -74,6 +76,8 @@ const STARS = {
         unl() {
             if (player.atom.quarks.gte(tmp.stars.generator_req)) {
                 player.stars.unls++
+
+                tmp.stars.generator_req = player.stars.unls<tmp.stars.max_unlocks?STARS.generators.req[player.stars.unls]:EINF
             }
         },
         gain(i) {
@@ -206,4 +210,7 @@ function updateStarsHTML() {
         if (tmp.el["star_gen_arrow_"+x]) tmp.el["star_gen_arrow_"+x].setDisplay(unl)
         if (unl) tmp.el["star_gen_"+x].setHTML(format(player.stars.generators[x],2)+"<br>"+formatGain(player.stars.generators[x],tmp.stars.generators_gain[x].mul(tmp.preQUGlobalSpeed)))
     }
+
+    tmp.el.starSiltation.setDisplay(player.stars.points.gte(tmp.overflow_start.star[0]))
+	tmp.el.starSiltation.setHTML(`Because of star siltation at <b>${format(tmp.overflow_start.star[0])}</b>, the exponent of collapsed stars is ${overflowFormat(tmp.overflow.star||1)}!`)
 }

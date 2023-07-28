@@ -330,7 +330,7 @@ const MUONIC_ELEM = {
             effDesc: x=>"/"+format(x),
         },{
             cs: true,
-            desc: `You can unlock sixth star type.`,
+            desc: `Unlock the sixth star generator.`,
             cost: E('e625'),
         },
 

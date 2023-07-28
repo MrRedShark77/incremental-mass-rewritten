@@ -229,7 +229,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = i.add(1).log10().add(1).log10().div(200).mul(t.softcap(8,0.5,0)).add(1)
-                    return x.softcap(15,hasPrestige(1,300)?0.55:0.5,0)
+                    return x.softcap(15,hasPrestige(1,300)?0.55:0.5,0).overflow(1e8,1/3,0)
                 },
                 desc(x) {
                     return `Dark ray's effect is ^${x.format()} stronger`.corrupt(tmp.c16active)
@@ -402,7 +402,7 @@ const FERMIONS = {
                 eff(i, t) {
                     let x = i.add(1).log10().add(1).log10().div(2000).mul(t.softcap(8,0.5,0))
                     if (hasBeyondRank(2,2)) x = x.mul(8)
-                    return x.softcap(20,hasPrestige(1,300)?0.55:0.5,0)
+                    return x.softcap(20,hasPrestige(1,300)?0.55:0.5,0).overflow(1e9,1/3,0)
                 },
                 desc(x) {
                     return `Increase prestige base's exponent by ${format(x)}`

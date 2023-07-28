@@ -871,7 +871,7 @@ const BUILDINGS = {
         let cost = b.cost(), allow = b.allowPurchase ?? true
 
         tmp.el["building_btn_"+i].setClasses({ btn: true, locked: b.res.lt(cost) || !allow })
-        tmp.el["building_cost_"+i].setHTML(allow ? "Cost: "+b.get_cost(cost) : "Locked" + b.denyPurchaseText??"")
+        tmp.el["building_cost_"+i].setHTML(allow ? "Cost: "+b.get_cost(cost) : "Locked" + (b.denyPurchaseText??""))
 
         tmp.el["building_auto_"+i].setDisplay(b.autoUnlocked)
         tmp.el["building_auto_"+i].setHTML(player.build[i].auto ? "ON" : "OFF")
