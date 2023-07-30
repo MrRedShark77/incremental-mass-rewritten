@@ -138,7 +138,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = Decimal.pow(0.95,s.add(1).ssqrt().root(2))
+                let x = s.gt(0) ? Decimal.pow(0.95,s.add(1).ssqrt().root(2)) : E(1)
 
                 return x
             },
