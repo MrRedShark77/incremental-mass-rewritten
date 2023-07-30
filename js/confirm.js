@@ -102,6 +102,7 @@ const CONFIRMS_FUNCTION = {
     dark() {
         player.dark.unl = true
         player.dark.rays = player.dark.rays.add(tmp.dark.gain)
+        if (CHALS.inChal(19)) player.dark.rays = player.dark.rays.min(1e12)
 
         DARK.doReset()
 

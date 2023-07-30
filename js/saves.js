@@ -20,6 +20,7 @@ Decimal.prototype.softcap = function (start, power, mode, dis=false) {
         if ([0, "pow"].includes(mode)) x = x.div(start).max(1).pow(power).mul(start)
         if ([1, "mul"].includes(mode)) x = x.sub(start).div(power).add(start)
         if ([2, "exp"].includes(mode)) x = expMult(x.div(start), power).mul(start)
+        if ([3, "log"].includes(mode)) x = x.div(start).log(power).add(1).mul(start)
     }
     return x
 }
@@ -236,7 +237,7 @@ function getPlayerData() {
         stars: {
             unls: 0,
             points: E(0),
-            generators: [E(0),E(0),E(0),E(0),E(0),E(0)],
+            generators: [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)],
         },
         supernova: {
             times: E(0),

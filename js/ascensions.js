@@ -3,10 +3,10 @@ const ASCENSIONS = {
     fullNames: ["Ascension",'Transcension'],
     resetName: ['Ascend','Transcend'],
     baseExponent() {
-        let x = E(0)
+        let x = theoremEff('mass',5,0)
 
+        if (hasElement(284)) x = x.add(elemEffect(284,0))
         if (hasElement(44,1)) x = x.add(muElemEff(44,0))
-
         if (hasBeyondRank(16,1)) x = x.add(beyondRankEffect(16,1,0))
 
         x = x.add(1)
@@ -14,14 +14,24 @@ const ASCENSIONS = {
         return x
     },
     base() {
-        let x = E(1)
+        let x = E(1), exp = tmp.ascensions.tierExp
 
         for (let i = 0; i < PRESTIGES.names.length; i++) {
-            let r = player.prestiges[i]
-            x = x.mul(r.add(1).ln().add(1))
+            let r = player.prestiges[i], q = r.add(1).ln()
+            if (q.gt(1)) q = q.pow(exp)
+            x = x.mul(q.add(1))
         }
 
         return x.sub(1)
+    },
+    tierExponent() {
+        let x = E(0)
+
+        if (hasAscension(1,9)) x = x.add(1/3)
+
+        x = x.add(1)
+
+        return x
     },
     req(i) {
         let x = EINF, fp = this.fp(i), y = player.ascensions[i]
@@ -30,7 +40,7 @@ const ASCENSIONS = {
                 x = Decimal.pow(1.1,y.div(fp).scaleEvery('ascension0',false).pow(1.1)).mul(1600)
                 break;
             case 1:
-                x = y.div(fp).pow(1.1).mul(2).add(6)
+                x = y.div(fp).scaleEvery('ascension1',false).pow(1.1).mul(2).add(6)
                 break;
             default:
                 x = EINF
@@ -45,7 +55,7 @@ const ASCENSIONS = {
                 if (y.gte(1600)) x = y.div(1600).max(1).log(1.1).max(0).root(1.1).scaleEvery('ascension0',true).mul(fp).add(1)
                 break;
             case 1:
-                if (y.gte(6)) x = y.sub(6).div(2).root(1.1).mul(fp).add(1)
+                if (y.gte(6)) x = y.sub(6).div(2).root(1.1).scaleEvery('ascension1',true).mul(fp).add(1)
                 break;
             default:
                 x = E(0)
@@ -81,12 +91,15 @@ const ASCENSIONS = {
             15: `Remove Exotic Rank & Tier, Super & Hyper Hex.`,
             22: `Challenge 5's reward is changed again.`,
             23: `The bonus of any radiation boost now multiplies its strengthness at an reduced rate.`,
+            33: `19th Big Rip upgrade is twice as effective again.`,
+            42: `15th Black Hole upgrade now works like as Atomic Power's effect. The bonus of BHC now multiplies its level instead of adding.`,
         },{
             1: `Prestige Base Exponent is doubled. Big Rip Upgrade 19 now affects Renown.`,
             2: `Super Infinity Theorem is 10% weaker.`,
             3: `Super and Hyper Overpower starts +50 later.`,
             4: `Meta-Prestige Level starts 2x later.`,
             7: `MCF tier requirements are reduced by 10%.`,
+            9: `Increase prestige tiers exponent for ascension base by +0.333.`,
         },
     ],
     rewardEff: [
@@ -154,6 +167,7 @@ function setupAscensionsHTML() {
 
 function updateAscensionsHTML() {
     tmp.el.asc_base.setHTML(`${tmp.ascensions.baseMul.format(0)}<sup>${format(tmp.ascensions.baseExp)}</sup> = ${tmp.ascensions.base.format(0)}`)
+    tmp.el.asc_texp.setHTML(tmp.ascensions.tierExp.format(2))
 
     for (let x = 0; x < ASCENSIONS.names.length; x++) {
         let unl = ASCENSIONS.unl[x]?ASCENSIONS.unl[x]():true
@@ -180,6 +194,7 @@ function updateAscensionsHTML() {
 }
 
 function updateAscensionsTemp() {
+    tmp.ascensions.tierExp = ASCENSIONS.tierExponent()
     tmp.ascensions.baseMul = ASCENSIONS.base()
     tmp.ascensions.baseExp = ASCENSIONS.baseExponent()
     tmp.ascensions.base = tmp.ascensions.baseMul.pow(tmp.ascensions.baseExp)

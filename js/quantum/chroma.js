@@ -7,7 +7,7 @@ const CHROMA = {
     gain(i) {
         if (!player.qu.chr_get.includes(i)) return E(0)
         let x = E(1)
-        if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2))
+        if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2).min('e3e9'))
         if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
         if (hasTree('qu8')) x = x.mul(tmp.supernova.tree_eff.qu8)
         if (hasPrestige(0,607)) x = x.mul(prestigeEff(0,607))
@@ -63,7 +63,7 @@ const CHROMA = {
         i => {
             let x = E(1.1).pow(i.add(1).log10().max(0).pow(0.75))
             if (hasUpgrade('br',10)) x = x.pow(1.1)
-            return x
+            return x.overflow('1e15000',0.25)
         },
     ],
     effDesc: [

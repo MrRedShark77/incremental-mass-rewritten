@@ -8,8 +8,10 @@ const DARK_RUN = {
 
         g = g.div(tmp.dark.glyph_weak)
 
-        if (CHALS.inChal(17)) g = E(250)
+        if (CHALS.inChal(20)) g = E(1.5e3)
+        else if (CHALS.inChal(17)) g = E(250)
         else if (CHALS.inChal(18)) g = E(500)
+        else if (CHALS.inChal(19)) g = E(1e3)
 
         if (i < 4) x = g.root(2).div(100).add(1).pow(-1) // 1/(g**0.5/100+1)
         else if (i == 4) x = [g.root(2).div(100).add(1).pow(-1),Decimal.pow(1.1,g.pow(0.75))] // [1/(g**0.5/100+1),1.1**(g**0.75)]
@@ -164,7 +166,7 @@ function glyphButton(i) {
 }
 
 function inDarkRun() {
-    return player.dark.run.active || CHALS.inChal(17) || CHALS.inChal(18)
+    return player.dark.run.active || CHALS.inChal(17) || CHALS.inChal(18) || CHALS.inChal(19) || CHALS.inChal(20)
 }
 
 function darkRun() {
@@ -210,7 +212,7 @@ function updateDarkRunHTML() {
     tmp.el.mg_max_gain.setTxt(format(player.dark.run.gamount,0))
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         tmp.el["mass_glyph"+x].setHTML(
-            format(c16 ? x == 5 ? 10 : 100 : player.dark.run.glyphs[x],0)
+            c16 ? "Corrupted" : format(player.dark.run.glyphs[x],0)
             + (dra ? " (+" + format(tmp.dark.mass_glyph_gain[x],0) + ")" : dtmp.mg_passive[x]>0 ? " ["+format(dtmp.mg_passive[x],0)+"]" : ""))
         tmp.el["mass_glyph_tooltip"+x].setTooltip("<h3>"+DARK_RUN.mass_glyph_name[x]+"</h3><br class='line'>"+DARK_RUN.mass_glyph_effDesc[x](tmp.dark.mass_glyph_eff[x]))
     }

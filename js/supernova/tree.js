@@ -1076,7 +1076,7 @@ const TREE_UPGS = {
 
             effect() {
                 let x = player.dark.c16.bestBH.add(1).log10().root(3)
-                return x
+                return x.overflow('1e300',0.25)
             },
             effDesc(x) { return "+"+format(x) },
         },
@@ -1121,7 +1121,7 @@ const TREE_UPGS = {
             reqDesc() { return `Reach ${formatMass('1e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().root(2)
+                let x = player.dark.c16.bestBH.add(1).log10().root(2).overflow('1e430',0.25)
                 return x
             },
             effDesc(x) { return "+"+format(x) },

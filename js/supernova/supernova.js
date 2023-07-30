@@ -21,7 +21,7 @@ const SUPERNOVA = {
         if (hasTree("qol2")) list_keep.push(6)
         let keep = []
         for (let x = 0; x < player.mainUpg.atom.length; x++) if (list_keep.includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
-        player.mainUpg.atom = keep
+        if (!hasInfUpgrade(18)) player.mainUpg.atom = keep
 
         list_keep = [21,36]
         if (player.mainUpg.br.includes(1)) list_keep.push(1)
@@ -40,7 +40,7 @@ const SUPERNOVA = {
         for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
 
         player.stars.unls = 0
-        player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0)]
+        player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
         player.stars.points = E(0)
         BUILDINGS.reset('star_booster')
 
@@ -81,14 +81,17 @@ const SUPERNOVA = {
         return {maxlimit: maxlimit, bulk: bulk}
     },
     passiveGain() {
-        let x = player.stars.points.add(1e10).log10().log10().pow(3).sub(1)
+        if (CHALS.inChal(19)) return E(0)
+        
+        let x = player.stars.points.add(1e10).log10().log10().pow(hasElement(279) ? 3.3 : 3).sub(1)
 
-        x = x.mul(tmp.cs_effect.sn_speed||1)
+        x = x.mul(tmp.cs_effect.sn_speed||1).mul(tmp.chal?.eff[19]||1)
 
         if (hasElement(46,1)) x = x.mul(muElemEff(46))
         if (hasElement(49,1)) x = x.mul(muElemEff(49))
         if (hasElement(274)) x = x.mul(elemEffect(274))
         if (hasUpgrade('br',22)) x = x.mul(tmp.prim.eff[7])
+        x = x.mul(theoremEff('time',5))
 
         return x
     },
@@ -156,6 +159,7 @@ function updateSupernovaTemp() {
     }
 
     let no_req1 = hasInfUpgrade(0)
+    let can_buy = !CHALS.inChal(19)
 
     for (let i = 0; i < TREE_TAB.length; i++) {
         tmp.supernova.tree_afford2[i] = []
@@ -169,7 +173,7 @@ function updateSupernovaTemp() {
             let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)
             if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
             if (no_req1 && !CS_TREE.includes(id)) req = true
-            let can = (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost) && !bought && req
+            let can = can_buy && (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost) && !bought && req
             if (branch != "") for (let x = 0; x < branch.length; x++) if (!(player.supernova.tree.includes(branch[x]) || player.dark.c16.tree.includes(branch[x]))) {
                 unl = false
                 can = false

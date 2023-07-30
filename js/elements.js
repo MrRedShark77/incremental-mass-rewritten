@@ -582,7 +582,7 @@ function updateHTML() {
 			else if (tmp.stab[1] == 4) updateAscensionsRewardHTML()
 		}
 		else if (tmp.tab == 2) {
-			updateMainUpgradesHTML()
+			if (tmp.stab[2] == 0) updateMainUpgradesHTML()
 		}
 		else if (tmp.tab == 3) {
 			updateChalHTML()

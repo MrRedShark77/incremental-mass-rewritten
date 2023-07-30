@@ -39,6 +39,7 @@ const CORRUPTED_STAR = {
 
         if (hasElement(38,1)) x.sn_speed = cs.add(1).log10().add(1).pow(1.5)
         if (hasElement(43,1)) x.ea_reward = cs.add(1).log10().root(2).div(20)
+        if (hasElement(64,1)) x.prim_reduce = Decimal.pow(0.9,cs.add(1).log10().overflow(10,0.5).root(2))
 
         return x
     },
@@ -63,6 +64,13 @@ function updateCSTemp() {
 
     if (hasElement(50,1)) {
         let x = muElemEff(50)
+
+        ss1 = ss1.mul(x)
+        ss2 = ss2.mul(x)
+    }
+
+    if (hasElement(65,1)) {
+        let x = muElemEff(65)
 
         ss1 = ss1.mul(x)
         ss2 = ss2.mul(x)
@@ -185,6 +193,7 @@ function updateCSHTML() {
 
     if (eff.sn_speed) h += `<br>Speed Supernova Generation by <b>${formatMult(eff.sn_speed)}</b>`
     if (eff.ea_reward) h += `<br>Increase reward strength of exotic atom by <b>+${formatPercent(eff.ea_reward)}</b>`
+    if (eff.prim_reduce) h += `<br>Reduce the primordium theorem requirement by <b>^${format(eff.prim_reduce)}</b>`
 
     tmp.el.cs_effect.setHTML(h)
 }

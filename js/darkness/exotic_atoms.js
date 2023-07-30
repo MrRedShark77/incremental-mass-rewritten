@@ -132,8 +132,9 @@ const MUONIC_ELEM = {
             cost: E(1e270),
             eff() {
                 if (!tmp.atom) return E(0)
-                let x = tmp.atom.atomicEff.max(1).log10().floor()
-                return x
+                let x = tmp.atom.atomicEff.max(1).log10()
+                if (hasElement(60,1)) x = x.pow(1.75)
+                return x.floor()
             },
             effDesc: x=>"+"+format(x,0),
         },{
@@ -199,7 +200,7 @@ const MUONIC_ELEM = {
             desc: `Corrupted Star’s speed is increased by pre-Infinity global speed at a reduced rate.`,
             cost: E('e2600'),
             eff() {
-                let x = tmp.preInfGlobalSpeed.max(1).log10().add(1).pow(2)
+                let x = hasElement(59,1) ? expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2) : tmp.preInfGlobalSpeed.max(1).log10().add(1).pow(2)
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -240,6 +241,7 @@ const MUONIC_ELEM = {
             cost: E('e72'),
             eff() {
                 let x = player.stars.points.add(1).log10().add(1).log10().add(1)
+                if (hasElement(56,1)) x = x.pow(2)
                 return x
             },
             effDesc: x=>formatMult(x)+' later',
@@ -325,6 +327,7 @@ const MUONIC_ELEM = {
             cost: E('e440'),
             eff() {
                 let x = player.supernova.times.add(1)
+                if (hasElement(61,1)) x = x.pow(muElemEff(61))
                 return x
             },
             effDesc: x=>"/"+format(x),
@@ -332,6 +335,56 @@ const MUONIC_ELEM = {
             cs: true,
             desc: `Unlock the sixth star generator.`,
             cost: E('e625'),
+        },{
+            desc: `Undec 2’s reward now affects Hyper FSS.`,
+            cost: E('e26900'),
+        },{
+            desc: `Muonic Zirconium-40 is twice as stronger.`,
+            cost: E('e33100'),
+        },{
+            desc: `Unstable BH's effect is raised by 10 outside C16.`,
+            cost: E('e35000'),
+        },{
+            cs: true,
+            desc: `Unlock sixth star in the theorem.`,
+            cost: E('e840'),
+        },{
+            desc: `Muonic Arsenic-33 is even better.`,
+            cost: E('e91000'),
+        },{
+            desc: `Muonic Potassium-19 is even better.`,
+            cost: E('e95600'),
+        },{
+            desc: `Muonic Iodine-53 is stronger based on Infinity Theorem.`,
+            cost: E('e112800'),
+            eff() {
+                let x = player.inf.theorem.div(10).add(1).root(2)
+                return x
+            },
+            effDesc: x=>"^"+format(x),
+        },{
+            cs: true,
+            desc: `Unlock the seventh star generator.`,
+            cost: E('e1000'),
+        },{
+            desc: `Remove the scaling from primordium theorem. The bonus of each primordium particles multiplies its level instead of adding.`,
+            cost: E('e155000'),
+        },{
+            cs: true,
+            desc: `Unlock a new effect of corrupted star.`,
+            cost: E('e1100'),
+        },{
+            desc: `The growth reductions of corrupted stars start later based on Normal Energy.`,
+            cost: E('e161800'),
+            eff() {
+                let x = expMult(player.gp_resources[4].add(1),0.5)
+                return x
+            },
+            effDesc: x=>formatMult(x)+" later",
+        },{
+            cs: true,
+            desc: `Unlock the eighth star generator.`,
+            cost: E('e1430'),
         },
 
         /*
@@ -357,7 +410,7 @@ const MUONIC_ELEM = {
         if (tmp.ascensions_unl) u += 6
         if (tmp.CS_unl) u += 6
         if (tmp.c18reward) u += 10
-        if (tmp.fifthRowUnl) u += 10
+        if (tmp.fifthRowUnl) u += 8 + 10
 
         return u
     },

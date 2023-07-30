@@ -8,6 +8,7 @@ const CORE = {
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
             `Boost normal mass overflow^2 starting.`,
+            `Increase the exponent of ascension base.`,
         ],
         res: `Normal Mass`,
         boost() {return player.mass.add(1).log10().add(1).log10().add(1).log10().add(1)},
@@ -46,7 +47,7 @@ const CORE = {
                 return overflow(x,100,0.5)
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).log10().div(50)
 
                 return x
             },
@@ -67,7 +68,7 @@ const CORE = {
             x => formatMult(x),
             x => "+"+format(x),
             x => "^"+format(x),
-            x => formatMult(x),
+            x => "+"+format(x),
             x => formatMult(x),
             x => formatMult(x),
         ],
@@ -90,6 +91,7 @@ const CORE = {
             `Weaken unstable BH decreasing.`,
             `Boost FVM's power.`,
             `Boost the effect of Unstable BH.`,
+            `Weaken BH mass overflows.`,
         ],
         res: `Mass of Black Hole`,
         boost() {return player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1)},
@@ -136,7 +138,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(0)
+                let x = Decimal.pow(0.95,s.add(1).ssqrt().root(2))
 
                 return x
             },
@@ -157,7 +159,7 @@ const CORE = {
             x => formatReduction(x),
             x => formatMult(x),
             x => "^"+format(x),
-            x => formatMult(x),
+            x => formatReduction(x),
             x => formatMult(x),
             x => formatMult(x),
         ],
@@ -180,6 +182,7 @@ const CORE = {
             `Increase overpower's power.`,
             `Increase accelerator's power.`,
             `Boost Exotic Atom gain.`,
+            `Boost dilated mass gain.`,
         ],
         res: `Exotic Atom`,
         boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1)},
@@ -226,7 +229,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).log10().root(2).div(10).add(1)
 
                 return x
             },
@@ -247,7 +250,7 @@ const CORE = {
             x => "+"+format(x),
             x => "+"+format(x),
             x => "^"+format(x),
-            x => formatMult(x),
+            x => "^"+format(x)+" to exponent",
             x => formatMult(x),
             x => formatMult(x),
         ],
@@ -270,6 +273,7 @@ const CORE = {
             `Weaken each “entropic” reward scaling.`,
             `Weaken QC modifications.`,
             `Boost Entropy gain and cap.`,
+            `Boost quantum foam and death shard gain.`,
         ],
         res: `Quantum Foam`,
         boost() {return player.qu.points.add(1).log10().add(1).log10().add(1)},
@@ -300,7 +304,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).log10().root(2).div(10).add(1)
 
                 return x
             },
@@ -321,7 +325,7 @@ const CORE = {
             x => formatReduction(x),
             x => formatReduction(x),
             x => "^"+format(x),
-            x => formatMult(x),
+            x => "^"+format(x),
             x => formatMult(x),
             x => formatMult(x),
         ],
@@ -344,6 +348,7 @@ const CORE = {
             `Boost dark shadow & abyssal blot gains.`,
             `Weaken each glyphic mass nerfing.`,
             `Boost Exotic Atom Reward Strength.`,
+            `Boost supernova generation.`,
         ],
         res: `Corrupted Shard`,
         boost() {return player.dark.c16.totalS.add(1).log10().add(1).log10().add(1)},
@@ -374,7 +379,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = E(0)
+                let x = s.add(1).root(3)
 
                 return x
             },
@@ -419,7 +424,7 @@ const MAX_INV_LENGTH = 100
 
 const CORE_CHANCE_MIN = 0.1
 const CORE_TYPE = Object.keys(CORE)
-const MIN_STAR_CHANCES = [0.1,0.1,0.1,0.1,0.01,0.001,0.0001,0.00001] // new Array(MAX_STARS).fill(0.1)
+const MIN_STAR_CHANCES = [0.1,0.1,0.1,0.1,0.01,0.01,0.0025,0.000125] // new Array(MAX_STARS).fill(0.1)
 
 const MAX_CORE_FIT = 1
 
@@ -792,6 +797,7 @@ function updateCoreTemp() {
 
     let t = 4
     if (tmp.c18reward) t++
+    if (hasElement(58,1)) t++
 
     for (let i = 0; i < MAX_STARS; i++) {
         let l = E(1)
@@ -806,6 +812,8 @@ function updateCoreTemp() {
     if (player.inf.theorem.gte(6)) tmp.min_core_len++
 
     tmp.core_lvl = INF.level()
+
+    let c20 = CHALS.inChal(20)
 
     let ss = E(1e3)
 
@@ -822,6 +830,8 @@ function updateCoreTemp() {
             let sc = Decimal.pow(ct.total_s[j].mul(Decimal.pow(boost, ct.total_s[j].add(1).log10().add(1))),ct.total_p) // Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
             sc = overflow(sc,ss,0.5)
             if (sc.gt(0)) sc = sc.add(tmp.dim_mass_eff)
+
+            if (c20) sc = E(0)
 
             s[j] = sc
             eff[j] = t.eff[j](sc)

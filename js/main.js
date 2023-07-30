@@ -18,7 +18,7 @@ const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark', 'inf']
 
 const FORMS = {
     getPreInfGlobalSpeed() {
-        let x = E(1)
+        let x = GPEffect(5)
         
         if (tmp.inf_unl) x = x.mul(10).mul(theoremEff('time',0))
 
@@ -116,7 +116,7 @@ const FORMS = {
         let op = E(.5)
         let os2 = tmp.c16active ? E('ee11') : E('ee279')
         let op2 = E(.25)
-        let os3 = E('eee5')
+        let os3 = E('eee6')
         let op3 = E(.15)
 
         if (hasTree('ct6')) os = os.pow(treeEff('ct6'))
@@ -143,6 +143,11 @@ const FORMS = {
         if (hasElement(24,1)) {
             op = op.pow(.95)
             op2 = op2.pow(.95)
+        }
+
+        if (hasUpgrade('rp',24)) {
+            op = op.pow(.8)
+            op2 = op2.pow(.8)
         }
 
         let pp = GPEffect(1)
@@ -486,12 +491,14 @@ const FORMS = {
 
             if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || inDarkRun() ? 5 : 100)
 
+            let bhw = theoremEff('bh',5)
+
             let o = x
             let os = tmp.c16active ? E('ee3') : E('ee69').pow(exoticAEff(1,1))
-            let op = E(0.5)
+            let op = E(0.5).pow(bhw)
 
             let os2 = tmp.c16active ? E('ee6') : E('ee249')
-            let op2 = E(0.25)
+            let op2 = E(0.25).pow(bhw)
 
             if (hasElement(187)) os = os.pow(elemEffect(187))
             if (hasElement(200)) os = os.pow(tmp.chal.eff[15])
@@ -552,7 +559,7 @@ const FORMS = {
         doReset() {
             let keep = []
             for (let x = 0; x < player.mainUpg.rp.length; x++) if ([3,5,6].includes(player.mainUpg.rp[x])) keep.push(player.mainUpg.rp[x])
-            player.mainUpg.rp = keep
+            if (!hasInfUpgrade(18)) player.mainUpg.rp = keep
             player.rp.points = E(0)
             BUILDINGS.reset('tickspeed')
             BUILDINGS.reset('accelerator')

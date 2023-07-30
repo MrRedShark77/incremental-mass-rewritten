@@ -100,6 +100,8 @@ const DARK = {
         tmp.pass = 2
     },
     shadowGain() {
+        if (CHALS.inChal(19)) return E(0)
+        
         let x = E(1)
 
         x = x.mul(tmp.dark.rayEff.shadow)
@@ -131,6 +133,8 @@ const DARK = {
         return x
     },
     abGain() {
+        if (CHALS.inChal(19)) return E(0)
+
         let x = E(1)
 
         x = x.mul(tmp.dark.shadowEff.ab||1)
@@ -175,7 +179,11 @@ function calcDark(dt) {
 
         if (tmp.chal14comp) player.dark.abyssalBlot = player.dark.abyssalBlot.add(tmp.dark.abGain.mul(dt))
 
-        if (tmp.dark.rayEff.passive) player.dark.rays = player.dark.rays.add(tmp.dark.gain.mul(dt).mul(tmp.dark.rayEff.passive))
+        if (tmp.dark.rayEff.passive) {
+            let c = player.dark.rays.add(tmp.dark.gain.mul(dt).mul(tmp.dark.rayEff.passive))
+            if (CHALS.inChal(19)) c = c.min(1e12)
+            player.dark.rays = c
+        }
 
         if (tmp.matterUnl) {
             let mu = player.dark.matters.unls

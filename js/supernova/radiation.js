@@ -69,11 +69,12 @@ const RADIATION = {
     },
     getbonusLevel(i) {
         let x = E(0)
-        x = x.add(tmp.chal?tmp.chal.eff[12]:0)
         if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
         if (i < 17) x = x.add(tmp.radiation.bs.eff[17])
 
         if (hasTree('ct9')) x = x.add(treeEff('ct9'))
+
+        x = hasUpgrade('bh',24) ? x.add(1).mul(tmp.chal?tmp.chal.eff[12]:0).sub(1) : x.add(tmp.chal?tmp.chal.eff[12]:0)
 
         if (hasTree('rad6')) x = x.mul(1.6-0.05*Math.floor(i/3))
 
@@ -218,7 +219,7 @@ const RADIATION = {
             title: `U-Lepton Boost`,
             eff(b) {
                 let x = b.add(1).root(4).softcap(5,0.5,0)
-                return x.overflow(1e24,0.5,0)
+                return x.overflow(1e24,0.5,0).min(1e30)
             },
             desc(x) { return `U-Leptons are ${format(x)}x stronger` },
         },{
@@ -240,7 +241,7 @@ const RADIATION = {
             title: `U-Quark Boost`,
             eff(b) {
                 let x = b.add(1).root(5).softcap(3,0.5,0)
-                return x.overflow(1e24,0.5,0)
+                return x.overflow(1e24,0.5,0).min(1e30)
             },
             desc(x) { return `U-Quarks are ${format(x)}x stronger` },
         },{

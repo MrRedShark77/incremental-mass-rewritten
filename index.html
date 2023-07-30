@@ -242,16 +242,14 @@
                                 <br><br>
                                 <div id="galactic_prestige_div">
                                     <div>
-                                        Galactic Prestige <h4 id="gal_prestige">0</h4><br>
+                                        <span id="gal_prestige_scale"></span>Galactic Prestige <h4 id="gal_prestige">0</h4><br>
                                         <button id="gp_btn" class="btn galactic" onclick="GAL_PRESTIGE.reset()">Reset Supernova for that what do you mean?</button>
                                     </div>
                                     <br>
-                                    <div id="gp_rewards">
-                                        
-                                    </div>
+                                    <div id="gp_rewards"></div>
                                 </div>
                             </div><div id="rank_tab2">
-                                Your Ascension base is <span id="asc_base"></span> (based on product of ln[Prestige tiers+1]+1)<br><br>
+                                Your Ascension base is <span id="asc_base"></span> (based on product of ln[Prestige tiers+1]<sup id="asc_texp"></sup>+1)<br><br>
                                 <div id="asc_table" class="table_center" style="min-height: 180px;"></div>
                             </div>
                         </div><div id="stab_frame0_1">
@@ -320,8 +318,10 @@
                             <div id="asc_rewards_table"></div>
                         </div>
                     </div><div id="tab_frame2">
-                        <div id="main_upg_msg" style="min-height: 100px;"></div>
-                        <div id="main_upgs_table" class="table_center"></div>
+                        <div id="stab_frame2_0">
+                            <div id="main_upg_msg" style="min-height: 100px;"></div>
+                            <div id="main_upgs_table" class="table_center"></div>
+                        </div>
                     </div><div id="tab_frame3">
                         <div id="stab_frame3_0">
                             Note: Click any image to show challenge description. Click again to enter any challenge<br><br>
@@ -588,7 +588,7 @@
                             <h2>Confirmation Settings</h2><br>
                             <div id="confirm_table" class="table_center"></div>
                             <br><br>
-                            Incremental Mass Rewritten v0.7.1.5 - made by MrRedShark77<br>
+                            Incremental Mass Rewritten v0.7.1.6 - made by MrRedShark77<br>
                             The game is inspired by Distance Incremental & Synergism<br>
                             Contributors: <span style="cursor: pointer;" onclick='addNotify(`where lemon<br><img src="https://i.imgflip.com/57cc98.jpg" style="width:100%">`)'>Bézier</span>, 16777216 & Aarex (Artists)<br><br><br>
                             Hint 1: Hover top image above tabs to show description...<br><br>

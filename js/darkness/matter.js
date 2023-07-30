@@ -6,7 +6,7 @@ const MATTERS = {
         let x, m0, c16 = tmp.c16active
 
         if (c16) {
-            x = i == 12 ? E(1) : player.dark.matters.amt[i+1]
+            x = i == 12 ? E(1) : player.dark.matters.amt[i+1].add(1)
         } else {
             m0 = i == 0 ? player.bh.dm : player.dark.matters.amt[i-1]
             x = Decimal.pow(10,m0.max(1).log10().max(1).log10().add(1).pow(tmp.matters.exponent).sub(1))
@@ -35,6 +35,9 @@ const MATTERS = {
 
         if (hasElement(4,1)) x = c16 ? x.pow(1.1) : expMult(x,1.05)
         if (hasElement(227)) x = c16 ? x.pow(elemEffect(227)) : expMult(x,elemEffect(227))
+        if (i < MATTERS_LEN-1) {
+            x = c16 ? x.pow(tmp.matters.upg[i+1].exp) : expMult(x,tmp.matters.upg[i+1].exp)
+        }
 
         return x
     },
@@ -56,9 +59,11 @@ const MATTERS = {
 
         let eff = c16?Decimal.pow(base,lvl):i==0?hasElement(21,1)?Decimal.pow(base,lvl.root(5)):lvl.add(1):Decimal.pow(base,lvl)
 
-        if (i==0) eff = eff.overflow('e2500',0.5)
+        if (i==0) eff = eff.overflow('e2500',0.5).overflow('e75000',1/3)
 
-        return {cost: cost, bulk: bulk, eff: eff}
+        let exp = hasInfUpgrade(17) && i > 0 ? lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1) : E(1)
+
+        return {cost, bulk, eff, exp}
     },
 
     final_star_shard: {
@@ -173,7 +178,7 @@ function updateMattersHTML() {
 
                 tmp.el['matter_upg_btn'+i].setClasses({btn: true, full: true, locked: amt.lt(tu.cost)})
 
-                tmp.el['matter_upg_eff'+i].setHTML((c16?"x":"^")+tu.eff.format(2))
+                tmp.el['matter_upg_eff'+i].setHTML((c16?"x":"^")+tu.eff.format(2)+(tu.exp.gt(1) ? ", ^" + tu.exp.format() + (c16?"":" to exponent") : ""))
                 tmp.el['matter_upg_cost'+i].setHTML(tu.cost.format(0))
             }
         }

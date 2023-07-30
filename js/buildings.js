@@ -16,12 +16,14 @@ const BUILDINGS_DATA = {
 
         get_cost: x => formatMass(x),
 
-        effect(x, bonus) {
+        get beMultiplicative() { return hasAscension(0,1) },
+
+        effect(x) {
             let power = E(1)
             if (player.ranks.rank.gte(3)) power = power.add(RANKS.effect.rank[3]())
             power = power.mul(BUILDINGS.eff('mass_2'))
 
-            let effect = power.mul(hasAscension(0,1)?x.add(1).mul(bonus.add(1)):x.add(bonus))
+            let effect = power.mul(x)
             if (hasElement(209)) effect = effect.pow(elemEffect(209))
 
             return {power, effect}
@@ -55,12 +57,14 @@ const BUILDINGS_DATA = {
 
         get_cost: x => formatMass(x),
 
-        effect(x, bonus) {
+        get beMultiplicative() { return hasAscension(0,1) },
+
+        effect(x) {
             let step = E(2)
             if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
             step = step.pow(BUILDINGS.eff('mass_3'))
 
-            let ret = step.mul(hasAscension(0,1)?x.add(1).mul(bonus.add(1)):x.add(bonus)).add(1)//.softcap("ee14",0.95,2)
+            let ret = step.mul(x).add(1)//.softcap("ee14",0.95,2)
             if (hasElement(203)) ret = ret.pow(elemEffect(203))
 
             return {power: step, effect: ret}
@@ -96,8 +100,10 @@ const BUILDINGS_DATA = {
 
         forceEffect: true,
 
-        effect(x, bonus) {
-            let xx = hasAscension(0,1)?x.add(1).mul(bonus.add(1)):x.add(bonus)
+        get beMultiplicative() { return hasAscension(0,1) },
+
+        effect(x) {
+            let xx = x
             if (hasElement(81)) xx = xx.pow(1.1)
             let ss = E(10)
             if (player.ranks.rank.gte(34)) ss = ss.add(2)
@@ -149,6 +155,10 @@ const BUILDINGS_DATA = {
                 op = op.pow(w)
                 op2 = op2.pow(w)
             }
+            if (hasUpgrade('rp',23)) {
+                op = op.pow(0.85)
+                op2 = op2.pow(0.85)
+            }
 
             ret = overflow(ret,os,op)
             ret = overflow(ret,os2,op2)
@@ -187,8 +197,8 @@ const BUILDINGS_DATA = {
 
         get_cost: x => formatMass(x),
 
-        effect(x, bonus) {
-            let xx = x.add(bonus)
+        effect(x) {
+            let xx = x
                 
             let step = E(.005)
             if (hasUpgrade('rp',17)) step = step.add(.005)
@@ -231,7 +241,7 @@ const BUILDINGS_DATA = {
 
             if (hasElement(248)) fp = fp.mul(getEnRewardEff(0))
 
-            return Decimal.pow(2,x.div(fp).scaleEvery('tickspeed')).ceil()
+            return Decimal.pow(2,x.div(fp).scaleEvery('tickspeed'))
         },
         get bulk() {
             let fp = E(1)
@@ -243,10 +253,12 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Rage Power",
 
-        effect(x, bonus) {
+        get beMultiplicative() { return hasAscension(0,1) },
+
+        effect(x) {
             let t = x, step = E(1), ss = E(1e50), eff = E(1), eff_bottom = E(1)
 
-            if (CHALS.inChal(17)) return {step, eff, bonus, ss, eff_bottom}
+            if (CHALS.inChal(17)) return {power: step, effect: eff, ss, eff_bottom}
 
             if (hasElement(63)) t = t.mul(25)
             t = t.mul(tmp.prim.eff[1][1])
@@ -278,7 +290,7 @@ const BUILDINGS_DATA = {
 
             if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])
             
-            eff = step.pow((hasAscension(0,1)?t.add(1).mul(bonus.add(1)):t.add(bonus)).mul(hasElement(80)?25:1))
+            eff = step.pow(x.mul(hasElement(80)?25:1))
 
             if (!hasElement(199) || CHALS.inChal(15)) {
                 if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
@@ -321,7 +333,7 @@ const BUILDINGS_DATA = {
         set res(v) { player.rp.points = v },
 
         cost(x=this.level) {
-            return Decimal.pow(10,Decimal.pow(1.5,x)).ceil()
+            return Decimal.pow(10,Decimal.pow(1.5,x))
         },
         get bulk() {
             return this.res.max(1).log10().max(1).log(1.5).add(1).floor()
@@ -329,7 +341,7 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Rage Power",
 
-        effect(x, bonus) {
+        effect(x) {
             let step = E(0.0004)
             if (tmp.inf_unl) step = step.add(theoremEff('atom',3,0))
             step = step.mul(tmp.dark.abEff.accelPow||1)
@@ -342,8 +354,8 @@ const BUILDINGS_DATA = {
 
             if (hasElement(259)) sp = 0.56
 
-            let eff = x.add(bonus).mul(step).add(1)
-            eff = overflow(eff,ss,sp).overflow(25000,1/3)
+            let eff = x.mul(step).add(1)
+            eff = overflow(eff,ss,sp).overflow(25000,hasBeyondRank(20,1) ? 0.4 : 1/3)
             return {power: step, effect: eff, ss}
         },
 
@@ -378,7 +390,7 @@ const BUILDINGS_DATA = {
 
             if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
 
-            return Decimal.pow(1.75,x.div(fp2).scaleEvery('bh_condenser',false,[1,1,1,fp])).ceil()
+            return Decimal.pow(1.75,x.div(fp2).scaleEvery('bh_condenser',false,[1,1,1,fp]))
         },
         get bulk() {
             let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
@@ -393,7 +405,9 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Dark Matter",
 
-        effect(x, bonus) {
+        get beMultiplicative() { return hasAscension(0,42) },
+
+        effect(x) {
             let t = x
             t = t.mul(tmp.radiation.bs.eff[5])
             let pow = E(2)
@@ -411,7 +425,7 @@ const BUILDINGS_DATA = {
             
             if (CHALS.inChal(17)) pow = E(1)
             
-            let eff = pow.pow(t.add(bonus))
+            let eff = pow.pow(t)
 
             let os = tmp.c16active ? E('ee150') : E('ee10000'), op = E(0.5)
 
@@ -446,7 +460,7 @@ const BUILDINGS_DATA = {
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
-        get allowPurchase() { return tmp.c16active },
+        get allowPurchase() { return tmp.c16active || hasElement(277) },
         denyPurchaseText: " outside C16",
 
         get res() { return player.bh.dm },
@@ -456,7 +470,7 @@ const BUILDINGS_DATA = {
             let p = 1.5
             if (hasBeyondRank(1,137)) p **= 0.8
 
-            return Decimal.pow(10,x.scaleEvery('fvm',false).pow(p)).mul(1e300).ceil()
+            return Decimal.pow(10,x.scaleEvery('fvm',false).pow(p)).mul(1e300)
         },
         get bulk() {
             let p = 1.5
@@ -467,7 +481,7 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Dark Matter",
 
-        effect(x, bonus) {
+        effect(x) {
             let lvl = x
 
             let pow = E(2)
@@ -476,7 +490,7 @@ const BUILDINGS_DATA = {
 
             if (tmp.inf_unl) pow = pow.mul(theoremEff('bh',3))
 
-            let eff = pow.pow(lvl.add(bonus))
+            let eff = pow.pow(lvl)
 
             return {power: pow, effect: eff}
         },
@@ -509,7 +523,7 @@ const BUILDINGS_DATA = {
 
             if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
 
-            return Decimal.pow(2,x.div(fp2).scaleEvery("gamma_ray",false,[1,1,1,fp])).ceil()
+            return Decimal.pow(2,x.div(fp2).scaleEvery("gamma_ray",false,[1,1,1,fp]))
         },
         get bulk() {
             let fp = tmp.fermions.effs[1][5]
@@ -523,7 +537,7 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Atom",
 
-        effect(x, bonus) {
+        effect(x) {
             let t = x
             t = t.mul(tmp.radiation.bs.eff[10])
             let pow = E(2)
@@ -540,7 +554,7 @@ const BUILDINGS_DATA = {
 
             if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
 
-            let eff = pow.pow(t.add(bonus)).sub(1)
+            let eff = pow.pow(t).sub(1)
 
             if (CHALS.inChal(17)) {
                 pow = E(1)
@@ -598,7 +612,7 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Quark",
 
-        effect(x, bonus) {
+        effect(x) {
             let pow = E(2), a22 = hasUpgrade('atom',22)
 
             if (hasElement(57)) pow = pow.mul(tmp.elements.effect[57])
@@ -607,7 +621,7 @@ const BUILDINGS_DATA = {
 
             if (CHALS.inChal(17)) pow = E(1)
 
-            let eff = pow.pow(x.add(bonus).mul(tmp.chal?tmp.chal.eff[11]:1)).softcap('e3e18',0.95,2,a22)
+            let eff = pow.pow(x.mul(tmp.chal?tmp.chal.eff[11]:1)).softcap('e3e18',0.95,2,a22)
 
             return {power: pow, effect: eff}
         },
@@ -638,7 +652,7 @@ const BUILDINGS_DATA = {
 
             if (tmp.inf_unl) fp = fp.mul(theoremEff('proto',0))
 
-            return Decimal.pow(2,x.div(fp).scaleEvery("cosmic_str").add(1)).ceil()
+            return Decimal.pow(2,x.div(fp).scaleEvery("cosmic_str").add(1))
         },
         get bulk() {
             let fp = E(1)
@@ -650,14 +664,16 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Quantum Foam",
 
-        effect(x, bonus) {
+        effect(x) {
             let pow = E(2)
             if (hasTree('qu6')) pow = pow.mul(treeEff('qu6'))
             pow = pow.mul(tmp.dark.abEff.csp||1)
             pow = pow.pow(exoticAEff(1,3))
+            if (hasElement(278)) pow = pow.pow(elemEffect(278))
+
             if (CHALS.inChal(17)) pow = E(1)
 
-            let eff = pow.pow(x.add(bonus))
+            let eff = pow.pow(x)
             return {power: pow, effect: eff}
         },
 
@@ -683,7 +699,7 @@ const BUILDINGS_DATA = {
         set res(v) { player.inf.points = v },
 
         cost(x=this.level) {
-            return Decimal.pow(1.2,x.scaleEvery('pe')).mul(1000).ceil()
+            return Decimal.pow(1.2,x.scaleEvery('pe')).mul(1000)
         },
         get bulk() {
             return this.res.div(1000).log(1.2).scaleEvery('pe',true).add(1).floor()
@@ -691,14 +707,16 @@ const BUILDINGS_DATA = {
 
         get_cost: x => format(x,0) + " Infinity Points",
 
-        effect(x, bonus) {
+        effect(x) {
             let t = x
+
+            if (hasElement(283)) t = t.mul(3)
 
             let step = E(2).add(exoticAEff(1,4,0))
 
             if (hasElement(225)) step = step.add(elemEffect(225,0))
             
-            let eff = step.pow(t.add(bonus))
+            let eff = step.pow(t)
 
             return {power: step, effect: eff}
         },
@@ -786,13 +804,13 @@ const BUILDINGS = {
 
 			if (b.isUnlocked || b.forceEffect) {
                 let bonus = b.bonus
-                let total = b.level.add(bonus)
+                let total = b.beMultiplicative ? b.level.add(1).mul(bonus.add(1)).sub(1) : b.level.add(bonus)
 
                 bt[i] = {
                     bulk: b.bulk,
                     total: total,
                     bonus: bonus,
-                    effect: b.effect(b.level, bonus),
+                    effect: b.effect(total),
                 }
             } else {
                 bt[i] = {
@@ -865,7 +883,7 @@ const BUILDINGS = {
 
         if (!unl) return;
 		
-        tmp.el["building_lvl_"+i].setHTML(b.level.format(0) + (bt.bonus.gt(0) ? " + " + bt.bonus.format(0) : ""))
+        tmp.el["building_lvl_"+i].setHTML(b.level.format(0) + (bt.bonus.gt(0) ? (b.beMultiplicative ? " × " : " + ") + bt.bonus.format(0) : "")) //  + " = " + bt.total.format(0)
         tmp.el["building_scale_"+i].setHTML(b.scale ? getScalingName(b.scale) : "")
 
         let cost = b.cost(), allow = b.allowPurchase ?? true

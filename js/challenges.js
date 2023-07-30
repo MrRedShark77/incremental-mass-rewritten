@@ -84,7 +84,7 @@ const CHALS = {
         }
         player.chal.choosed = x
     },
-    inChal(x) { return player.chal.active == x || (player.chal.active == 15 && x <= 12) },
+    inChal(x) { return player.chal.active == x || (player.chal.active == 15 && x <= 12) || (player.chal.active == 20 && x <= 19) },
     reset(x, chal_reset=true) {
         if (x < 5) FORMS.bh.doReset()
         else if (x < 9) ATOM.doReset(chal_reset)
@@ -144,11 +144,13 @@ const CHALS = {
     },
     getMax(i) {
         if (i <= 12 && hasPrestige(2,25)) return EINF 
+        if ((i==13||i==14||i==15) && hasInfUpgrade(19)) return EINF 
         let x = this[i].max
         if (i == 16) {
             if (hasElement(229)) x = E(100)
             if (hasElement(261)) x = x.add(100)
             if (hasElement(271)) x = x.add(300)
+            if (hasElement(286)) x = x.add(500)
         }
         else if (i < 16) {
             if (i <= 4 && !hasPrestige(2,25)) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
@@ -177,12 +179,15 @@ const CHALS = {
         return x.floor()
     },
     getScaleName(i) {
-        if (i < 16 && i != 16) {
-            if (player.chal.comps[i].gte(i==13?10:1000)) return " Impossible"
-            if (player.chal.comps[i].gte(i==13?5:i==8?200:i>8&&i!=13&&i!=16?50:300)) return " Insane"
-            if (player.chal.comps[i].gte(i==13?2:i>8&&i!=13&&i!=16?10:75)) return " Hardened"
+        let c = player.chal.comps[i]
+        if (i < 16) {
+            if (c.gte(i==13?10:1000)) return " Impossible"
+            if (c.gte(i==13?5:i==8?200:i>8&&i!=13&&i!=16?50:300)) return " Insane"
+            if (c.gte(i==13?2:i>8&&i!=13&&i!=16?10:75)) return " Hardened"
+        } else if (i == 16) {
+            if (c.gte(500)) return " Hardened"
         } else {
-            if (player.chal.comps[i].gte(10)) return " Hardened"
+            if (c.gte(10)) return " Hardened"
         }
         return ""
     },
@@ -220,8 +225,8 @@ const CHALS = {
             goal = chal.start.pow(Decimal.pow(chal.inc,lvl.scale(10,2,0).pow(chal.pow)))
             if (res.gte(chal.start)) bulk = res.log(chal.start).log(chal.inc).root(chal.pow).scale(10,2,0,true).add(1).floor()
         } else if (x == 16) {
-            goal = lvl.gt(0) ? Decimal.pow('ee23',Decimal.pow(2,lvl.sub(1).pow(1.5))) : chal.start
-            if (res.gte(chal.start)) bulk = res.log('ee23').max(1).log(2).root(1.5).add(1).floor()
+            goal = lvl.gt(0) ? Decimal.pow('ee23',Decimal.pow(2,lvl.scale(500,2,0).sub(1).pow(1.5))) : chal.start
+            if (res.gte(chal.start)) bulk = res.log('ee23').max(1).log(2).root(1.5).add(1).scale(500,2,0,true).floor()
             if (res.gte('ee23')) bulk = bulk.add(1)
         } else {
             if (QCs.active() && x <= 12) fp /= tmp.qu.qc_eff[5]
@@ -394,6 +399,7 @@ const CHALS = {
             if (!c && hasPrestige(1,127)) return E(1)
             let ret = c?Decimal.pow(0.97,x.add(1).log10().root(4)):E(0.97).pow(x.root(2).softcap(5,0.5,0))
             if (hasAscension(0,22)) ret = ret.root(2)
+            if (hasElement(288)) ret = ret.pow(2)
             return ret
         },
         effDesc(x) { return hasCharger(3)?formatReduction(x)+" weaker":format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
@@ -569,7 +575,7 @@ const CHALS = {
         • Pre-Quantum global speed is always set to /100.<br>
         You can earn Corrupted Shards based on your mass of black hole, when exiting the challenge.
         `,
-        reward: `Improve Hybridized Uran-Astatine.<br><span class="yellow">On first completion, unlock new prestige layer.</span>`,
+        get reward() { return `Improve Hybridized Uran-Astatine.<br><span class="yellow">On first completion, unlock new prestige layer when reaching ${formatMass(Decimal.pow(10,Number.MAX_VALUE))} of normal mass.</span>` },
         max: E(1),
         start: E('e1.25e11'),
         effect(x) {
@@ -620,7 +626,39 @@ const CHALS = {
         },
         effDesc(x) { return formatPercent(x.sub(1))+' stronger' },
     },
-    cols: 18,
+    19: {
+        unl() { return hasElement(280) },
+        title: "Yin Yang Malfunction",
+        get desc() { return `
+        You cannot become/generate supernovas, produce star resources, dark ray (it is capped at ${format(1e12)}), dark shadow, and abyssal blot, nor purchase tree upgrades. You are stuck in dark run with 1000 all glyphs (unaffected by weakness). This challenge resets supernova.
+        `},
+        reward: `Generate more supernovas by completions.<br><span class="yellow">On 10th completion, unlock sixth row of infinity upgrades.</span>`,
+        max: E(100),
+        inc: E('1e10'),
+        pow: E(3),
+        start: E('ee5555'),
+        effect(x) {
+            let ret = Decimal.pow(100,expMult(x.mul(10),2/3).div(10))
+            return ret
+        },
+        effDesc(x) { return formatMult(x) },
+    },
+    20: {
+        unl() { return hasElement(290) },
+        title: "The Reality III",
+        desc: "You are trapped in C1-19 and dark run with 1500 all glyphs. Theorems in the Core don't work. This challenge resets main upgrades.",
+        reward: `???.<br><span class="yellow">On first completion, unlock ???.</span>`,
+        max: E(100),
+        inc: E(10),
+        pow: E(1.25),
+        start: EINF,
+        effect(x) {
+            let ret = E(1)
+            return ret
+        },
+        effDesc(x) { return "???" },
+    },
+    cols: 20,
 }
 
 /*

@@ -384,6 +384,7 @@ function updateBlackHoleTemp() {
     
     t.p = E(1)
     if (tmp.inf_unl) t.p = t.p.div(theoremEff('bh',2))
+    if (hasUpgrade('bh',23)) t.p = t.p.div(.75)
 
     t.gain = UNSTABLE_BH.gain()
     t.effect = UNSTABLE_BH.effect()

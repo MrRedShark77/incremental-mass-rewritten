@@ -176,11 +176,11 @@ const RANKS = {
             '6'() {
                 let ret = E(2).pow(player.ranks.tier)
                 if (player.ranks.tier.gte(8)) ret = ret.pow(RANKS.effect.tier[8]())
-                return overflow(ret,'ee100',0.5)
+                return overflow(ret,'ee100',0.5).overflow('ee40000',0.25,2)
             },
             '8'() {
                 let ret = player.bh.dm.max(1).log10().add(1).root(2)
-                return ret
+                return ret.overflow('ee5',0.5)
             },
             '55'() {
                 let ret = player.ranks.tier.max(1).log10().add(1).root(4)
@@ -469,6 +469,7 @@ const PRESTIGES = {
         {
             1: `Super Renown is 25% weaker.`,
             7: `Corrupted Star upgrade 1 and 2 costs are divided by 1e10.`,
+            12: `Oct 7's reward is overpowered.`,
         },
     ],
     rewardEff: [
@@ -709,8 +710,12 @@ function updateRanksTemp() {
     let rcs = E(1e14)
 
     if (hasUpgrade('rp',22)) rcs = rcs.mul(upgEffect(1,22))
+    if (hasElement(287)) rcs = rcs.mul(elemEffect(287))
 
     tmp.rank_collapse.start = rcs
+
+    tmp.beyond_ranks.scale_start = 24
+    tmp.beyond_ranks.scale_pow = 1.6
 
     tmp.beyond_ranks.max_tier = BEYOND_RANKS.getTier()
     tmp.beyond_ranks.latestRank = BEYOND_RANKS.getRankFromTier(tmp.beyond_ranks.max_tier)
@@ -743,16 +748,17 @@ const BEYOND_RANKS = {
         return x
     },
     getTier(r=player.ranks.beyond) {
-        let x = r.gt(0)?r.log10().max(0).pow(.8).mul(tmp.beyond_ranks.tier_power).add(1).floor():E(1)
+        let x = r.gt(0)?r.log10().max(0).pow(.8).mul(tmp.beyond_ranks.tier_power).add(1).scale(tmp.beyond_ranks.scale_start,tmp.beyond_ranks.scale_pow,0,true).floor():E(1)
         return x
     },
     getRankFromTier(i,r=player.ranks.beyond) {
-        let hp = Decimal.pow(10,Decimal.pow(Decimal.sub(i,1).div(tmp.beyond_ranks.tier_power),1/.8)).ceil()
+        let hp = Decimal.pow(10,Decimal.pow(Decimal.sub(i.scale(tmp.beyond_ranks.scale_start,tmp.beyond_ranks.scale_pow,0),1).div(tmp.beyond_ranks.tier_power),1/.8)).ceil()
 
         return r.div(hp).floor()
     },
     getRequirementFromTier(i,t=tmp.beyond_ranks.latestRank,mt=tmp.beyond_ranks.max_tier) {
-        return Decimal.pow(10,Decimal.pow(Decimal.div(mt,tmp.beyond_ranks.tier_power),1/.8).sub(Decimal.pow(Decimal.sub(mt,i).div(tmp.beyond_ranks.tier_power),1/.8))).mul(Decimal.add(t,1)).ceil()
+        let s = tmp.beyond_ranks.scale_start, p = tmp.beyond_ranks.scale_pow
+        return Decimal.pow(10,Decimal.pow(Decimal.div(mt.add(1).scale(s,p,0).sub(1),tmp.beyond_ranks.tier_power),1/.8).sub(Decimal.pow(Decimal.sub(mt,i).add(1).scale(s,p,0).sub(1).div(tmp.beyond_ranks.tier_power),1/.8))).mul(Decimal.add(t,1)).ceil()
         // Decimal.pow(10,Math.pow(mt/tmp.beyond_ranks.tier_power,1/.8)-Math.pow((mt-i)/tmp.beyond_ranks.tier_power,1/.8)).mul(Decimal.add(t,1)).ceil()
     },
     getRankDisplayFromValue(r) {
@@ -825,6 +831,12 @@ const BEYOND_RANKS = {
         16: {
             1: `Ascension Base's exponent is increased by beyond-ranks' maximum tier, starting at Icos.`,
         },
+        20: {
+            1: `The second softcap of Accelerator's Effect is slightly weaker.`,
+        },
+        28: {
+            1: `Super Infinity Theorem starts +5 later.`,
+        },
     },
 
     rewardEff: {
@@ -867,9 +879,9 @@ const BEYOND_RANKS = {
             ],
             7: [
                 ()=>{
-                    let x = player.ranks.beyond.add(1).log10().add(1).pow(2)
+                    let x = hasPrestige(4,12) ? player.ranks.beyond.add(1).pow(0.4) : player.ranks.beyond.add(1).log10().add(1).pow(2).overflow(10,0.5)
 
-                    return overflow(x,10,0.5)
+                    return x
                 },
                 x=>"x"+format(x),
             ],
@@ -1103,7 +1115,7 @@ function updateRanksHTML() {
                 To ${getRankTierName(t.add(5))} up, require ${getRankTierName(t.add(4))} ${
                     t == 1
                     ? tmp.beyond_ranks.req.format(0)
-                    : BEYOND_RANKS.getRequirementFromTier(1,tmp.beyond_ranks.latestRank,t-1).format(0)
+                    : BEYOND_RANKS.getRequirementFromTier(1,tmp.beyond_ranks.latestRank,t.sub(1)).format(0)
                 }.<br>
                 To ${getRankTierName(t.add(6))} up, require ${getRankTierName(t.add(5))} ${BEYOND_RANKS.getRequirementFromTier(1,0).format(0)}.
             `
@@ -1157,7 +1169,7 @@ const PRES_BEFOREC13 = [40,7]
 
 const GAL_PRESTIGE = {
     req() {
-        let x = Decimal.pow(10,player.gal_prestige.pow(1.5)).mul(1e17)
+        let x = Decimal.pow(10,player.gal_prestige.scaleEvery('gal_prestige').pow(1.5)).mul(1e17)
 
         return x
     },
@@ -1174,32 +1186,38 @@ const GAL_PRESTIGE = {
         switch (i) {
             case 0:
                 if (gp.gte(1)) {
-                    x = player.stars.points.add(1).log10().add(1).log10().add(1).pow(gp.root(1.5))
+                    x = player.stars.points.add(1).log10().add(1).log10().add(1).pow(gp.root(1.5)).sub(1)
                 }
             break;
             case 1:
                 if (gp.gte(2)) {
-                    x = tmp.prestiges.base.add(1).log10().add(1).pow(gp.sub(1).root(1.5))
+                    x = tmp.prestiges.base.add(1).log10().add(1).pow(gp.sub(1).root(1.5)).sub(1)
                 }
             break;
             case 2:
                 if (gp.gte(4)) {
-                    x = player.dark.matters.amt[12].add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(3).root(1.5))
+                    x = player.dark.matters.amt[12].add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(3).root(1.5)).sub(1)
                 }
             break;
             case 3:
                 if (gp.gte(6)) {
-                    x = player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5))
+                    x = player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5)).sub(1)
                 }
             break;
             case 4:
                 if (gp.gte(9)) {
-                    x = player.inf.cs_amount.add(1).log10().add(1).pow(2).pow(gp.sub(8).root(1.5))
+                    x = player.inf.cs_amount.add(1).log10().add(1).pow(2).pow(gp.sub(8).root(1.5)).sub(1)
+                }
+            break;
+            case 5:
+                if (gp.gte(14)) {
+                    x = player.supernova.bosons.hb.add(10).log10().log10().add(1).pow(gp.sub(13).root(1.5)).sub(1)
                 }
             break;
         }
 
         if (hasElement(263)) x = x.mul(elemEffect(263))
+        if (hasElement(281)) x = x.mul(elemEffect(281))
 
         return x
     },
@@ -1222,11 +1240,14 @@ const GAL_PRESTIGE = {
             case 4:
                 x = Decimal.pow(0.95,res.add(1).slog(10))
             break;
+            case 5:
+                x = expMult(res.add(1),0.5)
+            break;
         }
 
         return x
     },
-    res_length: 5,
+    res_length: 6,
 }
 
 function GPEffect(i,def=1) { return tmp.gp.res_effect[i]||def }
@@ -1249,6 +1270,7 @@ function updateGPHTML() {
         let gp = player.gal_prestige
 
         tmp.el.gal_prestige.setHTML(gp.format(0))
+        tmp.el.gal_prestige_scale.setHTML(getScalingName('gal_prestige'))
         tmp.el.gp_btn.setHTML(`
         Reset Supernovas (force an Infinity reset), but Galactic Prestige up. Next Galactic Prestige reveals its treasure or happens nothing.<br><br>
         Require: <b>${tmp.gp.req.format()}</b> Supernovas
@@ -1271,6 +1293,9 @@ function updateGPHTML() {
 
         if (gp.gte(9)) h += `You have <h4>${res[4].format(0)}</h4> ${res[4].formatGain(res_gain[4])} Normal Energy (based on corrupted star and galactic prestige), 
         which weaken corrupted star reduction by <h4>${formatReduction(res_effect[4])}</h4>.<br>`
+
+        if (gp.gte(14)) h += `You have <h4>${res[5].format(0)}</h4> ${res[5].formatGain(res_gain[5])} Dilatons (based on higgs bosons and galactic prestige), 
+        which increases Pre-Infinity Global Speed by <h4>${formatMult(res_effect[5])}</h4>.<br>`
 
         tmp.el.gp_rewards.setHTML(h)
     }

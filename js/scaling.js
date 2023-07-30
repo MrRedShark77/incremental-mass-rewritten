@@ -16,12 +16,15 @@ const SCALE_START = {
 		prestige1: E(7),
 		prestige2: E(30),
 		prestige3: E(8),
+		prestige4: E(10),
 		massUpg4: E(50),
 		FSS: E(5),
 		fvm: E(1e11),
 		pe: E(25),
 		inf_theorem: E(10),
 		ascension0: E(20),
+		ascension1: E(10),
+		gal_prestige: E(10),
     },
 	hyper: {
 		rank: E(120),
@@ -80,6 +83,7 @@ const SCALE_START = {
 	},
 	instant: {
 		rank: E('e400'),
+		fvm: E(1e25),
 	},
 	mega: {
 		
@@ -104,12 +108,15 @@ const SCALE_POWER= {
 		prestige1: 1.5,
 		prestige2: 2,
 		prestige3: 2,
+		prestige4: 2.5,
 		massUpg4: 3,
 		FSS: 2,
 		fvm: 10,
 		pe: 2,
 		inf_theorem: 2,
 		ascension0: 2,
+		ascension1: 2,
+		gal_prestige: 2,
     },
 	hyper: {
 		rank: 2.5,
@@ -168,6 +175,7 @@ const SCALE_POWER= {
 	},
 	instant: {
 		rank: 3,
+		fvm: 10,
 	},
 	mega: {
 
@@ -200,12 +208,15 @@ const SCALING_RES = {
 	prestige1() { return player.prestiges[1] },
 	prestige2() { return player.prestiges[2] },
 	prestige3() { return player.prestiges[3] },
+	prestige4() { return player.prestiges[4] },
 	massUpg4() { return player.build.mass_4.amt },
 	FSS() { return player.dark.matters.final },
 	fvm() { return player.build.fvm.amt },
 	pe() { return player.build.pe.amt },
 	inf_theorem() { return player.inf.theorem },
 	ascension0() { return player.ascensions[0] },
+	ascension1() { return player.ascensions[1] },
+	gal_prestige() { return player.gal_prestige },
 }
 
 const NAME_FROM_RES = {
@@ -225,12 +236,15 @@ const NAME_FROM_RES = {
 	prestige1: "Honor",
 	prestige2: "Glory",
 	prestige3: "Renown",
+	prestige4: "Valor",
 	massUpg4: "Overpower",
 	FSS: "Final Star Shard",
 	fvm: "False Vacuum Manipulator",
 	pe: "Parallel Extruder",
 	inf_theorem: "Infinity Theorem",
 	ascension0: "Ascension",
+	ascension1: "Transcension",
+	gal_prestige: "Galactic Prestige",
 }
 
 const C18_SCALING = [
@@ -368,6 +382,12 @@ function getScalingStart(type, name) {
 		else if (name=="massUpg4") {
 			if (hasAscension(1,3)) start = start.add(50)
 		}
+		else if (name=="gal_prestige") {
+			if (hasElement(285)) start = start.add(1)
+		}
+		else if (name=='inf_theorem') {
+			if (hasBeyondRank(28,1)) start = start.add(5)
+		}
 	}
 	else if (type==1) {
 		if (name=="tickspeed") {
@@ -386,6 +406,9 @@ function getScalingStart(type, name) {
 		}
 		else if (name=="massUpg4") {
 			if (hasAscension(1,3)) start = start.add(50)
+		}
+		else if (name=="FSS") {
+			if (hasElement(55,1) && hasBeyondRank(5,2)) start = start.add(beyondRankEffect(5,2,0))
 		}
 	}
 	else if (type==2) {
@@ -408,7 +431,7 @@ function getScalingStart(type, name) {
 			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
 			if (hasPrestige(1,5)) start = start.mul(prestigeEff(1,5))
 			start = start.mul(tmp.radiation.bs.eff[14])
-			start = start.mul(tmp.bd.upgs[4].eff)
+			if (!hasUpgrade('br',24)) start = start.mul(tmp.bd.upgs[4].eff)
 		}
 		else if (name=="tickspeed") {
 			if (hasElement(68)) start = start.mul(2)
@@ -459,7 +482,12 @@ function getScalingStart(type, name) {
 		else if (name=="supernova") {
 			if (hasBeyondRank(4,1)) start = start.add(beyondRankEffect(4,1,0))
 		}
+	} else if (type==6) {
+		if (name=="rank") {
+			if (hasUpgrade('br',24)) start = start.mul(tmp.bd.upgs[4].eff)
+		}
 	}
+
 	if (name=='supernova' && type < 4 && !hasUpgrade('br',22)) {
 		start = start.add(tmp.prim.eff[7])
 	}

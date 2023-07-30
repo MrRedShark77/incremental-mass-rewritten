@@ -113,14 +113,22 @@ const ELEMENTS = {
             desc: `Gain 1% more quarks for each challenge completion.`,
             cost: E(5e18),
             effect() {
-                let x = E(0)
-                for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
-                if (hasElement(7)) x = x.mul(tmp.elements.effect[7])
-                if (hasElement(87)) x = E(1.01).pow(x).root(3)
-                else x = x.div(100).add(1).max(1)
+                let x
+                if (hasElement(276)) {
+                    x = E(1)
+                    for (let i = 1; i <= CHALS.cols; i++) x = x.mul(player.chal.comps[i].add(1))
+                    if (hasElement(7)) x = x.pow(elemEffect(7))
+                    x = x.overflow('e1000',1/3)
+                } else {
+                    x = E(0)
+                    for (let i = 1; i <= CHALS.cols; i++) x = x.add(player.chal.comps[i].mul(i>4?2:1))
+                    if (hasElement(7)) x = x.mul(elemEffect(7))
+                    if (hasElement(87)) x = E(1.01).pow(x).root(3)
+                    else x = x.div(100).add(1).max(1)
+                }
                 return x
             },
-            effDesc(x) { return format(x)+"x" },
+            effDesc(x) { return hasElement(276) ? "^"+format(x) : formatMult(x) },
         },
         {
             desc: `Carbon's effect is now multiplied by the number of elements bought.`,
@@ -852,7 +860,7 @@ const ELEMENTS = {
             desc: `Supernova boosts blueprint particles earned.`,
             cost: E("e8.6e26"),
             effect() {
-                let x = Decimal.pow(1.1,player.supernova.times.softcap(2e5,0.25,0))
+                let x = Decimal.pow(1.1,player.supernova.times.overflow(1e75,0.1).softcap(2e5,0.25,0))
                 return x
             },
             effDesc(x) { return "x"+format(x,1) },
@@ -1558,6 +1566,84 @@ const ELEMENTS = {
             c16: true,
             desc: `Super False Vacuum Manipulator is 50% weaker.`,
             cost: E('ee3500'),
+        },{
+            desc: `Carbon-6's effect is overpowered again.`,
+            cost: E('ee19800'),
+        },{
+            c16: true,
+            desc: `You can now buy false vacuum manipulator outside C16.`,
+            cost: E('ee6170'),
+        },{
+            desc: `Bonus cosmic string strengthens its power at a reduced rate.`,
+            cost: E('ee23500'),
+            effect() {
+                let x = tmp.build.cosmic_string.bonus.add(1).pow(0.75)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
+        },{
+            dark: true,
+            desc: `The base of collapsed star’s effect for supernova generation is slightly stronger.`,
+            cost: E('e1.13e12'),
+        },{
+            inf: true,
+            desc: `Unlock 19th Challenge.`,
+            cost: E('1e110'),
+        },{
+            desc: `Supernovas boost galactic prestige’s resources at a reduced rate.`,
+            cost: E('ee25400'),
+            effect() {
+                let x = expMult(player.supernova.times.add(1),0.5)
+                return x
+            },
+            effDesc(x) { return formatMult(x) },
+        },{
+            c16: true,
+            desc: `Total corrupted shards boost infinity points gain.`,
+            cost: E('ee6700'),
+            effect() {
+                let x = player.dark.c16.totalS.add(10).log10()
+                return x
+            },
+            effDesc(x) { return formatMult(x) },
+        },{
+            desc: `Parallel Extruder is thrice as effective.`,
+            cost: E('ee46000'),
+        },{
+            dark: true,
+            desc: `FSS boosts the exponent of Ascension’s base.`,
+            cost: E('e3.24e12'),
+            effect() {
+                let x = player.dark.matters.final.root(2).div(100)
+                return x
+            },
+            effDesc(x) { return "+"+format(x) },
+        },{
+            desc: `Super Galactic Prestige starts +1 later.`,
+            cost: E('ee59000'),
+        },{
+            desc: `Add 500 more C16’s max completions.`,
+            cost: E('ee64600'),
+        },{
+            dark: true,
+            desc: `Rank Collapse starts later based on fading matter.`,
+            cost: E('e6.5e12'),
+            effect() {
+                let x = player.dark.matters.amt[12].add(1e10).log10().log10().pow(4/3)
+                return x
+            },
+            effDesc(x) { return formatMult(x)+" later" },
+        },{
+            c16: true,
+            desc: `Challenge 5’s reward is twice as stronger.`,
+            cost: E('ee23700'),
+        },{
+            desc: `Dimensional Mass’s effect is even stronger.`,
+            cost: E('ee83000'),
+        },{
+            inf: true,
+            desc: `Unlock 20th Challenge.`,
+            cost: E(Number.MAX_VALUE),
         },
     ],
     /*
@@ -1610,7 +1696,7 @@ const ELEMENTS = {
         if (tmp.ascensions_unl) u += 9
         if (tmp.CS_unl) u += 7
         if (tmp.c18reward) u += 12
-        if (tmp.fifthRowUnl) u += 10
+        if (tmp.fifthRowUnl) u += 20
 
         return u
     },

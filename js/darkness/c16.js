@@ -96,6 +96,8 @@ const UNSTABLE_BH = {
 
         if (hasCharger(2)) x = x.pow(1.5)
 
+        if (hasElement(57,1) && !tmp.c16active) x = x.pow(10)
+
         return x
     },
     fvm: {
@@ -175,13 +177,17 @@ function corruptedShardGain() {
     if (hasElement(232)) bh = player.dark.c16.bestBH.max('e100')
     else if (!tmp.c16active || bh.lt('e100')) return E(0)
 
-    let x = Decimal.pow(10,bh.max(1).log10().overflow(1e70,1/3).overflow(1e9,0.5).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))
+    let w = 1
+
+    if (hasUpgrade('br',25)) w *= 0.8
+
+    let x = Decimal.pow(10,bh.max(1).log10().overflow(1e70,(1/3)**w).overflow(1e9,0.5**w).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))
 
     if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 
     x = x.mul(exoticAEff(0,0))
 
-    return x.floor()
+    return x.overflow('ee12',0.25).floor()
 }
 
 function updateC16Temp() {

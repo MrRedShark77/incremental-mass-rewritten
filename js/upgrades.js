@@ -423,6 +423,7 @@ const UPGS = {
                 desc: `Corrupted Shards boost normal mass gain.`,
                 cost: E('e2e357'),
                 effect() {
+                    if (tmp.c16active) return E(1)
                     let x = player.dark.c16.totalS.add(1)
                     return overflow(x,10,0.5).pow(2).overflow('e15000',0.25)
                 },
@@ -456,42 +457,25 @@ const UPGS = {
             },
             23: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Stronger Overflows are 15% weaker.`,
+                cost: E('ee42000'),
             },
             24: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Mass Overflows are 20% weaker.`,
+                cost: E('ee85000'),
             },
             25: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
+                desc: `Rage Powers boost Infinity Points gain.`,
+                cost: E('ee115500'),
                 effect() {
-                    let x = E(1)
+                    let x = player.rp.points.add(1e10).log10().log10().pow(2.25)
                     return x
                 },
                 effDesc(x=this.effect()) {
                     return formatMult(x)
                 },
-                noImage: true,
             },
         },
         2: {
@@ -626,7 +610,7 @@ const UPGS = {
                 desc: "Atomic Powers add Black Hole Condensers at a reduced rate.",
                 cost: E('e420'),
                 effect() {
-                    let ret = player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
+                    let ret = hasAscension(0,42) && tmp.atom ? tmp.atom.atomicEff : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
                     return ret.floor()
                 },
                 effDesc(x=this.effect()) {
@@ -638,6 +622,7 @@ const UPGS = {
                 desc: `Red matter's upgrade applies to mass gain at a reduced rate.`,
                 cost: E('e5e101'),
                 effect() {
+                    if (tmp.c16active) return E(1)
                     let x = tmp.matters.upg[0].eff.max(1).pow(0.75)
                     return x.overflow('e1000',0.5)
                 },
@@ -679,6 +664,7 @@ const UPGS = {
                 desc: `Corrupted Shards boost mass of black hole gain.`,
                 cost: E('e1e273'),
                 effect() {
+                    if (tmp.c16active) return E(1)
                     let x = player.dark.c16.totalS.add(1)
                     return overflow(x,10,0.5).pow(3).overflow('e12000',0.25)
                 },
@@ -705,42 +691,25 @@ const UPGS = {
             },
             23: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Unstable Black Hole decreasing is 25% weaker.`,
+                cost: E('ee162500'),
             },
             24: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Challenge 12's reward now multiplies each bonus radiation boosts.`,
+                cost: E('ee236000'),
             },
             25: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
+                desc: `Best mass of black hole in C16 boosts Infinity Points gain.`,
+                cost: E('ee261500'),
                 effect() {
-                    let x = E(1)
+                    let x = expMult(player.dark.c16.bestBH.add(10).log10(),0.4)
                     return x
                 },
                 effDesc(x=this.effect()) {
                     return formatMult(x)
                 },
-                noImage: true,
             },
         },
         3: {
@@ -904,6 +873,7 @@ const UPGS = {
                 cost: E('e2.7e186'),
                 effect() {
                     let x = player.atom.atomic.add(1).log10().add(1).log10().root(2)
+                    if (hasUpgrade('br',23)) x = x.pow(2)
                     return overflow(x,10,0.5).floor()
                 },
                 effDesc(x=this.effect()) {
@@ -922,42 +892,25 @@ const UPGS = {
             },
             23: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Atom Upgrade 20 is slightly stronger.`,
+                cost: E('ee54000'),
             },
             24: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Star Siltation starts ^2 later to exponent.`,
+                cost: E('ee87000'),
             },
             25: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
+                desc: `Dimensional Mass boosts Infinity Points gain.`,
+                cost: E('ee111111'),
                 effect() {
-                    let x = E(1)
+                    let x = player.inf.dim_mass.add(10).log10().pow(2.7)
                     return x
                 },
                 effDesc(x=this.effect()) {
                     return formatMult(x)
                 },
-                noImage: true,
             },
         },
         4: {
@@ -1092,6 +1045,7 @@ const UPGS = {
                 effect() {
                     let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).log10().div(60).add(1)
                     if (hasAscension(0,3)) x = x.pow(2)
+                    if (hasAscension(0,33)) x = x.pow(2)
                     return x
                 },
                 effDesc(x=this.effect()) { return "x"+format(x)+" cheaper" },
@@ -1125,42 +1079,25 @@ const UPGS = {
             },
             23: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
+                desc: `Quantum Shard's effect now affects death shards at a reduced rate.`,
+                cost: E('e80000'),
                 effect() {
-                    let x = E(1)
+                    let x = tmp.qu.qc_s_eff.max(1).root(5)
                     return x
                 },
                 effDesc(x=this.effect()) {
                     return formatMult(x)
                 },
-                noImage: true,
             },
             24: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `Break Dilation Upgrade 5 is overpowered.`,
+                cost: E('e690000'),
             },
             25: {
                 unl() { return tmp.fifthRowUnl },
-                desc: `Placeholder.`,
-                cost: EINF,
-                effect() {
-                    let x = E(1)
-                    return x
-                },
-                effDesc(x=this.effect()) {
-                    return formatMult(x)
-                },
-                noImage: true,
+                desc: `The softcaps of corrupted shards gain are slightly weaker.`,
+                cost: E('e791500'),
             },
         },
     },

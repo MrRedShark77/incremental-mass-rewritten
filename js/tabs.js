@@ -40,6 +40,9 @@ const TABS = {
             { id: "Beyond-Ranks Rewards", unl() { return tmp.brUnl } },
             { id: "Ascension Rewards", unl() { return tmp.ascensions_unl } },
         ],
+        2: [
+            { id: "Main Upgrades" },
+        ],
         3: [
             { id: "Challenges" },
             { id: "Quantum Challenge", unl() { return hasTree("unl3") }, style: "qu" },
