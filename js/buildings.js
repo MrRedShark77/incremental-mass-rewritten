@@ -290,7 +290,7 @@ const BUILDINGS_DATA = {
 
             if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])
             
-            eff = step.pow(x.mul(hasElement(80)?25:1))
+            eff = step.pow(t.mul(hasElement(80)?25:1))
 
             if (!hasElement(199) || CHALS.inChal(15)) {
                 if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
