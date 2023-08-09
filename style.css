@@ -531,6 +531,10 @@ button {
 	color: #5a9994;
 	border-color: #386864;
 }
+.btn_tab.mlt {
+	color: #ff6600;
+	border-color: #a74808;
+}
 .btn_tab.sn:hover {
 	background-color: #500031;
 }
@@ -587,8 +591,9 @@ button {
 .btn_tree:not(.locked):not(.bought):hover,
 .elements:not(.locked):not(.bought):not(.final):hover,
 .elements:hover {
-transform: scale(1.25)}
-.btn:not(.locked):not(.md):hover,
+transform: scale(1.25)
+}
+.btn:not(.locked):not(.md):not(.circle):hover,
 .img_btn:not(.locked):not(.bought):hover {
 	background-color: #555
 }
@@ -779,6 +784,44 @@ transform: scale(1.25)}
 	padding: 7px 25px;
 	text-decoration: none;
 }
+.circleDebuff {
+width: 400px;
+margin: auto;
+background-color: rgba(250, 0, 0, 0.05);
+text-align: center;
+padding-top: 40px;
+padding-bottom: 40px;
+table-layout: auto;
+
+}
+.circleBuff {
+	width: 400px;
+	margin: auto;
+	background-color: rgba(250, 71, 0, 0.05);
+	text-align: center;
+	padding-top: 40px;
+	padding-bottom: 40px;
+	table-layout: auto;
+}
+.mltButton {
+	cursor: pointer;
+	background-color: #ff7300;
+	border-color: rgb(253, 136, 3);
+	color:#000;
+	font-size: 12px;
+	max-width: 250px;
+	padding: 7px 25px;
+	text-decoration: none;
+}
+.mltButton.locked {
+	cursor: default;
+	color:#ffffff;
+	background-color: #29110183;
+	font-size: 12px;
+	max-width: 250px;
+	padding: 7px 25px;
+	text-decoration: none;
+}
 .presButton {
 	cursor: pointer;
 	background-color: #ffee00;
@@ -936,7 +979,27 @@ h4 {
 	background-color: #003a00;
 	box-shadow: 0 0 10px #00ce00;
 }
+.circle:not(.locked) {
+	border-color: rgb(255, 217, 0);
+	background: repeating-linear-gradient(90deg,rgb(255, 145, 0) 0%, rgb(255, 94, 0)50%, rgb(255, 145, 0) 100%);
+	animation: circle_spin 10s linear infinite;
+}
+.left-sided {
+	display: flex;
+	flex-direction: column;
+	flex-flow:row-wrap;
+}
+.circle.locked,
+.bd.locked,
+.charger.locked {
+	border-color: #303030;
+	cursor: default;
+}
 
+.circle:not(.locked):hover {
+	border-color: rgb(255, 251, 0);
+	box-shadow: 0 0 10px rgb(255, 217, 0);
+}
 .bd {
 	border-color: #00644e;
 	background-color: #171717;
@@ -1610,7 +1673,14 @@ h4 {
 		background-position-x: -48px;
 	}
 }
-
+@keyframes circle_spin {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -480px;
+	}
+}
 @keyframes implode {
     0% {transform:scale(1); filter:blur(0px)}
     50% {transform:scale(0); filter:blur(5px)}

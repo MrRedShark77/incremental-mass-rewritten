@@ -142,6 +142,10 @@ const CONFIRMS_FUNCTION = {
        GALAXY.doReset()
       addQuote(13)
     },
+    multiverse() {
+        SPELL.getCycle()
+       addQuote(14)
+     },
     t_switch() {
         
     },

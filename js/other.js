@@ -217,6 +217,10 @@ const QUOTES = [
     <h2>Chapter 13: Galaxies</h2><br>
     <img class='quote' src='images/quotes/13.png'><br>
     You got insane amount of stars... Time to collapse it!
+    `,`
+    <h2>Chapter 14: Multiverse</h2><br>
+    <img class='quote' src='images/quotes/13.png'><br>
+    Your power grants you the strange energy. <i>You feel many of universes in your hand...</i>
     `,
 ]
 

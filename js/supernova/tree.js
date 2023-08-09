@@ -1343,8 +1343,13 @@ const TREE_UPGS = {
         },
         glx21: {
             branch: ['glx4','glx11','glx12','glx19'],
-            desc: 'Unlock ???',
-            cost: Infinity,
+            desc: 'Newton Theorem also affects mass gain after overflow at reduced rate',
+            effect() {
+                let x = theoremEff('mass',0).max(1).root(2).add(1)
+                return x
+            },
+            effDesc(x) { return "^"+format(x) },
+            cost: E(1e85),
         },
         /*
         x: {

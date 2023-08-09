@@ -257,7 +257,18 @@ const TOOLTIP_RES = {
            return h
         }
     },
-
+    mlt: {
+        full: "Multiversal Fragments",
+        desc() {
+           let h = `You have <b class='orange'>`+format(player.mv.points,0)+ `</b> Multiverse Fragments<br>To collect Multiversal Fragments, finish the spell casting cycle.
+           <br class='line'>
+           <i style='color: gray'>The mighty, multiversal power that can give you everything you want...<br> But to aquire it, lose everything...<br>
+           <br class='line'></i>
+           First Multiversal reset will reset all previous features!
+           `
+           return h
+        }
+    },
     /**
      * desc() {
             let h = ``

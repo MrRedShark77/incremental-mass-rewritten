@@ -56,6 +56,7 @@ function resetTemp() {
         upgs: {
             main: {},
             mass: {},
+            mv: {},
         },
 
         elements: {
@@ -94,6 +95,10 @@ function resetTemp() {
         },
         galaxy: {
             maxlimit: E('1e100'),
+        },
+
+        mv: {
+            upgs: {},
         },
         grade: {
             eff: [],
@@ -227,7 +232,6 @@ function resetTemp() {
             gain: [E(0),E(0)],
             eff: [[],[]],
         },
-
         prevSave: "",
         ascensions: {
             req: [],
@@ -241,6 +245,7 @@ function resetTemp() {
 
         inf_reached: false,
         inf_time: 0,
+        mv_time: E(0),
         inf_limit: Decimal.pow(10,Number.MAX_VALUE),
 
         inf_unl: false,
@@ -253,9 +258,11 @@ function resetTemp() {
         iu_eff: [],
     }
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
+    for (let x = 0; x < ASCENSIONS.names.length; x++) tmp.ascensions.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
     for (let x in BEYOND_PRES.rewardEff) tmp.beyond_pres.eff[x] = {}
     for (let x = UPGS.mass.cols; x >= 1; x--) tmp.upgs.mass[x] = {}
+    for (let x = UPGS.mv.cols; x >= 1; x--) tmp.upgs.mv[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs.main[x] = {}
     for (let j = 0; j < TREE_TAB.length; j++) {
         tmp.supernova.tree_had2[j] = []
@@ -276,6 +283,7 @@ function resetTemp() {
         }
     }
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) tmp.bd.upgs[x] = {}
+    for (let x = 0; x < SPELL.upgs.ids.length; x++) tmp.mv.upgs[x] = {}
     for (let x = 0; x < SCALE_TYPE.length; x++) {
         let st = SCALE_TYPE[x]
 
@@ -332,6 +340,7 @@ function updateAcceleratorTemp() {
 function updateUpgradesTemp() {
     UPGS.main.temp()
     UPGS.mass.temp()
+    UPGS.mv.temp()
 }
 
 function updateRagePowerTemp() {
@@ -383,6 +392,7 @@ function updateBlackHoleTemp() {
 }
 
 function updateTemp() {
+    updateSpellTemp()
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
 
@@ -402,6 +412,7 @@ function updateTemp() {
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.ascensions_unl = hasElement(281)
     tmp.bpUnl = hasElement(294)
+    tmp.mlt_unl = player.chal.comps[20].gte(2) || player.mv.points.gt(0) || player.mv.firstReset == true
     updateGradeTemp()
     updateOrbTemp()
     updateInfTemp()

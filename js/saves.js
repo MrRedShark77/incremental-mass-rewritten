@@ -148,6 +148,7 @@ function calc(dt) {
         calcDark(inf_gs)
         calcInf(dt)
         calcGalaxy(dt)
+        calcMv(dt)
 
         if (hasTree("qu_qol4")) player.supernova.times = player.supernova.times.max(tmp.supernova.bulk)
 
@@ -203,6 +204,8 @@ function getPlayerData() {
         },
         massUpg: {},
         autoMassUpg: [null,false,false,false],
+        mvUpg: {},
+        autoMvUpg: [null,false,false,false],
         autoTickspeed: false,
         autoAccel: false,
         mainUpg: {
@@ -312,6 +315,15 @@ function getPlayerData() {
                 theorems: E(0),
             },
         },
+        mv: {
+            points: E(0),
+            upgs: [],
+            totalCycles: E(0),
+            orbits: E(10),
+            coreLvl: E(1),
+            firstReset: false,
+            best: E(0),
+        },
         reset_msg: "",
         main_upg_msg: [0,0],
         tickspeed: E(0),
@@ -342,6 +354,7 @@ function getPlayerData() {
     for (let x = 1; x <= CHALS.cols; x++) s.chal.comps[x] = E(0)
     for (let x = 0; x < CONFIRMS.length; x++) s.confirms[CONFIRMS[x]] = true
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) s.md.upgs[x] = E(0)
+    for (let x = 0; x < SPELL.upgs.ids.length; x++) s.mv.upgs[x] = E(0)
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) s.md.break.upgs[x] = E(0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) s.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
     for (let x = 0; x < 7; x++) {
@@ -444,8 +457,10 @@ function deepUndefinedAndDecimal(obj, data) {
 
 function convertStringToDecimal() {
     for (let x = 1; x <= UPGS.mass.cols; x++) if (player.massUpg[x] !== undefined) player.massUpg[x] = E(player.massUpg[x])
+    for (let x = 1; x <= UPGS.mv.cols; x++) if (player.mvUpg[x] !== undefined) player.mvUpg[x] = E(player.mvUpg[x])
     for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
     for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
+    for (let x = 0; x < SPELL.upgs.ids.length; x++) player.mv.upgs[x] = E(player.mv.upgs[x]||0)
     for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) player.md.break.upgs[x] = E(player.md.break.upgs[x]||0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
 }
@@ -546,12 +561,18 @@ function loadGame(start=true, gotNaN=false) {
     setupHTML()
     setupTooltips()
     updateQCModPresets()
-    
     if (start) {
         setInterval(save,60000)
         for (let x = 0; x < 5; x++) updateTemp()
 
         updateHTML()
+        if (player.name == '' || player.name.length > 12){    createPrompt("Choose your name! Max Length - 12",'import',loadbeta=>{
+            if(loadbeta.length <= 12) player.name = loadbeta;
+            else if(loadbeta.length > 12) {
+                 addNotify(`Why your name is so long?! Let's try again`)
+                resetName()}
+             })
+            }
 
         let t = (Date.now() - player.offline.current)/1000
         if (player.offline.active && t > 60) simulateTime(t)

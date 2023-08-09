@@ -59,10 +59,10 @@ const RANKS = {
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
-        rank() { return player.mainUpg.rp.includes(5) || tmp.inf_unl },
-        tier() { return player.mainUpg.rp.includes(6) || tmp.inf_unl },
-        tetr() { return player.mainUpg.atom.includes(5) || tmp.inf_unl },
-        pent() { return hasTree("qol8") || tmp.inf_unl },
+        rank() { return player.mainUpg.rp.includes(5) || tmp.inf_unl || tmp.mlt_unl },
+        tier() { return player.mainUpg.rp.includes(6) || tmp.inf_unl || tmp.mlt_unl},
+        tetr() { return player.mainUpg.atom.includes(5) || tmp.inf_unl|| tmp.mlt_unl },
+        pent() { return hasTree("qol8") || tmp.inf_unl|| tmp.mlt_unl },
         hex() { return true },
     },
     desc: {

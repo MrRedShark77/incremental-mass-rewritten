@@ -70,7 +70,26 @@ function setupHTML() {
 		</div>`
 	}
 	mass_upgs_table.setHTML(table)
-
+	let mv_upgs_table = new Element("mv_upgs_table")
+	table = ""
+	for (let x = 1; x <= UPGS.mv.cols; x++) {
+		let upg = UPGS.mv[x]
+		table += `<div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="mvUpg_div_${x}">
+			<div style="width: 300px">
+				<div class="resources">
+					<img src="images/mv_upg${x}.png">
+					<span style="margin-left: 5px; text-align: left;"><span id="mvUpg_scale_${x}"></span>${upg.title} [<span id="mvUpg_lvl_${x}">X</span>]</span>
+				</div>
+			</div><button id="mvUpg_btn_${x}" class="btn" style="width: 300px;" onclick="UPGS.mv.buy(${x}, true)">Cost: <span id="mvUpg_cost_${x}">X</span></button>
+			<button class="btn" style="width: 120px;" onclick="UPGS.mv.buyMax(${x})">Buy Max</button>
+			<button id="mvUpg_auto_${x}" class="btn" style="width: 80px;" onclick="UPGS.mv.autoSwitch(${x})">OFF</button>
+			<div style="margin-left: 5px; text-align: center; width: 400px">
+			
+			<b>Effect: <span id="mvUpg_eff_${x}">X</span></b><br><span style='font-size: 11px'>(Power: <span id="mvUpg_step_${x}">X</span>)</b><hr style='width: 75px'>
+			</div>
+		</div>`
+	}
+	mv_upgs_table.setHTML(table)
 	let ranks_rewards_table = new Element("ranks_rewards_table")
 	table = ""
 	for (let x = 0; x < RANKS.names.length; x++) {
@@ -159,6 +178,7 @@ function setupHTML() {
 	setupInfHTML()
 	setupOrbHTML()
 setupGradeHTML()
+setupSpellHTML()
 	/*
 	function setupTestHTML() {
 		let test_table = new Element("test_table")
@@ -289,7 +309,22 @@ function updateMassUpgradesHTML() {
 		}
 	}
 }
-
+function updateMvUpgradesHTML() {
+	for (let x = 1; x <= UPGS.mv.cols; x++) {
+		let upg = UPGS.mv[x]
+		tmp.el["mvUpg_div_"+x].setDisplay(upg.unl())
+		if (upg.unl()) {
+			tmp.el["mvUpg_scale_"+x].setTxt(x==4?getScalingName("mvUpg4"):getScalingName("mvUpg", x))
+			tmp.el["mvUpg_lvl_"+x].setTxt(format(player.mvUpg[x]||0,0)+(tmp.upgs.mv[x].bonus.gt(0)?(" + ")+format(tmp.upgs.mv[x].bonus,0):""))
+			tmp.el["mvUpg_btn_"+x].setClasses({btn: true, locked: player.mv.points.lt(tmp.upgs.mv[x].cost)})
+			tmp.el["mvUpg_cost_"+x].setTxt(format(tmp.upgs.mv[x].cost)+" Multiverse Fragments")
+			tmp.el["mvUpg_step_"+x].setTxt(tmp.upgs.mv[x].effDesc.step)
+			tmp.el["mvUpg_eff_"+x].setHTML(tmp.upgs.mv[x].effDesc.eff)
+			tmp.el["mvUpg_auto_"+x].setDisplay(player.mainUpg.rp.includes(3))
+			tmp.el["mvUpg_auto_"+x].setTxt(player.autoMvUpg[x]?"ON":"OFF")
+		}
+	}
+}
 function updateTickspeedHTML() {
 	let unl = player.rp.unl
 	tmp.el.tickspeed_div.setDisplay(unl)
@@ -477,7 +512,8 @@ function updateBlackHoleHTML() {
 }
 
 function updateOptionsHTML() {
-	if (tmp.stab[9] == 0) {
+	if (tmp.stab[11] == 0) {
+
 		for (let x = 0; x < CONFIRMS.length; x++) {
 			let unl = 
 			CONFIRMS[x] == "sn"
@@ -499,7 +535,9 @@ function updateOptionsHTML() {
 		tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
 		tmp.el.mass_dis.setTxt(["Default",'Always show g','Always show mlt','Important units only'][player.options.massDis])
 	
-	} else if (tmp.stab[9] == 1) {
+
+	} else if (tmp.stab[11] == 1) {
+
 		updateResourcesHiderHTML()
 	}
 }
@@ -529,6 +567,7 @@ function updateHTML() {
 			if (tmp.stab[0] == 0) {
 				updateRanksHTML()
 				updateMassUpgradesHTML()
+				updateMvUpgradesHTML()
 				updateTickspeedHTML()
 				
 				tmp.el.massSoft1.setDisplay(tmp.massGain.gte(tmp.massSoftGain))
@@ -577,6 +616,9 @@ function updateHTML() {
 			else if (tmp.stab[0] == 3) {
 				updateStarsHTML()
 			}
+			else if (tmp.stab[0] == 7) {
+				updateMvUpgradesHTML()
+			}
 		}
 		else if (tmp.tab == 1) {
 			updateStatsHTML()
@@ -605,7 +647,8 @@ function updateHTML() {
 			}
 		}
 		if (tmp.stab[8] == 4) updateOrbHTML()
-		else if (tmp.tab == 10) {
+		else if (tmp.tab == 10) updateSpellHTML()
+		else if (tmp.tab == 11) {
 			updateOptionsHTML()
 		}
 	}

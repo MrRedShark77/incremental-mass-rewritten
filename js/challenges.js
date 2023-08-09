@@ -667,7 +667,7 @@ ret = overflow(ret,1e68,0.5)
     • Pre-Infinity Global Speed is much more weaker, but it applies to Pre-Quantum Global Speed exponentially<br>
     • You are trapped in Mass Dilation.
     `,
-    reward: `Boosts Galaxy Particles gain.<br><span class='orange'>At 10 completions, unlock Multiverse Fragments</span>`,
+    reward: `Boosts Galaxy Particles gain.<br><span class='orange'>At 3 completions, unlock Multiverse Fragments</span>`,
     max: E(10),
     inc: E('e7.5e347'),
     pow: E(200),

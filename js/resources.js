@@ -141,6 +141,15 @@ const RESOURCES_DIS = {
 
         resetBtn() { ORB.getOrb() },
     },
+    mlt: {
+        unl: ()=>tmp.mlt_unl,
+        icon: "mlt",
+        class: "orange",
+
+        desc: (gs)=>format(tmp.mv_time)+'s / '+ format(tmp.mv.cycleTime)+"s | " + format(player.mv.points)+"<br>"+"(+"+(tmp.mv_time.gte(tmp.mv.cycleTime)?format(tmp.mv.cycleGain):'0')+")",
+
+        resetBtn() { CONFIRMS_FUNCTION.multiverse() },
+    },
     /*
     mass: {
         unl: ()=>true,

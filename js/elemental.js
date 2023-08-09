@@ -649,6 +649,7 @@ const ELEMENTS = {
             effect() {
                 let pent = player.ranks.pent
                 let x = hasElement(195) ? pent.softcap(2e5,0.25,0).root(1.5).div(400) : pent.root(2).div(1e3)
+                if (hasElement(330)) x = x.pow(tmp.elements.effect[330])
                 return x.toNumber()
             },
             effDesc(x) { return "+^"+format(x) },
@@ -1859,7 +1860,105 @@ cost: E('ee1290'),
                    x = (player.chal.comps[18].mul(25).pow(10).add(1)).log(1.1)
                 return x},
                 effDesc(x) { return "x"+format(x,3)+"" },
-            },
+},
+{
+            desc: 'Uncorrupt Unhexbium-162.',
+            cost: E('ee27000'),
+},
+{
+            c16: true,
+            desc: `[glx13] Effect is better.`,
+            cost: E('e1.75e617'),
+},
+{
+            inf: true,
+            desc: `Reduce Meta-Scaling Power Hardcap to <b>25%</b>, but Bioctnilium-280 is weaker.`,
+            cost: E(1e68),
+},
+{
+
+            dark: true,
+            desc: `Unsoftcap Dalton Fragments effects.`,
+            cost: E('e2.55e10'),
+},
+{
+            desc: 'Newton Theorem sixth star now applies to C18 max completions.',
+            cost: E('ee45500'),
+},
+{
+            c16: true,
+            desc: `Reduce Accelerators cost by Triunnilium-310 effect.`,
+            cost: E('e1e715'),
+},
+{
+        inf: true,
+        desc: `Unlock fifth row main upgrades per Silver Grading.`,
+        effect() {
+            let x = E(0)
+           if (player.galaxy.grade.type[0].gte(20)) x = x.add(1)
+           if (player.galaxy.grade.type[1].gte(20)) x = x.add(1)
+           if (player.galaxy.grade.type[2].gte(20)) x = x.add(1)
+           if (player.galaxy.grade.type[3].gte(20)) x = x.add(1)
+           if (player.galaxy.grade.type[4].gte(20)) x = x.add(1)
+            return x.floor()
+        },
+        effDesc(x) { return "+"+format(x) },
+        cost: E('1e78'),
+},
+{
+    dark: true,
+    desc: `Unlock 7th star for Theorems.`,
+    cost: E('e3.5e10'),
+},
+{
+    c16: true,
+    desc: `Remove Challenge 12 reward effect softcap.`,
+    cost: E('e5e916'),
+},
+{
+    desc: 'Change Beryllium-4 Hardcap to Softcap.',
+    cost: E('ee100400'),
+},
+{
+    inf: true,
+    desc: `Unlock Post-17th Fusion Tiers, that will muonize all of the effects.`,
+    cost: E(1e100),
+},
+{
+    desc: 'Galaxy Particles main effect is overpowered.',
+    cost: E('ee100670'),
+},
+{
+    dark: true,
+    desc: `Exotic-Prestige Level and Meta-Honor starts later based on Infinity Points.`,
+    effect() {
+        let x = E(0)
+        x = player.inf.points.add(1).log10().max(1).log2()
+        return x
+    },
+    effDesc(x) { return "x"+format(x) },
+    cost: E('e1.795e11'),
+},
+{
+    inf: true,
+    desc: `Unlock the chances to get last grading type.`,
+    cost: E(1e110),
+},
+{
+    desc: 'Protoversal Theorem 6th star effect formula is better.',
+    cost: E('ee103650'),
+},
+{
+    dark: true,
+    desc: `Fermium-100 is much better based on Dark Rays.`,
+    effect() {
+        let x = E(0)
+        x = player.dark.rays.add(1).log10().max(1).log10().root(5).div(5).add(1)
+        return x
+    },
+    effDesc(x) { return "^"+format(x) },
+    cost: E('e2.83975e11'),
+},
     ],
     /*
     {
@@ -1910,6 +2009,9 @@ cost: E('ee1290'),
         if (hasElement(253)) u += 16
         if (hasElement(269)) u += 23
         if (hasElement(292)) u += 22
+
+        if (hasTree('glx20')) u += 8
+        if (hasElement(322)) u += 8
         return u
     },
 }

@@ -169,7 +169,7 @@ if (hasElement(290) && !(CHALS.inChal(16)|| CHALS.inChal(17)|| CHALS.inChal(19) 
         tmp.overflow_power.mass = [op,op2,op3,op4]
 
         if (CHALS.inChal(13)|| CHALS.inChal(18)) x = x.max(1).log10().tetrate(1.5)
-
+        if (hasTree('glx21')) x = x.pow(treeEff('glx21'))
         return x
     },
     massSoftGain() {

@@ -22,7 +22,8 @@ const TABS = {
         { id: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu" },
         { id: "Darkness", icon: "ic:baseline-remove-red-eye", color: "grey", unl() { return player.dark.unl }, style: "dark" },
         { id: "Infinity", icon: "game-icons:infinity", color: "orange", unl() { return tmp.inf_unl }, style: "inf" },
-        { id: "Galaxy", icon: "solar:star-rings-broken", color: "white", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
+        { id: "Galaxy", icon: "solar:black-hole-line-duotone", color: "white", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
+        { id: "Multiverse", icon: "solar:star-rings-broken", color: "white", unl() { return tmp.mlt_unl }, style: "mlt" },
         { id: "Options", icon: "mdi:gear" },
     ],
     2: {
@@ -34,6 +35,7 @@ const TABS = {
             { id: "Indescribable Matter", unl() { return quUnl() }, style: "qu" },
             { id: "The Parallel", unl() { return hasInfUpgrade(9) }, style: "inf" },
             { id: "Antimatter", unl() { return hasElement(268) }, style: "dark" },
+            { id: "Multiversal Mass", unl() { return tmp.mlt_unl }, style: "inf" },
         ],
         1: [
             { id: "Ranks Rewards" },
@@ -86,6 +88,10 @@ const TABS = {
             { id: "Grading", unl() { return player.galaxy.times.gte(1) }, style: "glx" },
         ],
         10: [
+            { id: "Travel", style: "mlt" },
+            { id: "Circle Perks", unl() { return player.galaxy.times.gte(1) }, style: "mlt" },
+        ],
+        11: [
             { id: "Options" },
             { id: "Resource Hider" },
         ],

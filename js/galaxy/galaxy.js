@@ -6,7 +6,7 @@ const GALAXY = {
     gain() {
         let x = E(0.5)
  x = x.mul(tmp.galaxy.genEff)
- if (player.galaxy.grade.type[0].gte(1)) x = x.mul(tmp.grade.eff[0][0])
+ if (player.galaxy.grade.type[0].gte(1)) x = x.mul(gradeEffect(0,0))
  if (hasElement(309)) x = x.mul(elemEffect(309))
  if (hasElement(314)) x = x.mul(elemEffect(314))
         return x
@@ -25,7 +25,7 @@ const GALAXY = {
         let pow = E(1.25)
         let bonus = E(0)
         if (hasTree("glx7")) bonus = bonus.add(treeEff('glx7'))
-        if (player.galaxy.grade.type[2].gte(1)) pow = pow.add(tmp.grade.eff[2][0])
+        if (player.galaxy.grade.type[2].gte(1)) pow = pow.add(gradeEffect(2,0))
         if (hasTree('glx1')) pow = pow.mul(treeEff('glx1'))
         if (hasElement(302)) x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).root(.25).max(1)).max(1)
        else if (hasElement(299)) x = player.galaxy.generator.add(tmp.galaxy.bonus).add(1).pow(pow).mul(player.galaxy.stars.add(1).root(2).max(1)).max(1)
@@ -97,7 +97,6 @@ if (GRADE.unl()) {
 }
 }
 function updateGalaxiesTemp() {
-    updateGradeTemp()
 tmp.galaxy.req = GALAXY.cost()
 tmp.galaxy.maxlimit = GALAXY.req()
 tmp.galaxy.gain = GALAXY.gain()

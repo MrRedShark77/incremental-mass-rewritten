@@ -266,8 +266,8 @@ const CORE = {
             },
             s => {
                 let x = Math.log10(s+3)/2+1
-
-                return Math.floor(x)
+                if (hasElement(329)) x = Math.log2(s+3)/2+1
+                return x
             },
             s => {
                 let x = E(1).pow(s)

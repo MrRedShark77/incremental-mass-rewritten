@@ -26,6 +26,8 @@
     <script src="js/challenges.js"></script>
     <script src="js/debug.js"></script>
 
+    <script src="js/multiverse/circle.js"></script>
+
     <script src="js/galaxy/galaxy.js"></script>
     <script src="js/galaxy/grading.js"></script>
 
@@ -408,7 +410,9 @@
                                 Antimatter Generator Power: <span id="am_step">X</span><br>
                                 Antimatter Generator Effect: <span id="am_eff">X</span> to Antimatter gain
                             </div>
-                        </div></div>
+                        </div></div><div id="stab_frame0_7">
+                            <div id="mv_upgs_table"></div><br><br>
+                        </div>
                     </div><div id="tab_frame1">
                         <div id="stab_frame1_0">
                             <div id="ranks_reward_btn" class="table_center"></div><br>
@@ -776,6 +780,24 @@
                         </div>
                     </div><div id="tab_frame10">
                         <div id="stab_frame10_0">
+                            <div class="table_center"><div style="width: 50%; min-width: 500px;">
+                                <b style="font-size:20px">Current cycle time is <span id="cycleTime"></span></b><br>
+                                Completing the cycle will give you <b style="font-size:20px" id="cycleGain"></b> Multiversal Fragments
+                                <div class='table_center' id="circle_upg_table"></div><br>
+                                You have <h3 id="orbitAmt"></h3> orbits, that weakens your Multiversal Fragments gain/cycle<br>
+                                Your ring length is <h3 id="ringLength"></h3> mm, that boosts your Multiversal Fragments gain/cycle<br>
+                                Your core level is <h3 id="coreLvl"></h3>, that boosts the base of core effect<br>
+                                Your core power is <h3 id="corePower"></h3>, that affects core effect and giving you a boost to Multiversal Fragments gain/cycle<br>
+                                Note: Every boosting cicrle part are making the cycle time higher!
+                    </div>
+                    <div class='circleDebuff'style="width: 25%; min-width: 250px;">
+                        <h3>Portal Spell's Circle Debuffs:</h3><br><span class="sky">Your multiverse fragments gain per cycle is weakened by <h3 id="orbitNerf"></h3></span><br>(Based on Orbits)<br><span class="sky">Your circle's parts are boosting cycle time by +<h3 id="timeScale"></h3></span><br>(Based on Everyting)</span><br>
+            </div>
+            <div class='circleBuff'style="width: 25%; min-width: 250px;">
+                <h3>Portal Spell's Circle Buffs:</h3><br><span class="sky">Your multiverse fragments gain per cycle is boosted by <h3 id="ringEff"></h3></span><br>(Based on Ring Length)<br><span class="sky">Your multiverse fragments gain per cycle is boosted by <h3 id="coreEff"></h3></span><br>(Based on Core Level and Core Power)
+    </div></div>
+        </div></div><div id="tab_frame11">
+                        <div id="stab_frame11_0">
                             <button class="btn" onclick="save()">Save</button>
                             <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',()=>wipe(true))">Hard Reset</button>
                             <button class="btn" onclick="exporty()">Export</button>
@@ -803,7 +825,7 @@
                             <!-- <a href="https://www.easycounter.com/">
                             <img src="https://www.easycounter.com/counter.php?mrredshark77"
                             border="0" alt="error"></a> -->
-                        </div><div id="stab_frame10_1">
+                        </div><div id="stab_frame11_1">
                             <div id="res_hider_table" class="table_center"></div>
                         </div>
 
