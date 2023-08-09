@@ -1,3 +1,5 @@
+/* BUILDINGS.JS: ORIGINAL BY AAREX, EDITED BY MRREDSHARK77 */
+
 const BUILDINGS_DATA = {
     mass_1: {
         name: "Muscler",
