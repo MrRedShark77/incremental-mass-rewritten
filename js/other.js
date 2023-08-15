@@ -214,6 +214,10 @@ const QUOTES = [
     <h2>Chapter 12: Broken Infinity</h2><br>
     <img class='quote' src='images/quotes/12.png'><br>
     Your omnipotence ascends as you surpass Infinity.
+    `,`
+    <h2>Chapter 13: Urobros</h2><br>
+    <img class='quote' src='images/quotes/13.png'><br>
+    Outbusting Infinity's barrier within Reality III, you're reborn as a Serp'iu forest snake.
     `,
 ]
 
@@ -361,36 +365,49 @@ function keyEvent(e) {
 
     // console.log(k)
 
-    if (k == 38 || k == 40) {
-        let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
-
-        while (true) {
-            t += v
-            tt = TABS[1][t]
-            if (!tt) {
-                tmp.tab = s
-                return
+    if (tmp.tab_name == 'snake') {
+        if (k == 87 || k == 38) snake.move = 0
+        else if (k == 68 || k == 39) snake.move = 1
+        else if (k == 83 || k == 40) snake.move = 2
+        else if (k == 65 || k == 37) snake.move = 3
+    } else {
+        if (k == 38 || k == 40) {
+            let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
+    
+            while (true) {
+                t += v
+                tt = TABS[t]
+                if (!tt) {
+                    tmp.tab = s
+                    tmp.stab[s] ||= 0
+                    return
+                }
+                else if (!tt.unl || tt.unl()) {
+                    tmp.tab = t
+                    tmp.stab[t] ||= 0
+                    return
+                }
             }
-            else if (!tt.unl || tt.unl()) {
-                tmp.tab = t
-                return
-            }
-        }
-    } else if (k == 37 || k == 39) {
-        if (!TABS[2][tmp.tab]) return
-
-        let v = k == 39 ? 1 : -1, t = tmp.stab[tmp.tab], s = t
-
-        while (true) {
-            t += v
-            tt = TABS[2][tmp.tab][t]
-            if (!tt) {
-                tmp.stab[tmp.tab] = s
-                return
-            }
-            else if (!tt.unl || tt.unl()) {
-                tmp.stab[tmp.tab] = t
-                return
+        } else if (k == 37 || k == 39) {
+            if (!TABS[tmp.tab].stab) return
+    
+            let v = k == 39 ? 1 : -1, t = tmp.stab[tmp.tab], s = t
+    
+            while (true) {
+                t += v
+                tt = TABS[tmp.tab].stab[t]
+                if (!tt) {
+                    tmp.stab[tmp.tab] = s
+                    return
+                }
+                else {
+                    let unl = true
+                    if (Array.isArray(tt)) unl = (!tt[1] || tt[1]()) && (!tt[2] || tt[2]())
+                    if (unl) {
+                        tmp.stab[tmp.tab] = t
+                        return
+                    }
+                }
             }
         }
     }
@@ -457,16 +474,16 @@ scaling_ch: 0,
 */
 
 function updateStatsHTML() {
-    if (tmp.stab[1] == 0) for (let i in RANKS.names) {
+    if (tmp.tab_name == 'rank-reward') for (let i in RANKS.names) {
         tmp.el[`stats_${RANKS.names[i]}_btn`].setDisplay(player.ranks[RANKS.names[i]].gt(0))
     }
-    else if (tmp.stab[1] == 1) for (let i in SCALE_TYPE) {
+    else if (tmp.tab_name == "scaling") for (let i in SCALE_TYPE) {
         tmp.el[`stats_${SCALE_TYPE[i]}_btn`].setDisplay(tmp.scaling[SCALE_TYPE[i]].length>0)
     }
-    else if (tmp.stab[1] == 2) for (let i in PRESTIGES.names) {
+    else if (tmp.tab_name == "pres-reward") for (let i in PRESTIGES.names) {
         tmp.el[`stats_${PRESTIGES.names[i]}_btn`].setDisplay(player.prestiges[i].gt(0))
     }
-    else if (tmp.stab[1] == 4) for (let i in ASCENSIONS.names) {
+    else if (tmp.tab_name == "asc-reward") for (let i in ASCENSIONS.names) {
         tmp.el[`stats_${ASCENSIONS.names[i]}_btn`].setDisplay(player.ascensions[i].gt(0))
     }
 }

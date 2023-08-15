@@ -6,11 +6,20 @@ const RESOURCES_DIS = {
         desc: (gs)=>formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true),
     },
     rp: {
-        unl: ()=>true,
+        unl: ()=>OURO.evolution < 1,
         icon: "rp",
         class: "red",
 
         desc: (gs)=>format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"),
+    
+        resetBtn() { FORMS.rp.reset() },
+    },
+    cp: {
+        unl: ()=>OURO.evolution >= 1,
+        icon: "evolution/calm_power",
+        class: "red",
+
+        desc: (gs)=>format(player.evo.cp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.evo.cp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"),
     
         resetBtn() { FORMS.rp.reset() },
     },
@@ -127,7 +136,15 @@ const RESOURCES_DIS = {
 
         resetBtn() { INF.goInf() },
     },
+    ourobros: {
+        unl: ()=>OURO.unl() || player.chal.comps[20].gte(1),
+        icon: "ourobros",
+        class: "limegreen",
 
+        desc: (gs)=>tmp.ouro.unl ? "Evolution "+player.evo.times : "Something Happened...",
+
+        resetBtn() { OURO.reset() },
+    },
     /*
     mass: {
         unl: ()=>true,

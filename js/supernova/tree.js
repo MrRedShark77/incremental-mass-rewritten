@@ -1275,7 +1275,7 @@ function resizeCanvas() {
 }
 
 function drawTreeHTML() {
-    if (tmp.tab == 5) {
+    if (tmp.tab_name == "sn-tree") {
         if (tree_canvas.width == 0 || tree_canvas.height == 0) resizeCanvas()
         drawTree()
     }

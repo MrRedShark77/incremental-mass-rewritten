@@ -28,11 +28,23 @@ const TOOLTIP_RES = {
             return h
         },
     },
+    cp: {
+        full: "Calm Power",
+        desc() {
+            let h = `<i>
+            Reach over <b>${formatMass(1e15)}</b> of normal mass to reset previous features for gain Calm Powers.
+            </i>`
+
+            return h
+        },
+    },
     dm: {
         full: "Dark Matter",
         desc() {
+            let r = OURO.evolution >= 1 ? `<b>${format(1e5)}</b> Calm Power` : `<b>${format(1e20)}</b> Rage Power`
+
             let h = `<i>
-            Reach over <b>${format(1e20)}</b> Rage Power to reset all previous features for gain Dark Matters.
+            Reach over ${r} to reset all previous features for gain Dark Matters.
             </i>`
 
             return h
@@ -230,6 +242,25 @@ const TOOLTIP_RES = {
             Your normal mass limit is <b>${formatMass(tmp.inf_limit)}</b>
             <br><br>
             Going Infinity resets everything darkness as well!
+            </i>`
+
+            return h
+        },
+    },
+    ourobros: {
+        full: "Ourobrosity",
+        desc() {
+            if (!tmp.ouro.unl) return "Something Happened...";
+
+            let h = `
+            You're currently at Evolution <b class="limegreen">${player.evo.times}</b>. Evolving will cause something to be changed...
+            <br class='line'>
+            <i>
+            Complete <b class="yellow">Challenge 20</b> first to Evolve.
+            <br><br>
+            Ourobrosity resets everything up to this point!
+            <br><br>
+            Evolving ceases escrow content in this Evolution!
             </i>`
 
             return h

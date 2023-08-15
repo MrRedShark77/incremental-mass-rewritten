@@ -5,7 +5,7 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].add(1)
             let reset = true
-            if (tmp.chal14comp || tmp.inf_unl) reset = false
+            if (OURO.evolution >= 1 || tmp.chal14comp || tmp.inf_unl) reset = false
             else if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
@@ -20,7 +20,7 @@ const RANKS = {
         if (tmp.ranks[type].can) {
             player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
             let reset = true
-            if (tmp.chal14comp || tmp.inf_unl) reset = false
+            if (OURO.evolution >= 1 || tmp.chal14comp || tmp.inf_unl) reset = false
             if (type == "rank" && player.mainUpg.rp.includes(4)) reset = false
             else if (type == "tier" && player.mainUpg.bh.includes(4)) reset = false
             else if (type == "tetr" && hasTree("qol5")) reset = false
@@ -59,10 +59,10 @@ const RANKS = {
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
-        rank() { return player.mainUpg.rp.includes(5) || tmp.inf_unl },
-        tier() { return player.mainUpg.rp.includes(6) || tmp.inf_unl },
-        tetr() { return player.mainUpg.atom.includes(5) || tmp.inf_unl },
-        pent() { return hasTree("qol8") || tmp.inf_unl },
+        rank() { return OURO.evolution >= 1 || player.mainUpg.rp.includes(5) || tmp.inf_unl },
+        tier() { return OURO.evolution >= 1 || player.mainUpg.rp.includes(6) || tmp.inf_unl },
+        tetr() { return OURO.evolution >= 1 || player.mainUpg.atom.includes(5) || tmp.inf_unl },
+        pent() { return OURO.evolution >= 1 || hasTree("qol8") || tmp.inf_unl },
         hex() { return true },
     },
     desc: {
@@ -75,7 +75,7 @@ const RANKS = {
             '6': "boost mass gain by (x+1)^2, where x is rank.",
             '13': "triple mass gain.",
             '14': "double Rage Powers gain.",
-            '17': "Rank 6 reward effect is better. [(x+1)^2 -> (x+1)^x^1/3]",
+            '17': "Rank 6 reward effect is better. [(x+1)^2 ➜ (x+1)^x^1/3]",
             '34': "mass upgrade 3 softcaps 1.2x later.",
             '40': "adds tickspeed power based on ranks.",
             '45': "rank boosts Rage Powers gain.",

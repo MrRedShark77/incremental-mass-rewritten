@@ -46,13 +46,15 @@ const FORMS = {
     },
     massGain() {
         let x = E(1)
-        x = x.add(BUILDINGS.eff('mass_1'))
+        x = x.add(BUILDINGS.eff('mass_1',undefined,0))
         if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         if (player.mainUpg.bh.includes(10)) x = x.mul(tmp.upgs.main?tmp.upgs.main[2][10].effect:E(1))
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         if (!hasElement(162)) x = x.mul(tmp.stars.effect)
         if (hasTree("m1") && !hasElement(164)) x = x.mul(tmp.supernova.tree_eff.m1)
+
+        x = x.mul(appleEffect('mass'))
 
         x = x.mul(tmp.bosons.effect.pos_w[0])
 
@@ -298,7 +300,7 @@ const FORMS = {
             if (hasElement(63)) t = t.mul(25)
             t = t.mul(tmp.prim.eff[1][1])
             t = t.mul(tmp.radiation.bs.eff[1])
-            if (player.atom.unl) bonus = bonus.add(tmp.atom.atomicEff)
+            if (player.atom.unl) bonus = bonus.add(tmp.atom.atomicEff[0])
             bonus = bonus.mul(getEnRewardEff(4))
 
             step = E(1.5)
@@ -384,7 +386,9 @@ const FORMS = {
     },
     rp: {
         gain() {
-            if (tmp.c16active || player.mass.lt(1e15) || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
+            if (player.mass.lt(1e15)) return E(0)
+            if (OURO.evolution == 0) if ( tmp.c16active || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
+
             let gain = player.mass.div(1e15).root(3)
             if (player.ranks.rank.gte(14)) gain = gain.mul(2)
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
@@ -408,6 +412,12 @@ const FORMS = {
 
             if (tmp.c16active || inDarkRun()) gain = expMult(gain,mgEff(1))
 
+            if (OURO.evolution >= 1) {
+                gain = gain.max(1).log10().add(1)
+
+                gain = gain.mul(appleEffect('cp'))
+            }
+
             return gain.floor()
         },
         reset() {
@@ -426,10 +436,18 @@ const FORMS = {
         DM_gain() {
             if (tmp.c16active) return player.dark.matters.amt[0]
 
-            let gain = player.rp.points.div(1e20)
-            if (CHALS.inChal(7) || CHALS.inChal(10)) gain = player.mass.div(1e180)
-            if (gain.lt(1)) return E(0)
-            gain = gain.root(4)
+            let gain
+
+            if (OURO.evolution == 0 || CHALS.inChal(7) || CHALS.inChal(10)) {
+                gain = player.rp.points.div(1e20)
+                if (CHALS.inChal(7) || CHALS.inChal(10)) gain = player.mass.div(1e180)
+                
+                if (gain.lt(1)) return E(0)
+                if (OURO.evolution < 1) gain = gain.root(4)
+            } else {
+                if (player.evo.cp.points.lt(1e5)) return E(0)
+                gain = Decimal.pow(1.00001,player.evo.cp.points)
+            }
 
             if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(tmp.supernova.tree_eff.bh1)
             if (!hasElement(204)) gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
@@ -564,6 +582,14 @@ const FORMS = {
             BUILDINGS.reset('tickspeed')
             BUILDINGS.reset('accelerator')
             player.bh.mass = E(0)
+
+            if (OURO.unl()) {
+                let s = OURO.save().evo.cp
+                if (!hasElement(70,1)) player.evo.cp.level = s.level
+                player.evo.cp.points = s.points
+                player.evo.cp.m_time = s.m_time
+            }
+
             FORMS.rp.doReset()
         },
         effect() {
@@ -665,6 +691,7 @@ const FORMS = {
 
 function loop() {
     diff = Date.now()-date;
+    mass_type = ['short','standard'][player.options.massType]
     ssf[1]()
     updateTemp()
     updateHTML()
@@ -740,26 +767,62 @@ function format(ex, acc=4, max=12, type=player.options.notation) {
 
 function turnOffline() { player.offline.active = !player.offline.active }
 
-const ARV = ['mlt','mgv','giv','tev','pev','exv','zev','yov']
+var mass_type = 'standard'
+const VERSES = {
+    standard: [
+        [
+            // Pre-Archverse Verses
+            'multi',  'mega',   'giga'   ,'tera'  ,'peta'   ,'exa'   ,'zetta'   ,'yotta' ,'rinta'   ,'quetta',
+            'xenna',  'weka',   'vendeka','uda'   ,'tradaka','sorta' ,'quexa'   ,'pepta' ,'ocha'    ,'nena',
+            'minga',  'luma',   'kema'   ,'jretta','iqatta' ,'huitta','gatextta','feqesa','enscenda','desyta',
+            'ceanata','bevvgta','avta'
+        ],[
+            // Pre-Lodeverse Verses
+            'multi','meta','xeno','hyper','ultra','omni'
+        ],
+    ],
+    short: [
+        [
+            // Pre-Archverse Verses
+            'mlt','mg','gi','te','pe','ex','ze','yo','ri','qu',
+             'xn','wk','ve','ud','tr','sr','qx','pp','oc','ne',
+             'mi','lu','ke','jr','iq','hu','ga','fe','en','ds',
+             'ce','be','av'
+        ],[
+            // Pre-Lodeverse Verses
+            'mlt','met','xen','hyp','ult','omv'
+        ],
+    ]
+}
+const MASS_NAMES = {
+    standard: [
+        'gramm',
+        'kilogramm',
+        'tonne',
+        'mass of mount everest',
+        'mass of earth',
+        'mass of sun',
+        'mass of milky way galaxy',
+        'universe',
 
-function formatMass(ex) {
-    let md = player.options.massDis
-    ex = E(ex)
-    if (md == 1) return format(ex) + ' g'
-    else if (md == 2) return format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt'
-    else if (md == 3) {
-        return  ex.gte('ee14979') ? formatARV(ex) : ex.gte('1.5e1000000056') ? format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt' : format(ex) + ' g'
-    }
+        'verse', // 8
+        'arch',  // 9
+        'lode',  // 10
+    ],
+    short: [
+        'g',
+        'kg',
+        'tonne',
+        'MME',
+        'M⊕',
+        'M☉',
+        'MMWG',
+        'uni',
 
-    if (ex.gte(E(1.5e56).mul('ee9'))) return formatARV(ex)
-    if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' uni'
-    if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' MMWG'
-    if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' M☉'
-    if (ex.gte(5.972e27)) return format(ex.div(5.972e27)) + ' M⊕'
-    if (ex.gte(1.619e20)) return format(ex.div(1.619e20)) + ' MME'
-    if (ex.gte(1e6)) return format(ex.div(1e6)) + ' tonne'
-    if (ex.gte(1e3)) return format(ex.div(1e3)) + ' kg'
-    return format(ex) + ' g'
+        'v',  // 8
+        'ar', // 9
+        'ld', // 10
+    ],
 }
 
 function getMltValue(mass){
@@ -771,43 +834,122 @@ function getMltValue(mass){
 	}
 }
 
-function formatARV(ex,gain=false) {
-    let mlt = getMltValue(ex);
-    if (gain) mlt = ex
-    let arv = mlt.log10().div(15).floor()
-	if (player.options.massDis == 2 || player.options.massDis == 3 && arv.lt(1002))arv = E(0)
-	if(arv.add(2).gte(1000))return format(mlt.log10().div(15).add(2))+" arvs";
-    return format(mlt.div(Decimal.pow(1e15,arv))) + " " + (arv.gte(8)?"arv^"+format(arv.add(2),0):ARV[arv.toNumber()])
+function getARVName(i,lode) { const n = MASS_NAMES[mass_type], v = VERSES[mass_type][0][i-1]; return i > 0 ? v ? v + (!lode && (mass_type == 'standard' || i != 1) ? n[8] : "") : (lode ? n[9] : n[9]+n[8])+"^"+format(i,0) : "" }
+
+function formatARV(ex,lode) {
+    if (lode && ex.lt(1e15)) return format(ex) + " "
+    const n = MASS_NAMES[mass_type]
+    const mlt = lode ? ex.div(1e15) : getMltValue(ex);
+    const arv = mlt.log10().div(15)
+	if(arv.add(1).gte(1000)) return format(arv.add(1))+" "+n[9]+ (lode ? "s-" : n[8]+"s");
+    return format(mlt.div(Decimal.pow(1e15,arv.floor()))) + " " + getARVName(arv.add(1).floor().toNumber(),lode) + (lode ? "-" : "")
 }
 
-function formatGain(amt, gain, isMass=false) {
-    let md = player.options.massDis
-    let f = isMass?formatMass:format
-    let next = amt.add(gain)
-    let rate
-    let ooms = next.max(1).log10().div(amt.max(1).log10())
-    if (((ooms.gte(10) && amt.gte('ee100')) || ooms.gte(10**0.05) && amt.gte('ee1000')) && (!isMass || md == 1 || md == 2)) {
-        ooms = ooms.log10().mul(20)
-        rate = "(+"+format(ooms) + " OoMs^2/sec)"
-    }else{
-		ooms = next.div(amt)
-		if ((ooms.gte(10) && amt.gte(1e100)) || (isMass && md == 2)) {
-        ooms = ooms.log10().mul(20)
-        if (isMass && amt.gte(mlt(1)) && ooms.gte(1e6) && md != 1){
-			let mlt_amt = getMltValue(amt)
-			let mlt_next = getMltValue(amt.add(gain.div(20)))
-			rate = "(+"+formatARV(mlt_next.sub(mlt_amt).mul(20),true) + "/sec)"
-		}
-        else rate = "(+"+format(ooms) + " OoMs/sec)"
-		if ((md == 0 || md == 3) && isMass){
-			let arv_amt = getMltValue(amt).log10().div(15);
-			let arv_next = getMltValue(amt.add(gain.div(20))).log10().div(15);
-			if (getMltValue(gain).log10().div(15).gte(1000) || arv_next.sub(arv_amt).gte(10))rate = "(+"+format(arv_next.sub(arv_amt).mul(20)) + " arvs/sec)"
-		}
+function formatLDV(ex) {
+    const n = MASS_NAMES[mass_type]
+    const ldv = E(ex).slog(10).toNumber() - 1.9542425094393248
+    const ldv_floor = Math.floor(ldv)
+    if (ldv >= 1000) return format(ldv)+' '+n[10]+n[8]+'s'
+    var v = VERSES[mass_type][1][ldv_floor-1]
+    return formatARV(ex.iteratedlog(10,ldv_floor).div(1e9),true) + "" + (v ? v + (mass_type == 'standard' ? n[8] : "") : n[10]+n[8]+"^"+format(ldv_floor,0))
+    // Decimal.tetrate(10, ldv % 1 + 1).div(10)
+}
+
+const DT = Decimal.tetrate(10,6)
+const MAX_ARVS = Decimal.iteratedexp(10,2,VERSES.standard[0].length*15+9)
+const LOG_MAX_ARVS = MAX_ARVS.log10()
+const MAX_LDVS = Decimal.iteratedexp(10,VERSES.standard[1].length+2,9)
+
+function formatGain(a,e,mass) {
+    const g = Decimal.add(a,e), f = mass ? formatMass : format, n = MASS_NAMES[mass_type], verse = n[8], arch = n[9], lode = n[10];
+
+    if (mass && player.options.massDis == 1) mass = false
+
+    if (g.neq(a)) {
+        if (mass) {
+            if (a.gte('eee9')) {
+                var ldv = E(a).slog(10).toNumber() - 1.9542425094393248, ldv_floor = Math.floor(ldv)
+
+                if (a.gte(MAX_LDVS)) {
+                    ldv = E(g).slog(10).sub(E(a).slog(10)).mul(FPS)
+                    if (ldv.gte(1)) return "(+" + ldv.format() + " "+lode+verse+"s/s)"
+                }
+
+                var sg = E(g).iteratedlog(10,ldv_floor), sa = E(a).iteratedlog(10,ldv_floor), rate = ""
+
+                if (sa.gte(LOG_MAX_ARVS)) {
+                    var arv = sg.div(sa).log10().div(15).mul(FPS)
+                    if (arv.gte(1)) rate = arv.format() + " "+arch+"s-"
+                }
+
+                if (rate === '') rate = formatARV(sg.sub(sa).div(1e9).mul(FPS),true)
+                
+                var v = VERSES[mass_type][1][ldv_floor-1]
+                return "(+" + rate + "" + (v ? v + (mass_type == 'standard' ? verse : "") : lode+verse+"^"+format(ldv_floor,0)) + "/s)"
+            }
+
+            if (a.gte(MAX_ARVS)) {
+                var arv = E(g).log10().div(E(a).log10()).log10().div(15).mul(FPS)
+                return "(+" + arv.format() + " "+arch+verse+"s/s)"
+            }
+        } else {
+            if (a.gte(DT)) {
+                var oom = E(g).slog(10).sub(E(a).slog(10)).mul(FPS)
+                if (oom.gte(1e-3)) return "(+" + oom.format() + " OoMs^^2/s)"
+            }
+    
+            if (a.gte('ee100')) {
+                var tower = Math.floor(E(a).slog(10).toNumber() - 1.3010299956639813);
+        
+                var oom = E(g).iteratedlog(10,tower).sub(E(a).iteratedlog(10,tower)).mul(FPS), rated = false;
+        
+                if (oom.gte(1)) rated = true
+                else if (tower > 2) {
+                    tower--
+                    oom = E(g).iteratedlog(10,tower).sub(E(a).iteratedlog(10,tower)).mul(FPS)
+                    if (oom.gte(1)) rated = true
+                }
+        
+                if (rated) return "(+" + oom.format() + " OoMs^"+tower+"/s)"
+            }
+        }
+    
+        if (a.gte(1e100)) {
+            const oom = g.div(a).log10().mul(FPS)
+            if (mass && oom.gte(1e9) && a.lt(MAX_ARVS)) return "(+" + formatARV(Decimal.pow(10,oom)) + "/s)"
+            if (oom.gte(1)) return "(+" + oom.format() + " OoMs/s)"
+        }
     }
-    else rate = "(+"+f(gain)+"/sec)"
-	}
-    return rate
+
+    return "(+" + f(e) + "/s)"
+}
+
+function formatMass(ex) {
+    ex = E(ex)
+
+    const n = MASS_NAMES[mass_type]
+    let md = player.options.massDis
+
+    if (md == 1 || ex.gte(EINF)) return format(ex) + ' ' + n[0]
+
+    /*
+    if (md == 1) return format(ex) + ' g'
+    else if (md == 2) return format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt'
+    else if (md == 3) {
+        return  ex.gte('ee14979') ? formatARV(ex) : ex.gte('1.5e1000000056') ? format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt' : format(ex) + ' g'
+    }
+    */
+
+    if (ex.gte('eee9')) return formatLDV(ex)
+    if (ex.gte('1.5e1000000056')) return formatARV(ex)
+    if (ex.gte(1.5e56)) return format(ex.div(1.5e56)) + ' ' + n[7]
+    if (ex.gte(2.9835e45)) return format(ex.div(2.9835e45)) + ' ' + n[6]
+    if (ex.gte(1.989e33)) return format(ex.div(1.989e33)) + ' ' + n[5]
+    if (ex.gte(5.972e27)) return format(ex.div(5.972e27)) + ' ' + n[4]
+    if (ex.gte(1.619e20)) return format(ex.div(1.619e20)) + ' ' + n[3]
+    if (ex.gte(1e6)) return format(ex.div(1e6)) + ' ' + n[2]
+    if (ex.gte(1e3)) return format(ex.div(1e3)) + ' ' + n[1]
+    return format(ex) + ' ' + n[0]
 }
 
 function formatTime(ex,acc=2,type="s") {
@@ -818,9 +960,9 @@ function formatTime(ex,acc=2,type="s") {
     return (ex.gte(10)||type!="m" ?"":"0")+format(ex,acc,12,"sc")
 }
 
-function formatReduction(ex) { ex = E(ex); return format(E(1).sub(ex).mul(100))+"%" }
+function formatReduction(ex,acc) { ex = E(ex); return format(E(1).sub(ex).mul(100),acc)+"%" }
 
-function formatPercent(ex) { ex = E(ex); return format(ex.mul(100))+"%" }
+function formatPercent(ex,acc) { ex = E(ex); return format(ex.mul(100),acc)+"%" }
 
 function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
 

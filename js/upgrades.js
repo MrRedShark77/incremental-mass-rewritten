@@ -251,7 +251,7 @@ const UPGS = {
             title: "Rage Upgrades",
             res: "Rage Power",
             getRes() { return player.rp.points },
-            unl() { return player.rp.unl },
+            unl() { return OURO.evolution < 1 },
             can(x) { return player.rp.points.gte(this[x].cost) && !player.mainUpg.rp.includes(x) },
             buy(x) {
                 if (this.can(x)) {
@@ -497,6 +497,7 @@ const UPGS = {
                 cost: E(1),
             },
             2: {
+                unl() { return OURO.evolution < 1 },
                 desc: "Tickspeeds boost BH Condenser Power.",
                 cost: E(10),
                 effect() {
@@ -523,6 +524,7 @@ const UPGS = {
                 cost: E(1e4),
             },
             5: {
+                unl() { return OURO.evolution < 1 },
                 desc: "You can automatically buy tickspeed and Rage Power upgrades.",
                 cost: E(5e5),
             },
@@ -584,7 +586,7 @@ const UPGS = {
                 cost: E(1e80),
             },
             12: {
-                unl() { return player.atom.unl },
+                unl() { return player.atom.unl && OURO.evolution < 1 },
                 desc: "Hyper Tickspeed scales 15% weaker.",
                 cost: E(1e120),
             },
@@ -610,7 +612,7 @@ const UPGS = {
                 desc: "Atomic Powers add Black Hole Condensers at a reduced rate.",
                 cost: E('e420'),
                 effect() {
-                    let ret = hasAscension(0,42) && tmp.atom ? tmp.atom.atomicEff : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
+                    let ret = hasAscension(0,42) && tmp.atom ? tmp.atom.atomicEff[0] : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
                     return ret.floor()
                 },
                 effDesc(x=this.effect()) {

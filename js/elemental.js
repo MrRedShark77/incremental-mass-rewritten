@@ -316,7 +316,7 @@ const ELEMENTS = {
             desc: `Cosmic Ray's free tickspeeds now add to RU7.`,
             cost: E(1e260),
             effect() {
-                let x = tmp.atom?tmp.atom.atomicEff:E(0)
+                let x = tmp.atom?tmp.atom.atomicEff[0]:E(0)
                 if (hasElement(82)) x = x.mul(3)
                 return x.div(6).floor()
             },
@@ -578,7 +578,7 @@ const ELEMENTS = {
             desc: `Pre-Ultra Mass Upgrades scale weaker based on Cosmic Ray's free tickspeeds.`,
             cost: E('e7e14'),
             effect() {
-                let x = tmp.atom?E(0.9).pow(tmp.atom.atomicEff.add(1).log10().pow(2/3)):E(1)
+                let x = tmp.atom?E(0.9).pow(tmp.atom.atomicEff[0].add(1).log10().pow(2/3)):E(1)
                 return x
             },
             effDesc(x) { return formatReduction(x)+" weaker" },
@@ -1660,43 +1660,46 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (tmp.inf_unl) u = 218
+        if (OURO.evolution >= 1) u = 290
         else {
-            if (player.dark.unl) u = 118+14
+            if (tmp.inf_unl) u = 218
             else {
-                if (quUnl()) u = 77+3
+                if (player.dark.unl) u = 118+14
                 else {
-                    if (player.supernova.times.gte(1)) u = 49+5
+                    if (quUnl()) u = 77+3
                     else {
-                        if (player.chal.comps[8].gte(1)) u += 14
-                        if (hasElement(18)) u += 3
-                        if (MASS_DILATION.unlocked()) u += 15
-                        if (STARS.unlocked()) u += 18
+                        if (player.supernova.times.gte(1)) u = 49+5
+                        else {
+                            if (player.chal.comps[8].gte(1)) u += 14
+                            if (hasElement(18)) u += 3
+                            if (MASS_DILATION.unlocked()) u += 15
+                            if (STARS.unlocked()) u += 18
+                        }
+                        if (player.supernova.post_10) u += 3
+                        if (player.supernova.fermions.unl) u += 10
+                        if (tmp.radiation.unl) u += 10
                     }
-                    if (player.supernova.post_10) u += 3
-                    if (player.supernova.fermions.unl) u += 10
-                    if (tmp.radiation.unl) u += 10
+                    if (PRIM.unl()) u += 3
+                    if (hasTree('unl3')) u += 3
+                    if (player.qu.rip.first) u += 9
+                    if (hasUpgrade("br",9)) u += 23 // 23
                 }
-                if (PRIM.unl()) u += 3
-                if (hasTree('unl3')) u += 3
-                if (player.qu.rip.first) u += 9
-                if (hasUpgrade("br",9)) u += 23 // 23
+                if (tmp.chal13comp) u += 10 + 2
+                if (tmp.chal14comp) u += 6 + 11
+                if (tmp.chal15comp) u += 16 + 4
+                if (tmp.darkRunUnlocked) u += 7
+                if (tmp.matterUnl) u += 14
+                if (tmp.mass4Unl) u += 6
+                if (tmp.brUnl) u += 10
             }
-            if (tmp.chal13comp) u += 10 + 2
-            if (tmp.chal14comp) u += 6 + 11
-            if (tmp.chal15comp) u += 16 + 4
-            if (tmp.darkRunUnlocked) u += 7
-            if (tmp.matterUnl) u += 14
-            if (tmp.mass4Unl) u += 6
-            if (tmp.brUnl) u += 10
-        }
 
-        if (tmp.brokenInf) u += 12
-        if (tmp.tfUnl) u += 12
-        if (tmp.ascensions_unl) u += 9
-        if (tmp.CS_unl) u += 7
-        if (tmp.c18reward) u += 12
-        if (tmp.fifthRowUnl) u += 20
+            if (tmp.brokenInf) u += 12
+            if (tmp.tfUnl) u += 12
+            if (tmp.ascensions_unl) u += 9
+            if (tmp.CS_unl) u += 7
+            if (tmp.c18reward) u += 12
+            if (tmp.fifthRowUnl) u += 20
+        }
 
         return u
     },
@@ -1859,7 +1862,7 @@ function updateElementsHTML() {
     let et = player.atom.elemTier, elayer = player.atom.elemLayer
     let infU7 = hasInfUpgrade(6)
 
-    tmp.el.elemLayer.setDisplay(tmp.eaUnl)
+    tmp.el.elemLayer.setDisplay(tmp.eaUnl || OURO.evolution > 0)
     tmp.el.elemLayer.setHTML("Elements' Layer: "+["Normal","Muonic"][elayer])
 
     tmp.el.elemTierDiv.setDisplay(tElem.max_tier[elayer]>1)
@@ -1870,7 +1873,7 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         let eu = elem_const.upgs[ch]
-        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.cs?" Corrupted Stars":" Exotic Atoms"][elayer]
+        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.apple?" Apples":eu.cs?" Corrupted Stars":" Exotic Atoms"][elayer]
         let eff = tElem[["effect","mu_effect"][elayer]]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
@@ -1904,7 +1907,19 @@ function updateElementsHTML() {
                         upg.setClasses(
                             c16 && isElemCorrupted(x,elayer)
                             ?{elements: true, locked: true, corrupted: true}
-                            :{elements: true, locked: !elem_const.canBuy(x), bought: hasElement(x,elayer), muon: elayer == 1, br: !infU7 && elayer == 0 && BR_ELEM.includes(x), final: elayer == 0 && x == 118, dark: elayer == 0 && eu.dark, c16: elayer == 0 && eu.c16, inf: elayer == 0 && eu.inf, cs: elayer == 1 && eu.cs}
+                            :{
+                                elements: true,
+                                locked: !elem_const.canBuy(x),
+                                bought: hasElement(x,elayer),
+                                muon: elayer == 1,
+                                br: !infU7 && elayer == 0 && BR_ELEM.includes(x),
+                                final: elayer == 0 && x == 118,
+                                dark: elayer == 0 && eu.dark,
+                                c16: elayer == 0 && eu.c16,
+                                inf: elayer == 0 && eu.inf,
+                                cs: elayer == 1 && eu.cs,
+                                apple: elayer == 1 && eu.apple,
+                            }
                         )
                     }
                 }
@@ -1916,6 +1931,7 @@ function updateElementsHTML() {
 }
 
 function updateElementsTemp() {
+    let evo = OURO.evolution
     let tElem = tmp.elements
     let et = player.atom.elemTier, elayer = player.atom.elemLayer
 
@@ -1944,6 +1960,6 @@ function updateElementsTemp() {
     tElem.unl_length = [ELEMENTS.getUnlLength(),MUONIC_ELEM.getUnlLength()]
 
     tElem.max_tier = [1,1]
-    if (player.dark.unl) tElem.max_tier[0]++
-    if (tmp.brokenInf) tElem.max_tier[0]++
+    if (evo >= 1 || player.dark.unl) tElem.max_tier[0]++
+    if (evo >= 1 || tmp.brokenInf) tElem.max_tier[0]++
 }

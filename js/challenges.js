@@ -13,7 +13,7 @@ function setupChalHTML() {
 }
 
 function updateChalHTML() {
-    if (tmp.stab[3]==0){
+    if (tmp.tab_name == "chal"){
         for (let x = 1; x <= CHALS.cols; x++) {
             let chal = CHALS[x]
             let unl = chal.unl ? chal.unl() : true
@@ -37,7 +37,7 @@ function updateChalHTML() {
             tmp.el.chal_ch_eff.setHTML("Currently: "+chal.effDesc(tmp.chal.eff[player.chal.choosed]))
         }
     }
-    if (tmp.stab[3]==1){
+    if (tmp.tab_name == "qc"){
         updateQCHTML()
     }
 }
@@ -62,13 +62,16 @@ function updateChalTemp() {
     if (hasTree('ct7')) v++
     if (hasTree('ct13')) v++
 
+    let p = tmp.chal.eff[20] ?? 1
+
     for (let x = 1; x <= CHALS.cols; x++) {
         let data = CHALS.getChalData(x)
         tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
-        let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:1
+        let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:E(1)
         if (x == 9) q = Decimal.min(q,'e150')
+        if (x < 20) q = x <= 16 ? q.pow(p) : q.mul(p)
         tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
@@ -647,16 +650,16 @@ const CHALS = {
         unl() { return hasElement(290) },
         title: "The Reality III",
         desc: "You are trapped in C1-19 and dark run with 1500 all glyphs. Theorems in the Core don't work. This challenge resets main upgrades.",
-        reward: `???.<br><span class="yellow">On first completion, unlock ???.</span>`,
+        reward: `Completions make previous challenges' reward powerful.<br><span class="yellow">On first completion, break the loop! You'll be able to evolve with a new layer...</span>`,
         max: E(100),
         inc: E(10),
-        pow: E(1.25),
-        start: EINF,
+        pow: E(4),
+        start: E('e1.5e25'),
         effect(x) {
-            let ret = E(1)
+            let ret = x.div(20).add(1)
             return ret
         },
-        effDesc(x) { return "???" },
+        effDesc(x) { return formatPercent(x.sub(1),0)+' powerful' },
     },
     cols: 20,
 }

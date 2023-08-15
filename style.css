@@ -259,6 +259,10 @@ button {
 	color: yellow;
 }
 
+.limegreen {
+	color: #00ff00;
+}
+
 .green {
 	color: #00bb00;
 }
@@ -449,6 +453,15 @@ button {
 	background-color: #220;
 }
 
+.btn_tab.ouro {
+	color: limegreen;
+	border-color: limegreen;
+}
+
+.btn_tab.ouro:hover {
+	background-color: #020;
+}
+
 .btn_tab.dilation {
 	color: #25ff30;
 	border-color: #25ff30;
@@ -535,6 +548,13 @@ button {
 	border-color: #a0f;
 	background-color: #6000b4;
 	box-shadow: 0 0 10px #a0f;
+}
+
+.elements.apple.bought {
+	color: #0a0;
+	border-color: #0a0;
+	background-color: #a00;
+	box-shadow: inset 0 0 10px #0a0;
 }
 
 #final_118 {
@@ -1433,6 +1453,70 @@ h4 {
 .galactic:not(.locked):hover {
 	border-color: #6ff5ff;
 	box-shadow: 0 0 10px #6ff5ff;
+}
+
+#rad_3_div {
+	background: linear-gradient(0.25turn, #560000, #564300, #00563c, #000056, #340056);
+}
+
+#ouro_scene, #ouro_quotes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1
+}
+#ouro_scene {
+    background: linear-gradient(transparent, #0F3F27)
+}
+#ouro_scene > *:not(#ouro_quotes) {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#ouro_quotes > span {
+    position: fixed;
+    left: 50%;
+    color: #007F3F7F;
+    font-size: 18px;
+	transform: translateX(-50%);
+}
+#ouro_loop {
+    animation: ouro_loop linear 5s infinite
+}
+#ouro_desc {
+	z-index: 1;
+}
+
+#ouro_evo {
+	display: flex;
+	font-weight: bold;
+	justify-content: center;
+	align-items: center;
+}
+#ouro_evo > img {
+	margin: 3px;
+}
+
+#snake_canvas {
+    width: 640px;
+    height: 480px;
+    background-image: url('images/snake/grid.png');
+    background-color: black;
+    image-rendering: pixelated;
+
+    margin: 5px
+}
+
+@keyframes ouro_loop {
+    0%{
+        transform: translate(-50%, -50%) rotate(0)
+    }
+    100%{
+        transform: translate(-50%, -50%) rotate(360deg)
+    }
 }
 
 @keyframes gal_spin-1 {

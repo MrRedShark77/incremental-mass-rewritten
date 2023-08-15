@@ -85,8 +85,11 @@ String.prototype.corrupt = function (active=true) { return active ? this.strike(
 function calc(dt) {
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
     let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
+    let evo = OURO.evolution
 
     if (tmp.pass<=0 && tmp.inf_time == 0) {
+        OURO.calc(dt)
+
         player.mass = player.mass.add(tmp.massGain.mul(du_gs))
         if (!tmp.brokenInf) player.mass = player.mass.min(tmp.inf_limit)
         
@@ -103,7 +106,7 @@ function calc(dt) {
             let upg = UPGS.main[x]
             if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) if (upg[y].unl ? upg[y].unl() : true) upg.buy(y)
         }
-        if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(du_gs))
+        if (evo == 0) if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(du_gs))
         if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(du_gs))
         if (hasElement(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(du_gs.mul(tmp.atom.quarkGainSec)))
         if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
@@ -282,6 +285,7 @@ function getPlayerData() {
             notation: 'sc',
             tree_animation: 0,
             massDis: 0,
+            massType: 0,
             res_hide: {},
 
             nav_hide: [],
@@ -335,6 +339,7 @@ function loadPlayer(load) {
     player = deepNaN(load, DATA)
     player = deepUndefinedAndDecimal(player, DATA)
     convertStringToDecimal()
+    OURO.load()
     player.qu.qc.presets = player.qu.qc.presets.slice(0,5)
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
@@ -538,6 +543,7 @@ function loadGame(start=true, gotNaN=false) {
     if (start) {
         setupHTML()
         setupTooltips()
+        setupSnake()
         updateQCModPresets()
 
         setInterval(save,60000)

@@ -95,7 +95,7 @@ const DARK = {
         QUANTUM.doReset(true,true)
 
         if (!hasElement(127)) tmp.rank_tab = 0
-        if (tmp.stab[4] == 3 && !hasElement(127)) tmp.stab[4] = 0
+        if (tmp.tab_name == "break-dil" && !hasElement(127)) tmp.stab[4] = 0
 
         tmp.pass = 2
     },
@@ -264,67 +264,65 @@ function updateDarkHTML() {
 	tmp.el.idk_div.setDisplay(unl)
     */
 
-    if (tmp.tab == 7) {
-        if (tmp.stab[7] == 0) {
-            tmp.el.darkRay.setHTML(player.dark.rays.format(0))
-            tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain.mul(inf_gs)))
+    if (tmp.tab_name == "dark-eff") {
+        tmp.el.darkRay.setHTML(player.dark.rays.format(0))
+        tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain.mul(inf_gs)))
 
-            let eff = dtmp.shadowEff
+        let eff = dtmp.shadowEff
 
-            let e = getNextDarkEffectFromID(1) +`
-                Boosts mass gain by <b>^${eff.mass.format(3)}</b><br>
-                Boosts dark ray gain by <b>x${eff.ray.format(3)}</b>
+        let e = getNextDarkEffectFromID(1) +`
+            Boosts mass gain by <b>^${eff.mass.format(3)}</b><br>
+            Boosts dark ray gain by <b>x${eff.ray.format(3)}</b>
+        `
+
+        if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
+        if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5,hasElement(9,1))
+        if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
+        if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
+        if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncaps BH-Exponent Boost's effect`.corrupt(c16)
+
+        tmp.el.dsEff.setHTML(e)
+
+        tmp.el.ab_div.setDisplay(tmp.chal14comp)
+        if (tmp.chal14comp) {
+            tmp.el.abyssalBlot.setHTML(player.dark.abyssalBlot.format(0)+" "+player.dark.abyssalBlot.formatGain(tmp.dark.abGain.mul(inf_gs)))
+
+            eff = dtmp.abEff
+
+            e = getNextDarkEffectFromID(2) + `
+                Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
+                <br>Makes mass gain softcaps 4-${hasElement(159)?8:6} start <b>^${eff.msoftcap.format(3)}</b> later
             `
 
-            if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
-            if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5,hasElement(9,1))
-            if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
-            if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
-            if (eff.bhp) e += `<br>Boosts exponent from the mass of BH formula by <b>+${eff.bhp.format(3)}</b><br>Uncaps BH-Exponent Boost's effect`.corrupt(c16)
+            if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
+            if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
+            if (eff.csp) e += `<br>Boosts cosmic string's power by <b>x${eff.csp.format(3)}</b>`
+            if (eff.mexp) e += `<br>`+`Boosts all matters gain by <b>^${eff.mexp.format(3)}</b>`.corrupt(c16)
+            if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5,hasElement(234))
+            if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`
+            if (eff.fss) e += `<br>Final Star Shards are <b>${formatPercent(eff.fss-1)}</b> stronger`
+            if (eff.ea) e += `<br>Raises Exotic Atom's formula by <b>${format(eff.ea)}</b>`+eff.ea.softcapHTML(1.75)
 
-            tmp.el.dsEff.setHTML(e)
-
-            tmp.el.ab_div.setDisplay(tmp.chal14comp)
-            if (tmp.chal14comp) {
-                tmp.el.abyssalBlot.setHTML(player.dark.abyssalBlot.format(0)+" "+player.dark.abyssalBlot.formatGain(tmp.dark.abGain.mul(inf_gs)))
-
-                eff = dtmp.abEff
-
-                e = getNextDarkEffectFromID(2) + `
-                    Boosts dark shadows gain by <b>x${eff.shadow.format(3)}</b>
-                    <br>Makes mass gain softcaps 4-${hasElement(159)?8:6} start <b>^${eff.msoftcap.format(3)}</b> later
-                `
-
-                if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
-                if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
-                if (eff.csp) e += `<br>Boosts cosmic string's power by <b>x${eff.csp.format(3)}</b>`
-                if (eff.mexp) e += `<br>`+`Boosts all matters gain by <b>^${eff.mexp.format(3)}</b>`.corrupt(c16)
-                if (eff.accelPow) e += `<br>Boosts accelerator power by <b>x${eff.accelPow.format(3)}</b>`+eff.accelPow.softcapHTML(5,hasElement(234))
-                if (eff.ApQ_Overflow) e += `<br>Atomic power & quark overflows start <b>^${eff.ApQ_Overflow.format(3)}</b> later`
-                if (eff.fss) e += `<br>Final Star Shards are <b>${formatPercent(eff.fss-1)}</b> stronger`
-                if (eff.ea) e += `<br>Raises Exotic Atom's formula by <b>${format(eff.ea)}</b>`+eff.ea.softcapHTML(1.75)
-
-                tmp.el.abEff.setHTML(e)
-            }
-
-            eff = dtmp.rayEff
-
-            e = getNextDarkEffectFromID(0) + `
-                Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
-            `
-
-            if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset per second`
-            if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`
-            if (eff.dChal) e += `<br>Adds <b>${format(eff.dChal,0)}</b> more C13-15 maximum completions`+eff.dChal.softcapHTML(100,hasBeyondRank(3,12))
-
-            tmp.el.drEff.setHTML(e)
-        } else if (tmp.stab[7] == 1) {
-            updateDarkRunHTML()
-        } else if (tmp.stab[7] == 2) {
-            updateMattersHTML()
-        } else if (tmp.stab[7] == 3) {
-            updateC16HTML()
+            tmp.el.abEff.setHTML(e)
         }
+
+        eff = dtmp.rayEff
+
+        e = getNextDarkEffectFromID(0) + `
+            Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
+        `
+
+        if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset per second`
+        if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`
+        if (eff.dChal) e += `<br>Adds <b>${format(eff.dChal,0)}</b> more C13-15 maximum completions`+eff.dChal.softcapHTML(100,hasBeyondRank(3,12))
+
+        tmp.el.drEff.setHTML(e)
+    } else if (tmp.tab_name == "dark-run") {
+        updateDarkRunHTML()
+    } else if (tmp.tab_name == "matters") {
+        updateMattersHTML()
+    } else if (tmp.tab_name == "c16") {
+        updateC16HTML()
     }
 }
 

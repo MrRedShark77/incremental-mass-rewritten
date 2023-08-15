@@ -1,6 +1,10 @@
 const CONFIRMS_FUNCTION = {
     rage() {
-        player.rp.points = player.rp.points.add(tmp.rp.gain)
+        let g = tmp.rp.gain
+
+        if (OURO.evolution >= 1) player.evo.cp.points = player.evo.cp.points.add(g)
+        else player.rp.points = player.rp.points.add(g)
+
         player.rp.unl = true
         FORMS.rp.doReset()
 

@@ -1,7 +1,7 @@
 const MUONIC_ELEM = {
     canBuy(x) {
         if (player.atom.muonic_el.includes(x)) return false
-        let upg = this.upgs[x], amt = upg.cs ? player.inf.cs_amount : tmp.exotic_atom.amount
+        let upg = this.upgs[x], amt = upg.apple ? player.ouro.apple : upg.cs ? player.inf.cs_amount : tmp.exotic_atom.amount
 
         return amt.gte(upg.cost||EINF)
     },
@@ -9,7 +9,8 @@ const MUONIC_ELEM = {
         if (this.canBuy(x)) {
             let upg = this.upgs[x]
 
-            if (upg.cs) player.inf.cs_amount = player.inf.cs_amount.sub(upg.cost)
+            if (upg.apple) player.ouro.apple = player.ouro.apple.sub(upg.cost)
+            else if (upg.cs) player.inf.cs_amount = player.inf.cs_amount.sub(upg.cost)
 
             player.atom.muonic_el.push(x)
         }
@@ -132,7 +133,7 @@ const MUONIC_ELEM = {
             cost: E(1e270),
             eff() {
                 if (!tmp.atom) return E(0)
-                let x = tmp.atom.atomicEff.max(1).log10()
+                let x = tmp.atom.atomicEff[0].max(1).log10()
                 if (hasElement(60,1)) x = x.pow(1.75)
                 return x.floor()
             },
@@ -385,6 +386,28 @@ const MUONIC_ELEM = {
             cs: true,
             desc: `Unlock the eighth star generator.`,
             cost: E('e1430'),
+        },{
+            apple: true,
+            desc: `Add new mediation’s effect.`,
+            cost: E(250),
+        },{
+            apple: true,
+            desc: `Calm Power boosts Apples.`,
+            cost: E(500),
+            eff() {
+                if (!tmp.ouro.unl) return E(1)
+                let x = expMult(player.evo.cp.points.add(1).log10().add(1),0.5)
+                return x
+            },
+            effDesc: x=>formatMult(x),
+        },{
+            apple: true,
+            desc: `Add new another mediation’s effect.`,
+            cost: E(2500),
+        },{
+            apple: true,
+            desc: `Automate mediation every second. Keep mediation on all pre-ourobrosity resets.`,
+            cost: E(5000),
         },
 
         /*
@@ -402,15 +425,18 @@ const MUONIC_ELEM = {
     getUnlLength() {
         let u = 11
 
-        if (tmp.inf_unl) u += 4
-        if (hasInfUpgrade(9)) u += 3
+        if (OURO.evolution >= 1) u = 66 + 4
+        else {
+            if (tmp.inf_unl) u += 4
+            if (hasInfUpgrade(9)) u += 3
 
-        if (tmp.brokenInf) u += 2
-        if (tmp.tfUnl) u += 6
-        if (tmp.ascensions_unl) u += 6
-        if (tmp.CS_unl) u += 6
-        if (tmp.c18reward) u += 10
-        if (tmp.fifthRowUnl) u += 8 + 10
+            if (tmp.brokenInf) u += 2
+            if (tmp.tfUnl) u += 6
+            if (tmp.ascensions_unl) u += 6
+            if (tmp.CS_unl) u += 6
+            if (tmp.c18reward) u += 10
+            if (tmp.fifthRowUnl) u += 8 + 10
+        }
 
         return u
     },

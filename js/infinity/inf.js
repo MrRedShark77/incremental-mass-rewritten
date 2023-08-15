@@ -597,7 +597,7 @@ function setupInfHTML() {
 }
 
 function updateInfHTML() {
-    if (tmp.tab == 0 && tmp.stab[0] == 5) {
+    if (tmp.tab_name == "tp") {
         tmp.el.dim_mass.setTxt(formatMass(player.inf.dim_mass)+" "+player.inf.dim_mass.formatGain(tmp.dim_mass_gain,true))
         tmp.el.dim_mass_eff.setHTML("+"+tmp.dim_mass_eff.format())
 
@@ -613,55 +613,53 @@ function updateInfHTML() {
 		tmp.el.pe_eff.setTxt(formatMult(pe_eff.eff))
         */
     }
-    else if (tmp.tab == 8) {
-        if (tmp.stab[8] == 0) updateCoreHTML()
-        else if (tmp.stab[8] == 1) {
-            let h = ``
-            for (let t in CORE) {
-                let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
-                for (let i = 0; i < MAX_STARS; i++) {
-                    if (s[i].gt(0)) hh += "Meta-Score "+format(s[i],2)+" | "+(ct.preEff[i] || '???.')+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
-                }
-                let f = player.inf.fragment[t]
-                if (f.gt(0)) hh += `<br>${f.format(0)} ${ct.title.split(' ')[0]} Fragments | ${ct.fragment[1](tmp.fragment_eff[t])}<br>`
-                if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p.mul(100),0)}%)</b></h2><br>`+hh+'<br>'
+    else if (tmp.tab_name == "inf-core") updateCoreHTML()
+    else if (tmp.tab_name == "core-eff") {
+        let h = ``
+        for (let t in CORE) {
+            let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
+            for (let i = 0; i < MAX_STARS; i++) {
+                if (s[i].gt(0)) hh += "Meta-Score "+format(s[i],2)+" | "+(ct.preEff[i] || '???.')+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
             }
-            tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")
+            let f = player.inf.fragment[t]
+            if (f.gt(0)) hh += `<br>${f.format(0)} ${ct.title.split(' ')[0]} Fragments | ${ct.fragment[1](tmp.fragment_eff[t])}<br>`
+            if (hh != '') h += `<h2>${ct.title} <b>(${format(core_tmp[t].total_p.mul(100),0)}%)</b></h2><br>`+hh+'<br>'
         }
-        else if (tmp.stab[8] == 2) {
-            tmp.el.ip_amt.setHTML(player.inf.points.format(0) + (hasElement(235)?" "+player.inf.points.formatGain(player.inf.best.div(1e2).mul(tmp.cs_effect.inf_speed)):""))
-
-            for (let r in INF.upgs) {
-                r = parseInt(r)
-
-                let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte(10))
-
-                tmp.el['iu_row'+r].setDisplay(unl)
-
-                if (!unl) continue;
-
-                let ru = INF.upgs[r], req = player.inf.theorem.gte(INF.upg_row_req[r])
-
-                for (let c in ru) {
-                    c = parseInt(c)
-
-                    let id = r*4+c
-                    if (r > 4) id -= 3
-
-                    let el = tmp.el[`iu_${id}_div`]
-
-                    if (el) {
-                        let u = ru[c], b = hasInfUpgrade(id)
-
-                        el.setClasses({inf_upg: true, locked: !b && (player.inf.points.lt(u.cost) || !req), bought: b})
-
-                        tmp.el[`iu_${id}_desc`].setHTML(b?u.effectDesc?"<br>Effect: "+u.effectDesc(infUpgEffect(id)):"":"<br>Cost: <b>"+u.cost.format(0)+"</b> Infinity Points")
-                    }
-                }
-            }
-        }
-        else if (tmp.stab[8] == 3) updateCSHTML()
+        tmp.el.core_eff_div.setHTML(h||"Place any theorem in core to show effects!")
     }
+    else if (tmp.tab_name == "inf-upgs") {
+        tmp.el.ip_amt.setHTML(player.inf.points.format(0) + (hasElement(235)?" "+player.inf.points.formatGain(player.inf.best.div(1e2).mul(tmp.cs_effect.inf_speed)):""))
+
+        for (let r in INF.upgs) {
+            r = parseInt(r)
+
+            let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte(10))
+
+            tmp.el['iu_row'+r].setDisplay(unl)
+
+            if (!unl) continue;
+
+            let ru = INF.upgs[r], req = player.inf.theorem.gte(INF.upg_row_req[r])
+
+            for (let c in ru) {
+                c = parseInt(c)
+
+                let id = r*4+c
+                if (r > 4) id -= 3
+
+                let el = tmp.el[`iu_${id}_div`]
+
+                if (el) {
+                    let u = ru[c], b = hasInfUpgrade(id)
+
+                    el.setClasses({inf_upg: true, locked: !b && (player.inf.points.lt(u.cost) || !req), bought: b})
+
+                    tmp.el[`iu_${id}_desc`].setHTML(b?u.effectDesc?"<br>Effect: "+u.effectDesc(infUpgEffect(id)):"":"<br>Cost: <b>"+u.cost.format(0)+"</b> Infinity Points")
+                }
+            }
+        }
+    }
+    else if (tmp.tab_name == "c-star") updateCSHTML()
 }
 
 function setupInfUpgradesHTML() {

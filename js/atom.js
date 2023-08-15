@@ -122,7 +122,11 @@ const ATOM = {
 
             x = overflow(x,'e2000',0.5)
 
-            return x.floor()
+            let y = 1
+
+            if (OURO.evolution >= 1) y = expMult(player.atom.atomic.add(1).log10().add(1),0.5)
+
+            return [x.floor(),y]
         },
     },
     gamma_ray: {
@@ -221,14 +225,16 @@ const ATOM = {
             },
             x=>{
                 let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(2)
+                
+                let bp = OURO.evolution >= 1 ? Decimal.pow(10,player.evo.cp.points) : player.rp.points
                 let b = hasUpgrade('atom',18)
                 ?Decimal.pow(1.1,
-                    player.rp.points.add(1).log10().add(10).log10().mul(x.add(1).log10().add(10).log10()).root(3).sub(1)
+                    bp.add(1).log10().add(10).log10().mul(x.add(1).log10().add(10).log10()).root(3).sub(1)
                 )
                 .mul(player.mass.add(1).log10().add(10).log10())
                 :(hasElement(19)
-                ?player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
-                :player.mass.max(1).log10().add(1).pow(player.rp.points.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
+                ?player.mass.max(1).log10().add(1).pow(bp.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
+                :player.mass.max(1).log10().add(1).pow(bp.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
 
                 if (CHALS.inChal(17) && !hasUpgrade('atom',18)) b = E(1)
 
@@ -321,7 +327,10 @@ function setupAtomHTML() {
 
 function updateAtomicHTML() {
     tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain.mul(tmp.preQUGlobalSpeed)))
-	tmp.el.atomicEff.setHTML(format(tmp.atom.atomicEff,0)+(tmp.atom.atomicEff.gte(5e4)?" <span class='soft'>(softcapped)</span>":""))
+	tmp.el.atomicEff.setHTML(
+        `Which provides <h4>${format(tmp.atom.atomicEff[0],0)+(tmp.atom.atomicEff[0].gte(5e4)?" <span class='soft'>(softcapped)</span>":"")}</h4> free Tickspeeds`
+        +(OURO.evolution >= 1 ? ` and increases mediation's level by <h4>${formatMult(tmp.atom.atomicEff[1],2)}</h4>` : "")
+    )
 
     BUILDINGS.update('cosmic_ray')
 

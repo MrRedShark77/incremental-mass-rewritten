@@ -19,7 +19,8 @@ function resetTemp() {
         sn_tab: 0,
         tree_tab: 0,
         tab: 0,
-        stab: [],
+        stab: [0],
+        tab_name: "mass",
         qc_tab: 0,
         qc_ch: -1,
         pass: 0,
@@ -239,6 +240,8 @@ function resetTemp() {
         massFP: E(1),
 
         build: {},
+
+        ouro: {},
     }
 
     for (let x in BUILDINGS_DATA) tmp.build[x] = {
@@ -403,8 +406,12 @@ function updateBlackHoleTemp() {
 }
 
 function updateTemp() {
+    updateTabTemp()
+
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
+
+    OURO.temp()
 
     tmp.c16active = CHALS.inChal(16)
     tmp.c18active = CHALS.inChal(18)

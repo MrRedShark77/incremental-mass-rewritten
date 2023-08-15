@@ -7,7 +7,7 @@ const BUILDINGS_DATA = {
         scale: "massUpg",
 
         get isUnlocked() { return player.ranks.rank.gte(1) || player.mainUpg.atom.includes(1) },
-        get autoUnlocked() { return hasUpgrade('rp',3) },
+        get autoUnlocked() { return OURO.evolution >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -24,6 +24,7 @@ const BUILDINGS_DATA = {
             let power = E(1)
             if (player.ranks.rank.gte(3)) power = power.add(RANKS.effect.rank[3]())
             power = power.mul(BUILDINGS.eff('mass_2'))
+            power = power.mul(tmp.evo.mediation_eff.mass1??1)
 
             let effect = power.mul(x)
             if (hasElement(209)) effect = effect.pow(elemEffect(209))
@@ -48,7 +49,7 @@ const BUILDINGS_DATA = {
         scale: "massUpg",
 
         get isUnlocked() { return player.ranks.rank.gte(2) || player.mainUpg.atom.includes(1) },
-        get autoUnlocked() { return hasUpgrade('rp',3) },
+        get autoUnlocked() { return OURO.evolution >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -64,6 +65,7 @@ const BUILDINGS_DATA = {
         effect(x) {
             let step = E(2)
             if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
+            step = step.mul(tmp.evo.mediation_eff.mass2??1)
             step = step.pow(BUILDINGS.eff('mass_3'))
 
             let ret = step.mul(x).add(1)//.softcap("ee14",0.95,2)
@@ -89,7 +91,7 @@ const BUILDINGS_DATA = {
         scale: "massUpg",
 
         get isUnlocked() { return player.ranks.rank.gte(3) || player.mainUpg.atom.includes(1) },
-        get autoUnlocked() { return hasUpgrade('rp',3) },
+        get autoUnlocked() { return OURO.evolution >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -114,6 +116,7 @@ const BUILDINGS_DATA = {
             if (player.ranks.tetr.gte(2)) step = step.add(RANKS.effect.tetr[2]())
             if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
             if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
+            step = step.mul(tmp.evo.mediation_eff.mass3??1)
             if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
             if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
             step = step.pow(BUILDINGS.eff('mass_4'))
@@ -229,7 +232,7 @@ const BUILDINGS_DATA = {
 		icon: "tickspeed",
         scale: "tickspeed",
 
-        get isUnlocked() { return player.rp.unl },
+        get isUnlocked() { return player.rp.unl && OURO.evolution < 1 },
         get autoUnlocked() { return player.mainUpg.bh.includes(5) },
         get noSpend() { return player.mainUpg.atom.includes(2) },
 
@@ -314,7 +317,7 @@ const BUILDINGS_DATA = {
 
         get bonus() {
             let x = E(0)
-            if (player.atom.unl) x = x.add(tmp.atom.atomicEff||0)
+            if (player.atom.unl && tmp.atom.atomicEff) x = x.add(tmp.atom.atomicEff[0])
             x = x.mul(getEnRewardEff(4))
             return x
         },
@@ -327,7 +330,7 @@ const BUILDINGS_DATA = {
         name: "Accelerator",
 		icon: "accelerator",
 
-        get isUnlocked() { return player.rp.unl && hasElement(199) },
+        get isUnlocked() { return player.rp.unl && OURO.evolution < 1 && hasElement(199) },
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
@@ -416,6 +419,7 @@ const BUILDINGS_DATA = {
                 pow = pow.add(tmp.chal.eff[6])
                 if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                 pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
+                pow = pow.mul(escrowBoost('bhc'))
                 if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
                 pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                 pow = pow.mul(tmp.prim.eff[2][1])

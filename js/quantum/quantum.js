@@ -282,7 +282,7 @@ function updateQuantumTemp() {
 function updateQuantumHTML() {
     let inf_gs = tmp.preInfGlobalSpeed
 
-    if (tmp.tab == 0 && tmp.stab[0] == 4) {
+    if (tmp.tab_name == "bp") {
         tmp.el.bpAmt.setTxt(format(player.qu.bp,1)+" "+formatGain(player.qu.bp,tmp.qu.bpGain.mul(inf_gs)))
         tmp.el.bpEff.setTxt(format(tmp.qu.bpEff))
 
@@ -300,25 +300,22 @@ function updateQuantumHTML() {
         tmp.el.cosmic_str_auto.setHTML(player.qu.auto_cr?"ON":"OFF")
         */
     }
+    else if (tmp.tab_name == "chroma") updateChromaHTML()
+    else if (tmp.tab_name == "qu-mil") {
+        tmp.el.qu_times.setTxt(format(player.qu.times,0))
 
-    if (tmp.tab == 6) {
-        if (tmp.stab[6] == 0) updateChromaHTML()
-        if (tmp.stab[6] == 1) {
-            tmp.el.qu_times.setTxt(format(player.qu.times,0))
-
-            for (let x = 0; x < QUANTUM.mils.length; x++) {
-                tmp.el['qu_mil'+x].changeStyle('background-color',tmp.qu.mil_reached[x]?'#2f22':'#4442')
-                tmp.el['qu_mil_goal'+x].setTxt(format(QUANTUM.mils[x][0],0))
-            }
+        for (let x = 0; x < QUANTUM.mils.length; x++) {
+            tmp.el['qu_mil'+x].changeStyle('background-color',tmp.qu.mil_reached[x]?'#2f22':'#4442')
+            tmp.el['qu_mil_goal'+x].setTxt(format(QUANTUM.mils[x][0],0))
         }
-        if (tmp.stab[6] == 2) {
-            tmp.el.auto_qu.setTxt(player.qu.auto.enabled?"ON":"OFF")
-            tmp.el.auto_qu_mode.setTxt(QUANTUM.auto.mode[player.qu.auto.mode])
-            tmp.el.auto_qu_res.setTxt(player.qu.auto.mode==0?format(tmp.qu.auto_input,0):formatTime(tmp.qu.auto_input,1)+"s")
-        }
-        if (tmp.stab[6] == 3) updatePrimordiumHTML()
-        if (tmp.stab[6] == 4) updateEntropyHTML()
     }
+    else if (tmp.tab_name == "auto-qu") {
+        tmp.el.auto_qu.setTxt(player.qu.auto.enabled?"ON":"OFF")
+        tmp.el.auto_qu_mode.setTxt(QUANTUM.auto.mode[player.qu.auto.mode])
+        tmp.el.auto_qu_res.setTxt(player.qu.auto.mode==0?format(tmp.qu.auto_input,0):formatTime(tmp.qu.auto_input,1)+"s")
+    }
+    else if (tmp.tab_name == "prim") updatePrimordiumHTML()
+    else if (tmp.tab_name == "entropy") updateEntropyHTML()
 }
 
 function setupQuantumHTML() {

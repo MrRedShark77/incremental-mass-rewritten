@@ -207,13 +207,11 @@ function updateSupernovaEndingHTML() {
 
     // tmp.el.app_supernova.setDisplay((player.supernova.times.lte(0) ? !tmp.supernova.reached || quUnl() : true) && tmp.tab == 5)
 
-    if (tmp.tab == 5) {
-        if (tmp.stab[5] == 0) {
-            tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed)))
-            updateTreeHTML()
-        }
-        if (tmp.stab[5] == 1) updateBosonsHTML()
-        if (tmp.stab[5] == 2) updateFermionsHTML()
-        if (tmp.stab[5] == 3) updateRadiationHTML()
+    if (tmp.tab_name == "sn-tree") {
+        tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed)))
+        updateTreeHTML()
     }
+    else if (tmp.tab_name == "boson") updateBosonsHTML()
+    else if (tmp.tab_name == "ferm") updateFermionsHTML()
+    else if (tmp.tab_name == "rad") updateRadiationHTML()
 }
