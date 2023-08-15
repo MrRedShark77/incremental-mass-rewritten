@@ -538,8 +538,6 @@ function loadGame(start=true, gotNaN=false) {
     if (!gotNaN) tmp.prevSave = localStorage.getItem("betaSave")
     wipe()
     load(tmp.prevSave)
-    resetTemp()
-    OURO.load()
     
     if (start) {
         setupHTML()
@@ -548,6 +546,7 @@ function loadGame(start=true, gotNaN=false) {
         updateQCModPresets()
 
         setInterval(save,60000)
+        OURO.load()
         for (let x = 0; x < 5; x++) updateTemp()
 
         updateHTML()
