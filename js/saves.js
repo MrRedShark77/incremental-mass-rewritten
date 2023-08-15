@@ -339,7 +339,6 @@ function loadPlayer(load) {
     player = deepNaN(load, DATA)
     player = deepUndefinedAndDecimal(player, DATA)
     convertStringToDecimal()
-    OURO.load()
     player.qu.qc.presets = player.qu.qc.presets.slice(0,5)
     player.reset_msg = ""
     player.main_upg_msg = [0,0]
@@ -539,6 +538,7 @@ function loadGame(start=true, gotNaN=false) {
     if (!gotNaN) tmp.prevSave = localStorage.getItem("betaSave")
     wipe()
     load(tmp.prevSave)
+    OURO.load()
     
     if (start) {
         setupHTML()
