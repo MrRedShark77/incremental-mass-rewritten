@@ -1510,6 +1510,11 @@ h4 {
     margin: 5px
 }
 
+#snake_btns > button {
+	height: 50px;
+	width: 150px;
+}
+
 @keyframes ouro_loop {
     0%{
         transform: translate(-50%, -50%) rotate(0)
