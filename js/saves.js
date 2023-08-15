@@ -538,6 +538,7 @@ function loadGame(start=true, gotNaN=false) {
     if (!gotNaN) tmp.prevSave = localStorage.getItem("betaSave")
     wipe()
     load(tmp.prevSave)
+    resetTemp()
     OURO.load()
     
     if (start) {
