@@ -445,9 +445,9 @@ function cannotSave() { return tmp.supernova.reached && player.supernova.times.l
 function save(){
     let str = btoa(JSON.stringify(player))
     if (cannotSave() || findNaN(str, true)) return
-    if (localStorage.getItem("betaSave") == '') wipe()
-    localStorage.setItem("betaSave",str)
-    tmp.prevSave = localStorage.getItem("betaSave")
+    if (localStorage.getItem("betaSave2") == '') wipe()
+    localStorage.setItem("betaSave2",str)
+    tmp.prevSave = localStorage.getItem("betaSave2")
     if (tmp.saving < 1) {addNotify("Game Saved", 3); tmp.saving++}
 }
 
@@ -535,7 +535,7 @@ function importy() {
 }
 
 function loadGame(start=true, gotNaN=false) {
-    if (!gotNaN) tmp.prevSave = localStorage.getItem("betaSave")
+    if (!gotNaN) tmp.prevSave = localStorage.getItem("betaSave2")
     wipe()
     load(tmp.prevSave)
     
