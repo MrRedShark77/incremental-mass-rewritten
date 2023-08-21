@@ -72,12 +72,12 @@ const ASCENSIONS = {
         ()=>tmp.c18reward,
     ],
     noReset: [
-        ()=>hasElement(267),
-        ()=>false,
+        ()=>OURO.evolution >= 1||hasElement(267),
+        ()=>OURO.evolution >= 1,
     ],
     autoUnl: [
-        ()=>hasElement(267),
-        ()=>false,
+        ()=>OURO.evolution >= 1||hasElement(267),
+        ()=>OURO.evolution >= 1,
     ],
     autoSwitch(x) { player.auto_asc[x] = !player.auto_asc[x] },
     rewards: [

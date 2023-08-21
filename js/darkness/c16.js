@@ -1,6 +1,6 @@
 const CHARGERS = [
     {
-        req: E(1e100),
+        get req() { return E(OURO.evolution >= 1 ? 1e75 : 1e100) },
         cost: E(3),
         desc: `
         Multiply all matters gain by 1e10, and square mass of black hole gain.
@@ -172,16 +172,16 @@ function setupC16HTML() {
 }
 
 function corruptedShardGain() {
-    let bh = player.bh.mass
+    let bh = player.bh.mass, req = OURO.evolution >= 1 ? 1e75 : 1e100
 
-    if (hasElement(232)) bh = player.dark.c16.bestBH.max('e100')
-    else if (!tmp.c16active || bh.lt('e100')) return E(0)
+    if (hasElement(232)) bh = player.dark.c16.bestBH.max(req)
+    else if (!tmp.c16active || bh.lt(req)) return E(0)
 
     let w = 1
 
     if (hasUpgrade('br',25)) w *= 0.8
 
-    let x = Decimal.pow(10,bh.max(1).log10().overflow(1e70,(1/3)**w).overflow(1e9,0.5**w).div(100).root(hasElement(223) ? 2.9 : 3).sub(1))
+    let x = Decimal.pow(10,bh.max(1).log10().overflow(1e70,(1/3)**w).overflow(1e9,0.5**w).div(Math.log10(req)).root(hasElement(223) ? 2.9 : 3).sub(1))
 
     if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 

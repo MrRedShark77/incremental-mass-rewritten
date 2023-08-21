@@ -30,12 +30,12 @@ const DARK_RUN = {
     ],
 
     mass_glyph_gain: [
-        ()=>player.mass.gte('ee39')?player.mass.log10().div(1e39).log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.bh.mass.gte('e1.5e34')?player.bh.mass.log10().div(1.5e34).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.atom.quarks.gte('e3e32')?player.atom.quarks.log10().div(3e32).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.md.mass.gte('e1e21')?player.md.mass.log10().div(1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.stars.points.gte('e1.5e24')?player.stars.points.log10().div(1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>tmp.prestiges.base.gte(1e13)?tmp.prestiges.base.div(1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>player.mass.gte(OURO.evolution>=1?'ee26':'ee39')?player.mass.log10().div(OURO.evolution>=1?'e26':'e39').log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>player.bh.mass.gte(OURO.evolution>=1?'e1e18':'e1.5e34')?player.bh.mass.log10().div(OURO.evolution>=1?'1e18':1.5e34).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>player.atom.quarks.gte(OURO.evolution>=1?'e1e17':'e3e32')?player.atom.quarks.log10().div(OURO.evolution>=1?'1e17':3e32).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>player.md.mass.gte(OURO.evolution>=1?'e1e9':'e1e21')?player.md.mass.log10().div(OURO.evolution>=1?'1e9':1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>player.stars.points.gte(OURO.evolution>=1?'e1e11':'e1.5e24')?player.stars.points.log10().div(OURO.evolution>=1?'1e11':1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>tmp.prestiges.base.gte(OURO.evolution>=1?1e10:1e13)?tmp.prestiges.base.div(OURO.evolution>=1?1e10:1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
     ],
 
     upg_unl_length() {
@@ -271,7 +271,7 @@ function updateDarkRunTemp() {
 
     dtmp.glyph_upg_unls = DARK_RUN.upg_unl_length()
 
-    dtmp.glyph_mult = E(dtmp.rayEff.glyph||1)
+    dtmp.glyph_mult = E(dtmp.rayEff.glyph||1).mul(appleEffect('glyph'))
     if (hasPrestige(2,5)) dtmp.glyph_mult = dtmp.glyph_mult.mul(prestigeEff(2,5,1))
     dtmp.glyph_mult = dtmp.glyph_mult.mul(tmp.matters.FSS_eff[1])
     

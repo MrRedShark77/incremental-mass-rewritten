@@ -1,6 +1,6 @@
 const QCs = {
     active() { return player.qu.qc.active || player.qu.rip.active || CHALS.inChal(14) || CHALS.inChal(15) || tmp.c16active || inDarkRun() },
-    getMod(x) { return CHALS.inChal(15) ? [10,5,10,10,10,10,10,10][x] : tmp.c16active || inDarkRun() ? 8 : CHALS.inChal(14) ? 5 : player.qu.rip.active ? BIG_RIP_QC[x] : player.qu.qc.mods[x] },
+    getMod(x) { return CHALS.inChal(15) ? OURO.evolution >= 1 ? [6,0,6,6,6,6,6,6][x] : [10,5,10,10,10,10,10,10][x] : tmp.c16active || inDarkRun() ? OURO.evolution >= 1 ? 5 : 8 : CHALS.inChal(14) ? OURO.evolution >= 1 ? 4 : 5 : player.qu.rip.active ? tmp.qc_rip[x] : player.qu.qc.mods[x] },
     incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),10) },
     enter() {
         if (!player.qu.qc.active) {
@@ -165,6 +165,9 @@ function updateQCModPresets() {
 }
 
 function updateQCTemp() {
+    let evo1 = OURO.evolution >= 1
+    tmp.qc_rip = evo1 ? [10,2,10,10,1,0,2,5] : [10,2,10,10,5,0,2,10]
+
     tmp.qu.qc_s_b = E(2)
     if (hasTree("qf4")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
     if (hasPrestige(0,2)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
@@ -177,11 +180,12 @@ function updateQCTemp() {
     if (tmp.inf_unl) weak *= theoremEff('proto',3)
 
     tmp.qu.qc_s_eff = tmp.qu.qc_s_b.pow(player.qu.qc.shard)
-
+    
     let s = 0
     let bs = 0
     for (let x = 0; x < QCs_len; x++) {
         let m = QCs.getMod(x)
+        if (evo1) m *= 2
         s += m
         tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m*weak)
         if (hasTree('qc2') && m >= 10) bs++

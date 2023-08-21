@@ -380,18 +380,18 @@ const PRESTIGES = {
         ()=>hasElement(267),
     ],
     noReset: [
-        ()=>hasUpgrade('br',11)||tmp.inf_unl,
-        ()=>tmp.chal13comp||tmp.inf_unl,
-        ()=>tmp.chal15comp||tmp.inf_unl,
-        ()=>tmp.inf_unl,
-        ()=>hasElement(267),
+        ()=>hasUpgrade('br',11)||tmp.inf_unl||OURO.evolution >= 1,
+        ()=>tmp.chal13comp||tmp.inf_unl||OURO.evolution >= 1,
+        ()=>tmp.chal15comp||tmp.inf_unl||OURO.evolution >= 1,
+        ()=>tmp.inf_unl||OURO.evolution >= 1,
+        ()=>hasElement(267)||OURO.evolution >= 1,
     ],
     autoUnl: [
-        ()=>tmp.chal13comp||tmp.inf_unl,
-        ()=>tmp.chal14comp||tmp.inf_unl,
-        ()=>tmp.chal15comp||tmp.inf_unl,
-        ()=>tmp.inf_unl,
-        ()=>hasElement(267),
+        ()=>tmp.chal13comp||tmp.inf_unl||OURO.evolution >= 1,
+        ()=>tmp.chal14comp||tmp.inf_unl||OURO.evolution >= 1,
+        ()=>tmp.chal15comp||tmp.inf_unl||OURO.evolution >= 1,
+        ()=>tmp.inf_unl||OURO.evolution >= 1,
+        ()=>hasElement(267)||OURO.evolution >= 1,
     ],
     autoSwitch(x) { player.auto_pres[x] = !player.auto_pres[x] },
     rewards: [
@@ -712,7 +712,7 @@ function updateRanksTemp() {
     if (hasUpgrade('rp',22)) rcs = rcs.mul(upgEffect(1,22))
     if (hasElement(287)) rcs = rcs.mul(elemEffect(287))
 
-    tmp.rank_collapse.start = rcs
+    tmp.rank_collapse.start = OURO.evolution >= 1 ? EINF : rcs
 
     tmp.beyond_ranks.scale_start = 24
     tmp.beyond_ranks.scale_pow = 1.6
@@ -771,7 +771,7 @@ const BEYOND_RANKS = {
         if (player.ranks.hex.gte(tmp.beyond_ranks.req) && (!auto || tmp.beyond_ranks.bulk.gt(player.ranks.beyond))) {
             player.ranks.beyond = auto ? player.ranks.beyond.max(tmp.beyond_ranks.bulk) : player.ranks.beyond.add(1)
 
-            if (hasBeyondRank(2,2)||hasInfUpgrade(10)) return;
+            if (hasBeyondRank(2,2)||hasInfUpgrade(10)||OURO.evolution>=1) return;
 
             player.ranks.hex = E(0)
             DARK.doReset()

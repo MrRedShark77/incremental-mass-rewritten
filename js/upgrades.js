@@ -482,7 +482,7 @@ const UPGS = {
             title: "Black Hole Upgrades",
             res: "Dark Matter",
             getRes() { return player.bh.dm },
-            unl() { return player.bh.unl },
+            unl() { return player.bh.unl && OURO.evolution < 2 },
             auto_unl() { return player.mainUpg.atom.includes(2) || tmp.inf_unl },
             can(x) { return player.bh.dm.gte(this[x].cost) && !player.mainUpg.bh.includes(x) },
             buy(x) {
@@ -707,6 +707,7 @@ const UPGS = {
                 cost: E('ee261500'),
                 effect() {
                     let x = expMult(player.dark.c16.bestBH.add(10).log10(),0.4)
+                    if (OURO.evolution >= 1) x = x.pow(1.4)
                     return x
                 },
                 effDesc(x=this.effect()) {
@@ -733,6 +734,7 @@ const UPGS = {
                 cost: E(1),
             },
             2: {
+                unl() { return OURO.evolution < 2 },
                 desc: "You can automatically buy BH Condenser and upgrades. Tickspeed no longer spends Rage Powers.",
                 cost: E(100),
             },
@@ -741,6 +743,7 @@ const UPGS = {
                 cost: E(25000),
             },
             4: {
+                unl() { return OURO.evolution < 2 },
                 desc: "Keep challenges 1-4 on reset. BH Condensers add Cosmic Rays Power at a reduced rate.",
                 cost: E(1e10),
                 effect() {
@@ -767,6 +770,7 @@ const UPGS = {
                 },
             },
             7: {
+                unl() { return OURO.evolution < 1 },
                 desc: "Tickspeed boosts each particle powers gain.",
                 cost: E(1e25),
                 effect() {
@@ -908,6 +912,7 @@ const UPGS = {
                 cost: E('ee111111'),
                 effect() {
                     let x = player.inf.dim_mass.add(10).log10().pow(2.7)
+                    if (OURO.evolution >= 1) x = x.pow(1.4)
                     return x
                 },
                 effDesc(x=this.effect()) {

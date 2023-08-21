@@ -41,11 +41,36 @@ const TOOLTIP_RES = {
     dm: {
         full: "Dark Matter",
         desc() {
-            let r = OURO.evolution >= 1 ? `<b>${format(1e5)}</b> Calm Power` : `<b>${format(1e20)}</b> Rage Power`
+            let r = OURO.evolution >= 1 ? `<b>${format(1e4)}</b> Calm Power` : `<b>${format(1e20)}</b> Rage Power`
 
             let h = `<i>
             Reach over ${r} to reset all previous features for gain Dark Matters.
             </i>`
+
+            return h
+        },
+    },
+    fabric: {
+        full: "Fabric",
+        desc() {
+            let r = `<b>${format(1e5)}</b> Calm Power`
+
+            let h = `<i>
+            Reach over ${r} to reset all previous features for gain Fabrics.
+            </i>`
+
+            return h
+        },
+    },
+    wormhole: {
+        full: "Wormhole",
+        desc() {
+            let h = `You have <b>${formatMass(player.bh.mass)}</b> of first wormhole.`;
+
+            if (hasCharger(1))
+            h += `
+            <br class='line'>You have <b class='corrupted_text'>${formatMass(player.bh.unstable)} ${formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true)}</b> of Unstable Black Hole.
+            `;
 
             return h
         },
@@ -76,8 +101,10 @@ const TOOLTIP_RES = {
     atom: {
         full: "Atom",
         desc() {
+            let r = OURO.evolution >= 2 ? `<b>${format(1e3)}</b> Fabric` : `<b>${formatMass(uni(1e100))}</b> of black hole`
+
             let h = `<i>
-            Reach over <b>${formatMass(uni(1e100))}</b> of black hole to reset all previous features for gain Atoms & Quarks.
+            Reach over ${r} to reset all previous features for gain Atoms & Quarks.
             </i>`
 
             return h
@@ -219,7 +246,7 @@ const TOOLTIP_RES = {
             Your best mass of black hole in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
             <br class='line'>
             <i>
-            Start the 16th Challenge. Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge with more than <b>${formatMass('e100')}</b> of black hole.<br><br>
+            Start the 16th Challenge. Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge with more than <b>${formatMass(OURO.evolution >= 1 ? 1e75 : 1e100)}</b> of black hole.<br><br>
             • You cannot gain rage powers, and all matters' formulas are disabled, and they generate each other. Red matter generates dark matter.<br>
             • Pre-C16 features, such as rank, prestige tiers, main upgrades, elements, tree upgrades, etc. may be corrupted (disabled).<br>
             • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>
@@ -247,8 +274,8 @@ const TOOLTIP_RES = {
             return h
         },
     },
-    ourobros: {
-        full: "Ourobrosity",
+    ouroboros: {
+        full: "Ouroboric",
         desc() {
             if (!tmp.ouro.unl) return "Something Happened...";
 
@@ -258,7 +285,7 @@ const TOOLTIP_RES = {
             <i>
             Complete <b class="yellow">Challenge 20</b> first to Evolve.
             <br><br>
-            Ourobrosity resets everything up to this point!
+            Ouroboric resets everything up to this point!
             <br><br>
             Evolving ceases escrow content in this Evolution!
             </i>`

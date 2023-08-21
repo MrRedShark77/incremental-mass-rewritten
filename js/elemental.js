@@ -968,11 +968,11 @@ const ELEMENTS = {
             cost: E("1e84"),
         },{
             br: true,
-            desc: `Meta-Tickspeed scaling starts ^2 later.`,
+            get desc() { return OURO.evolution >= 1 ? `Raise Mediation' level to the 1.5th power.` : `Meta-Tickspeed scaling starts ^2 later.` },
             cost: E("e2.5e53"),
         },{
             desc: `Abyssal Blot’s second effect applies to mass gain’s softcap^7-8, they are 20% weaker.`,
-            cost: E("e2.2e69"),
+            get cost() { return E( OURO.evolution >= 1 ? "e8e68" : "e2.2e69") },
         },{
             br: true,
             desc: `Stronger Power’s softcap is weaker.`,
@@ -983,14 +983,14 @@ const ELEMENTS = {
             cost: E("1e96"),
         },{
             desc: `Collapsed star’s effect now provide an exponential boost at a reduced rate. It now applies to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
-            cost: E("e2e69"),
+            get cost() { return E( OURO.evolution >= 1 ? "e1e69" : "e2e69") },
         },{
             desc: `Spatial Dilation is slightly weaker.`,
             cost: E("e4.7e70"),
         },{
             br: true,
             desc: `[m1]’s effect is overpowered.`,
-            cost: E("e4.20e69"), // nice
+            get cost() { return E( OURO.evolution >= 1 ? "e6e68" : "e4.2e69") }, // nice
         },{
             br: true,
             desc: `[rp1]’s effect is overpowered again.`,
@@ -1001,7 +1001,7 @@ const ELEMENTS = {
             cost: E("e2.27e70"),
         },{
             desc: `Hex’s requirement and Glory’s requirement are slightly weaker.`,
-            cost: E("e1.08e72"),
+            get cost() { return E( OURO.evolution >= 1 ? "e1e71" : "e1.08e72") },
         },{
             dark: true,
             desc: `Unlock the 15th Challenge.`,
@@ -1272,7 +1272,7 @@ const ELEMENTS = {
         },{
             br: true,
             desc: `Entropic Evaporation^2 and Condenser^2 scale another 15% weaker.`,
-            cost: E('e3.1e123'),
+            get cost() { return E( OURO.evolution >= 1 ? "e1e123" : "e3.1e123") },
         },{
             desc: `Strengthen Unseptoctium-178 slightly.`,
             cost: E('e4.9e130'),
@@ -1282,7 +1282,7 @@ const ELEMENTS = {
             cost: E('1e1480'),
         },{
             desc: `Unlock the 16th Challenge.`,
-            cost: E('e7e134'),
+            get cost() { return E( OURO.evolution >= 1 ? "e1e134" : "e7e134") },
         },{
             desc: `[m1]’s effect is even better.`,
             cost: E('e3e333'),
@@ -1584,11 +1584,11 @@ const ELEMENTS = {
         },{
             dark: true,
             desc: `The base of collapsed star’s effect for supernova generation is slightly stronger.`,
-            cost: E('e1.13e12'),
+            get cost() { return E( OURO.evolution >= 1 ? "e1e12" : "e1.13e12") },
         },{
             inf: true,
             desc: `Unlock 19th Challenge.`,
-            cost: E('1e110'),
+            get cost() { return E( OURO.evolution >= 1 ? "e105" : "e110") },
         },{
             desc: `Supernovas boost galactic prestige’s resources at a reduced rate.`,
             cost: E('ee25400'),
@@ -1873,7 +1873,7 @@ function updateElementsHTML() {
     tmp.el.elem_ch_div.setVisible(ch>0)
     if (ch) {
         let eu = elem_const.upgs[ch]
-        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.apple?" Apples":eu.cs?" Corrupted Stars":" Exotic Atoms"][elayer]
+        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.berry?" Strawberries":eu.cs?" Corrupted Stars":" Exotic Atoms"][elayer]
         let eff = tElem[["effect","mu_effect"][elayer]]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
@@ -1918,7 +1918,7 @@ function updateElementsHTML() {
                                 c16: elayer == 0 && eu.c16,
                                 inf: elayer == 0 && eu.inf,
                                 cs: elayer == 1 && eu.cs,
-                                apple: elayer == 1 && eu.apple,
+                                berry: elayer == 1 && eu.berry,
                             }
                         )
                     }

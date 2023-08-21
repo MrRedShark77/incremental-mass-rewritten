@@ -550,7 +550,7 @@ button {
 	box-shadow: 0 0 10px #a0f;
 }
 
-.elements.apple.bought {
+.elements.berry.bought {
 	color: #0a0;
 	border-color: #0a0;
 	background-color: #a00;
@@ -1510,9 +1510,75 @@ h4 {
     margin: 5px
 }
 
-#snake_btns > button {
-	height: 50px;
-	width: 150px;
+#snake_btns {
+    position: relative;
+    left: calc(50% - 320px);
+    width: 640px;
+    height: 120px;
+}
+
+#snake_btns > div {
+    position: absolute;
+    top: 0;
+}
+
+#snake_movement > button {
+    height: 50px;
+    width: 50px;
+}
+
+.wormhole-div {
+	position: relative;
+
+	width: 200px;
+	height: 200px;
+	margin: 15px;
+	padding: 10px;
+	background: #210;
+	border: solid 2px #b60;
+	box-shadow: #b60 0px 0px 20px;
+
+	transition: background 0.25s;
+	cursor: pointer;
+}
+
+.wormhole-div:hover {
+	background: #331800;
+}
+
+.wormhole-div > div:not(.wh-id) {
+	position: absolute;
+	left: 0px;
+	width: 100%;
+}
+
+.wormhole-div > .wh-id {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+.wormhole-div > .wh-mult {
+	top: 10px;
+}
+.wormhole-div > .wh-mass {
+	font-size: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.wormhole-div > .wh-effect {
+	bottom: 0px;
+}
+
+.wormhole-div > .wh-id,
+.wormhole-div > .wh-mult,
+.wormhole-div > .wh-effect {
+	color: #950;
+	font-size: 12px;
+}
+
+.wormhole-div > .wh-effect > b {
+	color: white;
+	font-size: 14px;
 }
 
 @keyframes ouro_loop {

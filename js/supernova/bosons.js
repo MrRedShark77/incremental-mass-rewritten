@@ -2,7 +2,7 @@ const BOSONS = {
     names: ['pos_w','neg_w','z_boson','photon','gluon','graviton','hb'],
     gain: {
         pos_w() {
-            let x = E(0.01).mul(tmp.bosons.effect.neg_w?tmp.bosons.effect.neg_w[1]:1).mul(tmp.bosons.effect.z_boson?tmp.bosons.effect.z_boson[1]:1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            let x = E(0.1).mul(tmp.bosons.effect.neg_w?tmp.bosons.effect.neg_w[1]:1).mul(tmp.bosons.effect.z_boson?tmp.bosons.effect.z_boson[1]:1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             
@@ -14,7 +14,7 @@ const BOSONS = {
             return x
         },
         neg_w() {
-            let x = E(0.01).mul(tmp.bosons.effect.pos_w?tmp.bosons.effect.pos_w[1]:1).mul(tmp.bosons.effect.z_boson?tmp.bosons.effect.z_boson[1]:1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            let x = E(0.1).mul(tmp.bosons.effect.pos_w?tmp.bosons.effect.pos_w[1]:1).mul(tmp.bosons.effect.z_boson?tmp.bosons.effect.z_boson[1]:1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             
@@ -26,7 +26,7 @@ const BOSONS = {
             return x
         },
         z_boson() {
-            let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            let x = E(0.1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("sn4")) x = x.pow(1.5)
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
@@ -37,7 +37,7 @@ const BOSONS = {
             return x
         },
         photon() {
-            let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            let x = E(0.1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[1])
             x = hasElement(204) ? x.pow(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1) : x.mul(tmp.bosons.upgs.photon[2]?tmp.bosons.upgs.photon[2].effect:1)
@@ -49,7 +49,7 @@ const BOSONS = {
             return x
         },
         gluon() {
-            let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
+            let x = E(0.1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1)
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2") && tmp.supernova.tree_eff.bs2) x = x.mul(tmp.supernova.tree_eff.bs2[0])
             x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1) : x.mul(tmp.bosons.upgs.gluon[2]?tmp.bosons.upgs.gluon[2].effect:1)
@@ -61,7 +61,7 @@ const BOSONS = {
             return x
         },
         graviton() {
-            let x = E(0.01).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1).mul(tmp.fermions.effs[1][1])
+            let x = E(0.1).mul(tmp.bosons.effect.graviton?tmp.bosons.effect.graviton[0]:1).mul(tmp.fermions.effs[1][1])
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
@@ -71,7 +71,7 @@ const BOSONS = {
             return x
         },
         hb() {
-            let x = E(0.01).mul(tmp.fermions.effs[1][1])
+            let x = E(0.1).mul(tmp.fermions.effs[1][1])
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs1")) x = x.mul(tmp.supernova?tmp.supernova.tree_eff.bs1:1)
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])

@@ -10,7 +10,7 @@ const RESOURCES_DIS = {
         icon: "rp",
         class: "red",
 
-        desc: (gs)=>format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"),
+        desc: (gs)=>format(player.rp.points,0)+"<br>"+(tmp.layer2_passive?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"),
     
         resetBtn() { FORMS.rp.reset() },
     },
@@ -19,12 +19,12 @@ const RESOURCES_DIS = {
         icon: "evolution/calm_power",
         class: "red",
 
-        desc: (gs)=>format(player.evo.cp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.evo.cp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"),
+        desc: (gs)=>format(player.evo.cp.points,0)+"<br>"+(tmp.layer2_passive?formatGain(player.evo.cp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"),
     
         resetBtn() { FORMS.rp.reset() },
     },
     dm: {
-        unl: ()=>FORMS.bh.see(),
+        unl: ()=>FORMS.bh.see() && OURO.evolution < 2,
         icon: "dm",
         class: "yellow",
 
@@ -32,12 +32,31 @@ const RESOURCES_DIS = {
     
         resetBtn() { FORMS.bh.reset() },
     },
+    fabric: {
+        unl: ()=>FORMS.bh.see() && OURO.evolution >= 2,
+        icon: "evolution/fabric",
+        class: "yellow",
+
+        desc: (gs)=>format(player.evo.wh.fabric,0)+"<br>"+(player.mainUpg.atom.includes(6)?formatGain(player.evo.wh.fabric, tmp.bh.dm_gain):"(+"+format(tmp.bh.dm_gain,0)+")"),
+    
+        resetBtn() { FORMS.bh.reset() },
+    },
     bh: {
-        unl: ()=>player.bh.unl,
+        unl: ()=>player.bh.unl && OURO.evolution < 2,
         icon: "bh",
         class: "yellow",
 
         desc: (gs)=>formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true),
+    },
+    wormhole: {
+        unl: ()=>player.bh.unl && OURO.evolution >= 2,
+        icon: "evolution/wormhole",
+        class: "yellow",
+
+        desc: (gs)=>{
+            let m = player.evo.wh.mass[0]
+            return formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(m,tmp.evo.wormhole_mult[0].div(FPS)).mul(FPS), true)
+        },
     },
     atom: {
         unl: ()=>player.bh.unl,
@@ -136,12 +155,12 @@ const RESOURCES_DIS = {
 
         resetBtn() { INF.goInf() },
     },
-    ourobros: {
+    ouroboros: {
         unl: ()=>OURO.unl() || player.chal.comps[20].gte(1),
-        icon: "ourobros",
+        icon: "ouroboros",
         class: "limegreen",
 
-        desc: (gs)=>tmp.ouro.unl ? "Evolution "+player.evo.times : "Something Happened...",
+        desc: (gs)=>tmp.ouro.unl ? "Evolution "+player.evo.times+"<br>"+(player.chal.comps[20].gte(1)?"(Ready to Evolve)":"(Not Ready)") : "Something Happened...",
 
         resetBtn() { OURO.reset() },
     },

@@ -137,6 +137,8 @@ function setupHTML() {
 	setupDarkHTML()
 	setupInfHTML()
 
+	setupOuroHTML()
+
 	/*
 	function setupTestHTML() {
 		let test_table = new Element("test_table")
@@ -483,7 +485,7 @@ function updateHTML() {
 		updateQuantumHTML()
 		updateDarkHTML()
 		updateInfHTML()
-		updateOurobrosHTML()
+		updateOuroborosHTML()
 		if (tmp.tab_name == "mass") {
 			updateRanksHTML()
 			

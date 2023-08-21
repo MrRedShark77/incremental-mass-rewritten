@@ -7,7 +7,7 @@ const DARK = {
     gain() {
         let x = E(1)
 
-        x = x.mul(tmp.dark.shadowEff.ray)
+        x = x.mul(tmp.dark.shadowEff.ray).mul(appleEffect('dark'))
         if (tmp.chal) x = x.mul(tmp.chal.eff[13])
         if (player.ranks.hex.gte(4)) x = x.mul(RANKS.effect.hex[4]())
         if (hasElement(141)) x = x.mul(10)
@@ -150,6 +150,7 @@ const DARK = {
         let a = player.dark.abyssalBlot
 
         x.shadow = a.add(1).log10().add(1).pow(2)
+        if (OURO.evolution >= 1) x.shadow = expMult(x.shadow,2)
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
         if (a.gte(1e120)) x.hr = a.div(1e120).log10().add(1).pow(2)
         if (a.gte(1e180)) {

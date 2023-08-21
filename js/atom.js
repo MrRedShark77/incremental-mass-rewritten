@@ -1,9 +1,18 @@
 const ATOM = {
     gain() {
         if (CHALS.inChal(12)) return E(0)
-        let x = player.bh.mass.div(player.mainUpg.br.includes(1)?1.5e156**0.5:1.5e156)
-        if (x.lt(1)) return E(0)
-        x = x.root(5)
+        const evo = OURO.evolution;
+        let x
+
+        if (evo >= 2) {
+            if (player.evo.wh.fabric.lt(1e3)) return E(0)
+            x = Decimal.pow(1.0001,player.evo.wh.fabric)
+        } else {
+            x = player.bh.mass.div(player.mainUpg.br.includes(1)?1.5e156**0.5:1.5e156)
+            if (x.lt(1)) return E(0)
+            x = x.root(5)
+        }
+        
         if (player.mainUpg.rp.includes(15)) x = x.mul(tmp.upgs.main?tmp.upgs.main[1][15].effect:E(1))
         x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[0].effect) : x.mul(tmp.bosons.upgs.gluon[0].effect)
         if (hasElement(17)) x = x.pow(1.1)
@@ -51,6 +60,8 @@ const ATOM = {
         if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
 
         if (hasElement(45,1)) op = op.pow(0.75)
+
+        op = op.pow(escrowBoost('quark_overflow'))
 
         x = overflow(x,os,op)
 

@@ -98,7 +98,7 @@ function calc(dt) {
             let rn = RANKS.names[x]
             if (tmp.brUnl && x < 4 || RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
         }
-        if (player.auto_ranks.beyond && (hasBeyondRank(2,1)||hasInfUpgrade(10))) BEYOND_RANKS.reset(true)
+        if (player.auto_ranks.beyond && (hasBeyondRank(2,1)||hasInfUpgrade(10)||OURO.evolution>=1)) BEYOND_RANKS.reset(true)
         for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
         for (let x = 0; x < ASCENSIONS.names.length; x++) if (ASCENSIONS.autoUnl[x]() && player.auto_asc[x]) ASCENSIONS.reset(x,true)
         for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -106,8 +106,8 @@ function calc(dt) {
             let upg = UPGS.main[x]
             if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) if (upg[y].unl ? upg[y].unl() : true) upg.buy(y)
         }
-        if (evo == 0) if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(du_gs))
-        if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(du_gs))
+        if (evo < 1) if (tmp.layer2_passive) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(du_gs))
+        if (evo < 2) if (player.mainUpg.atom.includes(6)) player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain.mul(du_gs))
         if (hasElement(14)) player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain.mul(du_gs.mul(tmp.atom.quarkGainSec)))
         if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
         if (hasElement(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(du_gs).div(10))
@@ -287,6 +287,7 @@ function getPlayerData() {
             massDis: 0,
             massType: 0,
             res_hide: {},
+            snake_speed: 0,
 
             nav_hide: [],
         },
@@ -328,10 +329,14 @@ function getPlayerData() {
 function wipe(reload=false) {
     if (reload) {
         wipe()
+        resetTemp()
         save()
         location.reload()
     }
-    else player = getPlayerData()
+    else {
+        player = getPlayerData()
+        OURO.load()
+    }
 }
 
 function loadPlayer(load) {
@@ -521,9 +526,8 @@ function importy() {
                         return
                     }
                     load(loadgame)
-                    save()
                     resetTemp()
-                    loadGame(false)
+                    save()
                     location.reload()
                 }, 200)
             } catch (error) {

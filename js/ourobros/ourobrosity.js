@@ -6,6 +6,7 @@ const OURO = {
         let s = {
             ouro: {
                 apple: E(0),
+                berry: E(0),
             },
             evo: {
                 times: 0,
@@ -13,10 +14,16 @@ const OURO = {
                 cp: {
                     m_time: 0,
                     points: E(0),
+                    best: E(0),
                     level: E(0),
+                },
+                wh: {
+                    fabric: E(0),
+                    mass: [],
                 },
             }
         }
+        for (let x = 0; x < WORMHOLE.maxLength; x++) s.evo.wh.mass[x] = E(0)
         return s
     },
     load(force) {
@@ -30,6 +37,10 @@ const OURO = {
         tmp.evo = {
             mediation_eff: {},
             mediation_loss: {},
+
+            wormhole_eff: [],
+            wormhole_mult: [],
+            wormhole_power: E(2),
         }
         this.temp()
     },
@@ -57,36 +68,59 @@ const OURO = {
         player.build.pe.amt = E(0)
         player.build.fvm.amt = E(0)
 
+        let mu_keep = player.atom.muonic_el.filter(x => MUONIC_ELEM.upgs[x].berry)
+
         let keep = {}
         let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "gal_prestige", "ascensions", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
 
         tmp.tab = 0; tmp.stab = [0];
 
+        player.atom.muonic_el = mu_keep
+
+        this.ouroReset()
+
         tmp.pass = 2;
 
         updateTemp()
     },
+    ouroReset() {
+        player.ouro.apple = E(0)
+
+        snake = newSnakeData()
+        setupSnake()
+
+        const DATA = this.save()
+        player.evo.cp = DATA.evo.cp
+    },
 
     temp() {
         if (!this.unl()) return
+        const evo = this.evolution
 
         tmp.ouro.escrow_boosts = this.escrow_boosts
         tmp.ouro.apple_gain = appleGain()
+        tmp.ouro.berry_gain = berryGain()
         tmp.ouro.apple_eff = appleEffects()
 
-        tmp.evo.mediation_eff = MEDIATION.eff(player.evo.cp.level)
-        tmp.evo.mediation_loss = MEDIATION.loss(player.evo.cp.level)
+        if (evo >= 1) {
+            tmp.evo.mediation_eff = MEDIATION.eff(player.evo.cp.level)
+            tmp.evo.mediation_loss = MEDIATION.loss(player.evo.cp.level)
+        }
+
+        if (evo >= 2) WORMHOLE.temp()
     },
 
     calc(dt) {
         if (!this.unl()) return
-        let evo = this.evolution
+        const evo = this.evolution
 
         calcSnake(dt)
 
         if (evo >= 1) {
-            if (player.mainUpg.bh.includes(6) || player.mainUpg.atom.includes(6)) player.evo.cp.points = player.evo.cp.points.add(tmp.rp.gain.mul(dt))
+            if (tmp.layer2_passive) player.evo.cp.points = player.evo.cp.points.add(tmp.rp.gain.mul(dt))
+
+            player.evo.cp.best = player.evo.cp.best.max(player.evo.cp.points)
 
             let med_loss = tmp.evo.mediation_loss
             if (player.evo.cp.level.gte(med_loss.start)) player.evo.cp.level = player.evo.cp.level.sub(med_loss.speed.mul(dt/10)).max(med_loss.start)
@@ -101,6 +135,7 @@ const OURO = {
                 player.evo.cp.m_time = t
             }
         }
+        if (evo >= 2) WORMHOLE.calc(dt)
     },
 
     get evolution() { return player.evo ? player.evo.times : 0 },
@@ -109,7 +144,13 @@ const OURO = {
         let x = {}, evo = this.evolution
 
         if (evo == 1) {
-            if (player.bh.unl) x.bhc = BUILDINGS.eff('mass_2','power',E(1)).add(1).log10().add(1).root(2)
+            if (player.bh.unl) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).max(1)
+            if (MASS_DILATION.unlocked()) x.md_m3 = player.md.mass.add(1).log10().add(1).overflow(10,0.5)
+            if (player.dark.unl) {
+                x.apple = player.evo.cp.level.add(1).log10().div(50).add(1).root(2)
+                x.quark_overflow = Decimal.pow(0.925,player.evo.cp.level.add(1).log10().root(2))
+            }
+            if (tmp.SN_passive) x.sn = expMult(player.evo.cp.level.add(1),0.4)
         }
 
         return x
@@ -121,6 +162,10 @@ const EVOLUTION_DATA = [
     [
         `<img src="images/rp.png"> Rage ➜ Calm <img src="images/evolution/calm_power.png">`,
         `<span>Break the madness of Infinity. Reincarnate as a serpent.</span>`
+    ],
+    [
+        `<img src="images/dm.png"> Dark Matter ➜ Fabric <img src="images/evolution/fabric.png">`,
+        `<span>Evaporate what causes destruction. Black Hole.</span>`
     ],
 ]
 
@@ -138,10 +183,10 @@ function setOuroScene(show=true) {
 }
 
 function canEvolve() {
-    return player.evo.times == 0
+    return player.evo.times < 2
 }
 
-function updateOurobrosHTML() {
+function updateOuroborosHTML() {
     const evo_unl = OURO.unl()
 
     let map = tmp.tab_name
@@ -163,11 +208,15 @@ function updateOurobrosHTML() {
 
             if (eff.mass2) h += `<br>${formatMult(eff.mass2,2)} to Booster's power`
             if (eff.mass3) h += `<br>${formatMult(eff.mass3,2)} to Stronger's power`
+            if (eff.mass3_softcap) h += `<br>${formatReduction(eff.mass3_softcap,2)} to Stronger softcaps' weakness`
+            if (eff.mass_softcap) h += `<br>${formatReduction(eff.mass_softcap,2)} to normal mass softcaps' weakness`
 
             tmp.el.mediation_desc.setHTML(h)
         }
     } else if (tmp.tab_name == 'snake') {
-        tmp.el.snake_stats.setHTML( 'Moves without Feeding: '+snake.moves+' / 15 | Length: '+snake.bodies.length )
+        tmp.el.snake_stats.setHTML('Moves without Feeding: '+snake.moves+' / '+snake.move_max+' | Length: '+snake.bodies.length+(
+            snake.powerup ? " | Powerup: "+capitalFirst(snake.powerup)+" ("+formatTime(snake.powerup_time,0)+")": ""
+        ))
 
         snake.canvas.style.backgroundPosition = `${snake.cam_pos.x}px ${snake.cam_pos.y}px`
 
@@ -178,46 +227,35 @@ function updateOurobrosHTML() {
         if (eff.mass) h += `<br>${formatMult(eff.mass,2)} to normal mass`
         if (eff.cp) h += `<br>${formatMult(eff.cp,2)} to Calm Powers`
 
+        if (eff.cp_lvl) h += `<br>${formatMult(eff.cp_lvl,2)} to Mediation levels`
+        if (eff.fabric) h += `<br>${formatMult(eff.fabric,2)} to Fabrics`
+        if (eff.wh_loss) h += `<br>${formatReduction(eff.wh_loss,2)} to Wormhole's lossless-ness`
+
+        if (eff.dark) h += `<br>${formatMult(eff.dark,2)} to Dark Rays`
+        if (eff.glyph) h += `<br>${formatMult(eff.glyph,2)} to Mass Glyphs`
+
         tmp.el.apples.setHTML(`You have <h3>${player.ouro.apple.format(0)}</h3> apples. (+${tmp.ouro.apple_gain.format(0)}/feed)<b class='sky'>${h}</b>`)
 
         h = ``, eff = tmp.ouro.escrow_boosts
 
-        if (eff.bhc) h += `Booster's power boosts BHC's power at a reduced rate (<b>${formatMult(eff.bhc,2)}</b>)<br>`
+        if (eff.bhc) h += `Stronger's power boosts BHC's power at a reduced rate (<b>${formatMult(eff.bhc,2)}</b>)<br>`
+        if (eff.md_m3) h += `Dilated mass boosts Mediation's third effect (<b>${formatMult(eff.md_m3,2)}</b>)<br>`
+        if (eff.apple) h += `Mediation boosts apple feeded (<b>^${format(eff.apple,2)}</b>)<br>`
+        if (eff.quark_overflow) h += `Mediation weakens quark overflows (<b>${formatReduction(eff.quark_overflow,2)}</b>)<br>`
+        if (eff.sn) h += `Mediation boosts supernova generation (<b>${formatMult(eff.sn,2)}</b>)<br>`
 
         tmp.el.escrow_boosts.setHTML(h)
+
+        h = `
+        You have <h4>${player.ouro.berry.format(0)}</h4> strawberries that can be spent for muonic elements. (+${tmp.ouro.berry_gain.format(0)}/feed)
+        `
+
+        tmp.el.ouro_other_res.setHTML(h)
+    } else if (tmp.tab_name == 'wh') {
+        WORMHOLE.html()
     }
 }
 
-const MEDIATION = {
-    mediate() {
-        let lvl = this.level_gain
-        if (lvl.lt(1)) return;
-        player.evo.cp.level = player.evo.cp.level.add(lvl)
-        player.evo.cp.points = E(0)
-    },
-    get level_gain() {
-        let cp = expMult(player.evo.cp.points,0.5)
-
-        if (player.atom.unl && tmp.atom) cp = cp.mul(tmp.atom.atomicEff[1])
-
-        return cp.floor()
-    },
-    loss(lvl) {
-        let start = E(10)
-        let speed = E(1)
-
-        if (lvl.gte(start)) speed = speed.mul(lvl.div(start))
-
-        //losing is faster at higher values
-        return { speed, start }
-    },
-    eff(lvl) {
-        let eff = {}
-
-        eff.mass1 = lvl.add(1)
-        if (hasElement(67,1)) eff.mass2 = lvl.div(100).add(1)
-        if (hasElement(69,1)) eff.mass3 = lvl.add(1).log10().div(10).add(1)
-
-        return eff
-    }
+function setupOuroHTML() {
+    setupWormholeHTML()
 }

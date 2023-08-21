@@ -25,7 +25,10 @@ const INF = {
 
         e = []
         
-        for (let i = 0; i < player.atom.muonic_el.length; i++) if (MUONIC_ELEM.upgs[player.atom.muonic_el[i]].cs) e.push(player.atom.muonic_el[i])
+        for (let i = 0; i < player.atom.muonic_el.length; i++) {
+            let u = MUONIC_ELEM.upgs[player.atom.muonic_el[i]]
+            if (u.cs || u.berry) e.push(player.atom.muonic_el[i])
+        }
 
         player.atom.muonic_el = e
         for (let x = 1; x <= (hasElement(229) ? 15 : 16); x++) player.chal.comps[x] = E(0)
@@ -619,7 +622,11 @@ function updateInfHTML() {
         for (let t in CORE) {
             let hh = ``, ct = CORE[t], ctmp = tmp.core_eff[t], s = tmp.core_score[t]
             for (let i = 0; i < MAX_STARS; i++) {
-                if (s[i].gt(0)) hh += "Meta-Score "+format(s[i],2)+" | "+(ct.preEff[i] || '???.')+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
+                if (s[i].gt(0)) {
+                    let desc = ct.preEff[i]
+                    if (desc && typeof desc == 'function') desc = desc()
+                    hh += "Meta-Score "+format(s[i],2)+" | "+(desc || '???.')+` <b class='sky'>(${ct.effDesc[i](ctmp[i])})</b><br>`
+                }
             }
             let f = player.inf.fragment[t]
             if (f.gt(0)) hh += `<br>${f.format(0)} ${ct.title.split(' ')[0]} Fragments | ${ct.fragment[1](tmp.fragment_eff[t])}<br>`
@@ -633,7 +640,7 @@ function updateInfHTML() {
         for (let r in INF.upgs) {
             r = parseInt(r)
 
-            let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte(10))
+            let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte(OURO.evolution >= 1 ? 4 : 10))
 
             tmp.el['iu_row'+r].setDisplay(unl)
 

@@ -179,7 +179,7 @@ function updateStarsScreenHTML() {
     let show = !tmp.SN_passive && player.supernova.times.lt(1e5)
 
     tmp.el.star.setDisplay(show)
-    if ((!tmp.supernova.reached || player.supernova.post_10) && tmp.tab != 5 && show) {
+    if ((!tmp.supernova.reached || player.supernova.post_10) && show) {
         let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
         let percent = 0
         if (g.gte(1) && player.supernova.post_10) {

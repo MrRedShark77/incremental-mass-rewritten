@@ -87,15 +87,16 @@ const TREE_UPGS = {
         c: {
             req() { return player.supernova.times.gte(1) },
             reqDesc: `1 Supernova.`,
-            desc: `Start generating 0.1 Neutron Star per second (not affected by offline production).`,
+            desc: `Start generating 0.1 Neutron Star per second.`,
             cost: E(0),
         },
         sn1: {
             branch: ["c"],
             desc: `Tickspeed affects Neutron Star gain at a reduced rate.`,
+            evo_desc: [1,`Mediation boosts Neutron Stars.`],
             cost: E(10),
             effect() {
-                let x = player.build.tickspeed.amt.add(1).pow(0.25)
+                let x = OURO.evolution >= 1 ? player.evo.cp.level.add(1).root(2) : player.build.tickspeed.amt.add(1).root(4)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -151,7 +152,7 @@ const TREE_UPGS = {
         },
         m1: {
             branch: ["c"],
-            desc: `Neutron star multiplies Mass gain.`,
+            desc: `Neutron star boosts Mass gain.`,
             cost: E(100),
             effect() {
                 let x = 
@@ -190,19 +191,21 @@ const TREE_UPGS = {
         },
         rp1: {
             branch: ["c"],
-            desc: `Neutron Stars multiplies Rage Powers gain`,
+            desc: `Neutron Stars boost Rage Powers gain.`,
+            evo_desc: [1,`Neutron Stars boost calm powers gain.`],
             cost: E(200),
             effect() {
+                if (OURO.evolution >= 1) return hasElement(165) ? player.supernova.stars.add(1).log10().add(1) : player.supernova.stars.add(1).log10().add(1).log10().add(1).pow(2)
                 let x = hasElement(165)
                 ? player.supernova.stars.add(1).log10().add(1).log10().div(10).add(1)
                 : E(1e50).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
                 return x
             },
-            effDesc(x) { return hasElement(165)?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e50).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
+            effDesc(x) { return OURO.evolution >= 1?formatMult(x):hasElement(165)?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e50).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
         },
         bh1: {
             branch: ["c"],
-            desc: `Neutron Star multiplies Dark Matters gain.`,
+            desc: `Neutron Star boosts Dark Matters gain.`,
             cost: E(400),
             effect() {
                 let x = hasElement(166)
@@ -457,9 +460,10 @@ const TREE_UPGS = {
             unl() { return player.supernova.fermions.unl },
             branch: ["bs1"],
             desc: `Tickspeed affects Fermions gain at a reduced rate.`,
+            evo_desc: [1,`Mediation affects Fermions gain at a reduced rate.`],
             cost: E(1e27),
             effect() {
-                let x = E(1.25).pow(player.build.tickspeed.amt.softcap(1e24,0.5,2).pow(0.4))
+                let x = OURO.evolution >= 1 ? expMult(player.evo.cp.level.add(1),2) : E(1.25).pow(player.build.tickspeed.amt.softcap(1e24,0.5,2).pow(0.4))
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -790,10 +794,11 @@ const TREE_UPGS = {
             qf: true,
             branch: ["qu_qol3","qu_qol5"],
             req() {
+                if (OURO.evolution >= 1) return true
                 for (let x = 9; x <= 12; x++) if (player.chal.comps[x].gte(1)) return false
                 return player.mass.gte(mlt(5e3)) && FERMIONS.onActive("05")
             },
-            reqDesc() { return `Reach ${formatMass(mlt(5e3))} of mass without completing Challenges 9-12 in Quantum run, while in [Bottom].` },
+            reqDesc() { return OURO.evolution >= 1 ? `YOU CAN AFFORD BECAUSE OF EVOLUTION!` : `Reach ${formatMass(mlt(5e3))} of mass without completing Challenges 9-12 in Quantum run, while in [Bottom].` },
             desc: `Keep challenge 9-12 completions on going Quantum.`,
             cost: E(25),
         },
@@ -1348,17 +1353,20 @@ function changeTreeAnimation() {
 
 function updateTreeHTML() {
     let c16 = tmp.c16active
-    let req = ""
-    let t_ch = TREE_UPGS.ids[tmp.supernova.tree_choosed]
-    if (tmp.supernova.tree_choosed != "") req = t_ch.req?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
-    tmp.el.tree_desc.setHTML(
-        tmp.supernova.tree_choosed == "" ? `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`
-        : `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
-        ${`<span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${t_ch.desc}</span>`.corrupt(c16 && CORRUPTED_TREE.includes(tmp.supernova.tree_choosed))}<br>
-        <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':t_ch.cs?'<span class="corrupted_text">Corrupted Shard</span>':'Neutron star'}</span><br>
-        <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
-        `
-    )
+    if (tmp.supernova.tree_choosed == "") tmp.el.tree_desc.setHTML(`<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`)
+    else {
+        let t_ch = TREE_UPGS.ids[tmp.supernova.tree_choosed]
+        let req = t_ch.req?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
+        let desc = t_ch.desc
+        if (t_ch.evo_desc && OURO.evolution >= t_ch.evo_desc[0]) desc = desc.strike() + " " + t_ch.evo_desc[1]
+        tmp.el.tree_desc.setHTML(
+            `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
+            ${`<span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${desc}</span>`.corrupt(c16 && CORRUPTED_TREE.includes(tmp.supernova.tree_choosed))}<br>
+            <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':t_ch.cs?'<span class="corrupted_text">Corrupted Shard</span>':'Neutron star'}</span><br>
+            <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
+            `
+        )
+    }
 
     for (let i = 0; i < TREE_TAB.length; i++) {
         tmp.el["tree_tab"+i+"_btn"].setDisplay(TREE_TAB[i].unl?TREE_TAB[i].unl():true)

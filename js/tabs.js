@@ -1,6 +1,7 @@
 const TABS_DATA = {
     "mass"  : { name: "Mass" },
     "bh"    : { name: "Black Hole", style: "bh" },
+    "wh"    : { name: "Wormhole", style: "bh" },
     "atomic": { name: "Atomic Generator", style: "atom" },
     'star'  : { name: "Stars", style: "sn" },
     'bp'    : { name: "Indescribable Matter", style: "qu" },
@@ -73,7 +74,8 @@ function updateTabTemp() {
 const TABS = [
     { name: "Main", icon: "pajamas:weight", stab: [
         'mass',
-        ['bh', () => player.bh.unl],
+        ['bh', () => player.bh.unl, () => OURO.evolution < 2],
+        ['wh', () => player.bh.unl, () => OURO.evolution >= 2],
         ['atomic', () => player.atom.unl],
         ['star', () => STARS.unlocked()],
         ['bp', () => quUnl()],

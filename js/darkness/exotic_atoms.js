@@ -1,7 +1,7 @@
 const MUONIC_ELEM = {
     canBuy(x) {
         if (player.atom.muonic_el.includes(x)) return false
-        let upg = this.upgs[x], amt = upg.apple ? player.ouro.apple : upg.cs ? player.inf.cs_amount : tmp.exotic_atom.amount
+        let upg = this.upgs[x], amt = upg.berry ? player.ouro.berry : upg.cs ? player.inf.cs_amount : tmp.exotic_atom.amount
 
         return amt.gte(upg.cost||EINF)
     },
@@ -9,7 +9,7 @@ const MUONIC_ELEM = {
         if (this.canBuy(x)) {
             let upg = this.upgs[x]
 
-            if (upg.apple) player.ouro.apple = player.ouro.apple.sub(upg.cost)
+            if (upg.berry) player.ouro.berry = player.ouro.berry.sub(upg.cost)
             else if (upg.cs) player.inf.cs_amount = player.inf.cs_amount.sub(upg.cost)
 
             player.atom.muonic_el.push(x)
@@ -387,27 +387,56 @@ const MUONIC_ELEM = {
             desc: `Unlock the eighth star generator.`,
             cost: E('e1430'),
         },{
-            apple: true,
+            berry: true,
             desc: `Add new mediation’s effect.`,
+            cost: E(25),
+        },{
+            berry: true,
+            desc: `Calm Power boosts Apples & Strawberries.`,
+            cost: E(50),
+            eff() {
+                let x = tmp.ouro.unl ? player.evo.cp.points.add(1).log10().mul(hasElement(71,1)?1.5:1).add(1) : E(1)
+                let y = x.div(10).add(1).root(2)
+                return [x, y]
+            },
+            effDesc: x=>formatMult(x[0]) + " to Apples, " + formatMult(x[1]) + " to Strawberries",
+        },{
+            berry: true,
+            desc: `Add new another mediation’s effect.`,
+            cost: E(100),
+        },{
+            berry: true,
+            desc: `Automate mediation every second. Keep mediation on all pre-Ouroboric resets.`,
             cost: E(250),
         },{
-            apple: true,
-            desc: `Calm Power boosts Apples.`,
-            cost: E(500),
+            berry: true,
+            desc: `Muonic Erbium-68 is better.`,
+            cost: E(1000),
+        },{
+            berry: true,
+            desc: `Pent boosts Calm Power.`,
+            cost: E(2000),
             eff() {
-                if (!tmp.ouro.unl) return E(1)
-                let x = expMult(player.evo.cp.points.add(1).log10().add(1),0.5)
+                let x = player.ranks.pent.add(1).root(2)
                 return x
             },
             effDesc: x=>formatMult(x),
         },{
-            apple: true,
-            desc: `Add new another mediation’s effect.`,
-            cost: E(2500),
+            berry: true,
+            desc: `Improve 3rd Meditation effect base.`,
+            cost: E(3000),
         },{
-            apple: true,
-            desc: `Automate mediation every second. Keep mediation on all pre-ourobrosity resets.`,
+            berry: true,
+            desc: `Unlock 4th Meditation effect.`,
             cost: E(5000),
+        },{
+            berry: true,
+            desc: `Improve 2nd Apple effect.`,
+            cost: E(1e4),
+        },{
+            berry: true,
+            desc: `Unlock 5th Meditation effect.`,
+            cost: E(1.5e4),
         },
 
         /*
@@ -425,7 +454,7 @@ const MUONIC_ELEM = {
     getUnlLength() {
         let u = 11
 
-        if (OURO.evolution >= 1) u = 66 + 4
+        if (OURO.evolution >= 1) u = 66 + 10
         else {
             if (tmp.inf_unl) u += 4
             if (hasInfUpgrade(9)) u += 3

@@ -61,7 +61,7 @@ const MASS_DILATION = {
         if (hasUpgrade('atom',19)) os = os.pow(upgEffect(3,19))
         if (hasTree('ct14')) os = os.pow(treeEff('ct14'))
 
-        if (hasAscension(0,7)) os = EINF
+        if (OURO.evolution >= 1 || hasAscension(0,7)) os = EINF
 
         x = overflow(x,os,0.5)
 
@@ -157,7 +157,7 @@ const MASS_DILATION = {
                 cost(x) { return E(1.5e246) },
                 bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
             },{
-                unl() { return STARS.unlocked() || player.supernova.times.gte(1) },
+                unl() { return (STARS.unlocked() || player.supernova.times.gte(1)) && OURO.evolution == 0 },
                 desc: `Tickspeed affects all-star resources at a reduced rate.`,
                 maxLvl: 1,
                 cost(x) { return E(1.5e296) },
@@ -185,7 +185,7 @@ const MASS_DILATION = {
                 },
                 effDesc(x) { return "+"+format(x)+(x.gte(0.2)?" <span class='soft'>(softcapped)</span>":"") },
             },{
-                unl() { return player.supernova.post_10 },
+                unl() { return player.supernova.post_10 && OURO.evolution == 0 },
                 desc: `First 3 Mass Dilation upgrades are stronger.`,
                 cost(x) { return E(1e100).pow(x.pow(2)).mul('1.5e8056') },
                 bulk() { return player.md.mass.gte('1.5e8056')?player.md.mass.div('1.5e8056').max(1).log(1e100).max(0).root(2).add(1).floor():E(0) },

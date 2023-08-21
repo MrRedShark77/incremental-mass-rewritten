@@ -139,6 +139,12 @@ const BUILDINGS_DATA = {
                 sp **= 0.9
                 sp3 **= 0.925
             }
+            if (OURO.unl()) {
+                let w = tmp.evo.mediation_eff.mass3_softcap??1
+                sp = Decimal.pow(sp,w)
+                sp2 = Decimal.pow(sp2,w)
+                sp3 = Decimal.pow(sp3,w)
+            }
             step = step.softcap(1e43,hasElement(160)?0.85:0.75,0)
 
             let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
@@ -210,6 +216,7 @@ const BUILDINGS_DATA = {
             if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
 
             if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
+            step = step.mul(escrowBoost('mass4'))
 
             let ss = E(10)
 
@@ -378,7 +385,7 @@ const BUILDINGS_DATA = {
 		icon: "bhCondenser",
         scale: "bh_condenser",
 
-        get isUnlocked() { return player.bh.unl },
+        get isUnlocked() { return player.bh.unl && OURO.evolution < 2 },
         get autoUnlocked() { return player.mainUpg.atom.includes(2) },
         get noSpend() { return player.atom.unl },
 

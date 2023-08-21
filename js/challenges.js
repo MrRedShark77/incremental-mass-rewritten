@@ -321,6 +321,7 @@ const CHALS = {
         return {goal, bulk}
     },
     1: {
+        unl() { return OURO.evolution < 2 },
         title: "Instant Scale",
         desc: "Super rank and mass upgrade scaling starts at 25. Also, Super tickspeed starts at 50.",
         reward: ()=>hasBeyondRank(2,20)?`Supercritical Rank & All Fermions Tier scaling starts later, Super Overpower scales weaker based on completions.`:`Super Rank starts later, Super Tickspeed scales weaker based on completions.`,
@@ -339,7 +340,7 @@ const CHALS = {
         effDesc(x) { return hasBeyondRank(2,20)?formatMult(x.scrank)+" later to Supercritical Rank & All Fermions starting, "+formatReduction(x.over)+" weaker to Super Overpower scaling":"+"+format(x.rank,0)+" later to Super Rank starting, "+format(E(1).sub(x.tick).mul(100))+"% weaker to Super Tickspeed scaling" },
     },
     2: {
-        unl() { return player.chal.comps[1].gte(1) || player.atom.unl },
+        unl() { return OURO.evolution < 2 && (player.chal.comps[1].gte(1) || player.atom.unl) },
         title: "Anti-Tickspeed",
         desc: "You cannot buy Tickspeed.",
         reward: `Each completion adds +7.5% to Tickspeed Power.`,
@@ -357,7 +358,7 @@ const CHALS = {
         effDesc(x) { return "+"+format(x.mul(100))+"%"+(x.gte(0.3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     3: {
-        unl() { return player.chal.comps[2].gte(1) || player.atom.unl },
+        unl() { return OURO.evolution < 2 && (player.chal.comps[2].gte(1) || player.atom.unl) },
         title: "Melted Mass",
         desc: "Mass gain softcap starts 150 OoMs eariler, and is stronger.",
         reward: `Mass gain is raised based on completions (doesn't apply in this challenge).`,
@@ -373,7 +374,7 @@ const CHALS = {
         effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     4: {
-        unl() { return player.chal.comps[3].gte(1) || player.atom.unl },
+        unl() { return OURO.evolution < 2 && (player.chal.comps[3].gte(1) || player.atom.unl) },
         title: "Weakened Rage",
         desc: "Rage Power gain is rooted by 10. Additionally, mass gain softcap starts 100 OoMs eariler.",
         reward: `Rage Powers gain is raised by completions.`,
@@ -635,11 +636,13 @@ const CHALS = {
         get desc() { return `
         You cannot become/generate supernovas, produce star resources, dark ray (it is capped at ${format(1e12)}), dark shadow, and abyssal blot, nor purchase tree upgrades. You are stuck in dark run with 1000 all glyphs (unaffected by weakness). This challenge resets supernova.
         `},
-        reward: `Generate more supernovas by completions.<br><span class="yellow">On 10th completion, unlock sixth row of infinity upgrades.</span>`,
+        get reward() { return `
+        Generate more supernovas by completions.<br><span class="yellow">On ${OURO.evolution >= 1 ? 4 : 10}th completion, unlock sixth row of infinity upgrades.</span>
+        `},
         max: E(100),
         inc: E('1e10'),
         pow: E(3),
-        start: E('ee5555'),
+        get start() { return E(OURO.evolution >= 1 ? 'ee2555' : 'ee5555') },
         effect(x) {
             let ret = Decimal.pow(100,expMult(x.mul(10),2/3).div(10))
             return ret

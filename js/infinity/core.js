@@ -180,7 +180,7 @@ const CORE = {
             `Boost quarks gain.`,
             `Boost quark & atomic power overflows starting.`,
             `Increase overpower's power.`,
-            `Increase accelerator's power.`,
+            () => OURO.evolution >= 1 ? `Gain more mediation.` : `Increase accelerator's power.`,
             `Boost Exotic Atom gain.`,
             `Boost dilated mass gain.`,
         ],
@@ -215,13 +215,14 @@ const CORE = {
                 return x.div(1e4)
             },
             s => {
-                let x = s.root(4)
+                let evo1 = OURO.evolution >= 1
+                let x = evo1 ? s.add(1).pow(2) : s.root(4)
 
                 if (tmp.NHDimprove) x = x.pow(1.5)
 
                 if (hasAscension(0,1)) x = x.mul(10)
 
-                return x.div(1e4)
+                return evo1 ? x : x.div(1e4)
             },
             s => {
                 let x = s.add(1).log10().root(2).div(10).add(1)
@@ -248,7 +249,7 @@ const CORE = {
             x => "^"+format(x),
             x => "^"+format(x),
             x => "+"+format(x),
-            x => "+"+format(x),
+            x => OURO.evolution >= 1?formatMult(x):"+"+format(x),
             x => "^"+format(x),
             x => "^"+format(x)+" to exponent",
             x => formatMult(x),
@@ -538,7 +539,11 @@ function getTheoremPreEffects(data,s,p,level) {
     let t = data.type
 
     let e = ""
-    for (let i = 0; i < MAX_STARS; i++) if (s[i]) e += (CORE[t].preEff[i]||'???.') + "<br>"
+    for (let i = 0; i < MAX_STARS; i++) if (s[i]) {
+        let desc = CORE[t].preEff[i]
+        if (desc && typeof desc == 'function') desc = desc()
+        e += (desc||'???.') + "<br>"
+    }
     e += `(Based on <b>${CORE[t].res}</b>)`
     if (tmp.tfUnl) e += `<br class='line'>Form into <b>+${format(calcFragmentBase(data,s,p,level),0)}</b> fragment base`
     return e

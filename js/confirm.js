@@ -11,7 +11,11 @@ const CONFIRMS_FUNCTION = {
         addQuote(2)
     },
     bh() {
-        player.bh.dm = player.bh.dm.add(tmp.bh.dm_gain)
+        let g = tmp.bh.dm_gain
+
+        if (OURO.evolution >= 1) player.evo.wh.fabric = player.evo.wh.fabric.add(g)
+        else player.bh.dm = player.bh.dm.add(g)
+
         player.bh.unl = true
         FORMS.bh.doReset()
 
@@ -38,6 +42,8 @@ const CONFIRMS_FUNCTION = {
                 SUPERNOVA.doReset()
             }
         }
+
+        document.body.style.backgroundColor = "#111"
     },
     switchF(i,x) {
         let id = i+""+x

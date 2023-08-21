@@ -10,6 +10,11 @@ const SUPERNOVA = {
         let br = player.qu.rip.active || tmp.c16active || inDarkRun()
         tmp.supernova.time = 0
 
+        if (OURO.unl()) {
+            let s = OURO.save().evo.cp
+            player.evo.cp.best = s.best
+        }
+
         player.atom.points = E(0)
         player.atom.quarks = E(0)
         player.atom.particles = [E(0),E(0),E(0)]
@@ -91,7 +96,7 @@ const SUPERNOVA = {
         if (hasElement(49,1)) x = x.mul(muElemEff(49))
         if (hasElement(274)) x = x.mul(elemEffect(274))
         if (hasUpgrade('br',22)) x = x.mul(tmp.prim.eff[7])
-        x = x.mul(theoremEff('time',5))
+        x = x.mul(theoremEff('time',5)).mul(escrowBoost('sn'))
 
         return x
     },
@@ -131,6 +136,8 @@ function calcSupernova(dt) {
             .max(tmp.fermions.tiers[tmp.fermions.ch[0]][tmp.fermions.ch[1]])
         }
         if (tmp.fermions.ch[0] != 0 || tmp.fermions.ch[1] >= 6) if (hasTree("qu_qol8") && !(!hasTree("qu_qol8a")&&QCs.active())) for (let i = 0; i < 2; i++) for (let j = 0; j < w; j++) if (j < FERMIONS.getUnlLength()) {
+            let f = FERMIONS.types[i][j]
+            if (f.unl && !f.unl()) continue;
             su.fermions.tiers[i][j] = su.fermions.tiers[i][j]
             .max(tmp.fermions.tiers[i][j])
         }
@@ -194,6 +201,7 @@ function updateSupernovaTemp() {
 function updateSupernovaEndingHTML() {
     if (tmp.supernova.reached && tmp.start && player.supernova.times.lte(0) && !player.supernova.post_10) {
         tmp.tab = 5
+        tmp.stab[5] ||= 0
         document.body.style.backgroundColor = `hsl(0, 0%, ${7-Math.min(tmp.supernova.time/4,1)*7}%)`
         tmp.el.supernova_scene.setDisplay(tmp.supernova.time>4)
         tmp.el.sns1.setOpacity(Math.max(Math.min(tmp.supernova.time-4,1),0))

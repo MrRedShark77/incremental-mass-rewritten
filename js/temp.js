@@ -408,10 +408,14 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     updateTabTemp()
 
+    const evo = OURO.evolution
+
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
 
     OURO.temp()
+
+    tmp.layer2_passive = (evo>=2&&player.rp.unl)||player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)
 
     tmp.c16active = CHALS.inChal(16)
     tmp.c18active = CHALS.inChal(18)
