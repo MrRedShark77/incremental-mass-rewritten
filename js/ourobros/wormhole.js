@@ -1,44 +1,39 @@
 const WORMHOLE = {
-    step(x,t) {
-        if (x.lt(10)) {
-            let w = t.lt(10) ? t : Decimal.sub(10,t)
-            t = t.sub(w)
-            x = x.add(w).min(10)
-        }
+    step(i,m,dt) {
+        let p = tmp.evo.wormhole_power, mul = tmp.evo.wormhole_mult[i], div = m.div(mul)
+		if (div.gt(p)) div = E(2).pow(div.div(p).sub(1)).mul(p)
+		let rev = div.add(dt)
+		if (rev.gt(p)) rev = rev.div(p).log(2).add(1).mul(p)
+		rev = rev.mul(mul)
 
-        if (x.gte(10)) {
-            const p = tmp.evo.wormhole_power
-
-            x = Decimal.pow(10,Decimal.pow(10,x.log10().pow(p)).root(2).add(t).pow(2).log10().root(p))
-        }
-
-        return x.max(0)
+		if (i > 0 && m.eq(0)) return E(0)
+		if (isNaN(rev.mag)) return m
+        return rev
     },
-    calcGain(x,dt) {
-        return this.step(x,dt).sub(x)
+    calcGain(i) {
+		let m = player.evo.wh.mass[i]
+        return this.step(i,m,1).sub(m)
     },
     calc(dt) {
         const evo = OURO.evolution, unls = tmp.evo.wormhole_unls, mass = player.evo.wh.mass
-
         if (evo >= 2) if (player.mainUpg.atom.includes(6)) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
-        for (let i = 0; i < WORMHOLE.maxLength; i++) if (i < unls) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wormhole_mult[i].mul(dt))
+        for (let i = 0; i < unls; i++) mass[i] = WORMHOLE.step(i,mass[i],dt)
     },
     temp() {
         const unls = this.unlLength
         tmp.evo.wormhole_unls = unls
-
         tmp.evo.wormhole_power = Decimal.pow(2,appleEffect('wh_loss'))
 
         const mass = player.evo.wh.mass
-        const fabric_mult = player.evo.wh.fabric.add(1)
+        const fabric_mult = expMult(player.evo.wh.fabric.mul(10), 0.3).div(10)
         const wh_power = E(2)
 
         for (let [i,e] of Object.entries(this.effects)) {
             i = parseInt(i)
             let m = mass[i]
             tmp.evo.wormhole_eff[i] = e[0](i < unls ? m : E(1))
-            tmp.evo.wormhole_mult[i] = m.add(1).log10().add(1).pow(wh_power).mul(fabric_mult)
+            tmp.evo.wormhole_mult[i] = fabric_mult.mul(m.add(10).log10())
         }
     },
     html() {
@@ -50,39 +45,39 @@ const WORMHOLE = {
             tmp.el[id+'-div'].setDisplay(unl)
             if (unl) {
                 let m = mass[i]
-
-                const mult = tmp.evo.wormhole_mult[i], gain = WORMHOLE.calcGain(m,mult.div(FPS)).mul(FPS)
+                const mult = tmp.evo.wormhole_mult[i]
 
                 tmp.el[id+'-mult'].setHTML(formatMult(mult,2))
-                tmp.el[id+'-mass'].setHTML(formatMass(m)+"<br>"+m.formatGain(gain))
+                tmp.el[id+'-mass'].setHTML(formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(i), true))
                 tmp.el[id+'-effect'].setHTML(this.effects[i][1](tmp.evo.wormhole_eff[i]))
             }
         }
     },
 
     get unlLength() {
-        return 1
+		if (player.atom.unl) return 3
+		return 2
     },
-    maxLength: 3,
+    maxLength: 6,
 
     effects: [
         [
-            m => {
-                let x = m.div(100).add(1)
-                return x
-            },
+            m => m.div(10).add(1).sqrt(),
             x => `Boost mediation levels by <b>${formatMult(x,2)}</b>.`,
         ],[
-            m => {
-                let x = E(1)
-                return x
-            },
+            m => m.div(100).add(1),
+            x => `Boost Booster's power by <b>${formatMult(x,2)}</b>`,
+        ],[
+            m => m.add(10).log10(),
+            x => `Gain more Calm Power. <b>${formatMult(x,2)}</b>`,
+        ],[
+            m => E(1),
             x => `Placeholder. <b>${formatMult(x,2)}</b>`,
         ],[
-            m => {
-                let x = E(1)
-                return x
-            },
+            m => E(1),
+            x => `Placeholder. <b>${formatMult(x,2)}</b>`,
+        ],[
+            m => E(1),
             x => `Placeholder. <b>${formatMult(x,2)}</b>`,
         ],
 
@@ -123,7 +118,7 @@ function setupWormholeHTML() {
     for (let i = 0; i < WORMHOLE.maxLength; i++) {
         h += `
         <div class='wormhole-div' id='wormhole${i}-div' onclick="activateWormhole(${i})">
-            <div class='wh-id'>#${i+1}</div>
+            <div class='wh-id'>#${i+1} - Click to ${i ? "merge with #1" : "split"}</div>
             <div id='wormhole${i}-mult' class='wh-mult'>A</div>
             <div id='wormhole${i}-mass' class='wh-mass'>B</div>
             <div id='wormhole${i}-effect' class='wh-effect'>C</div>

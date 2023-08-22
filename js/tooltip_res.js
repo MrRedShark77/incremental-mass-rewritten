@@ -7,14 +7,6 @@ const TOOLTIP_RES = {
             if (tmp.overflowBefore.mass.gte(tmp.overflow_start.mass[0]))
             h += `<br>(<b>+${formatMass(tmp.overflowBefore.mass)}</b> gained before <b>overflow</b>)`;
 
-            /*
-            if (quUnl())
-            h += `
-            <br class='line'>You have <b class='red'>${player.rp.points.format(0)} ${player.rp.points.formatGain(tmp.rp.gain.mul(tmp.preQUGlobalSpeed))}</b> Rage Power. (after Quantum)
-            <br class='line'>You have <b class='yellow'>${player.bh.dm.format(0)} ${player.bh.dm.formatGain(tmp.bh.dm_gain.mul(tmp.preQUGlobalSpeed))}</b> Dark Matter. (after Quantum)
-            `;
-            */
-
             return h
         },
     },
@@ -42,37 +34,19 @@ const TOOLTIP_RES = {
         full: "Dark Matter",
         desc() {
             let r = OURO.evolution >= 1 ? `<b>${format(1e4)}</b> Calm Power` : `<b>${format(1e20)}</b> Rage Power`
-
-            let h = `<i>
-            Reach over ${r} to reset all previous features for gain Dark Matters.
-            </i>`
-
-            return h
+            return `<i>Reach over ${r} to reset all previous features for gain Dark Matters.</i>`
         },
     },
     fabric: {
         full: "Fabric",
         desc() {
-            let r = `<b>${format(1e5)}</b> Calm Power`
-
-            let h = `<i>
-            Reach over ${r} to reset all previous features for gain Fabrics.
-            </i>`
-
-            return h
+            return `<i>Reach over <b>${format(1e5)}</b> Calm Power to reset all previous features for gain Fabrics.</i>`
         },
     },
     wormhole: {
         full: "Wormhole",
         desc() {
-            let h = `You have <b>${formatMass(player.bh.mass)}</b> of first wormhole.`;
-
-            if (hasCharger(1))
-            h += `
-            <br class='line'>You have <b class='corrupted_text'>${formatMass(player.bh.unstable)} ${formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true)}</b> of Unstable Black Hole.
-            `;
-
-            return h
+            return `You have <b>${formatMass(player.evo.wh.mass[0])}</b> of first wormhole.`
         },
     },
     bh: {
@@ -87,13 +61,6 @@ const TOOLTIP_RES = {
             h += `
             <br class='line'>You have <b class='corrupted_text'>${formatMass(player.bh.unstable)} ${formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true)}</b> of Unstable Black Hole.
             `;
-
-            /*
-            if (quUnl())
-            h += `
-            <br class='line'>You have <b class='cyan'>${player.atom.points.format(0)} ${player.atom.points.formatGain(tmp.atom.gain.mul(tmp.preQUGlobalSpeed))}</b> Atom. (after Quantum)
-            `;
-            */
 
             return h
         },
@@ -246,7 +213,7 @@ const TOOLTIP_RES = {
             Your best mass of black hole in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
             <br class='line'>
             <i>
-            Start the 16th Challenge. Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge with more than <b>${formatMass(OURO.evolution >= 1 ? 1e75 : 1e100)}</b> of black hole.<br><br>
+            Start the 16th Challenge. Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge with more than <b>${formatMass(OURO.evolution >= 1 ? 1e70 : 1e100)}</b> of black hole.<br><br>
             • You cannot gain rage powers, and all matters' formulas are disabled, and they generate each other. Red matter generates dark matter.<br>
             • Pre-C16 features, such as rank, prestige tiers, main upgrades, elements, tree upgrades, etc. may be corrupted (disabled).<br>
             • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>

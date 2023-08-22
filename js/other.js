@@ -366,10 +366,10 @@ function keyEvent(e) {
     // console.log(k)
 
     if (tmp.tab_name == 'snake') {
-        if (k == 87 || k == 38) snake.move = 0
-        else if (k == 68 || k == 39) snake.move = 1
-        else if (k == 83 || k == 40) snake.move = 2
-        else if (k == 65 || k == 37) snake.move = 3
+        if (k == 87 || k == 38) recordMovement(0)
+        else if (k == 68 || k == 39) recordMovement(1)
+        else if (k == 83 || k == 40) recordMovement(2)
+        else if (k == 65 || k == 37) recordMovement(3)
     } else {
         if (k == 38 || k == 40) {
             let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
@@ -381,8 +381,7 @@ function keyEvent(e) {
                     tmp.tab = s
                     tmp.stab[s] ||= 0
                     return
-                }
-                else if (!tt.unl || tt.unl()) {
+                } else if (!tt.unl || tt.unl()) {
                     tmp.tab = t
                     tmp.stab[t] ||= 0
                     return

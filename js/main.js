@@ -416,11 +416,10 @@ const FORMS = {
 
             if (evo1) {
                 gain = gain.max(1).log10().add(1)
-
                 gain = gain.mul(appleEffect('cp'))
                 if (hasTree("rp1")) gain = gain.mul(treeEff('rp1'))
-
                 if (hasElement(72,1)) gain = gain.mul(muElemEff(72))
+                gain = gain.mul(wormholeEffect(2))
             }
 
             return gain.floor()
@@ -451,8 +450,9 @@ const FORMS = {
                 if (gain.lt(1)) return E(0)
                 if (evo < 1) gain = gain.root(4)
             } else {
-                if (player.evo.cp.best.lt(evo>=2?1e5:1e4)) return E(0)
-                gain = Decimal.pow(evo>=2?1.000001:1.00001,player.evo.cp.best)
+				let cp = player.evo.cp[evo >= 2 ? "points" : "best"]
+                if (cp.lt(evo>=2?1e5:1e4)) return E(0)
+                gain = Decimal.pow(evo>=2?1.000001:1.00001,cp)
             }
 
             if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(tmp.supernova.tree_eff.bh1)
@@ -474,8 +474,7 @@ const FORMS = {
             if (tmp.c16active || inDarkRun()) gain = expMult(gain,mgEff(1))
 
             if (evo >= 2) {
-                gain = gain.max(1).log10().add(1)
-
+                gain = gain.max(1).log10().add(1).sqrt()
                 gain = gain.mul(appleEffect('fabric'))
             }
 
@@ -611,16 +610,13 @@ const FORMS = {
 
             let x = (player.mainUpg.atom.includes(12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
             if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
-
             if (hasElement(201)) x = Decimal.add(1.1,exoticAEff(0,5,0)).pow(x.max(1).log10().add(1).log10().pow(.8))
 
             if (hasUpgrade('bh',18)) x = x.pow(2.5)
-
             if (hasElement(201)) x = x.overflow('e1000',0.5)
-
             if (hasElement(48,1)) x = x.pow(theoremEff('bh',4))
 
-            return x//.softcap("ee14",0.95,2)
+            return x
         },
         condenser: {
             autoSwitch() { player.bh.autoCondenser = !player.bh.autoCondenser },
@@ -945,14 +941,6 @@ function formatMass(ex) {
     let md = player.options.massDis
 
     if (md == 1 || ex.gte(EINF)) return format(ex) + ' ' + n[0]
-
-    /*
-    if (md == 1) return format(ex) + ' g'
-    else if (md == 2) return format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt'
-    else if (md == 3) {
-        return  ex.gte('ee14979') ? formatARV(ex) : ex.gte('1.5e1000000056') ? format(ex.div(1.5e56).max(1).log10().div(1e9)) + ' mlt' : format(ex) + ' g'
-    }
-    */
 
     if (ex.gte('eee9')) return formatLDV(ex)
     if (ex.gte('1.5e1000000056')) return formatARV(ex)

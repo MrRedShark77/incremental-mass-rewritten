@@ -11,6 +11,7 @@ Math.randomInt = function (min, max) {
 function newSnakeData() {
 	let s = {
 		time: 0,
+		auto: 0,
 		moves: 0,
 		cam_pos: {x: 320, y: 240},
 		bodies: [
@@ -21,9 +22,11 @@ function newSnakeData() {
 			[{x: 0, y: 3},'0t'],
 		],
 		len: 5,
-	
+
 		max_apples: 10,
 		apples: [],
+		range: [],
+		new_apples: [],
 	
 		size: [16, 10],
 		move: 0,
@@ -43,57 +46,51 @@ const SNAKE_HELPER = {
 	arrow_movement: [{x: 0, y: -1},{x: 2, y: 0},{x: 1, y: 2},{x: -1, y: 1}],
 	speed: [1/3,1/4,1/5,1/6],
 	connectToTextureID: {
-		'0h': 10, '1h': 8,  '2h': 11, '3h': 9,  // Head
-		'0t': 15, '1t': 13, '2t': 14, '3t': 12, // Tail
+		'0h': 12, '1h': 10, '2h': 13, '3h': 11, // Head
+		'0t': 17, '1t': 15, '2t': 16, '3t': 14, // Tail
 		'00': 3,  '22': 3,  '11': 2,  '33': 2,  // Line
 		'32': 5,  '01': 5,  '23': 0,  '10': 0,  // Curve
 		'12': 4,  '03': 4,  '30': 1,  '21': 1,
 	},
 	objectIDs: {
-		'apple': 6,
-		'green_apple': 16,
-		'strawberry': 17,
-
-		'aim': 18,
-		'combo': 19,
-		'adjoin': 20,
-		'frenzy': 21,
-		'purify': 22,
+		'strawberry': 30,
+		'aim': 40,
+		'combo': 41,
+		'adjoin': 42,
+		'frenzy': 43,
+		'purify': 44,
 	},
-	appleTiers: [null,'apple','green_apple'],
+	appleTiers: 10,
 }
 
 const TIMED_POWERUPS = ["combo", "frenzy", "purify"]
 function onPowerup(i) {
-	if (!snake.powerup && TIMED_POWERUPS.includes(i)) {
+	if (TIMED_POWERUPS.includes(i)) {
 		snake.powerup = i
-		snake.powerup_time = 30
+		snake.powerup_time = 15
 	}
 	switch (i) {
 		case 'adjoin':
-			snake.apples.forEach(x => {
-				if (x.type == 'apple') for (let d of SNAKE_HELPER.movement) {
-					let type, tier, origin
-					let s = snake.size
-
-					origin = {x: x.x + d.x, y: x.y + d.y}
-
-					if (origin.x < -s[0]/2 || origin.x > s[0]/2-1 || origin.y < -s[1]/2 || origin.y > s[1]/2-1) continue;
-
-					type = 'apple'
-					tier = Math.min(1 + Math.floor(-Math.log2(Math.random())),SNAKE_HELPER.appleTiers.length-1)
-
-					snake.apples.push({...origin, type, tier})
-				}
-			})
-		break;
+			for (let x of snake.apples) {
+				if (Math.random() < 0.5) continue
+				if (x.type == "powerup") continue
+				let n = getNewSnakePosition({...x}, SNAKE_HELPER.movement[Math.randomInt(0, 4)])
+				snake.new_apples.push(n)
+			}
+			break;
+		case 'purify':
+			for (let x of snake.apples) {
+				if (x.type != "apple") continue
+				x.tier = Math.max(x.tier, rollAppleTier())
+			}
+			break;
 	}
 }
 
 function calcSnake(dt) {
 	snake.time += dt
+	snake.auto += dt
 	if (snake.time >= SNAKE_HELPER.speed[player.options.snake_speed]) {
-		//console.log(snake.time,dt)
 		snake.time = 0
 		snakeStep()
 	}
@@ -110,35 +107,22 @@ function snakeStep() {
 	getNewSnakePosition(head_move, m)
 
 	// Apple Feeding
-	/*
-	let w = snake.apples.findIndex(x => x.x == head_move.x && x.y == head_move.y), w2 = w >= 0 && snake.len < 10
-	if (w >= 0) {
-		feedSomething(snake.apples[w],w)
-		snake.moves = 0
-		snake.apples.splice(w,1)
-	}
-	*/
-
 	let keep = []
-
 	snake.apples.forEach((x,w) => {
-		if (x.x == head_move.x && x.y == head_move.y) {
-			feedSomething(x,w)
-			snake.moves = 0
-		} else keep.push(x)
+		if (x.x == head_move.x && x.y == head_move.y) feedSomething(x,w)
+		else keep.push(x)
 	})
-
-	snake.apples = keep
-
-	let mult = p === 'combo' ? 1.5 : 1
+	snake.apples = keep.concat(snake.new_apples).splice(0,30)
+	snake.new_apples = []
 
 	// Snake Move
-	snake.move_max = snake.len == 5 ? 1/0 : Math.round((25 - snake.len * 2) * mult)
+	let mult = p === 'combo' ? 1.5 : 1
+	snake.move_max = snake.len == 5 ? 1/0 : Math.round((20 - snake.len) * mult)
 	snake.moves++
 	if (snake.moves >= snake.move_max) {
 		snake.moves = 0
 		snake.len--
-        snake.move_max = snake.len == 5 ? 1/0 : Math.round((25 - snake.len * 2) * mult)
+        snake.move_max = snake.len == 5 ? 1/0 : Math.round((20 - snake.len) * mult)
 	}
 
 	// Please fix the rendering issue.
@@ -149,13 +133,24 @@ function snakeStep() {
 	if (snake.bodies.length == snake.len) snake.bodies[snake.len-1][1] = snake.bodies[snake.len-1][1][0] + "t"
 
 	// Apple Spawn
-	if (snake.apples.length < snake.max_apples) spawnApples()
+	let max_apples = snake.powerup == "frenzy" ? 15 : 10
+	if (snake.apples.length < max_apples) spawnApples()
+
+	// Auto-Moving
+	if (snake.auto >= 5) {
+		snake.apples.forEach((x,w) => {
+			if (x.x == head_move.x && x.y < head_move.y) snake.move = 0
+			if (x.x > head_move.x && x.y == head_move.y) snake.move = 1
+			if (x.x == head_move.x && x.y > head_move.y) snake.move = 2
+			if (x.x < head_move.x && x.y == head_move.y) snake.move = 3
+		})
+	}
 }
 
 function spawnApples() {
 	let evo = OURO.evolution
 
-	var len = Math.min(Math.max(Math.log2(0.2 / Math.random()), 1), 4) //Aarex - Get Line Length
+	var len = Math.min(Math.max(Math.log10(1 / Math.random()) * (snake.powerup == "combo" ? 2 : 1) + 1, 1), 4) //Aarex - Get Line Length
 	var origin
 	var s = snake.size
 	while (!origin) {
@@ -163,17 +158,18 @@ function spawnApples() {
 		if (snake.bodies.findIndex(x => x[0].x == rx && x[0].y == ry) == -1 && snake.apples.findIndex(x => x.x == rx && x.y == ry) == -1) origin = {x: rx, y: ry}
 	}
 
+	let berry = Math.random() < 1/3, luck = 1 / Math.random()
 	for (var i = 1; i <= len; i++) {
 		let type, tier
 
-		if (evo >= 2 && Math.random() < 0.05) {
+		if (evo >= 2 && Math.random() < 1/50) {
 			let POWERUPS = ["combo", "adjoin", "frenzy", "purify"]
 			let powerup = POWERUPS[Math.randomInt(0, POWERUPS.length)]
 			type = "powerup"
 			tier = powerup
 		} else {
-			type = Math.random() < 1/4 && snake.powerup !== 'frenzy' ? "berry" : "apple" //Elund - Strawberries
-			tier = Math.min((snake.powerup === 'purify' ? 2 : 1) + Math.floor(-Math.log2(Math.random())),SNAKE_HELPER.appleTiers.length-1) //Elund - Green Apples
+			type = berry && snake.powerup !== 'frenzy' ? "berry" : "apple" //Elund - Strawberries
+			tier = rollAppleTier(luck) //Elund - Green Apples
 		}
 
 		snake.apples.push({...origin, type, tier})
@@ -181,21 +177,20 @@ function spawnApples() {
 	}
 }
 
+function rollAppleTier(luck = 1) {
+	let r = E(Math.random()).div(luck).log(1/10).max(0).add(snake.powerup === 'purify' ? 1.5 : 1).floor()
+	return Math.min(r.toNumber(), OURO.evolution >= 2 ? 3 + OURO.evolution : 2)
+}
+
 function drawSnake() {
 	let ctx = snake.canvas_ctx
-
 	ctx.clearRect(0,0,640,480)
 
-	ctx.font = "16px consolas";
-
-	for (let i = 0; i < snake.apples.length; i++) {
-		let a = snake.apples[i], x = a.x * 32 + snake.cam_pos.x, y = a.y * 32 + snake.cam_pos.y
-
-		let tx
-
+	for (let a of snake.apples) {
+		let x = a.x * 32 + snake.cam_pos.x, y = a.y * 32 + snake.cam_pos.y, tx
 		switch (a.type) {
 			case 'apple':
-				tx = SNAKE_HELPER.objectIDs[SNAKE_HELPER.appleTiers[a.tier]]
+				tx = 20+a.tier-1
 			break;
 			case 'berry':
 				tx = SNAKE_HELPER.objectIDs.strawberry
@@ -207,7 +202,7 @@ function drawSnake() {
 
 		ctx.save()
 		ctx.translate(x - 16, y - 16)
-		ctx.drawImage(snake.images.snake_texture,tx%8*32,Math.floor(tx/8)*32,32,32,0,0,32,32)
+		ctx.drawImage(snake.images.snake_texture,tx%10*32,Math.floor(tx/10)*32,32,32,0,0,32,32)
 		ctx.restore()
 	}
 
@@ -219,17 +214,15 @@ function drawSnake() {
 		let x = b[0].x * 32 + snake.cam_pos.x, y = b[0].y * 32 + snake.cam_pos.y
 
 		let tx = SNAKE_HELPER.connectToTextureID[b[1]]
-
 		if (tx != 7) {
 			ctx.save()
 			ctx.translate(x - 16, y - 16)
-			ctx.drawImage(snake.images.snake_texture,tx%8*32,Math.floor(tx/8)*32,32,32,0,0,32,32)
+			ctx.drawImage(snake.images.snake_texture,tx%10*32,Math.floor(tx/10)*32,32,32,0,0,32,32)
 			ctx.restore()
 		}
 	}
 
 	let s = snake.size
-
 	ctx.strokeStyle = "white";
 	ctx.lineWidth = 4;
 	ctx.strokeRect(snake.cam_pos.x - Math.floor(s[0]/2) * 32 - 16, snake.cam_pos.y - Math.floor(s[1]/2) * 32 - 16, s[0] * 32, s[1] * 32)
@@ -246,12 +239,14 @@ function drawSnake() {
 }
 
 function setupSnake() {
-	for (let i in SNAKE_HELPER.images) {
-		snake.images[SNAKE_HELPER.images[i]] = document.getElementById(SNAKE_HELPER.images[i])
-	}
-
+	for (let i in SNAKE_HELPER.images) snake.images[SNAKE_HELPER.images[i]] = document.getElementById(SNAKE_HELPER.images[i])
 	snake.canvas = document.getElementById('snake_canvas')
 	snake.canvas_ctx = document.getElementById('snake_canvas').getContext('2d')
+}
+
+function recordMovement(i) {
+	snake.move = i
+	snake.auto = 0
 }
 
 function getNewSnakePosition(p, m) {
@@ -266,6 +261,8 @@ function getNewSnakePosition(p, m) {
 }
 
 function feedSomething(obj,target) {
+	snake.auto = 0
+	snake.moves = -1
 	switch (obj.type) {
 		case 'apple':
 			player.ouro.apple = player.ouro.apple.add(tmp.ouro.apple_gain.mul(Decimal.pow(3, obj.tier-1)))
@@ -289,6 +286,7 @@ function appleGain() {
 
 function berryGain() {
 	let x = Decimal.max(1,snake.len-5)
+	x = x.mul(E(100).pow(OURO.evolution - 1))
 	if (hasElement(68,1)) x = x.mul(muElemEff(68)[1])
 	return x.round()
 }
@@ -297,16 +295,18 @@ function appleEffects() {
 	let a = player.ouro.apple, eff = {}, evo = OURO.evolution
 
 	eff.mass = expMult(a.add(1),a.add(1).log10().add(1))
-	if (player.rp.unl) eff.cp = a.add(1).pow(hasElement(75,1)?.6:.5)
-	if (player.dark.unl) eff.dark = a.add(1).pow(.5)
-	if (tmp.darkRunUnlocked) eff.glyph = a.add(1).log10().add(1).root(2)
+	eff.cp = a.add(1).pow(hasElement(76,1)?.6:.5)
 
 	if (evo >= 2) {
 		if (player.bh.unl) {
 			eff.cp_lvl = a.add(1).pow(.1)
-			eff.fabric = a.add(1).pow(.2)
-			eff.wh_loss = Decimal.pow(.99,a.add(1).log10().overflow(2,0.5))
+			eff.fabric = a.div(100).add(1).pow(.2)
+			eff.wh_loss = Decimal.pow(.9,a.add(1).log10().sqrt())
 		}
+	}
+	if (evo <= 6) {
+		eff.dark = a.add(1).cbrt()
+		eff.glyph = a.add(1).log10().add(1).root(2)
 	}
 
 	return eff

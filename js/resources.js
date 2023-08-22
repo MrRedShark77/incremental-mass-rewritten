@@ -19,7 +19,7 @@ const RESOURCES_DIS = {
         icon: "evolution/calm_power",
         class: "red",
 
-        desc: (gs)=>format(player.evo.cp.points,0)+"<br>"+(tmp.layer2_passive?formatGain(player.evo.cp.points, tmp.rp.gain):"(+"+format(tmp.rp.gain,0)+")"),
+        desc: (gs)=>format(player.evo.cp.points,0)+"<br>"+(tmp.layer2_passive?formatGain(player.evo.cp.points, cpProd()):"(+"+format(tmp.rp.gain,0)+")"),
     
         resetBtn() { FORMS.rp.reset() },
     },
@@ -55,7 +55,7 @@ const RESOURCES_DIS = {
 
         desc: (gs)=>{
             let m = player.evo.wh.mass[0]
-            return formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(m,tmp.evo.wormhole_mult[0].div(FPS)).mul(FPS), true)
+            return formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(0), true)
         },
     },
     atom: {
