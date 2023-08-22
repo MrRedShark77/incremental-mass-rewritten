@@ -117,24 +117,7 @@ const OURO = {
 
         calcSnake(dt)
 
-        if (evo >= 1) {
-            if (tmp.layer2_passive) player.evo.cp.points = player.evo.cp.points.add(tmp.rp.gain.mul(dt))
-
-            player.evo.cp.best = player.evo.cp.best.max(player.evo.cp.points)
-
-            let med_loss = tmp.evo.mediation_loss
-            if (player.evo.cp.level.gte(med_loss.start)) player.evo.cp.level = player.evo.cp.level.sub(med_loss.speed.mul(dt/10)).max(med_loss.start)
-
-            if (hasElement(70,1)) {
-                let t = player.evo.cp.m_time + dt
-                if (t >= 1) {
-                    let w = Math.floor(t)
-                    player.evo.cp.level = player.evo.cp.level.add(MEDIATION.level_gain.mul(w))
-                    t -= w
-                }
-                player.evo.cp.m_time = t
-            }
-        }
+        if (evo >= 1) MEDIATION.calc(dt)
         if (evo >= 2) WORMHOLE.calc(dt)
     },
 
@@ -144,10 +127,8 @@ const OURO = {
         let x = {}, evo = this.evolution
 
         if (evo == 1) {
-            if (player.bh.unl) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).max(1)
-            if (MASS_DILATION.unlocked()) x.md_m3 = player.md.mass.add(1).log10().add(1).overflow(10,0.5)
             if (player.dark.unl) {
-                x.apple = player.evo.cp.level.add(1).log10().div(50).add(1).root(2)
+                x.apple = player.evo.cp.level.add(1).log10().div(100).add(1).root(2)
                 x.quark_overflow = Decimal.pow(0.925,player.evo.cp.level.add(1).log10().root(2))
             }
             if (tmp.SN_passive) x.sn = expMult(player.evo.cp.level.add(1),0.4)
@@ -214,9 +195,11 @@ function updateOuroborosHTML() {
             tmp.el.mediation_desc.setHTML(h)
         }
     } else if (tmp.tab_name == 'snake') {
-        tmp.el.snake_stats.setHTML('Moves without Feeding: '+snake.moves+' / '+snake.move_max+' | Length: '+snake.bodies.length+(
-            snake.powerup ? " | Powerup: "+capitalFirst(snake.powerup)+" ("+formatTime(snake.powerup_time,0)+")": ""
-        ))
+        tmp.el.snake_stats.setHTML(
+			('Length: '+snake.bodies.length)+
+			(snake.move_max < Infinity ? ' | Moves without Feeding: '+snake.moves+' / '+snake.move_max : "")+
+			(snake.powerup ? " | Powerup: "+capitalFirst(snake.powerup)+" ("+formatTime(snake.powerup_time,0)+")": "")
+		)
 
         snake.canvas.style.backgroundPosition = `${snake.cam_pos.x}px ${snake.cam_pos.y}px`
 
@@ -238,8 +221,6 @@ function updateOuroborosHTML() {
 
         h = ``, eff = tmp.ouro.escrow_boosts
 
-        if (eff.bhc) h += `Stronger's power boosts BHC's power at a reduced rate (<b>${formatMult(eff.bhc,2)}</b>)<br>`
-        if (eff.md_m3) h += `Dilated mass boosts Mediation's third effect (<b>${formatMult(eff.md_m3,2)}</b>)<br>`
         if (eff.apple) h += `Mediation boosts apple feeded (<b>^${format(eff.apple,2)}</b>)<br>`
         if (eff.quark_overflow) h += `Mediation weakens quark overflows (<b>${formatReduction(eff.quark_overflow,2)}</b>)<br>`
         if (eff.sn) h += `Mediation boosts supernova generation (<b>${formatMult(eff.sn,2)}</b>)<br>`

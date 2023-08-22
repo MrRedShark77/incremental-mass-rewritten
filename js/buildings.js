@@ -66,9 +66,10 @@ const BUILDINGS_DATA = {
             let step = E(2)
             if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
             step = step.mul(tmp.evo.mediation_eff.mass2??1)
+            step = step.mul(wormholeEffect(1))
             step = step.pow(BUILDINGS.eff('mass_3'))
 
-            let ret = step.mul(x).add(1)//.softcap("ee14",0.95,2)
+            let ret = step.mul(x).add(1)
             if (hasElement(203)) ret = ret.pow(elemEffect(203))
 
             return {power: step, effect: ret}
@@ -426,7 +427,6 @@ const BUILDINGS_DATA = {
                 pow = pow.add(tmp.chal.eff[6])
                 if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
                 pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
-                pow = pow.mul(escrowBoost('bhc'))
                 if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
                 pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                 pow = pow.mul(tmp.prim.eff[2][1])

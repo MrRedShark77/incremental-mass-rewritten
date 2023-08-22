@@ -13,7 +13,7 @@ const CONFIRMS_FUNCTION = {
     bh() {
         let g = tmp.bh.dm_gain
 
-        if (OURO.evolution >= 1) player.evo.wh.fabric = player.evo.wh.fabric.add(g)
+        if (OURO.evolution >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(g)
         else player.bh.dm = player.bh.dm.add(g)
 
         player.bh.unl = true

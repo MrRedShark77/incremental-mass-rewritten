@@ -39,7 +39,6 @@ const INF = {
         for (let x = 0; x < PRESTIGES.names.length; x++) player.prestiges[x] = E(0)
 
         // Reset
-
         player.ranks[RANKS.names[RANKS.names.length-1]] = E(0)
         RANKS.doReset[RANKS.names[RANKS.names.length-1]]()
 
@@ -47,6 +46,7 @@ const INF = {
         BUILDINGS.reset('tickspeed')
         BUILDINGS.reset('accelerator')
         player.bh.mass = E(0)
+        if (OURO.unl()) player.evo = { ...OURO.save().evo, times: player.evo.times }
 
         player.atom.atomic = E(0)
         player.bh.dm = E(0)

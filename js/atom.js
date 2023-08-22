@@ -81,6 +81,7 @@ const ATOM = {
     },
     doReset(chal_reset=true) {
         player.atom.atomic = E(0)
+        if (OURO.unl()) player.evo.wh = OURO.save().evo.wh
         player.bh.dm = E(0)
         BUILDINGS.reset('bhc')
         let keep = []
@@ -128,15 +129,11 @@ const ATOM = {
             if (!hasElement(75)) x = x.softcap(5e4,0.75,0).softcap(4e6,0.25,0)
 
             let w = 0.1 ** exoticAEff(0,4)
-
             x = x.softcap(hasUpgrade("atom",13)?1e11:1e10,w,0).softcap(2.5e35,w,0)
-
             x = overflow(x,'e2000',0.5)
 
             let y = 1
-
             if (OURO.evolution >= 1) y = expMult(player.atom.atomic.add(1).log10().add(1),0.5)
-
             return [x.floor(),y]
         },
     },
