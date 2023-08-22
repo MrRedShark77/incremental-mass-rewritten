@@ -302,7 +302,7 @@ function appleEffects() {
 	if (evo >= 2) {
 		if (player.bh.unl) {
 			eff.fabric = a.div(100).add(1).pow(.2)
-			eff.wh_loss = Decimal.pow(.9,a.add(1).log10().sqrt())
+			eff.wh_loss = Decimal.pow(.99,a.add(1).log10().sqrt())
 		}
 	}
 	if (evo <= 6 && player.dark.unl) {

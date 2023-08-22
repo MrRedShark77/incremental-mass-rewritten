@@ -46,8 +46,7 @@ const TOOLTIP_RES = {
     wormhole: {
         full: "Wormhole",
         desc() {
-            if (OURO.evolution < 2) return
-            return `You have <b>${formatMass(player.evo.wh.mass[0])}</b> of first wormhole.`
+            return player.evo?`You have <b>${formatMass(player.evo.wh.mass[0])}</b> of first wormhole.`:"???";
         },
     },
     bh: {
