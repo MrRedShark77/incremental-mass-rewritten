@@ -133,7 +133,7 @@ function snakeStep() {
 	if (snake.bodies.length == snake.len) snake.bodies[snake.len-1][1] = snake.bodies[snake.len-1][1][0] + "t"
 
 	// Apple Spawn
-	let max_apples = snake.powerup == "frenzy" ? 15 : 10
+	let max_apples = snake.powerup == "frenzy" ? 12 : 8
 	if (snake.apples.length < max_apples) spawnApples()
 
 	// Auto-Moving
@@ -280,33 +280,34 @@ function feedSomething(obj,target) {
 function appleGain() {
 	let x = Decimal.max(1,snake.len-5)
 	if (hasElement(68,1)) x = x.mul(muElemEff(68)[0])
+	if (hasElement(71,1)) x = x.mul(2)
 	x = x.pow(escrowBoost('apple'))
 	return x.round()
 }
 
 function berryGain() {
-	let x = Decimal.max(1,snake.len-5)
-	x = x.mul(E(100).pow(OURO.evolution - 1))
+	let x = E(100).pow(OURO.evolution - 1)
 	if (hasElement(68,1)) x = x.mul(muElemEff(68)[1])
+	if (hasElement(71,1)) x = x.mul(2)
 	return x.round()
 }
 
 function appleEffects() {
 	let a = player.ouro.apple, eff = {}, evo = OURO.evolution
 
-	eff.mass = expMult(a.add(1),a.add(1).log10().add(1))
-	if (player.rp.unl) eff.cp = a.add(1).pow(hasElement(76,1)?.6:.5)
+	eff.mass = expMult(a.div(10).add(1), a.div(100).add(1).log10().add(1))
+	eff.cp = a.div(10).add(1).pow(hasElement(76,1)?.6:.5)
+	if (player.atom.unl) eff.cp_lvl = a.add(1).pow(.1)
 
 	if (evo >= 2) {
 		if (player.bh.unl) {
-			eff.cp_lvl = a.add(1).pow(.1)
 			eff.fabric = a.div(100).add(1).pow(.2)
 			eff.wh_loss = Decimal.pow(.99,a.add(1).log10().sqrt())
 		}
 	}
 	if (evo <= 6 && player.dark.unl) {
-		eff.dark = a.add(1).cbrt()
-		eff.glyph = a.add(1).log10().add(1).root(2)
+		eff.dark = a.div(1e4).add(1).cbrt()
+		eff.glyph = a.div(1e4).add(1).log10().add(1).root(2)
 	}
 
 	return eff

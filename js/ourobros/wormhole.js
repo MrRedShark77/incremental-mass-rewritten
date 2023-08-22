@@ -100,9 +100,12 @@ function activateWormhole(id) {
     const mass = player.evo.wh.mass
 
     if (id == 0) {
-        const assigned = mass[0].mul(.4/(unls-1))
-        for (let x = 1; x < unls; x++) mass[x] = mass[x].add(assigned);
-        mass[0] = mass[0].mul(.6)
+		let sum = E(0), toAdd = mass[0].mul(.4/(unls-1))
+        for (let x = 1; x < unls; x++) {
+			sum = sum.add(toAdd.sub(mass[x]).max(0))
+			mass[x] = mass[x].max(toAdd);
+		}
+        mass[0] = mass[0].sub(sum.div(2))
     } else {
         mass[0] = mass[0].add(mass[id]);
         mass[id] = E(0)

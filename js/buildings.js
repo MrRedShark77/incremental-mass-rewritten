@@ -431,6 +431,7 @@ const BUILDINGS_DATA = {
                 pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                 pow = pow.mul(tmp.prim.eff[2][1])
                 pow = pow.mul(getEnRewardEff(3)[1])
+                pow = pow.mul(escrowBoost("bhc"))
                 if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
                 if (hasTree("bh2")) pow = pow.pow(1.15)
             if (hasElement(129)) pow = pow.pow(elemEffect(18))

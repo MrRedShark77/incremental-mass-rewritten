@@ -93,7 +93,7 @@ const TREE_UPGS = {
         sn1: {
             branch: ["c"],
             desc: `Tickspeed affects Neutron Star gain at a reduced rate.`,
-            evo_desc: [1,`Mediation boosts Neutron Stars.`],
+            evo_desc: [1,`Meditation boosts Neutron Stars.`],
             cost: E(10),
             effect() {
                 let x = OURO.evolution >= 1 ? player.evo.cp.level.add(1).root(2) : player.build.tickspeed.amt.add(1).root(4)
@@ -460,7 +460,7 @@ const TREE_UPGS = {
             unl() { return player.supernova.fermions.unl },
             branch: ["bs1"],
             desc: `Tickspeed affects Fermions gain at a reduced rate.`,
-            evo_desc: [1,`Mediation affects Fermions gain at a reduced rate.`],
+            evo_desc: [1,`Meditation affects Fermions gain at a reduced rate.`],
             cost: E(1e27),
             effect() {
                 let x = OURO.evolution >= 1 ? expMult(player.evo.cp.level.add(1),2) : E(1.25).pow(player.build.tickspeed.amt.softcap(1e24,0.5,2).pow(0.4))

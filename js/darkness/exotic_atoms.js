@@ -395,8 +395,8 @@ const MUONIC_ELEM = {
             desc: `Calm Power boosts Apples & Strawberries.`,
             cost: E(50),
             eff() {
-                let x = tmp.ouro.unl ? player.evo.cp.points.add(1).log10().mul(hasElement(71,1)?2:1).add(1) : E(1)
-                let y = x.div(5).add(1).root(2)
+                let x = OURO.evolution >= 1 ? player.evo.cp.best.add(1).log10().add(1) : E(1)
+                let y = x.root(2)
                 return [x, y]
             },
             effDesc: x=>formatMult(x[0]) + " to Apples, " + formatMult(x[1]) + " to Strawberries",
@@ -406,25 +406,30 @@ const MUONIC_ELEM = {
             cost: E(100),
         },{
             berry: true,
-            desc: `Automate mediation every second. Keep mediation on all pre-Ouroboric resets.`,
+            desc: `Automate Meditation. Keep mediation on all pre-Ouroboric resets.`,
             cost: E(150),
         },{
             berry: true,
-            desc: `Muonic Erbium-68 is better.`,
+            desc: `Double Apples and Strawberries.`,
             cost: E(200),
         },{
             berry: true,
             desc: `Tetr boosts Calm Power.`,
             cost: E(300),
             eff() {
-                let x = player.ranks.tetr.add(1).root(2)
+                let x = player.ranks.tetr.add(1)
                 return x
             },
             effDesc: x=>formatMult(x),
         },{
             berry: true,
             desc: `Improve 3rd Meditation effect base.`,
-            cost: E(750),
+            cost: E(500),
+            eff() {
+                let x = OURO.evolution >= 1 ? player.evo.cp.level.div(1e7).add(1).sqrt() : E(1)
+                return x
+            },
+            effDesc: x=>formatMult(x),
         },{
             berry: true,
             desc: `Improve 2nd Apple effect.`,

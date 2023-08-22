@@ -450,9 +450,9 @@ const FORMS = {
                 if (gain.lt(1)) return E(0)
                 if (evo < 1) gain = gain.root(4)
             } else {
-				let cp = player.evo.cp[evo >= 2 ? "points" : "best"]
-                if (cp.lt(evo>=2?1e5:1e4)) return E(0)
-                gain = Decimal.pow(evo>=2?1.000001:1.00001,cp)
+				let cp = player.evo.cp.points
+                if (cp.lt(evo>=2?1e5:5e3)) return E(0)
+                gain = Decimal.pow(evo>=2?1.00001:1.0002,cp)
             }
 
             if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(tmp.supernova.tree_eff.bh1)
@@ -617,62 +617,6 @@ const FORMS = {
             if (hasElement(48,1)) x = x.pow(theoremEff('bh',4))
 
             return x
-        },
-        condenser: {
-            autoSwitch() { player.bh.autoCondenser = !player.bh.autoCondenser },
-            autoUnl() { return player.mainUpg.atom.includes(2) },
-            can() { return player.bh.dm.gte(tmp.bh.condenser_cost) && !CHALS.inChal(6) && !CHALS.inChal(10) },
-            buy() {
-                if (this.can()) {
-                    player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost).max(0)
-                    player.bh.condenser = player.bh.condenser.add(1)
-                }
-            },
-            buyMax() {
-                if (this.can()) {
-                    player.bh.condenser = tmp.bh.condenser_bulk
-                    player.bh.dm = player.bh.dm.sub(tmp.bh.condenser_cost).max(0)
-                }
-            },
-            effect() {
-                let t = player.bh.condenser
-                t = t.mul(tmp.radiation.bs.eff[5])
-                let pow = E(2)
-                    pow = pow.add(tmp.chal.eff[6])
-                    if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
-                    pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
-                    if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
-                    pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
-                    pow = pow.mul(tmp.prim.eff[2][1])
-                    pow = pow.mul(getEnRewardEff(3)[1])
-                    if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
-                    if (hasTree("bh2")) pow = pow.pow(1.15)
-                if (hasElement(129)) pow = pow.pow(elemEffect(18))
-                if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
-                
-                if (CHALS.inChal(17)) pow = E(1)
-                
-                let eff = pow.pow(t.add(tmp.bh.condenser_bonus))
-
-                let os = tmp.c16active ? E('ee150') : E('ee10000'), op = E(0.5)
-
-                if (hasUpgrade('bh',21)) os = expMult(os, 2)
-
-                let o = eff
-
-                eff = overflow(eff,os,op,2)
-
-                tmp.overflow.BHCEffect = calcOverflow(o,eff,os,2)
-                tmp.overflow_start.BHCEffect = [os]
-
-                return {pow: pow, eff: eff}
-            },
-            bonus() {
-                let x = E(0)
-                if (player.mainUpg.bh.includes(15)) x = x.add(tmp.upgs.main?tmp.upgs.main[2][15].effect:E(0))
-                x = x.mul(getEnRewardEff(4))
-                return x
-            },
         },
     },
     reset_msg: {
