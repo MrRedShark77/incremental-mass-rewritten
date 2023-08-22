@@ -87,11 +87,7 @@ const OURO = {
         tmp.ouro.berry_gain = berryGain()
         tmp.ouro.apple_eff = appleEffects()
 
-        if (evo >= 1) {
-            tmp.evo.mediation_eff = MEDIATION.eff(player.evo.cp.level)
-            tmp.evo.mediation_loss = MEDIATION.loss(player.evo.cp.level)
-        }
-
+        if (evo >= 1) tmp.evo.mediation_eff = MEDIATION.eff(player.evo.cp.level)
         if (evo >= 2) WORMHOLE.temp()
     },
 
@@ -111,6 +107,7 @@ const OURO = {
         let x = {}, evo = this.evolution
 
         if (evo == 1) {
+            if (player.bh.unl) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).sqrt().max(1)
             if (player.dark.unl) {
                 x.apple = player.evo.cp.level.add(1).log10().div(100).add(1).root(2)
                 x.quark_overflow = Decimal.pow(0.925,player.evo.cp.level.add(1).log10().root(2))
@@ -161,13 +158,13 @@ function updateOuroborosHTML() {
 
         tmp.el.mediation_div.setDisplay(unl)
         if (unl) {
-            let lvl_gain = MEDIATION.level_gain, lvl = player.evo.cp.level, loss = tmp.evo.mediation_loss
+            let lvl_gain = MEDIATION.level_gain, lvl = player.evo.cp.level
 
-            tmp.el.mediation_btn.setHTML(`Mediate with all Calm Power.<br>(+${lvl_gain.format(0)} Level)`)
-            tmp.el.mediation_btn.setClasses({btn: true, locked: lvl_gain.lt(1)})
+            tmp.el.mediation_btn.setHTML(`Meditate with all Calm Power.<br>(+${lvl_gain.format(0)} Level)`)
+            tmp.el.mediation_btn.setClasses({btn: true, locked: !MEDIATION.can()})
 
             let eff = tmp.evo.mediation_eff, h = `
-            <h4>Level: ${lvl.format(0)}</h4> ${lvl.gte(loss.start) ? '(-'+loss.speed.div(10).format(2)+'/s)' : ""}
+            <h4>Level: ${lvl.format(0)}</h4> ${lvl.gte(10) ? '(-'+lvl.div(100).format(2)+'/s)' : ""}
             <br>${formatMult(eff.mass1)} to Muscler's power.
             `
 
@@ -194,7 +191,7 @@ function updateOuroborosHTML() {
         if (eff.mass) h += `<br>${formatMult(eff.mass,2)} to normal mass`
         if (eff.cp) h += `<br>${formatMult(eff.cp,2)} to Calm Powers`
 
-        if (eff.cp_lvl) h += `<br>${formatMult(eff.cp_lvl,2)} to Mediation levels`
+        if (eff.cp_lvl) h += `<br>${formatMult(eff.cp_lvl,2)} to Meditation levels`
         if (eff.fabric) h += `<br>${formatMult(eff.fabric,2)} to Fabrics`
         if (eff.wh_loss) h += `<br>${formatReduction(eff.wh_loss,2)} to Wormhole's lossless-ness`
 
@@ -205,9 +202,10 @@ function updateOuroborosHTML() {
 
         h = ``, eff = tmp.ouro.escrow_boosts
 
-        if (eff.apple) h += `Mediation boosts apple feeded (<b>^${format(eff.apple,2)}</b>)<br>`
-        if (eff.quark_overflow) h += `Mediation weakens quark overflows (<b>${formatReduction(eff.quark_overflow,2)}</b>)<br>`
-        if (eff.sn) h += `Mediation boosts supernova generation (<b>${formatMult(eff.sn,2)}</b>)<br>`
+        if (eff.bhc) h += `Stronger power boosts BHC power (<b>${formatMult(eff.bhc,2)}</b>)<br>`
+        if (eff.quark_overflow) h += `Meditation weakens quark overflows (<b>${formatReduction(eff.quark_overflow,2)}</b>)<br>`
+        if (eff.sn) h += `Meditation boosts supernova generation (<b>${formatMult(eff.sn,2)}</b>)<br>`
+        if (eff.apple) h += `Meditation boosts apple feeded (<b>^${format(eff.apple,2)}</b>)<br>`
 
         tmp.el.escrow_boosts.setHTML(h)
 

@@ -33,7 +33,7 @@ const TOOLTIP_RES = {
     dm: {
         full: "Dark Matter",
         desc() {
-            let r = OURO.evolution >= 1 ? `<b>${format(1e4)}</b> Calm Power` : `<b>${format(1e20)}</b> Rage Power`
+            let r = OURO.evolution >= 1 ? `<b>${format(5e3)}</b> Calm Power` : `<b>${format(1e20)}</b> Rage Power`
             return `<i>Reach over ${r} to reset all previous features for gain Dark Matters.</i>`
         },
     },
@@ -46,6 +46,7 @@ const TOOLTIP_RES = {
     wormhole: {
         full: "Wormhole",
         desc() {
+            if (OURO.evolution < 2) return
             return `You have <b>${formatMass(player.evo.wh.mass[0])}</b> of first wormhole.`
         },
     },

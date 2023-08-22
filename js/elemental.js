@@ -968,7 +968,7 @@ const ELEMENTS = {
             cost: E("1e84"),
         },{
             br: true,
-            get desc() { return OURO.evolution >= 1 ? `Raise Mediation' level to the 1.5th power.` : `Meta-Tickspeed scaling starts ^2 later.` },
+            get desc() { return OURO.evolution >= 1 ? `Raise Meditation' level to the 1.5th power.` : `Meta-Tickspeed scaling starts ^2 later.` },
             cost: E("e2.5e53"),
         },{
             desc: `Abyssal Blot’s second effect applies to mass gain’s softcap^7-8, they are 20% weaker.`,

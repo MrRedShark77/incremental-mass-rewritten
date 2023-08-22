@@ -133,7 +133,7 @@ const ATOM = {
             x = overflow(x,'e2000',0.5)
 
             let y = 1
-            if (OURO.evolution >= 1) y = expMult(player.atom.atomic.add(1).log10().add(1),0.5)
+            if (OURO.evolution >= 1) y = expMult(player.atom.atomic.add(1).log10().div(5).add(1),0.5)
             return [x.floor(),y]
         },
     },
