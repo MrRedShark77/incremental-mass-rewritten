@@ -55,7 +55,7 @@ const RESOURCES_DIS = {
 
         desc: (gs)=>{
             let m = player.evo.wh.mass[0]
-            return formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(0), true)
+            return formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(m,tmp.evo.wormhole_mult[0].div(FPS),0).mul(FPS), true)
         },
     },
     atom: {

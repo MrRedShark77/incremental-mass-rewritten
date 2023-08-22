@@ -1,39 +1,36 @@
 const WORMHOLE = {
-    step(i,m,dt) {
-        let p = tmp.evo.wormhole_power, mul = tmp.evo.wormhole_mult[i], div = m.div(mul)
-		if (div.gt(p)) div = E(2).pow(div.div(p).sub(1)).mul(p)
-		let rev = div.add(dt)
-		if (rev.gt(p)) rev = rev.div(p).log(2).add(1).mul(p)
-		rev = rev.mul(mul)
+    step(x,t,i) {
+        if (i > 0 && x.eq(0)) return E(0)
 
-		if (i > 0 && m.eq(0)) return E(0)
-		if (isNaN(rev.mag)) return m
-        return rev
+        const p = tmp.evo.wormhole_power, pp = Decimal.div(2,p)
+
+        x = Decimal.pow(p.add(1.5),x.root(pp)).root(pp).add(t).pow(pp).log(p.add(1.5)).pow(pp)
+
+        return isNaN(x.mag) ? E(0) : x.max(0)
     },
-    calcGain(i) {
-		let m = player.evo.wh.mass[i]
-        return this.step(i,m,1).sub(m)
+    calcGain(x,dt) {
+        return this.step(x,dt).sub(x)
     },
     calc(dt) {
         const evo = OURO.evolution, unls = tmp.evo.wormhole_unls, mass = player.evo.wh.mass
         if (evo >= 2) if (player.mainUpg.atom.includes(6)) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
-        for (let i = 0; i < unls; i++) mass[i] = WORMHOLE.step(i,mass[i],dt)
+        for (let i = 0; i < unls; i++) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wormhole_mult[i].mul(dt),i)
     },
     temp() {
         const unls = this.unlLength
         tmp.evo.wormhole_unls = unls
-        tmp.evo.wormhole_power = Decimal.pow(2,appleEffect('wh_loss'))
+        tmp.evo.wormhole_power = Decimal.div(1,appleEffect('wh_loss'))
 
         const mass = player.evo.wh.mass
-        const fabric_mult = expMult(player.evo.wh.fabric.mul(10), 0.3).div(10)
+        const fabric_mult = player.evo.wh.fabric.add(1)
         const wh_power = E(2)
 
         for (let [i,e] of Object.entries(this.effects)) {
             i = parseInt(i)
             let m = mass[i]
             tmp.evo.wormhole_eff[i] = e[0](i < unls ? m : E(1))
-            tmp.evo.wormhole_mult[i] = fabric_mult.mul(m.add(10).log10())
+            tmp.evo.wormhole_mult[i] = m.add(10).log10().pow(wh_power).mul(fabric_mult)
         }
     },
     html() {
@@ -48,7 +45,7 @@ const WORMHOLE = {
                 const mult = tmp.evo.wormhole_mult[i]
 
                 tmp.el[id+'-mult'].setHTML(formatMult(mult,2))
-                tmp.el[id+'-mass'].setHTML(formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(i), true))
+                tmp.el[id+'-mass'].setHTML(formatMass(m)+"<br>"+m.formatGain(this.calcGain(m,mult.div(FPS),i).mul(FPS)))
                 tmp.el[id+'-effect'].setHTML(this.effects[i][1](tmp.evo.wormhole_eff[i]))
             }
         }

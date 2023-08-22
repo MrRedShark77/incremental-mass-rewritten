@@ -152,12 +152,12 @@ function canEvolve() {
 }
 
 function updateOuroborosHTML() {
-    const evo_unl = OURO.unl()
+    const evo_unl = OURO.unl(), evo = OURO.evolution
 
     let map = tmp.tab_name
 
     if (map == 'mass') {
-        let unl = evo_unl && player.rp.unl
+        let unl = evo >= 1 && player.rp.unl
 
         tmp.el.mediation_div.setDisplay(unl)
         if (unl) {

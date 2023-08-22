@@ -295,16 +295,16 @@ function appleEffects() {
 	let a = player.ouro.apple, eff = {}, evo = OURO.evolution
 
 	eff.mass = expMult(a.add(1),a.add(1).log10().add(1))
-	eff.cp = a.add(1).pow(hasElement(76,1)?.6:.5)
+	if (player.rp.unl) eff.cp = a.add(1).pow(hasElement(76,1)?.6:.5)
 
 	if (evo >= 2) {
 		if (player.bh.unl) {
 			eff.cp_lvl = a.add(1).pow(.1)
 			eff.fabric = a.div(100).add(1).pow(.2)
-			eff.wh_loss = Decimal.pow(.9,a.add(1).log10().sqrt())
+			eff.wh_loss = Decimal.pow(.99,a.add(1).log10().sqrt())
 		}
 	}
-	if (evo <= 6) {
+	if (evo <= 6 && player.dark.unl) {
 		eff.dark = a.add(1).cbrt()
 		eff.glyph = a.add(1).log10().add(1).root(2)
 	}
