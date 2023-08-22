@@ -128,11 +128,12 @@ const CHALS = {
     },
     getResource(x) {
         if (x < 5 || x > 8) return player.mass
+        if (OURO.evolution >= 2) return player.evo.wh.mass[0]
         return player.bh.mass
     },
     getResName(x) {
         if (x < 5 || x > 8) return ''
-        return ' of Black Hole'
+        return OURO.evolution >= 2 ? ' of first Wormhole' : ' of Black Hole'
     },
     getFormat(x) {
         return formatMass
@@ -189,6 +190,8 @@ const CHALS = {
             if (c.gte(i==13?2:i>8&&i!=13&&i!=16?10:75)) return " Hardened"
         } else if (i == 16) {
             if (c.gte(500)) return " Hardened"
+        } else if (i <= 8 && OURO.evolution == 2) {
+            return ""
         } else {
             if (c.gte(10)) return " Hardened"
         }
@@ -231,6 +234,9 @@ const CHALS = {
             goal = lvl.gt(0) ? Decimal.pow('ee23',Decimal.pow(2,lvl.scale(500,2,0).sub(1).pow(1.5))) : chal.start
             if (res.gte(chal.start)) bulk = res.log('ee23').max(1).log(2).root(1.5).add(1).scale(500,2,0,true).floor()
             if (res.gte('ee23')) bulk = bulk.add(1)
+        } else if (x <= 8 && OURO.evolution == 2) {
+			goal = lvl.mul(this.getPower3(x)).add(13).mul(10)
+			bulk = res.div(10).sub(13).div(this.getPower(x)).add(1).floor()
         } else {
             if (QCs.active() && x <= 12) fp /= tmp.qu.qc_eff[5]
             let s1 = x > 8 ? 10 : 75

@@ -5,7 +5,6 @@ const DARK_RUN = {
         let x, g = player.dark.run.glyphs[i]
 
         if (tmp.c16active) g = E(i == 5 ? 10 : 100)
-
         g = g.div(tmp.dark.glyph_weak)
 
         if (CHALS.inChal(20)) g = E(1.5e3)

@@ -35,7 +35,7 @@ const MEDIATION = {
             if (hasElement(73,1)) x = x.max(lvl.root(2).div(1e4).add(1))
             eff.mass3 = x.mul(escrowBoost('md_m3'))
         }
-        if (hasElement(74,1)) eff.mass3_softcap = Decimal.pow(.95,lvl.add(1).log10())
+        if (hasElement(75,1)) eff.mass3_softcap = Decimal.pow(.95,lvl.add(1).log10())
         if (hasElement(76,1)) eff.mass_softcap = Decimal.pow(.9,lvl.add(1).log10().root(2))
 
         return eff

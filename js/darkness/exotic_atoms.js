@@ -395,8 +395,8 @@ const MUONIC_ELEM = {
             desc: `Calm Power boosts Apples & Strawberries.`,
             cost: E(50),
             eff() {
-                let x = tmp.ouro.unl ? player.evo.cp.points.add(1).log10().mul(hasElement(71,1)?1.5:1).add(1) : E(1)
-                let y = x.div(10).add(1).root(2)
+                let x = tmp.ouro.unl ? player.evo.cp.points.add(1).log10().mul(hasElement(71,1)?2:1).add(1) : E(1)
+                let y = x.div(5).add(1).root(2)
                 return [x, y]
             },
             effDesc: x=>formatMult(x[0]) + " to Apples, " + formatMult(x[1]) + " to Strawberries",
@@ -407,36 +407,56 @@ const MUONIC_ELEM = {
         },{
             berry: true,
             desc: `Automate mediation every second. Keep mediation on all pre-Ouroboric resets.`,
-            cost: E(250),
+            cost: E(150),
         },{
             berry: true,
             desc: `Muonic Erbium-68 is better.`,
-            cost: E(1000),
+            cost: E(200),
         },{
             berry: true,
-            desc: `Pent boosts Calm Power.`,
-            cost: E(2000),
+            desc: `Tetr boosts Calm Power.`,
+            cost: E(300),
             eff() {
-                let x = player.ranks.pent.add(1).root(2)
+                let x = player.ranks.tetr.add(1).root(2)
                 return x
             },
             effDesc: x=>formatMult(x),
         },{
             berry: true,
             desc: `Improve 3rd Meditation effect base.`,
-            cost: E(3000),
+            cost: E(750),
+        },{
+            berry: true,
+            desc: `Improve 2nd Apple effect.`,
+            cost: E(2000),
         },{
             berry: true,
             desc: `Unlock 4th Meditation effect.`,
             cost: E(5000),
         },{
             berry: true,
-            desc: `Improve 2nd Apple effect.`,
-            cost: E(1e4),
-        },{
-            berry: true,
             desc: `Unlock 5th Meditation effect.`,
             cost: E(1.5e4),
+        },{
+            berry: true,
+            desc: `Placeholder.`,
+            cost: EINF,
+        },{
+            berry: true,
+            desc: `Placeholder.`,
+            cost: EINF,
+        },{
+            berry: true,
+            desc: `Placeholder.`,
+            cost: EINF,
+        },{
+            berry: true,
+            desc: `Placeholder.`,
+            cost: EINF,
+        },{
+            berry: true,
+            desc: `Placeholder.`,
+            cost: EINF,
         },
 
         /*
@@ -454,7 +474,7 @@ const MUONIC_ELEM = {
     getUnlLength() {
         let u = 11
 
-        if (OURO.evolution >= 1) u = 66 + 10
+        if (OURO.unl()) u = [66,76,81][OURO.evolution]
         else {
             if (tmp.inf_unl) u += 4
             if (hasInfUpgrade(9)) u += 3

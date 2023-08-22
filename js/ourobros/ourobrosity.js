@@ -67,31 +67,15 @@ const OURO = {
 
         player.build.pe.amt = E(0)
         player.build.fvm.amt = E(0)
+        player.ouro.apple = E(0)
 
         let mu_keep = player.atom.muonic_el.filter(x => MUONIC_ELEM.upgs[x].berry)
-
-        let keep = {}
+        let keep = { atom: { muonic_el: mu_keep } }
         let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "gal_prestige", "ascensions", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
 
         tmp.tab = 0; tmp.stab = [0];
-
-        player.atom.muonic_el = mu_keep
-
-        this.ouroReset()
-
-        tmp.pass = 2;
-
         updateTemp()
-    },
-    ouroReset() {
-        player.ouro.apple = E(0)
-
-        snake = newSnakeData()
-        setupSnake()
-
-        const DATA = this.save()
-        player.evo.cp = DATA.evo.cp
     },
 
     temp() {

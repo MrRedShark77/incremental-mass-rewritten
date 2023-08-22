@@ -1,6 +1,6 @@
 const CHARGERS = [
     {
-        get req() { return E(OURO.evolution >= 1 ? 1e75 : 1e100) },
+        get req() { return E(OURO.evolution >= 1 ? 1e70 : 1e100) },
         cost: E(3),
         desc: `
         Multiply all matters gain by 1e10, and square mass of black hole gain.
@@ -8,9 +8,9 @@ const CHARGERS = [
     },{
         req: E('e1000'),
         cost: E(1000),
-        desc: `
-        Unlock the Unstable Black Hole that boosts normal black hole. (in black hole tab)
-        `,
+        get desc() {
+            return OURO.evolution >= 2 ? `Unlock something... [wormhole-related]` : `Unlock the Unstable Black Hole that boosts normal black hole. (in black hole tab)`
+        },
     },{
         req: E('e4500'),
         cost: E(15000),
@@ -172,7 +172,7 @@ function setupC16HTML() {
 }
 
 function corruptedShardGain() {
-    let bh = player.bh.mass, req = OURO.evolution >= 1 ? 1e75 : 1e100
+    let bh = player.bh.mass, req = OURO.evolution >= 1 ? 1e70 : 1e100
 
     if (hasElement(232)) bh = player.dark.c16.bestBH.max(req)
     else if (!tmp.c16active || bh.lt(req)) return E(0)

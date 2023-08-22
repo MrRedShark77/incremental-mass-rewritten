@@ -26,7 +26,7 @@ const WORMHOLE = {
         tmp.evo.wormhole_power = Decimal.pow(2,appleEffect('wh_loss'))
 
         const mass = player.evo.wh.mass
-        const fabric_mult = expMult(player.evo.wh.fabric, 0.3)
+        const fabric_mult = expMult(player.evo.wh.fabric.mul(10), 0.3).div(10)
         const wh_power = E(2)
 
         for (let [i,e] of Object.entries(this.effects)) {
@@ -55,22 +55,29 @@ const WORMHOLE = {
     },
 
     get unlLength() {
-        return 2
+		if (player.atom.unl) return 3
+		return 2
     },
-    maxLength: 3,
+    maxLength: 6,
 
     effects: [
         [
-            m => m.div(100).add(1),
+            m => m.div(10).add(1).sqrt(),
             x => `Boost mediation levels by <b>${formatMult(x,2)}</b>.`,
         ],[
-            m => m.div(1000).add(1).pow(2),
+            m => m.div(100).add(1),
             x => `Boost Booster's power by <b>${formatMult(x,2)}</b>`,
         ],[
-            m => {
-                let x = E(1)
-                return x
-            },
+            m => m.add(10).log10(),
+            x => `Gain more Calm Power. <b>${formatMult(x,2)}</b>`,
+        ],[
+            m => E(1),
+            x => `Placeholder. <b>${formatMult(x,2)}</b>`,
+        ],[
+            m => E(1),
+            x => `Placeholder. <b>${formatMult(x,2)}</b>`,
+        ],[
+            m => E(1),
             x => `Placeholder. <b>${formatMult(x,2)}</b>`,
         ],
 
@@ -111,7 +118,7 @@ function setupWormholeHTML() {
     for (let i = 0; i < WORMHOLE.maxLength; i++) {
         h += `
         <div class='wormhole-div' id='wormhole${i}-div' onclick="activateWormhole(${i})">
-            <div class='wh-id'>#${i+1}</div>
+            <div class='wh-id'>#${i+1} - Click to ${i ? "merge with #1" : "split"}</div>
             <div id='wormhole${i}-mult' class='wh-mult'>A</div>
             <div id='wormhole${i}-mass' class='wh-mass'>B</div>
             <div id='wormhole${i}-effect' class='wh-effect'>C</div>

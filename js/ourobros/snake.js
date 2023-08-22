@@ -73,12 +73,15 @@ function onPowerup(i) {
 		case 'adjoin':
 			for (let x of snake.apples) {
 				if (Math.random() < 0.5) continue
+				if (x.type == "powerup") continue
 				let n = getNewSnakePosition({...x}, SNAKE_HELPER.movement[Math.randomInt(0, 4)])
-				if (n.type == "powerup" && Math.random() < 0.5) {
-					n.type = "apple"
-					n.tier = rollAppleTier()
-				}
 				snake.new_apples.push(n)
+			}
+			break;
+		case 'purify':
+			for (let x of snake.apples) {
+				if (x.type != "apple") continue
+				x.tier = Math.max(x.tier, rollAppleTier())
 			}
 			break;
 	}
@@ -130,7 +133,8 @@ function snakeStep() {
 	if (snake.bodies.length == snake.len) snake.bodies[snake.len-1][1] = snake.bodies[snake.len-1][1][0] + "t"
 
 	// Apple Spawn
-	if (snake.apples.length < snake.max_apples) spawnApples()
+	let max_apples = snake.powerup == "frenzy" ? 15 : 10
+	if (snake.apples.length < max_apples) spawnApples()
 
 	// Auto-Moving
 	if (snake.auto >= 5) {
@@ -146,7 +150,7 @@ function snakeStep() {
 function spawnApples() {
 	let evo = OURO.evolution
 
-	var len = Math.min(Math.max(Math.log2(0.5 / Math.random()), 1), 4) //Aarex - Get Line Length
+	var len = Math.min(Math.max(Math.log10(1 / Math.random()) * (snake.powerup == "combo" ? 2 : 1) + 1, 1), 4) //Aarex - Get Line Length
 	var origin
 	var s = snake.size
 	while (!origin) {
@@ -158,7 +162,7 @@ function spawnApples() {
 	for (var i = 1; i <= len; i++) {
 		let type, tier
 
-		if (evo >= 2 && berry && Math.random() < 1/3) {
+		if (evo >= 2 && Math.random() < 1/50) {
 			let POWERUPS = ["combo", "adjoin", "frenzy", "purify"]
 			let powerup = POWERUPS[Math.randomInt(0, POWERUPS.length)]
 			type = "powerup"
@@ -174,7 +178,7 @@ function spawnApples() {
 }
 
 function rollAppleTier(luck = 1) {
-	let r = E(Math.random()).div(luck).log(1/5).max(0).add(snake.powerup === 'purify' ? 1.5 : 1).floor()
+	let r = E(Math.random()).div(luck).log(1/10).max(0).add(snake.powerup === 'purify' ? 1.5 : 1).floor()
 	return Math.min(r.toNumber(), OURO.evolution >= 2 ? 3 + OURO.evolution : 2)
 }
 
@@ -235,10 +239,7 @@ function drawSnake() {
 }
 
 function setupSnake() {
-	for (let i in SNAKE_HELPER.images) {
-		snake.images[SNAKE_HELPER.images[i]] = document.getElementById(SNAKE_HELPER.images[i])
-	}
-
+	for (let i in SNAKE_HELPER.images) snake.images[SNAKE_HELPER.images[i]] = document.getElementById(SNAKE_HELPER.images[i])
 	snake.canvas = document.getElementById('snake_canvas')
 	snake.canvas_ctx = document.getElementById('snake_canvas').getContext('2d')
 }
@@ -285,6 +286,7 @@ function appleGain() {
 
 function berryGain() {
 	let x = Decimal.max(1,snake.len-5)
+	x = x.mul(E(100).pow(OURO.evolution - 1))
 	if (hasElement(68,1)) x = x.mul(muElemEff(68)[1])
 	return x.round()
 }
@@ -293,12 +295,12 @@ function appleEffects() {
 	let a = player.ouro.apple, eff = {}, evo = OURO.evolution
 
 	eff.mass = expMult(a.add(1),a.add(1).log10().add(1))
-	eff.cp = a.add(1).pow(hasElement(75,1)?.6:.5)
+	eff.cp = a.add(1).pow(hasElement(76,1)?.6:.5)
 
 	if (evo >= 2) {
 		if (player.bh.unl) {
 			eff.cp_lvl = a.add(1).pow(.1)
-			eff.fabric = a.add(1).pow(.2)
+			eff.fabric = a.div(100).add(1).pow(.2)
 			eff.wh_loss = Decimal.pow(.9,a.add(1).log10().sqrt())
 		}
 	}
