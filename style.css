@@ -339,11 +339,20 @@ button {
 	0%, 100% {
 		color: red;
 	}
+	16.7% {
+		color: magenta;
+	}
 	33.3% {
 		color: blue;
 	}
+	50.0% {
+		color: cyan;
+	}
 	66.7% {
 		color: limegreen;
+	}
+	83.3% {
+		color: yellow;
 	}
 }
 
