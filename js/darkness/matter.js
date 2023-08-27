@@ -169,7 +169,7 @@ function updateMattersHTML() {
 
     let h = `10<sup>lg(lg(x))<sup>${format(tmp.matters.exponent)}</sup>`
 	if (rdc == 2) h = `lg(x)<sup>${format(tmp.matters.exponent)}</sup>`
-    else if (hasElement(256)) h += c16 ? `</sup>×(next matter)` : `×lg(next matter)</sup>`
+    else if (hasElement(256)) h += tmp.c16active ? `</sup>×(next matter)` : `×lg(next matter)</sup>`
 
     tmp.el.matter_formula.setHTML(h)
     tmp.el.matter_req_div.setDisplay(player.dark.matters.unls<14)

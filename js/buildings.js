@@ -122,7 +122,7 @@ const BUILDINGS_DATA = {
             if (player.ranks.tetr.gte(2)) step = step.add(RANKS.effect.tetr[2]())
             if (hasUpgrade("rp",9)) step = step.add(0.25)
             if (hasUpgrade("rp",12)) step = step.add(tmp.upgs?tmp.upgs[1][12].effect:E(0))
-            step = step.mul(tmp.evo.meditation_eff.mass3??1)
+            if (OURO.evo >= 1) step = step.mul(tmp.evo.meditation_eff.mass3??1)
             if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
             if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
 			step = step.mul(nebulaEff("red"))

@@ -211,8 +211,6 @@ function resetTemp() {
         inf_time: 0,
         inf_limit: Decimal.pow(10,Number.MAX_VALUE),
 
-        inf_unl: false,
-
         core_chance: CORE_CHANCE_MIN,
         core_lvl: E(1),
         core_score: {},

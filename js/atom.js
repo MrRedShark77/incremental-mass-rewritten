@@ -146,50 +146,6 @@ const ATOM = {
             return [x.floor(),y]
         },
     },
-    gamma_ray: {
-        buy() {
-            if (tmp.atom.gamma_ray_can) {
-                player.atom.points = player.atom.points.sub(tmp.atom.gamma_ray_cost).max(0)
-                player.atom.gamma_ray = player.atom.gamma_ray.add(1)
-            }
-        },
-        buyMax() {
-            if (tmp.atom.gamma_ray_can) {
-                player.atom.gamma_ray = tmp.atom.gamma_ray_bulk
-                player.atom.points = player.atom.points.sub(tmp.atom.gamma_ray_cost).max(0)
-            }
-        },
-        effect() {
-            let t = player.atom.gamma_ray
-            t = t.mul(tmp.radiation.bs.eff[10])
-            let pow = E(2)
-            if (hasUpgrade("atom",4)) pow = pow.add(tmp.upgs?tmp.upgs[3][4].effect:E(0))
-            if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
-            if (hasTree("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
-            pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
-            pow = pow.mul(tmp.prim.eff[3][1])
-            pow = pow.mul(getEnRewardEff(3)[1])
-            if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
-            if (hasTree("gr2")) pow = pow.pow(1.25)
-            if (hasElement(129)) pow = pow.pow(elemEffect(18))
-            if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
-
-            let eff = pow.pow(t.add(tmp.atom.gamma_ray_bonus)).sub(1)
-            if (CHALS.inChal(17)) {
-                pow = E(1)
-                eff = E(1)
-            }
-            let exp = E(1)
-            if (hasGlyphUpg(12)) exp = Decimal.pow(1.1,eff.max(1).log10().add(1).log10())
-
-            return {pow: pow, eff: eff, exp: exp}
-        },
-        bonus() {
-            let x = tmp.fermions.effs[0][0]||E(0)
-            x = x.mul(getEnRewardEff(4))
-            return x
-        },
-    },
     particles: {
         names: ['Protons', 'Neutrons', 'Electrons'],
         assign(x) {
