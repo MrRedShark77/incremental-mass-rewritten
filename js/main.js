@@ -649,10 +649,9 @@ function loop() {
     diff = Date.now()-date;
     player.offline.current = date
 
+    updateHTML()
     calc(diff/1000)
     date = Date.now()
-
-    updateHTML()
 }
 
 function format(ex, acc=4, max=12, type=player.options.notation) {
