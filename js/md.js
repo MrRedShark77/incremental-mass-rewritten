@@ -1,5 +1,5 @@
 const MASS_DILATION = {
-    unlocked() { return hasElement(21) },
+    unlocked() { return hasElement(21) && OURO.evo < 3 },
     penalty() {
         let x = 0.8
         if (FERMIONS.onActive("02")) x **= 2
@@ -57,11 +57,9 @@ const MASS_DILATION = {
 
         let o = x
         let os = E('ee30').pow(glyphUpgEff(8))
-
         if (hasUpgrade('atom',19)) os = os.pow(upgEffect(3,19))
         if (hasTree('ct14')) os = os.pow(treeEff('ct14'))
-
-        if (OURO.evolution >= 1 || hasAscension(0,7)) os = EINF
+        if (OURO.evo >= 1 || hasAscension(0,7)) os = EINF
 
         x = overflow(x,os,0.5)
 
@@ -72,9 +70,7 @@ const MASS_DILATION = {
         return x
     },
     gainSoftcap1() {
-        let s = mlt(1e12)
-        
-        return s
+        return OURO.evo >= 2 ? EINF : mlt(1e12)
     },
     mass_req() {
         let x = E(10).pow(player.md.particles.add(1).div(tmp.md.rp_mult_gain).root(tmp.md.rp_exp_gain).add(14).mul(40)).mul(1.50005e56)
@@ -117,14 +113,21 @@ const MASS_DILATION = {
                 desc: `Double relativistic particles gain.`,
                 cost(x) { return E(10).pow(x.pow(E(1.25).pow(tmp.md.upgs[4].eff||1))).mul(1000) },
                 bulk() { return player.md.mass.gte(1000)?player.md.mass.div(1000).max(1).log10().root(E(1.25).pow(tmp.md.upgs[4].eff||1)).add(1).floor():E(0) },
-                effect(x) { return E(2).pow(x.softcap(2.5e26,0.1,0).mul(tmp.md.upgs[11].eff||1)).softcap(1e25,0.75,0) },
-                effDesc(x) { return format(x,0)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
+                effect(x) {
+					if (OURO.evo < 2) return E(2).pow(x.softcap(2.5e26,0.1,0).mul(tmp.md.upgs[11].eff||1)).softcap(1e25,0.75,0)
+					if (OURO.evo >= 2) return E(2).pow(x.softcap(500,0.1,0))
+				},
+                effDesc(x) { return format(x,0)+"x"+(x.gte(1e25) && OURO.evo < 2?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: `Dilated mass also boost Stronger's power.`,
                 maxLvl: 1,
                 cost(x) { return E(1.619e20).mul(25) },
                 bulk() { return player.md.mass.gte(E(1.619e20).mul(25))?E(1):E(0) },
-                effect(x) { return player.md.mass.max(1).log(100).root(3).div(8).add(1) },
+				effect(x) {
+					let r = player.md.mass.max(1).log(100).root(3).div(8).add(1)
+					if (OURO.evo >= 2) r = r.min(100)
+					return r
+				},
                 effDesc(x) { return format(x)+"x" },
             },{
                 desc: `Mass Dilation upgrade 3 scales 10% weaker.`,
@@ -157,7 +160,7 @@ const MASS_DILATION = {
                 cost(x) { return E(1.5e246) },
                 bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
             },{
-                unl() { return (STARS.unlocked() || player.supernova.times.gte(1)) && OURO.evolution == 0 },
+                unl() { return (STARS.unlocked() || player.supernova.times.gte(1)) && OURO.evo == 0 },
                 desc: `Tickspeed affects all-star resources at a reduced rate.`,
                 maxLvl: 1,
                 cost(x) { return E(1.5e296) },
@@ -170,9 +173,11 @@ const MASS_DILATION = {
                 cost(x) { return E(5).pow(x).mul('1.50001e536') },
                 bulk() { return player.md.mass.gte('1.50001e536')?player.md.mass.div('1.50001e536').max(1).log(5).add(1).floor():E(0) },
                 effect(x) {
-                    return E(2).pow(x).softcap(1e25,2/3,0)//.softcap("ee12",0.8,2)
+                    let r = E(2).pow(x)
+                    if (OURO.evo < 2) r = r.softcap(1e25,2/3,0)
+                    return r
                 },
-                effDesc(x) { return format(x)+"x"+(x.gte(1e25)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return format(x)+"x"+(x.gte(1e25) && OURO.evo < 2?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 unl() { return player.supernova.times.gte(1) },
                 desc: `Add 0.015 to mass dilation upgrade 6's base.`,
@@ -181,11 +186,12 @@ const MASS_DILATION = {
                 effect(i) {
                     if (player.md.break.upgs[3].gte(1)) i = i.pow(1.5).softcap(1e18,1/1.5,0)
                     let x = i.mul(0.015).add(1).softcap(1.2,0.75,0).sub(1)
+                    if (OURO.evo < 2) x = x.add(1).softcap(1.2,0.75,0).sub(1)
                     return x
                 },
-                effDesc(x) { return "+"+format(x)+(x.gte(0.2)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return "+"+format(x)+(x.gte(0.2) && OURO.evo < 2?" <span class='soft'>(softcapped)</span>":"") },
             },{
-                unl() { return player.supernova.post_10 && OURO.evolution == 0 },
+                unl() { return player.supernova.post_10 && OURO.evo == 0 },
                 desc: `First 3 Mass Dilation upgrades are stronger.`,
                 cost(x) { return E(1e100).pow(x.pow(2)).mul('1.5e8056') },
                 bulk() { return player.md.mass.gte('1.5e8056')?player.md.mass.div('1.5e8056').max(1).log(1e100).max(0).root(2).add(1).floor():E(0) },

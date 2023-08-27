@@ -6,8 +6,8 @@ const BUILDINGS_DATA = {
 		icon: "mass_upg1",
         scale: "massUpg",
 
-        get isUnlocked() { return player.ranks.rank.gte(1) || player.mainUpg.atom.includes(1) },
-        get autoUnlocked() { return OURO.evolution >= 1 || hasUpgrade('rp',3) },
+        get isUnlocked() { return player.ranks.rank.gte(1) || hasUpgrade("atom",1) },
+        get autoUnlocked() { return OURO.evo >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -24,7 +24,7 @@ const BUILDINGS_DATA = {
             let power = E(1)
             if (player.ranks.rank.gte(3)) power = power.add(RANKS.effect.rank[3]())
             power = power.mul(BUILDINGS.eff('mass_2'))
-            power = power.mul(tmp.evo.mediation_eff.mass1??1)
+            power = power.mul(tmp.evo.meditation_eff.mass1??1)
 
             let effect = power.mul(x)
             if (hasElement(209)) effect = effect.pow(elemEffect(209))
@@ -34,8 +34,10 @@ const BUILDINGS_DATA = {
 
         get bonus() {
             let x = E(0)
-            if (player.mainUpg.rp.includes(1)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][1].effect:E(0))
-            if (player.mainUpg.rp.includes(2)) x = hasAscension(0,1)?x.mul(tmp.build.mass_2.bonus.add(1)):x.add(tmp.build.mass_2.bonus)
+			if (hasUpgrade("rp",1)) {
+				x = x.add(tmp.upgs?tmp.upgs[1][1].effect:E(0))
+				if (hasUpgrade("rp",2)) x = hasAscension(0,1)?x.mul(tmp.build.mass_2.bonus.add(1)):x.add(tmp.build.mass_2.bonus)
+			}
             x = x.mul(getEnRewardEff(4))
             return x
         },
@@ -48,8 +50,8 @@ const BUILDINGS_DATA = {
 		icon: "mass_upg2",
         scale: "massUpg",
 
-        get isUnlocked() { return player.ranks.rank.gte(2) || player.mainUpg.atom.includes(1) },
-        get autoUnlocked() { return OURO.evolution >= 1 || hasUpgrade('rp',3) },
+        get isUnlocked() { return player.ranks.rank.gte(2) || hasUpgrade("atom",1) },
+        get autoUnlocked() { return OURO.evo >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -65,7 +67,7 @@ const BUILDINGS_DATA = {
         effect(x) {
             let step = E(2)
             if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
-            step = step.mul(tmp.evo.mediation_eff.mass2??1)
+            step = step.mul(tmp.evo.meditation_eff.mass2??1)
             step = step.mul(wormholeEffect(1))
             step = step.pow(BUILDINGS.eff('mass_3'))
 
@@ -77,8 +79,8 @@ const BUILDINGS_DATA = {
 
         get bonus() {
             let x = E(0)
-            if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][2].effect:E(0))
-            if (player.mainUpg.rp.includes(7)) x = hasAscension(0,1)?x.mul(tmp.build.mass_3.bonus.add(1)):x.add(tmp.build.mass_3.bonus)
+            if (hasUpgrade("rp",2)) x = x.add(tmp.upgs?tmp.upgs[1][2].effect:E(0))
+            if (hasUpgrade("rp",7)) x = hasAscension(0,1)?x.mul(tmp.build.mass_3.bonus.add(1)):x.add(tmp.build.mass_3.bonus)
             x = x.mul(getEnRewardEff(4))
             return x
         },
@@ -91,8 +93,8 @@ const BUILDINGS_DATA = {
 		icon: "mass_upg3",
         scale: "massUpg",
 
-        get isUnlocked() { return player.ranks.rank.gte(3) || player.mainUpg.atom.includes(1) },
-        get autoUnlocked() { return OURO.evolution >= 1 || hasUpgrade('rp',3) },
+        get isUnlocked() { return player.ranks.rank.gte(3) || hasUpgrade("atom",1) },
+        get autoUnlocked() { return OURO.evo >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -108,22 +110,26 @@ const BUILDINGS_DATA = {
         get beMultiplicative() { return hasAscension(0,1) },
 
         effect(x) {
-            let xx = x
-            if (hasElement(81)) xx = xx.pow(1.1)
-            let ss = E(10)
+            let post_x = hasElement(8,1) && OURO.evo >= 2
+            if (hasElement(81)) x = x.pow(1.1)
+			if (OURO.evo < 2 && hasElement(80)) x = x.mul(hasElement(80)?25:1)
+
+			let ss = E(10)
             if (player.ranks.rank.gte(34)) ss = ss.add(2)
-            if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
+            if (hasUpgrade("bh",9)) ss = ss.add(tmp.upgs?tmp.upgs[2][9].effect:E(0))
+
             let step = E(1)
             if (player.ranks.tetr.gte(2)) step = step.add(RANKS.effect.tetr[2]())
-            if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
-            if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
-            step = step.mul(tmp.evo.mediation_eff.mass3??1)
+            if (hasUpgrade("rp",9)) step = step.add(0.25)
+            if (hasUpgrade("rp",12)) step = step.add(tmp.upgs?tmp.upgs[1][12].effect:E(0))
+            step = step.mul(tmp.evo.meditation_eff.mass3??1)
             if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
             if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
+			step = step.mul(nebulaEff("red"))
             step = step.pow(BUILDINGS.eff('mass_4'))
 
             let sp = 0.5
-            if (player.mainUpg.atom.includes(9)) sp *= 1.15
+            if (hasUpgrade("atom",9)) sp *= 1.15
             if (player.ranks.tier.gte(30)) sp *= 1.1
             let sp2 = 0.1
             let ss2 = E(5e15)
@@ -132,28 +138,28 @@ const BUILDINGS_DATA = {
                 sp2 **= 0.9
                 ss2 = ss2.mul(3)
             }
-            if (hasElement(149)) {
+            if (hasElement(149) && OURO.evo < 2) {
                 sp **= 0.5
                 sp3 **= 0.9
             }
-            if (hasElement(150)) {
+            if (hasElement(150) && OURO.evo < 2) {
                 sp **= 0.9
                 sp3 **= 0.925
             }
-            if (OURO.unl()) {
-                let w = tmp.evo.mediation_eff.mass3_softcap??1
+            if (OURO.evo) {
+                let w = tmp.evo.meditation_eff.mass3_softcap??1
                 sp = Decimal.pow(sp,w)
                 sp2 = Decimal.pow(sp2,w)
                 sp3 = Decimal.pow(sp3,w)
             }
-            step = step.softcap(1e43,hasElement(160)?0.85:0.75,0)
+			if (OURO.evo < 2) step = step.softcap(1e43,hasElement(160)?0.85:0.75,0)
 
-            let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
+            let ret = step.mul(post_x ? 1 : x).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
             ret = ret.mul(tmp.prim.eff[0])
             if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
 
             let o = ret
-            let os = E('e115').mul(getFragmentEffect('mass')), os2 = E('e1555')
+            let os = E(OURO.evo >= 2 ? 'e70' : 'e115').mul(getFragmentEffect('mass')), os2 = E(OURO.evo >= 2 ? 'e600' : 'e1555')
             let op = E(.5), op2 = E(0.25)
             if (hasElement(210)) os = os.mul(elemEffect(210))
             if (hasElement(27,1)) {
@@ -178,13 +184,14 @@ const BUILDINGS_DATA = {
             tmp.overflow.stronger = calcOverflow(o,ret,os)
             tmp.overflow_start.stronger = [os,os2]
             tmp.overflow_power.stronger = [op,op2]
-            
+			if (post_x) ret = ret.mul(x.div(tmp.c16active ? 1 : 1e140).max(1).sqrt())
+
             return {power: step, effect: ret, ss: ss}
         },
 
         get bonus() {
             let x = E(0)
-            if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:0)
+            if (hasUpgrade("rp",7)) x = x.add(tmp.upgs?tmp.upgs[1][7].effect:0)
             x = x.mul(getEnRewardEff(4))
             return x
         },
@@ -209,20 +216,14 @@ const BUILDINGS_DATA = {
 
         get_cost: x => formatMass(x),
 
-        effect(x) {
-            let xx = x
-                
+        effect(x) {         
             let step = E(.005)
             if (hasUpgrade('rp',17)) step = step.add(.005)
             if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
-
             if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
-            step = step.mul(escrowBoost('mass4'))
 
             let ss = E(10)
-
-            let eff = step.mul(xx).add(1).softcap(ss,0.5,0)
-                
+            let eff = step.mul(x).add(1).softcap(ss,0.5,0)                
             return {power: step, effect: eff, ss: ss}
         },
 
@@ -240,12 +241,11 @@ const BUILDINGS_DATA = {
 		icon: "tickspeed",
         scale: "tickspeed",
 
-        get isUnlocked() { return player.rp.unl && OURO.evolution < 1 },
-        get autoUnlocked() { return player.mainUpg.bh.includes(5) },
-        get noSpend() { return player.mainUpg.atom.includes(2) },
+        get isUnlocked() { return player.rp.unl && OURO.evo < 1 },
+        get autoUnlocked() { return hasUpgrade("bh",5) },
+        get noSpend() { return hasUpgrade("atom",2) },
 
         get allowPurchase() { return !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(10) },
-
         get res() { return player.rp.points },
         set res(v) { player.rp.points = v },
 
@@ -263,9 +263,7 @@ const BUILDINGS_DATA = {
 
             return this.res.max(1).log(2).scaleEvery('tickspeed',true).mul(fp).add(1).floor()
         },
-
         get_cost: x => format(x,0) + " Rage Power",
-
         get beMultiplicative() { return hasAscension(0,1) },
 
         effect(x) {
@@ -300,26 +298,21 @@ const BUILDINGS_DATA = {
             step = step.softcap(ss,p,0,hasUpgrade('rp',16))
 
             if (hasBeyondRank(2,4)) step = step.pow(BUILDINGS.eff('accelerator'))
-
-            if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])
-            
+            if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])            
             eff = step.pow(t.mul(hasElement(80)?25:1))
 
             if (!hasElement(199) || CHALS.inChal(15)) {
                 if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
                 if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
-
                 if (hasElement(150)) eff = expMult(eff,1.6)
             }
 
             eff_bottom = eff
-
 			if (hasElement(199) && !CHALS.inChal(15)){
 				eff = eff.add(9).log10().add(9).log10().pow(BUILDINGS.eff('accelerator').mul(0.1));
 				eff_bottom = eff_bottom.pow(BUILDINGS.eff('accelerator'));
 				if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05),eff_bottom = eff_bottom.pow(1.05);
 			}
-
             return {power: step, effect: eff, ss, eff_bottom}
         },
 
@@ -338,7 +331,7 @@ const BUILDINGS_DATA = {
         name: "Accelerator",
 		icon: "accelerator",
 
-        get isUnlocked() { return player.rp.unl && OURO.evolution < 1 && hasElement(199) },
+        get isUnlocked() { return player.rp.unl && OURO.evo < 1 && hasElement(199) },
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
@@ -386,8 +379,8 @@ const BUILDINGS_DATA = {
 		icon: "bhCondenser",
         scale: "bh_condenser",
 
-        get isUnlocked() { return player.bh.unl && OURO.evolution < 2 },
-        get autoUnlocked() { return player.mainUpg.atom.includes(2) },
+        get isUnlocked() { return player.bh.unl && OURO.evo < 2 },
+        get autoUnlocked() { return hasUpgrade("atom",2) },
         get noSpend() { return player.atom.unl },
 
         get allowPurchase() { return !CHALS.inChal(6) && !CHALS.inChal(10) },
@@ -425,9 +418,9 @@ const BUILDINGS_DATA = {
             t = t.mul(tmp.radiation.bs.eff[5])
             let pow = E(2)
                 pow = pow.add(tmp.chal.eff[6])
-                if (player.mainUpg.bh.includes(2)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[2][2].effect:E(1))
+                if (hasUpgrade("bh",2)) pow = pow.mul(tmp.upgs?tmp.upgs[2][2].effect:E(1))
                 pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
-                if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
+                if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
                 pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
                 pow = pow.mul(tmp.prim.eff[2][1])
                 pow = pow.mul(getEnRewardEff(3)[1])
@@ -457,7 +450,7 @@ const BUILDINGS_DATA = {
 
         get bonus() {
             let x = E(0)
-            if (player.mainUpg.bh.includes(15)) x = x.add(tmp.upgs.main?tmp.upgs.main[2][15].effect:E(0))
+            if (hasUpgrade("bh",15)) x = x.add(tmp.upgs?tmp.upgs[2][15].effect:E(0))
             x = x.mul(getEnRewardEff(4))
             return x
         },
@@ -470,7 +463,7 @@ const BUILDINGS_DATA = {
 		icon: "fvm",
         scale: "fvm",
 
-        get isUnlocked() { return player.bh.unl && hasCharger(1) },
+        get isUnlocked() { return player.bh.unl && hasCharger(1) && OURO.evo < 2 },
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
@@ -523,7 +516,7 @@ const BUILDINGS_DATA = {
 		icon: "gamma_ray",
         scale: "gamma_ray",
 
-        get isUnlocked() { return player.atom.unl },
+        get isUnlocked() { return player.atom.unl && OURO.evo < 3 },
         get autoUnlocked() { return hasElement(18) },
         get noSpend() { return hasElement(18) },
 
@@ -555,8 +548,8 @@ const BUILDINGS_DATA = {
             let t = x
             t = t.mul(tmp.radiation.bs.eff[10])
             let pow = E(2)
-            if (player.mainUpg.atom.includes(4)) pow = pow.add(tmp.upgs.main?tmp.upgs.main[3][4].effect:E(0))
-            if (player.mainUpg.atom.includes(11)) pow = pow.mul(tmp.upgs.main?tmp.upgs.main[3][11].effect:E(1))
+            if (hasUpgrade("atom",4)) pow = pow.add(tmp.upgs?tmp.upgs[3][4].effect:E(0))
+            if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
             if (hasTree("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
             pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
             pow = pow.mul(tmp.prim.eff[3][1])
@@ -564,7 +557,6 @@ const BUILDINGS_DATA = {
             if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
             if (hasTree("gr2")) pow = pow.pow(1.25)
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
-            pow = pow//.softcap('e3e12',0.9,2)
 
             if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
 
@@ -577,8 +569,6 @@ const BUILDINGS_DATA = {
 
             let exp = E(1)
             if (hasGlyphUpg(12)) exp = Decimal.pow(1.1,eff.max(1).log10().add(1).log10())
-
-            //exp = overflow(exp,1000,0.5)
 
             return {power: pow, effect: eff, exp: exp}
         },
@@ -636,7 +626,6 @@ const BUILDINGS_DATA = {
             if (CHALS.inChal(17)) pow = E(1)
 
             let eff = pow.pow(x.mul(tmp.chal?tmp.chal.eff[11]:1)).softcap('e3e18',0.95,2,a22)
-
             return {power: pow, effect: eff}
         },
 
@@ -744,44 +733,6 @@ const BUILDINGS_DATA = {
         get_power: x => formatMult(x.power),
         get_effect: x => formatMult(x.effect) + " to dimensional mass",
     },
-
-    /*
-    {
-        name: "Placeholder",
-		icon: "placeholder",
-
-        get isUnlocked() { return false },
-        get autoUnlocked() { return false },
-        get noSpend() { return false },
-
-        get res() { return player.mass },
-        set res(v) { player.mass = v },
-
-        cost(x=this.level) {
-            return EINF
-        },
-        get bulk() {
-            return E(0)
-        },
-
-        get_cost: x => format(x,0),
-
-        effect(x, bonus) {
-            let pow = E(1)
-            let eff = E(1)
-            return {power: pow, effect: eff}
-        },
-
-        get bonus() {
-            let x = E(0)
-
-            return x
-        },
-
-        get_power: x => formatMult(x.power),
-        get_effect: x => formatMult(x.effect),
-    },
-    */
 }
 
 const BUILDINGS_ORDER = [
@@ -855,8 +806,6 @@ const BUILDINGS = {
         } else {
             b.level = b.level.add(1)
         }
-
-        console.log()
 
 		if (!b.noSpend && b.res.gt(cost)) {
 			b.res = b.res.sub(cost).max(0) // without .max(0) causes NaN because of negative amount
@@ -1043,7 +992,7 @@ function checkBuildings() {
 
     // Parallel Extruder
     b = player.build.pe
-    if (b.amt.lte(0) && player.inf.pe && Decimal.gt(player.inf.pe,0)) {
+    if (b.amt.lte(0) && player.inf?.pe && Decimal.gt(player.inf.pe,0)) {
         b.amt = E(player.inf.pe)
         player.inf.pe = undefined;
     }

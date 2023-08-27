@@ -33,7 +33,7 @@ const TOOLTIP_RES = {
     dm: {
         full: "Dark Matter",
         desc() {
-            let r = OURO.evolution >= 1 ? `<b>${format(5e3)}</b> Calm Power` : `<b>${format(1e20)}</b> Rage Power`
+            let r = OURO.evo >= 1 ? `<b>${format(5e3)}</b> Calm Power` : `<b>${format(1e25)}</b> Rage Power`
             return `<i>Reach over ${r} to reset all previous features for gain Dark Matters.</i>`
         },
     },
@@ -43,32 +43,32 @@ const TOOLTIP_RES = {
             return `<i>Reach over <b>${format(1e5)}</b> Calm Power to reset all previous features for gain Fabrics.</i>`
         },
     },
-    wormhole: {
-        full: "Wormhole",
-        desc() {
-            return player.evo?`You have <b>${formatMass(player.evo.wh.mass[0])}</b> of first wormhole.`:"???";
-        },
-    },
     bh: {
         full: "Black Hole",
         desc() {
+            if (OURO.evo >= 2) return ``
+
             let h = `You have <b>${formatMass(player.bh.mass)}</b> of black hole.`;
 
             if (tmp.overflowBefore.bh.gte(tmp.overflow_start.bh[0]))
             h += `<br>(<b>+${formatMass(tmp.overflowBefore.bh)}</b> gained before <b>overflow</b>)`;
 
             if (hasCharger(1))
-            h += `
-            <br class='line'>You have <b class='corrupted_text'>${formatMass(player.bh.unstable)} ${formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true)}</b> of Unstable Black Hole.
-            `;
+            h += `<br class='line'>You have <b class='corrupted_text'>${formatMass(player.bh.unstable)} ${formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true)}</b> of Unstable Black Hole.`;
 
             return h
+        },
+    },
+    wormhole: {
+        full: "Wormhole",
+        desc() {
+            return player.evo?`You have <b>${formatMass(WORMHOLE.total())}</b> of wormhole.`:"???";
         },
     },
     atom: {
         full: "Atom",
         desc() {
-            let r = OURO.evolution >= 2 ? `<b>${format(1e3)}</b> Fabric` : `<b>${formatMass(uni(1e100))}</b> of black hole`
+            let r = OURO.evo >= 2 ? `<b>${format(300,0)}</b> Fabric` : `<b>${formatMass(uni(1e100))}</b> of black hole`
 
             let h = `<i>
             Reach over ${r} to reset all previous features for gain Atoms & Quarks.
@@ -76,6 +76,10 @@ const TOOLTIP_RES = {
 
             return h
         },
+    },
+    protostar: {
+        full: "Protostar",
+        desc: _ => `Reach over <b>${format(1e3,0)}</b> Fabric to reset all previous features for gain Protostars & Quarks.`,
     },
     quarks: {
         full: "Quark",
@@ -89,7 +93,6 @@ const TOOLTIP_RES = {
             <br class='line'>
             You have <b class='orange'>${tmp.exotic_atom.amount.format(0)}</b> Exotic Atoms.
             `
-
             return h
         },
     },
@@ -150,7 +153,7 @@ const TOOLTIP_RES = {
         full: "Death Shard",
         desc() {
             let h = `<i>
-            Big Rip the Dimension, then go back.
+            ${player.qu.rip.active ? "Our dimension is Big Ripped. Click to undo." : "Big Rip the Dimension."}
             <br><br>
             While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers [10,2,10,10,5,0,2,10]. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.
             </i>`
@@ -213,7 +216,7 @@ const TOOLTIP_RES = {
             Your best mass of black hole in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
             <br class='line'>
             <i>
-            Start the 16th Challenge. Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge with more than <b>${formatMass(OURO.evolution >= 1 ? 1e70 : 1e100)}</b> of black hole.<br><br>
+            ${ player.chal.active == 16 ? "Exit the 16th Challenge." : "Start the 16th Challenge." } Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge${OURO.evo >= 2 ? "" : `with more than <b>${formatMass(OURO.evo >= 1 ? 1e70 : 1e100)}</b> of black hole`}.<br><br>
             • You cannot gain rage powers, and all matters' formulas are disabled, and they generate each other. Red matter generates dark matter.<br>
             • Pre-C16 features, such as rank, prestige tiers, main upgrades, elements, tree upgrades, etc. may be corrupted (disabled).<br>
             • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>
@@ -227,6 +230,7 @@ const TOOLTIP_RES = {
     inf: {
         full: "Infinity",
         desc() {
+			if (!tmp.inf_unl) return ``
             let h = `
             Your ${getScalingName('inf_theorem')}Infinity Theorem is <b class="yellow">${player.inf.theorem.format(0)}</b>.
             <br class='line'>
@@ -252,9 +256,7 @@ const TOOLTIP_RES = {
             <i>
             Complete <b class="yellow">Challenge 20</b> first to Evolve.
             <br><br>
-            Ouroboric resets everything up to this point!
-            <br><br>
-            Evolving ceases escrow content in this Evolution!
+            Ouroboric resets everything up to this point, and so Apples!
             </i>`
 
             return h

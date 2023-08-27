@@ -1,6 +1,6 @@
 const QCs = {
     active() { return player.qu.qc.active || player.qu.rip.active || CHALS.inChal(14) || CHALS.inChal(15) || tmp.c16active || inDarkRun() },
-    getMod(x) { return CHALS.inChal(15) ? OURO.evolution >= 1 ? [6,0,6,6,6,6,6,6][x] : [10,5,10,10,10,10,10,10][x] : tmp.c16active || inDarkRun() ? OURO.evolution >= 1 ? 5 : 8 : CHALS.inChal(14) ? OURO.evolution >= 1 ? 4 : 5 : player.qu.rip.active ? tmp.qc_rip[x] : player.qu.qc.mods[x] },
+    getMod(x) { return tmp.c16active && OURO.evo >= 2 ? 10 : CHALS.inChal(15) ? (OURO.evo >= 2 ? 3 : OURO.evo == 1 ? [6,0,6,6,6,6,6,6][x] : [10,5,10,10,10,10,10,10][x]) : tmp.c16active || inDarkRun() ? (OURO.evo == 1 ? 5 : 8) : CHALS.inChal(14) ? (OURO.evo >= 1 ? 4 : 5) : player.qu.rip.active ? tmp.qc_rip[x] : player.qu.qc.mods[x] },
     incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),10) },
     enter() {
         if (!player.qu.qc.active) {
@@ -61,6 +61,7 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
+                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16active) i *= getEvo2Ch8Boost().toNumber()
                 let x = [1-0.05*i,i/10+1]
                 return x
             },
@@ -165,28 +166,26 @@ function updateQCModPresets() {
 }
 
 function updateQCTemp() {
-    let evo1 = OURO.evolution >= 1
-    tmp.qc_rip = evo1 ? [10,2,10,10,1,0,2,5] : [10,2,10,10,5,0,2,10]
+    let evo = OURO.evo
+    tmp.qc_rip = [[10,2,10,10,5,0,2,10], [10,2,10,10,1,0,2,5], [10,2,0,5,1,0,2,0], [10,10,10,10,10,10,10,10]][evo]
 
     tmp.qu.qc_s_b = E(2)
     if (hasTree("qf4")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
     if (hasPrestige(0,2)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
     if (hasTree("qc3")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(treeEff('qc3',0))
     if (hasElement(146)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(elemEffect(146,0))
-
     if (hasElement(226)) tmp.qu.qc_s_b = tmp.qu.qc_s_b.pow(elemEffect(226))
 
     let weak = 1
     if (tmp.inf_unl) weak *= theoremEff('proto',3)
-
     tmp.qu.qc_s_eff = tmp.qu.qc_s_b.pow(player.qu.qc.shard)
     
     let s = 0
     let bs = 0
     for (let x = 0; x < QCs_len; x++) {
-        let m = QCs.getMod(x)
-        if (evo1) m *= 2
-        s += m
+        let m = QCs.getMod(x) * [1, 2, 1.5, 10][evo]
+        let n = QCs.getMod(x) * [1, 2, 1.6, 10][evo]
+        s += Math.round(n)
         tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m*weak)
         if (hasTree('qc2') && m >= 10) bs++
     }

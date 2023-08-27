@@ -58,7 +58,6 @@ const POPUP_GROUPS = {
         `,
     },
     fonts: {
-        // <button class="btn" style="font-family: Comic Sans MS;" onclick="player.options.font = 'Comic Sans MS'">Comic Sans MS</button>
         html: `
             <button class="btn" style="font-family: 'Andy Bold';" onclick="player.options.font = 'Andy Bold'">Andy Bold</button>
             <button class="btn" style="font-family: Arial, Helvetica, sans-ser;" onclick="player.options.font = 'Arial, Helvetica, sans-ser'">Arial</button>
@@ -173,11 +172,11 @@ const QUOTES = [
     `,`
     <h2>Chapter 2: Rage Power</h2><br>
     <img class='quote' src='images/quotes/2.png'><br>
-    You feel outrageous and want to be energy-efficient. You are stronger with less effort needed.
+    With your energy, you felt outrageous and want to rush!
     `,`
     <h2>Chapter 3: The Black Hole</h2><br>
     <img class='quote' src='images/quotes/3.png'><br>
-    You pulled up a hidden mystery of cosmos. The force was so strong, it forms a black hole!
+    You lifted a singularity. It even formed a black hole!
     `,`
     <h2>Chapter 4: The Atom</h2><br>
     <img class='quote' src='images/quotes/4.png'><br>
@@ -185,11 +184,11 @@ const QUOTES = [
     `,`
     <h2>Chapter 5: Supernova Born</h2><br>
     <img class='quote' src='images/quotes/5.png'><br>
-    A new age of stars rises, while the stars collapsed.  Neutron stars felt elder...
+    Stars have collapsed. A dwarf age begins.
     `,`
     <h2>Chapter 6: The Radiation</h2><br>
     <img class='quote' src='images/quotes/6.png'><br>
-    As stars radiate, you dig deeper: Radiation.
+    Neutron Stars have gone very radiant.
     `,`
     <h2>Chapter 7: Scale to Quantum</h2><br>
     <img class='quote' src='images/quotes/7.png'><br>
@@ -201,11 +200,11 @@ const QUOTES = [
     `,`
     <h2>Chapter 9: Trapped in Darkness</h2><br>
     <img class='quote' src='images/quotes/9.png'><br>
-    You rose up the darkness. Time to research the mysteries of matter!
+    You rose with darkness. Time to enrich for Matters.
     `,`
     <h2>Chapter 10: The Corruption</h2><br>
     <img class='quote' src='images/quotes/10.png'><br>
-    The final challenge stands against you. Good luck!
+    The deadly corruption stands against you.
     `,`
     <h2>Chapter 11: The Infinity</h2><br>
     <img class='quote' src='images/quotes/11.png'><br>
@@ -217,7 +216,7 @@ const QUOTES = [
     `,`
     <h2>Chapter 13: Uroboros</h2><br>
     <img class='quote' src='images/quotes/13.png'><br>
-    Outbusting Infinity's barrier within Reality III, you're reborn as a Serp'iu forest snake.
+    Outbursting Infinity by Reality III, you felt snakey.
     `,
 ]
 
@@ -363,14 +362,12 @@ function convertStringIntoAGY(s) {
 function keyEvent(e) {
     let k = e.keyCode
 
-    // console.log(k)
-
     if (tmp.tab_name == 'snake') {
         if (k == 87 || k == 38) recordMovement(0)
         else if (k == 68 || k == 39) recordMovement(1)
         else if (k == 83 || k == 40) recordMovement(2)
         else if (k == 65 || k == 37) recordMovement(3)
-    } else {
+    } else if (!player.options.nav_hide[3]) {
         if (k == 38 || k == 40) {
             let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
     
@@ -390,8 +387,7 @@ function keyEvent(e) {
         } else if (k == 37 || k == 39) {
             if (!TABS[tmp.tab].stab) return
     
-            let v = k == 39 ? 1 : -1, t = tmp.stab[tmp.tab], s = t
-    
+            let v = k == 39 ? 1 : -1, t = tmp.stab[tmp.tab], s = t    
             while (true) {
                 t += v
                 tt = TABS[tmp.tab].stab[t]
@@ -415,21 +411,24 @@ function keyEvent(e) {
 function hideNavigation(i) { player.options.nav_hide[i] = !player.options.nav_hide[i]; updateNavigation() }
 
 function updateNavigation() {
-    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"]]
+    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_extra_hider"],["nav_pin_hider"]]
     let w = 450
 
-    for (i in player.options.nav_hide) {
+    for (let i in player.options.nav_hide) {
         let h = player.options.nav_hide[i]
 
         tmp.el[ids[i][0]].setClasses({toggled: h})
-        tmp.el[ids[i][1]].setDisplay(!h)
-        if (h) w -= i == 0 ? 198 : 248
+        if (ids[i][1]) tmp.el[ids[i][1]].setDisplay(!h)
+        if (ids[i][1] && h) w -= i == 0 ? 198 : 248
     }
 
     let p = `calc(100% - ${w}px)`
 
     tmp.el.main_app.changeStyle('width',p)
     tmp.el.nav_btns.changeStyle('width',p)
+
+	tmp.el.stabs.setDisplay(!player.options.nav_hide[3])
+	PINS.update()
 }
 
 function setupStatsHTML() {
@@ -465,12 +464,6 @@ function setupStatsHTML() {
 
     new Element("asc_reward_btn").setHTML(h)
 }
-
-/*
-ranks_reward: 0,
-pres_reward: 0,
-scaling_ch: 0,
-*/
 
 function updateStatsHTML() {
     if (tmp.tab_name == 'rank-reward') for (let i in RANKS.names) {

@@ -28,10 +28,7 @@ const PRIM = {
         chance: [],
 
         eff: [
-            p=>{
-                let x = p.add(1).root(2)
-                return x
-            },
+            p=>p.add(1).root(2),
             p=>{
                 let br16 = hasUpgrade('br',16)
                 let x = [p.root(3).div(5).add(1).softcap(3,0.4,0,br16),p.pow(1.25).add(1)]
@@ -79,6 +76,16 @@ const PRIM = {
             x=>{ return hasUpgrade('br',22) ? `Increase supernova generation by ${formatMult(x)}` : `Make ${player.dark.unl ? "pre-exotic" : "all"} Supernova's scalings start ${format(x)} later` + x.softcapHTML(1500) },
         ],
     },
+
+	canLock(x) {
+		return player.qu.prim.lock.includes(x) || player.qu.prim.lock.indexOf(-1) >= 0
+	},
+	lock(x) {
+		if (!this.canLock(x)) return
+		let p_lock = player.qu.prim.lock
+		if (p_lock.includes(x)) p_lock[p_lock.indexOf(x)] = -1
+		else p_lock[p_lock.indexOf(-1)] = x
+	},
 }
 
 function giveRandomPParticles(v, max=false) {
@@ -105,7 +112,7 @@ function giveRandomPParticles(v, max=false) {
 
 function respecPParticles() {
     createConfirm("Are you sure you want to respec all Particles?",'respectPPs',()=>{
-        for (let i =0; i < 8; i++) player.qu.prim.particles[i] = E(0)
+        for (let i = 0; i < 8; i++) if (!player.qu.prim.lock.includes(i)) player.qu.prim.particles[i] = E(0)
         QUANTUM.doReset()
     })
 }
@@ -151,7 +158,7 @@ function updatePrimordiumTemp() {
 
     let p_mul = hasElement(63,1)
 
-    tp.prim_pow = tmp.cs_effect.prim_reduce || 1
+    tp.prim_pow = CSEffect("prim_reduce")
     tp.theorems = PRIM.getTheorems()
     tp.next_theorem = PRIM.getNextTheorem()
     tp.spent_theorem = PRIM.spentTheorems()
@@ -162,8 +169,7 @@ function updatePrimordiumTemp() {
         if (hasTree('ct12')) b = b.add(treeEff('ct12'))
         if (tmp.c16active) {
             pp = E(0)
-        }
-        else {
+        } else {
             if (hasTree('qu_qol10') && i < 4) pp = pt
             else if (hasTree('qu_qol11') && i < 6) pp = pt
             else if (hasTree('qu_qol12') && i < 8) pp = pt
@@ -188,5 +194,9 @@ function updatePrimordiumHTML() {
     for (let i = 0; i < player.qu.prim.particles.length; i++) {
         tmp.el["prim_part"+i].setTxt(format(tmp.prim.parts[i],0)+(tmp.prim.bonus[i].gt(0)?(p_mul ? " × " : " + ")+tmp.prim.bonus[i].format(0):""))
         tmp.el["prim_part_eff"+i].setHTML(PRIM.particle.effDesc[i](tmp.prim.eff[i]))
+
+        tmp.el["prim_lock"+i].setDisplay(tmp.prim.w[i] && OURO.evo >= 2)
+        tmp.el["prim_lock"+i].setClasses({ btn: true, locked: !PRIM.canLock(i) })
+        tmp.el["prim_lock"+i].setTxt(player.qu.prim.lock.includes(i) ? "Unlock" : "Lock")
     }
 }

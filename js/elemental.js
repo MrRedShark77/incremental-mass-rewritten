@@ -35,45 +35,54 @@ const ELEMENTS = {
         'Mendelevium','Nobelium','Lawrencium','Rutherfordium','Dubnium','Seaborgium','Bohrium','Hassium','Meitnerium','Darmstadium',
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
-    canBuy(x) {
+    canBuy(x, layer = 0) {
         if (tmp.c16active && isElemCorrupted(x)) return false
-        let u = this.upgs[x]
-        let res = u.inf ? player.inf.points : u.dark ? player.dark.shadow : player.atom.quarks
-        return res.gte(u.cost) && !hasElement(x) && (hasInfUpgrade(6) && x <= 218 || player.qu.rip.active || !BR_ELEM.includes(x)) && (tmp.c16active || !C16_ELEM.includes(x)) && !tmp.elements.cannot.includes(x) && !(CHALS.inChal(14) && x < 118)
+		if (hasElement(x, layer)) return
+
+        let u = [ELEMENTS, MUONIC_ELEM][layer].upgs[x]
+		let data = ELEM_TYPES[getElementClass(x, layer)]
+		if (data.can && !data.can()) return
+		if (data.res.lt(u.cost)) return
+
+		return !this.cannotAfford(x, layer)
     },
-    buyUpg(x) {
-        if (this.canBuy(x)) {
-            let u = this.upgs[x]
+	cannotAfford(x, layer) {
+		if (OURO.isFed("e"+layer+"_"+x)) return true
+		if (layer == 1) return
+		if (CHALS.inChal(14) && x < 118) return true
+		if (tmp.c16active && isElemCorrupted(x)) return true
+		if (player.qu.rip.active && tmp.elements.cannot.includes(x)) return true
+	},
+    buyUpg(x, layer = 0) {
+		if (!this.canBuy(x, layer)) return
 
-            if (u.inf) player.inf.points = player.inf.points.sub(u.cost)
-            else if (u.dark) player.dark.shadow = player.dark.shadow.sub(u.cost)
-            else player.atom.quarks = player.atom.quarks.sub(u.cost)
-            player.atom.elements.push(x)
+		let u = [ELEMENTS, MUONIC_ELEM][layer].upgs[x]
+		let type = ELEM_TYPES[getElementClass(x, layer)]
+		type.res = type.res.sub(u.cost).max(0)
+		player.atom[["elements", "muonic_el"][layer]].push(x)
 
-            if (x==230) {
-                updateTheoremCore()
-                updateTheoremInv()
-            }
-
-            if (x==251) {
-                tmp.tab=8
-                tmp.stab[8]=3
-            }
-
-            if (x==262) {
-                tmp.tab=0
-                tmp.stab[0]=0
-                tmp.rank_tab=1
-            }
-
-            tmp.pass = 2
-        }
+		if (layer == 0) {
+			if (x==230) {
+				updateTheoremCore()
+				updateTheoremInv()
+			}
+			if (x==251 && !OURO.evo) {
+				tmp.tab=8
+				tmp.stab[8]=3
+			}
+			if (x==262 && !OURO.evo) {
+				tmp.tab=0
+				tmp.stab[0]=0
+				tmp.rank_tab=1
+			}
+		}
+		tmp.pass = 1
     },
     upgs: [
         null,
         {
             desc: `Quark gain formula is better.`,
-            cost: E(5e8),
+            cost: E(1e8),
         },
         {
             desc: `Hardened Challenge scaling is 25% weaker.`,
@@ -85,9 +94,9 @@ const ELEMENTS = {
             effect() {
                 let x
                 if (hasPrestige(0,867)) {
-                    x = player.atom?player.atom.powers[2].add(1).log10().add(1).log10().add(1).pow(1.5):E(1)
+                    x = tmp.atom.unl?player.atom.powers[2].add(1).log10().add(1).log10().add(1).pow(1.5):E(1)
                 } else {
-                    x = player.atom?player.atom.powers[2].add(1).root(2):E(1)
+                    x = tmp.atom.unl?player.atom.powers[2].add(1).root(2):E(1)
                     if (x.gte('e1e4')) x = expMult(x.div('e1e4'),0.9).mul('e1e4')
                     x = overflow(x,'ee100',0.25).min('ee101')
                 }
@@ -100,8 +109,9 @@ const ELEMENTS = {
             desc: `Stronger's power is stronger based on Proton Powers.`,
             cost: E(2.5e16),
             effect() {
-                let x = player.atom?player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1):E(1)
-                return overflow(x.softcap(1e45,0.1,0),'e60000',0.5).min('ee6')
+                let x = tmp.atom.unl?player.atom.powers[0].max(1).log10().pow(0.8).div(50).add(1):E(1)
+                if (OURO.evo >= 2) x = x.min(5e7)
+                return overflow(x.softcap(1e45,0.1,0),'e60000',0.5).min("ee6")
             },
             effDesc(x) { return format(x)+"x stronger" },
         },
@@ -134,7 +144,7 @@ const ELEMENTS = {
             desc: `Carbon's effect is now multiplied by the number of elements bought.`,
             cost: E(1e20),
             effect() {
-                let x = E(player.atom.elements.length+1)
+                let x = E(getElemLength(0)+1)
                 if (hasElement(11) && !hasElement(87)) x = x.pow(2)
                 return x
             },
@@ -175,14 +185,14 @@ const ELEMENTS = {
             cost: E(1e33),
         },
         {
-            desc: `Super BH Condenser & Cosmic Ray scale 20% weaker.`,
+            get desc() { return OURO.evo >= 2 ? `Raise Fabric by +^0.1.` : `Super BH Condenser & Cosmic Ray scale 20% weaker.` },
             cost: E(1e34),
         },
         {
             desc: `Silicon's effect is +2% better for each element bought.`,
             cost: E(5e38),
             effect() {
-                let x = player.atom.elements.length*0.02
+                let x = getElemLength(0)*0.02
                 return Number(x)
             },
             effDesc(x) { return "+"+format(x*100)+"%" },
@@ -243,7 +253,7 @@ const ELEMENTS = {
             desc: `Hardened challenge scaling is weaker for each element bought.`,
             cost: E(1e85),
             effect() {
-                let x = E(0.99).pow(E(player.atom.elements.length).softcap(30,2/3,0)).max(0.5)
+                let x = E(0.99).pow(E(getElemLength(0)).softcap(30,2/3,0)).max(0.5)
                 return x
             },
             effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
@@ -316,7 +326,7 @@ const ELEMENTS = {
             desc: `Cosmic Ray's free tickspeeds now add to RU7.`,
             cost: E(1e260),
             effect() {
-                let x = tmp.atom?tmp.atom.atomicEff[0]:E(0)
+                let x = tmp.atom.unl?tmp.atom.atomicEff[0]:E(0)
                 if (hasElement(82)) x = x.mul(3)
                 return x.div(6).floor()
             },
@@ -426,7 +436,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x)+"x" },
         },
         {
-            desc: `Hyper/Ultra BH Condenser & Cosmic Ray scale 25% weaker.`,
+            get desc() { return OURO.evo >= 2 ? `Square Atomic Upgrade 6.` : `Hyper/Ultra BH Condenser & Cosmic Ray scale 25% weaker.` },
             cost: E('e1.6e4'),
         },
         {
@@ -453,7 +463,7 @@ const ELEMENTS = {
             effDesc(x) { return format(E(1).sub(x).mul(100))+"% weaker" },
         },
         {
-            desc: `The power from the mass of the BH formula is increased to 0.45.`,
+            get desc() { return OURO.evo >= 2 ? `Gain 10x more Apples.` : `The power from the mass of the BH formula is increased to 0.45.` },
             cost: E('e6.6e4'),
         },
         {
@@ -474,7 +484,7 @@ const ELEMENTS = {
             effDesc(x) { return format(x,0)+" later" },
         },
         {
-            desc: `Non-Bonus tickspeeds are 25x more effective.`,
+            get desc() { return OURO.evo >= 2 ? `Increase Wormhole loselessness by 20%.` : `Non-Bonus tickspeeds are 25x more effective.` },
             cost: E('e3e5'),
         },
         {
@@ -494,10 +504,10 @@ const ELEMENTS = {
             cost: E('e1.7e6'),
             effect() {
                 let x
-                x = hasElement(236) ? Decimal.pow(1.1,player.stars.points.add(1).log10().add(1).log10()) : overflow(player.stars.points.add(1).softcap('e3e15',0.85,2),'ee100',0.5)
+                x = hasElement(236) || OURO.evo >= 2 ? Decimal.pow(1.1,player.stars.points.add(1).log10().add(1).log10()) : overflow(player.stars.points.add(1).softcap('e3e15',0.85,2),'ee100',0.5)
                 return x
             },
-            effDesc(x) { return hasElement(236) ? "^"+format(x) : format(x)+"x" },
+            effDesc(x) { return hasElement(236) || OURO.evo >= 2 ? "^"+format(x) : format(x)+"x" },
         },
         {
             desc: `Meta-Tickspeed starts 2x later.`,
@@ -512,13 +522,13 @@ const ELEMENTS = {
             cost: E('e6.9e7'),
         },
         {
-            desc: `BH formula softcap starts laster based on Supernovas.`,
+            get desc() { return OURO.evo >= 2 ? `Raise Fabric by +^0.05.` : `BH formula softcap starts laster based on Supernovas.` },
             cost: E('e1.6e8'),
             effect() {
                 let x = player.supernova.times.add(1).root(4)
                 return x
             },
-            effDesc(x) { return "^"+format(x)+" later" },
+            effDesc(x) { return OURO.evo >= 2 ? "[none]" : "^"+format(x)+" later" },
         },
         {
             desc: `Tetrs are 15% cheaper.`,
@@ -559,7 +569,7 @@ const ELEMENTS = {
             cost: E('e4.8e12'),
         },
         {
-            desc: `Stronger & Tickspeed are 10x stronger.`,
+            get desc() { return OURO.evo >= 2 ? `Gain 100x more Quantum Foam.` : `Stronger & Tickspeed are 10x stronger.` },
             cost: E('e1.4e13'),
         },
         {
@@ -578,7 +588,7 @@ const ELEMENTS = {
             desc: `Pre-Ultra Mass Upgrades scale weaker based on Cosmic Ray's free tickspeeds.`,
             cost: E('e7e14'),
             effect() {
-                let x = tmp.atom?E(0.9).pow(tmp.atom.atomicEff[0].add(1).log10().pow(2/3)):E(1)
+                let x = tmp.atom.unl?E(OURO.evo >= 2 ? 0.998 : 0.9).pow(tmp.atom.atomicEff[0].add(1).log10().pow(2/3)):E(1)
                 return x
             },
             effDesc(x) { return formatReduction(x)+" weaker" },
@@ -604,7 +614,6 @@ const ELEMENTS = {
             cost: E('e1100'),
             effect() {
                 let x = player.bh.mass.add(1).log10().add(1).log10().mul(1.25).add(1).pow(hasElement(201)||player.qu.rip.active?2:0.4)
-                //if (player.qu.rip.active) x = x.softcap(100,0.1,0)
                 return x
             },
             effDesc(x) { return "^"+x.format() },
@@ -639,7 +648,10 @@ const ELEMENTS = {
             desc: `Death Shard gain is increased by 10% for every supernova.`,
             cost: E("e32000"),
             effect() {
-                let s = player.supernova.times.overflow(1e8,0.5)
+                let s = player.supernova.times
+                if (OURO.evo >= 2) return s = s.min(Number.MAX_VALUE)
+
+                s = s.overflow(1e8,0.5)
                 if (!player.qu.rip.active) s = s.root(1.5)
                 let x = E(1.1).pow(s)
                 return x.softcap(player.qu.rip.active?'1e130':'1e308',0.01,0).min('e2e4')
@@ -796,10 +808,10 @@ const ELEMENTS = {
             desc: `Keep quantum tree on darkness.`,
             cost: E("1e7"),
         },{
-            desc: `7th challenge’s effect gives more C9-12 completions at 10% rate.`,
+            get desc() { return OURO.evo >= 2 ? `Fabric boosts Wormhole more. Improve 4th and 5th Wormholes.` : `7th challenge’s effect gives more C9-12 completions at 10% rate.` },
             cost: E("e9e24"),
             effect() {
-                if (hasPrestige(2,25)) return E(0)
+                if (betterC7Effect()) return E(0)
                 let c = tmp.chal?tmp.chal.eff[7]:E(0)
                 let x = c.div(10).ceil()
                 return x
@@ -834,7 +846,7 @@ const ELEMENTS = {
             desc: `Unlock the 13th Challenge, Automate Big Rip upgrades.`,
             cost: E("e13"),
         },{
-            desc: `Make the 3rd, 4th & 8th Challenges’ effect better.`,
+            get desc() { return OURO.evo >= 2 ? `2nd Wormhole boosts Stronger instead. Improve 5th Wormhole in Big Rips.` : `Make the 3rd, 4th & 8th Challenges’ effect better.` },
             cost: E("e6.5e27"),
         },{
             desc: `Super Prestige Level & Honor are 5% weaker.`,
@@ -850,7 +862,7 @@ const ELEMENTS = {
             effDesc(x) { return "x"+format(x,1) },
         },{
             dark: true,
-            desc: `You can now gain Relativistic Energy outside of Big Rip. Keep non-QoL quantum tree on entering any dark challenge.`,
+            desc: `You can now gain Relativistic Energy outside of Big Rip.`,
             cost: E("1e18"),
         },{
             desc: `Super & Hyper cosmic string scalings are 25% weaker.`,
@@ -906,7 +918,7 @@ const ELEMENTS = {
             desc: `Quantum shard’s base is increased based on the number of elements bought.`,
             cost: E("ee30"),
             effect() {
-                let x = player.atom.elements.length/100
+                let x = getElemLength(0)/100
                 return x
             },
             effDesc(x) { return "+"+format(x,2) },
@@ -919,15 +931,15 @@ const ELEMENTS = {
             desc: `Big Rip upgrade 7 is active outside of Big Rip.`,
             cost: E("e2.6e30"),
         },{
-            desc: `Stronger’s effect softcap is slightly weaker.`,
+            get desc() { return OURO.evo >= 2 ? `Untritrium-133 effect in Big Rip works outside of Big Rip.` : `Stronger’s effect softcap is slightly weaker.` },
             cost: E("e4e45"),
         },{
-            desc: `Stronger’s effect softcap is slightly weaker again. Tickspeed’s effect is overpowered.`,
+            get desc() { return OURO.evo >= 2 ? `Improve 4th Wormhole.` : `Stronger’s effect softcap is slightly weaker again. Tickspeed’s effect is overpowered.` },
             cost: E("ee54"),
         },{
             dark: true,
             desc: `Add 75 more C13 maximum completions.`,
-            cost: E("1e68"),
+            cost: E("1e67"),
         },{
             desc: `Boost Dark Ray gain based on quarks.`,
             cost: E("e3.6e61"),
@@ -968,11 +980,11 @@ const ELEMENTS = {
             cost: E("1e84"),
         },{
             br: true,
-            get desc() { return OURO.evolution >= 1 ? `Raise Meditation' level to the 1.5th power.` : `Meta-Tickspeed scaling starts ^2 later.` },
+            get desc() { return OURO.evo >= 2 ? `Fabric boosts Wormhole more.` : OURO.evo >= 1 ? `Raise Meditation' level to the 1.5th power.` : `Meta-Tickspeed scaling starts ^2 later.` },
             cost: E("e2.5e53"),
         },{
             desc: `Abyssal Blot’s second effect applies to mass gain’s softcap^7-8, they are 20% weaker.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e8e68" : "e2.2e69") },
+            get cost() { return E( OURO.evo >= 1 ? "e8e68" : "e2.2e69") },
         },{
             br: true,
             desc: `Stronger Power’s softcap is weaker.`,
@@ -983,14 +995,14 @@ const ELEMENTS = {
             cost: E("1e96"),
         },{
             desc: `Collapsed star’s effect now provide an exponential boost at a reduced rate. It now applies to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e1e69" : "e2e69") },
+            get cost() { return E( OURO.evo >= 1 ? "e1e69" : "e2e69") },
         },{
             desc: `Spatial Dilation is slightly weaker.`,
             cost: E("e4.7e70"),
         },{
             br: true,
             desc: `[m1]’s effect is overpowered.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e6e68" : "e4.2e69") }, // nice
+            get cost() { return E( OURO.evo >= 1 ? "e6e68" : "e4.2e69") }, // nice
         },{
             br: true,
             desc: `[rp1]’s effect is overpowered again.`,
@@ -1001,7 +1013,7 @@ const ELEMENTS = {
             cost: E("e2.27e70"),
         },{
             desc: `Hex’s requirement and Glory’s requirement are slightly weaker.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e1e71" : "e1.08e72") },
+            get cost() { return E( OURO.evo >= 1 ? "e1e71" : "e1.08e72") },
         },{
             dark: true,
             desc: `Unlock the 15th Challenge.`,
@@ -1234,8 +1246,7 @@ const ELEMENTS = {
                 let m = player.build.mass_1.amt
                 let x = m.add(10).log10().pow(0.8);
 
-                if (hasElement(245)) x = x.mul(Decimal.pow(1.1,m.max(1).log10()))
-                
+                if (hasElement(245)) x = x.mul(Decimal.pow(1.1,m.max(1).log10()))                
 				return x
             },
             effDesc(x) { return "^"+format(x) },
@@ -1244,9 +1255,7 @@ const ELEMENTS = {
             desc: `Stronger overflow starts later based on FSS.`,
             cost: E('e710'),
             effect() {
-                let x = player.dark.matters.final.pow(.8).add(2).pow(player.dark.matters.final)
-                
-				return x
+				return player.dark.matters.final.pow(.8).add(2).pow(player.dark.matters.final)
             },
             effDesc(x) { return "x"+format(x)+" later" },
         },{
@@ -1272,7 +1281,7 @@ const ELEMENTS = {
         },{
             br: true,
             desc: `Entropic Evaporation^2 and Condenser^2 scale another 15% weaker.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e1e123" : "e3.1e123") },
+            get cost() { return E( OURO.evo >= 1 ? "e1e123" : "e3.1e123") },
         },{
             desc: `Strengthen Unseptoctium-178 slightly.`,
             cost: E('e4.9e130'),
@@ -1282,7 +1291,7 @@ const ELEMENTS = {
             cost: E('1e1480'),
         },{
             desc: `Unlock the 16th Challenge.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e1e134" : "e7e134") },
+            get cost() { return E( OURO.evo >= 1 ? "e1e134" : "e7e134") },
         },{
             desc: `[m1]’s effect is even better.`,
             cost: E('e3e333'),
@@ -1310,8 +1319,8 @@ const ELEMENTS = {
             desc: `Infinity theorem increases parallel extruder’s power. Muon-Catalyzed Fusion no longer resets.`,
             cost: E('1e14'),
             effect() {
-                let x = player.inf.theorem.div(20)
-                return x
+                if (!tmp.inf_unl) return E(0)
+                return player.inf.theorem.div(20)
             },
             effDesc(x) { return "+"+format(x,2) },
         },{
@@ -1404,9 +1413,8 @@ const ELEMENTS = {
             desc: `Dimensional mass gain is boosted by infinity theorems. Its formula is slightly better.`,
             cost: E('ee1155'),
             effect() {
-                let x = hasElement(273) ? Decimal.pow(10,player.inf.theorem.pow(2)) : player.inf.theorem.add(1).tetrate(1.75)
-                
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return hasElement(273) ? Decimal.pow(10,player.inf.theorem.pow(2)) : player.inf.theorem.add(1).tetrate(1.75)
             },
             effDesc(x) { return formatMult(x) },
         },{
@@ -1417,8 +1425,8 @@ const ELEMENTS = {
             desc: `Super FSS starts +1 later per 2 infinity theorems.`,
             cost: E('e4.15e7'),
             effect() {
-                let x = player.inf.theorem.div(2).floor()
-                return x
+                if (!tmp.inf_unl) return E(0)
+                return player.inf.theorem.div(2).floor()
             },
             effDesc(x) { return "+"+format(x,0)+' later' },
         },{
@@ -1504,7 +1512,7 @@ const ELEMENTS = {
             desc: `Prestige mass’s effect now affects stronger overflow^1-2 at a reduced rate.`,
             cost: E('ee294'),
             effect() {
-                let x = GPEffect(1,E(1)).root(2)
+                let x = GPEffect(1,E(1)).root(OURO.evo >= 2 ? 1 : 2)
                 return x
             },
             effDesc(x) { return formatReduction(x) + ' weaker' },
@@ -1528,7 +1536,7 @@ const ELEMENTS = {
             desc: `Newton Theorem’s fifth star now affects black hole overflow^2, but weaker in C16.`,
             cost: E('ee1745'),
             effect() {
-                let x = theoremEff('mass',4)
+                let x = tmp.inf_unl ? theoremEff('mass',4) : E(1)
                 if (tmp.c16active) x = x.max(1).log10().add(1)
                 return x
             },
@@ -1545,8 +1553,8 @@ const ELEMENTS = {
             desc: `The softcap of theorem’s meta-score starts x1.05 later per infinity theorem.`,
             cost: E('1e94'),
             effect() {
-                let x = Decimal.pow(1.05,player.inf.theorem)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return Decimal.pow(1.05,player.inf.theorem)
             },
             effDesc(x) { return formatMult(x)+' later' },
         },{
@@ -1555,7 +1563,7 @@ const ELEMENTS = {
         },{
             dark: true,
             desc: `Dark shadow’s fourth reward now affects supernova generation at reduced rate.`,
-            cost: E('e1.67e11'),
+            get cost() { return OURO.evo >= 2 ? E('e8e10') : E('e1.67e11') },
             effect() {
                 let x = tmp.dark.shadowEff.sn||E(1)
                 x = x.root(3)
@@ -1584,11 +1592,11 @@ const ELEMENTS = {
         },{
             dark: true,
             desc: `The base of collapsed star’s effect for supernova generation is slightly stronger.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e1e12" : "e1.13e12") },
+            get cost() { return E( OURO.evo >= 1 ? "e1e12" : "e1.13e12") },
         },{
             inf: true,
             desc: `Unlock 19th Challenge.`,
-            get cost() { return E( OURO.evolution >= 1 ? "e105" : "e110") },
+            get cost() { return E( OURO.evo >= 1 ? "e105" : "e110") },
         },{
             desc: `Supernovas boost galactic prestige’s resources at a reduced rate.`,
             cost: E('ee25400'),
@@ -1612,7 +1620,7 @@ const ELEMENTS = {
         },{
             dark: true,
             desc: `FSS boosts the exponent of Ascension’s base.`,
-            cost: E('e3.24e12'),
+            cost: E('e3.1e12'),
             effect() {
                 let x = player.dark.matters.final.root(2).div(100)
                 return x
@@ -1636,14 +1644,14 @@ const ELEMENTS = {
         },{
             c16: true,
             desc: `Challenge 5’s reward is twice as stronger.`,
-            cost: E('ee23700'),
+            get cost() { return OURO.evo >= 2 ? E('ee13000') : E('ee23700') },
         },{
             desc: `Dimensional Mass’s effect is even stronger.`,
             cost: E('ee83000'),
         },{
             inf: true,
             desc: `Unlock 20th Challenge.`,
-            cost: E(Number.MAX_VALUE),
+            get cost() { return OURO.evo >= 2 ? E(1e256) : E(Number.MAX_VALUE) },
         },
     ],
     /*
@@ -1660,7 +1668,7 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (OURO.evolution >= 1) u = 290
+        if (OURO.unl()) u = 290+Math.min(Math.max(18*(OURO.evo-2),0),72)
         else {
             if (tmp.inf_unl) u = 218
             else {
@@ -1706,6 +1714,88 @@ const ELEMENTS = {
 }
 
 const MAX_ELEM_TIERS = 3
+const ELEM_TYPES = {
+	//Special
+	final: {
+		title: "???",
+		get: (i, l, eu) => l == 0 && i == 118,
+		can: _ => hasInfUpgrade(6) || player.qu.rip.active,
+		get res() { return player.atom.quarks },
+		set res(x) { player.atom.quarks = E(x) },
+		resDisp: x => format(x, 0) + " Quarks in Big Rip"
+	},
+
+	//Challenges
+	br: {
+		title: "Ripped",
+		get: (i, l, eu) => l == 0 && BR_ELEM.includes(i),
+		can: _ => hasInfUpgrade(6) || player.qu.rip.active,
+		get res() { return player.atom.quarks },
+		set res(x) { player.atom.quarks = E(x) },
+		resDisp: x => format(x, 0) + " Quarks in Big Rip"
+	},
+	c16: {
+		title: "C16",
+		get: (i, l, eu) => eu.c16,
+		can: _ => tmp.c16active,
+		get res() { return player.atom.quarks },
+		set res(x) { player.atom.quarks = E(x) },
+		resDisp: x => format(x, 0) + " Quarks in Challenge 16"
+	},
+
+	//Types,
+	dark: {
+		title: "Dark",
+		get: (i, l, eu) => eu.dark,
+		get res() { return player.dark.shadow },
+		set res(x) { player.dark.shadow = E(x) },
+		resDisp: x => format(x, 0) + " Dark Shadows"
+	},
+	inf: {
+		title: "Infinity",
+		get: (i, l, eu) => eu.inf,
+		get res() { return tmp.inf_unl ? player.inf.points : E(0) },
+		set res(x) { player.inf.points = E(x) },
+		resDisp: x => format(x, 0) + " Infinity Points"
+	},
+	cs: {
+		title: "Corrupted",
+		get: (i, l, eu) => eu.cs,
+		get res() { return tmp.inf_unl ? player.inf.cs_amount : E(0) },
+		set res(x) { player.inf.cs_amount = E(x) },
+		resDisp: x => format(x, 0) + " Corrupted Stars"
+	},
+	berry: {
+		title: "Berry",
+		get: (i, l, eu) => eu.berry,
+		get res() { return player.ouro.berry },
+		set res(x) { player.ouro.berry = E(x) },
+		resDisp: x => format(x, 0) + " Strawberries"
+	},
+	proto: {
+		title: "Proto",
+		get: (i, l, eu) => eu.proto,
+		get res() { return player.evo.proto.star },
+		set res(x) { player.evo.proto.star = E(x) },
+		resDisp: x => format(x, 0) + " Protostars"
+	},
+
+	//Layers
+	normal: {
+		title: "Normal",
+		get: (i, l, eu) => l == 0,
+		get res() { return player.atom.quarks },
+		set res(x) { player.atom.quarks = E(x) },
+		resDisp: x => format(x, 0) + " Quarks"
+	},
+	muon: {
+		title: "Muonic",
+		get: (i, l, eu) => l == 1,
+		get res() { return tmp.exotic_atom.amount },
+		set res(x) { },
+		resDisp: x => format(x, 0) + " Exotic Atoms"
+	}
+}
 
 const BR_ELEM = (()=>{
     let x = []
@@ -1768,6 +1858,7 @@ for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
             ELEMENTS.fullNames.push(getElementName(y))
             if (!ELEMENTS.upgs[y]) ELEMENTS.upgs.push({
                 desc: `Placeholder.`,
+                proto: true, //temp
                 cost: EINF,
             })
         }
@@ -1776,7 +1867,6 @@ for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
     }
 
     // Muonic Elements
-
     for (let y = ts+1; y <= te; y++) {
         if (!MUONIC_ELEM.upgs[y]) MUONIC_ELEM.upgs.push({
             desc: `Placeholder.`,
@@ -1787,13 +1877,15 @@ for (let x = 1; x <= MAX_ELEM_TIERS; x++) {
 
 function isElemCorrupted(x,layer=0) { return layer == 0 && !tmp.elements.deCorrupt.includes(x) && CORRUPTED_ELEMENTS.includes(x) }
 
-function hasElement(x,layer=0) { return player.atom[["elements","muonic_el"][layer]].includes(x) && !(tmp.c16active && isElemCorrupted(x)) }
-
 function elemEffect(x,def=1) { return tmp.elements.effect[x]||def }
 
-function buyElement(x,layer=player.atom.elemLayer) {
-    if (layer == 0) ELEMENTS.buyUpg(x)
-    else if (layer == 1) MUONIC_ELEM.buyUpg(x)
+function buyElement(x, layer=player.atom.elemLayer) {
+    ELEMENTS.buyUpg(x, layer)
+}
+
+function buyAllElements() {
+	let layer = player.atom.elemLayer
+	for (let i = 1; i < tmp.elements.unl_length[layer]; i++) buyElement(i, layer)
 }
 
 function setupElementsHTML() {
@@ -1820,7 +1912,6 @@ function setupElementsHTML() {
                     else if (num==118) num = 56
                     else if (num==102) num = 118
                 } else {
-                    //console.log(num,p)
                     if (n == 0) {
                         if (num == xs + 2 || num == xs + p + 2) num += p - 18
                         else if (num == xe) {
@@ -1853,8 +1944,9 @@ function setupElementsHTML() {
         </button>
         `
     }
-
     elem_tier.setHTML(table)
+
+	setupNextElements()
 }
 
 function updateElementsHTML() {
@@ -1862,23 +1954,23 @@ function updateElementsHTML() {
     let et = player.atom.elemTier, elayer = player.atom.elemLayer
     let infU7 = hasInfUpgrade(6)
 
-    tmp.el.elemLayer.setDisplay(tmp.eaUnl || OURO.evolution > 0)
+    tmp.el.elemLayer.setDisplay(tmp.eaUnl || OURO.evo > 0)
     tmp.el.elemLayer.setHTML("Elements' Layer: "+["Normal","Muonic"][elayer])
-
     tmp.el.elemTierDiv.setDisplay(tElem.max_tier[elayer]>1)
 
     let elem_const = [ELEMENTS,MUONIC_ELEM][elayer]
 
     let ch = tElem.choosed
-    tmp.el.elem_ch_div.setVisible(ch>0)
+    let fed = tmp.ouro.fed["e"+elayer+"_"+ch]
+    tmp.el.elem_ch_div.setDisplay(ch>0)
+    tmp.el.elem_next_div.setDisplay(ch==0)
     if (ch) {
         let eu = elem_const.upgs[ch]
-        let res = [eu.inf?" Infinity Points":eu.dark?" Dark Shadows":" Quarks",eu.berry?" Strawberries":eu.cs?" Corrupted Stars":" Exotic Atoms"][elayer]
         let eff = tElem[["effect","mu_effect"][elayer]]
 
-        tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+eu.desc)
+        tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+(fed?OURO.fed_msg[fed]:eu.desc))
         tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer)})
-        tmp.el.elem_cost.setTxt(format(eu.cost,0)+res+(eu.c16?" in Challenge 16":!infU7&&BR_ELEM.includes(ch)?" in Big Rip":"")+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
+        tmp.el.elem_cost.setTxt(ELEM_TYPES[getElementClass(ch, elayer)].resDisp(eu.cost)+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(eff[ch]):"")
     }
 
@@ -1887,7 +1979,6 @@ function updateElementsHTML() {
         tmp.el["elemTier"+t+"_div"].setDisplay(unl)
         if (unl) {
             let unllen = tElem.unl_length[elayer]
-
             if (t == 1) {
                 tmp.el.element_la_1.setVisible(unllen>56)
                 tmp.el.element_la_3.setVisible(unllen>56)
@@ -1895,8 +1986,7 @@ function updateElementsHTML() {
                 tmp.el.element_la_4.setVisible(unllen>88)
             }
 
-            let len = t > 1 ? tElem.te : tElem.upg_length
-
+            let len = tElem.te
             for (let x = tElem.ts+1; x <= len; x++) {
                 let upg = tmp.el['elementID_'+x]
                 if (upg) {
@@ -1904,22 +1994,16 @@ function updateElementsHTML() {
                     upg.setVisible(unl2)
                     if (unl2) {
                         let eu = elem_const.upgs[x]
+                        let fed2 = tmp.ouro.fed["e"+elayer+"_"+x]
                         upg.setClasses(
-                            c16 && isElemCorrupted(x,elayer)
-                            ?{elements: true, locked: true, corrupted: true}
-                            :{
-                                elements: true,
-                                locked: !elem_const.canBuy(x),
-                                bought: hasElement(x,elayer),
-                                muon: elayer == 1,
-                                br: !infU7 && elayer == 0 && BR_ELEM.includes(x),
-                                final: elayer == 0 && x == 118,
-                                dark: elayer == 0 && eu.dark,
-                                c16: elayer == 0 && eu.c16,
-                                inf: elayer == 0 && eu.inf,
-                                cs: elayer == 1 && eu.cs,
-                                berry: elayer == 1 && eu.berry,
-                            }
+							(fed || fed2) ? {elements: true, locked: true, [ (fed || fed2) ]: true} :
+							c16 && isElemCorrupted(x,elayer) ? {elements: true, locked: true, corrupted: true} :
+							{
+								elements: true,
+								locked: !ELEMENTS.canBuy(x, elayer),
+								bought: hasElement(x,elayer),
+								[ getElementClass(x, elayer) ]: true,
+							}
                         )
                     }
                 }
@@ -1930,8 +2014,13 @@ function updateElementsHTML() {
     }
 }
 
+function getElementClass(i, layer) {
+	let upgs = [ELEMENTS, MUONIC_ELEM][layer].upgs
+	for (var [key, d] of Object.entries(ELEM_TYPES)) if (d.get(i, layer, upgs[i])) return key
+}
+
 function updateElementsTemp() {
-    let evo = OURO.evolution
+    let evo = OURO.evo
     let tElem = tmp.elements
     let et = player.atom.elemTier, elayer = player.atom.elemLayer
 
@@ -1952,14 +2041,99 @@ function updateElementsTemp() {
     }
     tElem.cannot = cannot
 
-    if (!tElem.upg_length) tElem.upg_length = ELEMENTS.upgs.length-1
-    for (let x = tElem.upg_length; x >= 1; x--) if (ELEMENTS.upgs[x].effect) {
+    tElem.unl_length = [ELEMENTS.getUnlLength(),MUONIC_ELEM.getUnlLength()]
+    for (let x = tElem.unl_length[0]; x >= 1; x--) if (ELEMENTS.upgs[x].effect) {
         tElem.effect[x] = ELEMENTS.upgs[x].effect()
     }
-
-    tElem.unl_length = [ELEMENTS.getUnlLength(),MUONIC_ELEM.getUnlLength()]
 
     tElem.max_tier = [1,1]
     if (evo >= 1 || player.dark.unl) tElem.max_tier[0]++
     if (evo >= 1 || tmp.brokenInf) tElem.max_tier[0]++
+}
+
+//Chunks!
+function chunkify(r) {
+    let min = [], max = []
+    for (let i of r) {
+		i = getChunk(i)
+        min.push(i[0])
+        max.push(i[1])
+    }
+    let sort = (a, b) => (a > b ? 1 : -1)
+    min.sort(sort), max.sort(sort)
+
+    let new_chunks = []
+    let min_sel = min[0]
+    for (let [i, j] of Object.entries(max)) {
+		i = parseInt(i)
+        if (j+1 >= min[i+1]) continue
+        new_chunks.push(min_sel == j ? j : [min_sel, j])
+		min_sel = min[i+1]
+    }
+    return new_chunks
+}
+
+function unchunkify(r) {
+	let list = []
+	for (let i of r) {
+		i = getChunk(i)
+		for (let x = i[0]; x <= i[1]; x++) list.push(x)
+	}
+	return list
+}
+
+function getChunk(x) {
+    return typeof x == "number" ? [x,x] : x ?? [0,0]
+}
+
+function hasElement(i, layer = 0) {
+	let s = player.atom[["elements", "muonic_el"][layer]]
+	if (s.includes(i)) return true
+
+	for (let c of s) if (c[0] <= i && c[1] >= i) return true
+	return false
+}
+
+function getElemLength(layer) {
+	let s = player.atom[["elements", "muonic_el"][layer]]
+	let total = s.length
+	for (let i of s) if (typeof i != "number") total += i[1] - i[0]
+	return total
+}
+
+//Next
+function setupNextElements() {
+	let h = ``
+	for (var i = 0; i < 3; i++) h += `<div class='elem_detailed' id="elem_next_div${i}" onclick="buyNextElement(${i})">
+		<button id="elem_next_btn${i}"></button>
+		<div id="elem_next${i}"></div>
+	</div>`
+	new Element("elem_next_ch").setHTML(h)
+}
+
+function buyNextElement(i) {
+	buyElement(nextElm[i])
+}
+
+let nextElm = []
+function calcNextElements() {
+	let layer = player.atom.elemLayer
+	let ch = getChunk(player.atom[["elements", "muonic_el"][layer]][0])
+	let i = ch[0] != 1 ? 0 : ch[1], data = [ELEMENTS, MUONIC_ELEM][layer].upgs
+	nextElm = []
+
+	while (nextElm.length < 3 && i < tmp.elements.unl_length[layer]) {
+		i++
+		if (ELEMENTS.cannotAfford(i, layer)) continue
+		if (hasElement(i, layer)) continue
+
+		let len = nextElm.length, type = getElementClass(i, layer), type_data = ELEM_TYPES[type]
+		tmp.el["elem_next_div" + len].setDisplay(true)
+		tmp.el["elem_next_btn" + len].setClasses({ elements: true, bought: true, [ type ]: true })
+		tmp.el["elem_next_btn" + len].setTxt(ELEMENTS.names[i] ?? getElementId(i))
+		tmp.el["elem_next" + len].setHTML(`${type_data.resDisp(data[i].cost)}<br>
+		<span style='font-size: 12px'>${type_data.title}</span>`)
+		nextElm.push(i)
+	}
+	for (i = nextElm.length; i < 3; i++) tmp.el["elem_next_div" + i].setDisplay(false)
 }

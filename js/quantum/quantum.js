@@ -5,10 +5,12 @@ const QUANTUM = {
         x = x.max(0).pow(hasTree("qu11")?3:1.5)
 
         x = x.mul(tmp.qu.qc_s_eff)
+        x = x.mul(tmp.qu.qc_s_eff)
         if (tmp.qu.mil_reached[4]) x = x.mul(2)
         if (hasTree("qf1")) x = x.mul(treeEff("qf1"))
         if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
         if (hasTree("qf3")) x = x.mul(treeEff("qf3"))
+        if (hasElement(80) && OURO.evo >= 2) x = x.mul(100)
         if (hasPrestige(0,2)) x = x.mul(4)
 
         x = x.pow(theoremEff('proto',5))
@@ -76,7 +78,7 @@ const QUANTUM = {
 
         SUPERNOVA.doReset()
 
-        tmp.pass = 2
+        tmp.pass = 1
     },
     bpGain() {
         let x = E(1)
@@ -122,7 +124,7 @@ const QUANTUM = {
     },
     mils: [
         [E(1), `You start with qol1-6, bosons, and fermions unlocked.`],
-        [E(2), `Pre quantum supernova tree's requirements are gone. Pre-Quantum global speed is increased by 10x.`],
+        [E(2), `Pre-quantum supernova tree's requirements are gone.`],
         [E(3), `You start with challenges tree and qol7 unlocked.`],
         [E(5), `You start with qol8-9, unl1, and radiation unlocked.`],
         [E(6), `Double Quantum Foam gain.`],
@@ -169,6 +171,7 @@ function getQUSave() {
         prim: {
             theorems: E(0),
             particles: [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)],
+            lock: [-1,-1,-1,-1],
         },
         
         qc: {
@@ -259,18 +262,6 @@ function updateQuantumTemp() {
     tmp.qu.theories = player.qu.times.sub(player.qu.chr_get.length).max(0).min(3).toNumber()
     tmp.qu.pick_chr = tmp.qu.theories > 0
 
-    /*
-    let fp = E(1)
-
-    if (tmp.inf_unl) fp = fp.mul(theoremEff('proto',0))
-
-    tmp.qu.cosmic_str_cost = E(2).pow(player.qu.cosmic_str.div(fp).scaleEvery("cosmic_str").add(1)).floor()
-    tmp.qu.cosmic_str_bulk = player.qu.points.max(1).log(2).scaleEvery("cosmic_str",true).mul(fp).add(scalingActive('cosmic_str',player.qu.cosmic_str.max(tmp.qu.cosmic_str_bulk),'super')?1:0).floor()
-
-    tmp.qu.cosmic_str_can = player.qu.points.gte(tmp.qu.cosmic_str_cost)
-    tmp.qu.cosmic_str_eff = QUANTUM.cosmic_str.eff()
-    */
-
     tmp.qu.bpGain = QUANTUM.bpGain()
     tmp.qu.bpEff = QUANTUM.bpEff()
 
@@ -287,18 +278,6 @@ function updateQuantumHTML() {
         tmp.el.bpEff.setTxt(format(tmp.qu.bpEff))
 
         BUILDINGS.update('cosmic_string')
-
-        /*
-        tmp.el.cosmic_str_lvl.setTxt(format(player.qu.cosmic_str,0)+(tmp.qu.cosmic_str_eff.bonus.gte(1)?" + "+format(tmp.qu.cosmic_str_eff.bonus,0):""))
-        tmp.el.cosmic_str_btn.setClasses({btn: true, locked: !tmp.qu.cosmic_str_can})
-        tmp.el.cosmic_str_scale.setTxt(getScalingName('cosmic_str'))
-        tmp.el.cosmic_str_cost.setTxt(format(tmp.qu.cosmic_str_cost,0))
-        tmp.el.cosmic_str_pow.setTxt(format(tmp.qu.cosmic_str_eff.pow))
-        tmp.el.cosmic_str_eff.setHTML(format(tmp.qu.cosmic_str_eff.eff))
-
-        tmp.el.cosmic_str_auto.setDisplay(hasElement(147))
-        tmp.el.cosmic_str_auto.setHTML(player.qu.auto_cr?"ON":"OFF")
-        */
     }
     else if (tmp.tab_name == "chroma") updateChromaHTML()
     else if (tmp.tab_name == "qu-mil") {
@@ -361,8 +340,9 @@ function setupQuantumHTML() {
         <div class="primordium table_center">
             <div style="width: 350px; height: 60px;">
                 <h2>${PRIM.particle.names[x]} Particles</h2><br>
-                 - [<span id="prim_part${x}">0</span>]
-            </div><div style="width: 700px;" id="prim_part_eff${x}"></div>
+				- [<span id="prim_part${x}">0</span>]
+                <button class='btn' id="prim_lock${x}" onclick="PRIM.lock(${x})">Lock</button>
+            </div><div style="width: 300px; text-align: center" id="prim_part_eff${x}"></div>
         </div>
         `
     }

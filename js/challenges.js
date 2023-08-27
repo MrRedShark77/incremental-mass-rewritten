@@ -23,9 +23,12 @@ function updateChalHTML() {
                 tmp.el["chal_comp_"+x].setTxt(format(player.chal.comps[x],0)+(tmp.chal.max[x].gte(EINF)?"":" / "+format(tmp.chal.max[x],0)))
             }
         }
-        tmp.el.chal_enter.setVisible(player.chal.active != player.chal.choosed)
+        tmp.el.chal_enter.setVisible(player.chal.choosed != player.chal.active || player.chal.choosed == 16)
+        tmp.el.chal_enter.setTxt(player.chal.choosed == player.chal.active ? "Retry Challenge" : "Enter Challenge")
         tmp.el.chal_exit.setVisible(player.chal.active != 0)
         tmp.el.chal_exit.setTxt(tmp.chal.canFinish && !hasTree("qol6") ? "Finish Challenge for +"+tmp.chal.gain+" Completions" : "Exit Challenge")
+        tmp.el.chal_auto.setDisplay(player.chal.choosed == 16)
+        tmp.el.chal_auto.setTxt("Auto-retry: " + (player.options.auto_retry ? "ON" : "OFF"))
         tmp.el.chal_desc_div.setDisplay(player.chal.choosed != 0)
         if (player.chal.choosed != 0) {
             let chal = CHALS[player.chal.choosed]
@@ -53,6 +56,7 @@ function updateChalTemp() {
         max: {},
         eff: {},
         bulk: {},
+        unl: false,
         canFinish: false,
         gain: E(0),
     }
@@ -64,6 +68,7 @@ function updateChalTemp() {
 
     let p = tmp.chal.eff[20] ?? 1
 
+    tmp.chal.unl = false
     for (let x = 1; x <= CHALS.cols; x++) {
         let data = CHALS.getChalData(x)
         tmp.chal.max[x] = CHALS.getMax(x)
@@ -72,7 +77,9 @@ function updateChalTemp() {
         let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:E(1)
         if (x == 9) q = Decimal.min(q,'e150')
         if (x < 20) q = x <= 16 ? q.pow(p) : q.mul(p)
+        if ([6,8].includes(x)) q = E(1)
         tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
+        if (CHALS[x].unl()) tmp.chal.unl = true
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
@@ -116,8 +123,8 @@ const CHALS = {
             if (ch == 16) {
                 player.dark.c16.first = true
                 tmp.c16active = true
+                addQuote(10)
             }
-
             player.chal.active = ch
             this.reset(ch, false)
         } else if (ch != player.chal.active) {
@@ -128,12 +135,12 @@ const CHALS = {
     },
     getResource(x) {
         if (x < 5 || x > 8) return player.mass
-        if (OURO.evolution >= 2) return player.evo.wh.mass[0]
+        if (OURO.evo >= 2) return WORMHOLE.total()
         return player.bh.mass
     },
     getResName(x) {
         if (x < 5 || x > 8) return ''
-        return OURO.evolution >= 2 ? ' of first Wormhole' : ' of Black Hole'
+        return OURO.evo >= 2 ? ' of Wormhole' : ' of Black Hole'
     },
     getFormat(x) {
         return formatMass
@@ -147,6 +154,8 @@ const CHALS = {
         return "Entering challenge will force an Infinity reset."
     },
     getMax(i) {
+        if (i == 6 && OURO.evo >= 2) return E(100)
+        if (i == 8 && OURO.evo >= 2) return E(30)
         if (i <= 12 && hasPrestige(2,25)) return EINF 
         if ((i==13||i==14||i==15) && hasInfUpgrade(19)) return EINF 
         let x = this[i].max
@@ -157,7 +166,7 @@ const CHALS = {
             if (hasElement(286)) x = x.add(500)
         }
         else if (i < 16) {
-            if (i <= 4 && !hasPrestige(2,25)) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
+            if (i <= 4 && !betterC7Effect()) x = x.add(tmp.chal?tmp.chal.eff[7]:0)
             if (hasElement(13) && (i==5||i==6)) x = x.add(tmp.elements.effect[13])
             if (hasElement(20) && (i==7)) x = x.add(50)
             if (hasElement(41) && (i==7)) x = x.add(50)
@@ -190,7 +199,7 @@ const CHALS = {
             if (c.gte(i==13?2:i>8&&i!=13&&i!=16?10:75)) return " Hardened"
         } else if (i == 16) {
             if (c.gte(500)) return " Hardened"
-        } else if (i <= 8 && OURO.evolution == 2) {
+        } else if (i <= 8 && OURO.evo >= 2) {
             return ""
         } else {
             if (c.gte(10)) return " Hardened"
@@ -203,7 +212,7 @@ const CHALS = {
         if (hasElement(2)) x = x.mul(0.75)
         if (hasElement(26)) x = x.mul(tmp.elements.effect[26])
         if (hasElement(180) && i <= 12) x = x.mul(.7)
-        if (i != 7 && hasPrestige(2,25)) x = x.mul(tmp.chal.eff[7])
+        if (i != 7 && betterC7Effect()) x = x.mul(tmp.chal.eff[7])
         return x
     },
     getPower2(i) {
@@ -212,12 +221,13 @@ const CHALS = {
         if (hasElement(92)) x = x.mul(0.75)
         if (hasElement(120)) x = x.mul(0.75)
         if (hasElement(180) && i <= 12) x = x.mul(.7)
-        if (i != 7 && hasPrestige(2,25)) x = x.mul(tmp.chal.eff[7])
+        if (i != 7 && betterC7Effect()) x = x.mul(tmp.chal.eff[7])
         return x
     },
     getPower3(i) {
         let x = E(1)
         if (i == 16) return x
+        if (i <= 8) x = x.div(escrowBoost("chal"))
         if (hasElement(120)) x = x.mul(0.75)
         if (hasElement(180) && i <= 12) x = x.mul(.7)
         return x
@@ -234,9 +244,10 @@ const CHALS = {
             goal = lvl.gt(0) ? Decimal.pow('ee23',Decimal.pow(2,lvl.scale(500,2,0).sub(1).pow(1.5))) : chal.start
             if (res.gte(chal.start)) bulk = res.log('ee23').max(1).log(2).root(1.5).add(1).scale(500,2,0,true).floor()
             if (res.gte('ee23')) bulk = bulk.add(1)
-        } else if (x <= 8 && OURO.evolution == 2) {
-			goal = lvl.mul(this.getPower3(x)).add(13).mul(10)
-			bulk = res.div(10).sub(13).div(this.getPower(x)).add(1).floor()
+        } else if (x <= 8 && OURO.evo >= 2) {
+			let base = x == 8 ? 10 : 100
+			goal = E(2).pow(lvl.mul(this.getPower3(x))).mul(base)
+			bulk = res.div(base).log(2).div(this.getPower3(x)).add(1).floor()
         } else {
             if (QCs.active() && x <= 12) fp /= tmp.qu.qc_eff[5]
             let s1 = x > 8 ? 10 : 75
@@ -327,7 +338,7 @@ const CHALS = {
         return {goal, bulk}
     },
     1: {
-        unl() { return OURO.evolution < 2 },
+        unl() { return OURO.evo < 2 && (player.mass.gte(1.5e136) || player.atom.unl) },
         title: "Instant Scale",
         desc: "Super rank and mass upgrade scaling starts at 25. Also, Super tickspeed starts at 50.",
         reward: ()=>hasBeyondRank(2,20)?`Supercritical Rank & All Fermions Tier scaling starts later, Super Overpower scales weaker based on completions.`:`Super Rank starts later, Super Tickspeed scales weaker based on completions.`,
@@ -346,7 +357,7 @@ const CHALS = {
         effDesc(x) { return hasBeyondRank(2,20)?formatMult(x.scrank)+" later to Supercritical Rank & All Fermions starting, "+formatReduction(x.over)+" weaker to Super Overpower scaling":"+"+format(x.rank,0)+" later to Super Rank starting, "+format(E(1).sub(x.tick).mul(100))+"% weaker to Super Tickspeed scaling" },
     },
     2: {
-        unl() { return OURO.evolution < 2 && (player.chal.comps[1].gte(1) || player.atom.unl) },
+        unl() { return OURO.evo < 2 && (player.chal.comps[1].gte(1) || player.atom.unl) },
         title: "Anti-Tickspeed",
         desc: "You cannot buy Tickspeed.",
         reward: `Each completion adds +7.5% to Tickspeed Power.`,
@@ -364,7 +375,7 @@ const CHALS = {
         effDesc(x) { return "+"+format(x.mul(100))+"%"+(x.gte(0.3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     3: {
-        unl() { return OURO.evolution < 2 && (player.chal.comps[2].gte(1) || player.atom.unl) },
+        unl() { return OURO.evo < 2 && (player.chal.comps[2].gte(1) || player.atom.unl) },
         title: "Melted Mass",
         desc: "Mass gain softcap starts 150 OoMs eariler, and is stronger.",
         reward: `Mass gain is raised based on completions (doesn't apply in this challenge).`,
@@ -380,7 +391,7 @@ const CHALS = {
         effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     4: {
-        unl() { return OURO.evolution < 2 && (player.chal.comps[3].gte(1) || player.atom.unl) },
+        unl() { return OURO.evo < 2 && (player.chal.comps[3].gte(1) || player.atom.unl) },
         title: "Weakened Rage",
         desc: "Rage Power gain is rooted by 10. Additionally, mass gain softcap starts 100 OoMs eariler.",
         reward: `Rage Powers gain is raised by completions.`,
@@ -396,7 +407,7 @@ const CHALS = {
         effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     5: {
-        unl() { return player.atom.unl },
+        unl() { return player.atom.unl && OURO.evo < 3 },
         title: "No Rank",
         desc: "You cannot rank up.",
         reward: ()=>hasAscension(0,22)?`Supercritical Rank, Ultra Hex scale weaker based on completions.`:hasCharger(3)?`Exotic Rank & Tier, Ultra Prestige Level scale weaker based on completions.`:`Rank requirement is weaker based on completions.`,
@@ -407,7 +418,7 @@ const CHALS = {
         effect(x) {
             let c = hasCharger(3)
             if (!c && hasPrestige(1,127)) return E(1)
-            let ret = c?Decimal.pow(0.97,x.add(1).log10().root(4)):E(0.97).pow(x.root(2).softcap(5,0.5,0))
+            let ret = c?Decimal.pow(0.97,x.add(1).log10().root(4)):E(0.97).pow(x.root(2))
             if (hasAscension(0,22)) ret = ret.root(2)
             if (hasElement(288)) ret = ret.pow(2)
             return ret
@@ -415,52 +426,53 @@ const CHALS = {
         effDesc(x) { return hasCharger(3)?formatReduction(x)+" weaker":format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     6: {
-        unl() { return player.chal.comps[5].gte(1) || player.supernova.times.gte(1) || quUnl() },
+        unl() { return (player.chal.comps[5].gte(1) || player.supernova.times.gte(1) || quUnl()) && OURO.evo < 3 },
         title: "No Tickspeed & Condenser",
-        desc: "You cannot buy Tickspeed or BH Condenser.",
-        reward: `Every completion adds 10% to tickspeed and BH condenser power.`,
+        get desc() { return `You cannot ${OURO.evo >= 2 ? "Meditate or split Wormhole" : "buy Tickspeed or BH Condenser"}.` },
+        reward: () => OURO.evo >= 2 ? `Gain +10% more Fabric per completion.` : `Every completion adds 10% to tickspeed and BH condenser power.`,
         max: E(50),
         inc: E(64),
         pow: E(1.25),
         start: E(1.989e38),
         effect(x) {
-            let ret = x.mul(0.1).add(1).softcap(1.5,hasElement(39)?1:0.5,0).sub(1)
-            return ret
+            if (OURO.evo < 2) return x.mul(0.1).add(1).softcap(1.5,hasElement(39)?1:0.5,0).sub(1)
+            if (OURO.evo >= 2) return hasElement(80,1) ? E(1.1).pow(x) : x.mul(0.1).add(1)
         },
-        effDesc(x) { return "+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return OURO.evo>=2?formatMult(x):"+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     7: {
-        unl() { return player.chal.comps[6].gte(1) || player.supernova.times.gte(1) || quUnl() },
+        unl() { return (player.chal.comps[6].gte(1) || player.supernova.times.gte(1) || quUnl()) && OURO.evo < 3 },
         title: "No Rage Powers",
-        desc: "You cannot gain rage powers. Instead, dark matters are gained from mass at a reduced rate. Additionally, mass gain softcap is stronger.",
-        reward: ()=>(hasPrestige(2,25)?`Pre-Impossible challenges scale weaker by completions, but this reward doesn't affect C7.`:`Each completion increases challenges 1-4 cap by 2.`) + `<br><span class="yellow">On 16th completion, unlock Elements</span>`,
+        get desc() { return `You cannot gain ${OURO.evo >= 2 ? "calm powers" : "rage powers"}. Instead, ${OURO.evo >= 2 ? "fabric" : "dark matters"} are gained from mass at a reduced rate. Additionally, mass gain softcap is stronger.` },
+        reward: ()=>(betterC7Effect()?`Pre-Impossible challenges scale weaker by completions, but this reward doesn't affect C7.`:`Each completion increases challenges 1-4 cap by 2.`) + `<br><span class="yellow">On 16th completion, unlock Elements</span>`,
         max: E(50),
         inc: E(64),
         pow: E(1.25),
         start: E(1.5e76),
         effect(x) {
-            let c = hasPrestige(2,25)
+            let c = betterC7Effect()
             let ret = c?Decimal.pow(0.987,x.add(1).log10().root(2)):x.mul(2)
             if (hasElement(5)) ret = c?ret.pow(2):ret.mul(2)
             return c?ret:ret.floor()
         },
-        effDesc(x) { return hasPrestige(2,25)?formatReduction(x)+" weaker":"+"+format(x,0) },
+        effDesc(x) { return betterC7Effect()?formatReduction(x)+" weaker":"+"+format(x,0) },
     },
     8: {
-        unl() { return player.chal.comps[7].gte(1) || player.supernova.times.gte(1) || quUnl() },
+        unl() { return (player.chal.comps[7].gte(1) || player.supernova.times.gte(1) || quUnl()) && OURO.evo < 3 },
         title: "White Hole",
-        desc: "Dark Matter & Mass from Black Hole gains are rooted by 8.",
-        reward: `Dark Matter & Mass from Black Hole gains are raised by completions.<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,
+        get desc() { return OURO.evo >= 2 ? "Fabric & Wormhole masses are square-rooted." : "Dark Matter & Mass from Black Hole gains are rooted by 8." },
+        reward: () => OURO.evo >= 2 ? `Gain +20% more Fabric per completion.` : `Dark Matter & Mass from Black Hole gains are raised by completions.<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,
         max: E(50),
         inc: E(80),
         pow: E(1.3),
         start: E(1.989e38),
         effect(x) {
+            if (OURO.evo >= 2) return hasElement(80,1) ? E(1.2).pow(x) : x.mul(0.2).add(1)
             if (hasElement(64)) x = x.mul(1.5)
             let ret = hasElement(133) ? x.root(1.5).mul(0.025).add(1) : x.root(1.75).mul(0.02).add(1)
             return overflow(ret.softcap(2.3,0.25,0),1e10,0.5)
         },
-        effDesc(x) { return "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return OURO.evo >= 2 ? formatMult(x) : "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     9: {
         unl() { return hasTree("chal4") },
@@ -472,14 +484,11 @@ const CHALS = {
         pow: E(2),
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
-            let ret = x.root(hasTree("chal4a")?3.5:4).mul(0.1).add(1)
-            
-            if (!hasElement(41,1)) ret = ret.softcap(21,hasElement(8,1)?0.253:0.25,0)
-
+            let ret = x.root(hasTree("chal4a")?3.5:4).mul(0.1).add(1)            
+            if (!hasElement(41,1)) ret = ret.softcap(21,hasElement(8,1)&&OURO.evo<2?0.253:0.25,0)
             if (hasElement(31,1) && tmp.chal) ret = ret.pow(tmp.chal.eff[16]||1)
 
-            ret = overflow(ret,5e8,0.5).softcap(1e12,0.1,0)
-
+            ret = ret.overflow(5e8,OURO.evo>=2?.25:.5).softcap(1e12,0.1,0)
             return ret
         },
         effDesc(x) { return "^"+format(x)+softcapHTML(x,21) },
@@ -494,7 +503,7 @@ const CHALS = {
         pow: E(2),
         start: E('e3e4').mul(1.5e56),
         effect(x) {
-            let ret = x.root(1.75).mul(0.01).add(1)
+            let ret = x.root(1.75).mul(OURO.evo >= 2 ? 0.1 : 0.01).add(1)
             return ret
         },
         effDesc(x) { return format(x)+"x" },
@@ -522,7 +531,7 @@ const CHALS = {
         max: E(100),
         inc: E('e2e7'),
         pow: E(2),
-        start: uni('e8.4e8'),
+        get start() { return OURO.evo >= 2 ? uni('e1e7') : uni('e8.4e8') },
         effect(x) {
             let ret = x.root(hasTree("chal7a")?1.5:2)
             return overflow(ret.softcap(50,0.5,0),1e50,0.5)
@@ -590,8 +599,7 @@ const CHALS = {
         start: E('e1.25e11'),
         effect(x) {
             if (hasBeyondRank(12,1)) x = x.mul(beyondRankEffect(12,1))
-
-            x = x.mul(tmp.chal.eff[18])
+            if (tmp.chal.eff[18]) x = x.mul(tmp.chal.eff[18][0])
             let ret = x.root(3).mul(0.05).add(1)
             return ret.softcap(3,0.5,0)
         },
@@ -624,17 +632,19 @@ const CHALS = {
         desc: `
         You cannot weaken nor remove pre-Infinity scalings. You are stuck in dark run with 500 all glyphs (unaffected by weakness).
         `,
-        reward: `Hybridized Uran-Astatine applies to Exotic scalings, and strengthen C16's reward.<br><span class="yellow">On 4th completion, unlock fifth star in the theorem and more features.</span>`,
+        get reward () { return (OURO.evo >= 2 ? `Corrupted Stars` : `Hybridized Uran-Astatine`) + ` weaken pre-Hex Exotic scalings, and strengthen C16's reward.<br><span class="yellow">On 4th completion, unlock fifth star in the theorem and more features.</span>` },
         max: E(100),
-        start: E('ee340'),
+        get start() { return OURO.evo >= 2 ? E('ee140') : E('ee340') },
         inc: E(10),
         pow: E(3),
         effect(x) {
-            let ret = x.pow(1.5).div(2).add(1)
-            
-            return ret
+			let xx = x.pow(1.5).div(2).add(1)
+			let yy = E(1)
+			if (OURO.evo < 2 && x.gte(1) && tmp.qu) yy = tmp.qu.chroma_eff[1][1]
+			if (OURO.evo >= 2 && x.gte(1) && tmp.inf_unl) yy = player.inf.cs_amount.max(1).log10().div(10).sub(1).max(2).log(2).pow(-.5)
+            return [xx, yy]
         },
-        effDesc(x) { return formatPercent(x.sub(1))+' stronger' },
+        effDesc(x) { return (x[1].lt(1) ? `${formatReduction(x[1])} to those scalings, ` : "") + formatPercent(x[0].sub(1))+' stronger' },
     },
     19: {
         unl() { return hasElement(280) },
@@ -643,12 +653,12 @@ const CHALS = {
         You cannot become/generate supernovas, produce star resources, dark ray (it is capped at ${format(1e12)}), dark shadow, and abyssal blot, nor purchase tree upgrades. You are stuck in dark run with 1000 all glyphs (unaffected by weakness). This challenge resets supernova.
         `},
         get reward() { return `
-        Generate more supernovas by completions.<br><span class="yellow">On ${OURO.evolution >= 1 ? 4 : 10}th completion, unlock sixth row of infinity upgrades.</span>
+        Generate more supernovas by completions.<br><span class="yellow">On ${["10th","4th","2nd"][OURO.evo]} completion, unlock sixth row of infinity upgrades.</span>
         `},
         max: E(100),
         inc: E('1e10'),
         pow: E(3),
-        get start() { return E(OURO.evolution >= 1 ? 'ee2555' : 'ee5555') },
+        get start() { return E(OURO.evo >= 2 ? 'ee666' : OURO.evo >= 1 ? 'ee2555' : 'ee5555') },
         effect(x) {
             let ret = Decimal.pow(100,expMult(x.mul(10),2/3).div(10))
             return ret
@@ -659,7 +669,7 @@ const CHALS = {
         unl() { return hasElement(290) },
         title: "The Reality III",
         desc: "You are trapped in C1-19 and dark run with 1500 all glyphs. Theorems in the Core don't work. This challenge resets main upgrades.",
-        reward: `Completions make previous challenges' reward powerful.<br><span class="yellow">On first completion, break the loop! You'll be able to evolve with a new layer...</span>`,
+        reward: `Strengthen prior challenge rewards.<br><span class="yellow">On first completion, break the loop and evolve! (Unlock a new layer...)</span>`,
         max: E(100),
         inc: E(10),
         pow: E(4),
@@ -673,21 +683,6 @@ const CHALS = {
     cols: 20,
 }
 
-/*
-3: {
-    unl() { return player.chal.comps[2].gte(1) },
-    title: "Placeholder",
-    desc: "Placeholder.",
-    reward: `Placeholder.`,
-    max: E(50),
-    inc: E(10),
-    pow: E(1.25),
-    start: EINF,
-    effect(x) {
-        let ret = E(1)
-        return ret
-    },
-    effDesc(x) { return format(x)+"x" },
-},
-*/
-
+function betterC7Effect() {
+	return hasPrestige(2,25) || OURO.evo >= 2
+}

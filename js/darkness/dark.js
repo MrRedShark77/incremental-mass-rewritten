@@ -1,6 +1,6 @@
 const DARK = {
     nextEffectAt: [
-        [0,1e12,1e22,1e130],
+        [0,1e9,1e22,1e130],
         [1e6,1e11,1e25,1e130],
         [1e120,1e180,'e345','e800','e2500','e56000','e125500','ee7'],
     ],
@@ -28,9 +28,10 @@ const DARK = {
         let a = player.dark.rays
         let x = {}
 
-        x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1)).overflow('ee10',0.5)
+        x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1))
+		x.shadow = x.shadow.overflow('ee10',0.5)
 
-        if (a.gte(1e12)) x.passive = a.div(1e12).max(1).log10().add(1).pow(2).div(1e3)
+        if (a.gte(1e9)) x.passive = a.div(1e9).max(1).log10().add(1).pow(3).div(100)
         if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1)
         if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0,hasBeyondRank(3,12)).floor()
 
@@ -74,7 +75,7 @@ const DARK = {
 
         if (!hasElement(204)) resetMainUpgs(4,k)
         
-        if (!hasElement(124) || (force && !hasElement(136))) {
+        if (!hasElement(124)) {
             let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
             "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11']
 
@@ -85,36 +86,35 @@ const DARK = {
 
         if (!hasElement(194)) for (let x = 0; x < player.prestiges.length; x++) player.prestiges[x] = E(0)
 
-        let ke = []
-        for (let x = 0; x < player.atom.elements.length; x++) {
-            let e = player.atom.elements[x]
-            if (hasElement(161) || (hasElement(143) ? e != 118 : (e < 87 || e > 118))) ke.push(e)
-        }
-        player.atom.elements = ke
+		if (!hasElement(161)) {
+			let ke = []
+			let noReset = hasElement(143)
+			for (let e of unchunkify(player.atom.elements)) {
+				if (noReset ? e != 118 : e > 118) ke.push(e)
+			}
+			player.atom.elements = ke
+		}
 
         QUANTUM.doReset(true,true)
 
         if (!hasElement(127)) tmp.rank_tab = 0
         if (tmp.tab_name == "break-dil" && !hasElement(127)) tmp.stab[4] = 0
 
-        tmp.pass = 2
+        tmp.pass = 1
     },
     shadowGain() {
         if (CHALS.inChal(19)) return E(0)
         
         let x = E(1)
-
         x = x.mul(tmp.dark.rayEff.shadow)
         x = x.mul(tmp.bd.upgs[11].eff||1)
         if (hasElement(119)) x = x.mul(elemEffect(119))
         if (hasElement(135)) x = x.mul(elemEffect(135))
-
         x = x.mul(tmp.dark.abEff.shadow||1)
 
         if (hasPrestige(1,22)) x = x.pow(1.1)
-
         if (tmp.inf_unl) x = x.pow(theoremEff('time',2))
-
+		if (hasElement(18, 1) && OURO.evo >= 2) x = x.pow(1.5)
         return x
     },
     shadowEff() {
@@ -128,7 +128,7 @@ const DARK = {
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3).overflow('ee10',1/3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
-        if (!tmp.c16active && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
+        if (!tmp.c16active && OURO.evo < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
 
         return x
     },
@@ -150,7 +150,7 @@ const DARK = {
         let a = player.dark.abyssalBlot
 
         x.shadow = a.add(1).log10().add(1).pow(2)
-        if (OURO.evolution >= 1) x.shadow = expMult(x.shadow,2)
+        if (OURO.evo >= 1) x.shadow = expMult(x.shadow,2)
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
         if (a.gte(1e120)) x.hr = a.div(1e120).log10().add(1).pow(2)
         if (a.gte(1e180)) {
@@ -199,16 +199,12 @@ function calcDark(dt) {
         }
     }
 
-    if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(player.bh.mass)
-
-    if (hasCharger(1)) {
-        player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
-    }
+    if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
+    if (hasCharger(1) && OURO.evo < 2) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
 
     if (tmp.eaUnl) {
         if (hasInfUpgrade(14)) {
             for (let i = 1; i <= tmp.elements.unl_length[1]; i++) buyElement(i,1)
-
             EXOTIC_ATOM.tier()
         }
 
@@ -220,7 +216,6 @@ function calcDark(dt) {
 
 function updateDarkTemp() {
     let dtmp = tmp.dark
-
     updateExoticAtomsTemp()
     updateMattersTemp()
     updateDarkRunTemp()
@@ -241,30 +236,7 @@ function setupDarkHTML() {
 }
 
 function updateDarkHTML() {
-    let dtmp = tmp.dark
-    let c16 = tmp.c16active
-
-    let inf_gs = tmp.preInfGlobalSpeed
-
-    /*
-    let og = hasElement(118)
-    let unl = og || player.dark.unl
-
-	tmp.el.dark_div.setDisplay(unl)
-	if (unl) tmp.el.darkAmt.setHTML(player.dark.rays.format(0)+"<br>"+(og?dtmp.rayEff.passive?player.dark.rays.formatGain(dtmp.gain.mul(dtmp.rayEff.passive)):"(+"+dtmp.gain.format(0)+")":"(require Og-118)"))
-
-    unl = player.dark.matters.final.gt(0)
-	tmp.el.fss_div.setDisplay(unl)
-	if (unl) tmp.el.FSS2.setHTML(format(player.dark.matters.final,0)+"<br>(+"+(tmp.matters.FSS_base.gte(tmp.matters.FSS_req)?1:0)+")")
-
-	unl = player.dark.c16.first
-	tmp.el.corrupt_div.setDisplay(unl)
-	if (unl) tmp.el.corruptShard1.setHTML(format(player.dark.c16.shard,0)+"<br>(+"+tmp.c16.shardGain.format(0)+")")
-
-    unl = player.chal.comps[16].gte(1)
-	tmp.el.idk_div.setDisplay(unl)
-    */
-
+    let dtmp = tmp.dark, c16 = tmp.c16active, inf_gs = tmp.preInfGlobalSpeed
     if (tmp.tab_name == "dark-eff") {
         tmp.el.darkRay.setHTML(player.dark.rays.format(0))
         tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain.mul(inf_gs)))
@@ -309,9 +281,7 @@ function updateDarkHTML() {
 
         eff = dtmp.rayEff
 
-        e = getNextDarkEffectFromID(0) + `
-            Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>
-        `
+        e = getNextDarkEffectFromID(0) + `Boosts dark shadows gain by <b>x${eff.shadow.format(2)}</b>`
 
         if (eff.passive) e += `<br>Passively gains <b>${formatPercent(eff.passive)}</b> of dark rays gained on reset per second`
         if (eff.glyph) e += `<br>Earns <b>x${format(eff.glyph,3)}</b> more glyphic mass`
@@ -325,6 +295,7 @@ function updateDarkHTML() {
     } else if (tmp.tab_name == "c16") {
         updateC16HTML()
     }
+    drawC16()
 }
 
 function getNextDarkEffectFromID(i) {
@@ -348,8 +319,10 @@ function getDarkSave() {
             active: false,
             glyphs: [E(0),E(0),E(0),E(0),E(0),E(0)],
             gmode: 0,
-            gamount: 1,
+            gamount: 10,
+            rounds: 1,
             upg: [],
+            pin_upg: 0,
         },
 
         matters: {

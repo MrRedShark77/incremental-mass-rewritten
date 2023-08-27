@@ -3,7 +3,7 @@ const ASCENSIONS = {
     fullNames: ["Ascension",'Transcension'],
     resetName: ['Ascend','Transcend'],
     baseExponent() {
-        let x = theoremEff('mass',5,0)
+        let x = theoremEff('mass',5,E(0))
 
         if (hasElement(284)) x = x.add(elemEffect(284,0))
         if (hasElement(44,1)) x = x.add(muElemEff(44,0))
@@ -72,12 +72,12 @@ const ASCENSIONS = {
         ()=>tmp.c18reward,
     ],
     noReset: [
-        ()=>OURO.evolution >= 1||hasElement(267),
-        ()=>OURO.evolution >= 1,
+        ()=>OURO.evo >= 1||hasElement(267),
+        ()=>OURO.evo >= 1,
     ],
     autoUnl: [
-        ()=>OURO.evolution >= 1||hasElement(267),
-        ()=>OURO.evolution >= 1,
+        ()=>OURO.evo >= 1||hasElement(267),
+        ()=>OURO.evo >= 1,
     ],
     autoSwitch(x) { player.auto_asc[x] = !player.auto_asc[x] },
     rewards: [
@@ -134,7 +134,7 @@ const ASCENSIONS = {
     },
 }
 
-function hasAscension(i,x) { return player.ascensions[i].gte(x) }
+function hasAscension(i,x) { return tmp.inf_unl && player.ascensions[i].gte(x) }
 function ascensionEff(i,x,def=1) { return tmp.ascensions.eff[i][x]||def }
 
 function setupAscensionsHTML() {
@@ -208,7 +208,6 @@ function updateAscensionsTemp() {
 
 function updateAscensionsRewardHTML() {
 	let c16 = tmp.c16active
-	// tmp.el["asc_reward_name"].setTxt(ASCENSIONS.fullNames[player.asc_reward])
 	for (let x = 0; x < ASCENSIONS.names.length; x++) {
 		tmp.el["asc_reward_div_"+x].setDisplay(player.asc_reward == x)
 		if (player.asc_reward == x) {

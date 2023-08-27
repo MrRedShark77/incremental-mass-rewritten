@@ -2,7 +2,7 @@ const CONFIRMS_FUNCTION = {
     rage() {
         let g = tmp.rp.gain
 
-        if (OURO.evolution >= 1) player.evo.cp.points = player.evo.cp.points.add(g)
+        if (OURO.evo >= 1) player.evo.cp.points = player.evo.cp.points.add(g)
         else player.rp.points = player.rp.points.add(g)
 
         player.rp.unl = true
@@ -13,7 +13,7 @@ const CONFIRMS_FUNCTION = {
     bh() {
         let g = tmp.bh.dm_gain
 
-        if (OURO.evolution >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(g)
+        if (OURO.evo >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(g)
         else player.bh.dm = player.bh.dm.add(g)
 
         player.bh.unl = true
@@ -38,7 +38,7 @@ const CONFIRMS_FUNCTION = {
                 player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
             }
             if (post?!hasTree("qu_qol4"):true) {
-                tmp.pass = 2
+                tmp.pass = 1
                 SUPERNOVA.doReset()
             }
         }
@@ -58,7 +58,7 @@ const CONFIRMS_FUNCTION = {
             player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
             player.qu.qc.active = false
         }
-        if (player.qu.times.gte(10) || force) {
+        if (player.qu.times.gte(10) || OURO.unl() || force) {
             if (!force) {
                 player.qu.points = player.qu.points.add(tmp.qu.gain)
                 player.qu.times = player.qu.times.add(tmp.qu.gainTimes)
@@ -119,13 +119,11 @@ const CONFIRMS_FUNCTION = {
         addQuote(9)
     },
     inf(limit) {
+		if (!tmp.inf_unl) INF.load(true)
+
         if (limit || player.inf.pt_choosed >= 0) {
             if (player.inf.theorem.eq(0)) addTheorem('mass',[0,1,1,1,1,1,1,1],E(1),E(1))
-            else {
-                let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
-
-                addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),getPowerMult().mul(td.power_m).add(1))
-            }
+            else addSelectedTheorem(true)
         } else if (hasElement(239) && player.inf.pt_choosed < 0) {
             let fl = Decimal.floor(tmp.core_lvl), pm = getPowerMult()
             for (let i in player.inf.pre_theorem) {
@@ -133,7 +131,6 @@ const CONFIRMS_FUNCTION = {
                 player.inf.fragment[t.type] = player.inf.fragment[t.type].add(calcFragmentBase(t,chanceToBool(t.star_c),pm.mul(t.power_m).mul(100).add(100).round().div(100),fl).div(4)) // Math.round(100+pm*t.power_m*100)/100
             }
         }
-
 
         if (player.inf.theorem.eq(0)) {
             player.inf.points = player.inf.points.add(2)
@@ -145,7 +142,6 @@ const CONFIRMS_FUNCTION = {
         }
 
         player.inf.best = player.inf.best.max(tmp.IP_gain)
-
         if (tmp.inf_reached) player.inf.theorem = player.inf.theorem.add(1)
 
         updateInfTemp()

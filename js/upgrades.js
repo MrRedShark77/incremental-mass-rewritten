@@ -1,246 +1,38 @@
 const UPGS = {
     mass: {
         cols: 4,
-        temp() {
-            for (let x = this.cols; x >= 1; x--) {
-                let d = tmp.upgs.mass
-                let data = this.getData(x)
-                d[x].cost = data.cost
-                d[x].bulk = data.bulk
-                
-                d[x].bonus = this[x].bonus?this[x].bonus():E(0)
-                d[x].eff = this[x].effect(player.massUpg[x]||E(0))
-                d[x].effDesc = this[x].effDesc(d[x].eff)
-            }
-        },
-        autoSwitch(x) {
-            player.autoMassUpg[x] = !player.autoMassUpg[x]
-        },
-        buy(x, manual=false) {
-            let cost = manual ? this.getData(x).cost : tmp.upgs.mass[x].cost
-            if (player.mass.gte(cost)) {
-                if (!player.mainUpg.bh.includes(1)) player.mass = player.mass.sub(cost)
-                if (!player.massUpg[x]) player.massUpg[x] = E(0)
-                player.massUpg[x] = player.massUpg[x].add(1)
-            }
-        },
-        buyMax(x) {
-            let d = tmp.upgs.mass[x]
-            let bulk = d.bulk
-            let cost = d.cost
-            if (player.mass.gte(cost)) {
-                let m = player.massUpg[x]
-                if (!m) m = E(0)
-                m = m.max(bulk.floor().max(m.plus(1)))
-                player.massUpg[x] = m
-                if (!player.mainUpg.bh.includes(1)) player.mass = player.mass.sub(cost)
-            }
-        },
-        getData(i) {
-            let upg = this[i]
-            let inc = upg.inc
-            let start = upg.start
-            let lvl = player.massUpg[i]||E(0)
-            let cost, bulk = E(0), fp
-
-            if (i==4) {
-                if (hasInfUpgrade(2)) start = E(1e10)
-                let pow = 1.5
-                cost = Decimal.pow(10,Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
-                if (player.mass.gte(Decimal.pow(10,start))) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
-            } else {
-                fp = tmp.massFP
-                
-                if (i == 1 && player.ranks.rank.gte(2)) inc = inc.pow(0.8)
-                if (i == 2 && player.ranks.rank.gte(3)) inc = inc.pow(0.8)
-                if (i == 3 && player.ranks.rank.gte(4)) inc = inc.pow(0.8)
-                if (player.ranks.tier.gte(3)) inc = inc.pow(0.8)
-                cost = inc.pow(lvl.div(fp).scaleEvery("massUpg")).mul(start)
-                bulk = E(0)
-                if (player.mass.gte(start)) bulk = player.mass.div(start).max(1).log(inc).scaleEvery("massUpg",true).mul(fp).add(1).floor()
-            }
-        
-            return {cost: cost, bulk: bulk}
-        },
         1: {
-            unl() { return player.ranks.rank.gte(1) || player.mainUpg.atom.includes(1) },
-            title: "Muscler",
             start: E(10),
-            inc: E(1.5),
-            effect(x) {
-                let step = E(1)
-                if (player.ranks.rank.gte(3)) step = step.add(RANKS.effect.rank[3]())
-                step = step.mul(tmp.upgs.mass[2]?tmp.upgs.mass[2].eff.eff:1)
-                let ret = step.mul(hasAscension(0,1)?x.add(1).mul(tmp.upgs.mass[1].bonus.add(1)):x.add(tmp.upgs.mass[1].bonus))
-                if (hasElement(209)) ret = ret.pow(elemEffect(209))
-                return {step: step, eff: ret}
-            },
-            effDesc(eff) {
-                return {
-                    step: "+"+formatMass(eff.step),
-                    eff: "+"+formatMass(eff.eff)+" to mass gain"
-                }
-            },
-            bonus() {
-                let x = E(0)
-                if (player.mainUpg.rp.includes(1)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][1].effect:E(0))
-                if (player.mainUpg.rp.includes(2)) x = hasAscension(0,1)?x.mul(tmp.upgs.mass[2].bonus.add(1)):x.add(tmp.upgs.mass[2].bonus)
-                x = x.mul(getEnRewardEff(4))
-                return x
-            },
+            inc: E(1.5)
         },
         2: {
-            unl() { return player.ranks.rank.gte(2) || player.mainUpg.atom.includes(1) },
-            title: "Booster",
-            start: E(100),
-            inc: E(4),
-            effect(x) {
-                let step = E(2)
-                if (player.ranks.rank.gte(5)) step = step.add(RANKS.effect.rank[5]())
-                step = step.pow(tmp.upgs.mass[3]?tmp.upgs.mass[3].eff.eff:1)
-                let ret = step.mul(hasAscension(0,1)?x.add(1).mul(tmp.upgs.mass[2].bonus.add(1)):x.add(tmp.upgs.mass[2].bonus)).add(1)//.softcap("ee14",0.95,2)
-                if (hasElement(203)) ret = ret.pow(elemEffect(203))
-                return {step: step, eff: ret}
-            },
-            effDesc(eff) {
-                return {
-                    step: "+"+format(eff.step)+"x",
-                    eff: "x"+format(eff.eff)+" to Muscler Power"
-                }
-            },
-            bonus() {
-                let x = E(0)
-                if (player.mainUpg.rp.includes(2)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][2].effect:E(0))
-                if (player.mainUpg.rp.includes(7)) x = hasAscension(0,1)?x.mul(tmp.upgs.mass[3].bonus.add(1)):x.add(tmp.upgs.mass[3].bonus)
-                x = x.mul(getEnRewardEff(4))
-                return x
-            },
+            start: E(50),
+            inc: E(4)
         },
         3: {
-            unl() { return player.ranks.rank.gte(3) || player.mainUpg.atom.includes(1) },
-            title: "Stronger",
-            start: E(1000),
-            inc: E(9),
-            effect(x) {
-                let xx = hasAscension(0,1)?x.add(1).mul(tmp.upgs.mass[3].bonus.add(1)):x.add(tmp.upgs.mass[3].bonus)
-                if (hasElement(81)) xx = xx.pow(1.1)
-                let ss = E(10)
-                if (player.ranks.rank.gte(34)) ss = ss.add(2)
-                if (player.mainUpg.bh.includes(9)) ss = ss.add(tmp.upgs.main?tmp.upgs.main[2][9].effect:E(0))
-                let step = E(1)
-                if (player.ranks.tetr.gte(2)) step = step.add(RANKS.effect.tetr[2]())
-                if (player.mainUpg.rp.includes(9)) step = step.add(0.25)
-                if (player.mainUpg.rp.includes(12)) step = step.add(tmp.upgs.main?tmp.upgs.main[1][12].effect:E(0))
-                if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
-                if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
-                step = step.pow(tmp.upgs.mass[4]?tmp.upgs.mass[4].eff.eff:1)
-
-                let sp = 0.5
-                if (player.mainUpg.atom.includes(9)) sp *= 1.15
-                if (player.ranks.tier.gte(30)) sp *= 1.1
-                let sp2 = 0.1
-                let ss2 = E(5e15)
-                let sp3 = hasPrestige(0,12)?0.525:0.5
-                if (hasElement(85)) {
-                    sp2 **= 0.9
-                    ss2 = ss2.mul(3)
-                }
-                if (hasElement(149)) {
-                    sp **= 0.5
-                    sp3 **= 0.9
-                }
-                if (hasElement(150)) {
-                    sp **= 0.9
-                    sp3 **= 0.925
-                }
-                step = step.softcap(1e43,hasElement(160)?0.85:0.75,0)
-                let ret = step.mul(xx.mul(hasElement(80)?25:1)).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
-                ret = ret.mul(tmp.prim.eff[0])
-                if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
-
-                let o = ret
-                let os = E('e115').mul(getFragmentEffect('mass')), os2 = E('e1555')
-                let op = E(.5), op2 = E(0.25)
-
-                if (hasElement(210)) os = os.mul(elemEffect(210))
-
-                if (hasElement(27,1)) {
-                    let w = muElemEff(27)
-                    os = os.mul(w)
-                    os2 = os2.mul(w)
-                }
-
-                if (hasBeyondRank(3,1)) op = op.pow(beyondRankEffect(3,1))
-
-                if (hasElement(264)) {
-                    let w = elemEffect(264)
-                    op = op.pow(w)
-                    op2 = op2.pow(w)
-                }
-
-                ret = overflow(ret,os,op)
-
-                ret = overflow(ret,os2,op2)
-
-                tmp.overflow.stronger = calcOverflow(o,ret,os)
-                tmp.overflow_start.stronger = [os,os2]
-                tmp.overflow_power.stronger = [op,op2]
-                
-                return {step: step, eff: ret, ss: ss}
-            },
-            effDesc(eff) {
-                return {
-                    step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Booster Power"+(eff.eff.gte(eff.ss)?` <span class='soft'>(softcapped${eff.eff.gte(1.8e5)?eff.eff.gte(5e15)&&!player.ranks.pent.gte(15)?"^3":"^2":""})</span>`:"")
-                }
-            },
-            bonus() {
-                let x = E(0)
-                if (player.mainUpg.rp.includes(7)) x = x.add(tmp.upgs.main?tmp.upgs.main[1][7].effect:0)
-                x = x.mul(getEnRewardEff(4))
-                return x
-            },
+            start: E(500),
+            inc: E(9)
         },
         4: {
-            unl() { return hasElement(202) || hasInfUpgrade(2) },
-            title: "Overpower",
             start: E(1e100),
-            inc: E(1.5),
-            effect(i) {
-                let xx = i.add(tmp.upgs.mass[4].bonus)
-                
-                let step = E(.005)
-                if (hasUpgrade('rp',17)) step = step.add(.005)
-                if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
-
-                if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
-
-                let ss = E(10)
-
-                let x = step.mul(xx).add(1).softcap(ss,0.5,0)
-                
-                return {step: step, eff: x, ss: ss}
-            },
-            effDesc(eff) {
-                return {
-                    step: "+^"+format(eff.step),
-                    eff: "^"+format(eff.eff)+" to Stronger Power"+eff.eff.softcapHTML(eff.ss)
-                }
-            },
-            bonus() {
-                let x = E(0)
-                if (hasUpgrade('atom',20)) x = x.add(upgEffect(3,20))
-                return x
-            },
+            inc: E(1.5)
         },
     },
     main: {
         temp() {
+            tmp.upgs.unl = false
             for (let x = 1; x <= this.cols; x++) {
-                for (let y = 1; y <= this[x].lens; y++) {
-                    let u = this[x][y]
-                    if (u.effDesc) tmp.upgs.main[x][y] = { effect: u.effect(), effDesc: u.effDesc() }
-                }
+				let ut = tmp.upgs[x] = {}
+                let unl = this[x].unl()
+                if (!unl) continue
+
+				tmp.upgs.unl = true
+				for (let y = 1; y <= this[x].lens; y++) {
+					let u = this[x][y]
+					let unl = (u.unl ? u.unl() : true)
+					ut[y] = { unl, has: unl && player.mainUpg[this.ids[x]].includes(y) }
+					if (unl && u.effect) ut[y] = { ...ut[y], effect: u.effect() }
+				}
             }
         },
         ids: [null, 'rp', 'bh', 'atom', 'br'],
@@ -249,58 +41,46 @@ const UPGS = {
         reset() { player.main_upg_msg = [0,0] },
         1: {
             title: "Rage Upgrades",
-            res: "Rage Power",
-            getRes() { return player.rp.points },
-            unl() { return OURO.evolution < 1 },
-            can(x) { return player.rp.points.gte(this[x].cost) && !player.mainUpg.rp.includes(x) },
-            buy(x) {
-                if (this.can(x)) {
-                    player.rp.points = player.rp.points.sub(this[x].cost)
-                    player.mainUpg.rp.push(x)
-                }
-            },
-            auto_unl() { return player.mainUpg.bh.includes(5) || tmp.inf_unl },
+            resName: "Rage Power",
+            get res() { return player.rp.points },
+            set res(x) { return player.rp.points = E(x) },
+            unl() { return player.rp.unl && OURO.evo < 1 },
+            auto_unl() { return hasUpgrade("bh",5) || tmp.inf_unl },
             lens: 25,
             1: {
                 desc: "Boosters add Musclers.",
                 cost: E(1),
-                effect() {
-                    let ret = player.build.mass_2.amt
-                    return ret
-                },
+                effect: _ => player.build.mass_2.amt.mul(2),
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Musclers"
                 },
             },
             2: {
                 desc: "Strongers add Boosters.",
-                cost: E(10),
-                effect() {
-                    let ret = player.build.mass_3.amt
-                    return ret
-                },
+                cost: E(2),
+                effect: _ => player.build.mass_3.amt,
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Boosters"
                 },
             },
             3: {
                 desc: "You can automatically buy mass upgrades.",
-                cost: E(25),
+                cost: E(4),
             },
             4: {
                 desc: "Ranks no longer reset anything.",
-                cost: E(50),
+                cost: E(10),
             },
             5: {
                 desc: "You can automatically rank up.",
-                cost: E(1e4),
+                cost: E(100),
             },
             6: {
                 desc: "You can automatically tier up.",
-                cost: E(1e5),
+                cost: E(1e3),
             },
             7: {
-                desc: "For every 3 tickspeeds add Stronger.",
+                desc: "Tickspeed adds Stronger.",
                 cost: E(1e7),
                 effect() {
                     let ret = hasAscension(0,1)?player.build.tickspeed.amt.div(3).add(1).mul(hasElement(38)?tmp.elements.effect[38].add(1):1):player.build.tickspeed.amt.div(3).add(hasElement(38)?tmp.elements.effect[38]:0)
@@ -312,7 +92,7 @@ const UPGS = {
             },
             8: {
                 desc: "Super and Hyper mass upgrade scalings are weaker based on Rage Power.",
-                cost: E(1e15),
+                cost: E(1e12),
                 effect() {
                     let ret = E(0.9).pow(player.rp.points.max(1).log10().max(1).log10().pow(1.25).softcap(2.5,0.5,0))
                     return ret
@@ -480,24 +260,18 @@ const UPGS = {
         },
         2: {
             title: "Black Hole Upgrades",
-            res: "Dark Matter",
-            getRes() { return player.bh.dm },
-            unl() { return player.bh.unl && OURO.evolution < 2 },
-            auto_unl() { return player.mainUpg.atom.includes(2) || tmp.inf_unl },
-            can(x) { return player.bh.dm.gte(this[x].cost) && !player.mainUpg.bh.includes(x) },
-            buy(x) {
-                if (this.can(x)) {
-                    player.bh.dm = player.bh.dm.sub(this[x].cost)
-                    player.mainUpg.bh.push(x)
-                }
-            },
+            resName: "Dark Matter",
+            get res() { return player.bh.dm },
+            set res(x) { return player.bh.dm = E(x) },
+            unl() { return player.bh.unl && OURO.evo < 2 },
+            auto_unl() { return hasUpgrade("atom",2) || tmp.inf_unl },
             lens: 25,
             1: {
-                desc: "Mass Upgardes no longer spend mass.",
+                desc: "Mass Upgrades no longer spend mass.",
                 cost: E(1),
             },
             2: {
-                unl() { return OURO.evolution < 1 },
+                unl() { return OURO.evo < 1 },
                 desc: "Tickspeeds boost BH Condenser Power.",
                 cost: E(10),
                 effect() {
@@ -524,7 +298,7 @@ const UPGS = {
                 cost: E(1e4),
             },
             5: {
-                unl() { return OURO.evolution < 1 },
+                unl() { return OURO.evo < 1 },
                 desc: "You can automatically buy tickspeed and Rage Power upgrades.",
                 cost: E(5e5),
             },
@@ -586,7 +360,7 @@ const UPGS = {
                 cost: E(1e80),
             },
             12: {
-                unl() { return player.atom.unl && OURO.evolution < 1 },
+                unl() { return player.atom.unl && OURO.evo < 1 },
                 desc: "Hyper Tickspeed scales 15% weaker.",
                 cost: E(1e120),
             },
@@ -612,7 +386,7 @@ const UPGS = {
                 desc: "Atomic Powers add Black Hole Condensers at a reduced rate.",
                 cost: E('e420'),
                 effect() {
-                    let ret = hasAscension(0,42) && tmp.atom ? tmp.atom.atomicEff[0] : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
+                    let ret = hasAscension(0,42) && tmp.atom.unl ? tmp.atom.atomicEff[0] : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
                     return ret.floor()
                 },
                 effDesc(x=this.effect()) {
@@ -706,8 +480,8 @@ const UPGS = {
                 desc: `Best mass of black hole in C16 boosts Infinity Points gain.`,
                 cost: E('ee261500'),
                 effect() {
-                    let x = expMult(player.dark.c16.bestBH.add(10).log10(),0.4)
-                    if (OURO.evolution >= 1) x = x.pow(1.4)
+                    let x = expMult(tmp.c16.best_bh_eff,0.4)
+                    if (OURO.evo >= 1) x = x.pow(1.4)
                     return x
                 },
                 effDesc(x=this.effect()) {
@@ -717,16 +491,10 @@ const UPGS = {
         },
         3: {
             title: "Atom Upgrades",
-            res: "Atom",
-            getRes() { return player.atom.points },
-            unl() { return player.atom.unl },
-            can(x) { return player.atom.points.gte(this[x].cost) && !player.mainUpg.atom.includes(x) },
-            buy(x) {
-                if (this.can(x)) {
-                    player.atom.points = player.atom.points.sub(this[x].cost)
-                    player.mainUpg.atom.push(x)
-                }
-            },
+            resName: "Atom",
+            get res() { return player.atom.points },
+            set res(x) { return player.atom.points = E(x) },
+            unl() { return player.atom.unl && OURO.evo < 3 },
             auto_unl() { return hasTree("qol1") || tmp.inf_unl },
             lens: 25,
             1: {
@@ -734,7 +502,7 @@ const UPGS = {
                 cost: E(1),
             },
             2: {
-                unl() { return OURO.evolution < 2 },
+                unl() { return OURO.evo < 2 },
                 desc: "You can automatically buy BH Condenser and upgrades. Tickspeed no longer spends Rage Powers.",
                 cost: E(100),
             },
@@ -743,7 +511,7 @@ const UPGS = {
                 cost: E(25000),
             },
             4: {
-                unl() { return OURO.evolution < 2 },
+                unl() { return OURO.evo < 2 },
                 desc: "Keep challenges 1-4 on reset. BH Condensers add Cosmic Rays Power at a reduced rate.",
                 cost: E(1e10),
                 effect() {
@@ -759,18 +527,24 @@ const UPGS = {
                 cost: E(1e16),
             },
             6: {
-                desc: "Gain 100% of Dark Matters gained from reset per second. Mass gain from Black Hole softcap starts later based on Atomic Powers.",
+                get desc() { return `Gain 100% of Dark Matters gained from reset per second. ${ OURO.evo >= 2 ? "Increase Wormhole loselessness" : "Mass gain from Black Hole softcap starts later" } based on Atomic Powers.` },
                 cost: E(1e18),
                 effect() {
-                    let ret = player.atom.atomic.add(1).pow(0.5)
-                    return ret
+                    if (OURO.evo < 2) return player.atom.atomic.add(1).pow(0.5)
+                    if (OURO.evo >= 2) {
+						let exp = .2
+						if (hasElement(55)) exp *= 2
+						exp += escrowBoost("au6",0)
+						return player.atom.atomic.add(1).log10().add(1).log10().div(3).add(1).pow(exp)
+					}
                 },
                 effDesc(x=this.effect()) {
-                    return format(x)+"x later"
+                    if (OURO.evo < 2) return format(x)+"x later"
+                    if (OURO.evo >= 2) return formatMult(x)
                 },
             },
             7: {
-                unl() { return OURO.evolution < 1 },
+                unl() { return OURO.evo < 1 },
                 desc: "Tickspeed boosts each particle powers gain.",
                 cost: E(1e25),
                 effect() {
@@ -821,7 +595,7 @@ const UPGS = {
             },
             12: {
                 unl() { return MASS_DILATION.unlocked() },
-                desc: "Mass from Black Hole effect is better.",
+                get desc() { return OURO.evo >= 2 ? "Wormhole effects are better." : "Mass from Black Hole effect is better." },
                 cost: E('e2015'),
             },
             13: {
@@ -857,7 +631,7 @@ const UPGS = {
                 },
             },
             18: {
-                unl() { return tmp.mass4Unl || tmp.inf_unl },
+                unl() { return (tmp.mass4Unl || tmp.inf_unl) && OURO.evo < 2 },
                 desc: `Neutron Power's second effect now provides an expontial boost and applies to mass of black hole.`,
                 cost: E('e4.2e120'),
             },
@@ -912,7 +686,7 @@ const UPGS = {
                 cost: E('ee111111'),
                 effect() {
                     let x = player.inf.dim_mass.add(10).log10().pow(2.7)
-                    if (OURO.evolution >= 1) x = x.pow(1.4)
+                    if (OURO.evo >= 1) x = x.pow(1.4)
                     return x
                 },
                 effDesc(x=this.effect()) {
@@ -922,16 +696,10 @@ const UPGS = {
         },
         4: {
             title: "Big Rip Upgrades",
-            res: "Death Shard",
-            getRes() { return player.qu.rip.amt },
+            resName: "Death Shard",
+            get res() { return player.qu.rip.amt },
+            set res(x) { return player.qu.rip.amt = E(x) },
             unl() { return player.qu.rip.first },
-            can(x) { return player.qu.rip.amt.gte(this[x].cost) && !player.mainUpg.br.includes(x) },
-            buy(x) {
-                if (this.can(x)) {
-                    player.qu.rip.amt = player.qu.rip.amt.sub(this[x].cost)
-                    player.mainUpg.br.push(x)
-                }
-            },
             auto_unl() { return hasElement(132) || tmp.inf_unl },
             lens: 25,
             1: {
@@ -944,7 +712,7 @@ const UPGS = {
             },
             3: {
                 desc: `Pre-Quantum Global Speed is raised based on Death Shards (before division).`,
-                cost: E(50),
+                cost: E(20),
                 effect() {
                     let x = player.qu.rip.amt.add(1).log10().div(25).add(1)
                     return x.softcap(30,0.5,0)
@@ -953,11 +721,11 @@ const UPGS = {
             },
             4: {
                 desc: `Start with 2 tiers of each Fermion in Big Rip.`,
-                cost: E(250),
+                cost: E(100),
             },
             5: {
                 desc: `Root Star Booster’s starting cost by 10. Star Booster’s base is increased based on Death Shards.`,
-                cost: E(2500),
+                cost: E(1000),
                 effect() {
                     let x = player.qu.rip.amt.add(1).log10().add(1).pow(3)
                     return x
@@ -966,7 +734,7 @@ const UPGS = {
             },
             6: {
                 desc: `Start with all Radiation features unlocked.`,
-                cost: E(15000),
+                cost: E(5000),
             },
             7: {
                 desc: `Hybridized Uran-Astatine is twice as effective in Big Rip.`,
@@ -1110,25 +878,61 @@ const UPGS = {
     },
 }
 
-/*
-1: {
-    desc: "Placeholder.",
-    cost: E(1),
-    effect() {
-        let ret = E(1)
-        return ret
-    },
-    effDesc(x=this.effect()) {
-        return format(x)+"x"
-    },
-},
-*/
-
-function hasUpgrade(id,x) { return player.mainUpg[id].includes(x) }
-function upgEffect(id,x,def=E(1)) { return tmp.upgs.main[id][x]?tmp.upgs.main[id][x].effect:def }
+function canGetUpgrade(id,x) {
+	let idx = UPGS.main.ids.indexOf(id), ud = UPGS.main[idx], ut = tmp.upgs[idx][x]
+	return ut?.unl && !ut.has && ud.res.gte(ud[x].cost)
+}
+function buyUpgrade(id,x) {
+	if (!canGetUpgrade(id,x)) return
+	let idx = UPGS.main.ids.indexOf(id), ud = UPGS.main[idx], ut = tmp.upgs[idx][x]
+	ut.has = true
+	ud.res = ud.res.sub(ud[x].cost)
+	player.mainUpg[id].push(x)
+}
+function hasUpgrade(id,x) { return tmp.upgs[UPGS.main.ids.indexOf(id)]?.[x]?.has }
+function upgEffect(id,x,def=E(1)) { return tmp.upgs[id][x]?tmp.upgs[id][x].effect:def }
 function resetMainUpgs(id,keep=[]) {
     let k = []
     let id2 = UPGS.main.ids[id]
     for (let x = 0; x < player.mainUpg[id2].length; x++) if (keep.includes(player.mainUpg[id2][x])) k.push(player.mainUpg[id2][x])
     player.mainUpg[id2] = k
+}
+
+//Upgrade Notifications
+function updateUpgNotify() {
+	if (player.supernova.times.gte(1) || quUnl()) {
+		for (var [x, af] of Object.entries(tmp.supernova.tree_afford)) {
+			if (!af || !tmp.supernova.tree_had.includes(x)) continue
+			tmp.upg_notify = ["sn", x]
+			return
+		}
+	}
+	if (player.atom.unl || OURO.unl()) {
+		for (var x = 0; x < 2; x++) {
+			for (var y = 1; y <= tmp.elements.unl_length[x]; y++) {
+				if (!ELEMENTS.canBuy(y, x)) continue
+				tmp.upg_notify = ["el", x, y]
+				return
+			}
+		}
+	}
+	delete tmp.upg_notify
+}
+
+function goUpgNotify() {
+	if (!tmp.upg_notify) return
+	if (tmp.upg_notify[0] == "sn") {
+		goToTab("sn-tree")
+		tmp.tree_tab = tmp.supernova.tree_loc[tmp.upg_notify[1]]
+		tmp.supernova.tree_choosed = tmp.upg_notify[1]
+	}
+	if (tmp.upg_notify[0] == "el") {
+		goToTab("elements")
+		if (tmp.upg_notify[1] != player.atom.elemLayer) changeElemLayer()
+
+		let tier = 0
+		while (tmp.upg_notify[2] > ELEMENTS.exp[tier]) tier++
+		player.atom.elemTier[player.atom.elemLayer] = tier
+		updateElementsHTML()
+	}
 }

@@ -2,15 +2,14 @@ function loadGame(start=true, gotNaN=false) {
     if (!gotNaN) tmp.prevSave = localStorage.getItem("betaSave2")
     wipe()
     load(tmp.prevSave)
-    
+
     if (start) {
         setupHTML()
         setupTooltips()
         setupSnake()
         updateQCModPresets()
 
-        setInterval(save,60000)
-        OURO.load()
+        setInterval(save, 30000)
         for (let x = 0; x < 5; x++) updateTemp()
 
         updateHTML()
@@ -37,11 +36,13 @@ function loadGame(start=true, gotNaN=false) {
         document.getElementById('auto_qu_input').addEventListener('input', e=>{
             player.qu.auto.input = e.target.value
         })
+	
         document.onmousemove = e => {
             tmp.cx = e.clientX
             tmp.cy = e.clientY
         }
         document.addEventListener('keydown', e => {keyEvent(e)})
+
         updateTheoremInv()
         updateTheoremCore()
         updateNavigation()
@@ -55,7 +56,7 @@ function loadGame(start=true, gotNaN=false) {
 
         setTimeout(()=>{
             tmp.start = true
-        },2000)
+        },1000)
 
         if (tmp.april) createConfirm("Do you want to disable softcap everywhere?",'april',()=>{
             createPopup(`You trolled! I can't disable softcap! April Fools! <br><br> <img src="https://media.tenor.com/GryShD35-psAAAAM/troll-face-creepy-smile.gif">`,'troll','Dammit!')

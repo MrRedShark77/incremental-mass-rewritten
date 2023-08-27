@@ -4,7 +4,7 @@ const CORE = {
         icon: `N`,
         preEff: [
             `Boost normal mass gain.`,
-            `Boost normal mass overflow starting.`,
+            () => OURO.evo >= 2 ? `Weaken Mass Upgrade scalings.` : `Boost normal mass overflow starting.`,
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
             `Boost normal mass overflow^2 starting.`,
@@ -21,11 +21,12 @@ const CORE = {
                 return x
             },
             s => {
-                let x = s.add(1).pow(s.root(2).mul(2)).overflow(100,0.5)
-
-                if (tmp.NHDimprove) x = x.pow(10)
-
-                return x
+                if (OURO.evo >= 2) s = s.add(1).log10().div(5).add(1).pow(-.3)
+                if (OURO.evo < 2) {
+					s = s.add(1).pow(s.root(2).mul(2)).overflow(100,0.5)
+					if (tmp.NHDimprove) s = s.pow(10)
+				}
+				return s
             },
             s => {
                 let x = s.root(2).div(10).add(1).root(2)
@@ -35,7 +36,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = s.root(2)
+                let x = s.root(OURO.evo >= 2 ? 4 : 2)
 
                 if (tmp.NHDimprove) x = x.pow(2)
 
@@ -83,6 +84,7 @@ const CORE = {
         ],
     },
     bh: {
+        unl: _ => OURO.evo < 2,
         title: `Hawking Theorem`,
         icon: `Λ`,
         preEff: [
@@ -180,7 +182,7 @@ const CORE = {
             `Boost quarks gain.`,
             `Boost quark & atomic power overflows starting.`,
             `Increase overpower's power.`,
-            () => OURO.evolution >= 1 ? `Gain more mediation.` : `Increase accelerator's power.`,
+            () => OURO.evo >= 1 ? `Gain more meditation.` : `Increase accelerator's power.`,
             `Boost Exotic Atom gain.`,
             `Boost dilated mass gain.`,
         ],
@@ -197,7 +199,7 @@ const CORE = {
                 return x
             },
             s => {
-                let x = s.add(1).pow(s.root(2).mul(2))
+                let x = s.add(1).pow(s.root(2).mul(OURO.evo >= 2 ? 1 : 2))
 
                 x = overflow(x,100,0.5)
 
@@ -215,7 +217,7 @@ const CORE = {
                 return x.div(1e4)
             },
             s => {
-                let evo1 = OURO.evolution >= 1
+                let evo1 = OURO.evo >= 1
                 let x = evo1 ? s.add(1).pow(2) : s.root(4)
 
                 if (tmp.NHDimprove) x = x.pow(1.5)
@@ -249,7 +251,7 @@ const CORE = {
             x => "^"+format(x),
             x => "^"+format(x),
             x => "+"+format(x),
-            x => OURO.evolution >= 1?formatMult(x):"+"+format(x),
+            x => OURO.evo >= 1?formatMult(x):"+"+format(x),
             x => "^"+format(x),
             x => "^"+format(x)+" to exponent",
             x => formatMult(x),
@@ -290,12 +292,12 @@ const CORE = {
                 return x
             },
             s => {
-                let x = s.add(1).log10().div(100).add(1).pow(-1) // Math.pow(1+Math.log10(s+1)/100,-1)
+                let x = s.add(1).log10().div(100).add(1).pow(-1)
 
                 return x
             },
             s => {
-                let x = s.add(1).log10().div(10).add(1).pow(-1) //  Math.pow(1+Math.log10(s+1)/10,-1)
+                let x = s.add(1).log10().div(10).add(1).pow(-1)
 
                 return x
             },
@@ -419,7 +421,7 @@ const CORE = {
 
 const MAX_STARS = 8
 
-const MAX_CORE_LENGTH = 8
+const MAX_CORE_LENGTH = 5
 const MIN_CORE_LENGTH = 4
 const MAX_INV_LENGTH = 100
 
@@ -434,8 +436,8 @@ var core_weight = {}
 var core_star_luck = []
 var core_star_chances = []
 
-function getCoreChance(i, lvl=tmp.core_lvl) { return Decimal.sub(1,Decimal.pow(Decimal.sub(1,Decimal.pow(MIN_STAR_CHANCES[i],core_star_luck[i].pow(-1))),lvl.floor().pow(0.4))) } // 1-Math.pow(1-MIN_STAR_CHANCES[i]**(1/core_star_luck[i]),Math.floor(lvl)**0.4)
-function getPowerMult(lvl=tmp.core_lvl) { return lvl.sub(1).floor().root(2).div(100).mul(tmp.cs_effect.power_mult) } // Math.floor(lvl-1)**0.5/100 * tmp.cs_effect.power_mult
+function getCoreChance(i, lvl=tmp.core_lvl) { return Decimal.sub(1,Decimal.pow(Decimal.sub(1,Decimal.pow(MIN_STAR_CHANCES[i],core_star_luck[i].pow(-1))),lvl.floor().pow(0.4))) }
+function getPowerMult(lvl=tmp.core_lvl) { return lvl.sub(1).floor().root(2).div(100).mul(CSEffect("power_mult")) }
 function chanceToBool(arr) { return arr.map((x,i) => core_star_chances[i].gt(x)) }
 
 function resetCoreTemp() {
@@ -452,51 +454,8 @@ function resetCoreTemp() {
 resetCoreTemp()
 
 var t_choosed = "-"
-
-debug.generateTheorem = (chance=CORE_CHANCE_MIN) => {
-    let c = []
-    while (c.length == 0) {
-        let m = [], n = false
-        for (let i = 0; i < MAX_STARS; i++) {
-            m[i] = Math.random()
-            if (m[i] < chance && i < 4) n = true
-        }
-        if (n) c = m
-    }
-    let t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)], s = ""
-    let p = 1+Math.random()/5
-
-    for (let i = 0; i < 4; i++) s += `<iconify-icon icon="${c[i]<chance?'ic:baseline-star':'ic:baseline-star-border'}" width="18"></iconify-icon>`
-
-    tmp.el.theorem_debug.setHTML(`
-    <div class="theorem_div ${t}">
-        <iconify-icon icon="${CORE[t].icon}" width="45"></iconify-icon>
-        <div class="c_pow">${format(p*100,0)}%</div>
-        <div class="c_lvl">${format(10*Math.random()+1,0)}</div>
-        <div>
-            ${s}
-        </div>
-    </div>
-    `)
-}
-
-debug.addRandomTheorem = (level=1,power=1,max_chance=CORE_CHANCE_MIN) => {
-    let c = []
-    while (c.length == 0) {
-        let m = [], n = false
-        for (let i = 0; i < MAX_STARS; i++) {
-            m[i] = Math.random()
-            if (i < 4 && m[i] < max_chance) n = true
-        }
-        if (n) c = m
-    }
-
-    addTheorem(CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)],c,level,power)
-}
-
 var changeCoreFromBestLevel = () => {
-    let lvl = Decimal.floor(tmp.core_lvl), power = getPowerMult(tmp.core_lvl).mul(100).add(100).round().div(100) // Math.round(100+getPowerMult(tmp.core_lvl)*100)/100
-    
+    let lvl = Decimal.floor(tmp.core_lvl), power = getPowerMult(tmp.core_lvl).mul(100).add(100).round().div(100)
     for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i]) {
         if (lvl.gt(player.inf.core[i].level)) player.inf.core[i].level=lvl
         if (power.gt(player.inf.core[i].power)) player.inf.core[i].power=power
@@ -507,8 +466,6 @@ var changeCoreFromBestLevel = () => {
 }
 
 function theoremEff(t,i,def=1) { return tmp.core_eff[t][i]||def }
-
-// setInterval(debug.generateTheorem,1000)
 
 function getTheoremHTML(data,sub=false) {
     let s = ""
@@ -551,35 +508,19 @@ function getTheoremPreEffects(data,s,p,level) {
 
 function setupCoreHTML() {
     let h = `<div id="preTReq"></div>`
-
-    for (let i = 0; i < 4; i++) {
-        h += `
-        <div id="preT${i}" class="theorem_div tooltip" tooltip-pos="bottom" onclick="choosePreTheorem(${i})"></div>
-        `
-    }
-
+    for (let i = 0; i < 4; i++) h += `<div id="preT${i}" class="theorem_div tooltip" tooltip-pos="bottom" onclick="choosePreTheorem(${i})"></div>`
     new Element('pre_theorem').setHTML(h)
 
     h = ``
-
-    for (let i = 0; i < MAX_CORE_LENGTH; i++) {
-        h += `
-        <div id="coreT${i}" class="theorem_div tooltip" onclick="chooseTheorem('${i}',true)"></div>
-        `
-    }
-
+    for (let i = 0; i < MAX_CORE_LENGTH; i++) h += `<div id="coreT${i}" class="theorem_div tooltip" onclick="chooseTheorem('${i}',true)"></div>`
     new Element('theorem_table').setHTML(h)
 
     h = ``
-
     for (let i = 0; i < MAX_INV_LENGTH; i++) {
-        h += `
-        <div>
+        h += `<div>
             <div id="invT${i}" class="theorem_div tooltip" onclick="chooseTheorem('${i}')"></div>
-        </div>
-        `
+        </div>`
     }
-
     new Element('theorem_inv_table').setHTML(h)
 }
 
@@ -606,22 +547,22 @@ function updateCoreHTML() {
             pt.setClasses({theorem_div:true, tooltip:true, [p.type]:true, choosed: player.inf.pt_choosed == i})
             pt.setHTML(getTheoremHTML({type: p.type, level: fl, power, star: s},true))
 
-            pt.setTooltip(`
-            <h3>${CORE[p.type].title}</h3>
+            pt.setTooltip(`<h3>${CORE[p.type].title}</h3>
             <br class='line'>
-            ${getTheoremPreEffects(p,s,power,fl)}
-            `)
+            ${getTheoremPreEffects(p,s,power,fl)}`)
         }
         
         tmp.el.preTReq.setHTML(`Reach over <b>${formatMass(INF.req)}</b> of normal mass to show theorems that you will choose.`)
     }
 
+    tmp.el.rerollBtn.setTxt(`Reroll (${player.inf.reroll.format(0)})`)
     tmp.el.formTBtn.setDisplay(tmp.tfUnl)
 }
 
 function updateTheoremCore() {
     resetCoreTemp()
 
+	if (!tmp.inf_unl) return
     for (let i = 0; i < MAX_CORE_LENGTH; i++) {
         let u = i < tmp.min_core_len
         let t = tmp.el['coreT'+i]
@@ -653,6 +594,7 @@ function updateTheoremCore() {
 }
 
 function updateTheoremInv() {
+	if (!tmp.inf_unl) return
     for (let i = 0; i < MAX_INV_LENGTH; i++) {
         let t = tmp.el['invT'+i]
         let p = player.inf.inv[i]
@@ -686,24 +628,41 @@ function formTheorem() {
     if (t_choosed.includes('c') || t_choosed == '-' || !tmp.tfUnl) return
 
     let inv = player.inf.inv[t_choosed]
-
     player.inf.fragment[inv.type] = player.inf.fragment[inv.type].add(calcFragmentBase(inv,inv.star,inv.power));
-
     delete player.inf.inv[t_choosed]
 
     t_choosed = '-'
-
     updateTheoremInv()
 }
 
+function savageTheorem() {
+    if (t_choosed.includes('c') || t_choosed == '-') return
+	player.inf.savage = player.inf.inv[t_choosed]
+	delete player.inf.inv[t_choosed]
+
+	t_choosed = '-'
+	updateTheoremInv()
+	generatePreTheorems()
+}
+
 function createPreTheorem() {
-    let c = [], t = CORE_TYPE[Math.floor(Math.random() * CORE_TYPE.length)]
+    let t = CORE_TYPE[Math.randomInt(0, CORE_TYPE.length)]
+    while (CORE[t].unl ? !CORE[t].unl() : false) t = CORE_TYPE[Math.randomInt(0, CORE_TYPE.length)]
+
+	let sav = player.inf.savage ?? {}, c = []
     while (c.length == 0) {
         let m = [], n = false
         for (let i = 0; i < MAX_STARS; i++) {
             m[i] = Math.random()
             if (m[i] < CORE_CHANCE_MIN && i < 4) n = true
         }
+        if (sav.type && Math.random() > 0.05 * OURO.evo) t = sav.type
+        if (sav.star) {
+			sav.star.forEach((o,i)=>{
+				if (o) m[i] = 0
+			})
+			n = true
+		}
         if (n) c = m
     }
     return {star_c: c, type: t, power_m: Math.random()}
@@ -724,6 +683,17 @@ function addTheorem(type, star, level, power) {
     updateTheoremInv()
 }
 
+function addSelectedTheorem(onInf) {
+	if (!onInf && player.inf.pt_choosed==-1) return
+	if (onInf) {
+		player.inf.reroll = player.inf.theorem.div(5).floor()
+		delete player.inf.savage
+	}
+
+	let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
+    addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),getPowerMult().mul(td.power_m).add(1))
+}
+
 function getFragmentEffect(id,def=1) { return tmp.fragment_eff[id]||def }
 
 function chooseTheorem(id,is_core=false) {
@@ -735,8 +705,6 @@ function chooseTheorem(id,is_core=false) {
     else if (t_choosed == '-') {
         if (is_core ? core[id] : inv[id]) t_choosed = is_core?id+'c':id
     } else {
-        // console.log(id,t_choosed)
-
         if (inv[t_choosed]) {
             if (is_core) {
                 if (core[id] !== undefined && core[id] !== null) {
@@ -784,17 +752,19 @@ function isTheoremHigher(t,t_target) {
 
 function switchTheorems(id1,id2,force=false) {
     let inv = player.inf.inv, core = player.inf.core;
-
     [inv[id1], core[id2]] = [core[id2], inv[id1]]
-
     t_choosed = '-'
 
-    if (force) {
-        INF.doReset()
-    }
-    
+    if (force) INF.doReset()    
     updateTheoremCore()
     updateTheoremInv()
+}
+
+function rerollTheorems() {
+	if (player.inf.reroll.eq(0)) return
+	player.inf.reroll = player.inf.reroll.sub(1)
+	addSelectedTheorem()
+	generatePreTheorems()
 }
 
 function updateCoreTemp() {
@@ -806,15 +776,13 @@ function updateCoreTemp() {
 
     for (let i = 0; i < MAX_STARS; i++) {
         let l = E(1)
-
-        if (i < 4) l = l.mul(tmp.cs_effect.theorem_luck)
+        if (i < 4) l = l.mul(CSEffect("theorem_luck"))
 
         core_star_luck[i] = l
-
         core_star_chances[i] = i < t ? getCoreChance(i) : E(0)
     }
 
-    if (player.inf.theorem.gte(6)) tmp.min_core_len++
+    if (player.inf.theorem.gte(6) && OURO.evo < 2) tmp.min_core_len++
 
     tmp.core_lvl = INF.level()
 
@@ -849,11 +817,15 @@ function updateCoreTemp() {
 var TS_visible = true
 
 function updateOneSec() {
+	updateUpgNotify()
     if (hasElement(242)) changeCoreFromBestLevel()
-
-    if (false) {
-        let p = true
-        for (let i in player.inf.core) p &&= player.inf.core[i]
-        TS_visible = !p
-    }
+    if (WORMHOLE.autoUnl) {
+		let split
+		for (let [i, on] of Object.entries(player.evo.wh.auto)) {
+			if (!on) continue
+			activateWormhole(i, true)
+			split = 1
+		}
+		if (split) activateWormhole(player.evo.wh.origin, true)
+	}
 }

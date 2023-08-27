@@ -29,7 +29,6 @@ const CHROMA = {
     ],
     eff: [
         i => {
-            //if (tmp.c16active) return E(1)
             let c = hasElement(13,1)
             let x = c ? expMult(i.add(1).log10().add(1),2) : i.add(1).log10().add(1).root(3)
             if (hasUpgrade('br',10)) x = c ? x.pow(1.1) : x.mul(1.1)
@@ -42,10 +41,8 @@ const CHROMA = {
             
             if (hasElement(243)) {
                 x = i.add(10).log10()
-
                 if (hasUpgrade('br',7) && (player.qu.rip.active || hasElement(148))) x = x.mul(2)
-                if (hasUpgrade('br',10)) x = x.mul(1.1)
-                
+                if (hasUpgrade('br',10)) x = x.mul(1.1)                
                 x = x.pow(c)
             } else {
                 x = E(1.01).pow(i.add(1).log10().max(0).pow(0.8))
@@ -68,7 +65,7 @@ const CHROMA = {
     ],
     effDesc: [
         x => {
-            return `Makes tickspeed power raised to the ${format(x)}th power.`//.corrupt(tmp.c16active)
+            return `Makes tickspeed power raised to the ${format(x)}th power.`
         },
         x => {
             return `Makes all ${player.dark.unl ? "Pre-Exotic p" : "P"}re-Pent requirements reduced by ${format(x[0])}x`+x[0].softcapHTML(1e10)+"."

@@ -23,7 +23,7 @@ function resetTemp() {
         tab_name: "mass",
         qc_tab: 0,
         qc_ch: -1,
-        pass: 0,
+        pass: 1,
         notify: [],
         popup: [],
         saving: 0,
@@ -49,11 +49,9 @@ function resetTemp() {
             upgs: [],
         },
 
-        upgs: {
-            main: {},
-            mass: {},
-        },
+        upgs: {},
 
+		atom: {},
         elements: {
             choosed: 0,
             effect: [null],
@@ -87,6 +85,7 @@ function resetTemp() {
             tree_unlocked: {},
             tree_afford: {},
             tree_afford2: [],
+            tree_loc: {},
         },
     
         radiation: {
@@ -254,8 +253,7 @@ function resetTemp() {
     for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
     for (let x = 0; x < ASCENSIONS.names.length; x++) tmp.ascensions.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
-    for (let x = UPGS.mass.cols; x >= 1; x--) tmp.upgs.mass[x] = {}
-    for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs.main[x] = {}
+    for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs[x] = {}
     for (let j = 0; j < TREE_TAB.length; j++) {
         tmp.supernova.tree_had2[j] = []
         tmp.supernova.tree_afford2[j] = []
@@ -314,34 +312,15 @@ function updateMassTemp() {
 }
 
 function updateTickspeedTemp() {
+    if (OURO.evo >= 1) return
     tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : tmp.fermions.effs[1][2]
-
-    /*
-    let fp = E(1)
-
-    if (hasElement(248)) fp = fp.mul(getEnRewardEff(0))
-
-    tmp.tickspeedCost = E(2).pow(player.tickspeed.div(fp).scaleEvery('tickspeed')).floor()
-    tmp.tickspeedBulk = E(0)
-    if (player.rp.points.gte(1)) tmp.tickspeedBulk = player.rp.points.max(1).log(2).scaleEvery('tickspeed',true).mul(fp).add(1).floor()
-    tmp.tickspeedEffect = FORMS.tickspeed.effect()
-
-    */
-}
-
-function updateAcceleratorTemp() {
-    tmp.accelCost = Decimal.pow(10,Decimal.pow(1.5,player.accelerator)).floor()
-    tmp.accelBulk = E(0)
-    if (player.rp.points.gte(10)) tmp.accelBulk = player.rp.points.max(1).log10().max(1).log(1.5).add(1).floor()
-    tmp.accelEffect = FORMS.accel.effect()
 }
 
 function updateUpgradesTemp() {
     tmp.massFP = E(1);
-    if (hasElement(248)) tmp.massFP = tmp.massFP.mul(getEnRewardEff(0))
+    if (hasElement(248) && OURO.evo < 2) tmp.massFP = tmp.massFP.mul(getEnRewardEff(0))
     
     UPGS.main.temp()
-    // UPGS.mass.temp()
 }
 
 function updateRagePowerTemp() {
@@ -351,9 +330,12 @@ function updateRagePowerTemp() {
 }
 
 function updateBlackHoleTemp() {
-    if (!tmp.bh) tmp.bh = {}
-    let t = tmp.bh
+    let t = tmp.bh = {}
     t.dm_gain = FORMS.bh.DM_gain()
+    t.dm_can = t.dm_gain.gte(1)
+    t.unl = player.bh.unl && OURO.evo < 2
+
+	if (!t.unl) return
     t.fSoftStart = FORMS.bh.fSoftStart()
     t.fSoftPower = FORMS.bh.fSoftPower()
     t.f = FORMS.bh.f()
@@ -361,28 +343,9 @@ function updateBlackHoleTemp() {
     t.massSoftGain = FORMS.bh.massSoftGain()
     t.massPowerGain = FORMS.bh.massPowerGain()
     t.mass_gain = FORMS.bh.massGain()
-    t.dm_can = t.dm_gain.gte(1)
     t.effect = FORMS.bh.effect()
 
-    /*
-
-    let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
-    if (hasCharger(6) && tmp.c16active) fp *= 1e6
-
-    let fp2 = E(1)
-
-    if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
-
-    t.condenser_bonus = FORMS.bh.condenser.bonus()
-    t.condenser_cost = E(1.75).pow(player.bh.condenser.div(fp2).scaleEvery('bh_condenser',false,[1,1,1,fp])).floor()
-    t.condenser_bulk = E(0)
-    if (player.bh.dm.gte(1)) t.condenser_bulk = player.bh.dm.max(1).log(1.75).scaleEvery('bh_condenser',true,[1,1,1,fp]).mul(fp2).add(1).floor()
-    t.condenser_eff = FORMS.bh.condenser.effect()
-
-    */
-
     // Unstable
-
     t = tmp.unstable_bh
     
     t.p = E(1)
@@ -391,36 +354,23 @@ function updateBlackHoleTemp() {
 
     t.gain = UNSTABLE_BH.gain()
     t.effect = UNSTABLE_BH.effect()
-
-    /*
-
-    let p = 1.5
-    if (hasBeyondRank(1,137)) p **= 0.8
-
-    t.fvm_cost = E(10).pow(player.bh.fvm.scale(1e11,10,0).pow(p)).mul(1e300).floor()
-    t.fvm_bulk = E(0)
-    if (player.bh.dm.gte(10)) t.fvm_bulk = player.bh.dm.div(1e300).max(1).log(10).root(p).scale(1e11,10,0,true).add(1).floor()
-    t.fvm_eff = UNSTABLE_BH.fvm.effect()
-
-    */
 }
 
 function updateTemp() {
     updateTabTemp()
 
-    const evo = OURO.evolution
+    const evo = OURO.evo
 
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
 
     OURO.temp()
 
-    tmp.layer2_passive = (evo>=2&&player.rp.unl)||player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)
+    tmp.passive = (evo>=3?player.bh.unl:hasUpgrade("atom",6))?2:
+		(evo>=2?player.rp.unl:hasUpgrade("bh",6)||hasUpgrade("atom",6))?1:0
 
     tmp.c16active = CHALS.inChal(16)
     tmp.c18active = CHALS.inChal(18)
-
-    tmp.inf_unl = player.inf.theorem.gte(1)
 
     tmp.chal13comp = player.chal.comps[13].gte(1)
     tmp.chal14comp = player.chal.comps[14].gte(1)
@@ -430,7 +380,7 @@ function updateTemp() {
     tmp.moreUpgs = hasElement(192)
     tmp.mass4Unl = hasElement(202)
     tmp.brUnl = hasElement(208)
-    tmp.eaUnl = hasCharger(5)
+    tmp.eaUnl = hasCharger(5) && OURO.evo < 3
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.tfUnl = hasElement(230)
     tmp.ascensions_unl = player.chal.comps[17].gte(4)
@@ -441,8 +391,6 @@ function updateTemp() {
     tmp.SN_passive = hasElement(36,1)
 
     tmp.NHDimprove = hasElement(268)
-
-    updateGPTemp()
 
     updateInfTemp()
     updateC16Temp()
@@ -459,7 +407,6 @@ function updateTemp() {
     updateUpgradesTemp()
     updateChalTemp()
     updateAtomTemp()
-    // updateAcceleratorTemp()
     BUILDINGS.temp()
 
     updateStarsTemp()

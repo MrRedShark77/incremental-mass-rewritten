@@ -1,77 +1,85 @@
 const RESOURCES_DIS = {
+	//Important Resources
     mass: {
         unl: ()=>true,
         icon: "mass",
 
         desc: (gs)=>formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true),
     },
+    quarks: {
+        unl: ()=>player.atom.unl,
+        icon: "quark",
+        class: "quark_color",
+
+        desc: (gs)=>format(player.atom.quarks,0)+"<br>"+(hasElement(14)?formatGain(player.atom.quarks,tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec).mul(gs)):"(+"+format(tmp.atom.quarkGain,0)+")"),
+    },
+
     rp: {
-        unl: ()=>OURO.evolution < 1,
+        unl: ()=>OURO.evo < 1,
         icon: "rp",
         class: "red",
 
-        desc: (gs)=>format(player.rp.points,0)+"<br>"+(tmp.layer2_passive?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"),
+        desc: (gs)=>format(player.rp.points,0)+"<br>"+(tmp.passive >= 1?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"),
     
         resetBtn() { FORMS.rp.reset() },
     },
     cp: {
-        unl: ()=>OURO.evolution >= 1,
+        unl: ()=>OURO.evo >= 1,
         icon: "evolution/calm_power",
         class: "red",
 
-        desc: (gs)=>format(player.evo.cp.points,0)+"<br>"+(tmp.layer2_passive?formatGain(player.evo.cp.points, cpProd()):"(+"+format(tmp.rp.gain,0)+")"),
+        desc: (gs)=>format(player.evo.cp.points,0)+"<br>"+(tmp.passive >= 1?formatGain(player.evo.cp.points, cpProd()):"(+"+format(tmp.rp.gain,0)+")"),
     
         resetBtn() { FORMS.rp.reset() },
     },
     dm: {
-        unl: ()=>FORMS.bh.see() && OURO.evolution < 2,
+        unl: ()=>FORMS.bh.see() && OURO.evo < 2,
         icon: "dm",
         class: "yellow",
 
-        desc: (gs)=>format(player.bh.dm,0)+"<br>"+(player.mainUpg.atom.includes(6)?formatGain(player.bh.dm, tmp.bh.dm_gain.mul(gs)):"(+"+format(tmp.bh.dm_gain,0)+")"),
+        desc: (gs)=>format(player.bh.dm,0)+"<br>"+(hasUpgrade("atom",6)?formatGain(player.bh.dm, tmp.bh.dm_gain.mul(gs)):"(+"+format(tmp.bh.dm_gain,0)+")"),
     
         resetBtn() { FORMS.bh.reset() },
     },
     fabric: {
-        unl: ()=>FORMS.bh.see() && OURO.evolution >= 2,
+        unl: ()=>FORMS.bh.see() && OURO.evo >= 2,
         icon: "evolution/fabric",
         class: "yellow",
 
-        desc: (gs)=>format(player.evo.wh.fabric,0)+"<br>"+(player.mainUpg.atom.includes(6)?formatGain(player.evo.wh.fabric, tmp.bh.dm_gain):"(+"+format(tmp.bh.dm_gain,0)+")"),
+        desc: (gs)=>format(player.evo.wh.fabric,0)+"<br>"+(tmp.passive>=2?formatGain(player.evo.wh.fabric, tmp.bh.dm_gain):"(+"+format(tmp.bh.dm_gain,0)+")"),
     
         resetBtn() { FORMS.bh.reset() },
     },
     bh: {
-        unl: ()=>player.bh.unl && OURO.evolution < 2,
+        unl: ()=>player.bh.unl && OURO.evo < 2,
         icon: "bh",
         class: "yellow",
 
         desc: (gs)=>formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true),
     },
     wormhole: {
-        unl: ()=>player.bh.unl && OURO.evolution >= 2,
+        unl: ()=>player.bh.unl && OURO.evo >= 2,
         icon: "evolution/wormhole",
         class: "yellow",
 
-        desc: (gs)=>{
-            let m = player.evo.wh.mass[0]
-            return formatMass(m)+"<br>"+formatGain(m, WORMHOLE.calcGain(m,tmp.evo.wormhole_mult[0].div(FPS),0).mul(FPS), true)
-        },
+        desc: _ => formatMass(WORMHOLE.total()),
     },
     atom: {
-        unl: ()=>player.bh.unl,
+        unl: ()=>player.bh.unl && OURO.evo < 3,
         icon: "atom",
 
         desc: (gs)=>format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain.mul(gs)):"(+"+format(tmp.atom.gain,0)+")"),
 
         resetBtn() { ATOM.reset() },
     },
-    quarks: {
-        unl: ()=>player.atom.unl,
-        icon: "quark",
-        class: "quark_color",
+    protostar: {
+        unl: ()=>player.bh.unl && OURO.evo >= 3,
+        icon: "evolution/protostar",
+        class: "space",
 
-        desc: (gs)=>format(player.atom.quarks,0)+"<br>"+(hasElement(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec).mul(gs):0):"(+"+format(tmp.atom.quarkGain,0)+")"),
+        desc: _=>format(player.evo.proto.star,0)+"<br>"+(hasElement(24)?formatGain(player.evo.proto.star,tmp.atom.gain):"(+"+format(tmp.atom.gain,0)+")"),
+
+        resetBtn() { ATOM.reset() },
     },
     md: {
         unl: ()=>MASS_DILATION.unlocked(),
@@ -125,6 +133,7 @@ const RESOURCES_DIS = {
     fss: {
         unl: ()=>player.dark.matters.final.gt(0) || tmp.inf_unl&&hasElement(188),
         icon: "fss",
+        class: "quark_color",
 
         desc: (gs)=>format(player.dark.matters.final,0)+"<br>(+"+(tmp.matters.FSS_base.gte(tmp.matters.FSS_req)?1:0)+")",
 
@@ -135,16 +144,9 @@ const RESOURCES_DIS = {
         icon: "corrupted",
         class: "corrupted_text",
 
-        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(232)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):"(+"+tmp.c16.shardGain.format(0)+")"),
+        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(232)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):tmp.c16active?"(+"+tmp.c16.shardGain.format(0)+")":"(inactive)"),
 
         resetBtn() { startC16() },
-    },
-    speed: {
-        unl: ()=>quUnl(),
-        icon: "preQGSpeed",
-        class: "orange",
-
-        desc: (gs)=>formatMult(tmp.preQUGlobalSpeed)+(tmp.inf_unl?"<br><span class='yellow'>"+formatMult(tmp.preInfGlobalSpeed)+"</span>":""),
     },
     inf: {
         unl: ()=>tmp.inf_unl,
@@ -164,14 +166,13 @@ const RESOURCES_DIS = {
 
         resetBtn() { OURO.reset() },
     },
-    /*
-    mass: {
-        unl: ()=>true,
-        icon: "mass",
+    speed: {
+        unl: ()=>quUnl(),
+        icon: "speed",
+        class: "orange",
 
-        desc: (gs)=>formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true),
+        desc: (gs)=>formatMult(tmp.preQUGlobalSpeed)+(tmp.inf_unl?"<br><span class='yellow'>"+formatMult(tmp.preInfGlobalSpeed)+"</span>":""),
     },
-    */
 }
 
 function reset_res_btn(id) { RESOURCES_DIS[id].resetBtn() }
@@ -183,12 +184,17 @@ function setupResourcesHTML() {
 
     for (i in RESOURCES_DIS) {
         let rd = RESOURCES_DIS[i]
+        let className = rd.class || ""
+		if (i in TOOLTIP_RES) className += " tooltip"
+		if (rd.resetBtn) className += " reset"
 
         h1 += `
         <div id="${i}_res_div">
-            <div ${i in TOOLTIP_RES ? `id="${i}_tooltip" class="tooltip ${rd.class||""}" tooltip-pos="left" tooltip-align="left" tooltip-text-align="left"` : `class="${rd.class||""}"`}>
+            <div class='${className}'
+			${i in TOOLTIP_RES ? `id="${i}_tooltip" tooltip-pos="left" tooltip-align="left" tooltip-text-align="left"` : ""}
+			${rd.resetBtn ? `onclick="reset_res_btn('${i}')"` : ""}>
                 <span style="margin-right: 5px; text-align: right;" id="${i}_res_desc">X</span>
-                <div><img src="images/${rd.icon||"mass"}.png" ${rd.resetBtn ? `onclick="reset_res_btn('${i}')" style="cursor: pointer;"` : ""}></div>
+                <div><img src="images/${rd.icon||"mass"}.png"></div>
             </div>
         </div>
         `
