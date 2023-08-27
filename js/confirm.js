@@ -22,7 +22,8 @@ const CONFIRMS_FUNCTION = {
         addQuote(3)
     },
     atom() {
-        player.atom.points = player.atom.points.add(tmp.atom.gain)
+		if (OURO.evo >= 3) player.evo.proto.star = player.evo.proto.star.add(tmp.atom.gain)
+        else player.atom.points = player.atom.points.add(tmp.atom.gain)
         player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain)
         player.atom.unl = true
         ATOM.doReset()

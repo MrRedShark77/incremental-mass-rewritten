@@ -549,6 +549,7 @@ button {
 .elements.dark.bought {
 	border-color: #666;
 	background-color: #222;
+	color: #444;
 }
 
 .elements.inf {
