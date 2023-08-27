@@ -337,13 +337,13 @@ function recordMovement(i) {
 	snake.auto = 0
 }
 
-function boomSnake(auto, head) {
+function boomSnake(auto) {
 	if (!auto) {
 		if (player.ouro.energy < 200) return
 		player.ouro.energy -= 200
 	}
 
-	if (head === undefined) head = snake.snakes[0].bodies[0][0]
+	let head = snake.snakes[0].bodies[0][0]
 	snake.boom = {
 		x: head.x,
 		y: head.y,
