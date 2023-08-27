@@ -36,29 +36,6 @@ function setupHTML() {
 
 	BUILDINGS.setup()
 
-	/*
-	let mass_upgs_table = new Element("mass_upgs_table")
-	table = ""
-	for (let x = 1; x <= UPGS.mass.cols; x++) {
-		let upg = UPGS.mass[x]
-		table += `<div style="width: 100%; margin-bottom: 5px;" class="table_center upgrade" id="massUpg_div_${x}">
-			<div style="width: 300px">
-				<div class="resources">
-					<img src="images/mass_upg${x}.png">
-					<span style="margin-left: 5px; text-align: left;"><span id="massUpg_scale_${x}"></span>${upg.title} [<span id="massUpg_lvl_${x}">X</span>]</span>
-				</div>
-			</div><button id="massUpg_btn_${x}" class="btn" style="width: 300px;" onclick="UPGS.mass.buy(${x}, true)">Cost: <span id="massUpg_cost_${x}">X</span></button>
-			<button class="btn" style="width: 120px;" onclick="UPGS.mass.buyMax(${x})">Buy Max</button>
-			<button id="massUpg_auto_${x}" class="btn" style="width: 80px;" onclick="UPGS.mass.autoSwitch(${x})">OFF</button>
-			<div style="margin-left: 5px; text-align: left; width: 400px">
-				${upg.title} Power: <span id="massUpg_step_${x}">X</span><br>
-				${upg.title} Effect: <span id="massUpg_eff_${x}">X</span>
-			</div>
-		</div>`
-	}
-	mass_upgs_table.setHTML(table)
-	*/
-
 	let ranks_rewards_table = new Element("ranks_rewards_table")
 	table = ""
 	for (let x = 0; x < RANKS.names.length; x++) {
@@ -103,7 +80,7 @@ function setupHTML() {
 		table += `<div id="main_upg_${x}_div" style="width: 230px; margin: 0px 10px;"><b>${UPGS.main[x].title}</b><br><br><div style="font-size: 13px; min-height: 50px" id="main_upg_${x}_res"></div><br><div class="table_center" style="justify-content: start;">`
 		for (let y = 1; y <= UPGS.main[x].lens; y++) {
 			let key = UPGS.main[x][y]
-			table += `<img onclick="UPGS.main[${x}].buy(${y})" onmouseover="UPGS.main.over(${x},${y})" onmouseleave="UPGS.main.reset()"
+			table += `<img onclick="buyUpgrade('${id}', ${y})" onmouseover="UPGS.main.over(${x},${y})" onmouseleave="UPGS.main.reset()"
 			 style="margin: 3px;" class="img_btn" id="main_upg_${x}_${y}" src="${key.noImage?`images/test.png`:`images/upgrades/main_upg_${id+y}.png`}">`
 		}
 		table += `</div><br><button id="main_upg_${x}_auto" class="btn" style="width: 80px;" onclick="player.auto_mainUpg.${id} = !player.auto_mainUpg.${id}">OFF</button></div>`
@@ -136,21 +113,7 @@ function setupHTML() {
 	setupQuantumHTML()
 	setupDarkHTML()
 	setupInfHTML()
-
 	setupOuroHTML()
-
-	/*
-	function setupTestHTML() {
-		let test_table = new Element("test_table")
-		let table = ""
-		for (let i = 0; i < 5; i++) {
-			table += `
-				
-			`
-		}
-		test_table.setHTML(table)
-	}
-	*/
 
 	let confirm_table = new Element("confirm_table")
 	table = ""
@@ -159,140 +122,52 @@ function setupHTML() {
 	}
 	confirm_table.setHTML(table)
 
-    tmp.el = {}
-	let all = document.getElementsByTagName("*")
-	for (let i=0;i<all.length;i++) {
-		let x = all[i]
-		tmp.el[x.id] = new Element(x)
-	}
+    reloadElements()
 }
 
 function updateUpperHTML() {
-	let chal_unl = player.chal.active > 0
-	tmp.el.chal_upper.setVisible(chal_unl)
-	if (chal_unl) {
+	let mode = ""
+	if (player.chal.active > 0) mode = "chal"
+	if (player.supernova.pin_req) mode = "req"
+	if (tmp.upg_notify) mode = "upg"
+	if (tmp.ouro.time != undefined) mode = "saved"
+	
+	tmp.el.chal_upper.setDisplay(mode == "chal")
+	if (mode == "chal") {
 		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
 		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
 		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
 	}
-
-	/*
-	let gs = tmp.preQUGlobalSpeed
-
-	//tmp.el.reset_desc.setHTML(player.reset_msg)
-
-	let unl = true
-	tmp.el.mass_div.setDisplay(unl)
-	if (unl) tmp.el.mass.setHTML(formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true))
 	
-	unl = !quUnl()
-	tmp.el.rp_div.setDisplay(unl)
-	if (unl) tmp.el.rpAmt.setHTML(format(player.rp.points,0)+"<br>"+(player.mainUpg.bh.includes(6)||player.mainUpg.atom.includes(6)?formatGain(player.rp.points, tmp.rp.gain.mul(gs)):"(+"+format(tmp.rp.gain,0)+")"))
-	
-	unl = FORMS.bh.see() && !quUnl()
-	tmp.el.dm_div.setDisplay(unl)
-	if (unl) tmp.el.dmAmt.setHTML(format(player.bh.dm,0)+"<br>"+(player.mainUpg.atom.includes(6)?formatGain(player.bh.dm, tmp.bh.dm_gain.mul(gs)):"(+"+format(tmp.bh.dm_gain,0)+")"))
-	
-	unl = player.bh.unl
-	tmp.el.bh_div.setDisplay(unl)
-	tmp.el.atom_div.setDisplay(unl && !quUnl())
-	if (unl) {
-		tmp.el.bhMass.setHTML(formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true))
-		tmp.el.atomAmt.setHTML(format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain.mul(gs)):"(+"+format(tmp.atom.gain,0)+")"))
+	tmp.el.requirement.setDisplay(mode == "req")
+	if (mode == "req") {
+		let u = TREE_UPGS.ids[player.supernova.pin_req]
+		tmp.el.requirement.setHTML(`<b class='${u.req ? "green" : "red"}'>[${player.supernova.pin_req}]</b> ${typeof u.reqDesc == "function" ? u.reqDesc() : u.reqDesc}`)
 	}
 	
-	unl = player.atom.unl
-	tmp.el.quark_div.setDisplay(unl)
-	if (unl) tmp.el.quarkAmt.setHTML(format(player.atom.quarks,0)+"<br>"+(hasElement(14)?formatGain(player.atom.quarks,tmp.atom?tmp.atom.quarkGain.mul(tmp.atom.quarkGainSec).mul(gs):0):"(+"+format(tmp.atom.quarkGain,0)+")"))
+	tmp.el.upg_notify.setDisplay(mode == "upg")
+	if (mode == "upg") {
+		let nt = tmp.upg_notify
+		if (nt[0] == "el") tmp.el.upg_notify_msg.setHTML(`[!] ${["","Muonic "][nt[1]]+ELEMENTS.fullNames[nt[2]]} is available! [!]`)
+		if (nt[0] == "sn") tmp.el.upg_notify_msg.setHTML(`[!] Neutron Tree [${nt[1]}] is available! [!]`)
+	}
 	
-	unl = MASS_DILATION.unlocked()
-	tmp.el.md_div.setDisplay(unl)
-	if (unl) tmp.el.md_massAmt.setHTML(format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(hasTree("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(gs)):"(inactive)")))
-	
-	unl = player.supernova.post_10
-	tmp.el.sn_div.setDisplay(unl)
-	if (unl) tmp.el.supernovaAmt.setHTML(format(player.supernova.times,0)+"<br>(+"+format(tmp.supernova.bulk.sub(player.supernova.times).max(0),0)+")")
-
-	let gain2 = hasUpgrade('br',8)
-
-    unl = (quUnl() || player.chal.comps[12].gte(1))
-    tmp.el.qu_div.setDisplay(unl)
-    if (unl) tmp.el.quAmt.setHTML(format(player.qu.points,0)+"<br>"+(gain2?player.qu.points.formatGain(tmp.qu.gain.div(10)):"(+"+format(tmp.qu.gain,0)+")"))
-
-    unl = (quUnl())
-    tmp.el.gs1_div.setDisplay(unl)
-    if (unl) tmp.el.preQGSpeed.setHTML(formatMult(tmp.preQUGlobalSpeed))
-
-    unl = hasTree("unl4")
-    tmp.el.br_div.setDisplay(unl)
-    if (unl) tmp.el.brAmt.setHTML(player.qu.rip.amt.format(0)+"<br>"+(player.qu.rip.active||hasElement(147)?gain2?player.qu.rip.amt.formatGain(tmp.rip.gain.div(10)):`(+${tmp.rip.gain.format(0)})`:"(inactive)"))
-	*/
+	tmp.el.saved.setDisplay(mode == "saved")
+	if (mode == "saved") tmp.el.saved.setOpacity(0.2 - Math.abs(5 - tmp.ouro.time) / 25)
 }
 
 function updateMassUpgradesHTML() {
 	for (let x = 1; x <= 4; x++) {
 		BUILDINGS.update('mass_'+x)
 	}
-
-	/*
-	for (let x = 1; x <= UPGS.mass.cols; x++) {
-		let upg = UPGS.mass[x]
-		tmp.el["massUpg_div_"+x].setDisplay(upg.unl())
-		if (upg.unl()) {
-			tmp.el["massUpg_scale_"+x].setTxt(x==4?getScalingName("massUpg4"):getScalingName("massUpg", x))
-			tmp.el["massUpg_lvl_"+x].setTxt(format(player.massUpg[x]||0,0)+(tmp.upgs.mass[x].bonus.gt(0)?(hasAscension(0,1)&&x<=3?" × ":" + ")+format(tmp.upgs.mass[x].bonus,0):""))
-			tmp.el["massUpg_btn_"+x].setClasses({btn: true, locked: player.mass.lt(tmp.upgs.mass[x].cost)})
-			tmp.el["massUpg_cost_"+x].setTxt(formatMass(tmp.upgs.mass[x].cost))
-			tmp.el["massUpg_step_"+x].setTxt(tmp.upgs.mass[x].effDesc.step)
-			tmp.el["massUpg_eff_"+x].setHTML(tmp.upgs.mass[x].effDesc.eff)
-			tmp.el["massUpg_auto_"+x].setDisplay(player.mainUpg.rp.includes(3))
-			tmp.el["massUpg_auto_"+x].setTxt(player.autoMassUpg[x]?"ON":"OFF")
-		}
-	}
-	*/
 }
 
 function updateTickspeedHTML() {
 	BUILDINGS.update('tickspeed')
 	BUILDINGS.update('accelerator')
-	/*
-	let unl = player.rp.unl
-
-	tmp.el.tickspeed_div.setDisplay(unl)
-	if (unl) {
-		let teff = tmp.tickspeedEffect
-		tmp.el.tickspeed_scale.setTxt(getScalingName('tickspeed'))
-		tmp.el.tickspeed_lvl.setTxt(format(player.tickspeed,0)+(teff.bonus.gte(1)?(hasAscension(0,1)?" × ":" + ")+format(teff.bonus,0):""))
-		tmp.el.tickspeed_btn.setClasses({btn: true, locked: !FORMS.tickspeed.can()})
-		tmp.el.tickspeed_cost.setTxt(format(tmp.tickspeedCost,0))
-		tmp.el.tickspeed_step.setHTML((teff.step.gte(10)?format(teff.step)+"x":format(teff.step.sub(1).mul(100))+"%")
-		+(teff.step.gte(teff.ss)&&!hasUpgrade('rp',16)?" <span class='soft'>(softcapped)</span>":""))
-		if(hasElement(199) && !CHALS.inChal(15)) tmp.el.tickspeed_eff.setTxt("^"+format(teff.eff))
-		else tmp.el.tickspeed_eff.setTxt(format(teff.eff)+"x")
-		
-
-		tmp.el.tickspeed_auto.setDisplay(FORMS.tickspeed.autoUnl())
-		tmp.el.tickspeed_auto.setTxt(player.autoTickspeed?"ON":"OFF")
-	}
-
-	tmp.el.accel_div.setDisplay(unl && hasElement(199));
-	if(unl && hasElement(199)){
-		let eff = tmp.accelEffect
-		//tmp.el.accel_scale.setTxt(getScalingName('accel'))
-		tmp.el.accel_lvl.setTxt(format(player.accelerator,0))
-		tmp.el.accel_btn.setClasses({btn: true, locked: !FORMS.accel.can()})
-		tmp.el.accel_cost.setTxt(format(tmp.accelCost,0))
-		tmp.el.accel_step.setHTML("+^"+format(eff.step))
-		tmp.el.accel_eff.setHTML("^"+format(eff.eff)+" to Tickspeed Effect"+eff.eff.softcapHTML(eff.ss))
-
-		tmp.el.accel_auto.setDisplay(FORMS.accel.autoUnl())
-		tmp.el.accel_auto.setTxt(player.autoAccel?"ON":"OFF")
-	}
-	*/
 }
 
 function updateRanksRewardHTML() {
-	// tmp.el["ranks_reward_name"].setTxt(RANKS.fullNames[player.ranks_reward])
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
 		tmp.el["ranks_reward_div_"+x].setDisplay(player.ranks_reward == x)
@@ -356,8 +231,8 @@ function updateMainUpgradesHTML() {
 	if (player.main_upg_msg[0] != 0) {
 		let upg1 = UPGS.main[player.main_upg_msg[0]]
 		let upg2 = UPGS.main[player.main_upg_msg[0]][player.main_upg_msg[1]]
-		let msg = "<span class='sky'>"+(typeof upg2.desc == "function" ? upg2.desc() : upg2.desc)+"</span><br><span>Cost: "+format(upg2.cost,0)+" "+upg1.res+"</span>"
-		if (upg2.effDesc !== undefined) msg += "<br><span class='green'>Currently: "+tmp.upgs.main[player.main_upg_msg[0]][player.main_upg_msg[1]].effDesc+"</span>"
+		let msg = "<span class='sky'>"+(typeof upg2.desc == "function" ? upg2.desc() : upg2.desc)+"</span><br><span>Cost: "+format(upg2.cost,0)+" "+upg1.resName+"</span>"
+		if (upg2.effDesc !== undefined) msg += "<br><span class='green'>Currently: "+upg2.effDesc(tmp.upgs[player.main_upg_msg[0]][player.main_upg_msg[1]].effect)+"</span>"
 		tmp.el.main_upg_msg.setHTML(msg)
 	} else tmp.el.main_upg_msg.setTxt("")
 	for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -365,12 +240,12 @@ function updateMainUpgradesHTML() {
 		let upg = UPGS.main[x]
 		let unl = upg.unl()
 		tmp.el["main_upg_"+x+"_div"].setDisplay(unl)
-		tmp.el["main_upg_"+x+"_res"].setTxt(`You have ${upg.getRes().format(0)} ${upg.res}`)
+		tmp.el["main_upg_"+x+"_res"].setTxt(`You have ${format(upg.res, 0)} ${upg.resName}`)
 		if (unl) {
 			for (let y = 1; y <= upg.lens; y++) {
 				let unl2 = upg[y].unl ? upg[y].unl() : true
 				tmp.el["main_upg_"+x+"_"+y].changeStyle("visibility", unl2?"visible":"hidden")
-				if (unl2) tmp.el["main_upg_"+x+"_"+y].setClasses({img_btn: true, locked: !upg.can(y), bought: player.mainUpg[id].includes(y)})
+				if (unl2) tmp.el["main_upg_"+x+"_"+y].setClasses({img_btn: true, locked: !canGetUpgrade(id, y), bought: hasUpgrade(id, y)})
 			}
 			tmp.el["main_upg_"+x+"_auto"].setDisplay(upg.auto_unl ? upg.auto_unl() : false)
 			tmp.el["main_upg_"+x+"_auto"].setTxt(player.auto_mainUpg[id]?"ON":"OFF")
@@ -392,18 +267,6 @@ function updateBlackHoleHTML() {
 
 	BUILDINGS.update('bhc')
 	BUILDINGS.update('fvm')
-
-	/*
-	tmp.el.bhCondenser_lvl.setTxt(format(player.bh.condenser,0)+(tmp.bh.condenser_bonus.gte(1)?" + "+format(tmp.bh.condenser_bonus,0):""))
-	tmp.el.bhCondenser_btn.setClasses({btn: true, locked: !FORMS.bh.condenser.can()})
-	tmp.el.bhCondenser_scale.setTxt(getScalingName('bh_condenser'))
-	tmp.el.bhCondenser_cost.setTxt(format(tmp.bh.condenser_cost,0))
-	tmp.el.bhCondenser_pow.setTxt(format(tmp.bh.condenser_eff.pow))
-	tmp.el.bhCondenser_auto.setDisplay(FORMS.bh.condenser.autoUnl())
-	tmp.el.bhCondenser_auto.setTxt(player.bh.autoCondenser?"ON":"OFF")
-	*/
-
-	
 
 	tmp.el.bhOverflow.setDisplay(player.bh.mass.gte(tmp.overflow_start.bh[0]))
     tmp.el.bhOverflow.setHTML(`Because of black hole mass overflow at <b>${formatMass(tmp.overflow_start.bh[0])}</b>, your mass of black hole gain is ${overflowFormat(tmp.overflow.bh||1)}!`)
@@ -475,7 +338,7 @@ function updateHTML() {
 	let displayMainTab = true
 	
 	tmp.el.loading.setDisplay(!tmp.start)
-    tmp.el.app.setDisplay(tmp.inf_time != 2 && tmp.inf_time != 3 && tmp.start && (player.supernova.times.lte(0) && !player.supernova.post_10 ? !tmp.supernova.reached : true) && displayMainTab)
+    tmp.el.app.setDisplay(tmp.inf_time != 2 && tmp.inf_time != 3 && tmp.start && !supernovaAni() && displayMainTab)
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
 	if (!player.options.nav_hide[1]) updateResourcesHTML()
@@ -542,11 +405,14 @@ function updateHTML() {
 		else if (tmp.tab_name == "elements") updateElementsHTML()
 		else if (tmp.tab_name == "dil") updateMDHTML()
 		else if (tmp.tab_name == "break-dil") updateBDHTML()
-		else if (tmp.tab_name == "ext-atom") {
-			updateExoticAtomsHTML()
-		}
+		else if (tmp.tab_name == "ext-atom") updateExoticAtomsHTML()
 		updateStatsHTML()
 		updateOptionsHTML()
 		updateChalHTML()
 	}
+}
+
+function reloadElements() {
+	tmp.el = {}
+	for (let x of document.getElementsByTagName("*")) tmp.el[x.id] = new Element(x)
 }

@@ -22,9 +22,7 @@ const ENTROPY = {
         x = x.mul(tmp.dark.shadowEff.en||1)
 
         x = x.pow(exoticAEff(0,2))
-
         if (tmp.inf_unl) x = x.pow(theoremEff('proto',4))
-
         if (hasElement(185)) x = overflow(x,tmp.en.cap.max(10),0.25)
 
         return x
@@ -127,6 +125,7 @@ const ENTROPY = {
 
             eff(i) {
                 let x = i.root(2).div(10).add(1).pow(-1)
+                if (OURO.evo >= 2) x = x.max(.15)
                 return x
             },
             desc(x) { return `All pre-Supernova, pre-Pent & pre-Meta scalings are <b>${formatReduction(x)}</b> weaker.` },
@@ -209,7 +208,6 @@ const ENTROPY = {
     getRewardEffect(i) {
         if ((player.qu.rip.active || tmp.c16active || inDarkRun()) && !tmp.en.reward_br.includes(i)) return E(0)
         let x = player.qu.en.rewards[i]
-
         if (hasElement(91) && (player.qu.rip.active || tmp.c16active || inDarkRun()) && (i==1||i==4)) x = x.mul(0.1)
 
         return x
@@ -246,7 +244,7 @@ function calcEntropy(dt) {
     if (player.qu.en.hr[0]) {
         player.qu.en.hr[3] += dt
         player.qu.en.hr[1] = player.qu.en.hr[1].add(tmp.en.gain.hr.mul(dt))
-        let s = player.bh.mass.div(player.bh.mass.max(1).pow(dt).pow(player.qu.en.hr[3]**(2/3))).sub(1)
+        let s = OURO.evo >= 2 ? player.evo.wh.fabric : player.bh.mass.div(player.bh.mass.max(1).pow(dt).pow(player.qu.en.hr[3]**(2/3))).sub(1)
         if (isNaN(s.mag)) s=E(1)
         if (s.lt(1)) ENTROPY.switch(1)
         else player.bh.mass = s
@@ -288,7 +286,7 @@ function updateEntropyHTML() {
     let inf_gs = tmp.preInfGlobalSpeed
 
     tmp.el.enEva1.setTxt(player.supernova.radiation.hz.format())
-    tmp.el.enEva2.setTxt(formatMass(player.bh.mass))
+    tmp.el.enEva2.setTxt(OURO.evo >= 2 ? format(player.evo.wh.fabric) + " Fabric" : formatMass(player.bh.mass) + " of Black Hole")
 
     tmp.el.enAmt1.setTxt(player.qu.en.eth[2].format())
     tmp.el.enAmt2.setTxt(player.qu.en.amt.format(1) + " / " + tmp.en.cap.format(1))

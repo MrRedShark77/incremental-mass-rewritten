@@ -78,16 +78,18 @@ const TREE_UPGS = {
             else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
             
             if (CS_TREE.includes(x)) player.dark.c16.tree.push(x)
-            else  player.supernova.tree.push(x)
+            else player.supernova.tree.push(x)
+            if (!auto) delete player.supernova.pin_req
 
             if (x == 'unl1') addQuote(6)
         }
+        if (!auto && tmp.supernova.tree_choosed == x && !hasTree(x)) player.supernova.pin_req = x
     },
     ids: {
         c: {
             req() { return player.supernova.times.gte(1) },
             reqDesc: `1 Supernova.`,
-            desc: `Start generating 0.1 Neutron Star per second.`,
+            desc: `Start generating 1 Neutron Star per second.`,
             cost: E(0),
         },
         sn1: {
@@ -96,7 +98,7 @@ const TREE_UPGS = {
             evo_desc: [1,`Meditation boosts Neutron Stars.`],
             cost: E(10),
             effect() {
-                let x = OURO.evolution >= 1 ? player.evo.cp.level.add(1).root(2) : player.build.tickspeed.amt.add(1).root(4)
+                let x = OURO.evo >= 2 ? expMult(player.evo.cp.level.add(1).root(4), 1.5) :  OURO.evo == 1 ? player.evo.cp.level.add(1).root(2) : player.build.tickspeed.amt.add(1).root(4)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -108,7 +110,7 @@ const TREE_UPGS = {
             effect() {
                 let sn = player.supernova.times
                 if (!hasTree("qu4")) sn = sn.softcap(15,0.8,0).softcap(25,0.5,0)
-                let x = E(2).add(hasTree("sn4")?tmp.supernova.tree_eff.sn4:0).pow(sn)
+                let x = E(2.05).add(hasTree("sn4")?tmp.supernova.tree_eff.sn4:0).pow(sn)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -133,7 +135,7 @@ const TREE_UPGS = {
             reqDesc: `13 Supernovas.`,
             cost: E(1e8),
             effect() {
-                let x = player.supernova.times.mul(0.1).softcap(1.5,0.75,0)
+                let x = player.supernova.times.mul(0.2).softcap(1.5,0.75,0)
                 if (hasElement(112)) x = x.add(2)
                 return x
             },
@@ -195,28 +197,29 @@ const TREE_UPGS = {
             evo_desc: [1,`Neutron Stars boost calm powers gain.`],
             cost: E(200),
             effect() {
-                if (OURO.evolution >= 1) return hasElement(165) ? player.supernova.stars.add(1).log10().add(1) : player.supernova.stars.add(1).log10().add(1).log10().add(1).pow(2)
+                if (OURO.evo >= 1) return hasElement(165) ? player.supernova.stars.add(1).log10().add(1) : player.supernova.stars.add(1).log10().add(1).log10().add(1).pow(2)
                 let x = hasElement(165)
                 ? player.supernova.stars.add(1).log10().add(1).log10().div(10).add(1)
                 : E(1e50).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
                 return x
             },
-            effDesc(x) { return OURO.evolution >= 1?formatMult(x):hasElement(165)?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e50).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
+            effDesc(x) { return OURO.evo >= 1?formatMult(x):hasElement(165)?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e50).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
         },
         bh1: {
             branch: ["c"],
             desc: `Neutron Star boosts Dark Matters gain.`,
+            evo_desc: [2,`Neutron Stars raise Wormholes.`],
             cost: E(400),
             effect() {
-                let x = hasElement(166)
-                ? player.supernova.stars.add(1).log10().add(1).log10().div(10).add(1)
+                let x = hasElement(166) || OURO.evo >= 2 ? player.supernova.stars.add(1).log10().add(1).log10().div(10).add(1)
                 : E(1e35).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
                 return x
             },
-            effDesc(x) { return hasElement(166)?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e35).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
+            effDesc(x) { return hasElement(166)||OURO.evo>=2?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e35).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
         },
         bh2: {
             branch: ['bh1'],
+            unl() { return OURO.evo < 2 },
             req() { return player.supernova.chal.noBHC && player.bh.mass.gte("1.5e1.7556e4") },
             reqDesc() {return `Reach ${format("e1.75e4")} uni of black hole without buying any BH Condenser in a Supernova run.`},
             desc: `BH Condenser power is raised to the 1.15th.`,
@@ -303,8 +306,8 @@ const TREE_UPGS = {
         qol7: {
             branch: ["qol6"],
             unl() { return player.supernova.fermions.unl && hasTree("fn2") },
-            req() { return player.supernova.times.gte(40) },
-            reqDesc: `40 Supernovas.`,
+            req() { return OURO.evo >= 2 || player.supernova.times.gte(40) },
+            reqDesc() { return OURO.evo >= 2 ? `YOU CAN AFFORD BECAUSE OF EVOLUTION!` : `40 Supernovas.` },
             desc: `You can now automatically buy Photon & Gluon upgrades, they no longer spent their amount.`,
             cost: E(1e48),
         },
@@ -330,6 +333,7 @@ const TREE_UPGS = {
         },
         chal2: {
             branch: ["chal1"],
+            unl() { return OURO.evo < 2 },
             req() {
                 for (let x = 1; x <= 4; x++) if (player.chal.comps[x].gte(1)) return false
                 return player.mass.gte(E('e2.05e6').mul(1.5e56))
@@ -341,10 +345,11 @@ const TREE_UPGS = {
         chal3: {
             branch: ["chal1"],
             req() {
+                if (OURO.evo >= 2) return true
                 for (let x = 5; x <= 8; x++) if (player.chal.comps[x].gte(1)) return false
                 return player.bh.mass.gte(E('e1.75e4').mul(1.5e56))
             },
-            reqDesc() { return `Reach ${format('e1.75e4')} uni of black hole without challenge 5-8 completions in a Supernova run.` },
+            reqDesc() { return OURO.evo >= 2 ? `YOU CAN AFFORD BECAUSE OF EVOLUTION!` : `Reach ${format('e1.75e4')} uni of black hole without challenge 5-8 completions in a Supernova run.` },
             desc: `Keep challenge 5-8 completions on reset.`,
             cost: E(1e4),
         },
@@ -379,7 +384,7 @@ const TREE_UPGS = {
         chal7: {
             branch: ["chal6"],
             desc: `Unlock the 12th Challenge.`,
-            cost: E(1e200),
+            get cost() { return OURO.evo >= 2 ? E(1e150) : E(1e200) },
         },
         chal7a: {
             unl() { return hasTree("unl3") },
@@ -463,7 +468,7 @@ const TREE_UPGS = {
             evo_desc: [1,`Meditation affects Fermions gain at a reduced rate.`],
             cost: E(1e27),
             effect() {
-                let x = OURO.evolution >= 1 ? expMult(player.evo.cp.level.add(1),2) : E(1.25).pow(player.build.tickspeed.amt.softcap(1e24,0.5,2).pow(0.4))
+                let x = OURO.evo >= 1 ? expMult(player.evo.cp.level.add(1), 2).pow(OURO.evo >= 2 ? 0.1 : 1) : E(1.25).pow(player.build.tickspeed.amt.softcap(1e24,0.5,2).pow(0.4))
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -753,6 +758,7 @@ const TREE_UPGS = {
         },
         qu_qol3: {
             qf: true,
+            unl() { return OURO.evo < 2 },
             branch: ["qu_qol1"],
             req() {
                 for (let x = 1; x <= 4; x++) if (player.chal.comps[x].gte(1)) return false
@@ -792,13 +798,13 @@ const TREE_UPGS = {
         },
         qu_qol7: {
             qf: true,
-            branch: ["qu_qol3","qu_qol5"],
+            get branch() { return OURO.evo >= 2 ? ["qu_qol5"] : ["qu_qol3","qu_qol5"] },
             req() {
-                if (OURO.evolution >= 1) return true
+                if (OURO.evo >= 1) return true
                 for (let x = 9; x <= 12; x++) if (player.chal.comps[x].gte(1)) return false
                 return player.mass.gte(mlt(5e3)) && FERMIONS.onActive("05")
             },
-            reqDesc() { return OURO.evolution >= 1 ? `YOU CAN AFFORD BECAUSE OF EVOLUTION!` : `Reach ${formatMass(mlt(5e3))} of mass without completing Challenges 9-12 in Quantum run, while in [Bottom].` },
+            reqDesc() { return OURO.evo >= 1 ? `YOU CAN AFFORD BECAUSE OF EVOLUTION!` : `Reach ${formatMass(mlt(5e3))} of mass without completing Challenges 9-12 in Quantum run, while in [Bottom].` },
             desc: `Keep challenge 9-12 completions on going Quantum.`,
             cost: E(25),
         },
@@ -906,8 +912,8 @@ const TREE_UPGS = {
         unl1: {
             branch: ["qol7"],
             unl() { return hasTree("fn6") },
-            req() { return player.supernova.times.gte(44) },
-            reqDesc: `44 Supernovas.`,
+            req() { return OURO.evo >= 2 || player.supernova.times.gte(44) },
+            reqDesc() { return OURO.evo >= 2 ? `YOU CAN AFFORD BECAUSE OF EVOLUTION!` : `44 Supernovas.` },
             desc: `Unlock Radiation.`,
             cost: E(5e52),
         },
@@ -967,13 +973,12 @@ const TREE_UPGS = {
         },
 
         // Corrupted Tree
-
         ct1: {
             desc: `Best mass of black hole in C16 boosts normal mass gain.`,
             cost: E(10),
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1)
+                let x = tmp.c16.best_bh_eff.add(1)
                 return overflow(x,10,0.5)
             },
             effDesc(x) { return "^"+format(x) },
@@ -985,7 +990,7 @@ const TREE_UPGS = {
             cost: E(50),
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
+                let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -996,11 +1001,11 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free fermion tiers.`,
             cost: E(50),
 
-            req() { return tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e81') },
-            reqDesc() { return `Reach ${formatMass('1e81')} of black hole during C16 & [Meta-Quark].` },
+            req() { return OURO.evo || (tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e81')) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${formatMass('1e81')} of black hole during C16 & [Meta-Quark].` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1).log10().mul(1.5)
+                let x = tmp.c16.best_bh_eff.add(1).log10().mul(1.5)
                 return x
             },
             effDesc(x) { return "+"+format(x) },
@@ -1011,12 +1016,12 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds to the base of all matter's upgrade.`,
             cost: E(100),
 
-            req() { return tmp.c16active && player.bh.dm.gte(1e300) },
-            reqDesc() { return `Reach ${format(1e300)} dark matters during C16.` },
+            req() { return OURO.evo || (tmp.c16active && player.bh.dm.gte(1e300)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e300)} dark matters during C16.` },
 
             effect() {
                 let p = hasPrestige(2,40), c = tmp.c16active
-                let x = player.dark.c16.bestBH.add(1).log10().add(1).log10().div(c?8:30)
+                let x = tmp.c16.best_bh_eff.add(1).log10().div(c?8:30)
                 if (p) x = x.mul(c?3:1.2)
                 return x
             },
@@ -1040,11 +1045,11 @@ const TREE_UPGS = {
             desc: `Mass overflow starts later based on best mass of black hole in C16.`,
             cost: E(300),
 
-            req() { return tmp.c16active && player.atom.atomic.gte(1e8) },
-            reqDesc() { return `Reach ${format(1e8)} atomic powers during C16.` },
+            req() { return OURO.evo || (tmp.c16active && player.atom.atomic.gte(1e8)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e8)} atomic powers during C16.` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
+                let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return overflow(x,10,0.5)
             },
             effDesc(x) { return "^"+format(x)+" later" },
@@ -1055,8 +1060,8 @@ const TREE_UPGS = {
             desc: `Neutronium-0 now affects Challenge 14 at a reduced rate. (like [ct5])`,
             cost: E(1500),
 
-            req() { return player.chal.comps[14]&&player.chal.comps[14].gte(750) },
-            reqDesc() { return `Get ${format(750,0)} C14 completions.` },
+            req() { return OURO.evo || (player.chal.comps[14]&&player.chal.comps[14].gte(750)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Get ${format(750,0)} C14 completions.` },
         },
         ct8: {
             branch: ['ct2'],
@@ -1065,7 +1070,7 @@ const TREE_UPGS = {
             cost: E(2500),
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
+                let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
@@ -1076,11 +1081,11 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free radiation boosts.`,
             cost: E(5000),
 
-            req() { return tmp.c16active && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('1e400') && player.build.bhc.amt.lte(0) },
-            reqDesc() { return `Reach ${formatMass('1e400')} of black hole during C16 & [Meta-Lepton] without buying BH Condensers.` },
+            req() { return OURO.evo || (tmp.c16active && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('1e400') && player.build.bhc.amt.lte(0)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${formatMass('1e400')} of black hole during C16 & [Meta-Lepton] without buying BH Condensers.` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().root(3)
+                let x = tmp.c16.best_bh_eff.root(3)
                 return x.overflow('1e300',0.25)
             },
             effDesc(x) { return "+"+format(x) },
@@ -1104,11 +1109,11 @@ const TREE_UPGS = {
             desc: `Mass of black hole overflow starts later based on best mass of black hole in C16. (weaker during C16)`,
             cost: E(1e6),
 
-            req() { return tmp.c16active && player.atom.atomic.gte(1e20) },
-            reqDesc() { return `Reach ${format(1e20)} atomic powers during C16.` },
+            req() { return OURO.evo || (tmp.c16active && player.atom.atomic.gte(1e20)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e20)} atomic powers during C16.` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1)
+                let x = tmp.c16.best_bh_eff.add(1)
                 x = tmp.c16active ? x.root(4) : x.pow(3)
                 x = overflow(x,10,0.5)
                 x = tmp.c16active ? x.root(3) : x.pow(2)
@@ -1122,11 +1127,11 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free primordium particles.`,
             cost: E(5e7),
 
-            req() { return tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.build.bhc.amt.lte(0) },
-            reqDesc() { return `Reach ${formatMass('1e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
+            req() { return OURO.evo || (tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.build.bhc.amt.lte(0)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${formatMass('1e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().root(2).overflow('1e430',0.25)
+                let x = tmp.c16.best_bh_eff.root(2).overflow('1e430',0.25)
                 return x
             },
             effDesc(x) { return "+"+format(x) },
@@ -1137,8 +1142,8 @@ const TREE_UPGS = {
             desc: `Neutronium-0 now affects Challenge 15 at a reduced rate (like [ct5]). C15 now affects Atomic & Quark Overflows.`,
             cost: E(2.5e8),
 
-            req() { return player.chal.comps[14]&&player.chal.comps[14].gte(940) },
-            reqDesc() { return `Get ${format(940,0)} C14 completions.` },
+            req() { return OURO.evo||(player.chal.comps[14]&&player.chal.comps[14].gte(940)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Get ${format(940,0)} C14 completions.` },
         },
         ct14: {
             branch: ['ct11'],
@@ -1146,11 +1151,11 @@ const TREE_UPGS = {
             desc: `Dilated mass overflow starts later based on best mass of black hole in C16.`,
             cost: E(1e10),
 
-            req() { return tmp.c16active && player.atom.atomic.gte(1e144) },
-            reqDesc() { return `Reach ${format(1e144)} atomic powers during C16.` },
+            req() { return OURO.evo || (tmp.c16active && player.atom.atomic.gte(1e144)) },
+            reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e144)} atomic powers during C16.` },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().add(1).pow(2)
+                let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return x
             },
             effDesc(x) { return "^"+format(x)+" later" },
@@ -1172,47 +1177,18 @@ const TREE_UPGS = {
             branch: ['ct10'],
 
             desc: `Best mass of black hole in C16 boosts Kaon & Pion gain.`,
-            cost: E(5e16),
+            get cost() { return E(OURO.evo >= 2 ? 1e12 : 5e16) },
 
             effect() {
-                let x = player.dark.c16.bestBH.add(1).log10().div(1e5).add(1).pow(2)
+                let x = tmp.c16.best_bh_eff.div(1e5).add(1).pow(2)
                 return x
             },
             effDesc(x) { return "x"+format(x) },
         },
-
-        /*
-        x: {
-            unl() { return true },
-            req() { return true },
-            icon: "placeholder",
-            reqDesc: ``,
-            desc: `Placeholder.`,
-            cost: EINF,
-            effect() {
-                let x = E(1)
-                return x
-            },
-            effDesc(x) { return format(x)+"x" },
-        },
-        */
     },
 }
 
-for (let i in CS_TREE) {
-    let u = TREE_UPGS.ids[CS_TREE[i]]
-    if (!u) TREE_UPGS.ids[CS_TREE[i]] = {
-        icon: `placeholder`,
-        cs: true,
-        desc: `Placeholder.`,
-        cost: EINF,
-    }
-    else {
-        u.desc = u.desc||`Placeholder.`
-        u.cs = true
-        u.cost = u.cost||EINF
-    }
-}
+for (let i in CS_TREE) TREE_UPGS.ids[CS_TREE[i]].cs = true
 
 const TREE_TYPES = (()=>{
     let t = {
@@ -1267,14 +1243,16 @@ function retrieveCanvasData() {
 	let treeCanv = document.getElementById("tree_canvas")
 	if (treeCanv===undefined||treeCanv===null) return false;
     tree_canvas = treeCanv
-	tree_ctx = tree_canvas.getContext("2d");
+	tree_ctx = tree_canvas.getContext("2d")
 	return true;
 }
 
 function resizeCanvas() {
+	if (C16_ANI.canvas) {
+		C16_ANI.canvas.width = C16_ANI.canvas.clientWidth
+		C16_ANI.canvas.height = C16_ANI.canvas.clientHeight
+	}
     if (!retrieveCanvasData()) return
-	tree_canvas.width = 0;
-	tree_canvas.height = 0;
 	tree_canvas.width = tree_canvas.clientWidth
 	tree_canvas.height = tree_canvas.clientHeight
 }
@@ -1352,15 +1330,18 @@ function changeTreeAnimation() {
 }
 
 function updateTreeHTML() {
-    let c16 = tmp.c16active
-    if (tmp.supernova.tree_choosed == "") tmp.el.tree_desc.setHTML(`<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click any tree upgrade to show)</span></div>`)
+    let c16 = tmp.c16active, ch = tmp.supernova.tree_choosed
+    if (tmp.supernova.tree_choosed == "") tmp.el.tree_desc.setHTML(``)
     else {
-        let t_ch = TREE_UPGS.ids[tmp.supernova.tree_choosed]
-        let req = t_ch.req?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
+        let t_ch = TREE_UPGS.ids[ch]
+        let req = t_ch.req&&!hasTree(ch)?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
         let desc = t_ch.desc
-        if (t_ch.evo_desc && OURO.evolution >= t_ch.evo_desc[0]) desc = desc.strike() + " " + t_ch.evo_desc[1]
+        if (t_ch.evo_desc && OURO.evo >= t_ch.evo_desc[0]) desc = desc.strike() + " " + t_ch.evo_desc[1]
         tmp.el.tree_desc.setHTML(
-            `<div style="font-size: 12px; font-weight: bold;"><span class="gray">(click again to buy if affordable)</span>${req}</div>
+			`<div style="font-size: 12px; font-weight: bold;">
+				${tmp.supernova.tree_afford[ch] ? '<span class="green">(click to buy)</span>' : req != '' ? (player.supernova.pin_req == ch ? '<span class="yellow">(requirement pinned at top)</span>' : '<span class="yellow">(click to pin requirement)</span>') : ''}
+				${req}
+			</div>
             ${`<span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${desc}</span>`.corrupt(c16 && CORRUPTED_TREE.includes(tmp.supernova.tree_choosed))}<br>
             <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':t_ch.cs?'<span class="corrupted_text">Corrupted Shard</span>':'Neutron star'}</span><br>
             <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>

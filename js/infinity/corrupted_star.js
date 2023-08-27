@@ -32,50 +32,54 @@ const CORRUPTED_STAR = {
     },
     eff() {
         let x = {}, cs = player.inf.cs_amount
-
-        x.power_mult = cs.add(1).log10().add(1).overflow(10,0.5).root(2)
-        x.theorem_luck = cs.add(1).log10().root(2).div(10).add(1)
-        x.inf_speed = cs.add(1).log10().add(1)
-
-        if (hasElement(38,1)) x.sn_speed = cs.add(1).log10().add(1).pow(1.5)
-        if (hasElement(43,1)) x.ea_reward = cs.add(1).log10().root(2).div(20)
-        if (hasElement(64,1)) x.prim_reduce = Decimal.pow(0.9,cs.add(1).log10().overflow(10,0.5).root(2))
-
-        return x
+		for (var [i, eff] of Object.entries(this.effects)) {
+			if (!eff.unl()) continue
+			x[i] = eff.eff(cs)
+		}
+		return x
     },
+	effects: {
+		power_mult: {
+			unl: _ => true,
+			eff: cs => cs.add(1).log10().add(1).overflow(10,0.5).root(2),
+			eff_desc: i => `Increase Theorem's Power. <h4>${formatMult(i)}</h4>`
+		},
+		theorem_luck: {
+			unl: _ => true,
+			eff: cs => cs.add(1).log10().root(2).div(10).add(1),
+			eff_desc: i => `Increase luck on Theorem Stars 1-4. <h4>${formatMult(i)}</h4>`
+		},
+		inf_speed: {
+			unl: _ => true,
+			eff: cs => cs.add(1).log10().add(1),
+			eff_desc: i => `Increase passive IP generation. <h4>${formatMult(i)}</h4>`
+		},
+		sn_speed: {
+			unl: _ => hasElement(38,1),
+			eff: cs => cs.add(1).log10().add(1).pow(1.5),
+			eff_desc: i => `Increase passive Supernova generation. <h4>${formatMult(i)}</h4>`
+		},
+		ea_reward: {
+			unl: _ => hasElement(43,1),
+			eff: cs => cs.add(1).log10().root(2).div(20),
+			eff_desc: i => `Strengthen Exotic Atom rewards. <h4>+${format(i)}</h4>`
+		},
+		prim_reduce: {
+			unl: _ => hasElement(64,1),
+			eff: cs => Decimal.pow(0.9,cs.add(1).log10().overflow(10,0.5).root(2)),
+			eff_desc: i => `Weaken Primordium Theorem scalings. <h4>^${format(i)}</h4>`
+		}
+	}
 }
 
 function updateCSTemp() {
-    let ss1 = E(1e3), ss2 = E(1e10)
+	let ss_mul = E(1)
+    if (hasElement(37,1)) ss_mul = ss_mul.mul(muElemEff(37))
+    if (hasElement(40,1)) ss_mul = ss_mul.mul(muElemEff(40))
+    if (hasElement(50,1)) ss_mul = ss_mul.mul(muElemEff(50))
+    if (hasElement(65,1)) ss_mul = ss_mul.mul(muElemEff(65))
 
-    if (hasElement(37,1)) {
-        let x = muElemEff(37)
-
-        ss1 = ss1.mul(x)
-        ss2 = ss2.mul(x)
-    }
-
-    if (hasElement(40,1)) {
-        let x = muElemEff(40)
-
-        ss1 = ss1.mul(x)
-        ss2 = ss2.mul(x)
-    }
-
-    if (hasElement(50,1)) {
-        let x = muElemEff(50)
-
-        ss1 = ss1.mul(x)
-        ss2 = ss2.mul(x)
-    }
-
-    if (hasElement(65,1)) {
-        let x = muElemEff(65)
-
-        ss1 = ss1.mul(x)
-        ss2 = ss2.mul(x)
-    }
-
+    let ss1 = E(1e3).mul(ss_mul), ss2 = E(1e10).mul(ss_mul)
     tmp.cs_reduce_start1 = ss1
     tmp.cs_reduce_start2 = ss2
 
@@ -87,16 +91,17 @@ function updateCSTemp() {
     if (hasElement(47,1)) s = s.mul(muElemEff(47))
 
     tmp.cs_reduce_power = GPEffect(4,1)
-
     tmp.cs_speed = s
 
     tmp.csu_div = E(1)
-
     if (hasPrestige(4,7)) tmp.csu_div = tmp.csu_div.mul(1e10)
     if (hasElement(53,1)) tmp.csu_div = tmp.csu_div.mul(muElemEff(53))
 
     tmp.cs_effect = CORRUPTED_STAR.eff()
 }
+
+function hasCSEffect(i) { return tmp.cs_effect[i] !== undefined }
+function CSEffect(i, def = E(1)) { return OURO.isFed("cs_"+i) ? def : tmp.cs_effect[i] ?? def }
 
 function buyCSUpg(i) {
     let bulk
@@ -183,17 +188,11 @@ function updateCSHTML() {
         : ""
     )
 
-    let eff = tmp.cs_effect, h = ''
-
-    h += `
-    Increase Theorem's Power by <b>${formatMult(eff.power_mult)}</b>
-    <br>Increase Theorem's Star 1-4 Luck by <b>${formatMult(eff.theorem_luck)}</b>
-    <br>Speed IP Generation by <b>${formatMult(eff.inf_speed)}</b>
-    `
-
-    if (eff.sn_speed) h += `<br>Speed Supernova Generation by <b>${formatMult(eff.sn_speed)}</b>`
-    if (eff.ea_reward) h += `<br>Increase reward strength of exotic atom by <b>+${formatPercent(eff.ea_reward)}</b>`
-    if (eff.prim_reduce) h += `<br>Reduce the primordium theorem requirement by <b>^${format(eff.prim_reduce)}</b>`
-
+    let h = ''
+	for (var [i, eff] of Object.entries(tmp.cs_effect)) {
+		let fed = OURO.fed_msg[tmp.ouro.fed["cs_"+i]], line = CORRUPTED_STAR.effects[i].eff_desc(eff)
+		if (fed) line = line.strike() + " " + fed
+		h += line+"<br>"
+	}
     tmp.el.cs_effect.setHTML(h)
 }

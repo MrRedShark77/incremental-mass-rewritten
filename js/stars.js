@@ -8,15 +8,13 @@ const STARS = {
         x = x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
 
         if (hasElement(182)) x = x.pow(10)
-
         if (hasUpgrade('bh',17)) x = x.pow(upgEffect(2,17))
 
         let os = E('eee5'), op = E(0.5)
-
         if (hasUpgrade('atom',24)) os = expMult(os,2)
+        if (OURO.evo >= 2) os = EINF
         
         let o = x
-
         x = overflow(x,os,op,2)
 
         tmp.overflow.star = calcOverflow(o,x,os,2)
@@ -26,6 +24,7 @@ const STARS = {
         return x
     },
     softGain() {
+        if (hasUpgrade('atom',22)) return EINF
         let s = E("e1000").pow(tmp.fermions.effs[1][0]||1)
         return s
     },
@@ -45,14 +44,12 @@ const STARS = {
             if (hasPrestige(0,382)) {
                 x = Decimal.add(1.1,exoticAEff(0,5,0)).pow(pp.log10().add(1).mul(player.stars.points.add(1).log10().add(1).log10().add(1)).root(2).sub(1))
             } else {
-                x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1)
-            
+                x = pp.log10().mul(player.stars.points.add(1).log10().add(1).log10().add(1)).add(1)            
                 x = hasElement(170)?x.root(1.5).div(40):x.root(2).div(50)
-
                 x = x.add(1)
             }
 
-            x = x.overflow('e3000',0.5)
+            x = x.overflow(OURO.evo >= 2 ? 'e1000' : 'e3000', 0.5)
         } else {
             let [p, pp] = [E(1), E(1)]
             if (hasElement(48)) p = p.mul(1.1)
@@ -62,11 +59,12 @@ const STARS = {
                 ,player.ranks.tier.softcap(1.5e5,0.25,0).mul(p)
                 ,player.ranks.tetr.softcap(30000,0.15,0).mul(p).softcap(5,hasTree("s2")?1.5:5,1).softcap(9,0.3,0)
                 ,(hasElement(69)?player.ranks.pent.mul(pp):E(0)).softcap(9,0.5,0)]
-            x =
-            s.max(1).log10().add(1).pow(r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1))))
+            r = r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1)))
+            if (OURO.evo >= 2) r = r.softcap(1e40,3,3)
+            x = s.max(1).log10().add(1).pow(r)
             x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
-            if (player.qu.rip.active || tmp.c16active || inDarkRun()) x = x.softcap('ee33',0.9,2)
-            x = x.softcap('ee70',0.91,2)//.min('ee70')
+            if (player.qu.rip.active || tmp.c16active || inDarkRun() || OURO.evo >= 2) x = x.softcap('ee33',0.9,2)
+            x = x.softcap('ee70',0.91,2)
         }
 
         if (tmp.c16active) x = overflow(x,10,0.5).min('ee70')
@@ -92,9 +90,7 @@ const STARS = {
             }
             if (QCs.active() && pow.gte(1)) pow = pow.pow(tmp.qu.qc_eff[0][1])
 
-            let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(pow)
-        
-
+            let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(pow).mul(5)
             if (hasElement(49) && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.elements.effect[49])
             if (hasTree("s1") && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.supernova.tree_eff.s1)
             if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
@@ -130,28 +126,6 @@ function updateStarsTemp() {
     tmp.stars.max_unlocks = s
 
     tmp.stars.generator_req = player.stars.unls<tmp.stars.max_unlocks?STARS.generators.req[player.stars.unls]:EINF
-
-    BUILDINGS.update('star_booster')
-
-    /*
-    let s = E("e8000")
-    let inc = E("e100")
-    if (hasUpgrade('br',5)) {
-        s = s.root(10)
-        inc = inc.root(10)
-    }
-    tmp.stars.generator_boost_req = inc.pow(player.stars.boost.pow(1.25)).mul(s)//.scale(1e35,2,0)
-    tmp.stars.generator_boost_bulk = player.atom.quarks.gte(s)?player.atom.quarks.div(s).max(1).log(inc).root(1.25).add(1).floor():E(0)//.scale(1e35,2,0,true)
-
-    tmp.stars.generator_boost_base = E(2)
-    if (hasElement(57)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(tmp.elements.effect[57])
-    if (hasUpgrade('br',5)) tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.mul(upgEffect(4,5))
-    tmp.stars.generator_boost_base = tmp.stars.generator_boost_base.softcap(1e13,0.5,0)//.softcap(3e15,0.1,0)
-
-    if (CHALS.inChal(17)) tmp.stars.generator_boost_base = E(1)
-
-    tmp.stars.generator_boost_eff = tmp.stars.generator_boost_base.pow(player.stars.boost.mul(tmp.chal?tmp.chal.eff[11]:1)).softcap('e3e18',0.95,2)
-    */
 
     for (let x = 0; x < tmp.stars.max_unlocks; x++) tmp.stars.generators_gain[x] = STARS.generators.gain(x)
     tmp.stars.softPower = STARS.softPower()
@@ -218,6 +192,8 @@ function updateStarsHTML() {
         if (tmp.el["star_gen_arrow_"+x]) tmp.el["star_gen_arrow_"+x].setDisplay(unl)
         if (unl) tmp.el["star_gen_"+x].setHTML(format(player.stars.generators[x],2)+"<br>"+formatGain(player.stars.generators[x],tmp.stars.generators_gain[x].mul(tmp.preQUGlobalSpeed)))
     }
+
+    BUILDINGS.update('star_booster')
 
     tmp.el.starSiltation.setDisplay(player.stars.points.gte(tmp.overflow_start.star[0]))
 	tmp.el.starSiltation.setHTML(`Because of star siltation at <b>${format(tmp.overflow_start.star[0])}</b>, the exponent of collapsed stars is ${overflowFormat(tmp.overflow.star||1)}!`)

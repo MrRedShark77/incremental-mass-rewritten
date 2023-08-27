@@ -1,53 +1,32 @@
 const MUONIC_ELEM = {
-    canBuy(x) {
-        if (player.atom.muonic_el.includes(x)) return false
-        let upg = this.upgs[x], amt = upg.berry ? player.ouro.berry : upg.cs ? player.inf.cs_amount : tmp.exotic_atom.amount
-
-        return amt.gte(upg.cost||EINF)
-    },
-    buyUpg(x) {
-        if (this.canBuy(x)) {
-            let upg = this.upgs[x]
-
-            if (upg.berry) player.ouro.berry = player.ouro.berry.sub(upg.cost)
-            else if (upg.cs) player.inf.cs_amount = player.inf.cs_amount.sub(upg.cost)
-
-            player.atom.muonic_el.push(x)
-        }
-    },
     upgs: [
         null,
         {
-            desc: `Mass of unstable black hole boosts Pion gain.`,
+            get desc() { return OURO.evo >= 2 ? `Anti-Wormhole boosts Pion gain.` : `Mass of unstable black hole boosts Pion gain.` },
             cost: E(1000),
             eff() {
-                let x = player.bh.unstable.add(1).root(3)
-                return x
+                if (OURO.evo >= 2) return player.evo.wh.mass[6].div(1e4).max(1)
+                if (OURO.evo < 2) return player.bh.unstable.add(1).root(3)
             },
             effDesc: x=>formatMult(x),
-        },
-        {
+        },{
             desc: `Remove all pre-meta scalings from Fermion Tiers.`,
             cost: E(1e5),
-        },
-        {
+        },{
             desc: `You can now automatically get all Meta-Fermions Tiers outside any Fermion.`,
             cost: E(1e10),
-        },
-        {
+        },{
             desc: `^1.1 to Matters gain inside C16, and ^1.05 to Matters' exponent outside C16.`,
             cost: E(1e13),
-        },
-        {
+        },{
             desc: `Kaon & Pion are doubled every muonic element bought.`,
             cost: E(1e15),
             eff() {
-                let x = Decimal.pow(hasElement(26,1)?3:2,player.atom.muonic_el.length)
+                let x = Decimal.pow(hasElement(26,1)?3:2,getElemLength(1))
                 return x
             },
             effDesc: x=>formatMult(x),
-        },
-        {
+        },{
             desc: `Not affected by Neutronium-0, each pre-16 challenge’s completions boost each chroma gain.`,
             cost: E(1e20),
             eff() {
@@ -57,52 +36,42 @@ const MUONIC_ELEM = {
                 return x
             },
             effDesc: x=>formatMult(x),
-        },
-        {
+        },{
             desc: `You can now automatically earn Cyrillic, Deutsch, and Swedish glyphs outside Dark Run, and they don’t affect dark run’s nerf.`,
             cost: E(1e23),
-        },
-        {
-            desc: `C9’s effect softcap is 1% weaker.`,
-            cost: E(1e32),
-        },
-        {
-            desc: `Remove the softcap of dark shadow’s fourth reward. Supernovas boost Pion gain`,
+        },{
+            get desc() { return OURO.evo >= 2 ? `Stronger boosts after overflow.` : `C9’s effect softcap is 1% weaker.` },
+            get cost() { return OURO.evo >= 2 ? E(1e29) : E(1e32) },
+        },{
+            desc: `Remove the softcap of dark shadow’s fourth reward. Supernovas boost Pion gain.`,
             cost: E(1e42),
             eff() {
-                let x = player.supernova.times.div(1e6).add(1)
-                return x
+                return OURO.evo >= 2 ? player.supernova.times.div(1e5).add(1).pow(2) : player.supernova.times.div(1e6).add(1)
             },
             effDesc: x=>formatMult(x),
-        },
-        {
+        },{
             desc: `De-corrupt Unoctseptium-187.`,
             cost: E(1e46),
-        },
-        {
+        },{
             desc: `De-corrupt FSS’s reward to Matters.`,
             cost: E(1e54),
-        },
-        {
+        },{
             desc: `Pion’s first reward is even stronger. Honor 247’s reward affects Pion gain.`,
             cost: E(1e64),
-        },
-        {
+        },{
             desc: `Pyro-Radioactive Plasma is better.`,
             cost: E(1e81),
-        },
-        {
+        },{
             desc: `Final Star Shards increase Matter formula.`,
-            cost: E(1e100),
+            get cost() { return OURO.evo >= 2 ? E(1e90) : E(1e100) },
             eff() {
                 let x = player.dark.matters.final.root(2).div(5)
                 return x
             },
             effDesc: x=>"+"+format(x),
-        },
-        {
-            desc: `C15's reward affects mass overflow^2 starting.`,
-            cost: E(1e111),
+        },{
+            get desc() { return OURO.evo >= 2 ? "Greatly improve FSS base formula." : `C15's reward affects mass overflow^2 starting.` },
+            get cost() { return OURO.evo >= 2 ? E(1e95) : E(1e111) },
             eff() {
                 if (!tmp.chal) return E(1)
                 let x = hasElement(26,1)?tmp.chal.eff[15].root(2):overflow(tmp.chal.eff[15],10,0.5).pow(2)
@@ -116,13 +85,13 @@ const MUONIC_ELEM = {
             desc: `Quantum times boost infinity points gain. De-nullify [Tau]’s effect, but its formula is changed.`,
             cost: E(1e150),
             eff() {
-                let x = player.qu.times.add(1).log10().add(1)
+                let x = player.qu.times.add(1).log10().add(1).pow(OURO.evo >= 2 ? 2 : 1)
                 return x
             },
             effDesc: x=>formatMult(x),
         },{
-            desc: `Accelerators raise the Argon-18's effect at an extremely reduced rate (after first overflow).`,
-            cost: E(1e170),
+            get desc() { return OURO.evo >= 2 ? `Raise Dark Shadows by ^1.5.` : `Accelerators raise the Argon-18's effect at an extremely reduced rate (after first overflow).`},
+            get cost() { return OURO.evo >= 2 ? E(1e160) : E(1e170) },
             eff() {
                 let x = player.build.accelerator.amt.add(10).log10()
                 return x
@@ -132,7 +101,7 @@ const MUONIC_ELEM = {
             desc: `Atomic power’s free tickspeeds now append to cosmic strings at a logarithmic rate.`,
             cost: E(1e270),
             eff() {
-                if (!tmp.atom) return E(0)
+                if (!tmp.atom.unl) return E(0)
                 let x = tmp.atom.atomicEff[0].max(1).log10()
                 if (hasElement(60,1)) x = x.pow(1.75)
                 return x.floor()
@@ -153,8 +122,8 @@ const MUONIC_ELEM = {
             desc: `Total infinity points boost kaon & pion gains.`,
             cost: E('e470'),
             eff() {
-                let x = player.inf.total.add(1).root(4)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return player.inf.total.add(1).root(4)
             },
             effDesc: x=>formatMult(x),
         },{
@@ -167,8 +136,8 @@ const MUONIC_ELEM = {
             desc: `Increase exotic atom’s reward strength by +1.25% per infinity theorem.`,
             cost: E('e778').mul(7/9),
             eff() {
-                let x = player.inf.theorem.mul(.0125)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return player.inf.theorem.mul(.0125)
             },
             effDesc: x=>"+"+formatPercent(x),
         },{
@@ -201,18 +170,15 @@ const MUONIC_ELEM = {
             desc: `Corrupted Star’s speed is increased by pre-Infinity global speed at a reduced rate.`,
             cost: E('e2600'),
             eff() {
-                let x = hasElement(59,1) ? expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2) : tmp.preInfGlobalSpeed.max(1).log10().add(1).pow(2)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return hasElement(59,1) ? expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2) : tmp.preInfGlobalSpeed.max(1).log10().add(1).pow(2)
             },
             effDesc: x=>formatMult(x),
         },{
             cs: true,
             desc: `Muon-Catalyzed Fusion speeds Corrupted Star.`,
             cost: E('e20'),
-            eff() {
-                let x = Decimal.pow(1.5,player.dark.exotic_atom.tier)
-                return x
-            },
+            eff: _ => Decimal.pow(1.5,player.dark.exotic_atom.tier),
             effDesc: x=>formatMult(x),
         },{
             desc: `Increase the base of C17’s reward by 1.`,
@@ -235,7 +201,7 @@ const MUONIC_ELEM = {
             cost: E('e56'),
         },{
             desc: `Pion’s first reward now provides an exponential boost.`,
-            cost: E('e7300'),
+            get cost() { return OURO.evo >= 2 ? E('e4000') : E('e7300') },
         },{
             cs: true,
             desc: `Collapsed Stars boost starting of the growth reductions of corrupted stars.`,
@@ -252,10 +218,10 @@ const MUONIC_ELEM = {
             cost: E('e110'),
         },{
             desc: `Double corrupted star’s speed per infinity theorem.`,
-            cost: E('e8100'),
+            get cost() { return OURO.evo >= 2 ? E('e4500') : E('e8100') },
             eff() {
-                let x = Decimal.pow(2,player.inf.theorem)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return Decimal.pow(2,player.inf.theorem)
             },
             effDesc: x=>formatMult(x),
         },{
@@ -264,7 +230,7 @@ const MUONIC_ELEM = {
             cost: E('e130'),
         },{
             desc: `The exponent of ascension base is increased by Renown at a reduced rate.`,
-            cost: E('e8600'),
+            get cost() { return OURO.evo >= 2 ? E('e4700') : E('e8600') },
             eff() {
                 let x = player.prestiges[3].root(2).div(100)
                 return x
@@ -272,33 +238,30 @@ const MUONIC_ELEM = {
             effDesc: x=>"+^"+format(x),
         },{
             desc: `Quark overflow is 25% weaker.`,
-            cost: E('e9200'),
+            get cost() { return OURO.evo >= 2 ? E('e4900') : E('e9200') },
         },{
             desc: `Boost Supernova Generation based on beyond-ranks' maximum tier.`,
-            cost: E('e12100'),
-            eff() {
-                let x = Decimal.pow(2.5,tmp.beyond_ranks.max_tier)
-                return x
-            },
+            get cost() { return OURO.evo >= 2 ? E('e5250') : E('e12100') },
+            eff: _ => Decimal.pow(2.5,tmp.beyond_ranks.max_tier),
             effDesc: x=>formatMult(x),
         },{
             cs: true,
             desc: `Corrupted star boosts its speed at a reduced rate. Keep Supernovas on Infinity.`,
             cost: E('e150'),
             eff() {
-                let x = player.inf.cs_amount.add(1).overflow(10,0.5)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return player.inf.cs_amount.add(1).overflow(10,0.5)
             },
             effDesc: x=>formatMult(x),
         },{
-            desc: `Hawking Theorem’s fifth star now affects black hole’s effect.`,
-            cost: E('e14900'),
+            get desc() { return OURO.evo >= 2 ? `Infinity Theorems raise Pions and Kaons, and boost its reward strength.` : `Hawking Theorem’s fifth star now affects black hole’s effect.` },
+            get cost() { return OURO.evo >= 2 ? E('e5460') : E('e14900') },
         },{
             desc: `Pre-Infinity global speed now affects supernova generation.`,
             cost: E('e15900'),
             eff() {
-                let x = expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2)
             },
             effDesc: x=>formatMult(x),
         },{
@@ -306,8 +269,8 @@ const MUONIC_ELEM = {
             desc: `Corrupted star boosts its reductions starting at a reduced rate.`,
             cost: E('e230'),
             eff() {
-                let x = player.inf.cs_amount.add(1).log10().add(1).pow(3)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return player.inf.cs_amount.add(1).log10().add(1).pow(3)
             },
             effDesc: x=>formatMult(x),
         },{
@@ -348,7 +311,7 @@ const MUONIC_ELEM = {
         },{
             cs: true,
             desc: `Unlock sixth star in the theorem.`,
-            cost: E('e840'),
+            get cost() { return OURO.evo >= 2 ? E('e780') : E('e840') },
         },{
             desc: `Muonic Arsenic-33 is even better.`,
             cost: E('e91000'),
@@ -359,8 +322,8 @@ const MUONIC_ELEM = {
             desc: `Muonic Iodine-53 is stronger based on Infinity Theorem.`,
             cost: E('e112800'),
             eff() {
-                let x = player.inf.theorem.div(10).add(1).root(2)
-                return x
+                if (!tmp.inf_unl) return E(1)
+                return player.inf.theorem.div(10).add(1).root(2)
             },
             effDesc: x=>"^"+format(x),
         },{
@@ -377,10 +340,7 @@ const MUONIC_ELEM = {
         },{
             desc: `The growth reductions of corrupted stars start later based on Normal Energy.`,
             cost: E('e161800'),
-            eff() {
-                let x = expMult(player.gp_resources[4].add(1),0.5)
-                return x
-            },
+            eff: _ => tmp.inf_unl ? expMult(player.gp_resources[4].add(1),0.5) : E(1),
             effDesc: x=>formatMult(x)+" later",
         },{
             cs: true,
@@ -388,25 +348,25 @@ const MUONIC_ELEM = {
             cost: E('e1430'),
         },{
             berry: true,
-            desc: `Add new mediation’s effect.`,
+            desc: `Add new meditation’s effect.`,
             cost: E(25),
         },{
             berry: true,
             desc: `Calm Power boosts Apples & Strawberries.`,
             cost: E(50),
             eff() {
-                let x = OURO.evolution >= 1 ? player.evo.cp.best.add(1).log10().add(1) : E(1)
+                let x = OURO.evo >= 1 ? player.evo.cp.best.add(1).log10().add(1) : E(1)
                 let y = x.root(2)
                 return [x, y]
             },
             effDesc: x=>formatMult(x[0]) + " to Apples, " + formatMult(x[1]) + " to Strawberries",
         },{
             berry: true,
-            desc: `Add new another mediation’s effect.`,
+            desc: `Add new another meditation’s effect.`,
             cost: E(100),
         },{
             berry: true,
-            desc: `Automate Meditation. Keep mediation on all pre-Ouroboric resets.`,
+            desc: `Automate Meditation. Keep meditation on all pre-Ouroboric resets.`,
             cost: E(150),
         },{
             berry: true,
@@ -416,17 +376,14 @@ const MUONIC_ELEM = {
             berry: true,
             desc: `Tetr boosts Calm Power.`,
             cost: E(300),
-            eff() {
-                let x = player.ranks.tetr.add(1)
-                return x
-            },
+            eff: _ => player.ranks.tetr.add(1),
             effDesc: x=>formatMult(x),
         },{
             berry: true,
             desc: `Improve 3rd Meditation effect base.`,
             cost: E(500),
             eff() {
-                let x = OURO.evolution >= 1 ? player.evo.cp.level.div(1e7).add(1).sqrt() : E(1)
+                let x = OURO.evo >= 1 ? player.evo.cp.level.div(1e7).add(1).sqrt() : E(1)
                 return x
             },
             effDesc: x=>formatMult(x),
@@ -444,42 +401,66 @@ const MUONIC_ELEM = {
             cost: E(1.5e4),
         },{
             berry: true,
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Raise Fabric from ^0.5 to ^0.6.`,
+            cost: E(1e5),
         },{
             berry: true,
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Raise Fabric by +^0.1.`,
+            cost: E(2e5),
         },{
             berry: true,
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `+4 maximum spawn cap if you don't have an Aim powerup.`,
+            cost: E(5e5),
         },{
             berry: true,
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Challenge 6 and 8 effects are exponential. Automate Wormhole.`,
+            cost: E(1e6),
         },{
             berry: true,
-            desc: `Placeholder.`,
-            cost: EINF,
+            desc: `Double Snake Powerup chance. Increase powerup time to 30s.`,
+            cost: E(3e6),
+        },{
+            berry: true,
+            desc: `Increase base moves until reduction by +5. Gain more Apples on snake length.`,
+            cost: E(1e7),
+        },{
+            berry: true,
+            desc: `Purify luck is better based on snake length.`,
+            cost: E(1e8),
+        },{
+            berry: true,
+            desc: `[ Placeholder: Protostars ]`,
+            cost: E(2e8),
+        },{
+            berry: true,
+            desc: `Apple's first effect now provides an exponential boost.`,
+            cost: E(5e8),
+        },{
+            berry: true,
+            desc: `[ Placeholder: Protostars ]`,
+            cost: E(1e9),
+        },{
+            berry: true,
+            desc: `Snake enemies lose slower. (+2 moves per reduction)`,
+            cost: E(2e9),
+        },{
+            berry: true,
+            desc: `Triple Anti-Wormhole Mass.`,
+            cost: E(5e9),
+        },{
+            berry: true,
+            desc: `Raise Apples by ^1.1.`,
+            cost: E(1e10),
+        },{
+            berry: true,
+            desc: `Apple's second effect is stronger.`,
+            cost: E(2e10),
         },
-
-        /*
-        {
-            desc: `Placeholder.`,
-            cost: EINF,
-            eff() {
-                let x = E(1)
-                return x
-            },
-            effDesc: x=>formatMult(x),
-        },
-        */
     ],
     getUnlLength() {
         let u = 11
 
-        if (OURO.unl()) u = [66,76,81][OURO.evolution]
+        if (OURO.unl()) u = [66,76,82,88][OURO.evo]
         else {
             if (tmp.inf_unl) u += 4
             if (hasInfUpgrade(9)) u += 3
@@ -501,6 +482,8 @@ function muElemEff(x,def=1) { return tmp.elements.mu_effect[x]||def }
 function changeElemLayer() {
     player.atom.elemLayer = (player.atom.elemLayer+1)%2
     updateMuonSymbol()
+	updateElementsHTML()
+	calcNextElements()
 }
 
 function updateMuonSymbol(start=false) {
@@ -512,8 +495,6 @@ function updateMuonSymbol(start=false) {
         tElem.ts = ELEMENTS.exp[et[elayer]-1]
         tElem.te = ELEMENTS.exp[et[elayer]]
         tElem.tt = tElem.te - tElem.ts
-
-        updateElementsHTML()
     }
 
     document.documentElement.style.setProperty('--elem-symbol-size',["18px","16px"][elayer])
@@ -566,21 +547,21 @@ const EXOTIC_ATOM = {
         if (hasInfUpgrade(13)) xy = xy.mul(infUpgEffect(13))
         if (hasElement(22,1)) xy = xy.mul(muElemEff(22))
         if (hasAscension(0,4)) xy = xy.mul(ascensionEff(0,4))
-
         xy = xy.mul(getFragmentEffect('atom'))
         
-        let x = xy.div(10)
+        let x = xy.div(5)
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
         if (hasPrestige(1,247)) x = x.mul(prestigeEff(1,247))
         if (hasElement(1,1) && hasElement(30,1)) x = x.mul(muElemEff(1))
-        
-        let y = xy.div(20)
+        if (OURO.evo >= 2 && hasElement(48, 1)) x = x.pow(player.inf.theorem.add(1).log10().add(1.5))
+
+        let y = xy.div(5)
         if (hasElement(1,1)) y = y.mul(muElemEff(1))
         if (hasElement(9,1)) y = y.mul(muElemEff(9))
         if (hasElement(12,1)&&hasPrestige(1,247)) y = y.mul(prestigeEff(1,247))
+        if (OURO.evo >= 2 && hasElement(48, 1)) y = y.pow(player.inf.theorem.add(1).log10().add(1.5))
 
         if (hasPrestige(1,510)) [x,y] = [x.pow(1.1),y.pow(1.1)]
-
         return [x,y]
     },
     milestones: [
@@ -642,30 +623,24 @@ const EXOTIC_ATOM = {
 
 function updateExoticAtomsTemp() {
     let tea = tmp.exotic_atom, t = player.dark.exotic_atom.tier
-
-    for (let i = 1; i <= MUONIC_ELEM.upgs.length-1; i++) {
+    for (let i = 1; i <= tmp.elements.unl_length[1]; i++) {
         let u = MUONIC_ELEM.upgs[i]
         if (u.eff) tmp.elements.mu_effect[i] = u.eff()
     }
 
     let fp = E(1)
-
     if (hasAscension(1,7)) fp = fp.div(0.9)
 
     tea.req_fp = fp
-
     tea.req = EXOTIC_ATOM.req()
-
     tea.amount = EXOTIC_ATOM.getAmount()
     tea.gain = EXOTIC_ATOM.gain()
 
     let s = Decimal.add(1,Math.max(t.sub(12),0)*0.1)
-
     if (hasPrestige(2,58)) s = s.add(prestigeEff(2,58,0))
     if (hasElement(25,1)) s = s.add(muElemEff(25,0))
-
     if (tmp.inf_unl) s = s.add(theoremEff('time',4))
-    s = s.add(tmp.cs_effect.ea_reward||0)
+    s = s.add(CSEffect("ea_reward", 0))
 
     tea.strength = s
 

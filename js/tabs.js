@@ -1,12 +1,11 @@
 const TABS_DATA = {
     "mass"  : { name: "Mass" },
     "bh"    : { name: "Black Hole", style: "bh" },
-    "wh"    : { name: "Wormhole", style: "bh" },
     "atomic": { name: "Atomic Generator", style: "atom" },
     'star'  : { name: "Stars", style: "sn" },
     'bp'    : { name: "Indescribable Matter", style: "qu" },
     'tp'    : { name: "The Parallel", style: "inf" },
-    'snake' : { name: "The Snake", style: "ouro" },
+    'snake' : { name: "The Snake", style: "snake" },
 
     'rank-reward': { name: "Ranks Rewards" },
     'scaling'    : { name: "Scaling" },
@@ -20,7 +19,7 @@ const TABS_DATA = {
     'qc'  : { name: "Quantum Challenge", style: "qu" },
 
     'particles': { name: "Particles" },
-    'elements' : { name: "Elements" },
+    'elements' : { name: "Elemental", style: "atom" },
     'dil'      : { name: "Mass Dilation", style: "dilation" },
     'break-dil': { name: "Break Dilation", style: "break_dilation" },
     'ext-atom' : { name: "Exotic Atoms" },
@@ -48,6 +47,9 @@ const TABS_DATA = {
 
     'options' : { name: "Options" },
     'res-hide': { name: "Resource Hider" },
+
+    "wh"      : { name: "Wormhole", style: "bh" },
+    "proto"   : { name: "Protostar", style: "space" },
 }
 
 function chooseTab(x, stab=false) {
@@ -55,6 +57,7 @@ function chooseTab(x, stab=false) {
     else tmp.stab[tmp.tab] = x
 
     tmp.stab[tmp.tab] ??= 0
+	if (player.options.nav_hide[3]) PINS.open_menu()
 
     updateTabTemp()
 }
@@ -74,35 +77,34 @@ function updateTabTemp() {
 const TABS = [
     { name: "Main", icon: "pajamas:weight", stab: [
         'mass',
-        ['bh', () => player.bh.unl, () => OURO.evolution < 2],
-        ['wh', () => player.bh.unl, () => OURO.evolution >= 2],
-        ['atomic', () => player.atom.unl],
-        ['star', () => STARS.unlocked()],
-        ['bp', () => quUnl()],
-        ['tp', () => hasInfUpgrade(9), () => OURO.evolution < 1],
-        ['snake', null, () => OURO.evolution > 0],
+        ['bh', () => player.bh.unl, () => OURO.evo < 2],
+        ['wh', () => player.bh.unl, () => OURO.evo == 2],
+        ['atomic', () => player.atom.unl, () => OURO.evo < 3 ],
+        ['star', () => STARS.unlocked(), () => OURO.evo < 3 ],
+        ['elements', null, () => OURO.evo >= 3 ],
+        ['bp', () => quUnl(), () => OURO.evo < 3 ],
+        ['tp', () => hasInfUpgrade(9), () => OURO.evo < 1],
+        ['snake', null, () => OURO.evo > 0],
     ] },
-    { name: "Stats", icon: "material-symbols:query-stats", stab: [
-        'rank-reward',
-        ['scaling', () => tmp.scaling && tmp.scaling.super.length>0],
-        ['pres-reward', () => hasUpgrade("br",9)],
-        ['bd-reward', () => tmp.brUnl],
-        ['asc-reward', () => tmp.ascensions_unl],
-    ] },
-    { name: "Upgrades", icon: "carbon:upgrade", stab: [
-        'main-upg',
-        ['elements', null, () => OURO.evolution > 0],
+    { name: "Upgrades", icon: "carbon:upgrade", unl() { return [1,2].includes(OURO.evo) || tmp.upgs.unl }, stab: [
+        ['main-upg', () => tmp.upgs.unl],
+        ['elements', null, () => OURO.evo > 0],
     ] },
     { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
         'chal',
         ['qc', () => hasTree("unl3")],
     ] },
-    { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl }, style: "atom", stab: [
+    { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && OURO.evo < 3 }, style: "atom", stab: [
         'particles',
-        ['elements', () => player.chal.comps[7].gte(16) || player.supernova.times.gte(1) || quUnl(), () => OURO.evolution < 1],
+        ['elements', () => player.chal.comps[7].gte(16) || player.supernova.times.gte(1) || quUnl(), () => OURO.evo < 1],
         ['dil', () => MASS_DILATION.unlocked()],
         ['break-dil', () => hasUpgrade("br",9)],
         ['ext-atom', () => tmp.eaUnl],
+    ] },
+    { name: "Space", icon: "bx:planet", color: "space", unl() { return OURO.evo >= 3 }, style: "space", stab: [
+        'wh',
+        'proto',
+        'star',
     ] },
     { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn", stab: [
         'sn-tree',
@@ -112,10 +114,11 @@ const TABS = [
     ] },
     { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu", stab: [
         'chroma',
-        'qu-mil',
-        ['auto-qu', () => tmp.qu.mil_reached[6]],
+        ['bp', null, () => OURO.evo >= 3 ],
         ['prim', () => PRIM.unl()],
         ['entropy', () => player.qu.en.unl],
+        ['auto-qu', () => tmp.qu.mil_reached[6]],
+        'qu-mil'
     ] },
     { name: "Darkness", icon: "ic:baseline-remove-red-eye", color: "grey", unl() { return player.dark.unl }, style: "dark", stab: [
         'dark-eff',
@@ -127,10 +130,17 @@ const TABS = [
         'inf-core',
         'core-eff',
         'inf-upgs',
-        ['tp', () => hasInfUpgrade(9), () => OURO.evolution > 0],
+        ['tp', () => hasInfUpgrade(9), () => OURO.evo > 0],
         ['c-star', () => tmp.CS_unl],
     ] },
-    { name: "Options", icon: "mdi:gear", stab: [
+    { name: "Stats", icon: "material-symbols:query-stats", unl() { return !player.options.nav_hide[2] }, stab: [
+        'rank-reward',
+        ['scaling', () => tmp.scaling && tmp.scaling.super.length>0],
+        ['pres-reward', () => hasUpgrade("br",9)],
+        ['bd-reward', () => tmp.brUnl],
+        ['asc-reward', () => tmp.ascensions_unl],
+    ] },
+    { name: "Options", icon: "mdi:gear", unl() { return !player.options.nav_hide[2] }, stab: [
         'options',
         'res-hide',
     ] },
@@ -163,6 +173,8 @@ function setupTabHTML() {
 	}
 	tabs.setHTML(table)
 	stabs.setHTML(table2)
+
+	PINS.setup()
 }
 
 function updateTabsHTML() {
@@ -198,7 +210,70 @@ function updateTabsHTML() {
 		}
 	}
 
-    for (let x in TABS_DATA) {
-        if (tmp.el["tab_div-"+x]) tmp.el["tab_div-"+x].setDisplay(tmp.tab_name == x)
-    }
+    for (let x in TABS_DATA) if (tmp.el["tab_div-"+x]) tmp.el["tab_div-"+x].setDisplay(tmp.tab_name == x)
+
+	PINS.update()
+}
+
+function goToTab(i) {
+	for (var [x, xx] of Object.entries(TABS)) {
+		if (xx.unl ? !xx.unl() : false) continue
+		for (var [y, yy] of Object.entries(xx.stab)) {
+			if (Array.isArray(yy)) {
+				if (yy[2] ? !yy[2]() : false) continue
+				if (yy[1] ? !yy[1]() : false) continue
+				if (yy[0] != i) continue
+			} else if (yy != i) continue
+
+			tmp.tab = parseInt(x)
+			tmp.stab[x] = parseInt(y)
+			return true
+		}
+	}
+}
+
+//Pins
+const PINS = {
+	max: 10,
+
+	pin(i = tmp.tab_name) {
+		let pins = player.options.pins
+		if (pins.includes(i)) {
+			pins.splice(pins.indexOf(i),1)
+			if (pins.length == 0 && player.options.nav_hide[3]) PINS.open_menu()
+		} else if (pins.length >= PINS.max) addNotify(`Can't handle more than ${PINS.max} pins!`)
+		else pins.push(i)
+	},
+	go(i) {
+		i = player.options.pins[i]
+		if (!goToTab(i)) createConfirm("This tab might be locked or removed! Do you want to remove?",'cantGo',_=>PINS.pin(i))
+	},
+	open_menu() {
+		player.options.nav_hide[3] = !player.options.nav_hide[3]
+		updateNavigation()
+	},
+
+	setup() {
+		let h = ''
+		for (let i = 0; i < PINS.max; i++) h += `<div style="width: 160px" id="pin_div${i}">
+			<button onclick="PINS.go(${i})" class="btn_tab" id="pin${i}"></button>
+		</div>`
+		new Element("pins_stabs").setHTML(h)
+	},
+	update() {
+		tmp.el["nav_pin_hider"].setDisplay(player.options.pins.length > 0)
+		tmp.el["pin_btn"].setTxt(player.options.pins.includes(tmp.tab_name) ? "Unpin" : "Pin")
+		tmp.el["pins_stabs"].setDisplay(player.options.nav_hide[3])
+		if (!player.options.nav_hide[3]) return
+
+		for (let i = 0; i < PINS.max; i++) {
+			let p = player.options.pins[i]
+			let unl = p !== undefined
+			tmp.el["pin_div"+i].setDisplay(unl)
+			if (!unl) continue
+
+			tmp.el["pin"+i].setTxt(TABS_DATA[p].name)
+			tmp.el["pin"+i].setClasses({btn_tab: true, [ TABS_DATA[p].style ]: true, choosed: tmp.tab_name == p})
+		}
+	},
 }
