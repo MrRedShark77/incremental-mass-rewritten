@@ -354,7 +354,7 @@ const TREE_UPGS = {
             cost: E(1e4),
         },
         chal4: {
-            branch: ["chal2","chal3"],
+            get branch() { return OURO.evo >= 2 ? ["chal3"] : ["chal2","chal3"] },
             desc: `Unlock the 9th Challenge.`,
             cost: E(1.5e4),
         },
