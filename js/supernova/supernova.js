@@ -197,7 +197,7 @@ function updateSupernovaTemp() {
             }
             tmp.supernova.tree_loc[id] = i
             tmp.supernova.tree_unlocked[id] = unl || bought
-            tmp.supernova.tree_afford[id] = can
+            tmp.supernova.tree_afford[id] = unl && can
             if (can && unl && !(c16 && CORRUPTED_TREE.includes(id))) tmp.supernova.tree_afford2[i].push(id)
             if (t.effect) tmp.supernova.tree_eff[id] = t.effect()
         }
