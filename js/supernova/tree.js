@@ -85,6 +85,18 @@ const TREE_UPGS = {
         }
         if (!auto && tmp.supernova.tree_choosed == x && this.ids[x].reqDesc && !hasTree(x)) player.supernova.pin_req = x
     },
+	buyAll() {
+		let cont = true
+		while (cont) {
+			cont = false
+			for (var [i, can] of Object.entries(tmp.supernova.tree_afford)) {
+				if (!can) continue
+				this.buy(i, true)
+				cont = true
+			}
+			if (cont) updateSupernovaTemp()
+		}
+	},
     ids: {
         c: {
             req() { return player.supernova.times.gte(1) },
