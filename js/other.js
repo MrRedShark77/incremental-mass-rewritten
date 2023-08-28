@@ -98,7 +98,7 @@ const POPUP_GROUPS = {
     },
     supernova10: {
         html: `
-            Congratulations!<br><br>You have becomed 10 Supernovas!<br>
+            Congratulations!<br><br>You got 10 Supernovas!<br>
             And you can manualy supernova!<br><br>
             <b>Bosons are unlocked in Supernova tab!</b>
         `,
@@ -429,6 +429,20 @@ function updateNavigation() {
 
 	tmp.el.stabs.setDisplay(!player.options.nav_hide[3])
 	PINS.update()
+}
+
+function prefer(x) {
+	player.options.prefer[x] = !player.options.prefer[x]
+	if (x == "pin") {
+		player.options.nav_hide[3] = false
+		updateNavigation()
+	}
+}
+
+function isPreferred(x) {
+	//false: enabled
+	//true: disabled
+	return !player.options.prefer[x]
 }
 
 function setupStatsHTML() {

@@ -534,8 +534,8 @@ button {
 	box-shadow: 0px 0px 10px 0px #39ff4a7e;
 }
 
-.elements.locked:not(.bought) {
-	color: #222;
+.elements.locked:not(.bought):not(:hover) {
+	opacity: 0.2 !important;
 }
 
 .elements:hover {
@@ -642,19 +642,25 @@ button {
 .btn_tree.corrupted {
 	color: white;
 	box-shadow: 3px 3px 3px #ff5555, -3px -3px 3px #5555ff, 3px 3px 3px #ff5555 inset, -3px -3px 3px #5555ff inset;
-	transform: scale(1.1);
+	opacity: 0.1;
+	transform: scale(0.8);
 	animation: corrupted_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
 
 .elements.paralyzed {
 	border-color: #070;
 	box-shadow: 2px 2px 1px #0f0, -2px -2px 1px #7f0;
+	opacity: 0.1;
 	color: #111;
 	text-shadow: none;
-	transform: scale(0.9)
+	transform: scale(0.8)
+}
+.elements.paralyzed:hover {
+	box-shadow: 2px 2px 24px #0f0, -2px -2px 12px #7f0;
 }
 
 .elements.c16 {
+	border-color: #f5b;
 	box-shadow: 3px 3px 3px #ff5555, -3px -3px 3px #5555ff, 3px 3px 3px #ff5555 inset, -3px -3px 3px #5555ff inset
 }
 
@@ -1247,6 +1253,12 @@ h4 {
 	left: 0;
 	bottom: 155px !important;
 	border-radius: 0 15px 15px 0;
+}
+
+#nav_res_hider {
+	right: 0;
+	bottom: 90px !important;
+	border-radius: 15px 0 0 15px;
 }
 
 #nav_extra_hider.toggled > iconify-icon,

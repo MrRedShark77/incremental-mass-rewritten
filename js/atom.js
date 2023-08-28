@@ -10,7 +10,7 @@ const ATOM = {
         } else if (evo >= 2) {
             if (player.evo.wh.fabric.lt(300)) return E(0)
             x = player.evo.wh.fabric.div(300).sqrt()
-			if (!tmp.c16active) x = E(2.5).pow(x).mul(5)
+			if (!tmp.c16active) x = E(2).pow(x).mul(5)
         } else {
             x = player.bh.mass.div(hasUpgrade("br",1)?1.5e156**0.5:1.5e156)
             if (x.lt(1)) return E(0)
@@ -90,17 +90,20 @@ const ATOM = {
     },
     doReset(chal_reset=true) {
         player.atom.atomic = E(0)
-        if (OURO.unl()) {
+        FORMS.bh.doReset()
+        if (OURO.evo >= 2) {
 			player.evo.wh.fabric = E(0)
 			for (var i = 0; i < 6; i++) player.evo.wh.mass[i] = E(0)
+			return
 		}
-        player.bh.dm = E(0)
-        BUILDINGS.reset('bhc')
+
         let keep = []
         for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
         if (!hasInfUpgrade(18)) player.mainUpg.bh = keep
         if (chal_reset && !hasUpgrade("atom",4) && !hasTree("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
-        FORMS.bh.doReset()
+
+        player.bh.dm = E(0)
+        BUILDINGS.reset('bhc')
     },
     atomic: {
         gain() {
@@ -192,8 +195,8 @@ const ATOM = {
             },
             x=>{
                 let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(2)
-                
-                let bp = OURO.evo >= 1 ? Decimal.pow(2,player.evo.cp.points) : player.rp.points
+
+				let bp = OURO.evo >= 1 ? Decimal.pow(2,player.evo.cp.points) : player.rp.points
                 let b = hasUpgrade('atom',18)
                 ?Decimal.pow(1.1,
                     bp.add(1).log10().add(10).log10().mul(x.add(1).log10().add(10).log10()).root(3).sub(1)
@@ -202,8 +205,9 @@ const ATOM = {
                 :(hasElement(19)
                 ?player.mass.max(1).log10().add(1).pow(bp.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(bp.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
+				if (CHALS.inChal(17) && !hasUpgrade('atom',18)) b = E(1)
 
-                if (CHALS.inChal(17) && !hasUpgrade('atom',18)) b = E(1)
+                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
                 if (hasUpgrade('atom',18)) b = overflow(b,1e120,0.5)
 
                 return {eff1: a, eff2: b}

@@ -82,7 +82,10 @@ const OURO = {
 
         player.build.pe.amt = E(0)
         player.build.fvm.amt = E(0)
-        if (OURO.unl()) player.ouro.apple = E(0)
+        if (OURO.unl()) {
+			player.ouro.apple = E(0)
+			player.evo.wh.origin = 0
+		}
 
         let newData = getPlayerData()
         let keep = {
@@ -95,6 +98,7 @@ const OURO = {
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
 
         tmp.tab = 0; tmp.stab = [0]; player.options.nav_hide[3] = false
+		player.options.res_hide = {}
     },
 
     temp() {
@@ -157,6 +161,7 @@ const OURO = {
             e0_248: "corrupted",
             e0_249: "corrupted",
             e0_268: "corrupted",
+            e0_287: "corrupted",
             e0_289: "corrupted",
             e1_41: "paralyzed",
             ch8: "paralyzed",

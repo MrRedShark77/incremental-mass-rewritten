@@ -216,10 +216,9 @@ function buyGlyphUpgrade(i) {
 }
 
 function updateDarkRunHTML() {
-    let dra = player.dark.run.active
+    let dtmp = tmp.dark, dra = player.dark.run.active
+    let pin = player.dark.run.pin_upg, gum = tmp.mass_glyph_msg
     let c16 = tmp.c16active
-    let dtmp = tmp.dark
-    let gum = player.dark.run.pin_upg || tmp.mass_glyph_msg
 
     tmp.el.dark_run_btn.setTxt(dra?"Exit Dark Run":"Start Dark Run")
     tmp.el.dark_run_rounds.setTxt(GLYPH_SEL.length?"Next Round":dra?"Rounds left: "+player.dark.run.round:"Rounds: " + player.dark.run.rounds)
@@ -269,8 +268,8 @@ function updateDarkRunHTML() {
 		let u = DARK_RUN.upg[x]
         let ua = player.dark.run.upg[x]||0
         let max = u.max||Infinity
-		tmp.el['glyph_upg'+x].setOpacity((gum == x || !gum) ? 1 : 0.1)
-		tmp.el['glyph_upg'+x].setClasses({img_btn: true, locked: !isAffordGlyphCost(u.cost(ua)) && ua < max, bought: ua >= max, gumned: gum == x})
+		tmp.el['glyph_upg'+x].setOpacity((pin == x || !pin) ? 1 : 0.1)
+		tmp.el['glyph_upg'+x].setClasses({img_btn: true, locked: !isAffordGlyphCost(u.cost(ua)) && ua < max, bought: ua >= max})
 	}
 
     tmp.el.FSS_eff2.setHTML(

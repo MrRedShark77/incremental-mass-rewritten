@@ -42,7 +42,7 @@ const SUPERNOVA = {
         tmp.pass = 1
 
 		if (OURO.evo >= 3) player.evo.proto = OURO.save.evo.proto
-		if (!tmp.atom_unl) return
+		if (!tmp.atom.unl) return
 
 		//Pre-Ouroboric
         player.atom.particles = [E(0),E(0),E(0)]

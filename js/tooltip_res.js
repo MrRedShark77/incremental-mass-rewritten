@@ -125,7 +125,7 @@ const TOOLTIP_RES = {
         full: "Supernova",
         desc() {
             let h = `
-            You have becomed <b>${player.supernova.times.format(0)}</b> ${getScalingName('supernova')}Supernova
+            You became ${getScalingName('supernova')}Supernova <b>${player.supernova.times.format(0)}</b>  times
             <br class='line'>
             You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.<br>
             You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
@@ -213,7 +213,7 @@ const TOOLTIP_RES = {
         full: "Corrupted Shard",
         desc() {
             let h = `
-            Your best mass of black hole in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
+            Your best ${ OURO.evo >= 2 ? "Wormhole" : "mass of black hole" } in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
             <br class='line'>
             <i>
             ${ player.chal.active == 16 ? "Exit the 16th Challenge." : "Start the 16th Challenge." } Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge${OURO.evo >= 2 ? "" : `with more than <b>${formatMass(OURO.evo >= 1 ? 1e70 : 1e100)}</b> of black hole`}.<br><br>

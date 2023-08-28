@@ -70,7 +70,7 @@ const WORMHOLE = {
                     tmp.el[id+'-div'].setClasses({ ["wormhole-div"]: true, none: i != wh.origin })
                     tmp.el[id+'-id'].setHTML("")
                     tmp.el[id+'-effect'].setHTML("")
-                    tmp.el[id+'-mult'].setHTML(wh.origin == i ? "[Origin]" : "")
+                    tmp.el[id+'-mult'].setHTML(i == 6 ? "[ Can't be Origin ]" : wh.origin == i ? "[Origin]" : "")
                     tmp.el[id+'-mass'].setHTML("#" + (i+1))
                 } else {
                     const m = mass[i], mult = tmp.evo.wormhole_mult[i]
@@ -89,7 +89,7 @@ const WORMHOLE = {
 
         tmp.el["wormhole_origin"].setDisplay(player.atom.unl || OURO.evo >= 3)
         tmp.el["wormhole_rate_div"].setDisplay(player.supernova.times.gte(1) || quUnl() || OURO.evo >= 3)
-        tmp.el["wormhole_rate"].setHTML(formatPercent(wh.rate))
+        tmp.el["wormhole_rate"].setHTML(formatPercent(wh.rate, 0))
     },
 
     get unlLength() {
@@ -119,7 +119,7 @@ const WORMHOLE = {
             m => m.add(1).log10().div(5).add(1).pow(hasElement(150) ? -.2 : hasElement(125) ? -.15 : -.1),
             x => `Reduce Meditation's softcap weakness <b>${formatReduction(x)}</b>`,
         ],[
-            m => E(1).sub(m.add(1).log10().div((player.qu.rip.active ? hasElement(149) : hasElement(133)) ? 40 : 50).add(1).pow(hasElement(125) ? -.4 : -.3)).mul(1.1).toNumber(),
+            m => E(1).sub(m.add(1).log10().div((player.qu.rip.active ? hasElement(149) : hasElement(133)) ? 40 : 50).add(1).pow(-.4)).mul(1.1).toNumber(),
             x => `Raise Fabric. <b>+^${format(x,2)}</b>`,
         ],[
             m => m.add(1).log10().div(40).add(1).sqrt().softcap(3,0.5,0),
@@ -139,21 +139,19 @@ const WORMHOLE = {
 function wormholeEffect(id,def=E(1)) { return id<tmp.evo.wormhole_unls && tmp.evo.wormhole_eff[id] ? tmp.evo.wormhole_eff[id] : def }
 
 function activateWormhole(id, auto) {
+    if (id == 6) return
+
     const wh = player.evo.wh, mass = wh.mass
     if (!auto && WORMHOLE.choose_origin) {
         wh.origin = id
         wh.auto[id] = false
         WORMHOLE.choose_origin = false
-        return
-    }
-
-    if (id == 6) return
-    else if (id == wh.origin) {
+    } else if (id == wh.origin) {
         if (CHALS.inChal(6)) return
         splitWormhole(wh.origin, auto ? "auto" : "")
     } else if (WORMHOLE.canAuto(id) && !auto) {
         wh.auto[id] = !wh.auto[id]
-    } else {
+    } else if (wh.origin != 6) {
         let toAdd = mass[id].mul(auto ? 1 : wh.rate)
         mass[wh.origin] = mass[wh.origin].add(toAdd)
         mass[id] = mass[id].sub(toAdd)

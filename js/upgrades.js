@@ -676,7 +676,7 @@ const UPGS = {
                 cost: E('ee54000'),
             },
             24: {
-                unl() { return tmp.fifthRowUnl },
+                unl() { return tmp.fifthRowUnl && OURO.evo < 2 },
                 desc: `Star Siltation starts ^2 later to exponent.`,
                 cost: E('ee87000'),
             },
@@ -900,6 +900,9 @@ function resetMainUpgs(id,keep=[]) {
 
 //Upgrade Notifications
 function updateUpgNotify() {
+	delete tmp.upg_notify
+	if (!isPreferred("notify")) return
+
 	if (player.supernova.times.gte(1) || quUnl()) {
 		for (var [x, af] of Object.entries(tmp.supernova.tree_afford)) {
 			if (!af || !tmp.supernova.tree_had.includes(x)) continue
@@ -916,7 +919,16 @@ function updateUpgNotify() {
 			}
 		}
 	}
-	delete tmp.upg_notify
+	if (player.dark.c16.first) {
+		for (var [i, ch] of Object.entries(CHARGERS)) {
+			i = parseInt(i)
+			if (hasCharger(i)) continue
+			if (!canCharge(i)) continue
+			if (player.dark.c16.shard.lt(ch.cost)) continue
+			tmp.upg_notify = ["ch", i+1]
+			return
+		}
+	}
 }
 
 function goUpgNotify() {
@@ -935,4 +947,5 @@ function goUpgNotify() {
 		player.atom.elemTier[player.atom.elemLayer] = tier
 		updateElementsHTML()
 	}
+	if (tmp.upg_notify[0] == "ch") goToTab("c16")
 }

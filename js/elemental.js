@@ -355,9 +355,7 @@ const ELEMENTS = {
             cost: E('e325'),
             effect() {
                 let x = player.stars.points.add(1).pow(1/3)
-
                 x = overflow(x,'ee112',0.5)
-
                 return x.min('ee3000')
             },
             effDesc(x) { return format(x)+"x" },
@@ -400,7 +398,7 @@ const ELEMENTS = {
             desc: `Collapsed star boosts the last type of stars.`,
             cost: E('e1000'),
             effect() {
-                let x = player.stars.points.add(1).log10().add(1).pow(1.1)
+                let x = player.stars.points.add(1).log10().add(1).pow(OURO.evo >= 2 ? 1.5 : 1.1)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -417,7 +415,7 @@ const ELEMENTS = {
             desc: `Mass of black hole boosts atomic powers gain at a reduced rate.`,
             cost: E('e2800'),
             effect() {
-                let x = expMult(player.bh.mass.add(1),0.6)
+                let x = expMult(player.bh.mass.add(1), 0.6)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -430,7 +428,7 @@ const ELEMENTS = {
             desc: `Normal mass boosts all-star resources at a reduced rate.`,
             cost: E('e5200'),
             effect() {
-                let x = player.mass.max(1).log10().root(2)
+                let x = player.mass.max(1).log10().root(OURO.evo >= 2 ? 1.5 : 2)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -774,7 +772,7 @@ const ELEMENTS = {
             cost: E("e5e16"),
         },
         {
-            desc: `Unlock <span id="final_118">Darkness</span>, you'll able to go Dark.`,
+            desc: `Unlock Darkness, you'll able to go Dark.`,
             cost: E("e1.7e17"),
         },
         {
@@ -808,7 +806,7 @@ const ELEMENTS = {
             desc: `Keep quantum tree on darkness.`,
             cost: E("1e7"),
         },{
-            get desc() { return OURO.evo >= 2 ? `Fabric boosts Wormhole more. Improve 4th and 5th Wormholes.` : `7th challenge’s effect gives more C9-12 completions at 10% rate.` },
+            get desc() { return OURO.evo >= 2 ? `Improve the Wormhole.` : `7th challenge’s effect gives more C9-12 completions at 10% rate.` },
             cost: E("e9e24"),
             effect() {
                 if (betterC7Effect()) return E(0)
@@ -1644,7 +1642,7 @@ const ELEMENTS = {
         },{
             c16: true,
             desc: `Challenge 5’s reward is twice as stronger.`,
-            get cost() { return OURO.evo >= 2 ? E('ee13000') : E('ee23700') },
+            get cost() { return E('ee23700') },
         },{
             desc: `Dimensional Mass’s effect is even stronger.`,
             cost: E('ee83000'),
@@ -1961,12 +1959,12 @@ function updateElementsHTML() {
     let elem_const = [ELEMENTS,MUONIC_ELEM][elayer]
 
     let ch = tElem.choosed
-    let fed = tmp.ouro.fed["e"+elayer+"_"+ch]
     tmp.el.elem_ch_div.setDisplay(ch>0)
     tmp.el.elem_next_div.setDisplay(ch==0)
     if (ch) {
         let eu = elem_const.upgs[ch]
         let eff = tElem[["effect","mu_effect"][elayer]]
+        let fed = tmp.ouro.fed["e"+elayer+"_"+ch]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+(fed?OURO.fed_msg[fed]:eu.desc))
         tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer)})
@@ -1994,9 +1992,9 @@ function updateElementsHTML() {
                     upg.setVisible(unl2)
                     if (unl2) {
                         let eu = elem_const.upgs[x]
-                        let fed2 = tmp.ouro.fed["e"+elayer+"_"+x]
+                        let fed = tmp.ouro.fed["e"+elayer+"_"+x]
                         upg.setClasses(
-							(fed || fed2) ? {elements: true, locked: true, [ (fed || fed2) ]: true} :
+							fed ? {elements: true, locked: true, [ fed ]: true} :
 							c16 && isElemCorrupted(x,elayer) ? {elements: true, locked: true, corrupted: true} :
 							{
 								elements: true,

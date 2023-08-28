@@ -150,6 +150,7 @@ function updateUpperHTML() {
 		let nt = tmp.upg_notify
 		if (nt[0] == "el") tmp.el.upg_notify_msg.setHTML(`[!] ${["","Muonic "][nt[1]]+ELEMENTS.fullNames[nt[2]]} is available! [!]`)
 		if (nt[0] == "sn") tmp.el.upg_notify_msg.setHTML(`[!] Neutron Tree [${nt[1]}] is available! [!]`)
+		if (nt[0] == "ch") tmp.el.upg_notify_msg.setHTML(`[!] Charger [${nt[1]}] is available! [!]`)
 	}
 	
 	tmp.el.saved.setDisplay(mode == "saved")
@@ -256,9 +257,6 @@ function updateMainUpgradesHTML() {
 function updateBlackHoleHTML() {
 	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(tmp.preQUGlobalSpeed), true))
 	tmp.el.bhMassPower.setTxt(format(tmp.bh.massPowerGain))
-	tmp.el.bhFSoft1.setDisplay(tmp.bh.f.gte(tmp.bh.fSoftStart))
-	tmp.el.bhFSoftStart1.setTxt(format(tmp.bh.fSoftStart))
-	tmp.el.bhMassPower2.setTxt(format(tmp.bh.massPowerGain))
 	tmp.el.massSoft2.setDisplay(tmp.bh.mass_gain.gte(tmp.bh.massSoftGain))
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 
@@ -319,8 +317,10 @@ function updateOptionsHTML() {
 		tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
 		tmp.el.tree_anim_btn.setDisplay(player.supernova.times.gte(1) || quUnl())
 		tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
-		tmp.el.mass_dis.setTxt(["Default",'Always show g'][player.options.massDis])
-		tmp.el.mass_type.setTxt(["Short",'Standard'][player.options.massType])
+		tmp.el.mass_dis.setTxt(["Default",'Gramm'][player.options.massDis])
+		tmp.el.mass_type.setTxt(["Short",'Long'][player.options.massType])
+		tmp.el.prefer_notify.setTxt("Notifications: " + (isPreferred("notify") ? "ON" : "OFF"))
+		tmp.el.prefer_pin.setTxt("Pins: " + (isPreferred("pin") ? "ON" : "OFF"))
 	} else if (tmp.tab_name == "res-hide") {
 		updateResourcesHiderHTML()
 	}
