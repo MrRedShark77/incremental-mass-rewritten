@@ -244,22 +244,11 @@ const RADIATION = {
         },{
             title: `BH-Exponent Boost II`,
             eff(b) {
-                let x = b.div(2).add(1).root(3)
+                let x = b.div(40).add(1).root(3)
                 return x
             },
-            desc(x) { return `BH formula softcap starts ^${format(x)} later` },
+            desc(x) { return `Increase BH formula exponent by ${formatMult(x)}` },
         },
-
-        /*
-        {
-            title: `Placeholder Boost`,
-            eff(b) {
-                let x = E(1)
-                return x
-            },
-            desc(x) { return `Placeholder` },
-        },
-        */
     ],
 }
 

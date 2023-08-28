@@ -274,11 +274,12 @@ function getPlayerData() {
             tree_animation: 0,
             massDis: 0,
             massType: 0,
-            res_hide: {},
             snake_speed: 0,
 
             nav_hide: [],
+            res_hide: {},
             pins: [],
+            prefer: {},
         },
         confirms: {},
         offline: {
@@ -323,13 +324,6 @@ function wipe(reload=false) {
     }
 }
 
-function rollback(oldPlayer) {
-	if (OURO.evo >= 2 && !oldPlayer.evo.wh.auto) {
-		console.log("RESTARTING EVOLUTION 2")
-		OURO.doReset()
-	}
-}
-
 function loadPlayer(load) {
     const DATA = getPlayerData()
     player = deepNaN(load, DATA)
@@ -351,7 +345,6 @@ function loadPlayer(load) {
 
     checkBuildings()
 	onLoad()
-	rollback(load)
 	destroyOldData()
 }
 

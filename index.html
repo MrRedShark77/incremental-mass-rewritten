@@ -116,6 +116,7 @@
                     <button id="nav_right_hider" onclick="hideNavigation(1)"><iconify-icon icon="ic:round-arrow-forward-ios" width="35"></iconify-icon></button>
                     <button id="nav_extra_hider" onclick="hideNavigation(2)"><iconify-icon icon="mdi:plus" width="35"></iconify-icon></button>
                     <button id="nav_pin_hider" onclick="hideNavigation(3)"><iconify-icon icon="mdi:pin" width="35"></iconify-icon></button>
+                    <button id="nav_res_hider" onclick="goToTab('res-hide')"><iconify-icon icon="mdi:eye" width="35"></iconify-icon></button>
                 </div>
                 <div style="min-height: 60px">
                     <div id="chal_upper"></div>
@@ -230,9 +231,6 @@
                         <div id="building_fvm"></div>
                         <br><div>
                             <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> of mass gain from black hole, its mass gain will be softcapped!</span><br>
-                            <span id="bhFSoft1" class="red">
-                                The formula (x + 1)<sup id="bhMassPower2">0.33</sup> softcaps at <b id="bhFSoftStart1">X</b>
-                            </span><br>
                             <span id="bhOverflow"></span>
                             <div id="bhOverflow2" style="color: rgb(255, 197, 215)"></div>
                             <br><div id="bhcEffectOverflow" style="color: rgb(194, 177, 255)"></div>
@@ -432,6 +430,7 @@
                         </div>
                         <canvas id="tree_canvas"></canvas>
                         <div class="table_center" style="min-height: 30px;" id="tree_tab_table"></div><br>
+                        <button class="btn" onclick="TREE_UPGS.buyAll()">Buy All</button><br>
                         <div id="tree_table"></div>
                     </div><div id="tab_div-boson">
                         <div class="bosons">
@@ -671,24 +670,37 @@
                     
                     <div id="tab_div-options">
                         <button class="btn" onclick="save(); addNotify('Game saved')">Save</button>
-                        <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',()=>wipe(true))">Hard Reset</button>
-                        <button class="btn" onclick="exporty()">Export</button>
-                        <button class="btn" onclick="export_copy()">Export to clipboard</button>
+                        <button class="btn" onclick="exporty()">Save to file</button>
+                        <button class="btn" onclick="export_copy()">Export</button>
                         <button class="btn" onclick="importy()">Import</button>
-                        <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button>
-                        <button class="btn tooltip" onclick="window.open('https://boosty.to/mrredshark77')" tooltip-html="Support the original creator of IMR!">Donate</button>
-                        <button class="btn" onclick="createPopup(POPUP_GROUPS.help.html,'help')">Help</button><br>
                         <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button>
+                        <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',()=>wipe(true))">HARD RESET</button>
+
+						<br><br>
+                        <h2>Displays</h2><br>
                         <button class="btn" onclick="createPopup(POPUP_GROUPS.fonts.html,'fonts')">Fonts</button>
                         <button class="btn" onclick="createPopup(POPUP_GROUPS.notations.html,'notations')">Notations</button>
+                        <button class="btn" onclick="player.options.massDis = (player.options.massDis + 1) % 2">Mass: <span id="mass_dis">Default</span></button>
+                        <button class="btn" onclick="player.options.massType = (player.options.massType + 1) % 2">Mass Format: <span id="mass_type">Short</span></button>
                         <button class="btn" id="tree_anim_btn" onclick="changeTreeAnimation()">Tree Animation: <span id="tree_anim">ON</span></button>
-                        <button class="btn" onclick="player.options.massDis = (player.options.massDis + 1) % 2">Mass Format Display: <span id="mass_dis">Default</span></button>
-                        <button class="btn" onclick="player.options.massType = (player.options.massType + 1) % 2">Mass Format Naming: <span id="mass_type">Short</span></button>
-                        <br><br>
-                        <h2>Confirmation Settings</h2><br>
+
+						<br><br>
+                        <h2>Confirmations</h2><br>
                         <div id="confirm_table" class="table_center"></div>
-                        <br><br>
-                        Incremental Mass Rewritten v0.8 - Beta 3 - Contributed with Aarex<br>
+
+						<br><br>
+                        <h2>Preferences</h2><br>
+                        <button class="btn" id="prefer_notify" onclick="prefer('notify')">Notifications: OFF</button>
+                        <button class="btn" id="prefer_pin" onclick="prefer('pin')">Pins: OFF</button>
+
+						<br><br>
+                        <h2>Others</h2><br>
+                        <button class="btn" onclick="createPopup(POPUP_GROUPS.help.html,'help')">Help</button>
+                        <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button>
+                        <button class="btn tooltip" onclick="window.open('https://boosty.to/mrredshark77')" tooltip-html="Support the original creator of IMR!">Donate</button>
+
+						<br><br>
+                        Incremental Mass Rewritten v0.8 - Beta 3.1 - By MrRedShark77<br>
                         The game is inspired by Distance Incremental & Synergism<br>
                         Contributors: <span style="cursor: pointer;" onclick='addNotify(`where lemon<br><img src="https://i.imgflip.com/57cc98.jpg" style="width:100%">`)'>Bézier</span>, 16777216 & Aarex (Artists)<br><br><br>
                         Total time played: <span id="total_time">X</span>

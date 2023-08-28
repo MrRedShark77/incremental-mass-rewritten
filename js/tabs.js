@@ -248,6 +248,7 @@ const PINS = {
 		i = player.options.pins[i]
 		if (!goToTab(i)) createConfirm("This tab might be locked or removed! Do you want to remove?",'cantGo',_=>PINS.pin(i))
 	},
+
 	open_menu() {
 		player.options.nav_hide[3] = !player.options.nav_hide[3]
 		updateNavigation()
@@ -261,7 +262,8 @@ const PINS = {
 		new Element("pins_stabs").setHTML(h)
 	},
 	update() {
-		tmp.el["nav_pin_hider"].setDisplay(player.options.pins.length > 0)
+		tmp.el["nav_pin_hider"].setDisplay(player.options.pins.length > 0 && isPreferred("pin"))
+		tmp.el["pin_btn"].setDisplay(isPreferred("pin"))
 		tmp.el["pin_btn"].setTxt(player.options.pins.includes(tmp.tab_name) ? "Unpin" : "Pin")
 		tmp.el["pins_stabs"].setDisplay(player.options.nav_hide[3])
 		if (!player.options.nav_hide[3]) return

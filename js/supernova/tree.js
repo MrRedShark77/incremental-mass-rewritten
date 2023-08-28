@@ -83,8 +83,20 @@ const TREE_UPGS = {
 
             if (x == 'unl1') addQuote(6)
         }
-        if (!auto && tmp.supernova.tree_choosed == x && !hasTree(x)) player.supernova.pin_req = x
+        if (!auto && tmp.supernova.tree_choosed == x && this.ids[x].reqDesc && !hasTree(x)) player.supernova.pin_req = x
     },
+	buyAll() {
+		let cont = true
+		while (cont) {
+			cont = false
+			for (var [i, can] of Object.entries(tmp.supernova.tree_afford)) {
+				if (!can) continue
+				this.buy(i, true)
+				cont = true
+			}
+			if (cont) updateSupernovaTemp()
+		}
+	},
     ids: {
         c: {
             req() { return player.supernova.times.gte(1) },
@@ -475,8 +487,8 @@ const TREE_UPGS = {
         },
         fn2: {
             branch: ["fn1"],
-            req() { return player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01") },
-            reqDesc() { return `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilating mass in [Down]` },
+            req() { return OURO.evo >= 3 || (player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01")) },
+            reqDesc() { return OURO.evo >= 3 ? `YOU CAN AFFORD BECAUSE OF A EVOLUTION!` : `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilating mass in [Down]` },
             desc: `Unlock 2 more types of U-Quark & U-Fermion.`,
             cost: E(1e33),
         },

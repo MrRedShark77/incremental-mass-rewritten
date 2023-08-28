@@ -122,7 +122,11 @@ const INF = {
         player.bh.mass = E(0)
         if (OURO.unl()) player.evo = deepUndefinedAndDecimal({
 			times: player.evo.times,
-			wh: { auto: player.evo.wh.auto }
+			wh: {
+				auto: player.evo.wh.auto,
+				origin: player.evo.wh.origin,
+				rate: player.evo.wh.rate,
+			}
 		}, OURO.save.evo)
 
         player.atom.atomic = E(0)

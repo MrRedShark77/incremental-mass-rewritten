@@ -527,11 +527,9 @@ function setupCoreHTML() {
 function updateCoreHTML() {
     let reached = player.inf.reached
 
-    tmp.el.preTReq.setDisplay(!reached)
-
-    tmp.el.pt_selector.setDisplay(TS_visible)
-
     let lvl = tmp.core_lvl, fl = Decimal.floor(lvl)
+    tmp.el.preTReq.setDisplay(!reached)
+    tmp.el.pt_selector.setDisplay(TS_visible)
     tmp.el.pt_lvl.setHTML(`<b>${format(fl,0)}</b> (${formatPercent(lvl.sub(fl))})`)
 
     if (TS_visible) {
@@ -543,7 +541,7 @@ function updateCoreHTML() {
 
             if (!reached) continue
 
-            let p = player.inf.pre_theorem[i], s = chanceToBool(p.star_c), power = pm.mul(p.power_m).mul(100).add(100).round().div(100) // Math.round(100+pm*p.power_m*100)/100
+            let p = player.inf.pre_theorem[i], s = chanceToBool(p.star_c), power = pm.mul(p.power_m).mul(100).add(100).round().div(100).max(p.min_pow || 0)
             pt.setClasses({theorem_div:true, tooltip:true, [p.type]:true, choosed: player.inf.pt_choosed == i})
             pt.setHTML(getTheoremHTML({type: p.type, level: fl, power, star: s},true))
 
@@ -649,7 +647,7 @@ function createPreTheorem() {
     let t = CORE_TYPE[Math.randomInt(0, CORE_TYPE.length)]
     while (CORE[t].unl ? !CORE[t].unl() : false) t = CORE_TYPE[Math.randomInt(0, CORE_TYPE.length)]
 
-	let sav = player.inf.savage ?? {}, c = []
+	let sav = player.inf.savage ?? {}, c = [], min_pow = sav.power || E(1)
     while (c.length == 0) {
         let m = [], n = false
         for (let i = 0; i < MAX_STARS; i++) {
@@ -665,17 +663,17 @@ function createPreTheorem() {
 		}
         if (n) c = m
     }
-    return {star_c: c, type: t, power_m: Math.random()}
+    return {star_c: c, min_pow, type: t, power_m: Math.random()}
 }
 
 function choosePreTheorem(i) {
     player.inf.pt_choosed = i
 }
 
-function addTheorem(type, star, level, power) {
+function addTheorem(type, star, level, power, min_pow) {
     let s = true
     for (let i = 0; i < MAX_INV_LENGTH; i++) if (!player.inf.inv[i]) {
-        player.inf.inv[i] = {type, star: chanceToBool(star), level, power: power.mul(100).round().div(100)} // Math.round(power*100)/100
+        player.inf.inv[i] = {type, star: chanceToBool(star), level, power: power.mul(100).round().div(100).max(min_pow || 0)}
         s = false
         break
     }
@@ -691,7 +689,7 @@ function addSelectedTheorem(onInf) {
 	}
 
 	let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
-    addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),getPowerMult().mul(td.power_m).add(1))
+    addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),getPowerMult().mul(td.power_m).add(1),td.min_pow)
 }
 
 function getFragmentEffect(id,def=1) { return tmp.fragment_eff[id]||def }
@@ -800,7 +798,7 @@ function updateCoreTemp() {
         let boost = t.boost?t.boost():1
 
         for (let j = 0; j < MAX_STARS; j++) {
-            let sc = Decimal.pow(ct.total_s[j].mul(Decimal.pow(boost, ct.total_s[j].add(1).log10().add(1))),ct.total_p) // Decimal.pow(ct.total_s[j] * Math.pow(boost, Math.log10(ct.total_s[j]+1)+1),ct.total_p)
+            let sc = Decimal.pow(ct.total_s[j].mul(Decimal.pow(boost, ct.total_s[j].add(1).log10().add(1))),ct.total_p)
             sc = overflow(sc,ss,0.5)
             if (sc.gt(0)) sc = sc.add(tmp.dim_mass_eff)
 

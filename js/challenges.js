@@ -436,7 +436,7 @@ const CHALS = {
         start: E(1.989e38),
         effect(x) {
             if (OURO.evo < 2) return x.mul(0.1).add(1).softcap(1.5,hasElement(39)?1:0.5,0).sub(1)
-            if (OURO.evo >= 2) return hasElement(80,1) ? E(1.1).pow(x) : x.mul(0.1).add(1)
+            if (OURO.evo >= 2) return x.mul(0.1).mul(hasElement(80,1) ? E(1.1).pow(x) : 1).add(1)
         },
         effDesc(x) { return OURO.evo>=2?formatMult(x):"+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
     },
@@ -467,7 +467,7 @@ const CHALS = {
         pow: E(1.3),
         start: E(1.989e38),
         effect(x) {
-            if (OURO.evo >= 2) return hasElement(80,1) ? E(1.2).pow(x) : x.mul(0.2).add(1)
+            if (OURO.evo >= 2) return x.mul(0.2).mul(hasElement(80,1) ? E(1.2).pow(x) : 1).add(1)
             if (hasElement(64)) x = x.mul(1.5)
             let ret = hasElement(133) ? x.root(1.5).mul(0.025).add(1) : x.root(1.75).mul(0.02).add(1)
             return overflow(ret.softcap(2.3,0.25,0),1e10,0.5)

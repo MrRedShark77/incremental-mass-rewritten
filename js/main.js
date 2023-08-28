@@ -263,112 +263,6 @@ const FORMS = {
         if (hasElement(159)) p = p.pow(0.8)
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
-    tickspeed: {
-        cost(x=player.tickspeed) { return E(2).pow(x).floor() },
-        can() { return player.rp.points.gte(tmp.tickspeedCost) && !CHALS.inChal(2) && !CHALS.inChal(6) && !CHALS.inChal(10) },
-        buy() {
-            if (this.can()) {
-                if (!hasUpgrade("atom",2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost).max(0)
-                player.tickspeed = player.tickspeed.add(1)
-            }
-        },
-        buyMax() { 
-            if (this.can()) {
-                if (!hasUpgrade("atom",2)) player.rp.points = player.rp.points.sub(tmp.tickspeedCost).max(0)
-                player.tickspeed = tmp.tickspeedBulk
-            }
-        },
-        effect() {
-            let t = player.tickspeed, bonus = E(0), step = E(1), ss = E(1e50), eff = E(1), eff_bottom = E(1)
-
-            if (CHALS.inChal(17)) return {step, eff, bonus, ss, eff_bottom}
-
-            if (hasElement(63)) t = t.mul(25)
-            t = t.mul(tmp.prim.eff[1][1])
-            t = t.mul(tmp.radiation.bs.eff[1])
-            if (player.atom.unl) bonus = bonus.add(tmp.atom.atomicEff[0])
-            bonus = bonus.mul(getEnRewardEff(4))
-
-            step = E(1.5)
-			step = step.add(tmp.chal.eff[6])
-			step = step.add(tmp.chal.eff[2])
-			if (tmp.atom.unl) step = step.add(tmp.atom.particles[0].powerEffect.eff2)
-			if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
-			if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
-            step = step.mul(tmp.bosons.effect.z_boson[0])
-            step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
-            if (hasElement(191)) step = step.pow(elemEffect(191))
-            step = step.pow(tmp.qu.chroma_eff[0])
-            if (hasTree("t1")) step = step.pow(1.15)
-
-            ss = ss.mul(tmp.radiation.bs.eff[13])
-            let p = 0.1
-            if (hasElement(86)) {
-                ss = ss.pow(2)
-                p **= 0.5
-            }
-            if (hasPrestige(0,6)) ss = ss.pow(100)
-            if (hasElement(102)) ss = ss.pow(100)
-            step = step.softcap(ss,p,0,hasUpgrade('rp',16))
-
-            if (hasBeyondRank(2,4)) step = step.pow(tmp.accelEffect.eff)
-            if (hasBeyondRank(3,32)) step = step.pow(tmp.elements.effect[18])
-            
-            eff = step.pow((hasAscension(0,1)?t.add(1).mul(bonus.add(1)):t.add(bonus)).mul(hasElement(80)?25:1))
-
-            if (!hasElement(199) || CHALS.inChal(15)) {
-                if (hasElement(18)) eff = eff.pow(tmp.elements.effect[18])
-                if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05)
-
-                if (hasElement(150)) eff = expMult(eff,1.6)
-            }
-
-            eff_bottom = eff
-
-			if (hasElement(199) && !CHALS.inChal(15)){
-				eff = eff.add(9).log10().add(9).log10().pow(tmp.accelEffect.eff.mul(0.1));
-				eff_bottom = eff_bottom.pow(tmp.accelEffect.eff);
-				if (player.ranks.tetr.gte(3)) eff = eff.pow(1.05),eff_bottom = eff_bottom.pow(1.05);
-			}
-
-            return {step, eff, bonus, ss, eff_bottom}
-        },
-        autoUnl() { return hasUpgrade("bh",5) },
-        autoSwitch() { player.autoTickspeed = !player.autoTickspeed },
-    },
-    accel: {
-        cost(x=player.accelerator) { return Decimal.pow(10,Decimal.pow(1.5,x)).floor() },
-        can() { return player.rp.points.gte(tmp.accelCost) },
-        buy() {
-            if (this.can()) {
-                player.accelerator = player.accelerator.add(1)
-            }
-        },
-        buyMax() { 
-            if (this.can()) {
-                player.accelerator = tmp.accelBulk
-            }
-        },
-        effect() {
-            let step = E(0.0004)
-            if (tmp.inf_unl) step = step.add(theoremEff('atom',3,0))
-            step = step.mul(tmp.dark.abEff.accelPow||1)
-            if (hasElement(205)) step = step.mul(elemEffect(205))
-            if (hasUpgrade('bh',19)) step = step.mul(upgEffect(2,19))
-
-            if (CHALS.inChal(17)) step = E(0)
-
-            let ss = E(100), sp = 0.5
-
-            if (hasElement(259)) sp = 0.56
-
-            let x = player.accelerator.mul(step).add(1)
-            x = overflow(x,ss,sp)
-            return {step: step, eff: x, ss}
-        },
-        autoUnl() { return true },
-        autoSwitch() { player.autoAccel = !player.autoAccel },
-    },
     rp: {
         gain() {
             if (player.mass.lt(1e15)) return E(0)
@@ -485,6 +379,7 @@ const FORMS = {
             if (hasElement(59)) x = E(0.45)
             x = x.add(tmp.radiation.bs.eff[4])
             x = x.add(tmp.dark.shadowEff.bhp||0)
+            x = x.mul(tmp.radiation.bs.eff[20])
             return x
         },
         massGain() {
@@ -554,18 +449,7 @@ const FORMS = {
             return x
         },
         f() {
-            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain).softcap(tmp.bh.fSoftStart,tmp.bh.fSoftPower,2)
-            return x
-        },
-        fSoftStart() {
-            let x = uni("e3e9")
-            if (hasElement(71)) x = x.pow(tmp.elements.effect[71])
-            x = x.pow(tmp.radiation.bs.eff[20])
-            return x
-        },
-        fSoftPower() {
-            let x = 0.95
-            if (hasTree("qu3")) x **= 0.7
+            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain)
             return x
         },
         massSoftGain() {
@@ -602,18 +486,15 @@ const FORMS = {
             FORMS.rp.doReset()
         },
         effect() {
-            if (OURO.evo >= 2) return E(1)
-            if (CHALS.inChal(17) && !hasElement(201)) return E(1)
+			if (CHALS.inChal(17) && !hasElement(201)) return E(1)
 
-            let x = (hasUpgrade("atom",12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
-            if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
-            if (hasElement(201)) x = Decimal.add(1.1,exoticAEff(0,5,0)).pow(x.max(1).log10().add(1).log10().pow(.8))
-
-            if (hasUpgrade('bh',18)) x = x.pow(2.5)
-            x = x.overflow('e1000',0.5)
-
-            if (hasElement(48,1)) x = x.pow(theoremEff('bh',4))
-            return x
+			let x = (hasUpgrade('atom',12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.add(1).root(4))
+			if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
+			if (hasElement(201)) x = Decimal.add(1.1,exoticAEff(0,5,0)).pow(x.max(1).log10().add(1).log10().pow(.8))
+			if (hasUpgrade('bh',18)) x = x.pow(2.5)
+			if (hasElement(201)) x = x.overflow('e1000',0.5)
+			if (hasElement(48,1)) x = x.pow(theoremEff('bh',4))
+			return x
         },
     },
     reset_msg: {
@@ -658,7 +539,6 @@ function format(ex, acc=4, max=12, type=player.options.notation) {
     if (tmp.aprilEnabled && Math.random() < .9) return "Troll"
 
     ex = E(ex)
-    if (!tmp.inf_unl && ex.gt(INF.req)) return '[???]'
 
     neg = ex.lt(0)?"-":""
     if (ex.mag == Infinity) return neg + 'Infinite'
@@ -882,7 +762,6 @@ function formatGain(a,e,mass) {
 
 function formatMass(ex) {
     ex = E(ex)
-    if (!tmp.inf_unl && ex.gt(INF.req)) return '[???]'
 
     const n = MASS_NAMES[mass_type]
     let md = player.options.massDis
