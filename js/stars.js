@@ -64,10 +64,10 @@ const STARS = {
             x = s.max(1).log10().add(1).pow(r)
             x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
             if (player.qu.rip.active || tmp.c16active || inDarkRun() || OURO.evo >= 2) x = x.softcap('ee33',0.9,2)
-            x = x.softcap('ee70',0.91,2)
         }
 
-        if (tmp.c16active) x = overflow(x,10,0.5).min('ee70')
+        if (tmp.c16active) x = overflow(x,10,0.5)
+        if (!hasElement(162)) x = x.min('ee70')
 
         return x
     },

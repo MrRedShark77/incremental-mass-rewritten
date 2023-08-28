@@ -275,7 +275,7 @@ const FORMS = {
             if (evo == 0 && hasTree("rp1")) gain = gain.mul(treeEff('rp1'))
 
 			if (tmp.atom.unl) {
-				if (!hasElement(105) && !hasElement(165)) gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
+				if (!hasElement(105)) gain = gain.mul(tmp.atom.particles[1].powerEffect.eff1)
 				else gain = gain.pow(tmp.atom.particles[1].powerEffect.eff1)
 			}
 
@@ -286,8 +286,8 @@ const FORMS = {
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
-            if (hasElement(165)) gain = gain.pow(tmp.supernova.tree_eff.rp1)
 
+            if (evo == 0 && hasElement(165)) gain = gain.pow(treeEff('rp1'))
             if (evo == 0 && hasUpgrade('rp',18)) gain = gain.pow(upgEffect(1,18))
 			if (evo < 2 && (tmp.c16active || inDarkRun())) gain = expMult(gain,mgEff(1))
             if (evo >= 1) {

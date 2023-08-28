@@ -460,7 +460,7 @@ const MUONIC_ELEM = {
     getUnlLength() {
         let u = 11
 
-        if (OURO.unl()) u = [66,76,82,88][OURO.evo]
+        if (OURO.unl()) u = [66,76,82,88,98,108,118][OURO.evo]
         else {
             if (tmp.inf_unl) u += 4
             if (hasInfUpgrade(9)) u += 3
