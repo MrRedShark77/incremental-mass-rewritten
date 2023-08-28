@@ -1000,11 +1000,11 @@ const ELEMENTS = {
         },{
             br: true,
             desc: `[m1]’s effect is overpowered.`,
-            get cost() { return E( OURO.evo >= 1 ? "e6e68" : "e4.2e69") }, // nice
+            get cost() { return E( OURO.evo >= 2 ? "e1e66" : OURO.evo >= 1 ? "e6e68" : "e4.2e69") }, // nice
         },{
             br: true,
             desc: `[rp1]’s effect is overpowered again.`,
-            cost: E("e6.3e69"),
+            get cost() { return E( OURO.evo >= 2 ? "e1e67" : "e6.3e69") },
         },{
             br: true,
             desc: `[bh1]’s effect is overpowered for the third time.`,

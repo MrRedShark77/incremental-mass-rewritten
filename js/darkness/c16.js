@@ -189,7 +189,7 @@ let C16_ANI = {
 	squares: [],
 	last: 0,
 	time: 0,
-	get on() { return (tmp.c16active || (tmp.inf_unl && OURO.evo >= 2)) && !CHALS.inChal(20) }
+	get on() { return tmp.c16active && !CHALS.inChal(20) }
 }
 
 function drawC16() {
