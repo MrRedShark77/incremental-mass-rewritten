@@ -133,7 +133,8 @@ const WORMHOLE = {
 
     get autoUnl() { return hasElement(80, 1) },
     canAuto(i) {
-        return this.autoUnl && i != player.evo.wh.origin && i != 6 && (player.evo.wh.mass[i].eq(0) || player.evo.wh.auto[i])
+		let o = player.evo.wh.origin
+        return this.autoUnl && i != 6 && o != i && (o == 6 || player.evo.wh.mass[i].eq(0) || player.evo.wh.auto[i])
     },
 }
 
@@ -145,16 +146,19 @@ function activateWormhole(id, auto) {
         wh.origin = id
         wh.auto[id] = false
         WORMHOLE.choose_origin = false
-    } else if (id == wh.origin) {
-        if (CHALS.inChal(6)) return
-        splitWormhole(wh.origin, auto ? "auto" : "")
-    } else if (WORMHOLE.canAuto(id) && !auto) {
+        return
+    } else if (!auto && WORMHOLE.canAuto(id)) {
         wh.auto[id] = !wh.auto[id]
-    } else if (id != 6) {
-        let toAdd = mass[id].mul(auto ? 1 : wh.rate)
-        mass[wh.origin] = mass[wh.origin].add(toAdd)
-        mass[id] = mass[id].sub(toAdd)
-    }
+    } else if (id != 6 && wh.origin != 6) {
+		if (id == wh.origin) {
+			if (CHALS.inChal(6)) return
+			splitWormhole(wh.origin, auto ? "auto" : "")
+		} else {
+			let toAdd = mass[id].mul(auto ? 1 : wh.rate)
+			mass[wh.origin] = mass[wh.origin].add(toAdd)
+			mass[id] = mass[id].sub(toAdd)
+		}
+	}
 }
 
 function splitWormhole(origin, mode) {
