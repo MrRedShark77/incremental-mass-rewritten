@@ -528,7 +528,7 @@ const UPGS = {
             },
             6: {
                 get desc() { return `Gain 100% of Dark Matters gained from reset per second. ${ OURO.evo >= 2 ? "Increase Wormhole loselessness" : "Mass gain from Black Hole softcap starts later" } based on Atomic Powers.` },
-                cost: E(1e18),
+                get cost() { return OURO.evo >= 2 ? E(1e3) : E(1e18) },
                 effect() {
                     if (OURO.evo < 2) return player.atom.atomic.add(1).pow(0.5)
                     if (OURO.evo >= 2) {

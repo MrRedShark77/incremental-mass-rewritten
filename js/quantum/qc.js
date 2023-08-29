@@ -184,7 +184,7 @@ function updateQCTemp() {
     let bs = 0
     for (let x = 0; x < QCs_len; x++) {
         let m = QCs.getMod(x) * [1, 2, 1.5, 10][evo]
-        let n = QCs.getMod(x) * [1, 2, 1.6, 10][evo]
+        let n = QCs.getMod(x) * [1, 2, 1.7, 10][evo]
         s += Math.round(n)
         tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m*weak)
         if (hasTree('qc2') && m >= 10) bs++

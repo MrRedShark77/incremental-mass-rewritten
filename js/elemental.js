@@ -381,7 +381,7 @@ const ELEMENTS = {
             desc: `Collapsed star's effect boosts mass of black hole gain at a reduced rate.`,
             cost: E('e510'),
             effect() {
-                let x = tmp.stars?tmp.stars.effect.add(1).pow(0.02):E(1)
+                let x = tmp.stars?tmp.stars.effect[0].add(1).pow(0.02):E(1)
                 return x
             },
             effDesc(x) { return format(x)+"x" },
@@ -568,7 +568,7 @@ const ELEMENTS = {
         },
         {
             get desc() { return OURO.evo >= 2 ? `Gain 100x more Quantum Foam.` : `Stronger & Tickspeed are 10x stronger.` },
-            cost: E('e1.4e13'),
+            get cost() { return OURO.evo >= 2 ? E('e7e12') : E('e1.4e13') },
         },
         {
             desc: `Stronger is ^1.1 stronger.`,
@@ -992,7 +992,7 @@ const ELEMENTS = {
             desc: `Unlock Dark Run. Keep Oganesson-118 on darkness.`,
             cost: E("1e96"),
         },{
-            desc: `Collapsed star’s effect now provide an exponential boost at a reduced rate. It now applies to mass of black hole gain. But nullify Palladium-46, Cadmium-48, Thulium-69 & Osmium-76.`,
+            desc: `Collapsed star’s effect raises normal mass. This exponent also raises mass of black hole.`,
             get cost() { return E( OURO.evo >= 1 ? "e1e69" : "e2e69") },
         },{
             desc: `Spatial Dilation is slightly weaker.`,

@@ -77,7 +77,7 @@ function updateChalTemp() {
         let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:E(1)
         if (x == 9) q = Decimal.min(q,'e150')
         if (x < 20) q = x <= 16 ? q.pow(p) : q.mul(p)
-        if ([6,8].includes(x)) q = E(1)
+        if (OURO.evo == 2 && [6,8].includes(x)) q = E(1)
         tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
         if (CHALS[x].unl()) tmp.chal.unl = true
     }

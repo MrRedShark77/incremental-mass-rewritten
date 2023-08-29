@@ -46,7 +46,7 @@ const FORMS = {
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         if (hasUpgrade("bh",10)) x = x.mul(tmp.upgs?tmp.upgs[2][10].effect:E(1))
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
-        if (!hasElement(162)) x = x.mul(tmp.stars.effect)
+        x = x.mul(tmp.stars.effect[0])
         if (hasTree("m1") && !hasElement(164)) x = x.mul(tmp.supernova.tree_eff.m1)
 
         if (OURO.unl()) x = x.mul(appleEffect('mass')[0])
@@ -88,7 +88,7 @@ const FORMS = {
         .softcap(tmp.massSoftGain7,tmp.massSoftPower7,0)
         .softcap(tmp.massSoftGain8,tmp.massSoftPower8,0)
 
-        if (hasElement(162)) x = x.pow(tmp.stars.effect)
+        x = x.pow(tmp.stars.effect[1])
         if (hasElement(164)) x = x.pow(tmp.supernova.tree_eff.m1)
 
         x = x.pow(glyphUpgEff(1))
@@ -379,12 +379,10 @@ const FORMS = {
             if (hasElement(59)) x = E(0.45)
             x = x.add(tmp.radiation.bs.eff[4])
             x = x.add(tmp.dark.shadowEff.bhp||0)
-            x = x.mul(tmp.radiation.bs.eff[20])
             return x
         },
         massGain() {
-            if (OURO.evo >= 2) return E(0)
-            let x = tmp.bh.f.mul(BUILDINGS.eff('bhc'))
+            let x = tmp.bh.formula.mul(BUILDINGS.eff('bhc'))
             if (hasUpgrade("rp",11)) x = x.mul(tmp.upgs?tmp.upgs[1][11].effect:E(1))
             if (hasUpgrade("bh",14)) x = x.mul(tmp.upgs?tmp.upgs[2][14].effect:E(1))
             if (hasElement(46) && !hasElement(162)) x = x.mul(tmp.elements.effect[46])
@@ -394,29 +392,25 @@ const FORMS = {
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
-
-            x = x.softcap(tmp.bh.massSoftGain, tmp.bh.massSoftPower, 0).softcap(mlt(1e19),1/3,0)
+            x = x.softcap(tmp.bh.massSoftGain, .5, 0)
 
             x = x.pow(glyphUpgEff(2))
-
-            if (tmp.atom.unl && hasUpgrade('atom',18)) x = x.pow(tmp.atom.particles[1].powerEffect.eff2)
+            if (hasUpgrade('atom',18)) x = x.pow(tmp.atom.particles[1].powerEffect.eff2)
             if (hasUpgrade('bh',20)) x = x.pow(upgEffect(2,20))
-
             if (hasCharger(0)) x = x.pow(2)
             if (hasBeyondRank(2,10)) x = x.pow(1.2)
-            x = x.pow(tmp.unstable_bh.effect)
 
+            x = x.pow(tmp.unstable_bh.effect)
             if (tmp.inf_unl) x = x.pow(theoremEff('bh',0))
             if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[1])
 
             if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(0))
-
-            if (hasElement(162)) x = x.pow(tmp.stars.effect).pow(tmp.c16active || inDarkRun() ? 5 : 100)
+            if (hasElement(162)) x = x.pow(tmp.stars.effect[1]).pow(tmp.c16active || inDarkRun() ? 5 : 100)
 
             let bhw = theoremEff('bh',5)
 
             let o = x
-            let os = tmp.c16active ? E('ee3') : E('ee69').pow(exoticAEff(1,1))
+            let os = tmp.c16active ? E('ee3') : E('ee63').pow(exoticAEff(1,1))
             let op = E(0.5).pow(bhw)
 
             let os2 = tmp.c16active ? E('ee6') : E('ee249')
@@ -430,7 +424,6 @@ const FORMS = {
             if (hasPrestige(2,45)) os2 = os2.pow(prestigeEff(2,45))
             if (hasElement(269)) os2 = os2.pow(elemEffect(269))
             if (hasElement(51,1)) os2 = os2.pow(muElemEff(51))
-
             if (hasElement(252)) os2 = expMult(os2,1.5)
 
             os = os.min(os2)
@@ -448,18 +441,24 @@ const FORMS = {
             if (CHALS.inChal(13)) x = x.max(1).log10().tetrate(1.5)
             return x
         },
-        f() {
-            let x = player.bh.mass.add(1).pow(tmp.bh.massPowerGain)
-            return x
-        },
         massSoftGain() {
             let s = E(1.5e156)
             if (hasUpgrade("atom",6)) s = s.mul(tmp.upgs?tmp.upgs[3][6].effect:E(1))
             return s
         },
-        massSoftPower() {
-            let p = E(1)
-            return E(1).div(p.add(1))
+		formula() {
+			return player.bh.mass.add(1).pow(tmp.bh.massPowerGain).overflow(tmp.bh.fSoftStart, tmp.bh.fSoftPower)
+		},
+        fSoftStart() {
+            let x = uni("e3e9")
+            if (hasElement(71)) x = x.pow(tmp.elements.effect[71])
+            x = x.pow(tmp.radiation.bs.eff[20])
+            return x
+        },
+        fSoftPower() {
+            let x = 0.95
+            if (hasTree("qu3")) x **= 0.7
+            return x
         },
         reset() {
             if (tmp.bh.dm_can) {

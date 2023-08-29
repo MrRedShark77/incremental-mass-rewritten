@@ -17,26 +17,27 @@ const WORMHOLE = {
         else if (tmp.passive >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
         if (player.bh.unl) {
-            for (let i = 0; i < Math.min(unls, 6); i++) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wormhole_mult[i].mul(dt),i)
+            for (let i = 0; i < Math.min(unls, player.evo.wh.origin == 6 ? 7 : 6); i++) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wormhole_mult[i].mul(dt),i)
         }
     },
     mult(i) {
         let r = E(1)
-        if (i == 6) {
+		r = player.evo.wh.fabric.add(1)
+		r = r.mul(player.evo.wh.mass[i].add(10).log10().pow(2))
+
+		if (hasElement(125)) r = expMult(r, 1.1)
+		if (hasElement(158)) r = expMult(r, 1.05)
+
+		if (hasTree("bh1")) r = r.pow(treeEff("bh1"))
+		if (tmp.bosons) r = r.pow(tmp.bosons.upgs.photon[5].effect)
+		r = r.pow(glyphUpgEff(2))
+		r = r.pow(wormholeEffect(6))
+
+		if (i == 6) {
+			r = r.add(1).log10()
             if (hasCharger(6)) r = r.mul(3)
             if (hasElement(88,1)) r = r.mul(3)
-        } else {
-            r = player.evo.wh.fabric.add(1)
-            r = r.mul(player.evo.wh.mass[i].add(10).log10().pow(2))
-
-            if (hasElement(125)) r = expMult(r, 1.1)
-            if (hasElement(158)) r = expMult(r, 1.05)
-
-            if (hasTree("bh1")) r = r.pow(treeEff("bh1"))
-            if (tmp.bosons) r = r.pow(tmp.bosons.upgs.photon[5].effect)
-            r = r.pow(glyphUpgEff(2))
-            r = r.pow(wormholeEffect(6))
-        }
+		}
         return r
     },
     total() {
@@ -70,7 +71,7 @@ const WORMHOLE = {
                     tmp.el[id+'-div'].setClasses({ ["wormhole-div"]: true, none: i != wh.origin })
                     tmp.el[id+'-id'].setHTML("")
                     tmp.el[id+'-effect'].setHTML("")
-                    tmp.el[id+'-mult'].setHTML(i == 6 ? "[ Can't be Origin ]" : wh.origin == i ? "[Origin]" : "")
+                    tmp.el[id+'-mult'].setHTML(wh.origin == i ? "[Origin]" : "")
                     tmp.el[id+'-mass'].setHTML("#" + (i+1))
                 } else {
                     const m = mass[i], mult = tmp.evo.wormhole_mult[i]
@@ -139,8 +140,6 @@ const WORMHOLE = {
 function wormholeEffect(id,def=E(1)) { return id<tmp.evo.wormhole_unls && tmp.evo.wormhole_eff[id] ? tmp.evo.wormhole_eff[id] : def }
 
 function activateWormhole(id, auto) {
-    if (id == 6) return
-
     const wh = player.evo.wh, mass = wh.mass
     if (!auto && WORMHOLE.choose_origin) {
         wh.origin = id
@@ -151,7 +150,7 @@ function activateWormhole(id, auto) {
         splitWormhole(wh.origin, auto ? "auto" : "")
     } else if (WORMHOLE.canAuto(id) && !auto) {
         wh.auto[id] = !wh.auto[id]
-    } else if (wh.origin != 6) {
+    } else if (id != 6) {
         let toAdd = mass[id].mul(auto ? 1 : wh.rate)
         mass[wh.origin] = mass[wh.origin].add(toAdd)
         mass[id] = mass[id].sub(toAdd)
