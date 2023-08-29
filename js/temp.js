@@ -334,10 +334,11 @@ function updateBlackHoleTemp() {
     t.unl = player.bh.unl && OURO.evo < 2
 
 	if (!t.unl) return
-    t.f = FORMS.bh.f()
-    t.massSoftPower = FORMS.bh.massSoftPower()
     t.massSoftGain = FORMS.bh.massSoftGain()
     t.massPowerGain = FORMS.bh.massPowerGain()
+    t.fSoftStart = FORMS.bh.fSoftStart() 
+    t.fSoftPower = FORMS.bh.fSoftPower()
+    t.formula = FORMS.bh.formula()
     t.mass_gain = FORMS.bh.massGain()
     t.effect = FORMS.bh.effect()
 

@@ -209,7 +209,7 @@ const TREE_UPGS = {
             evo_desc: [1,`Neutron Stars boost calm powers gain.`],
             cost: E(200),
             effect() {
-                if (OURO.evo >= 1) return hasElement(165) ? player.supernova.stars.add(1).log10().add(1) : player.supernova.stars.add(1).log10().add(1).log10().add(1).pow(2)
+                if (OURO.evo >= 1) return hasElement(165) ? player.supernova.stars.add(1).log10().add(1).pow(2) : player.supernova.stars.add(1).log10().add(1).log10().add(1).pow(2)
                 let x = hasElement(165)
                 ? player.supernova.stars.add(1).log10().add(1).log10().div(10).add(1)
                 : E(1e50).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))

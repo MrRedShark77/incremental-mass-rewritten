@@ -9,7 +9,7 @@ const ATOM = {
 			return x
         } else if (evo >= 2) {
             if (player.evo.wh.fabric.lt(300)) return E(0)
-            x = player.evo.wh.fabric.div(300).sqrt()
+            x = player.evo.wh.fabric.div(150).sub(1).sqrt()
 			if (!tmp.c16active) x = E(2).pow(x).mul(5)
         } else {
             x = player.bh.mass.div(hasUpgrade("br",1)?1.5e156**0.5:1.5e156)
@@ -39,7 +39,7 @@ const ATOM = {
 
 		if (OURO.evo >= 3) x = E(1.01).pow(expMult(x.sub(1), 1)).floor() //save +4 for later upgrades.
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
-		else x = x.log10().pow(1.1).add(1)
+		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.1).add(1)
 
         if (!tmp.c16active) x = x.pow(escrowBoost("qk"))
         if (hasUpgrade("bh",13)) x = x.mul(10)

@@ -257,6 +257,8 @@ function updateMainUpgradesHTML() {
 function updateBlackHoleHTML() {
 	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(tmp.preQUGlobalSpeed), true))
 	tmp.el.bhMassPower.setTxt(format(tmp.bh.massPowerGain))
+	tmp.el.bhFSoft.setDisplay(tmp.bh.formula.gte(tmp.bh.fSoftStart))
+	tmp.el.bhFSoftStart.setTxt(formatMass(tmp.bh.fSoftStart))
 	tmp.el.massSoft2.setDisplay(tmp.bh.mass_gain.gte(tmp.bh.massSoftGain))
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 
