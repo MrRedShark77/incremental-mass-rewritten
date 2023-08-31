@@ -66,15 +66,13 @@ const DARK = {
         qu.rip.amt = E(0)
 
         let k = []
-
         if (hasElement(127) || hasInfUpgrade(11)) k.push(8,9,11)
         else bmd.active = false
         bmd.energy = E(0)
         bmd.mass = E(0)
         for (let x = 0; x < 10; x++) bmd.upgs[x] = E(0)
 
-        if (!hasElement(204)) resetMainUpgs(4,k)
-        
+        if (!hasElement(204)) resetMainUpgs(4,k)        
         if (!hasElement(124)) {
             let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
             "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11']
@@ -99,8 +97,6 @@ const DARK = {
 
         if (!hasElement(127)) tmp.rank_tab = 0
         if (tmp.tab_name == "break-dil" && !hasElement(127)) tmp.stab[4] = 0
-
-        tmp.pass = 1
     },
     shadowGain() {
         if (CHALS.inChal(19)) return E(0)

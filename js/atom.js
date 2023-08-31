@@ -97,10 +97,8 @@ const ATOM = {
 			return
 		}
 
-        let keep = []
-        for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
-        if (!hasInfUpgrade(18)) player.mainUpg.bh = keep
-        if (chal_reset && !hasUpgrade("atom",4) && !hasTree("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
+        if (!hasInfUpgrade(18)) resetMainUpgs(2,[5])
+        if (chal_reset && !hasUpgrade("atom",4) && !hasTree("chal2")) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
 
         player.bh.dm = E(0)
         BUILDINGS.reset('bhc')

@@ -51,6 +51,6 @@ const MEDITATION = {
 }
 
 function cpProd() {
-	let log = player.evo.cp.best.max(1).div(player.evo.cp.points.max(1)).log10()
-	return tmp.rp.gain.mul(log.add(1))
+	let r = player.evo.cp.best.div(player.evo.cp.points.add(1)).sqrt()
+	return tmp.rp.gain.mul(r.max(1))
 }

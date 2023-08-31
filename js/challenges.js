@@ -338,7 +338,7 @@ const CHALS = {
         return {goal, bulk}
     },
     1: {
-        unl() { return OURO.evo < 2 && (player.mass.gte(1.5e136) || player.atom.unl) },
+        unl() { return OURO.evo < 2 && (player.mass.gte(1.5e136) || player.chal.unl || player.atom.unl) },
         title: "Instant Scale",
         desc: "Super rank and mass upgrade scaling starts at 25. Also, Super tickspeed starts at 50.",
         reward: ()=>hasBeyondRank(2,20)?`Supercritical Rank & All Fermions Tier scaling starts later, Super Overpower scales weaker based on completions.`:`Super Rank starts later, Super Tickspeed scales weaker based on completions.`,
@@ -556,7 +556,7 @@ const CHALS = {
     14: {
         unl() { return hasElement(144) },
         title: "No Dmitri Mendeleev",
-        desc: "You cannot purchase any pre-118 elements. Additionally, you are trapped in quantum challenge with modifiers [5,5,5,5,5,5,5,5].",
+        get desc() { return `You cannot purchase any pre-118 elements. Additionally, you are trapped in quantum challenge with modifiers ${getQCForceDisp(14)}.` },
         reward: `Gain more primordium theorems.<br><span class="yellow">On first completion, unlock more features!</span>`,
         max: E(100),
         inc: E('e2e19'),
@@ -571,7 +571,7 @@ const CHALS = {
     15: {
         unl() { return hasElement(168) },
         title: "The Reality II",
-        desc: "You are trapped in c1-12 and quantum challenge with modifiers [10,5,10,10,10,10,10,10].",
+        get desc() { return `You are trapped in c1-12 and quantum challenge with modifiers ${getQCForceDisp(15)}.` },
         reward: `Normal mass's overflow starts later based on completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
         max: E(100),
         inc: E('e1e6'),

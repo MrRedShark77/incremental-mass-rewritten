@@ -38,10 +38,7 @@ const CONFIRMS_FUNCTION = {
             if (!force && !fermion) {
                 player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
             }
-            if (post?!hasTree("qu_qol4"):true) {
-                tmp.pass = 1
-                SUPERNOVA.doReset()
-            }
+            if (post || !hasTree("qu_qol4")) SUPERNOVA.doReset()
         }
 
         document.body.style.backgroundColor = "#111"

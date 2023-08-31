@@ -88,7 +88,7 @@ const TABS = [
     ] },
     { name: "Upgrades", icon: "carbon:upgrade", unl() { return [1,2].includes(OURO.evo) || tmp.upgs.unl }, stab: [
         ['main-upg', () => tmp.upgs.unl],
-        ['elements', null, () => OURO.evo > 0],
+        ['elements', null, () => [1,2].includes(OURO.evo)],
     ] },
     { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
         'chal',

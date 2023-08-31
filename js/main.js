@@ -410,7 +410,7 @@ const FORMS = {
             let bhw = theoremEff('bh',5)
 
             let o = x
-            let os = tmp.c16active ? E('ee3') : E('ee63').pow(exoticAEff(1,1))
+            let os = tmp.c16active ? E('ee3') : E('ee69').pow(exoticAEff(1,1))
             let op = E(0.5).pow(bhw)
 
             let os2 = tmp.c16active ? E('ee6') : E('ee249')
@@ -467,9 +467,7 @@ const FORMS = {
             }
         },
         doReset() {
-            let keep = []
-            for (let x = 0; x < player.mainUpg.rp.length; x++) if ([3,5,6].includes(player.mainUpg.rp[x])) keep.push(player.mainUpg.rp[x])
-            if (!hasInfUpgrade(18)) player.mainUpg.rp = keep
+            if (!hasInfUpgrade(18)) resetMainUpgs(1,[3,5,6])
             player.rp.points = E(0)
             BUILDINGS.reset('tickspeed')
             BUILDINGS.reset('accelerator')

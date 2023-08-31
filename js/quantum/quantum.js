@@ -77,8 +77,6 @@ const QUANTUM = {
         for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8 || force || dark) if (!hasElement(122) || x != 12 || dark) player.chal.comps[x] = E(0)
 
         SUPERNOVA.doReset()
-
-        tmp.pass = 1
     },
     bpGain() {
         let x = E(1)

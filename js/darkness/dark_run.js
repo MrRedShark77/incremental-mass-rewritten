@@ -221,6 +221,7 @@ function updateDarkRunHTML() {
     let c16 = tmp.c16active
 
     tmp.el.dark_run_btn.setTxt(dra?"Exit Dark Run":"Start Dark Run")
+    tmp.el.dark_run_btn.setTooltip(`Dark Running will force a Dark reset, and will trap you into Big Rip with quantum challenge modifiers ${getQCForceDisp('run')}. You will produce <b>Glyphic Mass</b> based on resources which nerf things, and choosing a glyph to earn will exit a Dark Run.`)
     tmp.el.dark_run_rounds.setTxt(GLYPH_SEL.length?"Next Round":dra?"Rounds left: "+player.dark.run.round:"Rounds: " + player.dark.run.rounds)
     tmp.el.mg_max.setTxt("Max: " + ["OFF", "ON"][player.dark.run.gmode])
     tmp.el.mg_max_gain.setTxt(player.dark.run.gmode ? "∞" : format(player.dark.run.gamount,0))
@@ -286,35 +287,32 @@ function updateDarkRunHTML() {
 
 function updateDarkRunTemp() {
     let dtmp = tmp.dark
-    let dra = player.dark.run.active
 
-    dtmp.glyph_upg_unls = DARK_RUN.upg_unl_length()
+    let w = 1
+    if (tmp.inf_unl) w /= theoremEff('time',3)
+    dtmp.glyph_weak = w
 
     dtmp.glyph_sel_max = 1 + OURO.evo
     dtmp.glyph_mult = E(dtmp.rayEff.glyph||1).mul(appleEffect('glyph'))
     if (hasPrestige(2,5)) dtmp.glyph_mult = dtmp.glyph_mult.mul(prestigeEff(2,5,1))
     dtmp.glyph_mult = dtmp.glyph_mult.mul(tmp.matters.FSS_eff[1])
 
-    let w = 1
-    if (tmp.inf_unl) w /= theoremEff('time',3)
-    dtmp.glyph_weak = w
-
     let dp = 0
     if (hasElement(7,1)) dp += 3
 
+    let dra = player.dark.run.active
+    dtmp.glyph_upg_unls = DARK_RUN.upg_unl_length()
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         dtmp.mass_glyph_eff[x] = DARK_RUN.mass_glyph_eff(x)
         let gain = DARK_RUN.mass_glyph_gain[x]()
         let mg = Decimal.max(0,(dra ? gain : E(0)).sub(player.dark.run.glyphs[x]))
         if (player.dark.run.gmode == 1) mg = Decimal.min(player.dark.run.gamount,mg)
         dtmp.mass_glyph_gain[x] = mg
-
         dtmp.mg_passive[x] = x < dp ? gain : 0
     }
 
     for (let x = 1; x < GLYPH_UPG_LEN; x++) {
         let u = DARK_RUN.upg[x]
-
         if (u.eff) tmp.glyph_upg_eff[x] = u.eff(player.dark.run.upg[x]||0)
     }
 }

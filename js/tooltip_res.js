@@ -155,7 +155,7 @@ const TOOLTIP_RES = {
             let h = `<i>
             ${player.qu.rip.active ? "Our dimension is Big Ripped. Click to undo." : "Big Rip the Dimension."}
             <br><br>
-            While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers [10,2,10,10,5,0,2,10]. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.
+            While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.
             </i>`
 
             return h

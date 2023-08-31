@@ -77,23 +77,24 @@ const OURO = {
         this.doReset()
     },
     doReset() {
-        INF.doReset()
-        INF.load(false)
-
         player.build.pe.amt = E(0)
         player.build.fvm.amt = E(0)
         if (OURO.unl()) {
 			player.ouro.apple = E(0)
 			player.evo.wh.origin = 0
 		}
+		for (let i in CORE) tmp.core_eff[i] = []
 
-        let newData = getPlayerData()
+        INF.doReset()
+        INF.load(false)
+
         let keep = {
             atom: {
                 elements: OURO.evo >= 3 ? [1] : [],
                 muonic_el: unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry)
             }
         }
+        let newData = getPlayerData()
         let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
 

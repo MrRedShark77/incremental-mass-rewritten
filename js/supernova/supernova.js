@@ -10,25 +10,17 @@ const SUPERNOVA = {
         let br = player.qu.rip.active || tmp.c16active || inDarkRun()
         tmp.supernova.time = 0
         if (OURO.unl()) player.evo.cp.best = E(0)
+		if (OURO.evo >= 3) player.evo.proto = OURO.save.evo.proto
 
 		//Permanent Stuff
-        player.atom.points = E(0)
         player.atom.quarks = E(0)
-
         player.stars.unls = 0
         player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
         player.stars.points = E(0)
         BUILDINGS.reset('star_booster')
-        
-        let list_keep = [2,5]
-        if (OURO.evo >= 3) list_keep.push(1)
-        if (hasTree("qol2")) list_keep.push(6)
-        let keep = []
-        for (let x = 0; x < player.mainUpg.atom.length; x++) if (list_keep.includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
-        if (!hasInfUpgrade(18)) player.mainUpg.atom = keep
 
         list_keep = [21,36]
-        if (hasUpgrade("br",1)) list_keep.push(1)
+        if (hasUpgrade("br",1) || OURO.evo >= 3) list_keep.push(1)
         if (hasTree("qol1")) list_keep.push(14,18)
         if (hasTree("qol2")) list_keep.push(24)
         if (hasTree("qol3")) list_keep.push(43)
@@ -38,27 +30,32 @@ const SUPERNOVA = {
         player.atom.elements = keep
         if (hasTree("qu_qol9") && QCs.active() && !hasElement(84)) player.atom.elements.push(84)
 
+		if (tmp.atom.unl) {
+			//Pre-Ouroboric
+			player.atom.points = E(0)
+			player.atom.particles = [E(0),E(0),E(0)]
+			player.atom.powers = [E(0),E(0),E(0)]
+			player.atom.atomic = E(0)
+			BUILDINGS.reset('cosmic_ray')
+
+			if (!hasInfUpgrade(18)) {
+				let list_keep = [2,5], keep = []
+				if (hasTree("qol2")) list_keep.push(6)
+				resetMainUpgs(3,list_keep)
+			}
+
+			player.md.active = false
+			player.md.particles = E(0)
+			player.md.mass = E(0)
+			for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
+
+			if (!hasTree("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
+			player.supernova.chal.noTick = true
+			player.supernova.chal.noBHC = true
+		}
+
+		tmp.pass = 1
         ATOM.doReset()
-        tmp.pass = 1
-
-		if (OURO.evo >= 3) player.evo.proto = OURO.save.evo.proto
-		if (!tmp.atom.unl) return
-
-		//Pre-Ouroboric
-        player.atom.particles = [E(0),E(0),E(0)]
-        player.atom.powers = [E(0),E(0),E(0)]
-        player.atom.atomic = E(0)
-        BUILDINGS.reset('cosmic_ray')
-
-        player.md.active = false
-        player.md.particles = E(0)
-        player.md.mass = E(0)
-        for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
-
-        if (!hasTree("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
-
-        player.supernova.chal.noTick = true
-        player.supernova.chal.noBHC = true
     },
     starGain() {
         let x = E(hasTree("c")?0.2:0)

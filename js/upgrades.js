@@ -894,7 +894,10 @@ function upgEffect(id,x,def=E(1)) { return tmp.upgs[id][x]?tmp.upgs[id][x].effec
 function resetMainUpgs(id,keep=[]) {
     let k = []
     let id2 = UPGS.main.ids[id]
-    for (let x = 0; x < player.mainUpg[id2].length; x++) if (keep.includes(player.mainUpg[id2][x])) k.push(player.mainUpg[id2][x])
+    for (let x of player.mainUpg[id2]) {
+		if (keep.includes(x)) k.push(x)
+		else tmp.upgs[id][x].has = false
+	}
     player.mainUpg[id2] = k
 }
 

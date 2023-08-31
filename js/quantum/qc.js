@@ -1,6 +1,6 @@
 const QCs = {
-    active() { return player.qu.qc.active || player.qu.rip.active || CHALS.inChal(14) || CHALS.inChal(15) || tmp.c16active || inDarkRun() },
-    getMod(x) { return tmp.c16active && OURO.evo >= 2 ? 10 : CHALS.inChal(15) ? (OURO.evo >= 2 ? 3 : OURO.evo == 1 ? [6,0,6,6,6,6,6,6][x] : [10,5,10,10,10,10,10,10][x]) : tmp.c16active || inDarkRun() ? (OURO.evo == 1 ? 5 : 8) : CHALS.inChal(14) ? (OURO.evo >= 1 ? 4 : 5) : player.qu.rip.active ? tmp.qc_rip[x] : player.qu.qc.mods[x] },
+    active() { return tmp.qc_force != undefined || player.qu.qc.active },
+    getMod(x) { return (tmp.qc_force || player.qu.qc.mods)[x] },
     incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),10) },
     enter() {
         if (!player.qu.qc.active) {
@@ -167,7 +167,13 @@ function updateQCModPresets() {
 
 function updateQCTemp() {
     let evo = OURO.evo
-    tmp.qc_rip = [[10,2,10,10,5,0,2,10], [10,2,10,10,1,0,2,5], [10,2,0,5,1,0,2,0], [10,10,10,10,10,10,10,10]][evo]
+    tmp.qc_force = undefined
+	if (player.qu.rip.active) tmp.qc_force = QC_FORCE.rip[evo]
+	if (player.dark.run.active) tmp.qc_force = QC_FORCE.run[evo]
+	for (var c of [14,15,16,20]) {
+		if (!CHALS.inChal(c)) continue
+		tmp.qc_force = QC_FORCE[c][evo]
+	}
 
     tmp.qu.qc_s_b = E(2)
     if (hasTree("qf4")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
@@ -217,4 +223,42 @@ function updateQCHTML() {
             )
         }
     }
+}
+
+function getQCForceDisp(mod) {
+	return `[${QC_FORCE[mod][OURO.evo].toString()}]`
+}
+
+let QC_FORCE = {
+	//Number: Challenge
+	rip: [
+		[10,2,10,10,5,0,2,10],
+		[10,2,10,10,1,0,2,5],
+		[10,2,0,5,1,0,2,0]
+	],
+	run: [
+		[8,8,8,8,8,8,8,8],
+		[5,5,5,5,5,5,5,5],
+		[7,7,7,7,7,7,0,7]
+	],
+	14: [
+		[5,5,5,5,5,5,5,5],
+		[4,4,4,4,4,4,4,4],
+		[4,4,4,4,4,4,4,4],
+	],
+	15: [
+		[10,5,10,10,10,10,10,10],
+		[6,0,6,6,6,6,6,6],
+		[3,3,3,3,3,3,3,3],
+	],
+	16: [
+		[8,8,8,8,8,8,8,8],
+		[5,5,5,5,5,5,5,5],
+		[10,10,10,10,10,10,10,10]
+	],
+	20: [
+		[10,5,10,10,10,10,10,10],
+		[6,0,6,6,6,6,6,6],
+		[10,10,10,10,10,10,10,10]
+	],
 }
