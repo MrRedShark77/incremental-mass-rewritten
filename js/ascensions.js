@@ -201,7 +201,7 @@ function updateAscensionsTemp() {
     for (let x = 0; x < ASCENSIONS.names.length; x++) {
         tmp.ascensions.req[x] = ASCENSIONS.req(x)
         for (let y in ASCENSIONS.rewardEff[x]) {
-            if (ASCENSIONS.rewardEff[x][y]) tmp.ascensions.eff[x][y] = ASCENSIONS.rewardEff[x][y][0]()
+            if (hasAscension(x, y) && ASCENSIONS.rewardEff[x][y]) tmp.ascensions.eff[x][y] = ASCENSIONS.rewardEff[x][y][0]()
         }
     }
 }

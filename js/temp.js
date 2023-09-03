@@ -45,12 +45,10 @@ function resetTemp() {
             eff: {},
         },
 
-        bd: {
-            upgs: [],
-        },
+		rp: {},
+        upgs: { msg: [0,0] },
 
-        upgs: {},
-
+		bh: {},
 		atom: {},
         elements: {
             choosed: 0,
@@ -265,12 +263,10 @@ function resetTemp() {
                     let u = TREE_UPGS.ids[id]
                     tmp.supernova.tree_had2[j].push(id)
                     tmp.supernova.tree_had.push(id)
-                    // if (u && !u.qf && !u.cs) tmp.supernova.auto_tree.push(id)
                 }
             }
         }
     }
-    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) tmp.bd.upgs[x] = {}
     for (let x = 0; x < SCALE_TYPE.length; x++) {
         let st = SCALE_TYPE[x]
 
@@ -323,6 +319,7 @@ function updateUpgradesTemp() {
 
 function updateRagePowerTemp() {
     if (!tmp.rp) tmp.rp = {}
+    tmp.rp.unl = OURO.evo < 1 && player.rp.unl
     tmp.rp.gain = FORMS.rp.gain()
     tmp.rp.can = tmp.rp.gain.gte(1)
 }
@@ -331,7 +328,7 @@ function updateBlackHoleTemp() {
     let t = tmp.bh = {}
     t.dm_gain = FORMS.bh.DM_gain()
     t.dm_can = t.dm_gain.gte(1)
-    t.unl = player.bh.unl && OURO.evo < 2
+    t.unl = player.bh?.unl
 
 	if (!t.unl) return
     t.massSoftGain = FORMS.bh.massSoftGain()
@@ -344,7 +341,6 @@ function updateBlackHoleTemp() {
 
     // Unstable
     t = tmp.unstable_bh
-    
     t.p = E(1)
     if (tmp.inf_unl) t.p = t.p.div(theoremEff('bh',2))
     if (hasUpgrade('bh',23)) t.p = t.p.div(.75)
@@ -363,8 +359,8 @@ function updateTemp() {
 
     OURO.temp()
 
-    tmp.passive = (evo>=3?player.bh.unl:hasUpgrade("atom",6))?2:
-		(evo>=2?player.rp.unl:hasUpgrade("bh",6)||hasUpgrade("atom",6))?1:0
+    tmp.passive = (evo>=3?FORMS.bh.unl():hasUpgrade("atom",6))?2:
+		(evo>=2?FORMS.rp.unl():hasUpgrade("bh",6)||hasUpgrade("atom",6))?1:0
 
     tmp.c16active = CHALS.inChal(16)
     tmp.c18active = CHALS.inChal(18)
@@ -400,13 +396,11 @@ function updateTemp() {
     updateSupernovaTemp()
 
     updateElementsTemp()
-    updateMDTemp()
+    updateAtomTemp()
     updateUpgradesTemp()
     updateChalTemp()
-    updateAtomTemp()
     BUILDINGS.temp()
 
-    updateStarsTemp()
     updateScalingTemp()
     updateRagePowerTemp()
     updateBlackHoleTemp()

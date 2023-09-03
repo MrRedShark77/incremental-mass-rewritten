@@ -1,22 +1,24 @@
 const CONFIRMS_FUNCTION = {
     rage() {
-        let g = tmp.rp.gain
+        let g = tmp.rp.gain, r = OURO.evo >= 1 ? player.evo.cp : player.rp
 
-        if (OURO.evo >= 1) player.evo.cp.points = player.evo.cp.points.add(g)
-        else player.rp.points = player.rp.points.add(g)
+        r.points = r.points.add(g)
+		r.unl = true
 
-        player.rp.unl = true
         FORMS.rp.doReset()
-
         addQuote(2)
     },
     bh() {
         let g = tmp.bh.dm_gain
 
-        if (OURO.evo >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(g)
-        else player.bh.dm = player.bh.dm.add(g)
+        if (OURO.evo >= 2) {
+			player.evo.wh.fabric = player.evo.wh.fabric.add(g)
+			player.evo.wh.unl = true
+        } else {
+			player.bh.dm = player.bh.dm.add(g)
+			player.bh.unl = true
+		}
 
-        player.bh.unl = true
         FORMS.bh.doReset()
 
         addQuote(3)

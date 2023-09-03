@@ -18,7 +18,7 @@ const ENTROPY = {
     gain() {
         let x = tmp.en.eff.eth.mul(getEnRewardEff(6))
         if (hasElement(93)) x = x.mul(tmp.elements.effect[93]||1)
-        if (player.md.break.upgs[6].gte(1)) x = x.mul(tmp.bd.upgs[6].eff?tmp.bd.upgs[6].eff[0]:1)
+        if (hasMDUpg(6, true)) x = x.mul(mdEff(6, true)[0] || 1)
         x = x.mul(tmp.dark.shadowEff.en||1)
 
         x = x.pow(exoticAEff(0,2))
@@ -219,14 +219,14 @@ function getEnRewardEff(x,def=1) { return tmp.en.rewards_eff[x] ?? E(def) }
 function calcEntropy(dt) {
     let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
 
-    if(player.md.break.upgs[10].gte(1) && player.qu.en.unl){
+    if (hasMDUpg(10, true) && player.qu.en.unl){
 		let s1 = Decimal.pow(4,player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));
         if (isNaN(s1.mag)) s1=E(0)
 		if(player.qu.en.eth[2].lt(s1))player.qu.en.eth[2] = s1;
         
-		s1 = Decimal.pow(4,player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
+		s1 = tmp.bh.unl ? Decimal.pow(4,player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25) : E(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));
         s1 = s1.mul(tmp.dark.abEff.hr||1)

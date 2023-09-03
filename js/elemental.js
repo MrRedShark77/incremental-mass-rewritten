@@ -47,7 +47,7 @@ const ELEMENTS = {
 		return !this.cannotAfford(x, layer)
     },
 	cannotAfford(x, layer) {
-		if (OURO.isFed("e"+layer+"_"+x)) return true
+		if (EVO.isFed("e"+layer+"_"+x)) return true
 		if (layer == 1) return
 		if (CHALS.inChal(14) && x < 118) return true
 		if (tmp.c16active && isElemCorrupted(x)) return true
@@ -240,6 +240,7 @@ const ELEMENTS = {
             desc: `Passively gain 100% of the atoms you would get from resetting each second. Atomic Power boost Relativistic particles gain at a reduced rate.`,
             cost: E(1e75),
             effect() {
+                if (!tmp.atom.unl) return E(1)
                 let x = hasPrestige(0,40) ? player.atom.atomic.max(1).log10().add(1).log10().add(1).root(2) : player.atom.atomic.max(1).log10().add(1).pow(0.4)
                 return x
             },
@@ -278,6 +279,7 @@ const ELEMENTS = {
             desc: `Dilated mass boosts Relativistic particles gain.`,
             cost: E(1e130),
             effect() {
+                if (!tmp.atom.unl) return E(1)
                 let x = player.md.mass.add(1).pow(0.0125)
                 return overflow(x.softcap('ee27',0.95,2),"ee110",0.25)
             },
@@ -294,19 +296,13 @@ const ELEMENTS = {
         {
             desc: `Rage power boosts Relativistic particles gain.`,
             cost: E(1e175),
-            effect() {
-                let x = player.rp.points.max(1).log10().add(1).pow(0.75)
-                return x
-            },
+            effect: _ => tmp.rp.unl ? player.rp.points.max(1).log10().add(1).pow(0.75) : E(1),
             effDesc(x) { return format(x)+"x" },
         },
         {
             desc: `Mass from Black Hole boosts dilated mass gain.`,
             cost: E(1e210),
-            effect() {
-                let x = player.bh.mass.max(1).log10().add(1).pow(0.8)
-                return x
-            },
+            effect: _ => tmp.bh.unl ? player.bh.mass.max(1).log10().add(1).pow(0.8) : E(1),
             effDesc(x) { return format(x)+"x" },
         },
         {
@@ -326,7 +322,8 @@ const ELEMENTS = {
             desc: `Cosmic Ray's free tickspeeds now add to RU7.`,
             cost: E(1e260),
             effect() {
-                let x = tmp.atom.unl?tmp.atom.atomicEff[0]:E(0)
+                if (!tmp.atom.unl) return E(0)
+                let x = tmp.atom.atomicEff[0]
                 if (hasElement(82)) x = x.mul(3)
                 return x.div(6).floor()
             },
@@ -414,10 +411,7 @@ const ELEMENTS = {
         {
             desc: `Mass of black hole boosts atomic powers gain at a reduced rate.`,
             cost: E('e2800'),
-            effect() {
-                let x = expMult(player.bh.mass.add(1), 0.6)
-                return x
-            },
+            effect: _ => tmp.bh.unl ? expMult(player.bh.mass.add(1), 0.6) : E(1),
             effDesc(x) { return format(x)+"x" },
         },
         {
@@ -586,8 +580,8 @@ const ELEMENTS = {
             desc: `Pre-Ultra Mass Upgrades scale weaker based on Cosmic Ray's free tickspeeds.`,
             cost: E('e7e14'),
             effect() {
-                let x = tmp.atom.unl?E(OURO.evo >= 2 ? 0.998 : 0.9).pow(tmp.atom.atomicEff[0].add(1).log10().pow(2/3)):E(1)
-                return x
+                if (!tmp.atom.unl) return E(1)
+                return E(OURO.evo >= 2 ? 0.998 : 0.9).pow(tmp.atom.atomicEff[0].add(1).log10().pow(2/3))
             },
             effDesc(x) { return formatReduction(x)+" weaker" },
         },
@@ -610,19 +604,13 @@ const ELEMENTS = {
         {
             desc: `Mass of Black Hole effect raises itself at a reduced logarithmic rate.`,
             cost: E('e1100'),
-            effect() {
-                let x = player.bh.mass.add(1).log10().add(1).log10().mul(1.25).add(1).pow(hasElement(201)||player.qu.rip.active?2:0.4)
-                return x
-            },
+            effect: _ => tmp.bh.unl ? player.bh.mass.add(1).log10().add(1).log10().mul(1.25).add(1).pow(hasElement(201)||player.qu.rip.active?2:0.4) : E(1),
             effDesc(x) { return "^"+x.format() },
         },
         {
             desc: `Death Shard gain is boosted by Dilated Mass.`,
             cost: E('e1300'),
-            effect() {
-                let x = player.md.mass.add(1).log10().add(1).pow(0.5)
-                return x
-            },
+            effect: _ => tmp.atom.unl ? player.md.mass.add(1).log10().add(1).pow(0.5) : E(1),
             effDesc(x) { return "x"+x.format() },
         },
         {
@@ -1130,10 +1118,7 @@ const ELEMENTS = {
             br: true,
             desc: `Dark matter boosts abyssal blots gain. Ultra mass upgrades start ^1.5 later.`,
             cost: E("e8.8e89"),
-            effect() {
-                let x = player.bh.dm.add(1).log10().add(1)
-                return x
-            },
+            effect: _ => tmp.bh.unl ? player.bh.dm.add(1).log10().add(1) : E(1),
             effDesc(x) { return "x"+format(x) },
         },{
             desc: `Chromas gain is raised to 1.1th power.`,
@@ -1150,10 +1135,7 @@ const ELEMENTS = {
             dark: true,
             desc: `Each Matter’s gain is increased by 10% for every OoM^2 of Dark Matter. Unlock more main upgrades.`,
             cost: E(1e303),
-            effect() {
-                let x = Decimal.pow(1.1,player.bh.dm.add(1).log10().add(1).log10())
-                return x
-            },
+            effect: _ => tmp.bh.unl ? Decimal.pow(1.1,player.bh.dm.add(1).log10().add(1).log10()) : E(1),
             effDesc(x) { return "x"+format(x) },
         },{
             desc: `Hybridized Uran-Astatine’s first effect makes Exotic Rank and Meta-Tier start later at ^0.5 rate.`,
@@ -1224,11 +1206,7 @@ const ELEMENTS = {
             br: true,
             desc: `Dark matter boosts matter exponent.`,
             cost: E("1e1.69e100"),
-            effect() {
-                let x = player.bh.dm.add(1).log10().add(1).log10().add(1).log10().div(10)
-                
-				return x
-            },
+            effect: _ => tmp.bh.unl ? player.bh.dm.add(1).log10().add(1).log10().add(1).log10().div(10) : E(0),
             effDesc(x) { return "+^"+format(x) },
         },{
             br: true,
@@ -1357,6 +1335,7 @@ const ELEMENTS = {
             desc: `Mass of black hole boosts mass overflow^1-2 starting.`,
             cost: E('e1e26'),
             effect() {
+                if (!tmp.bh.unl) return E(1)
                 let x = player.bh.mass.add(10).log10().root(20)
                 if (hasBeyondRank(6,12)) x = x.pow(3)
                 return x
@@ -1964,9 +1943,9 @@ function updateElementsHTML() {
     if (ch) {
         let eu = elem_const.upgs[ch]
         let eff = tElem[["effect","mu_effect"][elayer]]
-        let fed = tmp.ouro.fed["e"+elayer+"_"+ch]
+        let fed = tmp.evo.fed["e"+elayer+"_"+ch]
 
-        tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+(fed?OURO.fed_msg[fed]:eu.desc))
+        tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+(fed?EVO.fed_msg[fed]:eu.desc))
         tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer)})
         tmp.el.elem_cost.setTxt(ELEM_TYPES[getElementClass(ch, elayer)].resDisp(eu.cost)+(player.qu.rip.active&&tElem.cannot.includes(ch)?" [CANNOT AFFORD in Big Rip]":""))
         tmp.el.elem_eff.setHTML(eu.effDesc?"Currently: "+eu.effDesc(eff[ch]):"")
@@ -1992,7 +1971,7 @@ function updateElementsHTML() {
                     upg.setVisible(unl2)
                     if (unl2) {
                         let eu = elem_const.upgs[x]
-                        let fed = tmp.ouro.fed["e"+elayer+"_"+x]
+                        let fed = tmp.evo.fed["e"+elayer+"_"+x]
                         upg.setClasses(
 							fed ? {elements: true, locked: true, [ fed ]: true} :
 							c16 && isElemCorrupted(x,elayer) ? {elements: true, locked: true, corrupted: true} :

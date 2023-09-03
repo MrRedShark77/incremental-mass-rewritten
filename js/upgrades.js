@@ -37,14 +37,14 @@ const UPGS = {
         },
         ids: [null, 'rp', 'bh', 'atom', 'br'],
         cols: 4,
-        over(x,y) { player.main_upg_msg = [x,y] },
-        reset() { player.main_upg_msg = [0,0] },
+        over(x,y) { tmp.upgs.msg = [x,y] },
+        reset() { tmp.upgs.msg = [0,0] },
         1: {
             title: "Rage Upgrades",
             resName: "Rage Power",
             get res() { return player.rp.points },
             set res(x) { return player.rp.points = E(x) },
-            unl() { return player.rp.unl && OURO.evo < 1 },
+            unl() { return tmp.rp.unl },
             auto_unl() { return hasUpgrade("bh",5) || tmp.inf_unl },
             lens: 25,
             1: {
@@ -102,12 +102,12 @@ const UPGS = {
                 },
             },
             9: {
-                unl() { return player.bh.unl },
+                unl() { return FORMS.bh.unl() },
                 desc: "Stronger power is increased by +^0.25.",
                 cost: E(1e31),
             },
             10: {
-                unl() { return player.bh.unl },
+                unl() { return FORMS.bh.unl() },
                 desc: "Super Rank scaling is 20% weaker.",
                 cost: E(1e43),
             },
@@ -263,7 +263,7 @@ const UPGS = {
             resName: "Dark Matter",
             get res() { return player.bh.dm },
             set res(x) { return player.bh.dm = E(x) },
-            unl() { return player.bh.unl && OURO.evo < 2 },
+            unl() { return tmp.bh.unl },
             auto_unl() { return hasUpgrade("atom",2) || tmp.inf_unl },
             lens: 25,
             1: {
@@ -386,8 +386,8 @@ const UPGS = {
                 desc: "Atomic Powers add Black Hole Condensers at a reduced rate.",
                 cost: E('e420'),
                 effect() {
-                    let ret = hasAscension(0,42) && tmp.atom.unl ? tmp.atom.atomicEff[0] : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
-                    return ret.floor()
+                    if (!tmp.atom.unl) return E(0)
+                    return hasAscension(0,42) ? tmp.atom.atomicEff[0] : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0).floor()
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)
@@ -599,17 +599,17 @@ const UPGS = {
                 cost: E('e2015'),
             },
             13: {
-                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
+                unl() { return (brokeDil() && player.qu.rip.active) || hasElement(128) },
                 desc: "Cosmic Ray effect softcap starts x10 later.",
                 cost: E('e3.2e11'),
             },
             14: {
-                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
+                unl() { return (brokeDil() && player.qu.rip.active) || hasElement(128) },
                 desc: "Tickspeed, Black Hole Condenser and Cosmic Ray scalings up to Meta start x10 later.",
                 cost: E('e4.3e13'),
             },
             15: {
-                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
+                unl() { return (brokeDil() && player.qu.rip.active) || hasElement(128) },
                 desc: "Reduce Cosmic Ray scaling by 20%.",
                 cost: E('e3.4e14'),
             },
@@ -749,17 +749,17 @@ const UPGS = {
                 cost: E(1e7),
             },
             10: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl },
                 desc: `Chromas are 10% stronger.`,
                 cost: E(2.5e8),
             },
             11: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl },
                 desc: `Prestige Level no longer resets anything.`,
                 cost: E(1e10),
             },
             12: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return OURO.evo < 3 && (brokeDil() || tmp.inf_unl) },
                 desc: `Mass gain softcap^5 starts later based on Atom.`,
                 cost: E(1e16),
                 effect() {
@@ -769,7 +769,7 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "^"+format(x)+" later" },
             },
             13: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl },
                 desc: `Death Shard gain is boosted based on Prestige Base.`,
                 cost: E(1e17),
                 effect() {
@@ -779,12 +779,12 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "x"+format(x) },
             },
             14: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl },
                 desc: `Super Fermion Tier starts 10 later (after QC8 nerf).`,
                 cost: E(1e22),
             },
             15: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl },
                 desc: `Blueprint Particles boost Pre-Quantum Global Speed slightly.`,
                 cost: E(1e24),
             },
@@ -794,7 +794,7 @@ const UPGS = {
                 cost: E(1e273),
             },
             17: {
-                unl() { return tmp.mass4Unl || tmp.inf_unl },
+                unl() { return OURO.evo < 2 && (tmp.mass4Unl || tmp.inf_unl) },
                 desc: `Dark matter raises atoms gain at a reduced rate.`,
                 cost: E('e386'),
                 effect() {

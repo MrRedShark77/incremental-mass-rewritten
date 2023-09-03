@@ -77,8 +77,8 @@ function updateTabTemp() {
 const TABS = [
     { name: "Main", icon: "pajamas:weight", stab: [
         'mass',
-        ['bh', () => player.bh.unl, () => OURO.evo < 2],
-        ['wh', () => player.bh.unl, () => OURO.evo == 2],
+        ['bh', () => FORMS.bh.unl(), () => OURO.evo < 2],
+        ['wh', () => FORMS.bh.unl(), () => OURO.evo == 2],
         ['atomic', () => player.atom.unl, () => OURO.evo < 3 ],
         ['star', () => STARS.unlocked(), () => OURO.evo < 3 ],
         ['elements', null, () => OURO.evo >= 3 ],

@@ -785,17 +785,14 @@ function updateCoreTemp() {
     tmp.core_lvl = INF.level()
 
     let c20 = CHALS.inChal(20)
-
     let ss = E(1e3)
-
     if (hasElement(272)) ss = ss.mul(elemEffect(272))
-
     tmp.meta_score_ss = ss
 
     for (let i in CORE) {
         let t = CORE[i], s = tmp.core_score[i], eff = tmp.core_eff[i], ct = core_tmp[i]
 
-        let boost = t.boost?t.boost():1
+        let boost = (!t.unl||t.unl())&&t.boost?t.boost():0
 
         for (let j = 0; j < MAX_STARS; j++) {
             let sc = Decimal.pow(ct.total_s[j].mul(Decimal.pow(boost, ct.total_s[j].add(1).log10().add(1))),ct.total_p)

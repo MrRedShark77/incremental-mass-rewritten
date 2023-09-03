@@ -51,21 +51,21 @@ const RESOURCES_DIS = {
         resetBtn() { FORMS.bh.reset() },
     },
     bh: {
-        unl: ()=>player.bh.unl && OURO.evo < 2,
+        unl: ()=>tmp.bh.unl,
         icon: "bh",
         class: "yellow",
 
         desc: (gs)=>formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true),
     },
     wormhole: {
-        unl: ()=>player.bh.unl && OURO.evo >= 2,
+        unl: ()=>FORMS.bh.unl() && OURO.evo >= 2,
         icon: "evolution/wormhole",
         class: "yellow",
 
         desc: _ => formatMass(WORMHOLE.total()),
     },
     atom: {
-        unl: ()=>player.bh.unl && OURO.evo < 3,
+        unl: ()=>FORMS.bh.unl() && OURO.evo < 3,
         icon: "atom",
 
         desc: (gs)=>format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain.mul(gs)):"(+"+format(tmp.atom.gain,0)+")"),
@@ -73,7 +73,7 @@ const RESOURCES_DIS = {
         resetBtn() { ATOM.reset() },
     },
     protostar: {
-        unl: ()=>player.bh.unl && OURO.evo >= 3,
+        unl: ()=>FORMS.bh.unl() && OURO.evo >= 3,
         icon: "evolution/protostar",
         class: "space",
 
@@ -86,7 +86,7 @@ const RESOURCES_DIS = {
         icon: "md",
         class: "green",
 
-        desc: (gs)=>format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(hasTree("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(gs)):"(inactive)")),
+        desc: (gs)=>format(player.md.particles,0)+"<br>"+(inMD()?"(+"+format(tmp.md.rp_gain,0)+")":(hasTree("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(gs)):"(inactive)")),
 
         resetBtn() { MASS_DILATION.onactive() },
     },

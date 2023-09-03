@@ -237,7 +237,7 @@ function calcQuantum(dt) {
         createPopup(POPUP_GROUPS.en.html(),'enReached')
     }
 
-    if (hasUpgrade('br',9)) {
+    if (hasUpgrade('br',9) && tmp.atom.unl) {
         player.md.break.energy = player.md.break.energy.add(tmp.bd.energyGain.mul(inf_gs))
         player.md.break.mass = player.md.break.mass.add(tmp.bd.massGain.mul(inf_gs))
     }

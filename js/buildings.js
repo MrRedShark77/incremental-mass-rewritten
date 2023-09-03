@@ -124,7 +124,7 @@ const BUILDINGS_DATA = {
             if (hasUpgrade("rp",12)) step = step.add(tmp.upgs?tmp.upgs[1][12].effect:E(0))
             if (OURO.evo >= 1) step = step.mul(tmp.evo.meditation_eff.mass3??1)
             if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
-            if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
+            if (hasMDUpg(3)) step = step.mul(mdEff(3))
 			step = step.mul(nebulaEff("red"))
             step = step.pow(BUILDINGS.eff('mass_4'))
 
@@ -241,7 +241,7 @@ const BUILDINGS_DATA = {
 		icon: "tickspeed",
         scale: "tickspeed",
 
-        get isUnlocked() { return player.rp.unl && OURO.evo < 1 },
+        get isUnlocked() { return tmp.rp.unl },
         get autoUnlocked() { return hasUpgrade("bh",5) },
         get noSpend() { return hasUpgrade("atom",2) },
 
@@ -282,7 +282,7 @@ const BUILDINGS_DATA = {
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
             if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
             step = step.mul(tmp.bosons.effect.z_boson[0])
-            step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
+            if (tmp.md) step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
             if (hasElement(191)) step = step.pow(elemEffect(191))
             step = step.pow(tmp.qu.chroma_eff[0])
             if (hasTree("t1")) step = step.pow(1.15)
@@ -318,7 +318,7 @@ const BUILDINGS_DATA = {
 
         get bonus() {
             let x = E(0)
-            if (player.atom.unl && tmp.atom.atomicEff) x = x.add(tmp.atom.atomicEff[0])
+            if (tmp.atom.unl) x = x.add(tmp.atom.atomicEff[0])
             x = x.mul(getEnRewardEff(4))
             return x
         },
@@ -331,7 +331,7 @@ const BUILDINGS_DATA = {
         name: "Accelerator",
 		icon: "accelerator",
 
-        get isUnlocked() { return player.rp.unl && OURO.evo < 1 && hasElement(199) },
+        get isUnlocked() { return tmp.rp.unl && hasElement(199) },
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
@@ -379,7 +379,7 @@ const BUILDINGS_DATA = {
 		icon: "bhCondenser",
         scale: "bh_condenser",
 
-        get isUnlocked() { return player.bh.unl && OURO.evo < 2 },
+        get isUnlocked() { return tmp.bh.unl },
         get autoUnlocked() { return hasUpgrade("atom",2) },
         get noSpend() { return player.atom.unl },
 
@@ -393,7 +393,6 @@ const BUILDINGS_DATA = {
             if (hasCharger(6) && tmp.c16active) fp *= 1e6
 
             let fp2 = E(1)
-
             if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
 
             return Decimal.pow(1.75,x.div(fp2).scaleEvery('bh_condenser',false,[1,1,1,fp]))
@@ -414,37 +413,29 @@ const BUILDINGS_DATA = {
         get beMultiplicative() { return hasAscension(0,42) },
 
         effect(x) {
-            let t = x
-            t = t.mul(tmp.radiation.bs.eff[5])
             let pow = E(2)
-                pow = pow.add(tmp.chal.eff[6])
-                if (hasUpgrade("bh",2)) pow = pow.mul(tmp.upgs?tmp.upgs[2][2].effect:E(1))
-                if (tmp.atom.unl) pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
-                if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
-                pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
-                pow = pow.mul(tmp.prim.eff[2][1])
-                pow = pow.mul(getEnRewardEff(3)[1])
-                pow = pow.mul(escrowBoost("bhc"))
-                if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
-                if (hasTree("bh2")) pow = pow.pow(1.15)
+			pow = pow.add(tmp.chal.eff[6])
+			if (hasUpgrade("bh",2)) pow = pow.mul(tmp.upgs?tmp.upgs[2][2].effect:E(1))
+			if (tmp.atom.unl) pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
+			if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
+			pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
+			pow = pow.mul(tmp.prim.eff[2][1])
+			pow = pow.mul(getEnRewardEff(3)[1])
+			pow = pow.mul(escrowBoost("bhc"))
+			if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
+			if (hasTree("bh2")) pow = pow.pow(1.15)
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
-            if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
-            
+            if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))            
             if (CHALS.inChal(17)) pow = E(1)
-            
-            let eff = pow.pow(t)
 
-            let os = tmp.c16active ? E('ee150') : E('ee10000'), op = E(0.5)
+            x = x.mul(tmp.radiation.bs.eff[5])
+            let eff = pow.pow(x)
 
+            let os = tmp.c16active ? E('ee150') : E('ee10000'), op = E(0.5), o = eff
             if (hasUpgrade('bh',21)) os = expMult(os, 2)
-
-            let o = eff
-
             eff = overflow(eff,os,op,2)
-
             tmp.overflow.BHCEffect = calcOverflow(o,eff,os,2)
             tmp.overflow_start.BHCEffect = [os]
-
             return {power: pow, effect: eff}
         },
 
@@ -463,7 +454,7 @@ const BUILDINGS_DATA = {
 		icon: "fvm",
         scale: "fvm",
 
-        get isUnlocked() { return player.bh.unl && hasCharger(1) && OURO.evo < 2 },
+        get isUnlocked() { return tmp.bh.unl && hasCharger(1) },
         get autoUnlocked() { return true },
         get noSpend() { return true },
 

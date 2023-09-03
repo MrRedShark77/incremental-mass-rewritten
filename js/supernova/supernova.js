@@ -182,10 +182,11 @@ function updateSupernovaTemp() {
 
             let branch = t.branch||""
             let unl = !t.unl||t.unl()
-            let req = !t.req||t.req()
+            let req = unl&&(!t.req||t.req())
             let bought = player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)
             if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
             if (no_req1 && !CS_TREE.includes(id)) req = true
+
             let can = can_buy && (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost) && !bought && req
             if (branch != "") for (let x = 0; x < branch.length; x++) if (!(player.supernova.tree.includes(branch[x]) || player.dark.c16.tree.includes(branch[x]))) {
                 unl = false
@@ -196,7 +197,7 @@ function updateSupernovaTemp() {
             tmp.supernova.tree_unlocked[id] = unl || bought
             tmp.supernova.tree_afford[id] = unl && can
             if (can && unl && !(c16 && CORRUPTED_TREE.includes(id))) tmp.supernova.tree_afford2[i].push(id)
-            if (t.effect) tmp.supernova.tree_eff[id] = t.effect()
+            if (unl && t.effect) tmp.supernova.tree_eff[id] = t.effect()
         }
     }
 

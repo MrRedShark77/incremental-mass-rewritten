@@ -122,7 +122,7 @@ function calc(dt) {
 		player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(du_gs))
 		for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(du_gs))
 
-		if (hasTree("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
+		if (hasTree("qol3")) player.md.particles = player.md.particles.add(inMD() ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
 		player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(du_gs))
 
 		if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
@@ -141,9 +141,8 @@ function calc(dt) {
 	BUILDINGS.tick()
 
 	if (hasTree("qol6")) CHALS.exit(true)
-
 	if (hasTree("qu_qol3") && OURO.evo < 2) for (let x = 1; x <= 4; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
-	if (hasTree("qu_qol5")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
+	if (hasTree("qu_qol5") && OURO.evo < 3) for (let x = 5; x <= 8; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
 	if (hasElement(122)) for (let x = 9; x <= 11; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
 	if (hasElement(131)) player.chal.comps[12] = player.chal.comps[12].max(tmp.chal.bulk[12].min(tmp.chal.max[12]))
 	if (hasInfUpgrade(12)) for (let x = 13; x <= 15; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
@@ -158,7 +157,7 @@ function onPass(offline) {
 	player.atom.muonic_el = chunkify(player.atom.muonic_el)
 	calcNextElements()
 	updateUpgNotify()
-	OURO.update_fed()
+	EVO.update_fed()
 }
 
 function getPlayerData() {
@@ -267,7 +266,6 @@ function getPlayerData() {
             },
         },
         reset_msg: "",
-        main_upg_msg: [0,0],
         options: {
             font: 'Verdana',
             notation: 'sc',
@@ -332,7 +330,6 @@ function loadPlayer(load) {
 
     player.qu.qc.presets = player.qu.qc.presets.slice(0,5)
     player.reset_msg = ""
-    player.main_upg_msg = [0,0]
     player.chal.choosed = 0
     if (player.dark.run.gmode == 2) player.dark.run.gmode = 0
     if (player.dark.c16.first && player.dark.c16.totalS.eq(0) && player.dark.c16.shard.gt(0)) player.dark.c16.totalS = player.dark.c16.shard
@@ -394,23 +391,42 @@ function deepUndefinedAndDecimal(obj, data) {
 }
 
 function convertStringToDecimal() {
-    for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
-    for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
-    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) player.md.break.upgs[x] = E(player.md.break.upgs[x]||0)
     for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
 }
 
 function destroyOldData() {
 	delete player.massUpg
+	delete player.main_upg_msg
 	delete player.tickspeed
 	delete player.accelerator
 	delete player.autoMassUpg
 	delete player.autoTickspeed
 	delete player.autoAccel
-	delete player.bh.autoCondenser
-	delete player.bh.autoFVM
 	delete player.atom.auto_gr
 	delete player.qu.auto_cr
+
+	let evo = OURO.evo
+	if (evo >= 1) {
+		if (player.rp.unl) player.evo.cp.unl = player.rp.unl
+		delete player.rp
+	}
+	if (evo >= 2) {
+		if (player.bh.unl) player.evo.wh.unl = player.bh.unl
+		delete player.bh
+	} else {
+		delete player.bh.autoCondenser
+		delete player.bh.autoFVM
+	}
+	if (evo >= 3) {
+		delete player.atom.points
+		delete player.atom.atomic
+		delete player.atom.particles
+		delete player.atom.powers
+		delete player.atom.ratio
+		delete player.atom.dRatio
+		delete player.md
+	} else {
+	}
 }
 
 function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) && !quUnl() || tmp.inf_reached && !hasInfUpgrade(16) || onImport }

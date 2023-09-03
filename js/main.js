@@ -65,7 +65,7 @@ const FORMS = {
         if (player.ranks.tier.gte(2)) x = x.pow(1.15)
         if (player.ranks.rank.gte(180)) x = x.pow(1.025)
         if (!CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) x = x.pow(tmp.chal.eff[3])
-        if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) {
+        if (tmp.c16active || inMD() || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) {
             x = expMult(x,tmp.md.pen)
             if (hasElement(28)) x = x.pow(1.5)
         }
@@ -179,7 +179,7 @@ const FORMS = {
         if (player.ranks.hex.gte(10)) return EINF
         let s = E('1.5e1000056')
         if (hasTree("m2")) s = s.pow(1.5)
-        if (hasTree("m2")) s = s.pow(tmp.supernova.tree_eff.m3)
+        if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
         if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
 
         s = s.pow(tmp.bosons.effect.neg_w[0])
@@ -264,6 +264,7 @@ const FORMS = {
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     rp: {
+        unl() { return OURO.evo >= 1 ? player.evo.cp.unl : tmp.rp.unl },
         gain() {
             if (player.mass.lt(1e15)) return E(0)
             if (OURO.evo == 0 || OURO.evo >= 2) if (tmp.c16active || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
@@ -285,7 +286,7 @@ const FORMS = {
             gain = gain.pow(tmp.prim.eff[1][0])
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
-            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+            if (tmp.c16active || inMD() || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
             if (evo == 0 && hasElement(165)) gain = gain.pow(treeEff('rp1'))
             if (evo == 0 && hasUpgrade('rp',18)) gain = gain.pow(upgEffect(1,18))
@@ -314,7 +315,8 @@ const FORMS = {
         },
     },
     bh: {
-        see() { return player.rp.unl },
+        see() { return FORMS.rp.unl() },
+        unl() { return OURO.evo >= 2 ? player.evo.wh.unl : tmp.bh.unl },
         DM_gain() {
             const evo = OURO.evo;
             if (tmp.c16active) return player.dark.matters.amt[0]
@@ -343,7 +345,7 @@ const FORMS = {
             gain = gain.pow(tmp.prim.eff[2][0])
 
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
-            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
+            if (tmp.c16active || inMD() || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) gain = expMult(gain,tmp.md.pen)
 
             if (hasElement(204)) gain = gain.pow(tmp.bosons.upgs.photon[0].effect)
             if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
@@ -391,7 +393,7 @@ const FORMS = {
             x = x.pow(tmp.chal.eff[8])
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
-            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+            if (tmp.c16active || inMD() || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
             x = x.softcap(tmp.bh.massSoftGain, .5, 0)
 
             x = x.pow(glyphUpgEff(2))
@@ -467,18 +469,18 @@ const FORMS = {
             }
         },
         doReset() {
-            if (!hasInfUpgrade(18)) resetMainUpgs(1,[3,5,6])
-            player.rp.points = E(0)
-            BUILDINGS.reset('tickspeed')
-            BUILDINGS.reset('accelerator')
-            player.bh.mass = E(0)
-
-            if (OURO.unl()) {
+            if (OURO.evo >= 2) {
                 let s = OURO.save.evo.cp
                 if (!hasElement(70,1) || (OURO.evo >= 2 && CHALS.inChal(6))) player.evo.cp.level = s.level
                 player.evo.cp.points = s.points
                 player.evo.cp.m_time = s.m_time
-            }
+            } else {
+				if (!hasInfUpgrade(18)) resetMainUpgs(1,[3,5,6])
+				player.rp.points = E(0)
+				BUILDINGS.reset('tickspeed')
+				BUILDINGS.reset('accelerator')
+				player.bh.mass = E(0)
+			}
 
             FORMS.rp.doReset()
         },

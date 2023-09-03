@@ -88,7 +88,7 @@ function startC16() {
     }
 }
 
-function canCharge(i) { return OURO.evo >= 2 ? !OURO.isFed("ch"+i) : !tmp.c16active && player.dark.c16.bestBH.gte(CHARGERS[i].req) }
+function canCharge(i) { return OURO.evo >= 2 ? !EVO.isFed("ch"+i) : !tmp.c16active && player.dark.c16.bestBH.gte(CHARGERS[i].req) }
 function hasCharger(i) { return player.dark.c16.charger.includes(i) }
 function buyCharger(i) {
     if (hasCharger(i)) return;
@@ -171,7 +171,7 @@ function updateC16HTML() {
 
         let req = canCharge(i)
 
-        tmp.el[id+"_req"].setHTML(OURO.fed_msg[tmp.ouro.fed["ch"+i]] ?? `Requires: <b>${formatMass(c.req)}</b> of black hole.`)
+        tmp.el[id+"_req"].setHTML(EVO.fed_msg[tmp.evo.fed["ch"+i]] ?? `Requires: <b>${formatMass(c.req)}</b> of black hole.`)
         tmp.el[id+"_cost"].setHTML(`Cost: <b>${c.cost.format(0)}</b> Corrupted Shard.`)
 
         tmp.el[id+"_req"].setDisplay(!req)

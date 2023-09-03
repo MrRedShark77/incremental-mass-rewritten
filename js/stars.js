@@ -2,7 +2,7 @@ const STARS = {
     unlocked() { return hasElement(36) },
     gain() {
         let x = player.stars.generators[0]
-        if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
+        if (hasMDUpg(8)) x = x.mul(mdEff(8))
         if (hasPrestige(1,1)) x = x.pow(2)
 
         x = x.softcap(tmp.stars.softGain,tmp.stars.softPower,0)
@@ -92,7 +92,7 @@ const STARS = {
             let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(pow).mul(5)
             if (hasElement(49) && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.elements.effect[49])
             if (hasTree("s1") && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.supernova.tree_eff.s1)
-            if (player.md.upgs[8].gte(1)) x = x.mul(tmp.md.upgs[8].eff)
+            if (hasMDUpg(8)) x = x.mul(mdEff(8))
             if (hasElement(54)) x = x.mul(tmp.elements.effect[54])
             x = x.mul(BUILDINGS.eff('star_booster'))
             x = hasElement(213) ? x.pow(tmp.bosons.upgs.photon[3].effect) : x.mul(tmp.bosons.upgs.photon[3].effect)

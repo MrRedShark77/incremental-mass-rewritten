@@ -71,6 +71,7 @@ const FERMIONS = {
     types: [
         [
             {
+                unl: _ => tmp.atom.unl,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e50').pow(t.pow(1.25)).mul("e800")
@@ -91,6 +92,7 @@ const FERMIONS = {
                 inc: "Atomic Powers",
                 cons: "^0.6 to the exponent of Atomic Powers gain",
             },{
+                unl: _ => tmp.atom.unl,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e50').pow(t.pow(1.25)).mul("e400")
@@ -160,6 +162,7 @@ const FERMIONS = {
                 get inc() { return OURO.evo >= 1 ? "10^CP^0.5" : "Rage Power" },
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },{
+                unl: _ => tmp.atom.unl,
                 maxTier() {
                     if (hasElement(156)) return EINF
                     let x = 30
@@ -291,7 +294,7 @@ const FERMIONS = {
                 get inc() { return OURO.evo >= 2 ? "2^Fabric^0.5" : "Mass of Black Hole" },
                 cons: "The power from the mass of the BH formula is always -1",
             },{
-                unl: () => OURO.evo == 0,
+                unl: _ => OURO.evo == 0,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e5e3').pow(t.pow(1.5)).mul("e4.5e5")
@@ -340,6 +343,7 @@ const FERMIONS = {
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
             },{
+                unl: _ => tmp.atom.unl,
                 maxTier() {
                     if (hasElement(156)) return EINF
                     let x = 25
@@ -481,6 +485,7 @@ function updateFermionsTemp() {
 
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]
+			if (f.unl && !f.unl()) continue
 
             tf.bonuses[i][x] = FERMIONS.bonus(i,x)
             tf.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||EINF
@@ -492,8 +497,8 @@ function updateFermionsTemp() {
 
 function updateFermionsHTML() {
     let r = [
-        [player.atom.atomic, player.md.particles, player.mass, OURO.evo >= 1 ? Decimal.pow(10,player.evo.cp.points.root(2)) : player.rp.points, player.md.mass, BUILDINGS.eff('tickspeed','eff_bottom'), tmp.fermions.prod[0]],
-        [player.atom.quarks, OURO.evo >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, player.bh.dm, player.stars.points, player.atom.points, BUILDINGS.eff('tickspeed','power'), tmp.fermions.prod[1]]
+        [tmp.atom.unl ? player.atom.atomic : E(1), tmp.atom.unl ? player.md.particles : E(1), player.mass, OURO.evo >= 1 ? Decimal.pow(10,player.evo.cp.points.root(2)) : player.rp.points, tmp.atom.unl ? player.md.mass : E(1), BUILDINGS.eff('tickspeed','eff_bottom'), tmp.fermions.prod[0]],
+        [player.atom.quarks, OURO.evo >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, tmp.bh.unl ? player.bh.dm : E(1), player.stars.points, tmp.atom.unl ? player.atom.points : E(1), BUILDINGS.eff('tickspeed','power'), tmp.fermions.prod[1]]
     ]
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))

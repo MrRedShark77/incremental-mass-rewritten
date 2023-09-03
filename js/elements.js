@@ -229,11 +229,11 @@ function updateBeyondRanksRewardHTML() {
 }
 
 function updateMainUpgradesHTML() {
-	if (player.main_upg_msg[0] != 0) {
-		let upg1 = UPGS.main[player.main_upg_msg[0]]
-		let upg2 = UPGS.main[player.main_upg_msg[0]][player.main_upg_msg[1]]
+	if (tmp.upgs.msg[0] != 0) {
+		let upg1 = UPGS.main[tmp.upgs.msg[0]]
+		let upg2 = UPGS.main[tmp.upgs.msg[0]][tmp.upgs.msg[1]]
 		let msg = "<span class='sky'>"+(typeof upg2.desc == "function" ? upg2.desc() : upg2.desc)+"</span><br><span>Cost: "+format(upg2.cost,0)+" "+upg1.resName+"</span>"
-		if (upg2.effDesc !== undefined) msg += "<br><span class='green'>Currently: "+upg2.effDesc(tmp.upgs[player.main_upg_msg[0]][player.main_upg_msg[1]].effect)+"</span>"
+		if (upg2.effDesc !== undefined) msg += "<br><span class='green'>Currently: "+upg2.effDesc(tmp.upgs[tmp.upgs.msg[0]][tmp.upgs.msg[1]].effect)+"</span>"
 		tmp.el.main_upg_msg.setHTML(msg)
 	} else tmp.el.main_upg_msg.setTxt("")
 	for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -241,8 +241,8 @@ function updateMainUpgradesHTML() {
 		let upg = UPGS.main[x]
 		let unl = upg.unl()
 		tmp.el["main_upg_"+x+"_div"].setDisplay(unl)
-		tmp.el["main_upg_"+x+"_res"].setTxt(`You have ${format(upg.res, 0)} ${upg.resName}`)
 		if (unl) {
+			tmp.el["main_upg_"+x+"_res"].setTxt(`You have ${format(upg.res, 0)} ${upg.resName}`)
 			for (let y = 1; y <= upg.lens; y++) {
 				let unl2 = upg[y].unl ? upg[y].unl() : true
 				tmp.el["main_upg_"+x+"_"+y].changeStyle("visibility", unl2?"visible":"hidden")
@@ -310,6 +310,10 @@ function updateOptionsHTML() {
 			?player.qu.rip.first
 			:CONFIRMS[x] == "inf"
 			?tmp.inf_unl
+			:CONFIRMS[x] == "bh"
+			?FORMS.bh.unl()
+			:CONFIRMS[x] == "rp"
+			?FORMS.rp.unl()
 			:player[CONFIRMS[x]].unl
 	
 			tmp.el["confirm_div_"+x].setDisplay(unl)

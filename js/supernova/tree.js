@@ -487,7 +487,7 @@ const TREE_UPGS = {
         },
         fn2: {
             branch: ["fn1"],
-            req() { return OURO.evo >= 3 || (player.mass.div('1.5e56').gte("ee6") && player.md.active && FERMIONS.onActive("01")) },
+            req() { return OURO.evo >= 3 || (player.mass.div('1.5e56').gte("ee6") && inMD() && FERMIONS.onActive("01")) },
             reqDesc() { return OURO.evo >= 3 ? `YOU CAN AFFORD BECAUSE OF A EVOLUTION!` : `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilating mass in [Down]` },
             desc: `Unlock 2 more types of U-Quark & U-Fermion.`,
             cost: E(1e33),
@@ -538,7 +538,7 @@ const TREE_UPGS = {
         fn10: {
             unl() { return PRIM.unl() },
             branch: ["fn5"],
-            req() { return player.atom.points.gte("e1.5e8") && FERMIONS.onActive("10") && CHALS.inChal(9) },
+            req() { return tmp.atom.unl && player.atom.points.gte("e1.5e8") && FERMIONS.onActive("10") && CHALS.inChal(9) },
             reqDesc() { return `Reach ${format("e1.5e8")} atoms while in [Electron] and 9th Challenge.` },
             desc: `Uncap [Electron] tier, its effect is overpowered.`,
             cost: E('e600'),
@@ -829,7 +829,7 @@ const TREE_UPGS = {
             cost: E(1e11),
         },
         qu_qol8a: {
-            unl() { return player.md.break.active },
+            unl() { return brokeDil() },
             qf: true,
             branch: ["qu_qol8"],
             desc: `[qu_qol8] now works in Quantum Challenge or Big Rip.`,
@@ -1151,7 +1151,7 @@ const TREE_UPGS = {
         ct13: {
             branch: ['ct7'],
 
-            desc: `Neutronium-0 now affects Challenge 15 at a reduced rate (like [ct5]). C15 now affects Atomic & Quark Overflows.`,
+            desc: `Neutronium-0 now affects Challenge 15 at a reduced rate, like [ct5].`,
             cost: E(2.5e8),
 
             req() { return OURO.evo||(player.chal.comps[14]&&player.chal.comps[14].gte(940)) },

@@ -47,15 +47,11 @@ const OURO = {
             unl,
             apple_eff: {},
             escrow_boosts: {},
-            fed: {},
         }
         tmp.evo = {
+            fed: {},
             meditation_eff: {},
-            meditation_loss: {},
-
             wormhole_eff: [],
-            wormhole_mult: [],
-
             nebula_eff: {}
         }
         this.temp()
@@ -82,6 +78,7 @@ const OURO = {
         if (OURO.unl()) {
 			player.ouro.apple = E(0)
 			player.evo.wh.origin = 0
+			player.evo.wh.unl = false
 		}
 		for (let i in CORE) tmp.core_eff[i] = []
 
@@ -94,11 +91,19 @@ const OURO = {
                 muonic_el: unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry)
             }
         }
+
         let newData = getPlayerData()
         let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "mainUpg"]
-        for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
+        for (var i of reset) {
+			player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
+			if (tmp[i] != undefined) tmp[i].unl = false
+		}
+		destroyOldData()
 
-        tmp.tab = 0; tmp.stab = [0]; player.options.nav_hide[3] = false
+        tmp.tab = 0
+		tmp.stab = [0]
+		tmp.rank_tab = 0
+		player.options.nav_hide[3] = false
 		player.options.res_hide = {}
     },
 
@@ -118,10 +123,9 @@ const OURO = {
 
     calc(dt) {
         if (!this.unl()) return
-        const evo = this.evo
-
         calcSnake(dt)
 
+        const evo = this.evo
         if (evo >= 1) MEDITATION.calc(dt)
         if (evo >= 2) WORMHOLE.calc(dt)
         if (evo >= 3) PROTOSTAR.calc(dt)
@@ -133,7 +137,7 @@ const OURO = {
         let x = {}, evo = this.evo
 
         if (evo == 1) {
-            if (player.bh.unl) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).div(3).max(1)
+            if (FORMS.bh.unl()) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).div(3).max(1)
             if (player.dark.unl) {
                 x.apple = player.evo.cp.level.add(1).log10().div(100).add(1).root(2)
                 x.quark_overflow = Decimal.pow(0.925,player.evo.cp.level.add(1).log10().sqrt())
@@ -150,8 +154,26 @@ const OURO = {
 
         return x
     },
+}
 
-    //Fed Boosts
+const EVO = {
+	msg: [
+		null,
+		[
+			`<img src="images/rp.png"> Rage ➜ Calm <img src="images/evolution/calm_power.png">`,
+			`<span>Break the madness of Infinity. Reincarnate as a serpent.</span>`
+		],
+		[
+			`<img src="images/dm.png"> Dark Matter ➜ Fabric <img src="images/evolution/fabric.png">`,
+			`<span>Evaporate what causes destruction. Black Hole.</span>`
+		],
+		[
+			`<img src="images/atom.png"> Atoms ➜ Protostars <img src="images/evolution/protostar.png">`,
+			`<span>The first glimpses of shattering, all starts small.</span>`
+		],
+	],
+
+
     feed: [
         null,
         {},
@@ -177,29 +199,13 @@ const OURO = {
         paralyzed: "<b class='saved_text'>[Paralyzed]</b>"
     },
     isFed(x) {
-        return tmp.ouro.fed[x]
+        return tmp.evo.fed[x]
     },
     update_fed() {
-        let tt = tmp.ouro.fed = {}
+        let tt = tmp.evo.fed = {}
         for (var i = 1; i <= OURO.evo; i++) tt = Object.assign(tt, this.feed[i])
     },
 }
-
-const EVOLUTION_DATA = [
-    null,
-    [
-        `<img src="images/rp.png"> Rage ➜ Calm <img src="images/evolution/calm_power.png">`,
-        `<span>Break the madness of Infinity. Reincarnate as a serpent.</span>`
-    ],
-    [
-        `<img src="images/dm.png"> Dark Matter ➜ Fabric <img src="images/evolution/fabric.png">`,
-        `<span>Evaporate what causes destruction. Black Hole.</span>`
-    ],
-    [
-        `<img src="images/atom.png"> Atoms ➜ Protostars <img src="images/evolution/protostar.png">`,
-        `<span>The first glimpses of shattering, all starts small.</span>`
-    ],
-]
 
 function escrowBoost(id,def=1) { return tmp.ouro.escrow_boosts[id] ?? def }
 
@@ -207,7 +213,7 @@ function setOuroScene(show=true) {
     tmp.el.ouro_scene.setDisplay(show);
 
     if (show) {
-        const evo = EVOLUTION_DATA[player.evo.times]
+        const evo = EVO.msg[player.evo.times]
 
         tmp.el.ouro_evo.setHTML(evo[0])
         tmp.el.ouro_quotes.setHTML(evo[1])
@@ -224,7 +230,7 @@ function updateOuroborosHTML() {
     let map = tmp.tab_name
 
     if (map == 'mass') {
-        let unl = evo >= 1 && player.rp.unl
+        let unl = evo >= 1 && FORMS.rp.unl()
 
         tmp.el.meditation_div.setDisplay(unl)
         if (unl) {

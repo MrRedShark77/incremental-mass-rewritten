@@ -309,7 +309,7 @@ function updateScalingTemp() {
 	let sqc8 = []
 	if (!CHALS.inChal(14) && !inDarkRun() && !tmp.c16active && !CHALS.inChal(15)) {
 		if (hasUpgrade("br",2)) sqc8.push("massUpg","rank","tier","tetr","pent",'hex')
-		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
+		if (brokeDil()) sqc8.push("bh_condenser","gamma_ray")
 	}
 	tmp.scaling_qc8 = sqc8
 }
@@ -366,7 +366,7 @@ function getScalingStart(type, name) {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
 		}
 		else if (name=="prestige0") {
-			if (player.md.break.upgs[9].gte(1)) start = start.add(10)
+			if (hasMDUpg(9, true)) start = start.add(10)
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
 		}
@@ -431,7 +431,7 @@ function getScalingStart(type, name) {
 			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
 			if (hasPrestige(1,5)) start = start.mul(prestigeEff(1,5))
 			start = start.mul(tmp.radiation.bs.eff[14])
-			if (!hasUpgrade('br',24)) start = start.mul(tmp.bd.upgs[4].eff)
+			if (!hasUpgrade('br',24)) start = start.mul(mdEff(4, true))
 		}
 		else if (name=="tickspeed") {
 			if (hasElement(68)) start = start.mul(2)
@@ -484,7 +484,7 @@ function getScalingStart(type, name) {
 		}
 	} else if (type==6) {
 		if (name=="rank") {
-			if (hasUpgrade('br',24)) start = start.mul(tmp.bd.upgs[4].eff)
+			if (hasUpgrade('br',24)) start = start.mul(mdEff(4, true))
 		}
 	}
 

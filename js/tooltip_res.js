@@ -106,7 +106,7 @@ const TOOLTIP_RES = {
             if (tmp.overflowBefore.dm.gte(tmp.overflow_start.dm))
             h += `<br>(<b>+${formatMass(tmp.overflowBefore.dm)}</b> gained before <b>overflow</b>)`;
 
-            if (player.md.break.active)
+            if (brokeDil())
             h += `
             <br class='line'>
             You have <b class='sky'>${player.md.break.energy.format(0)} ${player.md.break.energy.formatGain(tmp.bd.energyGain)}</b> Relativistic Energy.<br>
@@ -115,7 +115,7 @@ const TOOLTIP_RES = {
 
             h += `
             <br class='line'><i>
-            ${player.md.active?`Reach <b>${formatMass(tmp.md.mass_req)}</b> of normal mass to gain Relativistic Particles, or cancel dilation.`:"Dilate mass, then cancel."}<br><br>Dilating mass will force an atom reset. While mass is dilated, all pre-atom resources and atomic power gain will get their multipliers' exponents raised to 0.8<br>
+            ${inMD()?`Reach <b>${formatMass(tmp.md.mass_req)}</b> of normal mass to gain Relativistic Particles, or cancel dilation.`:"Dilate mass, then cancel."}<br><br>Dilating mass will force an atom reset. While mass is dilated, all pre-atom resources and atomic power gain will get their multipliers' exponents raised to 0.8<br>
             </i>`
 
             return h
@@ -272,9 +272,9 @@ const TOOLTIP_RES = {
     */
 }
 
-function updateTooltipResHTML(start=false) {
+function updateTooltipResHTML() {
     for (let id in TOOLTIP_RES) {
-        if (!start && hover_tooltip.id !== id+'_tooltip') continue;
+        if (hover_tooltip.id !== id+'_tooltip') continue;
 
         let tr_data = TOOLTIP_RES[id]
         let tr = tmp.el[id+'_tooltip']

@@ -103,7 +103,7 @@ const DARK = {
         
         let x = E(1)
         x = x.mul(tmp.dark.rayEff.shadow)
-        x = x.mul(tmp.bd.upgs[11].eff||1)
+        x = x.mul(mdEff(11, true))
         if (hasElement(119)) x = x.mul(elemEffect(119))
         if (hasElement(135)) x = x.mul(elemEffect(135))
         x = x.mul(tmp.dark.abEff.shadow||1)
@@ -196,7 +196,7 @@ function calcDark(dt) {
     }
 
     if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
-    if (hasCharger(1) && OURO.evo < 2) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
+    if (hasCharger(1) && tmp.bh.unl) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
 
     if (tmp.eaUnl) {
         if (hasInfUpgrade(14)) {

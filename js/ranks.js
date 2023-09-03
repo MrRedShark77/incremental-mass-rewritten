@@ -178,6 +178,7 @@ const RANKS = {
                 return overflow(ret,'ee100',0.5).overflow('ee40000',0.25,2)
             },
             '8'() {
+                if (!tmp.bh.unl) return E(1)
                 let ret = player.bh.dm.max(1).log10().add(1).root(2)
                 return ret.overflow('ee5',0.5)
             },
@@ -559,6 +560,8 @@ const PRESTIGES = {
                 return x
             },x=>"x"+format(x)],
             45: [()=>{
+                if (!tmp.bh.unl) return E(1)
+
                 let y = player.bh.unstable//.overflow(1e24,0.5,0)
                 let x = hasElement(224) ? Decimal.pow(1.1,y.root(4)) : y.add(1)
                 if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
@@ -668,27 +671,22 @@ function updateRanksTemp() {
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
-        if (x > 0) {
-            tmp.ranks[rn].can = player.ranks[RANKS.names[x-1]].gte(tmp.ranks[rn].req)
-        }
+        if (x > 0) tmp.ranks[rn].can = player.ranks[RANKS.names[x-1]].gte(tmp.ranks[rn].req)
     }
 
     // Prestige
-
     tmp.prestiges.baseMul = PRESTIGES.base()
     tmp.prestiges.baseExp = PRESTIGES.baseExponent()
     tmp.prestiges.base = tmp.prestiges.baseMul.pow(tmp.prestiges.baseExp)
     for (let x = 0; x < PRES_LEN; x++) {
         tmp.prestiges.req[x] = PRESTIGES.req(x)
         for (let y in PRESTIGES.rewardEff[x]) {
-            if (PRESTIGES.rewardEff[x][y]) tmp.prestiges.eff[x][y] = PRESTIGES.rewardEff[x][y][0]()
+            if (hasPrestige(x, y) && PRESTIGES.rewardEff[x][y]) tmp.prestiges.eff[x][y] = PRESTIGES.rewardEff[x][y][0]()
         }
     }
 
     // Beyond
-
     let p = 1
-
     if (hasElement(221)) p /= 0.95
     p /= getFragmentEffect('time')
 
@@ -712,7 +710,7 @@ function updateRanksTemp() {
 
     for (let x in BEYOND_RANKS.rewardEff) {
         for (let y in BEYOND_RANKS.rewardEff[x]) {
-            if (BEYOND_RANKS.rewardEff[x][y]) tmp.beyond_ranks.eff[x][y] = BEYOND_RANKS.rewardEff[x][y][0]()
+            if (hasBeyondRank(x, y) && BEYOND_RANKS.rewardEff[x][y]) tmp.beyond_ranks.eff[x][y] = BEYOND_RANKS.rewardEff[x][y][0]()
         }
     }
 }
@@ -861,10 +859,8 @@ const BEYOND_RANKS = {
             ],
             17: [
                 ()=>{
-                    let x = player.bh.mass.add(1).log10().add(1).log10().add(1).pow(2)
-                    
+                    let x = tmp.bh.unl ? player.bh.mass.add(1).log10().add(1).log10().add(1).pow(2) : E(1)
                     let y = player.qu.times.add(1).log10().root(2).div(8).add(1)
-
                     return [x,y]
                 },
                 x=>"x"+format(x[0])+" effective; x"+format(x[1])+" later",
@@ -1013,9 +1009,7 @@ function beyondRankEffect(x,y,def=1) {
 function updateRanksHTML() {
     tmp.el.rank_tabs.setDisplay(hasUpgrade('br',9))
     tmp.el.asc_btn.setDisplay(tmp.ascensions_unl)
-    for (let x = 0; x < 3; x++) {
-        tmp.el["rank_tab"+x].setDisplay(tmp.rank_tab == x)
-    }
+    for (let x = 0; x < 3; x++) tmp.el["rank_tab"+x].setDisplay(tmp.rank_tab == x)
 
     if (tmp.rank_tab == 0) {
         for (let x = 0; x < RANKS.names.length; x++) {

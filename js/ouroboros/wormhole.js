@@ -16,7 +16,7 @@ const WORMHOLE = {
         if (player.qu.en.hr[0]) player.evo.wh.fabric = player.evo.wh.fabric.div(E(10).pow(dt).pow(player.qu.en.hr[3]))
         else if (tmp.passive >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
-        if (player.bh.unl) {
+        if (FORMS.bh.unl()) {
             for (let i = 0; i < Math.min(unls, player.evo.wh.origin == 6 ? 7 : 6); i++) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wormhole_mult[i].mul(dt),i)
         }
     },
@@ -54,6 +54,7 @@ const WORMHOLE = {
         if (hasElement(63)) p = p.mul(1.2)
         tmp.evo.wormhole_power = p
 
+		tmp.evo.wormhole_mult = []
         for (let [i,e] of Object.entries(this.effects)) {
             tmp.evo.wormhole_eff[i] = e[0](i < unls ? player.evo.wh.mass[i] : E(1))
             tmp.evo.wormhole_mult[i] = this.mult(i)

@@ -77,7 +77,7 @@ function updateChalTemp() {
         let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:E(1)
         if (x == 9) q = Decimal.min(q,'e150')
         if (x < 20) q = x <= 16 ? q.pow(p) : q.mul(p)
-        if (OURO.evo == 2 && [6,8].includes(x)) q = E(1)
+        if (OURO.evo >= 2 && [6,8].includes(x)) q = E(1)
         tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
         if (CHALS[x].unl()) tmp.chal.unl = true
     }
@@ -572,7 +572,7 @@ const CHALS = {
         unl() { return hasElement(168) },
         title: "The Reality II",
         get desc() { return `You are trapped in c1-12 and quantum challenge with modifiers ${getQCForceDisp(15)}.` },
-        reward: `Normal mass's overflow starts later based on completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
+        reward: `Mass, Atomic & Quark overflows scale later.<br><span class="yellow">On first completion, unlock more features!</span>`,
         max: E(100),
         inc: E('e1e6'),
         pow: E(2),
