@@ -103,7 +103,7 @@ const CORE = {
                 
                 x = overflow(x,100,0.5)
 
-                if (tmp.c16active) x = x.log10().add(1)
+                if (tmp.c16.in) x = x.log10().add(1)
 
                 if (tmp.NHDimprove) x = x.pow(10)
 
@@ -114,7 +114,7 @@ const CORE = {
 
                 x = overflow(x,100,0.5)
 
-                if (tmp.c16active) x = x.log10().add(1)
+                if (tmp.c16.in) x = x.log10().add(1)
 
                 if (tmp.NHDimprove) x = x.pow(10)
 

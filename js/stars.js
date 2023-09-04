@@ -36,7 +36,7 @@ const STARS = {
         let x = E(1)
 		let [p, pp] = [E(1), E(1)]
 		if (hasElement(48)) p = p.mul(1.1)
-		if (hasElement(76)) [p, pp] = player.qu.rip.active || tmp.c16active || inDarkRun()?[p.mul(1.1), pp.mul(1.1)]:[p.mul(1.25), pp.mul(1.25)]
+		if (hasElement(76)) [p, pp] = tmp.rip.in?[p.mul(1.1), pp.mul(1.1)]:[p.mul(1.25), pp.mul(1.25)]
 		let [s,r,t1,t2,t3] = [player.stars.points.mul(p)
 			,player.ranks.rank.softcap(2.5e6,0.25,0).mul(p)
 			,player.ranks.tier.softcap(1.5e5,0.25,0).mul(p)
@@ -46,8 +46,8 @@ const STARS = {
 		if (OURO.evo >= 2) r = r.softcap(1e40,3,3)
 		x = s.max(1).log10().add(1).pow(r)
 		x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
-		if (player.qu.rip.active || tmp.c16active || inDarkRun() || OURO.evo >= 2) x = x.softcap('ee33',0.9,2)
-        if (tmp.c16active) x = E(1)
+		if (tmp.rip.in || OURO.evo >= 2) x = x.softcap('ee33',0.9,2)
+        if (tmp.c16.in) x = E(1)
 
         return [x.min('ee70'), hasElement(162) ? this.expEffect() : E(1)]
     },
@@ -65,7 +65,7 @@ const STARS = {
 			x = hasElement(170)?x.root(1.5).div(40):x.root(2).div(50)
 			x = x.add(1)
 		}
-        if (tmp.c16active) x = overflow(x,10,0.5)
+        if (tmp.c16.in) x = overflow(x,10,0.5)
 
 		x = x.overflow(OURO.evo >= 2 ? 'e1000' : 'e3000', 0.5)
 		return x
@@ -149,7 +149,7 @@ function setupStarsHTML() {
 }
 
 function updateStarsScreenHTML() {
-    let show = !tmp.SN_passive && player.supernova.times.lt(1e5)
+    let show = !tmp.supernova.gen && player.supernova.times.lt(1e5)
 
     tmp.el.star.setDisplay(show)
     if ((!tmp.supernova.reached || player.supernova.post_10) && show) {
@@ -176,9 +176,9 @@ function updateStarsScreenHTML() {
 function updateStarsHTML() {
     tmp.el.starSoft1.setDisplay(tmp.stars.gain.gte(tmp.stars.softGain))
 	tmp.el.starSoftStart1.setTxt(format(tmp.stars.softGain))
-    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+(tmp.SN_passive?"":" / "+format(tmp.supernova.maxlimit,2))+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.preQUGlobalSpeed)))
-    tmp.el.stars_Eff.setHTML(`<h4>${formatMult(tmp.stars.effect[0])}</h4>`+(hasElement(162)?`, <h4>^${format(tmp.stars.effect[1])}</h4>`:``)+(tmp.SN_passive?`, +<h4>${tmp.supernova.passive.format(0)}</h4>/s to supernova gain`:''))
-    tmp.el.stars_Eff.setClasses({corrupted_text2: tmp.c16active})
+    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+(tmp.supernova.gen?"":" / "+format(tmp.supernova.maxlimit,2))+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.preQUGlobalSpeed)))
+    tmp.el.stars_Eff.setHTML(`<h4>${formatMult(tmp.stars.effect[0])}</h4>`+(hasElement(162)?`, <h4>^${format(tmp.stars.effect[1])}</h4>`:``)+(tmp.supernova.gen?`, +<h4>${tmp.supernova.passive.format(0)}</h4>/s to supernova gain`:''))
+    tmp.el.stars_Eff.setClasses({corrupted_text2: tmp.c16.in})
 
     tmp.el.star_btn.setDisplay(player.stars.unls < tmp.stars.max_unlocks)
     tmp.el.star_btn.setHTML(`Unlock new type of Stars, require ${format(tmp.stars.generator_req)} Quark`)

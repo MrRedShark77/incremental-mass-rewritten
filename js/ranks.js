@@ -278,9 +278,7 @@ const RANKS = {
     },
 }
 
-const CORRUPTED_PRES = [
-    [10,40],
-]
+const CORRUPTED_PRES = [10,40]
 
 const PRESTIGES = {
     names: ['prestige','honor','glory','renown','valor'],
@@ -298,7 +296,7 @@ const PRESTIGES = {
         if (hasBeyondRank(4,2)) x = x.mul(beyondRankEffect(4,2))
         if (hasAscension(1,1)) x = x.mul(2)
 
-        if (tmp.c16active || inDarkRun()) x = x.div(mgEff(5))
+        if (tmp.dark.run) x = x.div(mgEff(5))
 
         return x.overflow(2e4,0.5)
     },
@@ -564,7 +562,7 @@ const PRESTIGES = {
 
                 let y = player.bh.unstable//.overflow(1e24,0.5,0)
                 let x = hasElement(224) ? Decimal.pow(1.1,y.root(4)) : y.add(1)
-                if (tmp.c16active) x = overflow(x.log10().add(1).root(2),10,0.5)
+                if (tmp.c16.in) x = overflow(x.log10().add(1).root(2),10,0.5)
                 return overflow(x,1e100,0.5).min('e1750')
             },x=>"^"+format(x)+" later"],
             58: [()=>{
@@ -610,7 +608,7 @@ const PRESTIGES = {
 
 const PRES_LEN = PRESTIGES.fullNames.length
 
-function hasPrestige(x,y) { return player.prestiges[x].gte(y) && !(tmp.c16active && CORRUPTED_PRES[x] && CORRUPTED_PRES[x].includes(y)) }
+function hasPrestige(x,y) { return player.prestiges[x].gte(y) && (x || !tmp.c16.in || CORRUPTED_PRES.includes(y)) }
 
 function prestigeEff(x,y,def=E(1)) { return tmp.prestiges.eff[x][y] || def }
 
@@ -623,10 +621,10 @@ function updateRanksTemp() {
 
     let tetr_fp2 = !hasElement(243) && hasCharger(8) ? 1 : fp2
 
-    let rt_fp2 = !hasElement(243) && hasPrestige(1,127) ? tmp.c16active ? 5e2 : 1 : fp2
+    let rt_fp2 = !hasElement(243) && hasPrestige(1,127) ? tmp.c16.in ? 5e2 : 1 : fp2
     let ffp = E(1)
     let ffp2 = 1
-    if (tmp.c16active || inDarkRun()) ffp2 /= mgEff(5)
+    if (tmp.dark.run) ffp2 /= mgEff(5)
 
     let rooted_fp = GPEffect(3)
 
@@ -678,10 +676,11 @@ function updateRanksTemp() {
     tmp.prestiges.baseMul = PRESTIGES.base()
     tmp.prestiges.baseExp = PRESTIGES.baseExponent()
     tmp.prestiges.base = tmp.prestiges.baseMul.pow(tmp.prestiges.baseExp)
+	let rewards = PRESTIGES.rewardEff
     for (let x = 0; x < PRES_LEN; x++) {
         tmp.prestiges.req[x] = PRESTIGES.req(x)
-        for (let y in PRESTIGES.rewardEff[x]) {
-            if (hasPrestige(x, y) && PRESTIGES.rewardEff[x][y]) tmp.prestiges.eff[x][y] = PRESTIGES.rewardEff[x][y][0]()
+        for (let [y, eff] of Object.entries(rewards[x])) {
+            if (player.prestiges[x].gte(y)) tmp.prestiges.eff[x][y] = eff[0]()
         }
     }
 

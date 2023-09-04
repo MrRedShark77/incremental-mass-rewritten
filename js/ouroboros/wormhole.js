@@ -90,7 +90,7 @@ const WORMHOLE = {
         }
 
         tmp.el["wormhole_origin"].setDisplay(player.atom.unl || OURO.evo >= 3)
-        tmp.el["wormhole_rate_div"].setDisplay(player.supernova.times.gte(1) || quUnl() || OURO.evo >= 3)
+        tmp.el["wormhole_rate_div"].setDisplay(tmp.supernova.unl || OURO.evo >= 3)
         tmp.el["wormhole_rate"].setHTML(formatPercent(wh.rate, 0))
     },
 
@@ -98,7 +98,7 @@ const WORMHOLE = {
         if (hasCharger(1)) return 7
         if (player.dark.unl) return 6
         if (quUnl()) return 5
-        if (player.supernova.times.gt(0)) return 4
+        if (tmp.supernova.unl) return 4
         if (player.atom.unl) return 3
         return 2
     },
@@ -127,7 +127,7 @@ const WORMHOLE = {
             m => m.add(1).log10().div(40).add(1).sqrt().softcap(3,0.5,0),
             x => `Raise meditation levels. <b>^${format(x,2)}</b>`+softcapHTML(x,3),
         ],[
-            m => m.add(1).mul(tmp.c16active ? 1e-3 : 1e-4).pow(tmp.c16active ? .5 : 1).add(1),
+            m => m.add(1).mul(tmp.c16.in ? 1e-3 : 1e-4).pow(tmp.c16.in ? .5 : 1).add(1),
             x => `Raise Wormhole formula. <b>^${format(x,2)} to exponent</b>`,
         ],
     ],
@@ -173,7 +173,7 @@ function splitWormhole(origin, mode) {
         mass[x] = mass[x].max(toAdd);
     }
     mass[origin] = mass[origin].sub(sum)
-    if (tmp.evo.wormhole_unls > 6 && tmp.c16active) mass[6] = mass[6].add(sum.add(1).log10().mul(tmp.evo.wormhole_mult[6]))
+    if (tmp.evo.wormhole_unls > 6 && tmp.c16.in) mass[6] = mass[6].add(sum.add(1).log10().mul(tmp.evo.wormhole_mult[6]))
 }
 
 function setupWormholeHTML() {

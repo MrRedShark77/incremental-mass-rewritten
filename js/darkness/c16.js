@@ -68,12 +68,12 @@ const UNSTABLE_BH = {
     },
     effect() {
         let x = player.bh.unstable.add(1)
-        if (tmp.c16active) x = x.root(3)
+        if (tmp.c16.in) x = x.root(3)
         if (!hasAscension(0,3)) x = overflow(x,10,0.5)
 
         x = x.pow(theoremEff('bh',4))
         if (hasCharger(2)) x = x.pow(1.5)
-        if (hasElement(57,1) && !tmp.c16active) x = x.pow(10)
+        if (hasElement(57,1) && !tmp.c16.in) x = x.pow(10)
 
         return x
     },
@@ -88,7 +88,7 @@ function startC16() {
     }
 }
 
-function canCharge(i) { return OURO.evo >= 2 ? !EVO.isFed("ch"+i) : !tmp.c16active && player.dark.c16.bestBH.gte(CHARGERS[i].req) }
+function canCharge(i) { return OURO.evo >= 2 ? !EVO.isFed("ch"+i) : !tmp.c16.in && player.dark.c16.bestBH.gte(CHARGERS[i].req) }
 function hasCharger(i) { return player.dark.c16.charger.includes(i) }
 function buyCharger(i) {
     if (hasCharger(i)) return;
@@ -137,7 +137,7 @@ function corruptedShardGain() {
 	} else {
 		let bh = player.bh.mass, req = OURO.evo >= 1 ? 1e65 : 1e90
 		if (hasElement(232)) bh = player.dark.c16.bestBH.max(req)
-		else if (!tmp.c16active || bh.lt(req)) return E(0)
+		else if (!tmp.c16.in || bh.lt(req)) return E(0)
 
 		x = bh.max(1).log10()
 		x = Decimal.pow(10,x.overflow(1e70,(1/3)**w).overflow(1e9,0.5**w).div(Math.log10(req)).root(hasElement(223) ? 2.9 : 3).sub(1))
@@ -156,7 +156,7 @@ function updateC16Temp() {
 }
 
 function updateC16HTML() {
-    let evo2 = OURO.evo >= 2, c16 = tmp.c16active
+    let evo2 = OURO.evo >= 2, c16 = tmp.c16.in
     let bh = player.dark.c16.bestBH, cs = player.dark.c16.shard
     tmp.el.bestBH.setHTML(formatMass(player.dark.c16.bestBH))
     tmp.el.c16_info.setDisplay(!evo2)
@@ -189,7 +189,7 @@ let C16_ANI = {
 	squares: [],
 	last: 0,
 	time: 0,
-	get on() { return tmp.c16active && !CHALS.inChal(20) }
+	get on() { return tmp.c16.in && !CHALS.inChal(20) }
 }
 
 function drawC16() {

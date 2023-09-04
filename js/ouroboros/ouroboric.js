@@ -142,7 +142,7 @@ const OURO = {
                 x.apple = player.evo.cp.level.add(1).log10().div(100).add(1).root(2)
                 x.quark_overflow = Decimal.pow(0.925,player.evo.cp.level.add(1).log10().sqrt())
             }
-            if (tmp.SN_passive) x.sn = expMult(player.evo.cp.level.add(1),0.4)
+            if (tmp.supernova.gen) x.sn = expMult(player.evo.cp.level.add(1),0.4)
         } else if (evo == 2) {
             if (player.atom.unl) x.qk = player.evo.wh.mass[0].add(1).log10().add(1).sqrt()
             if (player.supernova.post_10) {
@@ -285,7 +285,7 @@ function updateOuroborosHTML() {
         if (eff.quark_overflow) h += `Meditation weakens quark overflows (<b>${formatReduction(eff.quark_overflow)}</b>)<br>`
         if (eff.sn) h += `Meditation boosts supernova generation (<b>${formatMult(eff.sn)}</b>)<br>`
 
-        if (eff.qk) h += `First Wormhole raises Quarks (<b>^${format(eff.qk)}</b>)`.corrupt(tmp.c16active)+"<br>"
+        if (eff.qk) h += `First Wormhole raises Quarks (<b>^${format(eff.qk)}</b>)`.corrupt(tmp.c16.in)+"<br>"
         if (eff.chal) h += `Challenge 9 completions scale C5-8 slower (<b>${formatMult(eff.chal)}</b>)<br>`
         if (eff.rank) h += `Frequency weakens Super - Ultra Rank (<b>${formatReduction(eff.rank)}</b>)<br>`
 

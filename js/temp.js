@@ -362,7 +362,7 @@ function updateTemp() {
     tmp.passive = (evo>=3?FORMS.bh.unl():hasUpgrade("atom",6))?2:
 		(evo>=2?FORMS.rp.unl():hasUpgrade("bh",6)||hasUpgrade("atom",6))?1:0
 
-    tmp.c16active = CHALS.inChal(16)
+    tmp.c16.in = CHALS.inChal(16)
     tmp.c18active = CHALS.inChal(18)
 
     tmp.chal13comp = player.chal.comps[13].gte(1)
@@ -380,8 +380,6 @@ function updateTemp() {
     tmp.CS_unl = hasElement(251)
     tmp.c18reward = player.chal.comps[18].gte(4)
     tmp.fifthRowUnl = hasElement(270)
-
-    tmp.SN_passive = hasElement(36,1)
 
     tmp.NHDimprove = hasElement(268)
 

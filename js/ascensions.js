@@ -207,7 +207,7 @@ function updateAscensionsTemp() {
 }
 
 function updateAscensionsRewardHTML() {
-	let c16 = tmp.c16active
+	let c16 = tmp.c16.in
 	for (let x = 0; x < ASCENSIONS.names.length; x++) {
 		tmp.el["asc_reward_div_"+x].setDisplay(player.asc_reward == x)
 		if (player.asc_reward == x) {

@@ -203,7 +203,7 @@ const UPGS = {
                 desc: `Corrupted Shards boost normal mass gain.`,
                 cost: E('e2e357'),
                 effect() {
-                    if (tmp.c16active) return E(1)
+                    if (tmp.c16.in) return E(1)
                     let x = player.dark.c16.totalS.add(1)
                     return overflow(x,10,0.5).pow(2).overflow('e15000',0.25)
                 },
@@ -375,7 +375,7 @@ const UPGS = {
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
-                    return overflow(ret,'ee108',0.25).min(tmp.c16active?'ee100':'ee110')
+                    return overflow(ret,'ee108',0.25).min(tmp.c16.in?'ee100':'ee110')
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
@@ -398,7 +398,7 @@ const UPGS = {
                 desc: `Red matter's upgrade applies to mass gain at a reduced rate.`,
                 cost: E('e5e101'),
                 effect() {
-                    if (tmp.c16active) return E(1)
+                    if (tmp.c16.in) return E(1)
                     let x = tmp.matters.upg[0].eff.max(1).pow(0.75)
                     return x.overflow('e1000',0.5)
                 },
@@ -440,7 +440,7 @@ const UPGS = {
                 desc: `Corrupted Shards boost mass of black hole gain.`,
                 cost: E('e1e273'),
                 effect() {
-                    if (tmp.c16active) return E(1)
+                    if (tmp.c16.in) return E(1)
                     let x = player.dark.c16.totalS.add(1)
                     return overflow(x,10,0.5).pow(3).overflow('e12000',0.25)
                 },
@@ -906,7 +906,7 @@ function updateUpgNotify() {
 	delete tmp.upg_notify
 	if (!isPreferred("notify")) return
 
-	if (player.supernova.times.gte(1) || quUnl()) {
+	if (tmp.supernova.unl) {
 		for (var [x, af] of Object.entries(tmp.supernova.tree_afford)) {
 			if (!af || !tmp.supernova.tree_had.includes(x)) continue
 			tmp.upg_notify = ["sn", x]

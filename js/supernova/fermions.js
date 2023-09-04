@@ -11,7 +11,7 @@ const FERMIONS = {
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(base.pow(player.supernova.fermions.tiers[i][j]))
         if (hasTree("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
+        if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
 
         return x
     },
@@ -237,7 +237,7 @@ const FERMIONS = {
                     return x.softcap(15,hasPrestige(1,300)?0.55:0.5,0).overflow(1e8,1/3,0)
                 },
                 desc(x) {
-                    return `Dark ray's effect is ^${x.format()} stronger`.corrupt(tmp.c16active)
+                    return `Dark ray's effect is ^${x.format()} stronger`.corrupt(tmp.c16.in)
                 },
                 inc: "product of above u-quarks",
                 cons: "All u-quarks at once, and force quantum reset.",
@@ -284,7 +284,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = t.pow(1.5).add(1).pow(i.add(1).log10().softcap(10,0.75,0)).softcap(1e6,0.75,0)
-                    if (tmp.c16active) x = overflow(x,1e100,0.5)
+                    if (tmp.c16.in) x = overflow(x,1e100,0.5)
                     return x
                 },
                 desc(x) {
@@ -388,7 +388,7 @@ const FERMIONS = {
                 eff(i, t) {
                     let c = hasCharger(7)
                     let x = c ? t.add(1).pow(i.add(1).log10().add(1).log10()) : i.add(1).log10().pow(0.75).div(100).add(1).pow(t.pow(0.75))
-                    if (!c && tmp.c16active) x = overflow(x,150,0.05)
+                    if (!c && tmp.c16.in) x = overflow(x,150,0.05)
                     return x
                 },
                 desc(x) {
@@ -419,28 +419,6 @@ const FERMIONS = {
                 inc: "product of above u-leptons",
                 cons: "All u-leptons at once, and force quantum reset.",
             },
-
-            /*
-            {
-                nextTierAt(x) {
-                    return EINF
-                },
-                calcTier() {
-                    let res = E(0)
-                    let x = E(0)
-                    return x
-                },
-                eff(i, t) {
-                    let x = E(1)
-                    return x
-                },
-                desc(x) {
-                    return `Placeholder`
-                },
-                inc: "Placeholder",
-                cons: "Placeholder",
-            },
-            */
         ],
     ],
     productF(i) {

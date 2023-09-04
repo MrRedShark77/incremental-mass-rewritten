@@ -326,7 +326,6 @@ function loadPlayer(load) {
     const DATA = getPlayerData()
     player = deepNaN(load, DATA)
     player = deepUndefinedAndDecimal(player, DATA)
-    convertStringToDecimal()
 
     player.qu.qc.presets = player.qu.qc.presets.slice(0,5)
     player.reset_msg = ""
@@ -390,10 +389,6 @@ function deepUndefinedAndDecimal(obj, data) {
     return obj
 }
 
-function convertStringToDecimal() {
-    for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
-}
-
 function destroyOldData() {
 	delete player.massUpg
 	delete player.main_upg_msg
@@ -425,7 +420,6 @@ function destroyOldData() {
 		delete player.atom.ratio
 		delete player.atom.dRatio
 		delete player.md
-	} else {
 	}
 }
 
@@ -584,9 +578,9 @@ function simulateTime(sec) {
     let ticks = sec * FPS
     let bonusDiff = 0
     let player_before = clonePlayer(player,getPlayerData());
-    if (ticks > 1000) {
-        bonusDiff = (ticks - 1000) / FPS / 1000
-        ticks = 1000
+    if (ticks > 500) {
+        bonusDiff = (ticks - 500) / FPS / 500
+        ticks = 500
     }
     for (let i=0; i<ticks; i++) {
         updateTemp()
@@ -597,14 +591,14 @@ function simulateTime(sec) {
 
     let s = {
         mass: player.mass.max(1).div(player_before.mass.max(1)).log10(),
-        bh_mass: player.bh.mass.max(1).div(player_before.bh.mass.max(1)).log10(),
+        bh_mass: tmp.bh.unl ? player.bh.mass.max(1).div(player_before.bh.mass.max(1)).log10() : E(1),
         quarks: player.atom.quarks.max(1).div(player_before.atom.quarks.max(1)).log10(),
         sn: player.supernova.times.sub(player_before.supernova.times),
     }
 
     let s2 = {
         mass: player.mass.max(1).log10().max(1).div(player_before.mass.max(1).log10().max(1)).log10(),
-        bh_mass: player.bh.mass.max(1).log10().max(1).div(player_before.bh.mass.max(1).log10().max(1)).log10(),
+        bh_mass: tmp.bh.unl ? player.bh.mass.max(1).log10().max(1).div(player_before.bh.mass.max(1).log10().max(1)).log10() : E(1),
         quarks: player.atom.quarks.max(1).log10().max(1).div(player_before.atom.quarks.max(1).log10().max(1)).log10(),
     }
 

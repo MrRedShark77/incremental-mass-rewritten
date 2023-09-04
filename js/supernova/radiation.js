@@ -8,7 +8,7 @@ const RADIATION = {
         
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
+        if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
         if (hasTree('ct8')) x = x.mul(treeEff('ct8'))
         return x
     },
@@ -29,7 +29,7 @@ const RADIATION = {
         x = x.mul(tmp.radiation.bs.eff[3*i])
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
+        if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
 
         if (hasTree('ct8')) x = x.mul(treeEff('ct8'))
 
@@ -137,7 +137,7 @@ const RADIATION = {
             title: `BH-Condenser Boost`,
             eff(b) {
                 let x = b.add(1).pow(2)
-                if (tmp.c16active) x = x.root(2)
+                if (tmp.c16.in) x = x.root(2)
                 return x.softcap(100,0.5,0)
             },
             desc(x) { return `Non-bonus BH condenser is ${format(x)}x stronger` },

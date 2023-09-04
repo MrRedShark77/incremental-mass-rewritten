@@ -184,7 +184,7 @@ const BUILDINGS_DATA = {
             tmp.overflow.stronger = calcOverflow(o,ret,os)
             tmp.overflow_start.stronger = [os,os2]
             tmp.overflow_power.stronger = [op,op2]
-			if (post_x) ret = ret.mul(x.div(tmp.c16active ? 1 : 1e140).max(1).sqrt())
+			if (post_x) ret = ret.mul(x.div(tmp.c16.in ? 1 : 1e140).max(1).sqrt())
 
             return {power: step, effect: ret, ss: ss}
         },
@@ -390,7 +390,7 @@ const BUILDINGS_DATA = {
 
         cost(x=this.level) {
             let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
-            if (hasCharger(6) && tmp.c16active) fp *= 1e6
+            if (hasCharger(6) && tmp.c16.in) fp *= 1e6
 
             let fp2 = E(1)
             if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
@@ -399,7 +399,7 @@ const BUILDINGS_DATA = {
         },
         get bulk() {
             let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
-            if (hasCharger(6) && tmp.c16active) fp *= 1e6
+            if (hasCharger(6) && tmp.c16.in) fp *= 1e6
 
             let fp2 = E(1)
 
@@ -431,7 +431,7 @@ const BUILDINGS_DATA = {
             x = x.mul(tmp.radiation.bs.eff[5])
             let eff = pow.pow(x)
 
-            let os = tmp.c16active ? E('ee150') : E('ee10000'), op = E(0.5), o = eff
+            let os = tmp.c16.in ? E('ee150') : E('ee10000'), op = E(0.5), o = eff
             if (hasUpgrade('bh',21)) os = expMult(os, 2)
             eff = overflow(eff,os,op,2)
             tmp.overflow.BHCEffect = calcOverflow(o,eff,os,2)
@@ -458,7 +458,7 @@ const BUILDINGS_DATA = {
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
-        get allowPurchase() { return tmp.c16active || hasElement(277) },
+        get allowPurchase() { return tmp.c16.in || hasElement(277) },
         denyPurchaseText: " outside C16",
 
         get res() { return player.bh.dm },

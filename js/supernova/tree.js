@@ -1013,7 +1013,7 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free fermion tiers.`,
             cost: E(50),
 
-            req() { return OURO.evo || (tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e81')) },
+            req() { return OURO.evo || (tmp.c16.in && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e81')) },
             reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${formatMass('1e81')} of black hole during C16 & [Meta-Quark].` },
 
             effect() {
@@ -1028,11 +1028,11 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds to the base of all matter's upgrade.`,
             cost: E(100),
 
-            req() { return OURO.evo || (tmp.c16active && player.bh.dm.gte(1e300)) },
+            req() { return OURO.evo || (tmp.c16.in && player.bh.dm.gte(1e300)) },
             reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e300)} dark matters during C16.` },
 
             effect() {
-                let p = hasPrestige(2,40), c = tmp.c16active
+                let p = hasPrestige(2,40), c = tmp.c16.in
                 let x = tmp.c16.best_bh_eff.add(1).log10().div(c?8:30)
                 if (p) x = x.mul(c?3:1.2)
                 return x
@@ -1057,7 +1057,7 @@ const TREE_UPGS = {
             desc: `Mass overflow starts later based on best mass of black hole in C16.`,
             cost: E(300),
 
-            req() { return OURO.evo || (tmp.c16active && player.atom.atomic.gte(1e8)) },
+            req() { return OURO.evo || (tmp.c16.in && player.atom.atomic.gte(1e8)) },
             reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e8)} atomic powers during C16.` },
 
             effect() {
@@ -1093,7 +1093,7 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free radiation boosts.`,
             cost: E(5000),
 
-            req() { return OURO.evo || (tmp.c16active && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('1e400') && player.build.bhc.amt.lte(0)) },
+            req() { return OURO.evo || (tmp.c16.in && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('1e400') && player.build.bhc.amt.lte(0)) },
             reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${formatMass('1e400')} of black hole during C16 & [Meta-Lepton] without buying BH Condensers.` },
 
             effect() {
@@ -1121,14 +1121,14 @@ const TREE_UPGS = {
             desc: `Mass of black hole overflow starts later based on best mass of black hole in C16. (weaker during C16)`,
             cost: E(1e6),
 
-            req() { return OURO.evo || (tmp.c16active && player.atom.atomic.gte(1e20)) },
+            req() { return OURO.evo || (tmp.c16.in && player.atom.atomic.gte(1e20)) },
             reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e20)} atomic powers during C16.` },
 
             effect() {
                 let x = tmp.c16.best_bh_eff.add(1)
-                x = tmp.c16active ? x.root(4) : x.pow(3)
+                x = tmp.c16.in ? x.root(4) : x.pow(3)
                 x = overflow(x,10,0.5)
-                x = tmp.c16active ? x.root(3) : x.pow(2)
+                x = tmp.c16.in ? x.root(3) : x.pow(2)
                 return x
             },
             effDesc(x) { return "^"+format(x)+" later" },
@@ -1139,7 +1139,7 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free primordium particles.`,
             cost: E(5e7),
 
-            req() { return OURO.evo || (tmp.c16active && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.build.bhc.amt.lte(0)) },
+            req() { return OURO.evo || (tmp.c16.in && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.build.bhc.amt.lte(0)) },
             reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${formatMass('1e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
 
             effect() {
@@ -1163,7 +1163,7 @@ const TREE_UPGS = {
             desc: `Dilated mass overflow starts later based on best mass of black hole in C16.`,
             cost: E(1e10),
 
-            req() { return OURO.evo || (tmp.c16active && player.atom.atomic.gte(1e144)) },
+            req() { return OURO.evo || (tmp.c16.in && player.atom.atomic.gte(1e144)) },
             reqDesc() { return OURO.evo ? `Require-free because of Ouroboric!` : `Reach ${format(1e144)} atomic powers during C16.` },
 
             effect() {
@@ -1216,7 +1216,7 @@ const TREE_TYPES = (()=>{
     return t
 })()
 
-function hasTree(id) { return (player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)) && !(tmp.c16active && CORRUPTED_TREE.includes(id)) }
+function hasTree(id) { return (player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)) && !(tmp.c16.in && CORRUPTED_TREE.includes(id)) }
 
 function treeEff(id,def=1) { return tmp.supernova.tree_eff[id]||E(def) }
 
@@ -1342,7 +1342,7 @@ function changeTreeAnimation() {
 }
 
 function updateTreeHTML() {
-    let c16 = tmp.c16active, ch = tmp.supernova.tree_choosed
+    let c16 = tmp.c16.in, ch = tmp.supernova.tree_choosed
     if (tmp.supernova.tree_choosed == "") tmp.el.tree_desc.setHTML(``)
     else {
         let t_ch = TREE_UPGS.ids[ch]

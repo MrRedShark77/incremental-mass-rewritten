@@ -36,7 +36,7 @@ const ELEMENTS = {
         'Roeritgenium','Copernicium','Nihonium','Flerovium','Moscovium','Livermorium','Tennessine','Oganesson'
     ],
     canBuy(x, layer = 0) {
-        if (tmp.c16active && isElemCorrupted(x)) return false
+        if (tmp.c16.in && isElemCorrupted(x)) return false
 		if (hasElement(x, layer)) return
 
         let u = [ELEMENTS, MUONIC_ELEM][layer].upgs[x]
@@ -50,7 +50,7 @@ const ELEMENTS = {
 		if (EVO.isFed("e"+layer+"_"+x)) return true
 		if (layer == 1) return
 		if (CHALS.inChal(14) && x < 118) return true
-		if (tmp.c16active && isElemCorrupted(x)) return true
+		if (tmp.c16.in && isElemCorrupted(x)) return true
 		if (player.qu.rip.active && tmp.elements.cannot.includes(x)) return true
 	},
     buyUpg(x, layer = 0) {
@@ -1106,7 +1106,7 @@ const ELEMENTS = {
             cost: E("e2e90"),
             effect() {
                 let x = Decimal.pow(2,tmp.prestiges.base.max(1).log10().root(2))
-                if (tmp.c16active) x = overflow(x,10,.5)
+                if (tmp.c16.in) x = overflow(x,10,.5)
                 return x
             },
             effDesc(x) { return "^"+format(x)+" later" },
@@ -1315,10 +1315,10 @@ const ELEMENTS = {
             cost: E('e1e25'),
             effect() {
                 let x = tmp.matters.exponent.add(1).log10().div(20)
-                if (tmp.c16active) x = x.mul(5)
+                if (tmp.c16.in) x = x.mul(5)
                 return x.add(1)
             },
-            effDesc(x) { return "^"+format(x)+(tmp.c16active?'':' to exponent') },
+            effDesc(x) { return "^"+format(x)+(tmp.c16.in?'':' to exponent') },
         },{
             desc: `Biniltrium-203 is overpowered.`,
             cost: E('ee448'),
@@ -1453,7 +1453,7 @@ const ELEMENTS = {
             cost: E('e3e3003'),
             effect() {
                 let x = overflow(tmp.matters.upg[12].eff.max(1),'ee3',0.5).root(4)
-                if (tmp.c16active) x = x.log10().add(1)
+                if (tmp.c16.in) x = x.log10().add(1)
                 return x
             },
             effDesc(x) { return "^"+format(x)+' later' },
@@ -1514,7 +1514,7 @@ const ELEMENTS = {
             cost: E('ee1745'),
             effect() {
                 let x = tmp.inf_unl ? theoremEff('mass',4) : E(1)
-                if (tmp.c16active) x = x.max(1).log10().add(1)
+                if (tmp.c16.in) x = x.max(1).log10().add(1)
                 return x
             },
             effDesc(x) { return "^"+format(x)+' later' },
@@ -1714,7 +1714,7 @@ const ELEM_TYPES = {
 	c16: {
 		title: "C16",
 		get: (i, l, eu) => eu.c16,
-		can: _ => tmp.c16active,
+		can: _ => tmp.c16.in,
 		get res() { return player.atom.quarks },
 		set res(x) { player.atom.quarks = E(x) },
 		resDisp: x => format(x, 0) + " Quarks in Challenge 16"
@@ -1773,6 +1773,12 @@ const ELEM_TYPES = {
 		resDisp: x => format(x, 0) + " Exotic Atoms"
 	}
 }
+
+const ELEM_EFFECT = (()=>{
+	let x = []
+    for (let [i, upg] of Object.entries(ELEMENTS.upgs)) if (upg?.effect) x.push(Number(i))
+	return x
+})()
 
 const BR_ELEM = (()=>{
     let x = []
@@ -1927,7 +1933,7 @@ function setupElementsHTML() {
 }
 
 function updateElementsHTML() {
-    let tElem = tmp.elements, c16 = tmp.c16active
+    let tElem = tmp.elements, c16 = tmp.c16.in
     let et = player.atom.elemTier, elayer = player.atom.elemLayer
     let infU7 = hasInfUpgrade(6)
 
@@ -2019,7 +2025,8 @@ function updateElementsTemp() {
     tElem.cannot = cannot
 
     tElem.unl_length = [ELEMENTS.getUnlLength(),MUONIC_ELEM.getUnlLength()]
-    for (let x = tElem.unl_length[0]; x >= 1; x--) if (ELEMENTS.upgs[x].effect) {
+    for (let x of ELEM_EFFECT) {
+		if (x > tElem.unl_length[0]) return
         tElem.effect[x] = ELEMENTS.upgs[x].effect()
     }
 

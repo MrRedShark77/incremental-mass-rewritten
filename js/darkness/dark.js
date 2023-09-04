@@ -28,7 +28,7 @@ const DARK = {
         let a = player.dark.rays
         let x = {}
 
-        x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1))
+        x.shadow = a.max(1).pow(2).pow(tmp.c16.in?1:(tmp.fermions.effs[0][6]||1))
 		x.shadow = x.shadow.overflow('ee10',0.5)
 
         if (a.gte(1e9)) x.passive = a.div(1e9).max(1).log10().add(1).pow(3).div(100)
@@ -124,7 +124,7 @@ const DARK = {
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3).overflow('ee10',1/3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
-        if (!tmp.c16active && OURO.evo < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
+        if (!tmp.c16.in && OURO.evo < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
 
         return x
     },
@@ -156,7 +156,7 @@ const DARK = {
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
         if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0,hasElement(234))
-        if (a.gte('e56000') && (hasElement(260) || !tmp.c16active)) {
+        if (a.gte('e56000') && (hasElement(260) || !tmp.c16.in)) {
             let e = a.div('e56000').log10().add(1).log10()
             if (hasElement(238)) e = e.pow(2)
             x.ApQ_Overflow = Decimal.pow(10,e)
@@ -195,7 +195,7 @@ function calcDark(dt) {
         }
     }
 
-    if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
+    if (tmp.c16.in) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
     if (hasCharger(1) && tmp.bh.unl) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
 
     if (tmp.eaUnl) {
@@ -232,7 +232,7 @@ function setupDarkHTML() {
 }
 
 function updateDarkHTML() {
-    let dtmp = tmp.dark, c16 = tmp.c16active, inf_gs = tmp.preInfGlobalSpeed
+    let dtmp = tmp.dark, c16 = tmp.c16.in, inf_gs = tmp.preInfGlobalSpeed
     if (tmp.tab_name == "dark-eff") {
         tmp.el.darkRay.setHTML(player.dark.rays.format(0))
         tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain.mul(inf_gs)))

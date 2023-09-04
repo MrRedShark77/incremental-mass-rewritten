@@ -61,7 +61,7 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
-                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16active) i *= getEvo2Ch8Boost().toNumber()
+                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16.in) i *= getEvo2Ch8Boost().toNumber()
                 let x = [1-0.05*i,i/10+1]
                 return x
             },
@@ -208,7 +208,7 @@ function updateQCHTML() {
         tmp.el["qc_tab"+x].setDisplay(tmp.qc_tab == x)
     }
     if (tmp.qc_tab == 0) {
-        tmp.el.qc_btn.setDisplay(!(player.qu.rip.active || tmp.c16active || inDarkRun()))
+        tmp.el.qc_btn.setDisplay(!tmp.rip.in)
         tmp.el.qc_btn.setTxt((QCs.active()?"Exit":"Enter") + " the Quantum Challenge")
         for (let x = 0; x < QCs_len; x++) {
             tmp.el["qcm_mod"+x].setTxt(QCs.getMod(x))

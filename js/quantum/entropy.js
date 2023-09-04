@@ -72,11 +72,11 @@ const ENTROPY = {
             inc: E(20),
 
             eff(i) {
-                if (tmp.c16active) return E(1)
+                if (tmp.c16.in) return E(1)
                 let x = i.pow(0.5).div(5).add(1)
                 return x
             },
-            desc(x) { return `Atomic Power’s effect is <b>${formatPercent(x.sub(1))}</b> exponentially stronger.`.corrupt(tmp.c16active) },
+            desc(x) { return `Atomic Power’s effect is <b>${formatPercent(x.sub(1))}</b> exponentially stronger.`.corrupt(tmp.c16.in) },
         },{
             title: "Entropic Evaporation",
 
@@ -99,12 +99,12 @@ const ENTROPY = {
             inc: E(2),
 
             eff(i) {
-                if (tmp.c16active) return [E(0),E(1)]
+                if (tmp.c16.in) return [E(0),E(1)]
                 let x = i.div(QCs.active()?100:5).softcap(2,0.5,0)
                 let y = BUILDINGS.eff('tickspeed','power').pow(x)
                 return [x,y]
             },
-            desc(x) { return `Tickspeed Power gives <b>^${x[0].format(2)}</b> boost to BHC & Cosmic Ray Powers.<br>Currently: <b>${x[1].format()}x</b>`.corrupt(tmp.c16active) },
+            desc(x) { return `Tickspeed Power gives <b>^${x[0].format(2)}</b> boost to BHC & Cosmic Ray Powers.<br>Currently: <b>${x[1].format()}x</b>`.corrupt(tmp.c16.in) },
         },{
             title: "Entropic Booster",
 
@@ -112,11 +112,11 @@ const ENTROPY = {
             inc: E(2),
 
             eff(i) {
-                if (tmp.c16active) return E(1)
+                if (tmp.c16.in) return E(1)
                 let x = i.pow(2).div(20).add(1)
                 return x
             },
-            desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray.`.corrupt(tmp.c16active) },
+            desc(x) { return `<b>x${x.format(2)}</b> extra Mass upgrades, Tickspeed, BHC and Cosmic Ray.`.corrupt(tmp.c16.in) },
         },{
             title: "Entropic Scaling",
 
@@ -151,27 +151,12 @@ const ENTROPY = {
             scale: {s: 20, p: 2.5},
 
             eff(i) {
-                if (tmp.c16active) return E(1)
+                if (tmp.c16.in) return E(1)
                 let x = player.qu.en.amt.add(1).log10().pow(0.75).mul(i).div(1500).add(1)
                 return overflow(x,50,0.5)
             },
-            desc(x) { return `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.`.corrupt(tmp.c16active) },
+            desc(x) { return `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.`.corrupt(tmp.c16.in) },
         },
-
-        /*
-        {
-            title: "Entropic Placeholder",
-
-            start: E(100),
-            inc: E(10),
-
-            eff(i) {
-                let x = E(1)
-                return x
-            },
-            desc(x) { return `Placeholder.` },
-        },
-        */
     ],
     nextReward(i) {
         let rc = this.rewards[i]
@@ -206,9 +191,9 @@ const ENTROPY = {
         return x
     },
     getRewardEffect(i) {
-        if ((player.qu.rip.active || tmp.c16active || inDarkRun()) && !tmp.en.reward_br.includes(i)) return E(0)
+        if ((tmp.rip.in) && !tmp.en.reward_br.includes(i)) return E(0)
         let x = player.qu.en.rewards[i]
-        if (hasElement(91) && (player.qu.rip.active || tmp.c16active || inDarkRun()) && (i==1||i==4)) x = x.mul(0.1)
+        if (hasElement(91) && (tmp.rip.in) && (i==1||i==4)) x = x.mul(0.1)
 
         return x
     },

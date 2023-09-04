@@ -96,7 +96,7 @@ const TABS = [
     ] },
     { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && OURO.evo < 3 }, style: "atom", stab: [
         'particles',
-        ['elements', () => player.chal.comps[7].gte(16) || player.supernova.times.gte(1) || quUnl(), () => OURO.evo < 1],
+        ['elements', () => player.chal.comps[7].gte(16) || tmp.supernova.unl, () => OURO.evo < 1],
         ['dil', () => MASS_DILATION.unlocked()],
         ['break-dil', () => hasUpgrade("br",9)],
         ['ext-atom', () => tmp.eaUnl],
@@ -106,7 +106,7 @@ const TABS = [
         'proto',
         'star',
     ] },
-    { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn", stab: [
+    { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return tmp.supernova.unl }, style: "sn", stab: [
         'sn-tree',
         ['boson', () => player.supernova.post_10],
         ['ferm', () => player.supernova.fermions.unl],

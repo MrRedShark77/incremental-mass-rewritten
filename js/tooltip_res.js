@@ -131,7 +131,7 @@ const TOOLTIP_RES = {
             You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
             `
 
-            if (!tmp.SN_passive) h += `<br class='line'>
+            if (!tmp.supernova.gen) h += `<br class='line'>
             <i>
             ${"Reach over <b>"+format(tmp.supernova.maxlimit)+"</b> collapsed stars to go Supernova"}.
             </i>`
@@ -262,14 +262,6 @@ const TOOLTIP_RES = {
             return h
         },
     },
-
-    /**
-     * desc() {
-            let h = ``
-
-            return h
-        },
-    */
 }
 
 function updateTooltipResHTML() {

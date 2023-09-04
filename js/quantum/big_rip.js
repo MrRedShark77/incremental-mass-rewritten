@@ -21,5 +21,6 @@ const BIG_RIP = {
 }
 
 function updateBigRipTemp() {
+    tmp.rip.ip = player.qu.rip.active || tmp.dark.run
     tmp.rip.gain = BIG_RIP.gain()
 }

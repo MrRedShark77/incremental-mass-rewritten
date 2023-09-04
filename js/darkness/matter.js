@@ -3,7 +3,7 @@ const MATTERS = {
     colors: ['#0002',"#f002","#f0f2","#ffb6c122","#a0f2","#70f2","#06f2","#0cf2","#0f02","#bf02","#ff02","#f802","#fff2","#8882"],
 
     gain(i) {
-        let c16 = tmp.c16active, rdc = tmp.matters.reduction
+        let c16 = tmp.c16.in, rdc = tmp.matters.reduction
 		let x, m0 = i == 0 ? tmp.matters.amt_0 : player.dark.matters.amt[i-1]
         if (c16) {
             x = i == 12 ? E(1) : player.dark.matters.amt[i+1].add(1)
@@ -58,7 +58,7 @@ const MATTERS = {
     },
 
     firstUpgData(i) {
-        let c16 = tmp.c16active, rdc = tmp.matters.reduction
+        let c16 = tmp.c16.in, rdc = tmp.matters.reduction
 
 		let m0 = player.dark.matters.amt[i]
         let lvl = player.dark.matters.upg[i], pow = c16?1.25:Math.max(i-2,0)/10+1.5
@@ -169,7 +169,7 @@ function updateMattersHTML() {
 
     let h = `10<sup>lg(lg(x))<sup>${format(tmp.matters.exponent)}</sup>`
 	if (rdc == 2) h = `lg(x)<sup>${format(tmp.matters.exponent)}</sup>`
-    else if (hasElement(256)) h += tmp.c16active ? `</sup>×(next matter)` : `×lg(next matter)</sup>`
+    else if (hasElement(256)) h += tmp.c16.in ? `</sup>×(next matter)` : `×lg(next matter)</sup>`
 
     tmp.el.matter_formula.setHTML(h)
     tmp.el.matter_req_div.setDisplay(player.dark.matters.unls<14)
@@ -216,7 +216,7 @@ function updateMattersHTML() {
 }
 
 function updateMattersTemp() {
-	let evo2 = OURO.evo >= 2, rdc = evo2 ? 2 : tmp.c16active ? 1 : 0
+	let evo2 = OURO.evo >= 2, rdc = evo2 ? 2 : tmp.c16.in ? 1 : 0
 	let mt = tmp.matters
 
 	mt.reduction = rdc

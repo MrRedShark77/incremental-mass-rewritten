@@ -32,7 +32,7 @@ const QUANTUM = {
         }
     },
     doReset(force=false, dark=false, metaF=false) {
-        let c16 = tmp.c16active
+        let c16 = tmp.c16.in
 
         if (!hasElement(47,1)) player.supernova.times = E(0)
         player.supernova.stars = E(0)

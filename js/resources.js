@@ -91,12 +91,12 @@ const RESOURCES_DIS = {
         resetBtn() { MASS_DILATION.onactive() },
     },
     sn: {
-        unl: ()=>player.supernova.post_10 || player.supernova.times.gt(0),
+        unl: ()=>tmp.supernova.unl,
         icon: "sn",
         class: "magenta",
 
         desc: (gs)=>{
-            let g = tmp.SN_passive ? tmp.supernova.passive.div(FPS) : tmp.supernova.bulk.sub(player.supernova.times).max(0)
+            let g = tmp.supernova.gen ? tmp.supernova.passive.div(FPS) : tmp.supernova.bulk.sub(player.supernova.times).max(0)
             let h = tmp.inf_unl?format(g.mul(FPS),0)+"/sec":format(g,0)
             return format(player.supernova.times,0)+(player.supernova.post_10?"<br>(+"+h+")":"")
         },
@@ -144,7 +144,7 @@ const RESOURCES_DIS = {
         icon: "corrupted",
         class: "corrupted_text",
 
-        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(232)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):tmp.c16active?"(+"+tmp.c16.shardGain.format(0)+")":"(inactive)"),
+        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(232)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):tmp.c16.in?"(+"+tmp.c16.shardGain.format(0)+")":"(inactive)"),
 
         resetBtn() { startC16() },
     },

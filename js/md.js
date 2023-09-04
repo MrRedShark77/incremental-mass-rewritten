@@ -7,7 +7,7 @@ const MASS_DILATION = {
         return x
     },
     onactive() {
-        if (tmp.c16active || inDarkRun()) return
+        if (tmp.dark.run) return
         if (inMD()) player.md.particles = player.md.particles.add(tmp.md.rp_gain)
         player.md.active = !inMD()
         ATOM.doReset()
@@ -19,7 +19,7 @@ const MASS_DILATION = {
         if (FERMIONS.onActive("01")) x = x.div(10)
         if (QCs.active()) x = x.mul(tmp.qu.qc_eff[4])
         if (hasElement(24) && hasPrestige(0,40)) x = x.mul(tmp.elements.effect[24])
-        if (tmp.c16active || inDarkRun()) x = x.pow(mgEff(3))
+        if (tmp.dark.run) x = x.pow(mgEff(3))
         return x
     },
     RPmultgain() {
@@ -53,7 +53,7 @@ const MASS_DILATION = {
 
         x = expMult(x,theoremEff('atom',5))
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(3))
+        if (tmp.dark.run) x = expMult(x,mgEff(3))
 
         let o = x
         let os = E('ee30').pow(glyphUpgEff(8))
@@ -104,7 +104,7 @@ const MASS_DILATION = {
                 cost(x) { return tmp.md.bd3 ? E(10).pow(E(1.25).pow(x)).mul(100) : E(10).pow(x).mul(100) },
                 bulk() { return player.md.mass.gte(100)?(tmp.md.bd3 ? player.md.mass.div(100).max(1).log10().max(1).log(1.25).add(1).floor() : player.md.mass.div(100).max(1).log10().add(1).floor()):E(0) },
                 effect(x) {
-                    if (tmp.md.bd3) return x.mul(mdEff(11)).root(player.qu.rip.active || tmp.c16active || inDarkRun() ? 3 : 2).mul(player.qu.rip.active || tmp.c16active || inDarkRun() ? 0.05 : 0.1).add(1)
+                    if (tmp.md.bd3) return x.mul(mdEff(11)).root(tmp.rip.in ? 3 : 2).mul(tmp.rip.in ? 0.05 : 0.1).add(1)
                     if (hasElement(83)) return expMult(x,2,1.5).add(1)
                     return hasMDUpg(7)?x.mul(mdEff(11)).root(1.5).mul(0.25).add(1):x.mul(tmp.md.upgs[11].eff||1).root(2).mul(0.15).add(1)
                 },
@@ -378,20 +378,6 @@ const MASS_DILATION = {
     },
 }
 
-/*
-{
-    desc: `Placeholder.`,
-    cost(x) { return E(10).pow(x.pow(1.1)).mul(1e5) },
-    bulk() { return player.md.break.mass.gte(1e5)?player.md.break.mass.div(1e5).max(1).log10().root(1.1).add(1).floor():E(0) },
-    effect(y) {
-        let x = E(1)
-
-        return x
-    },
-    effDesc(x) { return format(x,0)+"x"},
-},
-*/
-
 function setupMDHTML() {
     let md_upg_table = new Element("md_upg_table")
 	let table = ""
@@ -430,10 +416,11 @@ function setupMDHTML() {
 
 function updateMDTemp() {
 	tmp.md = {}
+    tmp.md.in = tmp.c16.in || inMD() || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)
     tmp.md.pen = MASS_DILATION.penalty()
 	if (!tmp.atom.unl) return
 
-    tmp.md.bd3 = !tmp.c16active && hasMDUpg(2, true)
+    tmp.md.bd3 = !tmp.c16.in && hasMDUpg(2, true)
 
     let mdub = 1
     if (hasElement(115)) mdub *= 1.05
@@ -505,7 +492,7 @@ function updateMDHTML() {
 function updateBDHTML() {
     let inf_gs = tmp.preInfGlobalSpeed
     let bd = player.md.break
-    let c16 = tmp.c16active
+    let c16 = tmp.c16.in
 
     tmp.el.bd_btn.setTxt(bd.active?"Fix Dilation":"Break Dilation")
 

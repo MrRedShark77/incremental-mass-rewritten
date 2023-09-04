@@ -184,7 +184,7 @@ function updateRanksRewardHTML() {
 }
 
 function updatePrestigesRewardHTML() {
-	let c16 = tmp.c16active
+	let c16 = tmp.c16.in
 	// tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
 	for (let x = 0; x < PRES_LEN; x++) {
 		tmp.el["pres_reward_div_"+x].setDisplay(player.pres_reward == x)
@@ -194,7 +194,7 @@ function updatePrestigesRewardHTML() {
 				let unl = player.prestiges[x].gte(keys[y])
 				tmp.el["pres_reward_"+x+"_"+y].setDisplay(unl)
 				if (unl) {
-					tmp.el["pres_reward_"+x+"_"+y].setClasses({corrupted_text2: c16 && CORRUPTED_PRES[x] && CORRUPTED_PRES[x].includes(parseInt(keys[y]))})
+					tmp.el["pres_reward_"+x+"_"+y].setClasses({corrupted_text2: c16 && x == 0 && CORRUPTED_PRES.includes(parseInt(keys[y]))})
 					if (tmp.el["pres_eff_"+x+"_"+y]) {
 						let eff = PRESTIGES.rewardEff[x][keys[y]]
 						tmp.el["pres_eff_"+x+"_"+y].setHTML(eff[1](tmp.prestiges.eff[x][keys[y]]))
@@ -206,7 +206,7 @@ function updatePrestigesRewardHTML() {
 }
 
 function updateBeyondRanksRewardHTML() {
-	let t = tmp.beyond_ranks.max_tier, lt = tmp.beyond_ranks.latestRank, c16 = tmp.c16active, c16_cr = {
+	let t = tmp.beyond_ranks.max_tier, lt = tmp.beyond_ranks.latestRank, c16 = tmp.c16.in, c16_cr = {
 		1: [7],
 	}
 	for (let x in BEYOND_RANKS.rewards) {
@@ -282,19 +282,9 @@ function updateBlackHoleHTML() {
 	let unl = hasCharger(1)
 
 	tmp.el.unstable_bhUnl.setDisplay(unl)
-	// tmp.el.falseVacuumDiv.setDisplay(unl)
 	if (unl) {
 		tmp.el.bhUnstable.setHTML(formatMass(player.bh.unstable)+" "+formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true))
 		tmp.el.bhUnstableEffect.setHTML("^"+format(tmp.unstable_bh.effect))
-
-		/*
-		tmp.el.fvm_lvl.setTxt(format(player.bh.fvm,0))
-		tmp.el.fvm_btn.setClasses({btn: true, locked: !UNSTABLE_BH.fvm.can()})
-		tmp.el.fvm_cost.setTxt(format(tmp.unstable_bh.fvm_cost,0))
-		tmp.el.fvm_pow.setTxt(format(tmp.unstable_bh.fvm_eff.pow))
-		tmp.el.fvm_eff.setHTML(format(tmp.unstable_bh.fvm_eff.eff))
-		tmp.el.fvm_auto.setTxt(player.bh.autoFVM?"ON":"OFF")
-		*/
 	}
 }
 
@@ -303,7 +293,7 @@ function updateOptionsHTML() {
 		for (let x = 0; x < CONFIRMS.length; x++) {
 			let unl = 
 			CONFIRMS[x] == "sn"
-			?(player.supernova.times.gte(1) || quUnl())
+			?(tmp.supernova.unl)
 			:CONFIRMS[x] == "qu"
 			?quUnl()
 			:CONFIRMS[x] == "br"
@@ -321,7 +311,7 @@ function updateOptionsHTML() {
 		}
 		tmp.el.total_time.setTxt(formatTime(player.time))
 		tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
-		tmp.el.tree_anim_btn.setDisplay(player.supernova.times.gte(1) || quUnl())
+		tmp.el.tree_anim_btn.setDisplay(tmp.supernova.unl)
 		tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
 		tmp.el.mass_dis.setTxt(["Default",'Gramm'][player.options.massDis])
 		tmp.el.mass_type.setTxt(["Short",'Long'][player.options.massType])

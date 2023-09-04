@@ -30,7 +30,7 @@ const MUONIC_ELEM = {
             desc: `Not affected by Neutronium-0, each pre-16 challenge’s completions boost each chroma gain.`,
             cost: E(1e20),
             eff() {
-                let c16 = tmp.c16active
+                let c16 = tmp.c16.in
                 let x = E(1)
                 for (let i = 1; i <= 15; i++) x = x.mul(Decimal.pow(c16?1.25:1.1,player.chal.comps[i].root(2)))
                 return x
@@ -278,7 +278,7 @@ const MUONIC_ELEM = {
             cost: E('e20400'),
             eff() {
                 let x = exoticAEff(1,1,E(1)).root(5)
-                if (tmp.c16active) x = x.max(1).log10().add(1)
+                if (tmp.c16.in) x = x.max(1).log10().add(1)
                 return x
             },
             effDesc: x=>"^"+format(x),

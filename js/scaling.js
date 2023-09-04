@@ -307,7 +307,7 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (!CHALS.inChal(14) && !inDarkRun() && !tmp.c16active && !CHALS.inChal(15)) {
+	if (!tmp.dark.run && !CHALS.inChal(14) && !CHALS.inChal(15)) {
 		if (hasUpgrade("br",2)) sqc8.push("massUpg","rank","tier","tetr","pent",'hex')
 		if (brokeDil()) sqc8.push("bh_condenser","gamma_ray")
 	}
@@ -335,7 +335,7 @@ function getScalingName(name, x=0, y=0) {
 }
 
 function getScalingStart(type, name) {
-	let c16 = tmp.c16active
+	let c16 = tmp.c16.in
 
 	let start = SCALE_START[SCALE_TYPE[type]][name]
 
@@ -639,7 +639,7 @@ function getScalingPower(type, name) {
 	if (hasPrestige(2,4) && rps.includes(name) && player.chal.comps[18].gte(1) && type == 4) power = power.mul(tmp.chal.eff[18][1])
 
 	let qf = tmp.qu.qc_eff[7][1]
-	if (!tmp.c16active) if (player.dark.run.upg[4] && inDarkRun() && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
+	if (!tmp.c16.in) if (player.dark.run.upg[4] && inDarkRun() && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name) && type<4) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
 	if (PreQ_SCALES.includes(name) && type<3) power = power.mul(getEnRewardEff(5))
 
@@ -677,7 +677,7 @@ function noScalings(type,name) {
 		if (hasBeyondRank(2,15) && OURO.evo < 2) return true
 	}
 	else if (name=="supernova") {
-		return tmp.SN_passive || type<3 && hasCharger(3)
+		return tmp.supernova.gen || type<3 && hasCharger(3)
 	}
 	else if (name=="tickspeed") {
 		if (hasCharger(4)) return true

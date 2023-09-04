@@ -10,7 +10,7 @@ const ATOM = {
         } else if (evo >= 2) {
             if (player.evo.wh.fabric.lt(300)) return E(0)
             x = player.evo.wh.fabric.div(150).sub(1).sqrt()
-			if (!tmp.c16active) x = E(2).pow(x).mul(5)
+			if (!tmp.c16.in) x = E(2).pow(x).mul(5)
         } else {
             x = player.bh.mass.div(hasUpgrade("br",1)?1.5e156**0.5:1.5e156)
             if (x.lt(1)) return E(0)
@@ -29,7 +29,7 @@ const ATOM = {
         x = x.pow(glyphUpgEff(5))
         if (hasUpgrade('br',17)) x = x.pow(upgEffect(4,17))
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
+        if (tmp.dark.run) x = expMult(x,mgEff(2))
 
         return x.floor()
     },
@@ -41,7 +41,7 @@ const ATOM = {
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
 		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.1).add(1)
 
-        if (!tmp.c16active) x = x.pow(escrowBoost("qk"))
+        if (!tmp.c16.in) x = x.pow(escrowBoost("qk"))
         if (hasUpgrade("bh",13)) x = x.mul(10)
         if (hasUpgrade("atom",8)) x = x.mul(tmp.upgs?tmp.upgs[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
@@ -58,13 +58,13 @@ const ATOM = {
 
         if (tmp.inf_unl) x = x.pow(theoremEff('atom',0))
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
+        if (tmp.dark.run) x = expMult(x,mgEff(2))
         if (tmp.inf_unl && OURO.evo >= 2) x = expMult(x,GPEffect(1).pow(-1))
 
         let os = E('ee90'), op = E(.5), o = x
 		if (OURO.evo >= 2) os = E("ee70")
 		if (tmp.chal) os = os.pow(tmp.chal.eff[15])
-		if (tmp.c16active && OURO.evo < 2) os = E("ee6")
+		if (tmp.c16.in && OURO.evo < 2) os = E("ee6")
         os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
 
         if (hasUpgrade('atom',16)) os = os.pow(10)
@@ -115,16 +115,16 @@ const ATOM = {
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
-            if (tmp.c16active || inMD() || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+            if (tmp.md.in) x = expMult(x,tmp.md.pen)
 
             if (hasGlyphUpg(12)) x = x.pow(greff.exp)
             if (hasUpgrade('bh',22)) x = x.pow(upgEffect(2,22))
-            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
+            if (tmp.dark.run) x = expMult(x,mgEff(2))
 
             let o = x
-            let os = tmp.c16active ? E('e500') : E('ee82')
+            let os = tmp.c16.in ? E('e500') : E('ee82')
 			if (tmp.chal) os = os.pow(tmp.chal.eff[15])
-			if (tmp.c16active && OURO.evo < 2) os = E("e500")
+			if (tmp.c16.in && OURO.evo < 2) os = E("e500")
             os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
             if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
 
