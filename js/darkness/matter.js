@@ -76,9 +76,10 @@ const MATTERS = {
 			cost = lvl.add(1).pow(hasInfUpgrade(17)?2:3).mul(1e3)
 			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).floor()
 			eff = lvl.add(1).mul(expMult(lvl.add(1), .9).pow(GPEffect(2)))
+            if (i == 0) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
 		}
 
-        let exp = hasInfUpgrade(17) && i > 0 && rdc < 2 ? lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1) : E(1)
+        let exp = hasInfUpgrade(17) && i > 0 ? rdc >= 2 ? lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1) : lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1) : E(1)
         return {cost, bulk, eff, exp}
     },
 
@@ -106,13 +107,16 @@ const MATTERS = {
             return x
         },
         bulk() {
-            let f = tmp.matters.FSS_base
+            let f = tmp.matters.FSS_base, fp = E(1)
 
             if (f.lt(OURO.evo>=2?1e3:1e43)) return E(0)
+
+            if (tmp.inf_unl) fp = fp.mul(theoremEff('time',6))
+
             let x = f.div(OURO.evo>=2?1e3:1e43).max(1).log(100).root(1.5)
             if (hasElement(217)) x = x.div(.8)
 
-            x = x.scaleEvery('FSS',true,[1,hasTree('ct10')?treeEff('ct10').pow(-1):1])
+            x = x.scaleEvery('FSS',true,[1,hasTree('ct10')?treeEff('ct10').pow(-1):1,fp])
             return x.add(1).floor()
         },
 

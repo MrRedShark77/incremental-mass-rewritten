@@ -14,7 +14,7 @@ const MASS_DILATION = {
         updateMDTemp()
     },
     RPexpgain() {
-        let x = E(2).add(mdEff(5, false, 0)).mul((tmp.chal && !CHALS.inChal(10))?tmp.chal.eff[10]:1)
+        let x = E(2).add(mdEff(5, false, 0)).mul(tmp.chal && !CHALS.inChal(10) ? tmp.chal.eff[10] : 1)
         if (!inMD() && hasTree("d1")) x = x.mul(1.25)
         if (FERMIONS.onActive("01")) x = x.div(10)
         if (QCs.active()) x = x.mul(tmp.qu.qc_eff[4])
@@ -296,7 +296,7 @@ const MASS_DILATION = {
                 
                         return x
                     },
-                    effDesc(x) { return "x"+format(x)+" later" },
+                    effDesc(x) { return formatMult(x)+" later" },
                 },{
                     desc: `Triple Relativistic Energy gain.`,
                     cost(x) { return E(10).pow(x.pow(1.5)).mul(2.9835e48) },

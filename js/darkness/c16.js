@@ -23,7 +23,7 @@ const CHARGERS = [
         desc: `Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed, but nullify [Tau]'s effect.`,
     },{
         req: E('e77000'),
-        get cost() { return E(OURO.evo >= 2 ? 5e7 : 5e10) },
+        get cost() { return E(OURO.evo >= 3 ? 1e14 : OURO.evo >= 2 ? 5e7 : 5e10) },
         get desc() { return OURO.evo >= 3 ? `Unlock Exotic Protostars.<br><b class='saved_text'>[ Evolved Exotic ]</b>` : `Unlock Exotic Atoms in Atom tab, and unlock new elements' layer.` },
     },{
         req: E('ee6'),
@@ -129,8 +129,15 @@ function corruptedShardGain() {
 
 	let x
 	if (OURO.evo >= 2) {
-		x = expMult((hasElement(232) ? player.dark.c16.bestBH : WORMHOLE.total()).add(1).root(hasCharger(6) ? 20 : 25), 3)
-		if (hasCharger(2)) x = x.mul(player.evo.wh.mass[6].div(5e3).pow(2).max(1))
+        let e = 25
+        if (hasElement(223) && OURO.evo >= 3) e -= 5
+        if (hasCharger(6)) e -= 5
+		x = expMult((hasElement(232) ? player.dark.c16.bestBH : WORMHOLE.total()).add(1).root(e), 3)
+		if (hasCharger(2)) {
+            let y = player.evo.wh.mass[6].div(5e3).pow(2).max(1)
+            if (OURO.evo >= 3) y = expMult(y,0.5)
+            x = x.mul(y)
+        }
 		x = x.mul(x.log10().mul(2).add(1).pow(2))
 		if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 		x = x.mul(exoticAEff(0,0))
@@ -145,7 +152,7 @@ function corruptedShardGain() {
 		x = x.mul(exoticAEff(0,0))
 		x = x.overflow('ee12',0.25)
 	}
-	x = x.mul(x.add(1).log10().add(1).pow(2))
+	x = x.mul(x.add(1).log10().add(1).pow(2)).pow(CSEffect('c16_exp'))
 
     return x.floor()
 }

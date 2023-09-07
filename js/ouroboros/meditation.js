@@ -17,6 +17,7 @@ const MEDITATION = {
 
 		cp = cp.mul(appleEffect('cp_lvl'))
 		cp = cp.mul(wormholeEffect(0))
+		if (hasZodiacUpg('aries','u2')) cp = cp.mul(zodiacUpgEff('aries','u2'))
 
 		if (OURO.evo >= 2) cp = cp.pow(wormholeEffect(5))
 		else if (hasElement(158)) cp = cp.pow(1.5)

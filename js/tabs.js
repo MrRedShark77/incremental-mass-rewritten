@@ -48,8 +48,9 @@ const TABS_DATA = {
     'options' : { name: "Options" },
     'res-hide': { name: "Resource Hider" },
 
-    "wh"      : { name: "Wormhole", style: "bh" },
-    "proto"   : { name: "Protostar", style: "space" },
+    "wh"           : { name: "Wormhole", style: "bh" },
+    "proto"        : { name: "Protostar", style: "space" },
+    "constellation": { name: "Constellation", style: "sn" },
 }
 
 function chooseTab(x, stab=false) {
@@ -104,7 +105,8 @@ const TABS = [
     { name: "Space", icon: "bx:planet", color: "space", unl() { return OURO.evo >= 3 }, style: "space", stab: [
         'wh',
         'proto',
-        'star',
+        ['star', null, () => OURO.evo < 4],
+        ['constellation', null, () => OURO.evo >= 4]
     ] },
     { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return tmp.supernova.unl }, style: "sn", stab: [
         'sn-tree',

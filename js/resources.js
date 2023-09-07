@@ -62,7 +62,7 @@ const RESOURCES_DIS = {
         icon: "evolution/wormhole",
         class: "yellow",
 
-        desc: _ => formatMass(WORMHOLE.total()),
+        desc: () => formatMass(WORMHOLE.total()),
     },
     atom: {
         unl: ()=>FORMS.bh.unl() && OURO.evo < 3,
@@ -104,7 +104,7 @@ const RESOURCES_DIS = {
         resetBtn() { if (player.supernova.post_10) SUPERNOVA.reset(false,false,true) },
     },
     qu: {
-        unl: ()=>quUnl() || player.chal.comps[12].gte(1),
+        unl: ()=>OURO.evo >= 4 || quUnl() || player.chal.comps[12].gte(1),
         icon: "qu",
         class: "light_green",
 

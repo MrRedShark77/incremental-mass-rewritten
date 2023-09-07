@@ -99,10 +99,10 @@ const FORMS = {
 
         if (tmp.inf_unl) x = x.pow(theoremEff('mass',0))
         if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[0])
-
         x = x.pow(tmp.bosons.effect.pos_w[2]||1)
-        if (tmp.dark.run) x = expMult(x,mgEff(0))
+        if (hasElement(295)) x = x.pow(elemEffect(295))
 
+        if (tmp.dark.run) x = expMult(x,mgEff(0))
 		if (OURO.evo < 2) {
 			let o = x
 			let os = tmp.c16.in ? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
@@ -351,7 +351,7 @@ const FORMS = {
             if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
             gain = gain.pow(tmp.matters.upg[0].eff)
 
-            if (evo < 2 && (tmp.dark.run)) gain = expMult(gain,mgEff(1))
+            if (evo < 2 && tmp.dark.run) gain = expMult(gain,mgEff(1))
             if (evo >= 2) {
 				let exp = 0.5
 				if (hasElement(77, 1)) exp = 0.6
@@ -669,7 +669,7 @@ function getMltValue(mass){
 	}
 }
 
-function getARVName(i,lode) { const n = MASS_NAMES[mass_type], v = VERSES[mass_type][0][i-1]; return i > 0 ? v ? v + (!lode && (mass_type == 'standard' || i != 1) ? n[8] : "") : (lode ? n[9] : n[9]+n[8])+"^"+format(i,0) : "" }
+function getARVName(i,lode) { const n = MASS_NAMES[mass_type], v = VERSES[mass_type][0][i-1]; return i > 0 ? v ? v + (!lode && (mass_type == 'standard' || i != 1) ? n[8] : "") : (lode ? n[9] : n[9]+n[8])+formatPow(i,0) : "" }
 
 function formatARV(ex,lode) {
     if (lode && ex.lt(1e15)) return format(ex) + " "
@@ -686,7 +686,7 @@ function formatLDV(ex) {
     const ldv_floor = Math.floor(ldv)
     if (ldv >= 1000) return format(ldv)+' '+n[10]+n[8]+'s'
     var v = VERSES[mass_type][1][ldv_floor-1]
-    return formatARV(ex.iteratedlog(10,ldv_floor).div(1e9),true) + "" + (v ? v + (mass_type == 'standard' ? n[8] : "") : n[10]+n[8]+"^"+format(ldv_floor,0))
+    return formatARV(ex.iteratedlog(10,ldv_floor).div(1e9),true) + "" + (v ? v + (mass_type == 'standard' ? n[8] : "") : n[10]+n[8]+formatPow(ldv_floor,0))
     // Decimal.tetrate(10, ldv % 1 + 1).div(10)
 }
 
@@ -720,7 +720,7 @@ function formatGain(a,e,mass) {
                 if (rate === '') rate = formatARV(sg.sub(sa).div(1e9).mul(FPS),true)
                 
                 var v = VERSES[mass_type][1][ldv_floor-1]
-                return "(+" + rate + "" + (v ? v + (mass_type == 'standard' ? verse : "") : lode+verse+"^"+format(ldv_floor,0)) + "/s)"
+                return "(+" + rate + "" + (v ? v + (mass_type == 'standard' ? verse : "") : lode+verse+formatPow(ldv_floor,0)) + "/s)"
             }
 
             if (a.gte(MAX_ARVS)) {
@@ -792,6 +792,8 @@ function formatReduction(ex,acc) { ex = E(ex); return format(E(1).sub(ex).mul(10
 function formatPercent(ex,acc) { ex = E(ex); return format(ex.mul(100),acc)+"%" }
 
 function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
+
+function formatPow(ex,acc=4) { return "^"+format(ex,acc) }
 
 function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }
 

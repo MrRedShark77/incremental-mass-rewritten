@@ -6,6 +6,16 @@ const ATOM = {
             if (player.evo.wh.fabric.lt(1e3)) return E(0)
 			x = expMult(player.evo.wh.fabric.div(1e3), 0.2)
 			x = x.mul(appleEffect("ps"))
+            if (tmp.chal) x = x.mul(tmp.chal.eff[9]).mul(tmp.chal.eff[10])
+            if (hasElement(123)) x = x.mul(elemEffect(123))
+            if (hasElement(291)) x = x.mul(elemEffect(291))
+            if (hasElement(292)) x = x.mul(elemEffect(292))
+            if (hasElement(297)) x = x.mul(elemEffect(297))
+            if (hasElement(303)) x = x.mul(elemEffect(303))
+            if (tmp.bosons) x = x.mul(tmp.bosons.upgs.gluon[4].effect)
+
+            if (hasElement(169)) x = x.pow(1.05)
+            if (tmp.inf_unl) x = x.pow(theoremEff('atom',5))
 			return x
         } else if (evo >= 2) {
             if (player.evo.wh.fabric.lt(300)) return E(0)
@@ -35,13 +45,24 @@ const ATOM = {
     },
     quarkGain() {
 		let x = tmp.atom.gain
-        if (tmp.atom.gain.lt(1)) return E(0)
+        if (x.lt(1)) return E(0)
 
-		if (OURO.evo >= 3) x = E(1.01).pow(expMult(x.sub(1), 1)).floor() //save +4 for later upgrades.
+		if (OURO.evo >= 3) {
+            let k = E(1), s = E(1e9)
+
+            if (hasElement(1)) k = k.add(0.25)
+            if (hasElement(84,1)) k = k.add(0.25)
+            if (hasElement(86,1)) k = k.add(0.1)
+
+            if (tmp.inf_unl) s = s.mul(theoremEff('time',4))
+
+            x = E(1.01).pow(expMult(x.overflow(s,hasElement(299)?2/3:0.5).sub(1), k)).floor() //save +4 for later upgrades.
+        }
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
 		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.1).add(1)
 
         if (!tmp.c16.in) x = x.pow(escrowBoost("qk"))
+
         if (hasUpgrade("bh",13)) x = x.mul(10)
         if (hasUpgrade("atom",8)) x = x.mul(tmp.upgs?tmp.upgs[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
@@ -221,13 +242,13 @@ const ATOM = {
             },
         ],
         desc: [
-            x=>{ return `Boost Mass gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>`+
+            x=>{ return `Boost Mass gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>`+
                 (OURO.evo == 0 ? `Increases Tickspeed Power by ${format(x.eff2.mul(100))}%` : ``)
             },
-            x=>{ return `Boost Rage Power gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>` +
-                (OURO.evo < 2 ? `Boost Mass gain based on Rage Powers - ${hasUpgrade('atom',18)?"^"+format(x.eff2):format(x.eff2)+"x"}<br><br>` : ``)
+            x=>{ return `Boost Rage Power gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>` +
+                (OURO.evo < 2 ? `Boost Mass gain based on Rage Powers - ${hasUpgrade('atom',18)?formatPow(x.eff2):format(x.eff2)+"x"}<br><br>` : ``)
             },
-            x=>{ return `Boost Dark Matter gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>`+
+            x=>{ return `Boost Dark Matter gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>`+
                 (OURO.evo < 2 ? `Increases BH Condenser Power by ${format(x.eff2)}` : ``)
             },
         ],

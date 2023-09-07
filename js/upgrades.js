@@ -50,7 +50,7 @@ const UPGS = {
             1: {
                 desc: "Boosters add Musclers.",
                 cost: E(1),
-                effect: _ => player.build.mass_2.amt.mul(2),
+                effect: () => player.build.mass_2.amt.mul(2),
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Musclers"
                 },
@@ -58,7 +58,7 @@ const UPGS = {
             2: {
                 desc: "Strongers add Boosters.",
                 cost: E(2),
-                effect: _ => player.build.mass_3.amt,
+                effect: () => player.build.mass_3.amt,
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Boosters"
                 },
@@ -144,7 +144,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             14: {
@@ -161,7 +161,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             16: {
@@ -195,7 +195,7 @@ const UPGS = {
                     return x
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             20: {
@@ -432,7 +432,7 @@ const UPGS = {
                     return x
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             20: {
@@ -730,7 +730,7 @@ const UPGS = {
                     let x = player.qu.rip.amt.add(1).log10().add(1).pow(3)
                     return x
                 },
-                effDesc(x=this.effect()) { return "x"+format(x) },
+                effDesc(x=this.effect()) { return formatMult(x) },
             },
             6: {
                 desc: `Start with all Radiation features unlocked.`,
@@ -776,7 +776,7 @@ const UPGS = {
                     let x = (tmp.prestiges.base||E(1)).add(1).log10().tetrate(1.5).add(1)
                     return x.min('e2.5e4')
                 },
-                effDesc(x=this.effect()) { return "x"+format(x) },
+                effDesc(x=this.effect()) { return formatMult(x) },
             },
             14: {
                 unl() { return brokeDil() || tmp.inf_unl },
@@ -811,7 +811,7 @@ const UPGS = {
                     let x = Decimal.pow(2,player.mass.add(1).log10().add(1).log10().pow(1.5))
                     return x
                 },
-                effDesc(x=this.effect()) { return "x"+format(x) },
+                effDesc(x=this.effect()) { return formatMult(x) },
             },
             19: {
                 unl() { return tmp.brUnl || tmp.inf_unl },
@@ -823,7 +823,7 @@ const UPGS = {
                     if (hasAscension(0,33)) x = x.pow(2)
                     return x
                 },
-                effDesc(x=this.effect()) { return "x"+format(x)+" cheaper" },
+                effDesc(x=this.effect()) { return formatMult(x)+" cheaper" },
             },
             20: {
                 unl() { return player.dark.c16.first || tmp.inf_unl },
@@ -834,7 +834,7 @@ const UPGS = {
                     return overflow(x,10,0.5).pow(1.25)
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             21: {

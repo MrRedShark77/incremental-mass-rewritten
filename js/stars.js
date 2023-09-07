@@ -1,6 +1,8 @@
 const STARS = {
     unlocked() { return hasElement(36) },
     gain() {
+        if (OURO.evo >= 4) return E(0)
+
         let x = player.stars.generators[0]
         if (hasMDUpg(8)) x = x.mul(mdEff(8))
         if (hasPrestige(1,1)) x = x.pow(2)
@@ -10,9 +12,8 @@ const STARS = {
         if (hasElement(182)) x = x.pow(10)
         if (hasUpgrade('bh',17)) x = x.pow(upgEffect(2,17))
 
-        let os = E('eee5'), op = E(0.5)
+        let os = E(OURO.evo >= 2?'eee7':'eee5'), op = E(0.5)
         if (hasUpgrade('atom',24)) os = expMult(os,2)
-        if (OURO.evo >= 2) os = EINF
         
         let o = x
         x = overflow(x,os,op,2)
@@ -24,7 +25,7 @@ const STARS = {
         return x
     },
     softGain() {
-        if (hasUpgrade('atom',22)) return EINF
+        if (hasUpgrade('atom',22) || OURO.evo >= 3) return EINF
         let s = E("e1000").pow(tmp.fermions.effs[1][0]||1)
         return s
     },
@@ -33,6 +34,8 @@ const STARS = {
         return p
     },
     effect() {
+        if (OURO.evo >= 4) return [E(1),E(1)];
+
         let x = E(1)
 		let [p, pp] = [E(1), E(1)]
 		if (hasElement(48)) p = p.mul(1.1)
@@ -95,10 +98,15 @@ const STARS = {
             if (hasMDUpg(8)) x = x.mul(mdEff(8))
             if (hasElement(54)) x = x.mul(tmp.elements.effect[54])
             x = x.mul(BUILDINGS.eff('star_booster'))
+        
+            let ne = nebulaEff("yellow")
+            x = x.pow(ne[0]??1)
+
             x = hasElement(213) ? x.pow(tmp.bosons.upgs.photon[3].effect) : x.mul(tmp.bosons.upgs.photon[3].effect)
             if (hasPrestige(1,1)) x = x.pow(2)
 
             x = expMult(x,GPEffect(0))
+            x = expMult(x,ne[1]??1)
             if (QCs.active()) x = expMult(x,tmp.qu.qc_eff[0][0])
             return x
         },
@@ -107,6 +115,8 @@ const STARS = {
 }
 
 function calcStars(dt) {
+    if (OURO.evo >= 4) return;
+
     player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt))
     if (!player.supernova.post_10) player.stars.points = player.stars.points.min(tmp.supernova.maxlimit)
     for (let x = 0; x < tmp.stars.max_unlocks; x++) player.stars.generators[x] = player.stars.generators[x].add(tmp.stars.generators_gain[x].mul(dt))

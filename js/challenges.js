@@ -391,7 +391,7 @@ const CHALS = {
             let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
             return overflow(ret.softcap(3,0.25,0),1e12,0.5)
         },
-        effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return formatPow(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     4: {
         unl() { return OURO.evo < 2 && (player.chal.comps[3].gte(1) || player.atom.unl) },
@@ -407,7 +407,7 @@ const CHALS = {
             let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
             return overflow(ret.softcap(3,0.25,0),1e12,0.5)
         },
-        effDesc(x) { return "^"+format(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return formatPow(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     5: {
         unl() { return player.atom.unl && OURO.evo < 3 },
@@ -475,18 +475,20 @@ const CHALS = {
             let ret = hasElement(133) ? x.root(1.5).mul(0.025).add(1) : x.root(1.75).mul(0.02).add(1)
             return overflow(ret.softcap(2.3,0.25,0),1e10,0.5)
         },
-        effDesc(x) { return OURO.evo >= 2 ? formatMult(x) : "^"+format(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
+        effDesc(x) { return OURO.evo >= 2 ? formatMult(x) : formatPow(x)+(x.gte(2.3)?" <span class='soft'>(softcapped)</span>":"") },
     },
     9: {
         unl() { return hasTree("chal4") },
         title: "No Particles",
         desc: "You cannot assign quarks. Additionally, mass gains exponent is raised to 0.9th power.",
-        reward: `Improve Magnesium-12.`,
+        reward: () => OURO.evo >= 3 ? `Gain +10% more protostars per completion.` : `Improve Magnesium-12.`,
         max: E(100),
         inc: E('e500'),
         pow: E(2),
         start: E('e9.9e4').mul(1.5e56),
         effect(x) {
+            if (OURO.evo >= 3) return Decimal.pow(1.1,expMult(x,0.5)).softcap(1e9,3,'log')
+
             let ret = x.root(hasTree("chal4a")?3.5:4).mul(0.1).add(1)            
             if (!hasElement(41,1)) ret = ret.softcap(21,hasElement(8,1)&&OURO.evo<2?0.253:0.25,0)
             if (hasElement(31,1) && tmp.chal) ret = ret.pow(tmp.chal.eff[16]||1)
@@ -494,22 +496,22 @@ const CHALS = {
             ret = ret.overflow(5e8,OURO.evo>=2?.25:.5).softcap(1e12,0.1,0)
             return ret
         },
-        effDesc(x) { return "^"+format(x)+softcapHTML(x,21) },
+        effDesc(x) { return OURO.evo >= 3?formatMult(x):formatPow(x)+softcapHTML(x,21) },
     },
     10: {
         unl() { return hasTree("chal5") },
         title: "The Reality I",
         desc: "You are trapped in mass dilation and challenges 1-8.",
-        reward: `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions!</span>`,
+        reward: () => OURO.evo >= 3 ? `Gain +10% more protostars per completion.` : `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions!</span>`,
         max: E(100),
         inc: E('e2000'),
         pow: E(2),
         start: E('e3e4').mul(1.5e56),
         effect(x) {
-            let ret = x.root(1.75).mul(OURO.evo >= 2 ? 0.1 : 0.01).add(1)
+            let ret = OURO.evo >= 3 ? Decimal.pow(1.1,expMult(x,0.5)).softcap(1e9,3,'log') : x.root(1.75).mul(OURO.evo >= 2 ? 0.1 : 0.01).add(1)
             return ret
         },
-        effDesc(x) { return format(x)+"x" },
+        effDesc(x) { return formatMult(x) },
     },
     11: {
         unl() { return hasTree("chal6") },
@@ -554,7 +556,7 @@ const CHALS = {
             let ret = x.add(1).pow(1.5)
             return ret
         },
-        effDesc(x) { return "x"+format(x,1) },
+        effDesc(x) { return formatMult(x,1) },
     },
     14: {
         unl() { return hasElement(144) },
@@ -569,7 +571,7 @@ const CHALS = {
             let ret = x.div(25).add(1)
             return ret
         },
-        effDesc(x) { return "x"+format(x,2) },
+        effDesc(x) { return formatMult(x,2) },
     },
     15: {
         unl() { return hasElement(168) },
@@ -584,7 +586,7 @@ const CHALS = {
             let ret = x.add(1).pow(2)
             return ret
         },
-        effDesc(x) { return "^"+format(x,2)+" later" },
+        effDesc(x) { return formatPow(x,2)+" later" },
     },
     16: {
         unl() { return hasElement(218) },
@@ -606,7 +608,7 @@ const CHALS = {
             let ret = x.root(3).mul(0.05).add(1)
             return ret.softcap(3,0.5,0)
         },
-        effDesc(x) { return "^"+format(x)+x.softcapHTML(3) },
+        effDesc(x) { return formatPow(x)+x.softcapHTML(3) },
     },
     17: {
         unl() { return hasElement(240) },
@@ -656,7 +658,7 @@ const CHALS = {
         You cannot become/generate supernovas, produce star resources, dark ray (it is capped at ${format(1e12)}), dark shadow, and abyssal blot, nor purchase tree upgrades. You are stuck in dark run with 1000 all glyphs (unaffected by weakness). This challenge resets supernova.
         `},
         get reward() { return `
-        Generate more supernovas by completions.<br><span class="yellow">On ${["10th","4th","2nd"][OURO.evo]} completion, unlock sixth row of infinity upgrades.</span>
+        Generate more supernovas by completions.<br><span class="yellow">On ${["10th","4th","2nd","3rd"][OURO.evo]} completion, unlock sixth row of infinity upgrades${OURO.evo>=3?" and seventh star in the theorem":""}.</span>
         `},
         max: E(100),
         inc: E('1e10'),

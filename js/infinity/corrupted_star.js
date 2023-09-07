@@ -40,32 +40,37 @@ const CORRUPTED_STAR = {
     },
 	effects: {
 		power_mult: {
-			unl: _ => true,
+			unl: () => true,
 			eff: cs => cs.add(1).log10().add(1).overflow(10,0.5).root(2),
 			eff_desc: i => `Increase Theorem's Power. <h4>${formatMult(i)}</h4>`
 		},
 		theorem_luck: {
-			unl: _ => true,
+			unl: () => true,
 			eff: cs => cs.add(1).log10().root(2).div(10).add(1),
 			eff_desc: i => `Increase luck on Theorem Stars 1-4. <h4>${formatMult(i)}</h4>`
 		},
 		inf_speed: {
-			unl: _ => true,
+			unl: () => true,
 			eff: cs => cs.add(1).log10().add(1),
 			eff_desc: i => `Increase passive IP generation. <h4>${formatMult(i)}</h4>`
 		},
 		sn_speed: {
-			unl: _ => hasElement(38,1),
+			unl: () => hasElement(38,1),
 			eff: cs => cs.add(1).log10().add(1).pow(1.5),
 			eff_desc: i => `Increase passive Supernova generation. <h4>${formatMult(i)}</h4>`
 		},
 		ea_reward: {
-			unl: _ => hasElement(43,1),
+			unl: () => hasElement(43,1),
 			eff: cs => cs.add(1).log10().root(2).div(20),
 			eff_desc: i => `Strengthen Exotic Atom rewards. <h4>+${format(i)}</h4>`
 		},
+        c16_exp: {
+			unl: () => OURO.evo >= 3 && hasElement(43,1),
+			eff: cs => cs.add(1).log10().root(2).div(25).add(1),
+			eff_desc: i => `Raise corrupted shards gain. <h4>${formatPow(i)}</h4>`
+		},
 		prim_reduce: {
-			unl: _ => hasElement(64,1),
+			unl: () => hasElement(64,1),
 			eff: cs => Decimal.pow(0.9,cs.add(1).log10().overflow(10,0.5).root(2)),
 			eff_desc: i => `Weaken Primordium Theorem scalings. <h4>^${format(i)}</h4>`
 		}
@@ -79,6 +84,8 @@ function updateCSTemp() {
     if (hasElement(50,1)) ss_mul = ss_mul.mul(muElemEff(50))
     if (hasElement(65,1)) ss_mul = ss_mul.mul(muElemEff(65))
 
+    if (hasElement(300)) ss_mul = ss_mul.pow(elemEffect(300))
+
     let ss1 = E(1e3).mul(ss_mul), ss2 = E(1e10).mul(ss_mul)
     tmp.cs_reduce_start1 = ss1
     tmp.cs_reduce_start2 = ss2
@@ -89,6 +96,8 @@ function updateCSTemp() {
     if (hasElement(34,1)) s = s.mul(muElemEff(34))
     if (hasElement(42,1)) s = s.mul(muElemEff(42))
     if (hasElement(47,1)) s = s.mul(muElemEff(47))
+
+    if (hasElement(300)) s = s.pow(elemEffect(300))
 
     tmp.cs_reduce_power = GPEffect(4,1)
     tmp.cs_speed = s

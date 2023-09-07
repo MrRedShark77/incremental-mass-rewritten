@@ -20,7 +20,8 @@ const SUPERNOVA = {
         BUILDINGS.reset('star_booster')
 
         list_keep = [21,36]
-        if (hasUpgrade("br",1) || OURO.evo >= 3) list_keep.push(1)
+        if (OURO.evo >= 3) list_keep.push(293)
+        if (hasUpgrade("br",1)) list_keep.push(1)
         if (hasTree("qol1")) list_keep.push(14,18)
         if (hasTree("qol2")) list_keep.push(24)
         if (hasTree("qol3")) list_keep.push(43)
@@ -70,6 +71,9 @@ const SUPERNOVA = {
 
         if (tmp.qu.mil_reached[6]) x = x.mul(qs.softcap('ee9',0.01,0).softcap('ee10',0.1,0))
         x = x.mul(tmp.radiation.bs.eff[11])
+
+        if (hasElement(294)) x = x.pow(1.5)
+
         return x
     },
     req(x=player.supernova.times) {
@@ -92,14 +96,17 @@ const SUPERNOVA = {
         if (hasElement(46,1)) x = x.mul(muElemEff(46))
         if (hasElement(49,1)) x = x.mul(muElemEff(49))
         if (hasElement(274)) x = x.mul(elemEffect(274))
+        if (hasElement(304)) x = x.mul(elemEffect(304))
         if (hasUpgrade('br',22)) x = x.mul(tmp.prim.eff[7])
-        x = x.mul(theoremEff('time',5)).mul(escrowBoost('sn'))
+        x = x.mul(theoremEff('time',5)).mul(escrowBoost('sn')).mul(escrowBoost('sn2'))
 
         return x
     },
 }
 
 function calcSupernova(dt) {
+    if (OURO.evo >= 4) return;
+
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
     let su = player.supernova
 
@@ -160,7 +167,7 @@ function calcSupernova(dt) {
 
 function updateSupernovaTemp() {
 	let tsn = tmp.supernova
-    tsn.unl = player.supernova.times.gt(1) || quUnl()
+    tsn.unl = OURO.evo < 4 && (player.supernova.times.gt(1) || quUnl())
     tsn.gen = hasElement(36,1)
     if (tsn.gen) {
         tsn.reached = false

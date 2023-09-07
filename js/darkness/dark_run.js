@@ -55,7 +55,7 @@ const DARK_RUN = {
                 return {0: Math.floor(6*i+5)}
             },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 10,
             get desc() { return OURO.evo >= 2 ? `Raise Wormhole by 1.5 every level.` : `Raise mass of black hole gain by 1.5 every level.` },
@@ -64,7 +64,7 @@ const DARK_RUN = {
                 return {0: Math.floor(6*i+10), 1: Math.floor(6*i+5)}
             },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 5,
             desc: `Exotic rank starts x1.25 later every level.`,
@@ -72,7 +72,7 @@ const DARK_RUN = {
                 return {1: 6*i+10, 2: 6*i+5}
             },
             eff(i) { return 1.25**i },
-            effDesc: x=>"x"+format(x,2)+" later",
+            effDesc: x=>formatMult(x,2)+" later",
         },{
             max: 1,
             desc: `Rank tiers' nerf power from 8th QC modifier is weaker while dark running.`,
@@ -84,7 +84,7 @@ const DARK_RUN = {
                 return {2: 75+5*i, 3: 5*i+5}
             },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 100,
             desc: `Triple dark ray gain for each level.`,
@@ -93,7 +93,7 @@ const DARK_RUN = {
                 return {0: Math.floor(20+20*i), 1: Math.floor(20+20*i), 2: Math.floor(20+20*i)}
             },
             eff(i) { return 3**i },
-            effDesc: x=>"x"+format(x,0),
+            effDesc: x=>formatMult(x,0),
         },{
             max: 1,
             desc: `Gain x1.5 more Cyrillic Glyphs.`,
@@ -107,13 +107,13 @@ const DARK_RUN = {
                 return {3: Math.floor(35+5*i), 4: Math.floor(5*i+5)}
             },
             eff(i) { return OURO.evo >= 2 ? 1 - 0.05 * i : 10 ** i },
-            effDesc: x=>OURO.evo >= 2 ? formatReduction(x) : "^"+format(x,0),
+            effDesc: x=>OURO.evo >= 2 ? formatReduction(x) : formatPow(x,0),
         },{
             max: 5,
             desc: `Star generators are ^1.5 stronger every level.`,
             cost(i) { return {1: 200+10*i, 2: 200+10*i, 5: 40+5*i} },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 10,
             desc: `Prestige base's exponent is increased by 0.02 per level.`,
@@ -145,7 +145,7 @@ const DARK_RUN = {
                 return {0: 160+j, 1: 446+j, 2: 460+j, 3: 328+j, 4: 333+j, 5: 222+j}
             },
             eff(i) { return 1+i/8 },
-            effDesc: x=>"^"+format(x,3),
+            effDesc: x=>formatPow(x,3),
         },
     ],
 }
@@ -298,11 +298,11 @@ function updateDarkRunTemp() {
     if (hasPrestige(2,5)) dtmp.glyph_mult = dtmp.glyph_mult.mul(prestigeEff(2,5,1))
     dtmp.glyph_mult = dtmp.glyph_mult.mul(tmp.matters.FSS_eff[1])
 
-    let dp = 0
-    if (hasElement(7,1)) dp += 3
-
     let dra = player.dark.run.active
     dtmp.glyph_upg_unls = DARK_RUN.upg_unl_length()
+
+    let dp = 0
+    if (hasElement(7,1)) dp += 3
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         dtmp.mass_glyph_eff[x] = DARK_RUN.mass_glyph_eff(x)
         let gain = DARK_RUN.mass_glyph_gain[x]()

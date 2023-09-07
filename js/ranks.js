@@ -30,8 +30,8 @@ const RANKS = {
         }
     },
     unl: {
-        tier() { return player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || hasUpgrade("atom",3) || tmp.radiation.unl || tmp.inf_unl },
-        tetr() { return hasUpgrade("atom",3) || tmp.radiation.unl || tmp.inf_unl },
+        tier() { return OURO.evo >= 3 || player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || hasUpgrade("atom",3) || tmp.radiation.unl || tmp.inf_unl },
+        tetr() { return OURO.evo >= 3 || hasUpgrade("atom",3) || tmp.radiation.unl || tmp.inf_unl },
         pent() { return tmp.radiation.unl || tmp.inf_unl },
         hex() { return tmp.chal13comp || tmp.inf_unl },
     },
@@ -243,8 +243,8 @@ const RANKS = {
         tier: {
             4(x) { return "+"+format(x.mul(100))+"%" },
             6(x) { return format(x)+"x" },
-            8(x) { return "^"+format(x) },
-            55(x) { return "^"+format(x) },
+            8(x) { return formatPow(x) },
+            55(x) { return formatPow(x) },
         },
         tetr: {
             2(x) { return "+"+format(x) },
@@ -255,7 +255,7 @@ const RANKS = {
             2(x) { return format(x)+"x" },
             4(x) { return format(x)+"x later" },
             5(x) { return format(x)+"x later" },
-            8(x) { return "^"+format(x)+" later" },
+            8(x) { return formatPow(x)+" later" },
         },
         hex: {
             4(x) { return format(x,1)+"x" },
@@ -487,7 +487,7 @@ const PRESTIGES = {
             "233": [()=>{
                 let x = player.dark.matters.amt[0].add(1).log10().add(1).log10().add(1).pow(2)
                 return x
-            },x=>"x"+format(x)],
+            },x=>formatMult(x)],
             "382": [()=>{
                 let x = player.prestiges[0].max(0).root(2).div(1e3)
                 if (hasPrestige(0,1337)) x = x.mul(10)
@@ -500,7 +500,7 @@ const PRESTIGES = {
             "607": [()=>{
                 let x = tmp.prestiges.base.max(1).pow(1.5).softcap('e7500',0.1,0).min('e50000')
                 return x
-            },x=>"x"+format(x)+softcapHTML(x,'e7500')],
+            },x=>formatMult(x)+softcapHTML(x,'e7500')],
             "1337": [()=>{
                 let x = tmp.preQUGlobalSpeed.max(1).log10().add(1).log10().div(10)
                 return x
@@ -540,7 +540,7 @@ const PRESTIGES = {
             "5": [()=>{
                 let x = player.prestiges[2].root(2).div(10).add(1)
                 return x
-            },x=>"x"+format(x,2)],
+            },x=>formatMult(x,2)],
             "8": [()=>{
                 let x = player.prestiges[2].root(3).div(10).add(1).pow(-1)
                 return x
@@ -548,15 +548,15 @@ const PRESTIGES = {
             "22": [()=>{
                 let x = Decimal.pow(2,player.prestiges[2].pow(.5))
                 return x
-            },x=>"x"+format(x)],
+            },x=>formatMult(x)],
             "28": [()=>{
                 let x = player.prestiges[1].root(2).div(10).add(1)
                 return x
-            },x=>"x"+format(x)],
+            },x=>formatMult(x)],
             "34": [()=>{
                 let x = player.dark.exotic_atom.amount[1].add(1).log10().add(1).pow(1.5)
                 return x
-            },x=>"x"+format(x)],
+            },x=>formatMult(x)],
             45: [()=>{
                 if (!tmp.bh.unl) return E(1)
 
@@ -564,7 +564,7 @@ const PRESTIGES = {
                 let x = hasElement(224) ? Decimal.pow(1.1,y.root(4)) : y.add(1)
                 if (tmp.c16.in) x = overflow(x.log10().add(1).root(2),10,0.5)
                 return overflow(x,1e100,0.5).min('e1750')
-            },x=>"^"+format(x)+" later"],
+            },x=>formatPow(x)+" later"],
             58: [()=>{
                 let x = tmp.beyond_ranks.max_tier.mul(.05)
                 return x
@@ -834,7 +834,7 @@ const BEYOND_RANKS = {
             ],
             7: [
                 ()=>player.ranks.beyond.add(1).root(2),
-                x=>"^"+format(x),
+                x=>formatPow(x),
             ],
         },
         2: {
@@ -846,7 +846,7 @@ const BEYOND_RANKS = {
 
                     return x.add(1)
                 },
-                x=>"x"+format(x),
+                x=>formatMult(x),
             ],
             7: [
                 ()=>{
@@ -854,7 +854,7 @@ const BEYOND_RANKS = {
 
                     return x
                 },
-                x=>"x"+format(x),
+                x=>formatMult(x),
             ],
             17: [
                 ()=>{
@@ -862,7 +862,7 @@ const BEYOND_RANKS = {
                     let y = player.qu.times.add(1).log10().root(2).div(8).add(1)
                     return [x,y]
                 },
-                x=>"x"+format(x[0])+" effective; x"+format(x[1])+" later",
+                x=>formatMult(x[0])+" effective; x"+format(x[1])+" later",
             ],
         },
         3: {
@@ -879,7 +879,7 @@ const BEYOND_RANKS = {
 
                     return x
                 },
-                x=>"x"+format(x),
+                x=>formatMult(x),
             ],
             18: [
                 ()=>{
@@ -905,7 +905,7 @@ const BEYOND_RANKS = {
 
                     return Decimal.max(1,x)
                 },
-                x=>"x"+format(x),
+                x=>formatMult(x),
             ],
         },
         5: {

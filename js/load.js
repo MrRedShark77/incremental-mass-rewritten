@@ -42,6 +42,10 @@ function loadGame(start=true, gotNaN=false) {
         }
         document.addEventListener('keydown', e => {keyEvent(e)})
 
+        document.getElementById('constellation_table').addEventListener('click', e => {
+            console.log(e.offsetX,e.offsetY)
+        })
+
         updateTheoremInv()
         updateTheoremCore()
         updateNavigation()
