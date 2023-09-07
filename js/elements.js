@@ -128,7 +128,7 @@ function setupHTML() {
 function updateUpperHTML() {
 	let mode = ""
 	if (player.chal.active > 0) mode = "chal"
-	if (player.supernova.pin_req) mode = "req"
+	if (player.supernova?.pin_req) mode = "req"
 	if (tmp.upg_notify) mode = "upg"
 	if (tmp.ouro.time != undefined) mode = "saved"
 	
@@ -293,7 +293,7 @@ function updateOptionsHTML() {
 		for (let x = 0; x < CONFIRMS.length; x++) {
 			let unl = 
 			CONFIRMS[x] == "sn"
-			?(tmp.supernova.unl)
+			?(tmp.sn.unl)
 			:CONFIRMS[x] == "qu"
 			?quUnl()
 			:CONFIRMS[x] == "br"
@@ -311,7 +311,7 @@ function updateOptionsHTML() {
 		}
 		tmp.el.total_time.setTxt(formatTime(player.time))
 		tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
-		tmp.el.tree_anim_btn.setDisplay(tmp.supernova.unl)
+		tmp.el.tree_anim_btn.setDisplay(tmp.sn.unl)
 		tmp.el.tree_anim.setTxt(TREE_ANIM[player.options.tree_animation])
 		tmp.el.mass_dis.setTxt(["Default",'Gramm'][player.options.massDis])
 		tmp.el.mass_type.setTxt(["Short",'Long'][player.options.massType])
@@ -340,7 +340,7 @@ function updateHTML() {
 	if (!player.options.nav_hide[1]) updateResourcesHTML()
 	if (hover_tooltip) updateTooltipResHTML()
 	updateUpperHTML()
-	if (tmp.start && (!tmp.supernova.reached || player.supernova.post_10) && displayMainTab) {
+	if (tmp.start && (!tmp.sn.reached || player.supernova.post_10) && displayMainTab) {
 		updateQuantumHTML()
 		updateDarkHTML()
 		updateInfHTML()

@@ -906,9 +906,9 @@ function updateUpgNotify() {
 	delete tmp.upg_notify
 	if (!isPreferred("notify")) return
 
-	if (tmp.supernova.unl) {
-		for (var [x, af] of Object.entries(tmp.supernova.tree_afford)) {
-			if (!af || !tmp.supernova.tree_had.includes(x)) continue
+	if (tmp.sn.boson) {
+		for (var [x, af] of Object.entries(tmp.sn.tree_afford)) {
+			if (!af || !tmp.sn.tree_had.includes(x)) continue
 			tmp.upg_notify = ["sn", x]
 			return
 		}
@@ -938,8 +938,8 @@ function goUpgNotify() {
 	if (!tmp.upg_notify) return
 	if (tmp.upg_notify[0] == "sn") {
 		goToTab("sn-tree")
-		tmp.tree_tab = tmp.supernova.tree_loc[tmp.upg_notify[1]]
-		tmp.supernova.tree_choosed = tmp.upg_notify[1]
+		tmp.sn.tree_tab = tmp.sn.tree_loc[tmp.upg_notify[1]]
+		tmp.sn.tree_choosed = tmp.upg_notify[1]
 	}
 	if (tmp.upg_notify[0] == "el") {
 		goToTab("elements")

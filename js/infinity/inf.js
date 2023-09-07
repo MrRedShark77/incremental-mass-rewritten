@@ -106,8 +106,6 @@ const INF = {
         player.atom.muonic_el = unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].cs || MUONIC_ELEM.upgs[x].berry)
 
         for (let x = 1; x <= (hasElement(229) ? 15 : 16); x++) player.chal.comps[x] = E(0)
-        player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
-        "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
 
         player.ranks.beyond = E(0)
         for (let x = 0; x < PRESTIGES.names.length; x++) player.prestiges[x] = E(0)
@@ -115,11 +113,14 @@ const INF = {
 		// Ouroboric
         if (OURO.unl()) player.evo = deepUndefinedAndDecimal({
 			times: player.evo.times,
+			cp: { unl: OURO.evo >= 1 },
 			wh: {
+				unl: OURO.evo >= 2,
 				auto: player.evo.wh.auto,
 				origin: player.evo.wh.origin,
 				rate: player.evo.wh.rate,
-			}
+			},
+			const: player.evo.const
 		}, OURO.save.evo)
 
         // Reset
@@ -155,38 +156,42 @@ const INF = {
 			for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
 		}
 
-        player.stars.unls = 0
-        player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
-        player.stars.points = E(0)
-        BUILDINGS.reset('star_booster')
+		if (tmp.sn.unl) {
+			player.stars.unls = 0
+			player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
+			player.stars.points = E(0)
+			BUILDINGS.reset('star_booster')
 
-        tmp.supernova.time = 0
-        player.supernova.chal.noTick = true
-        player.supernova.chal.noBHC = true
+			tmp.sn.time = 0
+			player.supernova.chal.noTick = true
+			player.supernova.chal.noBHC = true
 
-        if (CHALS.inChal(19) || !hasElement(47,1)) player.supernova.times = E(0)
-        player.supernova.stars = E(0)
+			if (CHALS.inChal(19) || !hasElement(47,1)) player.supernova.times = E(0)
+			player.supernova.stars = E(0)
+			player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
+			"qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
 
-        player.supernova.bosons = {
-            pos_w: E(0),
-            neg_w: E(0),
-            z_boson: E(0),
-            photon: E(0),
-            gluon: E(0),
-            graviton: E(0),
-            hb: E(0),
-        }
-        for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
+			player.supernova.bosons = {
+				pos_w: E(0),
+				neg_w: E(0),
+				z_boson: E(0),
+				photon: E(0),
+				gluon: E(0),
+				graviton: E(0),
+				hb: E(0),
+			}
+			for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
 
-        player.supernova.fermions.points = [E(0),E(0)]
+			player.supernova.fermions.points = [E(0),E(0)]
 
-        for (let x = 0; x < 2; x++) for (let y = 0; y < 7; y++) player.supernova.fermions.tiers[x][y] = E(0)
+			for (let x = 0; x < 2; x++) for (let y = 0; y < 7; y++) player.supernova.fermions.tiers[x][y] = E(0)
 
-        player.supernova.radiation.hz = hasUpgrade('br',6)?E(1e50):E(0)
-        for (let x = 0; x < 7; x++) {
-            player.supernova.radiation.ds[x] = E(0)
-            for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
-        }
+			player.supernova.radiation.hz = hasUpgrade('br',6)?E(1e50):E(0)
+			for (let x = 0; x < 7; x++) {
+				player.supernova.radiation.ds[x] = E(0)
+				for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
+			}
+		}
 
         // Quantum
         let qu = player.qu

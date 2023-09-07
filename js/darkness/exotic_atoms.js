@@ -46,6 +46,7 @@ const MUONIC_ELEM = {
             desc: `Remove the softcap of dark shadow’s fourth reward. Supernovas boost Pion gain.`,
             cost: E(1e42),
             eff() {
+                if (!tmp.sn.unl) return E(1)
                 return OURO.evo >= 2 ? player.supernova.times.div(1e5).add(1).pow(2) : player.supernova.times.div(1e6).add(1)
             },
             effDesc: x=>formatMult(x),
@@ -191,8 +192,8 @@ const MUONIC_ELEM = {
             desc: `The growth reductions of corrupted stars start later based on supernovas.`,
             cost: E('e3500'),
             eff() {
-                let x = player.supernova.times.add(1).overflow(10,0.5)
-                return x
+                if (!tmp.sn.unl) return E(1)
+                return player.supernova.times.add(1).overflow(10,0.5)
             },
             effDesc: x=>formatMult(x)+' later',
         },{
@@ -207,6 +208,7 @@ const MUONIC_ELEM = {
             desc: `Collapsed Stars boost starting of the growth reductions of corrupted stars.`,
             cost: E('e72'),
             eff() {
+                if (!tmp.star_unl) return E(1)
                 let x = player.stars.points.add(1).log10().add(1).log10().add(1)
                 if (hasElement(56,1)) x = x.pow(2)
                 return x
@@ -290,6 +292,7 @@ const MUONIC_ELEM = {
             desc: `Supernova divides Corrupted Star upgrade 1 and 2 costs.`,
             cost: E('e440'),
             eff() {
+                if (!tmp.sn.unl) return E(1)
                 let x = player.supernova.times.add(1)
                 if (hasElement(61,1)) x = x.pow(muElemEff(61))
                 return x

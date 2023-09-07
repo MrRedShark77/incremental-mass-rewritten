@@ -29,7 +29,7 @@ const WORMHOLE = {
 		if (hasElement(158)) r = expMult(r, 1.05)
 
 		if (hasTree("bh1")) r = r.pow(treeEff("bh1"))
-		if (tmp.bosons) r = r.pow(tmp.bosons.upgs.photon[5].effect)
+		if (tmp.sn.boson) r = r.pow(tmp.sn.boson.upgs.photon[5].effect)
 
         let ne = nebulaEff("cyan")
 
@@ -95,7 +95,7 @@ const WORMHOLE = {
         }
 
         tmp.el["wormhole_origin"].setDisplay(player.atom.unl || OURO.evo >= 3)
-        tmp.el["wormhole_rate_div"].setDisplay(tmp.supernova.unl || OURO.evo >= 3)
+        tmp.el["wormhole_rate_div"].setDisplay(tmp.sn.unl || OURO.evo >= 3)
         tmp.el["wormhole_rate"].setHTML(formatPercent(wh.rate, 0))
     },
 
@@ -103,7 +103,7 @@ const WORMHOLE = {
         if (hasCharger(1)) return 7
         if (player.dark.unl) return 6
         if (quUnl()) return 5
-        if (tmp.supernova.unl) return 4
+        if (tmp.sn.boson) return 4
         if (player.atom.unl) return 3
         return 2
     },

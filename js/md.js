@@ -28,7 +28,7 @@ const MASS_DILATION = {
         if (hasElement(31)) x = x.mul(tmp.elements.effect[31])
         if (hasElement(34)) x = x.mul(tmp.elements.effect[34])
         if (hasElement(45)) x = x.mul(tmp.elements.effect[45])
-        x = x.mul(tmp.fermions.effs[0][1]||1)
+        x = x.mul(fermEff(0, 1))
         return x
     },
     RPgain(m=player.mass) {
@@ -160,7 +160,7 @@ const MASS_DILATION = {
                 cost(x) { return E(1.5e246) },
                 bulk() { return player.md.mass.gte(1.5e246)?E(1):E(0) },
             },{
-                unl() { return (STARS.unlocked() || player.supernova.times.gte(1)) && OURO.evo == 0 },
+                unl() { return (tmp.star_unl || player.supernova.times.gte(1)) && OURO.evo == 0 },
                 desc: `Tickspeed affects all-star resources at a reduced rate.`,
                 maxLvl: 1,
                 cost(x) { return E(1.5e296) },
@@ -168,7 +168,7 @@ const MASS_DILATION = {
                 effect(x) { return player.build.tickspeed.amt.add(1).pow(2/3) },
                 effDesc(x) { return format(x)+"x" },
             },{
-                unl() { return STARS.unlocked() || player.supernova.times.gte(1) },
+                unl() { return tmp.star_unl || player.supernova.times.gte(1) },
                 desc: `Double quarks gain.`,
                 cost(x) { return E(5).pow(x).mul('1.50001e536') },
                 bulk() { return player.md.mass.gte('1.50001e536')?player.md.mass.div('1.50001e536').max(1).log(5).add(1).floor():E(0) },

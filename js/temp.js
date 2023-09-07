@@ -16,8 +16,6 @@ function resetTemp() {
 
         start: false,
 
-        sn_tab: 0,
-        tree_tab: 0,
         tab: 0,
         stab: [0],
         tab_name: "mass",
@@ -63,42 +61,7 @@ function resetTemp() {
             max_tier: [1,1],
             unl_length: [0,0],
         },
-    
-        fermions: {
-            ch: [0,0],
-            gains: [E(0),E(0)],
-            maxTier: [[],[]],
-            tiers: [[],[]],
-            effs:  [[],[]],
-            bonuses: [[],[]],
-        },
-    
-        supernova: {
-            time: 0,
-            tree_choosed: "",
-            tree_had: [],
-            tree_had2: [],
-            auto_tree: [],
-            tree_eff: {},
-            tree_unlocked: {},
-            tree_afford: {},
-            tree_afford2: [],
-            tree_loc: {},
-        },
-    
-        radiation: {
-            unl: false,
-            ds_gain: [],
-            ds_eff: [],
-            bs: {
-                sum: [],
-                lvl: [],
-                bonus_lvl: [],
-                cost: [],
-                bulk: [],
-                eff: [],
-            },
-        },
+        sn: {},
 
         qu: {
             chroma_gain: [],
@@ -250,23 +213,7 @@ function resetTemp() {
     for (let x = 0; x < ASCENSIONS.names.length; x++) tmp.ascensions.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs[x] = {}
-    for (let j = 0; j < TREE_TAB.length; j++) {
-        tmp.supernova.tree_had2[j] = []
-        tmp.supernova.tree_afford2[j] = []
-    }
     for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
-    for (let i = 0; i < TREE_IDS.length; i++) {
-        for (let j = 0; j < TREE_TAB.length; j++) {
-            for (let k = 0; k < TREE_IDS[i][j].length; k++) {
-                let id = TREE_IDS[i][j][k]
-                if (id != "") {
-                    let u = TREE_UPGS.ids[id]
-                    tmp.supernova.tree_had2[j].push(id)
-                    tmp.supernova.tree_had.push(id)
-                }
-            }
-        }
-    }
     for (let x = 0; x < SCALE_TYPE.length; x++) {
         let st = SCALE_TYPE[x]
 
@@ -307,7 +254,7 @@ function updateMassTemp() {
 
 function updateTickspeedTemp() {
     if (OURO.evo >= 1) return
-    tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : tmp.fermions.effs[1][2]
+    tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : fermEff(1, 2)
 }
 
 function updateUpgradesTemp() {
@@ -388,10 +335,6 @@ function updateTemp() {
     updateC16Temp()
     updateDarkTemp()
     updateQuantumTemp()
-
-    updateRadiationTemp()
-    updateFermionsTemp()
-    updateBosonsTemp()
     updateSupernovaTemp()
 
     updateElementsTemp()

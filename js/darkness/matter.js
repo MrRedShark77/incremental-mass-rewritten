@@ -76,10 +76,14 @@ const MATTERS = {
 			cost = lvl.add(1).pow(hasInfUpgrade(17)?2:3).mul(1e3)
 			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).floor()
 			eff = lvl.add(1).mul(expMult(lvl.add(1), .9).pow(GPEffect(2)))
-            if (i == 0) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
+        	if (i == 0 && OURO.evo >= 3) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
 		}
 
-        let exp = hasInfUpgrade(17) && i > 0 ? rdc >= 2 ? lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1) : lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1) : E(1)
+        let exp = E(1)
+		if (hasInfUpgrade(17) && i > 0) {
+			if (rdc < 2) exp = lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1)
+			if (OURO.evo >= 3) exp = lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1)
+		}
         return {cost, bulk, eff, exp}
     },
 

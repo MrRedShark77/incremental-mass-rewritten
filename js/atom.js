@@ -12,7 +12,7 @@ const ATOM = {
             if (hasElement(292)) x = x.mul(elemEffect(292))
             if (hasElement(297)) x = x.mul(elemEffect(297))
             if (hasElement(303)) x = x.mul(elemEffect(303))
-            if (tmp.bosons) x = x.mul(tmp.bosons.upgs.gluon[4].effect)
+            if (tmp.sn.boson) x = x.mul(tmp.sn.boson.upgs.gluon[4].effect)
 
             if (hasElement(169)) x = x.pow(1.05)
             if (tmp.inf_unl) x = x.pow(theoremEff('atom',5))
@@ -28,7 +28,7 @@ const ATOM = {
         }
 
         if (hasUpgrade("rp",15)) x = x.mul(tmp.upgs?tmp.upgs[1][15].effect:E(1))
-        x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[0].effect) : x.mul(tmp.bosons.upgs.gluon[0].effect)
+        if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[0].effect) : x.mul(tmp.sn.boson.upgs.gluon[0].effect)
         if (hasElement(17)) x = x.pow(1.1)
         x = x.pow(tmp.prim.eff[3][0])
         if (hasElement(111)) x = x.pow(tmp.elements.effect[111])
@@ -56,7 +56,7 @@ const ATOM = {
 
             if (tmp.inf_unl) s = s.mul(theoremEff('time',4))
 
-            x = E(1.01).pow(expMult(x.overflow(s,hasElement(299)?2/3:0.5).sub(1), k)).floor() //save +4 for later upgrades.
+            x = E(1.01).pow(expMult(x.overflow(s,hasElement(299)?2/3:0.5).sub(1), k)).floor()
         }
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
 		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.1).add(1)
@@ -132,7 +132,7 @@ const ATOM = {
             let x = greff.eff
             if (hasElement(3)) x = x.mul(tmp.elements.effect[3])
             if (hasElement(52)) x = x.mul(tmp.elements.effect[52])
-            x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[0].effect) : x.mul(tmp.bosons.upgs.gluon[0].effect)
+            if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[0].effect) : x.mul(tmp.sn.boson.upgs.gluon[0].effect)
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)

@@ -129,15 +129,15 @@ function corruptedShardGain() {
 
 	let x
 	if (OURO.evo >= 2) {
-        let e = 25
-        if (hasElement(223) && OURO.evo >= 3) e -= 5
-        if (hasCharger(6)) e -= 5
+		let e = 25
+		if (hasElement(223) && OURO.evo >= 3) e -= 5
+		if (hasCharger(6)) e -= 5
 		x = expMult((hasElement(232) ? player.dark.c16.bestBH : WORMHOLE.total()).add(1).root(e), 3)
 		if (hasCharger(2)) {
-            let y = player.evo.wh.mass[6].div(5e3).pow(2).max(1)
-            if (OURO.evo >= 3) y = expMult(y,0.5)
-            x = x.mul(y)
-        }
+			let y = player.evo.wh.mass[6].div(5e3).pow(2).max(1)
+			if (OURO.evo >= 3) y = expMult(y,0.5)
+			x = x.mul(y)
+		}
 		x = x.mul(x.log10().mul(2).add(1).pow(2))
 		if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 		x = x.mul(exoticAEff(0,0))

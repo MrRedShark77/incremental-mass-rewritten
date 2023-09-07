@@ -189,7 +189,7 @@ function updateQCTemp() {
     let s = 0
     let bs = 0
     for (let x = 0; x < QCs_len; x++) {
-        let m = QCs.getMod(x) * [1, 1, 1.5, 10][evo]
+        let m = QCs.getMod(x) * [1, 2, 1.5, 10][evo]
         let n = QCs.getMod(x) * [1, 2, 1.7, 10][evo]
         s += Math.round(n)
         tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m*weak)
@@ -239,8 +239,8 @@ let QC_FORCE = {
 	],
 	run: [
 		[8,8,8,8,8,8,8,8],
-		[5,5,5,5,5,5,5,5],
-		[7,7,7,7,7,7,0,7],
+		[5,5,5,5,5,5,4,5], //Bezier wants Aarex to nerf Evo 1 Dark Run
+		[7,7,7,7,7,7,0,7], //Suggested by Maxwell
 		[0,0,5,5,4,4,0,6]
 	],
 	14: [

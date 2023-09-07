@@ -2,8 +2,8 @@ const RADIATION = {
     names: ["Radio","Microwave","Infrared","Visible","Ultraviolet","X-ray","Gamma-ray"],
     unls: ["0","1e6","1e13","1e20","1e26","1e33","1e49"],
     hz_gain() {
-        let x = E(5).mul(tmp.radiation.ds_eff[0])
-        if (hasTree('rad1')) x = x.mul(tmp.supernova.tree_eff.rad1||1)
+        let x = E(5).mul(tmp.sn.rad.ds_eff[0])
+        if (hasTree('rad1')) x = x.mul(treeEff("rad1"))
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
@@ -22,11 +22,11 @@ const RADIATION = {
         if (hasTree('rad2')) x = x.mul(10)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
         if (i<RAD_LEN-1) {
-            if (hasTree('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(tmp.supernova.tree_eff.rad1||1)
-            x = x.mul(tmp.radiation.ds_eff[i+1])
+            if (hasTree('rad1') && player.supernova.radiation.hz.gte(RADIATION.unls[i+1])) x = x.mul(treeEff("rad1"))
+            x = x.mul(tmp.sn.rad.ds_eff[i+1])
         }
-        if (hasTree('rad5')) x = x.mul(tmp.supernova.tree_eff.rad5||1)
-        x = x.mul(tmp.radiation.bs.eff[3*i])
+        if (hasTree('rad5')) x = x.mul(treeEff("rad5"))
+        x = x.mul(tmp.sn.rad.bs.eff[3*i])
         if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
 
         if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -42,7 +42,7 @@ const RADIATION = {
     },
     getBoostData(i) {
         let b = player.supernova.radiation.bs[i]
-        let [f1,f2,f3,fp] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10,tmp.radiation.bs.fp]
+        let [f1,f2,f3,fp] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10,tmp.sn.rad.bs.fp]
         let cost = E(f1).pow(b.div(fp).pow(f2)).mul(f3)
 
         let d = player.supernova.radiation.ds[Math.floor(i/2)]
@@ -53,21 +53,21 @@ const RADIATION = {
         return [cost,bulk]
     },
     getA23Bonus(i) {
-        let x = expMult(tmp.radiation.bs.bonus_lvl[i].add(1),0.75)
+        let x = expMult(tmp.sn.rad.bs.bonus_lvl[i].add(1),0.75)
         return x
     },
     getLevelEffect(i) {
-        let b = tmp.radiation.bs.lvl[i].add(tmp.radiation.bs.bonus_lvl[i])
+        let b = tmp.sn.rad.bs.lvl[i].add(tmp.sn.rad.bs.bonus_lvl[i])
         if (hasAscension(0,23)) b = b.mul(this.getA23Bonus(i))
         if (FERMIONS.onActive("15") || Math.floor(i/3)>0&&player.supernova.radiation.hz.lt(RADIATION.unls[Math.floor(i/3)])) b = E(0)
-        //b = b.mul(tmp.chal?tmp.chal.eff[12]:1)
+
         let x = this.boosts[i].eff(b)
         return x
     },
     getbonusLevel(i) {
         let x = E(0)
-        if (i < 8) x = x.add(tmp.radiation.bs.eff[8])
-        if (i < 17) x = x.add(tmp.radiation.bs.eff[17])
+        if (i < 8) x = x.add(radBoostEff(8, 0))
+        if (i < 17) x = x.add(radBoostEff(17, 0))
 
         if (hasTree('ct9')) x = x.add(treeEff('ct9'))
 
@@ -78,11 +78,11 @@ const RADIATION = {
         return x
     },
     buyBoost(i) {
-        let [cost, bulk, j] = [tmp.radiation.bs.cost[i], tmp.radiation.bs.bulk[i], Math.floor(i/2)]
+        let [cost, bulk, j] = [tmp.sn.rad.bs.cost[i], tmp.sn.rad.bs.bulk[i], Math.floor(i/2)]
         if (player.supernova.radiation.ds[j].gte(cost) && bulk.gt(player.supernova.radiation.bs[i])) {
             player.supernova.radiation.bs[i] = player.supernova.radiation.bs[i].max(bulk)
             if (!hasTree("qol9")) {
-                let [f1,f2,f3,fp] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10,tmp.radiation.bs.fp]
+                let [f1,f2,f3,fp] = [2+i/2,1.3+i*0.05,(i*0.5+1)**2*10,tmp.sn.rad.bs.fp]
                 player.supernova.radiation.ds[j] = player.supernova.radiation.ds[j].sub(E(f1).pow(bulk.sub(1).div(fp).pow(f2)).mul(f3)).max(0)
             }
         }
@@ -93,7 +93,7 @@ const RADIATION = {
     getBoostsFP() {
         let x = E(1)
         if (hasTree('rad3')) x = x.mul(1.1)
-        x = x.mul(tmp.fermions.effs[0][4])
+        x = x.mul(fermEff(0, 4))
         return x
     },
     boosts: [
@@ -255,25 +255,40 @@ const RADIATION = {
 const RAD_LEN = 7
 
 function updateRadiationTemp() {
-    tmp.radiation.unl = hasTree("unl1")
-    tmp.radiation.hz_gain = RADIATION.hz_gain()
-    tmp.radiation.hz_effect = RADIATION.hz_effect()
-    tmp.radiation.bs.fp = RADIATION.getBoostsFP()
-    for (let x = 0; x < RAD_LEN; x++) {
-        tmp.radiation.ds_gain[x] = RADIATION.ds_gain(x)
-        tmp.radiation.ds_eff[x] = RADIATION.ds_eff(x)
-
-        tmp.radiation.bs.sum[x] = player.supernova.radiation.bs[2*x].add(player.supernova.radiation.bs[2*x+1])
-
-        for (let y = 0; y < 3; y++) {
-            tmp.radiation.bs.lvl[3*x+y] = tmp.radiation.bs.sum[x].add(2-y).div(3).floor()//.softcap(10,0.75,0)
-            tmp.radiation.bs.bonus_lvl[3*x+y] = RADIATION.getbonusLevel(3*x+y)
+	if (!tmp.sn.rad) {
+		tmp.sn.rad = {
+            ds_gain: [],
+            ds_eff: [],
+            bs: {
+                sum: [],
+                lvl: [],
+                bonus_lvl: [],
+                cost: [],
+                bulk: [],
+                eff: [],
+            },
         }
-        for (let y = 0; y < 2; y++) [tmp.radiation.bs.cost[2*x+y],tmp.radiation.bs.bulk[2*x+y]] = RADIATION.getBoostData(2*x+y)
+	}
+
+	let tr = tmp.sn.rad
+    tr.bs.fp = RADIATION.getBoostsFP()
+    for (let x = RAD_LEN - 1; x >= 0; x--) {
+        tr.bs.sum[x] = player.supernova.radiation.bs[2*x].add(player.supernova.radiation.bs[2*x+1])
+        for (let y = 0; y < 3; y++) {
+            tr.bs.lvl[3*x+y] = tr.bs.sum[x].add(2-y).div(3).floor()//.softcap(10,0.75,0)
+            tr.bs.bonus_lvl[3*x+y] = RADIATION.getbonusLevel(3*x+y)
+        }
+        for (let y = 0; y < 2; y++) [tr.bs.cost[2*x+y],tr.bs.bulk[2*x+y]] = RADIATION.getBoostData(2*x+y)
+
+        tr.ds_gain[x] = RADIATION.ds_gain(x)
+        tr.ds_eff[x] = RADIATION.ds_eff(x)
     }
     for (let x = 0; x < RAD_LEN*3; x++) {
-        tmp.radiation.bs.eff[x] = RADIATION.getLevelEffect(x)
+        tr.bs.eff[x] = RADIATION.getLevelEffect(x)
     }
+
+    tr.hz_gain = RADIATION.hz_gain()
+    tr.hz_effect = RADIATION.hz_effect()
 }
 
 function setupRadiationHTML() {
@@ -307,8 +322,8 @@ function setupRadiationHTML() {
 }
 
 function updateRadiationHTML() {
-    tmp.el.frequency.setTxt(format(player.supernova.radiation.hz,1)+" "+formatGain(player.supernova.radiation.hz,tmp.radiation.hz_gain.mul(tmp.preQUGlobalSpeed)))
-    tmp.el.frequency_eff.setTxt(format(tmp.radiation.hz_effect))
+    tmp.el.frequency.setTxt(format(player.supernova.radiation.hz,1)+" "+formatGain(player.supernova.radiation.hz,tmp.sn.rad.hz_gain.mul(tmp.preQUGlobalSpeed)))
+    tmp.el.frequency_eff.setTxt(format(tmp.sn.rad.hz_effect))
 
     let rad_id = 1
     let comp = false
@@ -331,23 +346,31 @@ function updateRadiationHTML() {
 
         tmp.el[id+"_div"].setDisplay(unl)
         if (unl) {
-            tmp.el[id+"_distance"].setTxt(format(player.supernova.radiation.ds[x],1)+" "+formatGain(player.supernova.radiation.ds[x],tmp.radiation.ds_gain[x].mul(tmp.preQUGlobalSpeed)))
-            tmp.el[id+"_disEff"].setTxt(format(tmp.radiation.ds_eff[x]))
+            tmp.el[id+"_distance"].setTxt(format(player.supernova.radiation.ds[x],1)+" "+formatGain(player.supernova.radiation.ds[x],tmp.sn.rad.ds_gain[x].mul(tmp.preQUGlobalSpeed)))
+            tmp.el[id+"_disEff"].setTxt(format(tmp.sn.rad.ds_eff[x]))
 
             for (let y = 0; y < 2; y++) {
                 let b = 2*x+y
                 let id2 = `rad_boost_${b}`
 
                 tmp.el[id2+"_lvl1"].setTxt(format(player.supernova.radiation.bs[b],0))
-                tmp.el[id2+"_cost"].setTxt(format(tmp.radiation.bs.cost[b],1))
-                tmp.el[id2+"_btn"].setClasses({btn: true, rad: true, locked: player.supernova.radiation.ds[x].lt(tmp.radiation.bs.cost[b])})
+                tmp.el[id2+"_cost"].setTxt(format(tmp.sn.rad.bs.cost[b],1))
+                tmp.el[id2+"_btn"].setClasses({btn: true, rad: true, locked: player.supernova.radiation.ds[x].lt(tmp.sn.rad.bs.cost[b])})
             }
             for (let y = 0; y < 3; y++) {
                 let lvl = 3*x+y
                 let id2 = `rad_level_${lvl}`
-                tmp.el[id2].setTxt(format(tmp.radiation.bs.lvl[lvl],0)+(tmp.radiation.bs.bonus_lvl[lvl].gt(0)?" + "+format(tmp.radiation.bs.bonus_lvl[lvl]):"")+(A23?", ×"+RADIATION.getA23Bonus(lvl).format():""))
-                tmp.el[id2+"_desc"].setTxt(RADIATION.boosts[lvl].desc(tmp.radiation.bs.eff[lvl]))
+                tmp.el[id2].setTxt(format(tmp.sn.rad.bs.lvl[lvl],0)+(tmp.sn.rad.bs.bonus_lvl[lvl].gt(0)?" + "+format(tmp.sn.rad.bs.bonus_lvl[lvl]):"")+(A23?", ×"+RADIATION.getA23Bonus(lvl).format():""))
+                tmp.el[id2+"_desc"].setTxt(RADIATION.boosts[lvl].desc(tmp.sn.rad.bs.eff[lvl]))
             }
         }
     }
+}
+
+function radUnl() {
+	return hasTree("unl1")
+}
+
+function radBoostEff(x, def = 1) {
+	return tmp.sn.rad?.bs.eff[x] ?? E(def)
 }

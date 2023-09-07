@@ -273,7 +273,7 @@ const BUILDINGS_DATA = {
 
             if (hasElement(63)) t = t.mul(25)
             t = t.mul(tmp.prim.eff[1][1])
-            t = t.mul(tmp.radiation.bs.eff[1])
+            t = t.mul(radBoostEff(1))
 
             step = E(1.5)
             step = step.add(tmp.chal.eff[6])
@@ -281,13 +281,13 @@ const BUILDINGS_DATA = {
             if (tmp.atom.unl) step = step.add(tmp.atom.particles[0].powerEffect.eff2)
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
             if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
-            step = step.mul(tmp.bosons.effect.z_boson[0])
+            if (tmp.sn.boson) step = step.mul(tmp.sn.boson.effect.z_boson[0])
             if (tmp.md) step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
             if (hasElement(191)) step = step.pow(elemEffect(191))
-            step = step.pow(tmp.qu.chroma_eff[0])
+            if (tmp.sn.boson) step = step.pow(tmp.qu.chroma_eff[0])
             if (hasTree("t1")) step = step.pow(1.15)
 
-            ss = ss.mul(tmp.radiation.bs.eff[13])
+            ss = ss.mul(radBoostEff(13))
             let p = 0.1
             if (hasElement(86)) {
                 ss = ss.pow(2)
@@ -389,7 +389,7 @@ const BUILDINGS_DATA = {
         set res(v) { player.bh.dm = v },
 
         cost(x=this.level) {
-            let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
+            let fp = hasCharger(6) ? 1 : fermEff(1, 5)
             if (hasCharger(6) && tmp.c16.in) fp *= 1e6
 
             let fp2 = E(1)
@@ -398,7 +398,7 @@ const BUILDINGS_DATA = {
             return Decimal.pow(1.75,x.div(fp2).scaleEvery('bh_condenser',false,[1,1,1,fp]))
         },
         get bulk() {
-            let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
+            let fp = hasCharger(6) ? 1 : fermEff(1, 5)
             if (hasCharger(6) && tmp.c16.in) fp *= 1e6
 
             let fp2 = E(1)
@@ -418,17 +418,17 @@ const BUILDINGS_DATA = {
 			if (hasUpgrade("bh",2)) pow = pow.mul(tmp.upgs?tmp.upgs[2][2].effect:E(1))
 			if (tmp.atom.unl) pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
 			if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
-			pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
+			if (tmp.sn.boson) pow = pow.mul(tmp.sn.boson.upgs.photon[1].effect)
 			pow = pow.mul(tmp.prim.eff[2][1])
 			pow = pow.mul(getEnRewardEff(3)[1])
 			pow = pow.mul(escrowBoost("bhc"))
-			if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
+			if (hasTree('bs5')) pow = pow.mul(tmp.sn.boson.effect.z_boson[0])
 			if (hasTree("bh2")) pow = pow.pow(1.15)
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
             if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))            
             if (CHALS.inChal(17)) pow = E(1)
 
-            x = x.mul(tmp.radiation.bs.eff[5])
+            x = x.mul(radBoostEff(5))
             let eff = pow.pow(x)
 
             let os = tmp.c16.in ? E('ee150') : E('ee10000'), op = E(0.5), o = eff
@@ -515,7 +515,7 @@ const BUILDINGS_DATA = {
         set res(v) { player.atom.points = v },
 
         cost(x=this.level) {
-            let fp = tmp.fermions.effs[1][5]
+            let fp = fermEff(1, 5)
 
             let fp2 = E(1)
 
@@ -524,7 +524,7 @@ const BUILDINGS_DATA = {
             return Decimal.pow(2,x.div(fp2).scaleEvery("gamma_ray",false,[1,1,1,fp]))
         },
         get bulk() {
-            let fp = tmp.fermions.effs[1][5]
+            let fp = fermEff(1, 5)
 
             let fp2 = E(1)
 
@@ -537,15 +537,15 @@ const BUILDINGS_DATA = {
 
         effect(x) {
             let t = x
-            t = t.mul(tmp.radiation.bs.eff[10])
+            t = t.mul(radBoostEff(10))
             let pow = E(2)
             if (hasUpgrade("atom",4)) pow = pow.add(tmp.upgs?tmp.upgs[3][4].effect:E(0))
             if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
-            if (hasTree("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
-            pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
+            if (hasTree("gr1")) pow = pow.mul(treeEff("gr1"))
+            if (tmp.sn.boson) pow = pow.mul(tmp.sn.boson.upgs.gluon[1].effect)
             pow = pow.mul(tmp.prim.eff[3][1])
             pow = pow.mul(getEnRewardEff(3)[1])
-            if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
+            if (hasTree('bs5')) pow = pow.mul(tmp.sn.boson.effect.z_boson[0])
             if (hasTree("gr2")) pow = pow.pow(1.25)
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
 
@@ -565,7 +565,7 @@ const BUILDINGS_DATA = {
         },
 
         get bonus() {
-            let x = tmp.fermions.effs[0][0]||E(0)
+            let x = fermEff(0, 0, 0)
             x = x.mul(getEnRewardEff(4))
             return x
         },

@@ -30,9 +30,9 @@ const RANKS = {
         }
     },
     unl: {
-        tier() { return OURO.evo >= 3 || player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || hasUpgrade("atom",3) || tmp.radiation.unl || tmp.inf_unl },
-        tetr() { return OURO.evo >= 3 || hasUpgrade("atom",3) || tmp.radiation.unl || tmp.inf_unl },
-        pent() { return tmp.radiation.unl || tmp.inf_unl },
+        tier() { return OURO.evo >= 3 || player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || hasUpgrade("atom",3) || hasTree("unl1") || tmp.inf_unl },
+        tetr() { return OURO.evo >= 3 || hasUpgrade("atom",3) || hasTree("unl1") || tmp.inf_unl },
+        pent() { return hasTree("unl1") || tmp.inf_unl },
         hex() { return tmp.chal13comp || tmp.inf_unl },
     },
     doReset: {
@@ -208,8 +208,8 @@ const RANKS = {
                 return ret
             },
             '4'() {
-                let ret = player.supernova.times.add(1).root(5)
-                return ret
+                if (!tmp.sn.unl) return E(1)
+                return player.supernova.times.add(1).root(5)
             },
             '5'() {
                 let ret = E(1.05).pow(player.ranks.pent.min(1500))
@@ -270,7 +270,7 @@ const RANKS = {
         },
         tier() {
             let f = E(1)
-            f = f.mul(tmp.fermions.effs[1][3])
+            f = f.mul(fermEff(1, 3))
             if (player.ranks.tetr.gte(1)) f = f.mul(1/0.75)
             if (hasUpgrade("atom",10)) f = f.mul(2)
             return f
@@ -288,7 +288,7 @@ const PRESTIGES = {
 
         if (hasElement(100)) x = x.add(tmp.elements.effect[100])
         if (hasPrestige(0,32)) x = x.add(prestigeEff(0,32,0))
-        x = x.add(tmp.fermions.effs[1][6]||0).add(glyphUpgEff(10,0))
+        x = x.add(fermEff(1, 6, 0)).add(glyphUpgEff(10,0))
         if (tmp.inf_unl) x = x.add(theoremEff('mass',3,0))
 
         x = x.add(1)
@@ -1226,7 +1226,7 @@ function updateGPTemp() {
 }
 
 function updateGPHTML() {
-    let unl = hasElement(262)
+    let unl = hasElement(262) && tmp.sn.unl
 
     tmp.el.galactic_prestige_div.setDisplay(unl)
 

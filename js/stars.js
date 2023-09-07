@@ -1,5 +1,5 @@
 const STARS = {
-    unlocked() { return hasElement(36) },
+    unlocked() { return OURO.evo >= 3 ? OURO.evo < 4 : hasElement(36) },
     gain() {
         if (OURO.evo >= 4) return E(0)
 
@@ -26,7 +26,7 @@ const STARS = {
     },
     softGain() {
         if (hasUpgrade('atom',22) || OURO.evo >= 3) return EINF
-        let s = E("e1000").pow(tmp.fermions.effs[1][0]||1)
+        let s = E("e1000").pow(fermEff(1, 0))
         return s
     },
     softPower() {
@@ -34,8 +34,6 @@ const STARS = {
         return p
     },
     effect() {
-        if (OURO.evo >= 4) return [E(1),E(1)];
-
         let x = E(1)
 		let [p, pp] = [E(1), E(1)]
 		if (hasElement(48)) p = p.mul(1.1)
@@ -76,7 +74,7 @@ const STARS = {
     generators: {
         req: [E(1e225),E(1e280),E('e320'),E('e430'),E('e870'),E('ee3600'),E('ee20000'),E('ee21000')],
         unl() {
-            if (player.atom.quarks.gte(tmp.stars.generator_req)) {
+            if (tmp.star_unl && player.atom.quarks.gte(tmp.stars.generator_req)) {
                 player.stars.unls++
 
                 tmp.stars.generator_req = player.stars.unls<tmp.stars.max_unlocks?STARS.generators.req[player.stars.unls]:EINF
@@ -87,14 +85,14 @@ const STARS = {
             if (FERMIONS.onActive("13")) pow = E(0.5)
             else {
                 if (hasElement(50)) pow = pow.mul(1.05)
-                if (hasTree("s3")) pow = pow.mul(tmp.supernova.tree_eff.s3)
+                if (hasTree("s3")) pow = pow.mul(tmp.sn.tree_eff.s3)
                 pow = pow.mul(glyphUpgEff(9))
             }
             if (QCs.active() && pow.gte(1)) pow = pow.pow(tmp.qu.qc_eff[0][1])
 
             let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(pow).mul(5)
             if (hasElement(49) && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.elements.effect[49])
-            if (hasTree("s1") && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.supernova.tree_eff.s1)
+            if (hasTree("s1") && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.sn.tree_eff.s1)
             if (hasMDUpg(8)) x = x.mul(mdEff(8))
             if (hasElement(54)) x = x.mul(tmp.elements.effect[54])
             x = x.mul(BUILDINGS.eff('star_booster'))
@@ -102,7 +100,7 @@ const STARS = {
             let ne = nebulaEff("yellow")
             x = x.pow(ne[0]??1)
 
-            x = hasElement(213) ? x.pow(tmp.bosons.upgs.photon[3].effect) : x.mul(tmp.bosons.upgs.photon[3].effect)
+            if (tmp.sn.boson) x = hasElement(213) ? x.pow(tmp.sn.boson.upgs.photon[3].effect) : x.mul(tmp.sn.boson.upgs.photon[3].effect)
             if (hasPrestige(1,1)) x = x.pow(2)
 
             x = expMult(x,GPEffect(0))
@@ -115,14 +113,19 @@ const STARS = {
 }
 
 function calcStars(dt) {
-    if (OURO.evo >= 4) return;
+    if (!tmp.star_unl) return;
 
     player.stars.points = player.stars.points.add(tmp.stars.gain.mul(dt))
-    if (!player.supernova.post_10) player.stars.points = player.stars.points.min(tmp.supernova.maxlimit)
+    if (!player.supernova.post_10) player.stars.points = player.stars.points.min(tmp.sn.maxlimit)
     for (let x = 0; x < tmp.stars.max_unlocks; x++) player.stars.generators[x] = player.stars.generators[x].add(tmp.stars.generators_gain[x].mul(dt))
 }
 
 function updateStarsTemp() {
+	tmp.star_unl = STARS.unlocked()
+	if (!tmp.star_unl) {
+		delete tmp.stars
+		return
+	}
     if (!tmp.stars) tmp.stars = {
         generators_gain: [],
     }
@@ -159,18 +162,18 @@ function setupStarsHTML() {
 }
 
 function updateStarsScreenHTML() {
-    let show = !tmp.supernova.gen && player.supernova.times.lt(1e5)
+    let show = OURO.evo < 4 && !tmp.sn.gen && player.supernova.times.lt(1e5)
 
     tmp.el.star.setDisplay(show)
-    if ((!tmp.supernova.reached || player.supernova.post_10) && show) {
-        let g = tmp.supernova.bulk.sub(player.supernova.times).max(0)
+    if (show && (!tmp.sn.reached || player.supernova.post_10)) {
+        let g = tmp.sn.bulk.sub(player.supernova.times).max(0)
         let percent = 0
         if (g.gte(1) && player.supernova.post_10) {
-            let d = SUPERNOVA.req(tmp.supernova.bulk).maxlimit
-            let e = SUPERNOVA.req(tmp.supernova.bulk.sub(1)).maxlimit
-            percent = player.stars.points.div(e).max(1).log10().div(d.div(tmp.supernova.maxlimit).max(1).log10()).max(0).min(1).toNumber()
+            let d = SUPERNOVA.req(tmp.sn.bulk).maxlimit
+            let e = SUPERNOVA.req(tmp.sn.bulk.sub(1)).maxlimit
+            percent = player.stars.points.div(e).max(1).log10().div(d.div(tmp.sn.maxlimit).max(1).log10()).max(0).min(1).toNumber()
         }
-        else percent = player.stars.points.max(1).log10().div(tmp.supernova.maxlimit.max(1).log10()).max(0).min(1).toNumber()
+        else percent = player.stars.points.max(1).log10().div(tmp.sn.maxlimit.max(1).log10()).max(0).min(1).toNumber()
         let size = Math.min(window.innerWidth, window.innerHeight)*percent*0.9
         let color = `rgb(${percent/0.4*191}, ${percent/0.4*91+133}, 255)`
         if (percent>0.4) color = `rgb(${(percent-0.4)/0.2*64+191}, ${224-(percent-0.4)/0.2*11}, ${255-(percent-0.4)/0.2*255})`
@@ -186,8 +189,8 @@ function updateStarsScreenHTML() {
 function updateStarsHTML() {
     tmp.el.starSoft1.setDisplay(tmp.stars.gain.gte(tmp.stars.softGain))
 	tmp.el.starSoftStart1.setTxt(format(tmp.stars.softGain))
-    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+(tmp.supernova.gen?"":" / "+format(tmp.supernova.maxlimit,2))+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.preQUGlobalSpeed)))
-    tmp.el.stars_Eff.setHTML(`<h4>${formatMult(tmp.stars.effect[0])}</h4>`+(hasElement(162)?`, <h4>^${format(tmp.stars.effect[1])}</h4>`:``)+(tmp.supernova.gen?`, +<h4>${tmp.supernova.passive.format(0)}</h4>/s to supernova gain`:''))
+    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+(tmp.sn.gen?"":" / "+format(tmp.sn.maxlimit,2))+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.preQUGlobalSpeed)))
+    tmp.el.stars_Eff.setHTML(`<h4>${formatMult(tmp.stars.effect[0])}</h4>`+(hasElement(162)?`, <h4>^${format(tmp.stars.effect[1])}</h4>`:``)+(tmp.sn.gen?`, +<h4>${tmp.sn.passive.format(0)}</h4>/s to supernova gain`:''))
     tmp.el.stars_Eff.setClasses({corrupted_text2: tmp.c16.in})
 
     tmp.el.star_btn.setDisplay(player.stars.unls < tmp.stars.max_unlocks)

@@ -28,7 +28,7 @@ const DARK = {
         let a = player.dark.rays
         let x = {}
 
-        x.shadow = a.max(1).pow(2).pow(tmp.c16.in?1:(tmp.fermions.effs[0][6]||1))
+        x.shadow = a.max(1).pow(2).pow(tmp.c16.in?1:fermEff(0, 6))
 		x.shadow = x.shadow.overflow('ee10',0.5)
 
         if (a.gte(1e9)) x.passive = a.div(1e9).max(1).log10().add(1).pow(3).div(100)

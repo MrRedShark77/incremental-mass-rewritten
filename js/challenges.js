@@ -429,7 +429,7 @@ const CHALS = {
         effDesc(x) { return hasCharger(3)?formatReduction(x)+" weaker":format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     6: {
-        unl() { return (player.chal.comps[5].gte(1) || tmp.supernova.unl) && OURO.evo < 3 },
+        unl() { return (player.chal.comps[5].gte(1) || tmp.sn.unl) && OURO.evo < 3 },
         title: "No Tickspeed & Condenser",
         get desc() { return `You cannot ${OURO.evo >= 2 ? "Meditate or split Wormhole" : "buy Tickspeed or BH Condenser"}.` },
         reward: () => OURO.evo >= 2 ? `Gain +10% more Fabric per completion.` : `Every completion adds 10% to tickspeed and BH condenser power.`,
@@ -444,7 +444,7 @@ const CHALS = {
         effDesc(x) { return OURO.evo>=2?formatMult(x):"+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     7: {
-        unl() { return (player.chal.comps[6].gte(1) || tmp.supernova.unl) && OURO.evo < 3 },
+        unl() { return (player.chal.comps[6].gte(1) || tmp.sn.unl) && OURO.evo < 3 },
         title: "No Rage Powers",
         get desc() { return `You cannot gain ${OURO.evo >= 2 ? "calm powers" : "rage powers"}. Instead, ${OURO.evo >= 2 ? "fabric" : "dark matters"} are gained from mass at a reduced rate. Additionally, mass gain softcap is stronger.` },
         reward: ()=>(betterC7Effect()?`Pre-Impossible challenges scale weaker by completions, but this reward doesn't affect C7.`:`Each completion increases challenges 1-4 cap by 2.`) + `<br><span class="yellow">On 16th completion, unlock Elements</span>`,
@@ -461,7 +461,7 @@ const CHALS = {
         effDesc(x) { return betterC7Effect()?formatReduction(x)+" weaker":"+"+format(x,0) },
     },
     8: {
-        unl() { return (player.chal.comps[7].gte(1) || tmp.supernova.unl) && OURO.evo < 3 },
+        unl() { return (player.chal.comps[7].gte(1) || tmp.sn.unl) && OURO.evo < 3 },
         title: "White Hole",
         get desc() { return OURO.evo >= 2 ? "Fabric & Wormhole masses are square-rooted." : "Dark Matter & Mass from Black Hole gains are rooted by 8." },
         reward: () => OURO.evo >= 2 ? `Gain +20% more Fabric per completion.` : `Dark Matter & Mass from Black Hole gains are raised by completions.<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,

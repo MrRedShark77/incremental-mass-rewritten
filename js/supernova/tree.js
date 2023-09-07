@@ -72,8 +72,7 @@ const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
 
 const TREE_UPGS = {
     buy(x, auto=false) {
-        if (tmp.supernova.noTree) return
-        if ((tmp.supernova.tree_choosed == x || auto) && tmp.supernova.tree_afford[x]) {
+        if ((tmp.sn.tree_choosed == x || auto) && tmp.sn.tree_afford[x]) {
             if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
             else if (this.ids[x].cs) player.dark.c16.shard = player.dark.c16.shard.sub(this.ids[x].cost).max(0)
             else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)
@@ -84,13 +83,13 @@ const TREE_UPGS = {
 
             if (x == 'unl1') addQuote(6)
         }
-        if (!auto && tmp.supernova.tree_choosed == x && this.ids[x].reqDesc && !hasTree(x)) player.supernova.pin_req = x
+        if (!auto && tmp.sn.tree_choosed == x && this.ids[x].reqDesc && !hasTree(x)) player.supernova.pin_req = x
     },
 	buyAll() {
 		let cont = true
 		while (cont) {
 			cont = false
-			for (var [i, can] of Object.entries(tmp.supernova.tree_afford)) {
+			for (var [i, can] of Object.entries(tmp.sn.tree_afford)) {
 				if (!can) continue
 				this.buy(i, true)
 				cont = true
@@ -123,8 +122,10 @@ const TREE_UPGS = {
             effect() {
                 let sn = player.supernova.times
                 if (!hasTree("qu4")) sn = sn.softcap(15,0.8,0).softcap(25,0.5,0)
-                let x = E(2.05).add(hasTree("sn4")?tmp.supernova.tree_eff.sn4:0).pow(sn)
-                return x
+
+                let x = E(2.05)
+				if (hasTree("sn4")) x = x.add(treeEff("sn4", 0))
+                return x.pow(sn)
             },
             effDesc(x) { return format(x)+"x" },
         },
@@ -392,7 +393,7 @@ const TREE_UPGS = {
             cost: E(1e17),
         },
         chal6: {
-            unl() { return tmp.radiation.unl },
+            unl() { return hasTree("unl1") },
             branch: ["chal5"],
             desc: `Unlock the 11th Challenge.`,
             cost: E(1e88),
@@ -461,7 +462,7 @@ const TREE_UPGS = {
             desc: `Neutrons gain is affected by Graviton's effect at a reduced rate.`,
             cost: E(1e14),
             effect() {
-                let x = tmp.bosons.effect.graviton[0].add(1).root(2)
+                let x = tmp.sn.boson.effect.graviton[0].add(1).root(2)
                 return x.softcap('e1000',1/3,0).softcap('ee38',0.95,2)
             },
             effDesc(x) { return format(x)+"x"+x.softcapHTML('e1000') },
@@ -566,7 +567,7 @@ const TREE_UPGS = {
             cost: E(1e51),
         },
         rad1: {
-            unl() { return tmp.radiation.unl },
+            unl() { return hasTree("unl1") },
             desc: `Gain more frequency based on Supernova, it will also multiply Radiations that is not the last available types.`,
             cost: E(1e54),
             effect() {
@@ -1222,9 +1223,9 @@ const TREE_TYPES = (()=>{
     return t
 })()
 
-function hasTree(id) { return (player.supernova.tree.includes(id) || player.dark.c16.tree.includes(id)) && !(tmp.c16.in && CORRUPTED_TREE.includes(id)) }
+function hasTree(id) { return (player.supernova?.tree.includes(id) || player.dark.c16.tree.includes(id)) && !(tmp.c16.in && CORRUPTED_TREE.includes(id)) }
 
-function treeEff(id,def=1) { return tmp.supernova.tree_eff[id]||E(def) }
+function treeEff(id,def=1) { return tmp.sn.tree_eff?.[id]||E(def) }
 
 function setupTreeHTML() {
     let tree_table = new Element("tree_table")
@@ -1234,7 +1235,7 @@ function setupTreeHTML() {
     for (let j = 0; j < TREE_TAB.length; j++) {
         table2 += `
         <div style="width: 145px">
-            <button onclick="tmp.tree_tab = ${j}" class="btn_tab" id="tree_tab${j}_btn">${TREE_TAB[j].title}<b id="tree_tab${j}_notify" style="color: red"> [!]</b></button>
+            <button onclick="tmp.sn.tree_tab = ${j}" class="btn_tab" id="tree_tab${j}_btn">${TREE_TAB[j].title}<b id="tree_tab${j}_notify" style="color: red"> [!]</b></button>
         </div>
         `
         table += `<div id="tree_tab${j}_div">`
@@ -1246,7 +1247,7 @@ function setupTreeHTML() {
 
                 let option = id == "" ? `style="visibility: hidden"` : ``
                 let img = TREE_UPGS.ids[id]?`<img src="images/tree/${u.icon||id}.png">`:""
-                table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.supernova.tree_choosed = '${id}'" ${option}>${img}</button>`
+                table += `<button id="treeUpg_${id}" class="btn_tree" onclick="TREE_UPGS.buy('${id}'); tmp.sn.tree_choosed = '${id}'" ${option}>${img}</button>`
             }
             table += `</div>`
         }
@@ -1285,10 +1286,10 @@ function drawTreeHTML() {
 function drawTree() {
 	if (!retrieveCanvasData()) return;
 	tree_ctx.clearRect(0, 0, tree_canvas.width, tree_canvas.height);
-	for (let x in tmp.supernova.tree_had2[tmp.tree_tab]) {
-        let id = tmp.supernova.tree_had2[tmp.tree_tab][x]
+	for (let x in tmp.sn.tree_had2[tmp.sn.tree_tab]) {
+        let id = tmp.sn.tree_had2[tmp.sn.tree_tab][x]
         let branch = TREE_UPGS.ids[id].branch||[]
-        if (branch.length > 0 && tmp.supernova.tree_unlocked[id]) for (let y in branch) if (tmp.supernova.tree_unlocked[branch[y]]) {
+        if (branch.length > 0 && tmp.sn.tree_unlocked[id]) for (let y in branch) if (tmp.sn.tree_unlocked[branch[y]]) {
 			drawTreeBranch(branch[y], id)
 		}
 	}
@@ -1319,7 +1320,7 @@ function drawTreeBranch(num1, num2) {
     tree_ctx.beginPath();
     let color = TREE_UPGS.ids[num2].qf?"#39FF49":"#00520b"
     let color2 = TREE_UPGS.ids[num2].qf?"#009C15":"#fff"
-    tree_ctx.strokeStyle = player.supernova.tree.includes(num2)||player.dark.c16.tree.includes(num2)?color:tmp.supernova.tree_afford[num2]?"#fff":"#333";
+    tree_ctx.strokeStyle = player.supernova.tree.includes(num2)||player.dark.c16.tree.includes(num2)?color:tmp.sn.tree_afford[num2]?"#fff":"#333";
     tree_ctx.moveTo(x1, y1);
     tree_ctx.lineTo(x2, y2);
     tree_ctx.stroke();
@@ -1348,8 +1349,8 @@ function changeTreeAnimation() {
 }
 
 function updateTreeHTML() {
-    let c16 = tmp.c16.in, ch = tmp.supernova.tree_choosed
-    if (tmp.supernova.tree_choosed == "") tmp.el.tree_desc.setHTML(``)
+    let c16 = tmp.c16.in, ch = tmp.sn.tree_choosed
+    if (tmp.sn.tree_choosed == "") tmp.el.tree_desc.setHTML(``)
     else {
         let t_ch = TREE_UPGS.ids[ch]
         let req = t_ch.req&&!hasTree(ch)?`<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`:""
@@ -1357,26 +1358,26 @@ function updateTreeHTML() {
         if (t_ch.evo_desc && OURO.evo >= t_ch.evo_desc[0]) desc = desc.strike() + " " + t_ch.evo_desc[1]
         tmp.el.tree_desc.setHTML(
 			`<div style="font-size: 12px; font-weight: bold;">
-				${tmp.supernova.tree_afford[ch] ? '<span class="green">(click to buy)</span>' : req != '' ? (player.supernova.pin_req == ch ? '<span class="yellow">(requirement pinned at top)</span>' : '<span class="yellow">(click to pin requirement)</span>') : ''}
+				${tmp.sn.tree_afford[ch] ? '<span class="green">(click to buy)</span>' : req != '' ? (player.supernova.pin_req == ch ? '<span class="yellow">(requirement pinned at top)</span>' : '<span class="yellow">(click to pin requirement)</span>') : ''}
 				${req}
 			</div>
-            ${`<span class="sky"><b>[${tmp.supernova.tree_choosed}]</b> ${desc}</span>`.corrupt(c16 && CORRUPTED_TREE.includes(tmp.supernova.tree_choosed))}<br>
+            ${`<span class="sky"><b>[${tmp.sn.tree_choosed}]</b> ${desc}</span>`.corrupt(c16 && CORRUPTED_TREE.includes(tmp.sn.tree_choosed))}<br>
             <span>Cost: ${format(t_ch.cost,2)} ${t_ch.qf?'Quantum foam':t_ch.cs?'<span class="corrupted_text">Corrupted Shard</span>':'Neutron star'}</span><br>
-            <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.supernova.tree_eff[tmp.supernova.tree_choosed]):""}</span>
+            <span class="green">${t_ch.effDesc?"Currently: "+t_ch.effDesc(tmp.sn.tree_eff[tmp.sn.tree_choosed]):""}</span>
             `
         )
     }
 
     for (let i = 0; i < TREE_TAB.length; i++) {
         tmp.el["tree_tab"+i+"_btn"].setDisplay(TREE_TAB[i].unl?TREE_TAB[i].unl():true)
-        tmp.el["tree_tab"+i+"_notify"].setDisplay(tmp.supernova.tree_afford2[i].length>0)
-        tmp.el["tree_tab"+i+"_div"].setDisplay(tmp.tree_tab == i)
-        if (tmp.tree_tab == i) for (let x = 0; x < tmp.supernova.tree_had2[i].length; x++) {
-            let id = tmp.supernova.tree_had2[i][x]
-            let unl = tmp.supernova.tree_unlocked[id]
+        tmp.el["tree_tab"+i+"_notify"].setDisplay(tmp.sn.tree_afford2[i].length>0)
+        tmp.el["tree_tab"+i+"_div"].setDisplay(tmp.sn.tree_tab == i)
+        if (tmp.sn.tree_tab == i) for (let x = 0; x < tmp.sn.tree_had2[i].length; x++) {
+            let id = tmp.sn.tree_had2[i][x]
+            let unl = tmp.sn.tree_unlocked[id]
             tmp.el["treeUpg_"+id].setVisible(unl)
             let bought = player.supernova.tree.includes(id)
-            if (unl) tmp.el["treeUpg_"+id].setClasses(player.dark.c16.tree.includes(id) || c16 && CORRUPTED_TREE.includes(id) ? {btn_tree: true, corrupted: true, choosed: id == tmp.supernova.tree_choosed} : {btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, locked: !tmp.supernova.tree_afford[id], bought: bought, choosed: id == tmp.supernova.tree_choosed})
+            if (unl) tmp.el["treeUpg_"+id].setClasses(player.dark.c16.tree.includes(id) || c16 && CORRUPTED_TREE.includes(id) ? {btn_tree: true, corrupted: true, choosed: id == tmp.sn.tree_choosed} : {btn_tree: true, qu_tree: TREE_UPGS.ids[id].qf, locked: !tmp.sn.tree_afford[id], bought: bought, choosed: id == tmp.sn.tree_choosed})
         }
     }
 }

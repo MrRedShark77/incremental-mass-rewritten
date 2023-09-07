@@ -186,7 +186,7 @@ const CORE = {
             () => OURO.evo >= 1 ? `Gain more meditation.` : `Increase accelerator's power.`,
             `Boost Exotic Atom gain.`,
             () => OURO.evo >= 3 ? `Boost protostars gain.` : `Boost dilated mass gain.`,
-            `Gain more Nebular Dust.`,
+            `Gain more Stardust.`,
         ],
         res: `Exotic Atom`,
         boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1)},

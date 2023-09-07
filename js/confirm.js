@@ -35,10 +35,10 @@ const CONFIRMS_FUNCTION = {
     sn(force,chal,post,fermion) {
         addQuote(5)
 
-        if (tmp.supernova.reached || force || fermion) {
+        if (tmp.sn.reached || force || fermion) {
             tmp.el.supernova_scene.setDisplay(false)
             if (!force && !fermion) {
-                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
+                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.sn.bulk) : player.supernova.times.add(1)
             }
             if (post || !hasTree("qu_qol4")) SUPERNOVA.doReset()
         }

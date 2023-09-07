@@ -46,11 +46,11 @@ const FORMS = {
         if (player.ranks.rank.gte(13)) x = x.mul(3)
         if (hasUpgrade("bh",10)) x = x.mul(tmp.upgs?tmp.upgs[2][10].effect:E(1))
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
-        x = x.mul(tmp.stars.effect[0])
-        if (hasTree("m1") && !hasElement(164)) x = x.mul(tmp.supernova.tree_eff.m1)
+        if (tmp.star_unl) x = x.mul(tmp.stars.effect[0])
+        if (hasTree("m1") && !hasElement(164)) x = x.mul(treeEff("m1"))
 
         if (OURO.unl()) x = x.mul(appleEffect('mass')[0])
-        x = x.mul(tmp.bosons.effect.pos_w[0])
+        if (tmp.sn.boson) x = x.mul(tmp.sn.boson.effect.pos_w[0])
         if (OURO.evo < 2 && tmp.atom.unl) x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
 
         if (tmp.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
@@ -88,8 +88,8 @@ const FORMS = {
         .softcap(tmp.massSoftGain7,tmp.massSoftPower7,0)
         .softcap(tmp.massSoftGain8,tmp.massSoftPower8,0)
 
-        x = x.pow(tmp.stars.effect[1])
-        if (hasElement(164)) x = x.pow(tmp.supernova.tree_eff.m1)
+        if (tmp.star_unl) x = x.pow(tmp.stars.effect[1])
+        if (tmp.sn.unl && hasElement(164)) x = x.pow(treeEff("m1"))
 
         x = x.pow(glyphUpgEff(1))
 
@@ -99,7 +99,7 @@ const FORMS = {
 
         if (tmp.inf_unl) x = x.pow(theoremEff('mass',0))
         if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[0])
-        x = x.pow(tmp.bosons.effect.pos_w[2]||1)
+        if (tmp.sn.boson) x = x.pow(tmp.sn.boson.effect.pos_w[2]||1)
         if (hasElement(295)) x = x.pow(elemEffect(295))
 
         if (tmp.dark.run) x = expMult(x,mgEff(0))
@@ -179,10 +179,10 @@ const FORMS = {
         if (player.ranks.hex.gte(10)) return EINF
         let s = E('1.5e1000056')
         if (hasTree("m2")) s = s.pow(1.5)
-        if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
+        if (hasTree("m3")) s = s.pow(treeEff("m3"))
         if (player.ranks.tetr.gte(8)) s = s.pow(1.5)
 
-        s = s.pow(tmp.bosons.effect.neg_w[0])
+        if (tmp.sn.boson) s = s.pow(tmp.sn.boson.effect.neg_w[0])
         if (hasPrestige(0,1)) s = s.pow(10)
 
         return s.min(tmp.massSoftGain3||1/0).max(1)
@@ -195,8 +195,8 @@ const FORMS = {
     massSoftGain3() {
         if (player.ranks.hex.gte(13)) return EINF
         let s = tmp.rip.in ? uni("ee7") : uni("ee8")
-        if (hasTree("m3")) s = s.pow(tmp.supernova.tree_eff.m3)
-        s = s.pow(tmp.radiation.bs.eff[2])
+        if (hasTree("m3")) s = s.pow(treeEff("m3"))
+        s = s.pow(radBoostEff(2))
         if (hasPrestige(0,1)) s = s.pow(10)
         return s.max(1)
     },
@@ -332,8 +332,8 @@ const FORMS = {
                 gain = Decimal.pow(1.00001,cp).mul(5)
             }
 
-            if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(tmp.supernova.tree_eff.bh1)
-            if (!hasElement(204)) gain = gain.mul(tmp.bosons.upgs.photon[0].effect)
+            if (hasTree("bh1") && !hasElement(166)) gain = gain.mul(treeEff("bh1"))
+            if (tmp.sn.boson && !hasElement(204)) gain = gain.mul(tmp.sn.boson.upgs.photon[0].effect)
 
             if (CHALS.inChal(7) || CHALS.inChal(10)) gain = gain.root(6)
 			if (tmp.atom.unl) {
@@ -347,8 +347,8 @@ const FORMS = {
             if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
             if (tmp.md.in) gain = expMult(gain,tmp.md.pen)
 
-            if (hasElement(204)) gain = gain.pow(tmp.bosons.upgs.photon[0].effect)
-            if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
+            if (tmp.sn.boson && hasElement(204)) gain = gain.pow(tmp.sn.boson.upgs.photon[0].effect)
+            if (tmp.sn.unl && hasElement(166)) gain = gain.pow(treeEff("bh1"))
             gain = gain.pow(tmp.matters.upg[0].eff)
 
             if (evo < 2 && tmp.dark.run) gain = expMult(gain,mgEff(1))
@@ -368,7 +368,7 @@ const FORMS = {
                 gain = gain.mul(tmp.chal.eff[6])
                 gain = gain.mul(tmp.chal.eff[8])
                 if (CHALS.inChal(8)) gain = gain.sqrt()
-                if (tmp.bosons) gain = gain.mul(tmp.bosons.upgs.photon[4].effect)
+                if (tmp.sn.boson) gain = gain.mul(tmp.sn.boson.upgs.photon[4].effect)
 			    gain = gain.mul(nebulaEff("blue"))
 				if (tmp.dark.run) gain = gain.pow(mgEff(1))
             }
@@ -379,7 +379,7 @@ const FORMS = {
             let x = E(0.33)
             if (FERMIONS.onActive("11")) return E(-1)
             if (hasElement(59)) x = E(0.45)
-            x = x.add(tmp.radiation.bs.eff[4])
+            x = x.add(radBoostEff(4, 0))
             x = x.add(tmp.dark.shadowEff.bhp||0)
             return x
         },
@@ -388,7 +388,7 @@ const FORMS = {
             if (hasUpgrade("rp",11)) x = x.mul(tmp.upgs?tmp.upgs[1][11].effect:E(1))
             if (hasUpgrade("bh",14)) x = x.mul(tmp.upgs?tmp.upgs[2][14].effect:E(1))
             if (hasElement(46) && !hasElement(162)) x = x.mul(tmp.elements.effect[46])
-            x = hasElement(204) ? x.pow(tmp.bosons.upgs.photon[0].effect) : x.mul(tmp.bosons.upgs.photon[0].effect)
+            if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.photon[0].effect) : x.mul(tmp.sn.boson.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
 
@@ -407,7 +407,7 @@ const FORMS = {
             if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[1])
 
             if (tmp.dark.run) x = expMult(x,mgEff(0))
-            if (hasElement(162)) x = x.pow(tmp.stars.effect[1]).pow(tmp.dark.run ? 5 : 100)
+            if (tmp.star_unl && hasElement(162)) x = x.pow(tmp.stars.effect[1]).pow(tmp.dark.run ? 5 : 100)
 
             let bhw = theoremEff('bh',5)
 
@@ -454,7 +454,7 @@ const FORMS = {
         fSoftStart() {
             let x = uni("e3e9")
             if (hasElement(71)) x = x.pow(tmp.elements.effect[71])
-            x = x.pow(tmp.radiation.bs.eff[20])
+            x = x.pow(radBoostEff(20))
             return x
         },
         fSoftPower() {
@@ -507,7 +507,7 @@ const FORMS = {
         },
         set(id) {
             if (id=="sn") {
-                player.reset_msg = "Reach over "+format(tmp.supernova.maxlimit)+" collapsed stars to go Supernova"
+                player.reset_msg = "Reach over "+format(tmp.sn.maxlimit)+" collapsed stars to go Supernova"
                 return
             }
             if (id=="qu") {

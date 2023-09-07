@@ -91,12 +91,12 @@ const RESOURCES_DIS = {
         resetBtn() { MASS_DILATION.onactive() },
     },
     sn: {
-        unl: ()=>tmp.supernova.unl,
+        unl: ()=>tmp.sn.unl,
         icon: "sn",
         class: "magenta",
 
         desc: (gs)=>{
-            let g = tmp.supernova.gen ? tmp.supernova.passive.div(FPS) : tmp.supernova.bulk.sub(player.supernova.times).max(0)
+            let g = tmp.sn.gen ? tmp.sn.passive.div(FPS) : tmp.sn.bulk.sub(player.supernova.times).max(0)
             let h = tmp.inf_unl?format(g.mul(FPS),0)+"/sec":format(g,0)
             return format(player.supernova.times,0)+(player.supernova.post_10?"<br>(+"+h+")":"")
         },

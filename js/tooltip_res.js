@@ -128,12 +128,12 @@ const TOOLTIP_RES = {
             You became ${getScalingName('supernova')}Supernova <b>${player.supernova.times.format(0)}</b>  times
             <br class='line'>
             You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.<br>
-            You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
+            You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.sn.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
             `
 
-            if (!tmp.supernova.gen) h += `<br class='line'>
+            if (!tmp.sn.gen) h += `<br class='line'>
             <i>
-            ${"Reach over <b>"+format(tmp.supernova.maxlimit)+"</b> collapsed stars to go Supernova"}.
+            ${"Reach over <b>"+format(tmp.sn.maxlimit)+"</b> collapsed stars to go Supernova"}.
             </i>`
 
             return h
@@ -145,6 +145,7 @@ const TOOLTIP_RES = {
             let h = `<i>
             ${"Reach over <b>"+formatMass(mlt(1e4))+"</b> of normal mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")}.
             </i>`
+            if (OURO.evo >= 4) h += `<br><b class='yellow'>Constellations persist until next Ouroboric!</b>`
 
             return h
         },

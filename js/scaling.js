@@ -204,8 +204,8 @@ const SCALING_RES = {
     massUpg(x=1) { return player.build["mass_"+(x+1)].amt },
 	bh_condenser(x=0) { return player.build.bhc.amt },
 	gamma_ray(x=0) { return player.build.cosmic_ray.amt },
-	supernova(x=0) { return player.supernova.times },
-	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
+	supernova(x=0) { return tmp.sn.unl ? player.supernova.times : E(0) },
+	fTier(x=0, y=0) { return tmp.sn.unl ? player.supernova.fermions.tiers[x][y] : E(0) },
 	cosmic_str(x=0) { return player.build.cosmic_string.amt },
 	prestige0() { return player.prestiges[0] },
 	prestige1() { return player.prestiges[1] },
@@ -434,13 +434,13 @@ function getScalingStart(type, name) {
 			if (player.ranks.pent.gte(1)) start = start.mul(1.1)
 			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
 			if (hasPrestige(1,5)) start = start.mul(prestigeEff(1,5))
-			start = start.mul(tmp.radiation.bs.eff[14])
+			start = start.mul(radBoostEff(14))
 			if (!hasUpgrade('br',24)) start = start.mul(mdEff(4, true))
 		}
 		else if (name=="tickspeed") {
 			if (hasElement(68)) start = start.mul(2)
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
-			start = start.mul(tmp.fermions.effs[0][5])
+			start = start.mul(fermEff(0, 5))
 			start = start.mul(getEnRewardEff(0))
 			if (hasElement(158)) start = start.pow(2)
 		}
@@ -510,7 +510,7 @@ function getScalingPower(type, name) {
 
 	let power = E(1)
 	if (name == "supernova" && (hasCharger(3)?type<5:type<3)) {
-		power = power.mul(tmp.fermions.effs[1][4])
+		power = power.mul(fermEff(1, 4))
 	}
 	if (name == "fTier" && type<4) {
 		if (hasTree("fn12")) power = power.mul(0.9)
@@ -684,7 +684,7 @@ function noScalings(type,name) {
 		if (hasBeyondRank(2,15) && OURO.evo < 2) return true
 	}
 	else if (name=="supernova") {
-		return tmp.supernova.gen || type<3 && hasCharger(3)
+		return tmp.sn.gen || type<3 && hasCharger(3)
 	}
 	else if (name=="tickspeed") {
 		if (hasCharger(4)) return true

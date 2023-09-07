@@ -423,9 +423,16 @@ function destroyOldData() {
 		delete player.atom.dRatio
 		delete player.md
 	}
+	if (evo >= 4) {
+		delete player.stars
+		delete player.supernova
+	}
+
+	//Ouroboric
+	delete player.evo?.constellation
 }
 
-function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) && !quUnl() || tmp.inf_reached && !hasInfUpgrade(16) || onImport }
+function cannotSave() { return tmp.sn.reached && player.supernova.times.lt(1) && !quUnl() || tmp.inf_reached && !hasInfUpgrade(16) || onImport }
 
 function save() {
     let str = btoa(JSON.stringify(player))
@@ -595,7 +602,7 @@ function simulateTime(sec) {
         mass: player.mass.max(1).div(player_before.mass.max(1)).log10(),
         bh_mass: tmp.bh.unl ? player.bh.mass.max(1).div(player_before.bh.mass.max(1)).log10() : E(1),
         quarks: player.atom.quarks.max(1).div(player_before.atom.quarks.max(1)).log10(),
-        sn: player.supernova.times.sub(player_before.supernova.times),
+        sn: tmp.sn.unl ? player.supernova.times.sub(player_before.supernova.times) : E(1),
     }
 
     let s2 = {

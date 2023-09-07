@@ -30,18 +30,17 @@ const OURO = {
                     exotic_atoms: E(0),
                     nebula: {}
                 },
-                constellation: {
-                    tier: 0,
-                    zodiac: {},
-                },
-            }
+				const: {
+					tier: 0,
+					upg: {}
+				},
+            },
         }
         for (let x = 0; x < WORMHOLE.maxLength; x++) s.evo.wh.mass[x] = E(0)
         for (var i in PROTOSTAR.nebulae) s.evo.proto.nebula[i] = E(0)
-        for (let [zi,z] of Object.entries(CONSTELLATION.zodiac)) s.evo.constellation.zodiac[zi] = {
+        for (let [zi,z] of Object.entries(CONSTELLATION.zodiac)) s.evo.const[zi] = {
             amount: E(0),
-            level: 0,
-            upg: {},
+            level: 0
         }
         return s
     },
@@ -64,16 +63,11 @@ const OURO = {
             wormhole_eff: [],
             nebula_eff: {},
 
-            global_zodiac_mult: E(1),
             zodiac: {},
-            zodiac_perks: 0,
+            zodiac_eff: {}
         }
 
-        for (let [zi,z] of Object.entries(CONSTELLATION.zodiac)) tmp.evo.zodiac[zi] = {
-            unl: {},
-            can: {},
-            eff: {},
-        }
+        for (let zi in CONSTELLATION.zodiac) tmp.evo.zodiac[zi] = {}
 
         this.temp()
     },
@@ -117,10 +111,13 @@ const OURO = {
 
         let newData = getPlayerData()
         let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "mainUpg"]
-        for (var i of reset) {
-			player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
-			if (tmp[i] != undefined) tmp[i].unl = false
-		}
+        for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
+
+		tmp.rp.unl = false
+		tmp.bh.unl = false
+		tmp.atom.unl = false
+		tmp.star_unl = false
+		tmp.sn = {}
 		destroyOldData()
 
         tmp.tab = 0
@@ -168,7 +165,7 @@ const OURO = {
                 x.apple = player.evo.cp.level.add(1).log10().div(100).add(1).root(2)
                 x.quark_overflow = Decimal.pow(0.925,player.evo.cp.level.add(1).log10().sqrt())
             }
-            if (tmp.supernova.gen) x.sn = expMult(player.evo.cp.level.add(1),0.4)
+            if (tmp.sn.gen) x.sn = expMult(player.evo.cp.level.add(1),0.4)
         } else if (evo == 2) {
             if (player.atom.unl) x.qk = player.evo.wh.mass[0].add(1).log10().add(1).sqrt()
             if (player.supernova.post_10) {
@@ -189,19 +186,19 @@ const EVO = {
 		null,
 		[
 			`<img src="images/rp.png"> Rage ➜ Calm <img src="images/evolution/calm_power.png">`,
-			`<span>Break the madness of Infinity. Reincarnate as a serpent.</span>`
+			`Break the madness of Infinity. Reincarnate as a serpent.`
 		],
 		[
 			`<img src="images/dm.png"> Dark Matter ➜ Fabric <img src="images/evolution/fabric.png">`,
-			`<span>Evaporate what causes destruction. Black Hole.</span>`
+			`Evaporate what causes destruction. Black Hole.`
 		],
 		[
 			`<img src="images/atom.png"> Atoms ➜ Protostars <img src="images/evolution/protostar.png">`,
-			`<span>The first glimpses of shattering, all starts small.</span>`
+			`The first glimpses of shattering, all starts small.`
 		],
 		[
 			`<img src="images/sn.png"> Supernova ➜ Constellation <img src="images/evolution/constellation.png">`,
-			`<span>No longer exploding, now start exploring.</span>`
+			`No longer exploding, now start exploring.`
 		],
 	],
 
