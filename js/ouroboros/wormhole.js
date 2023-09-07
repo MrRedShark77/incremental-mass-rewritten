@@ -30,14 +30,19 @@ const WORMHOLE = {
 
 		if (hasTree("bh1")) r = r.pow(treeEff("bh1"))
 		if (tmp.bosons) r = r.pow(tmp.bosons.upgs.photon[5].effect)
-		r = r.pow(glyphUpgEff(2))
-		r = r.pow(wormholeEffect(6))
+
+        let ne = nebulaEff("cyan")
+
+		r = r.pow(glyphUpgEff(2)).pow(wormholeEffect(6)).pow(ne[0]??1)
+
+        r = expMult(r,ne[1]??1)
 
 		if (i == 6) {
 			r = r.add(1).log10()
             if (hasCharger(6)) r = r.mul(3)
             if (hasElement(88,1)) r = r.mul(3)
 		}
+
         return r
     },
     total() {
@@ -120,13 +125,17 @@ const WORMHOLE = {
             m => m.add(1).log10().div(5).add(1).pow(hasElement(150) ? -.2 : hasElement(125) ? -.15 : -.1),
             x => `Reduce Meditation's softcap weakness <b>${formatReduction(x)}</b>`,
         ],[
-            m => E(1).sub(m.add(1).log10().div((player.qu.rip.active ? hasElement(149) : hasElement(133)) ? 40 : 50).add(1).pow(-.4)).mul(1.1).toNumber(),
+            m => E(1).sub(m.add(1).log10().div(hasElement(player.qu.rip.active ? 149 : 133) ? 40 : 50).add(1).pow(-.4)).mul(1.1).toNumber(),
             x => `Raise Fabric. <b>+^${format(x,2)}</b>`,
         ],[
             m => m.add(1).log10().div(40).add(1).sqrt().softcap(3,0.5,0),
             x => `Raise meditation levels. <b>^${format(x,2)}</b>`+softcapHTML(x,3),
         ],[
-            m => m.add(1).mul(tmp.c16active ? 1e-3 : 1e-4).pow(tmp.c16active ? .5 : 1).add(1),
+            m => {
+                m = m.add(1).mul(tmp.c16active ? 1e-3 : 1e-4).pow(tmp.c16active ? .5 : 1).add(1)
+                if (OURO.evo >= 3) m = expMult(m,0.5)
+                return m
+            },
             x => `Raise Wormhole formula. <b>^${format(x,2)} to exponent</b>`,
         ],
     ],

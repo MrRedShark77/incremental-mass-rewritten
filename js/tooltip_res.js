@@ -79,7 +79,7 @@ const TOOLTIP_RES = {
     },
     protostar: {
         full: "Protostar",
-        desc: _ => `Reach over <b>${format(1e3,0)}</b> Fabric to reset all previous features for gain Protostars & Quarks.`,
+        desc: () => `Reach over <b>${format(1e3,0)}</b> Fabric to reset all previous features for gain Protostars & Quarks.`,
     },
     quarks: {
         full: "Quark",
@@ -89,7 +89,7 @@ const TOOLTIP_RES = {
             if (tmp.overflowBefore.quark.gte(tmp.overflow_start.quark))
             h += `<br>(<b>+${format(tmp.overflowBefore.quark,0)}</b> gained before <b>overflow</b>)`;
 
-            if (tmp.eaUnl) h += `
+            if (tmp.eaUnl || tmp.epUnl) h += `
             <br class='line'>
             You have <b class='orange'>${tmp.exotic_atom.amount.format(0)}</b> Exotic Atoms.
             `
@@ -155,8 +155,10 @@ const TOOLTIP_RES = {
             let h = `<i>
             ${player.qu.rip.active ? "Our dimension is Big Ripped. Click to undo." : "Big Rip the Dimension."}
             <br><br>
-            While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers [10,2,10,10,5,0,2,10]. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.
-            </i>`
+            While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.
+            `
+            if (OURO.evo >= 3) h += `<br><br>Because of Evolution 3, you cannot purchase Nebulae and Prototar Elements!`
+            h += `</i>`
 
             return h
         },

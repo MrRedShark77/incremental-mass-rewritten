@@ -60,6 +60,7 @@ const SCALE_START = {
 		fTier: E(100),
 		prestige0: E(320),
 		prestige1: E(200),
+		FSS: E(80),
 	},
 	meta: {
 		rank: E(1e4),
@@ -152,6 +153,7 @@ const SCALE_POWER= {
 		fTier: 6,
 		prestige0: 3,
 		prestige1: 3,
+		FSS: 4,
 	},
 	meta: {
 		rank: 1.0025,
@@ -188,6 +190,7 @@ const SCALE_FP = {
 
 const QCM8_SCALES = ['rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
+const PreD_SCALES = [...PreQ_SCALES,'pent','hex','supernova','fTier','cosmic_str','prestige0','prestige1']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic', 'supercritical', 'instant', 'mega'] // super, hyper, ultra, meta, exotic
 const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta', 'Exotic', 'Supercritical', 'Instant', 'Mega']
 
@@ -338,6 +341,7 @@ function getScalingStart(type, name) {
 	let c16 = tmp.c16active
 
 	let start = SCALE_START[SCALE_TYPE[type]][name]
+	let t_name = SCALE_TYPE[type]
 
 	if (tmp.c18active && C18_SCALING.includes(name)) return start
 
@@ -498,7 +502,7 @@ function getScalingStart(type, name) {
 	if (QCs.active() && QCM8_SCALES.includes(name) && type<4) if (!tmp.scaling_qc8.includes(name)) start = start.pow(tmp.qu.qc_eff[7][0])
 	if (hasUpgrade('br',14) && name=="fTier" && type==0) start = start.add(10)
 	if (hasElement(88) && name == "tickspeed") start = start.mul(player.qu.rip.active?100:10)
-	return start.max(type%4==3?2:1).floor()
+	return start.max(type%4==3?Decimal.pow(SCALE_POWER[t_name][name],tmp.scaling_power[t_name][name]).sub(1).pow(-1).max(2):1).floor()
 }
 
 function getScalingPower(type, name) {
@@ -642,12 +646,15 @@ function getScalingPower(type, name) {
 	if (!tmp.c16active) if (player.dark.run.upg[4] && inDarkRun() && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name) && type<4) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
 	if (PreQ_SCALES.includes(name) && type<3) power = power.mul(getEnRewardEff(5))
+	if (OURO.evo >= 3 && PreD_SCALES.includes(name) && type<6) power = power.mul(nebulaEff('magenta'))
 
 	let p = ['prestige0','prestige1']
 	if (hasPrestige(3,10)) p.push('prestige2')
 	if (hasPrestige(0,388) && p.includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
 
 	if (hasPrestige(1,66) && name=="fTier") power = power.mul(0.8)
+
+	if (tmp.inf_unl && type == 4) power = power.mul(theoremEff('mass',6))
 
 	return power.max(type==3?0.5:0)
 }
@@ -692,6 +699,7 @@ function noScalings(type,name) {
 		if (hasCharger(7)) return true
 	}
 	else if (name=="prestige0") {
+		if (type == 3 && OURO.evo >= 3) return true
 		if (type < 3 && hasBeyondRank(5,7)) return true
 	}
 	else if (name=="prestige1" || name=="prestige2") {

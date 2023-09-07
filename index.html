@@ -28,6 +28,7 @@
     <script src="js/buildings.js"></script>
     <script src="js/debug.js"></script>
 
+    <script src="js/ouroboros/constellation.js"></script>
     <script src="js/ouroboros/protostar.js"></script>
     <script src="js/ouroboros/wormhole.js"></script>
     <script src="js/ouroboros/meditation.js"></script>
@@ -539,7 +540,7 @@
                         </div>
                     </div><div id="tab_div-dark-run">
                         <div id="FSS_eff2"></div><br>
-                        <button onclick="darkRun()" class="btn half_full tooltip" id="dark_run_btn" tooltip-html="Dark Running will force a Dark reset, and will trap you into Big Rip with quantum challenge modifiers [8,8,8,8,8,8,8,8]. You will produce <b>Glyphic Mass</b> based on resources which nerf things, and choosing a glyph to earn will exit a Dark Run."></button>
+                        <button onclick="darkRun()" class="btn half_full tooltip" id="dark_run_btn"></button>
                         <button class="btn half_full" onclick="player.dark.run.glyphs = [E(0),E(0),E(0),E(0),E(0),E(0)]">Clear glyphs</button>
                         <button class="btn half_full" id="dark_run_rounds" onclick="changeRunRounds()"></button>
                         <br><br>
@@ -664,9 +665,25 @@
                     </div><div id="tab_div-proto">
                         <div class='table_center'>
 							<div style='margin: 10px'><h4 id="proto_star">0</h4> Protostars</div>
-							<div style='margin: 10px'><h4 id="proto_dust">0</h4> Nebular Dust <span id="proto_dust_prod"></span></div>
+							<div style='margin: 10px'><span id="proto_dust"></span> <span id="proto_dust_prod"></span></div>
+                            <div style='margin: 10px' id="ea_amount"></div>
 						</div>
 						<div id="proto_table"></div>
+                    </div><div id="tab_div-constellation">
+                        <button class="btn" id="constellation_tier" onclick="CONSTELLATION.tier()"></button>
+                        <div id="zodiac_tabs"></div>
+                        <div id="zodiac_desc">
+                            <div id="zodiac_left">
+                                <h3 id="zodiac_perk">0 Perks</h3><br>
+                                <button class="btn" onclick="CONSTELLATION.upgGen()">Upgrade (-2)</button>
+                            </div><div id="zodiac_amount"></div>
+                        </div>
+                        <div id="constellation_div">
+                            <canvas id="constellation_canvas" width="730" height="490"></canvas>
+                            <div id="constellation_scroll"><div id="constellation_table">
+
+                            </div></div><div id="constellation_glow"></div>
+                        </div>
                     </div>
                     
                     <div id="tab_div-options">
@@ -701,7 +718,7 @@
                         <button class="btn tooltip" onclick="window.open('https://boosty.to/mrredshark77')" tooltip-html="Support the original creator of IMR!">Donate</button>
 
 						<br><br>
-                        Incremental Mass Rewritten v0.8 - Beta 3.2 - By MrRedShark77<br>
+                        Incremental Mass Rewritten v0.8 - Beta 4 - By MrRedShark77<br>
                         The game is inspired by Distance Incremental & Synergism<br>
                         Contributors: <span style="cursor: pointer;" onclick='addNotify(`where lemon<br><img src="https://i.imgflip.com/57cc98.jpg" style="width:100%">`)'>Bézier</span>, 16777216 & Aarex (Artists)<br><br><br>
                         Total time played: <span id="total_time">X</span>

@@ -207,7 +207,8 @@ const ENTROPY = {
     },
     getRewardEffect(i) {
         if ((player.qu.rip.active || tmp.c16active || inDarkRun()) && !tmp.en.reward_br.includes(i)) return E(0)
-        let x = player.qu.en.rewards[i]
+        let x = player.qu.en.rewards[i].mul(tmp.en.reward_str)
+
         if (hasElement(91) && (player.qu.rip.active || tmp.c16active || inDarkRun()) && (i==1||i==4)) x = x.mul(0.1)
 
         return x
@@ -267,6 +268,12 @@ function updateEntropyTemp() {
 
     tmp.en.s_p = 1
     if (tmp.inf_unl) tmp.en.s_p *= theoremEff('proto',2)
+
+    let mx = E(1)
+
+    if (tmp.inf_unl) mx = mx.mul(theoremEff('proto',6))
+
+    tmp.en.reward_str = mx
 
     for (let x = 0; x < ENTROPY.rewards.length; x++) {
         let rc = ENTROPY.rewards[x]

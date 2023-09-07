@@ -101,6 +101,8 @@ const FORMS = {
         if (hasInfUpgrade(1)) x = x.pow(infUpgEffect(1)[0])
 
         x = x.pow(tmp.bosons.effect.pos_w[2]||1)
+        if (hasElement(295)) x = x.pow(elemEffect(295))
+
         if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(0))
 
 		if (OURO.evo < 2) {
@@ -349,6 +351,8 @@ const FORMS = {
             if (hasElement(166)) gain = gain.pow(tmp.supernova.tree_eff.bh1)
             gain = gain.pow(tmp.matters.upg[0].eff)
 
+            // console.log(gain.format(),tmp.matters.upg[0].eff.format())
+
             if (evo < 2 && (tmp.c16active || inDarkRun())) gain = expMult(gain,mgEff(1))
             if (evo >= 2) {
 				let exp = 0.5
@@ -410,7 +414,7 @@ const FORMS = {
             let bhw = theoremEff('bh',5)
 
             let o = x
-            let os = tmp.c16active ? E('ee3') : E('ee63').pow(exoticAEff(1,1))
+            let os = tmp.c16active ? E('ee3') : E('ee69').pow(exoticAEff(1,1))
             let op = E(0.5).pow(bhw)
 
             let os2 = tmp.c16active ? E('ee6') : E('ee249')
@@ -467,9 +471,7 @@ const FORMS = {
             }
         },
         doReset() {
-            let keep = []
-            for (let x = 0; x < player.mainUpg.rp.length; x++) if ([3,5,6].includes(player.mainUpg.rp[x])) keep.push(player.mainUpg.rp[x])
-            if (!hasInfUpgrade(18)) player.mainUpg.rp = keep
+            if (!hasInfUpgrade(18)) resetMainUpgs(1,[3,5,6])
             player.rp.points = E(0)
             BUILDINGS.reset('tickspeed')
             BUILDINGS.reset('accelerator')
@@ -669,7 +671,7 @@ function getMltValue(mass){
 	}
 }
 
-function getARVName(i,lode) { const n = MASS_NAMES[mass_type], v = VERSES[mass_type][0][i-1]; return i > 0 ? v ? v + (!lode && (mass_type == 'standard' || i != 1) ? n[8] : "") : (lode ? n[9] : n[9]+n[8])+"^"+format(i,0) : "" }
+function getARVName(i,lode) { const n = MASS_NAMES[mass_type], v = VERSES[mass_type][0][i-1]; return i > 0 ? v ? v + (!lode && (mass_type == 'standard' || i != 1) ? n[8] : "") : (lode ? n[9] : n[9]+n[8])+formatPow(i,0) : "" }
 
 function formatARV(ex,lode) {
     if (lode && ex.lt(1e15)) return format(ex) + " "
@@ -686,7 +688,7 @@ function formatLDV(ex) {
     const ldv_floor = Math.floor(ldv)
     if (ldv >= 1000) return format(ldv)+' '+n[10]+n[8]+'s'
     var v = VERSES[mass_type][1][ldv_floor-1]
-    return formatARV(ex.iteratedlog(10,ldv_floor).div(1e9),true) + "" + (v ? v + (mass_type == 'standard' ? n[8] : "") : n[10]+n[8]+"^"+format(ldv_floor,0))
+    return formatARV(ex.iteratedlog(10,ldv_floor).div(1e9),true) + "" + (v ? v + (mass_type == 'standard' ? n[8] : "") : n[10]+n[8]+formatPow(ldv_floor,0))
     // Decimal.tetrate(10, ldv % 1 + 1).div(10)
 }
 
@@ -720,7 +722,7 @@ function formatGain(a,e,mass) {
                 if (rate === '') rate = formatARV(sg.sub(sa).div(1e9).mul(FPS),true)
                 
                 var v = VERSES[mass_type][1][ldv_floor-1]
-                return "(+" + rate + "" + (v ? v + (mass_type == 'standard' ? verse : "") : lode+verse+"^"+format(ldv_floor,0)) + "/s)"
+                return "(+" + rate + "" + (v ? v + (mass_type == 'standard' ? verse : "") : lode+verse+formatPow(ldv_floor,0)) + "/s)"
             }
 
             if (a.gte(MAX_ARVS)) {
@@ -792,6 +794,8 @@ function formatReduction(ex,acc) { ex = E(ex); return format(E(1).sub(ex).mul(10
 function formatPercent(ex,acc) { ex = E(ex); return format(ex.mul(100),acc)+"%" }
 
 function formatMult(ex,acc=4) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
+
+function formatPow(ex,acc=4) { return "^"+format(ex,acc) }
 
 function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }
 

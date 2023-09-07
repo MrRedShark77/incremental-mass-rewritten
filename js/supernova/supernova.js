@@ -7,27 +7,21 @@ const SUPERNOVA = {
         else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
     },
     doReset() {
-        let br = player.qu.rip.active || tmp.c16active || inDarkRun()
         tmp.supernova.time = 0
         if (OURO.unl()) player.evo.cp.best = E(0)
-
-		//Permanent Stuff
-        player.atom.points = E(0)
-        player.atom.quarks = E(0)
-
-        player.stars.unls = 0
-        player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
-        player.stars.points = E(0)
-        BUILDINGS.reset('star_booster')
-        
-        let list_keep = [2,5]
-        if (OURO.evo >= 3) list_keep.push(1)
-        if (hasTree("qol2")) list_keep.push(6)
-        let keep = []
-        for (let x = 0; x < player.mainUpg.atom.length; x++) if (list_keep.includes(player.mainUpg.atom[x])) keep.push(player.mainUpg.atom[x])
-        if (!hasInfUpgrade(18)) player.mainUpg.atom = keep
+        if (OURO.evo >= 3) {
+            let keep = {
+                nebula: {},
+                ea: player.evo.proto.exotic_atoms
+            }
+            for (let [ni,x] of Object.entries(player.evo.proto.nebula)) keep.nebula[ni] = ni.includes('ext') ? x : E(0)
+            player.evo.proto = OURO.save.evo.proto
+            player.evo.proto.exotic_atoms = keep.ea
+            player.evo.proto.nebula = keep.nebula
+        }
 
         list_keep = [21,36]
+        if (OURO.evo >= 3) list_keep.push(293)
         if (hasUpgrade("br",1)) list_keep.push(1)
         if (hasTree("qol1")) list_keep.push(14,18)
         if (hasTree("qol2")) list_keep.push(24)
@@ -38,27 +32,40 @@ const SUPERNOVA = {
         player.atom.elements = keep
         if (hasTree("qu_qol9") && QCs.active() && !hasElement(84)) player.atom.elements.push(84)
 
+		//Permanent Stuff
+        player.atom.quarks = E(0)
+
+        player.stars.unls = 0
+        player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
+        player.stars.points = E(0)
+        BUILDINGS.reset('star_booster')
+
+        if (tmp.atom.unl) {
+			//Pre-Ouroboric
+			player.atom.points = E(0)
+			player.atom.particles = [E(0),E(0),E(0)]
+			player.atom.powers = [E(0),E(0),E(0)]
+			player.atom.atomic = E(0)
+			BUILDINGS.reset('cosmic_ray')
+
+			if (!hasInfUpgrade(18)) {
+				let list_keep = [2,5], keep = []
+				if (hasTree("qol2")) list_keep.push(6)
+				resetMainUpgs(3,list_keep)
+			}
+
+			player.md.active = false
+			player.md.particles = E(0)
+			player.md.mass = E(0)
+			for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
+
+			if (!hasTree("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
+			player.supernova.chal.noTick = true
+			player.supernova.chal.noBHC = true
+		}
+
+		tmp.pass = 1
         ATOM.doReset()
-        tmp.pass = 1
-
-		if (OURO.evo >= 3) player.evo.proto = OURO.save.evo.proto
-		if (!tmp.atom.unl) return
-
-		//Pre-Ouroboric
-        player.atom.particles = [E(0),E(0),E(0)]
-        player.atom.powers = [E(0),E(0),E(0)]
-        player.atom.atomic = E(0)
-        BUILDINGS.reset('cosmic_ray')
-
-        player.md.active = false
-        player.md.particles = E(0)
-        player.md.mass = E(0)
-        for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
-
-        if (!hasTree("chal3")) for (let x = 5; x <= 8; x++) player.chal.comps[x] = E(0)
-
-        player.supernova.chal.noTick = true
-        player.supernova.chal.noBHC = true
     },
     starGain() {
         let x = E(hasTree("c")?0.2:0)
@@ -73,6 +80,9 @@ const SUPERNOVA = {
 
         if (tmp.qu.mil_reached[6]) x = x.mul(qs.softcap('ee9',0.01,0).softcap('ee10',0.1,0))
         x = x.mul(tmp.radiation.bs.eff[11])
+
+        if (hasElement(294)) x = x.pow(1.5)
+
         return x
     },
     req(x=player.supernova.times) {
@@ -95,14 +105,17 @@ const SUPERNOVA = {
         if (hasElement(46,1)) x = x.mul(muElemEff(46))
         if (hasElement(49,1)) x = x.mul(muElemEff(49))
         if (hasElement(274)) x = x.mul(elemEffect(274))
+        if (hasElement(304)) x = x.mul(elemEffect(304))
         if (hasUpgrade('br',22)) x = x.mul(tmp.prim.eff[7])
-        x = x.mul(theoremEff('time',5)).mul(escrowBoost('sn'))
+        x = x.mul(theoremEff('time',5)).mul(escrowBoost('sn')).mul(escrowBoost('sn2'))
 
         return x
     },
 }
 
 function calcSupernova(dt) {
+    if (OURO.evo >= 4) return;
+
     let du_gs = tmp.preQUGlobalSpeed.mul(dt)
     let su = player.supernova
 
@@ -162,7 +175,7 @@ function calcSupernova(dt) {
 }
 
 function updateSupernovaTemp() {
-    let c16 = tmp.c16active
+    let c16 = tmp.c16active, evo = OURO.evo
 
     if (tmp.SN_passive) {
         tmp.supernova.reached = false
@@ -176,6 +189,8 @@ function updateSupernovaTemp() {
 
     let no_req1 = hasInfUpgrade(0)
     let can_buy = !CHALS.inChal(19)
+
+    tmp.supernova.noTree = evo >= 4
 
     for (let i = 0; i < TREE_TAB.length; i++) {
         tmp.supernova.tree_afford2[i] = []

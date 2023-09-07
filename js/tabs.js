@@ -48,8 +48,9 @@ const TABS_DATA = {
     'options' : { name: "Options" },
     'res-hide': { name: "Resource Hider" },
 
-    "wh"      : { name: "Wormhole", style: "bh" },
-    "proto"   : { name: "Protostar", style: "space" },
+    "wh"           : { name: "Wormhole", style: "bh" },
+    "proto"        : { name: "Protostar", style: "space" },
+    "constellation": { name: "Constellation", style: "sn" },
 }
 
 function chooseTab(x, stab=false) {
@@ -88,7 +89,7 @@ const TABS = [
     ] },
     { name: "Upgrades", icon: "carbon:upgrade", unl() { return [1,2].includes(OURO.evo) || tmp.upgs.unl }, stab: [
         ['main-upg', () => tmp.upgs.unl],
-        ['elements', null, () => OURO.evo > 0],
+        ['elements', null, () => [1,2].includes(OURO.evo)],
     ] },
     { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
         'chal',
@@ -104,9 +105,10 @@ const TABS = [
     { name: "Space", icon: "bx:planet", color: "space", unl() { return OURO.evo >= 3 }, style: "space", stab: [
         'wh',
         'proto',
-        'star',
+        ['star', null, () => OURO.evo < 4],
+        ['constellation', null, () => OURO.evo >= 4]
     ] },
-    { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return player.supernova.times.gte(1) || quUnl() }, style: "sn", stab: [
+    { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return OURO.evo < 4 && (player.supernova.times.gte(1) || quUnl()) }, style: "sn", stab: [
         'sn-tree',
         ['boson', () => player.supernova.post_10],
         ['ferm', () => player.supernova.fermions.unl],

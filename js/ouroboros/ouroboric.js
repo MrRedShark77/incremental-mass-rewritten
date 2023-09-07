@@ -1,6 +1,6 @@
 /* ORIGINAL BY AAREX, EDITED BY MRREDSHARK77 */
 const OURO = {
-    unl: _ => tmp.ouro.unl,
+    unl: () => tmp.ouro.unl,
     get save() {
         let s = {
             ouro: {
@@ -27,12 +27,22 @@ const OURO = {
                 proto: {
                     star: E(0),
                     dust: E(0),
+                    exotic_atoms: E(0),
                     nebula: {}
+                },
+                constellation: {
+                    tier: 0,
+                    zodiac: {},
                 },
             }
         }
         for (let x = 0; x < WORMHOLE.maxLength; x++) s.evo.wh.mass[x] = E(0)
         for (var i in PROTOSTAR.nebulae) s.evo.proto.nebula[i] = E(0)
+        for (let [zi,z] of Object.entries(CONSTELLATION.zodiac)) s.evo.constellation.zodiac[zi] = {
+            amount: E(0),
+            level: 0,
+            upg: {},
+        }
         return s
     },
     load(force) {
@@ -56,12 +66,23 @@ const OURO = {
             wormhole_eff: [],
             wormhole_mult: [],
 
-            nebula_eff: {}
+            nebula_eff: {},
+
+            global_zodiac_mult: E(1),
+            zodiac: {},
+            zodiac_perks: 0,
         }
+
+        for (let [zi,z] of Object.entries(CONSTELLATION.zodiac)) tmp.evo.zodiac[zi] = {
+            unl: {},
+            can: {},
+            eff: {},
+        }
+
         this.temp()
     },
 
-    canReset: _ => player.chal.comps[20].gte(1),
+    canReset: () => player.chal.comps[20].gte(1),
     reset(force) {
         if (!force && !this.canReset()) return
 
@@ -77,28 +98,33 @@ const OURO = {
         this.doReset()
     },
     doReset() {
-        INF.doReset()
-        INF.load(false)
-
         player.build.pe.amt = E(0)
         player.build.fvm.amt = E(0)
         if (OURO.unl()) {
 			player.ouro.apple = E(0)
 			player.evo.wh.origin = 0
 		}
+        for (let i in CORE) tmp.core_eff[i] = []
 
-        let newData = getPlayerData()
+        INF.doReset()
+        INF.load(false)
+
+        let ek = []
+        if (OURO.evo >= 4) ek.push(293)
+
         let keep = {
             atom: {
-                elements: OURO.evo >= 3 ? [1] : [],
+                elements: ek,
                 muonic_el: unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry)
             }
         }
+        let newData = getPlayerData()
         let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
 
         tmp.tab = 0; tmp.stab = [0]; player.options.nav_hide[3] = false
 		player.options.res_hide = {}
+        updateMuonSymbol()
     },
 
     temp() {
@@ -113,6 +139,7 @@ const OURO = {
         if (evo >= 1) tmp.evo.meditation_eff = MEDITATION.eff(player.evo.cp.level)
         if (evo >= 2) WORMHOLE.temp()
         if (evo >= 3) PROTOSTAR.temp()
+        if (evo >= 4) CONSTELLATION.temp()
     },
 
     calc(dt) {
@@ -124,6 +151,7 @@ const OURO = {
         if (evo >= 1) MEDITATION.calc(dt)
         if (evo >= 2) WORMHOLE.calc(dt)
         if (evo >= 3) PROTOSTAR.calc(dt)
+        if (evo >= 4) CONSTELLATION.calc(dt)
     },
 
     get evo() { return player.evo ? player.evo.times : 0 },
@@ -145,6 +173,8 @@ const OURO = {
                 x.apple = WORMHOLE.total().add(1).log10().div(20).add(1).cbrt()
             }
             if (hasTree("unl1")) x.rank = player.supernova.radiation.hz.add(10).log10().pow(-.1)
+        } else if (evo == 3) {
+            if (tmp.SN_passive && player.gal_prestige?.gt(0)) x.sn2 = Decimal.pow(2,player.gal_prestige.pow(1.25))
         }
 
         return x
@@ -164,11 +194,25 @@ const OURO = {
             e0_287: "corrupted",
             e0_289: "corrupted",
             e1_41: "paralyzed",
+            e1_57: "paralyzed",
             ch8: "paralyzed",
         },
         {
             e0_221: "paralyzed",
+            e1_19: "paralyzed",
+            e1_25: "paralyzed",
+            e1_29: "paralyzed",
+            e1_32: "paralyzed",
             e1_34: "paralyzed",
+            e1_39: "paralyzed",
+            e1_51: "paralyzed",
+            e1_52: "paralyzed",
+            e1_61: "paralyzed",
+            cs_ea_reward: "paralyzed",
+            ch15: "corrupted",
+        },
+        {
+
         },
     ],
     fed_msg: {
@@ -198,6 +242,10 @@ const EVOLUTION_DATA = [
         `<img src="images/atom.png"> Atoms ➜ Protostars <img src="images/evolution/protostar.png">`,
         `<span>The first glimpses of shattering, all starts small.</span>`
     ],
+    [
+        `<img src="images/sn.png"> Supernova ➜ Constellation <img src="images/evolution/constellation.png">`,
+        `<span>No longer exploding, now start exploring.</span>`
+    ],
 ]
 
 function escrowBoost(id,def=1) { return tmp.ouro.escrow_boosts[id] ?? def }
@@ -214,7 +262,7 @@ function setOuroScene(show=true) {
 }
 
 function canEvolve() {
-    return player.evo.times < 3
+    return player.evo.times < 4
 }
 
 function updateOuroborosHTML() {
@@ -282,7 +330,9 @@ function updateOuroborosHTML() {
         if (eff.chal) h += `Challenge 9 completions scale C5-8 slower (<b>${formatMult(eff.chal)}</b>)<br>`
         if (eff.rank) h += `Frequency weakens Super - Ultra Rank (<b>${formatReduction(eff.rank)}</b>)<br>`
 
-        if (eff.apple) h += `${[null, "Meditation", "Wormhole"][OURO.evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
+        if (eff.sn2) h += `Galactic prestige boosts supernova generation (<b>${formatMult(eff.sn2)}</b>)<br>`
+
+        if (eff.apple) h += `${[null, "Meditation", "Wormhole", "Protostar"][OURO.evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
 
         tmp.el.escrow_boosts.setHTML(h)
 
@@ -295,12 +345,15 @@ function updateOuroborosHTML() {
         WORMHOLE.html()
     } else if (tmp.tab_name == 'proto') {
         PROTOSTAR.html()
+    } else if (tmp.tab_name == 'constellation') {
+        CONSTELLATION.html()
     }
 }
 
 function setupOuroHTML() {
     setupWormholeHTML()
     PROTOSTAR.setupHTML()
+    CONSTELLATION.setupHTML()
 }
 
 //Others

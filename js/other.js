@@ -493,3 +493,10 @@ function updateStatsHTML() {
         tmp.el[`stats_${ASCENSIONS.names[i]}_btn`].setDisplay(player.ascensions[i].gt(0))
     }
 }
+
+function checkImage(imageSrc, good, bad) {
+    var img = new Image();
+    img.onload = good; 
+    img.onerror = bad;
+    img.src = imageSrc;
+}

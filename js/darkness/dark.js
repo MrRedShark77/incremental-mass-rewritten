@@ -121,7 +121,7 @@ const DARK = {
         let x = {}
         let a = player.dark.shadow
 
-        x.ray = hasElement(143) ? a.add(1).log2().add(1).pow(1.5) : a.add(1).log10().add(1)
+        x.ray = hasElement(296) ? expMult(a.add(1),0.5) : hasElement(143) ? a.add(1).log2().add(1).pow(1.5) : a.add(1).log10().add(1)
         x.mass = hasCharger(4) ? overflow(a.add(1),10,0.25) : a.add(1).log10().add(1).root(2)
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10).overflow('e1e8',0.5,0)
@@ -202,15 +202,17 @@ function calcDark(dt) {
     if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
     if (hasCharger(1) && OURO.evo < 2) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
 
-    if (tmp.eaUnl) {
-        if (hasInfUpgrade(14)) {
-            for (let i = 1; i <= tmp.elements.unl_length[1]; i++) buyElement(i,1)
-            EXOTIC_ATOM.tier()
-        }
+    let eaUnl = tmp.eaUnl
 
+    if (eaUnl) {
         if (player.dark.exotic_atom.tier.gt(0)) {
             for (let i = 0; i < 2; i++) player.dark.exotic_atom.amount[i] = player.dark.exotic_atom.amount[i].add(tmp.exotic_atom.gain[i].mul(dt))
         }
+    }
+
+    if (eaUnl || tmp.epUnl) if (hasInfUpgrade(14)) {
+        for (let i = 1; i <= tmp.elements.unl_length[1]; i++) buyElement(i,1)
+        if (eaUnl) EXOTIC_ATOM.tier()
     }
 }
 

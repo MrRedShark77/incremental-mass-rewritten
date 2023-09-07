@@ -262,7 +262,7 @@ function updateBlackHoleHTML() {
 	tmp.el.massSoft2.setDisplay(tmp.bh.mass_gain.gte(tmp.bh.massSoftGain))
 	tmp.el.massSoftStart2.setTxt(formatMass(tmp.bh.massSoftGain))
 
-	tmp.el.bhEffect.setTxt(hasElement(201)?"^"+format(tmp.bh.effect):format(tmp.bh.effect)+"x")
+	tmp.el.bhEffect.setTxt(hasElement(201)?formatPow(tmp.bh.effect):format(tmp.bh.effect)+"x")
 	tmp.el.bhCondenserEffect.setHTML(format(BUILDINGS.eff('bhc')))
 
 	BUILDINGS.update('bhc')
@@ -285,7 +285,7 @@ function updateBlackHoleHTML() {
 	// tmp.el.falseVacuumDiv.setDisplay(unl)
 	if (unl) {
 		tmp.el.bhUnstable.setHTML(formatMass(player.bh.unstable)+" "+formatGain(player.bh.unstable,UNSTABLE_BH.calcProduction(),true))
-		tmp.el.bhUnstableEffect.setHTML("^"+format(tmp.unstable_bh.effect))
+		tmp.el.bhUnstableEffect.setHTML(formatPow(tmp.unstable_bh.effect))
 
 		/*
 		tmp.el.fvm_lvl.setTxt(format(player.bh.fvm,0))

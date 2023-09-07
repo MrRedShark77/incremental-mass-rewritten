@@ -377,6 +377,7 @@ function updateTemp() {
     tmp.moreUpgs = hasElement(192)
     tmp.mass4Unl = hasElement(202)
     tmp.brUnl = hasElement(208)
+    tmp.epUnl = hasCharger(5) && OURO.evo >= 3
     tmp.eaUnl = hasCharger(5) && OURO.evo < 3
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.tfUnl = hasElement(230)
