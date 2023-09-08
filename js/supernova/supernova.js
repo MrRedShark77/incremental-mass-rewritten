@@ -10,7 +10,16 @@ const SUPERNOVA = {
         let br = tmp.rip.in
         tmp.sn.time = 0
         if (OURO.unl()) player.evo.cp.best = E(0)
-		if (OURO.evo >= 3) player.evo.proto = OURO.save.evo.proto
+		if (OURO.evo >= 3) {
+            let keep = {
+                nebula: {},
+                ea: player.evo.proto.exotic_atoms
+            }
+            for (let [ni,x] of Object.entries(player.evo.proto.nebula)) keep.nebula[ni] = ni.includes('ext') ? x : E(0)
+            player.evo.proto = OURO.save.evo.proto
+            player.evo.proto.exotic_atoms = keep.ea
+            player.evo.proto.nebula = keep.nebula
+        }
 
 		//Permanent Stuff
         player.atom.quarks = E(0)
@@ -253,7 +262,7 @@ function updateSupernovaTemp() {
 				if (!req) req = !t.req || t.req()
 			}
 
-            let can = req && (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost)
+            let can = unl && req && (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost)
             tsn.tree_loc[id] = i
             tsn.tree_unlocked[id] = unl
             tsn.tree_afford[id] = can

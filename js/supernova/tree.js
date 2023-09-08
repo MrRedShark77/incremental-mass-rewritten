@@ -171,16 +171,14 @@ const TREE_UPGS = {
             desc: `Neutron star boosts Mass gain.`,
             cost: E(100),
             effect() {
-                let x = 
-                hasElement(219)
+                let x = E(1e100).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0)).min('ee100')
+                let y = E(1)
+                if (hasElement(164) || hasElement(219)) y = hasElement(219)
                 ? Decimal.pow(1.25,player.supernova.stars.add(1).log10().add(1).log10().softcap(100,0.5,0))
-                :
-                hasElement(164)
-                ? player.supernova.stars.add(1).log10().add(1).log10().div(10).add(1)
-                : E(1e100).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
-                return x
+                : player.supernova.stars.add(1).log10().add(1).log10().div(10).add(1)
+                return [x,y]
             },
-            effDesc(x) { return hasElement(164)||hasElement(219)?formatPow(x):(format(x)+"x"+(x.max(1).log(1e100).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
+            effDesc(x) { return format(x[0])+"x"+(x[0].max(1).log(1e100).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")+(hasElement(164)||hasElement(219)?", "+formatPow(x[1]):"") },
         },
         m2: {
             branch: ["m1"],

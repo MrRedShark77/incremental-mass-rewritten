@@ -749,12 +749,12 @@ const UPGS = {
                 cost: E(1e7),
             },
             10: {
-                unl() { return brokeDil() || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Chromas are 10% stronger.`,
                 cost: E(2.5e8),
             },
             11: {
-                unl() { return brokeDil() || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Prestige Level no longer resets anything.`,
                 cost: E(1e10),
             },
@@ -769,7 +769,7 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "^"+format(x)+" later" },
             },
             13: {
-                unl() { return brokeDil() || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Death Shard gain is boosted based on Prestige Base.`,
                 cost: E(1e17),
                 effect() {
@@ -779,12 +779,12 @@ const UPGS = {
                 effDesc(x=this.effect()) { return formatMult(x) },
             },
             14: {
-                unl() { return brokeDil() || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Super Fermion Tier starts 10 later (after QC8 nerf).`,
                 cost: E(1e22),
             },
             15: {
-                unl() { return brokeDil() || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Blueprint Particles boost Pre-Quantum Global Speed slightly.`,
                 cost: E(1e24),
             },

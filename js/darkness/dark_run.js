@@ -28,13 +28,13 @@ const DARK_RUN = {
     ],
 
     mass_glyph_gain: [
-        ()=>player.mass.gte(OURO.evo>=1?'ee26':'ee39')?player.mass.log10().div(OURO.evo>=1?'e26':'e39').log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>player.mass.gte(OURO.evo>=3?'ee18':OURO.evo>=1?'ee26':'ee39')?player.mass.log10().div(OURO.evo>=3?'e18':OURO.evo>=1?'e26':'e39').log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).mul(tmp.dark.glyph_mult).floor():E(0),
         ()=>OURO.evo>=2?player.evo.wh.fabric.add(1).log10().div(5).pow(1.5).mul(tmp.dark.glyph_mult).floor()
 			:(player.bh.mass.gte(OURO.evo>=1?'e1e18':'e1.5e34')?player.bh.mass.log10().div(OURO.evo>=1?'1e18':1.5e34).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0)),
         ()=>player.atom.quarks.gte(OURO.evo>=1?'e1e17':'e3e32')?player.atom.quarks.log10().div(OURO.evo>=1?'1e17':3e32).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
         ()=>tmp.atom.unl&&player.md.mass.gte(OURO.evo>=1?'e1e9':'e1e21')?player.md.mass.log10().div(OURO.evo>=1?'1e9':1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
         ()=>tmp.star_unl&&player.stars.points.gte(OURO.evo>=1?'e1e11':'e1.5e24')?player.stars.points.log10().div(OURO.evo>=1?'1e11':1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>tmp.prestiges.base.gte(OURO.evo>=1?1e10:1e13)?tmp.prestiges.base.div(OURO.evo>=1?1e10:1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>tmp.prestiges.base.gte(OURO.evo>=3?1e9:OURO.evo>=1?1e10:1e13)?tmp.prestiges.base.div(OURO.evo>=3?1e9:OURO.evo>=1?1e10:1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
     ],
 
     upg_unl_length() {
