@@ -167,7 +167,7 @@ function updatePrimordiumTemp() {
         let pp = player.qu.prim.particles[i]
         let b = E(0)
         if (hasTree('ct12')) b = b.add(treeEff('ct12'))
-        if (tmp.c16active) {
+        if (tmp.c16.in) {
             pp = E(0)
         } else {
             if (hasTree('qu_qol10') && i < 4) pp = pt
@@ -178,7 +178,7 @@ function updatePrimordiumTemp() {
         }
         tp.parts[i] = pp
         tp.bonus[i] = b
-        if (player.qu.rip.active || tmp.c16active || inDarkRun()) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
+        if (tmp.rip.in) pp = pp.mul(i==5?hasElement(95)?0.1:0:1/2)
         tp.eff[i] = PRIM.particle.eff[i]((p_mul ? pp.add(1).mul(b.add(1)).sub(1) : pp.add(b)).softcap(100,0.75,0).mul(pstr))
     }
 

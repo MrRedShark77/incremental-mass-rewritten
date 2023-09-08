@@ -110,7 +110,7 @@ function updateCSTemp() {
 }
 
 function hasCSEffect(i) { return tmp.cs_effect[i] !== undefined }
-function CSEffect(i, def = E(1)) { return OURO.isFed("cs_"+i) ? def : tmp.cs_effect[i] ?? def }
+function CSEffect(i, def = E(1)) { return EVO.isFed("cs_"+i) ? def : tmp.cs_effect[i] ?? def }
 
 function buyCSUpg(i) {
     let bulk
@@ -199,7 +199,7 @@ function updateCSHTML() {
 
     let h = ''
 	for (var [i, eff] of Object.entries(tmp.cs_effect)) {
-		let fed = OURO.fed_msg[tmp.ouro.fed["cs_"+i]], line = CORRUPTED_STAR.effects[i].eff_desc(eff)
+		let fed = EVO.fed_msg[tmp.evo.fed["cs_"+i]], line = CORRUPTED_STAR.effects[i].eff_desc(eff)
 		if (fed) line = line.strike() + " " + fed
 		h += line+"<br>"
 	}

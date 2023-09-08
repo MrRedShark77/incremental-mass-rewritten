@@ -1,5 +1,7 @@
 const FERMIONS = {
     onActive(id) {
+        if (!tmp.sn.unl) return
+
         let i = player.supernova.fermions.choosed
         return i == id || (i[1] == '6' && i[0] == id[0])
     },
@@ -7,11 +9,11 @@ const FERMIONS = {
         if (!player.supernova.fermions.unl) return E(0)
         let x = E(10)
         let base = E(1.25).add(tmp.prim.eff[5][0])
-        if (tmp.radiation.unl) x = x.mul(tmp.radiation.hz_effect)
+        if (hasTree("unl1")) x = x.mul(tmp.sn.rad.hz_effect)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(base.pow(player.supernova.fermions.tiers[i][j]))
-        if (hasTree("fn1") && tmp.supernova) x = x.mul(tmp.supernova.tree_eff.fn1)
+        if (hasTree("fn1") && tmp.sn) x = x.mul(treeEff("fn1"))
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(4)[0])
+        if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
 
         return x
     },
@@ -48,8 +50,8 @@ const FERMIONS = {
     },
     getTierScaling(t, bulk=false, meta=false) {
         let x = t
-        let fp = meta?E(1):tmp.fermions.fp
-        let fp2 = meta?E(1):tmp.fermions.fp2
+        let fp = meta?E(1):tmp.sn.ferm.fp
+        let fp2 = meta?E(1):tmp.sn.ferm.fp2
         if (bulk) {
             x = t.scaleEvery('fTier',true,[1,1,1,fp,fp2]).add(1).floor()
         } else {
@@ -71,7 +73,7 @@ const FERMIONS = {
     types: [
         [
             {
-                unl: () => OURO.evo < 3,
+                unl: _ => tmp.atom.unl,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e50').pow(t.pow(1.25)).mul("e800")
@@ -92,7 +94,7 @@ const FERMIONS = {
                 inc: "Atomic Powers",
                 cons: "^0.6 to the exponent of Atomic Powers gain",
             },{
-                unl: () => OURO.evo < 3,
+                unl: _ => tmp.atom.unl,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e50').pow(t.pow(1.25)).mul("e400")
@@ -162,7 +164,7 @@ const FERMIONS = {
                 get inc() { return OURO.evo >= 1 ? "10^CP^0.5" : "Rage Power" },
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },{
-                unl: () => OURO.evo < 3,
+                unl: _ => tmp.atom.unl,
                 maxTier() {
                     if (hasElement(156)) return EINF
                     let x = 30
@@ -227,7 +229,7 @@ const FERMIONS = {
                     return Decimal.pow(1.5,t).mul(this.base)
                 },
                 calcTier() {
-                    let res = tmp.fermions.prod[0]
+                    let res = tmp.sn.ferm.prod[0]
                     if (res.lt(this.base)) return E(0)
                     let x = res.div(this.base).max(1).log(1.5).max(0)
                     return FERMIONS.getTierScaling(x, true, true)
@@ -237,7 +239,7 @@ const FERMIONS = {
                     return x.softcap(15,hasPrestige(1,300)?0.55:0.5,0).overflow(1e8,1/3,0)
                 },
                 desc(x) {
-                    return `Dark ray's effect is ^${x.format()} stronger`.corrupt(tmp.c16active)
+                    return `Dark ray's effect is ^${x.format()} stronger`.corrupt(tmp.c16.in)
                 },
                 inc: "product of above u-quarks",
                 cons: "All u-quarks at once, and force quantum reset.",
@@ -284,7 +286,7 @@ const FERMIONS = {
                 },
                 eff(i, t) {
                     let x = t.pow(1.5).add(1).pow(i.add(1).log10().softcap(10,0.75,0)).softcap(1e6,0.75,0)
-                    if (tmp.c16active) x = overflow(x,1e100,0.5)
+                    if (tmp.c16.in) x = overflow(x,1e100,0.5)
                     return x
                 },
                 desc(x) {
@@ -294,7 +296,7 @@ const FERMIONS = {
                 get inc() { return OURO.evo >= 2 ? "2^Fabric^0.5" : "Mass of Black Hole" },
                 cons: "The power from the mass of the BH formula is always -1",
             },{
-                unl: () => OURO.evo == 0,
+                unl: _ => OURO.evo == 0,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e5e3').pow(t.pow(1.5)).mul("e4.5e5")
@@ -343,6 +345,7 @@ const FERMIONS = {
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
             },{
+                unl: _ => tmp.atom.unl,
                 maxTier() {
                     if (hasElement(156)) return EINF
                     let x = 25
@@ -389,7 +392,7 @@ const FERMIONS = {
                 eff(i, t) {
                     let c = hasCharger(7)
                     let x = c ? t.add(1).pow(i.add(1).log10().add(1).log10()) : i.add(1).log10().pow(0.75).div(100).add(1).pow(t.pow(0.75))
-                    if (!c && tmp.c16active) x = overflow(x,150,0.05)
+                    if (!c && tmp.c16.in) x = overflow(x,150,0.05)
                     return x
                 },
                 desc(x) {
@@ -404,7 +407,7 @@ const FERMIONS = {
                     return Decimal.pow(1.5,t).mul(this.base)
                 },
                 calcTier() {
-                    let res = tmp.fermions.prod[1]
+                    let res = tmp.sn.ferm.prod[1]
                     if (res.lt(this.base)) return E(0)
                     let x = res.div(this.base).max(1).log(1.5).max(0)
                     return FERMIONS.getTierScaling(x, true, true)
@@ -420,28 +423,6 @@ const FERMIONS = {
                 inc: "product of above u-leptons",
                 cons: "All u-leptons at once, and force quantum reset.",
             },
-
-            /*
-            {
-                nextTierAt(x) {
-                    return EINF
-                },
-                calcTier() {
-                    let res = E(0)
-                    let x = E(0)
-                    return x
-                },
-                eff(i, t) {
-                    let x = E(1)
-                    return x
-                },
-                desc(x) {
-                    return `Placeholder`
-                },
-                inc: "Placeholder",
-                cons: "Placeholder",
-            },
-            */
         ],
     ],
     productF(i) {
@@ -474,34 +455,46 @@ function setupFermionsHTML() {
 }
 
 function updateFermionsTemp() {
-    let tf = tmp.fermions
+	if (tmp.sn.ferm == undefined) {
+		tmp.sn.ferm = {
+            ch: [0,0],
+            gains: [E(0),E(0)],
+            maxTier: [[],[]],
+            tiers: [[],[]],
+            effs:  [[],[]],
+            bonuses: [[],[]],
+        }
+	}
 
+    let tf = tmp.sn.ferm
     tf.prod = [FERMIONS.productF(0),FERMIONS.productF(1)]
     tf.ch = player.supernova.fermions.choosed == "" ? [-1,-1] : [Number(player.supernova.fermions.choosed[0]),Number(player.supernova.fermions.choosed[1])]
     tf.fp = FERMIONS.fp()
     tf.fp2 = FERMIONS.fp2()
     tf.meta_fp = FERMIONS.metaFP()
-    for (i = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
         tf.gains[i] = FERMIONS.gain(i)
 
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]
+			if (f.unl && !f.unl()) continue
 
             tf.bonuses[i][x] = FERMIONS.bonus(i,x)
             tf.maxTier[i][x] = typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||EINF
             tf.tiers[i][x] = f.calcTier().min(tf.maxTier[i][x])
-            tf.effs[i][x] = f.eff(player.supernova.fermions.points[i], (FERMIONS.onActive("04") && i == 0) || (FERMIONS.onActive("14") && i == 1) ? E(0) : player.supernova.fermions.tiers[i][x].add(tmp.fermions.bonuses[i][x]).mul(i==1?tmp.radiation.bs.eff[16]:1).mul(i==0?tmp.radiation.bs.eff[19]:1))
+            tf.effs[i][x] = f.eff(player.supernova.fermions.points[i], (FERMIONS.onActive("04") && i == 0) || (FERMIONS.onActive("14") && i == 1) ? E(0) : player.supernova.fermions.tiers[i][x].add(tf.bonuses[i][x]).mul(i==1?radBoostEff(16):1).mul(i==0?radBoostEff(19):1))
         }
     }
 }
 
 function updateFermionsHTML() {
+	let tf = tmp.sn.ferm
     let r = [
-        [player.atom.atomic, player.md.particles, player.mass, OURO.evo >= 1 ? Decimal.pow(10,player.evo.cp.points.root(2)) : player.rp.points, player.md.mass, BUILDINGS.eff('tickspeed','eff_bottom'), tmp.fermions.prod[0]],
-        [player.atom.quarks, OURO.evo >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, player.bh.dm, player.stars.points, OURO.evo >= 3 ? E(2).pow(player.evo.proto.star.cbrt()) : player.atom.points, BUILDINGS.eff('tickspeed','power'), tmp.fermions.prod[1]]
+        [tmp.atom.unl ? player.atom.atomic : E(1), tmp.atom.unl ? player.md.particles : E(1), player.mass, OURO.evo >= 1 ? Decimal.pow(10,player.evo.cp.points.root(2)) : player.rp.points, tmp.atom.unl ? player.md.mass : E(1), BUILDINGS.eff('tickspeed','eff_bottom'), tf.prod[0]],
+        [player.atom.quarks, OURO.evo >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, tmp.bh.unl ? player.bh.dm : E(1), player.stars.points, OURO.evo >= 3 ? E(2).pow(player.evo.proto.star.cbrt()) : player.atom.points, BUILDINGS.eff('tickspeed','power'), tf.prod[1]]
     ]
     for (i = 0; i < 2; i++) {
-        tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tmp.fermions.gains[i].mul(tmp.preQUGlobalSpeed)))
+        tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tf.gains[i].mul(tmp.preQUGlobalSpeed)))
         let unls = FERMIONS.getUnlLength(i)
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]
@@ -516,8 +509,8 @@ function updateFermionsHTML() {
                 tmp.el[id+"_div"].setClasses({fermion_btn: true, [FERMIONS.names[i]]: true, choosed: active})
                 tmp.el[id+"_nextTier"].setTxt(fm(f.nextTierAt(player.supernova.fermions.tiers[i][x])))
                 tmp.el[id+"_tier_scale"].setTxt(getScalingName('fTier', i, x))
-                tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(Decimal.lt(tmp.fermions.maxTier[i][x],EINF)?" / "+format(tmp.fermions.maxTier[i][x],0):"") + (tmp.fermions.bonuses[i][x].gt(0)?" + "+tmp.fermions.bonuses[i][x].format():""))
-                tmp.el[id+"_desc"].setHTML(f.desc(tmp.fermions.effs[i][x]))
+                tmp.el[id+"_tier"].setTxt(format(player.supernova.fermions.tiers[i][x],0)+(Decimal.lt(tf.maxTier[i][x],EINF)?" / "+format(tf.maxTier[i][x],0):"") + (E(tf.bonuses[i][x]).gt(0)?" + "+tf.bonuses[i][x].format():""))
+                tmp.el[id+"_desc"].setHTML(f.desc(fermEff(i, x)))
 
                 tmp.el[id+"_cur"].setDisplay(active)
                 if (active) {
@@ -528,4 +521,8 @@ function updateFermionsHTML() {
             }
         }
     }
+}
+
+function fermEff(x, y, def = 1) {
+	return tmp.sn.ferm?.effs[x][y] ?? E(def)
 }

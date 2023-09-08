@@ -1,22 +1,24 @@
 const CONFIRMS_FUNCTION = {
     rage() {
-        let g = tmp.rp.gain
+        let g = tmp.rp.gain, r = OURO.evo >= 1 ? player.evo.cp : player.rp
 
-        if (OURO.evo >= 1) player.evo.cp.points = player.evo.cp.points.add(g)
-        else player.rp.points = player.rp.points.add(g)
+        r.points = r.points.add(g)
+		r.unl = true
 
-        player.rp.unl = true
         FORMS.rp.doReset()
-
         addQuote(2)
     },
     bh() {
         let g = tmp.bh.dm_gain
 
-        if (OURO.evo >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(g)
-        else player.bh.dm = player.bh.dm.add(g)
+        if (OURO.evo >= 2) {
+			player.evo.wh.fabric = player.evo.wh.fabric.add(g)
+			player.evo.wh.unl = true
+        } else {
+			player.bh.dm = player.bh.dm.add(g)
+			player.bh.unl = true
+		}
 
-        player.bh.unl = true
         FORMS.bh.doReset()
 
         addQuote(3)
@@ -33,10 +35,10 @@ const CONFIRMS_FUNCTION = {
     sn(force,chal,post,fermion) {
         addQuote(5)
 
-        if (tmp.supernova.reached || force || fermion) {
+        if (tmp.sn.reached || force || fermion) {
             tmp.el.supernova_scene.setDisplay(false)
             if (!force && !fermion) {
-                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.supernova.bulk) : player.supernova.times.add(1)
+                player.supernova.times = player.supernova.post_10 ? player.supernova.times.max(tmp.sn.bulk) : player.supernova.times.add(1)
             }
             if (post || !hasTree("qu_qol4")) SUPERNOVA.doReset()
         }
@@ -52,7 +54,7 @@ const CONFIRMS_FUNCTION = {
         }
     },
     qu(auto,force,rip,bd) {
-        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !CHALS.inChal(14) && !CHALS.inChal(15) && !inDarkRun() && !tmp.c16active) {
+        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !tmp.dark.run && !CHALS.inChal(14) && !CHALS.inChal(15)) {
             player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
             player.qu.qc.active = false
         }
@@ -98,7 +100,7 @@ const CONFIRMS_FUNCTION = {
         QUANTUM.doReset(player.qu.qc.active)
     },
     bigRip() {
-        if (tmp.c16active || inDarkRun()) return
+        if (tmp.dark.run) return
         if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain)
         player.qu.qc.active = false
         player.qu.rip.first = true

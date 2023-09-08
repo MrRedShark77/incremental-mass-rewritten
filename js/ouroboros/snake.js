@@ -425,7 +425,7 @@ function appleEffects() {
 	eff.cp = a.div(10).add(1).pow(hasElement(90,1)?.8:hasElement(76,1)?.6:.5)
 	if (player.atom.unl) eff.cp_lvl = a.add(1).pow(.1)
 
-	if (evo >= 2 && player.bh.unl) {
+	if (evo >= 2 && FORMS.bh.unl()) {
 		eff.fabric = a.div(100).add(1).pow(1/3)
 		eff.wh_loss = a.add(1).log10().add(1).pow(.2)
 	}

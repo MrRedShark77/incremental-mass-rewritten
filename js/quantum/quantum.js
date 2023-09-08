@@ -32,14 +32,19 @@ const QUANTUM = {
         }
     },
     doReset(force=false, dark=false, metaF=false) {
-        let c16 = tmp.c16active
+        if (!tmp.sn.unl) {
+			SUPERNOVA.doReset()
+			return
+		}
+
+        let c16 = tmp.c16.in
 
         if (!hasElement(47,1)) player.supernova.times = E(0)
         player.supernova.stars = E(0)
 
         if (!hasTree('ct8')) {
             let keep = ['qol1','qol2','qol3','qol4','qol5','qol6','fn2','fn5','fn6','fn7','fn8','fn9','fn10','fn11','fn13']
-            for (let x = 0; x < tmp.supernova.tree_had.length; x++) if (TREE_UPGS.ids[tmp.supernova.tree_had[x]].qf) keep.push(tmp.supernova.tree_had[x])
+            for (let x = 0; x < tmp.sn.tree_had.length; x++) if (TREE_UPGS.ids[tmp.sn.tree_had[x]].qf) keep.push(tmp.sn.tree_had[x])
             if (tmp.qu.mil_reached[2]) keep.push('chal1','chal2','chal3','chal4','chal4a','chal5','chal6','chal7','c','qol7','chal4b','chal7a','chal8')
             if (tmp.qu.mil_reached[3]) {
                 if (!force) keep.push('unl1')
@@ -77,13 +82,11 @@ const QUANTUM = {
         for (let x = 1; x <= 12; x++) if (!hasTree("qu_qol7") || x <= 8 || force || dark) if (!hasElement(122) || x != 12 || dark) player.chal.comps[x] = E(0)
 
         SUPERNOVA.doReset()
-
-        tmp.pass = 1
     },
     bpGain() {
         let x = E(1)
         if (tmp.qu.mil_reached[5]) x = x.mul(tmp.preQUGlobalSpeed.max(1).root(2).softcap(1e50,0.95,2))
-        if (hasTree('qu5')) x = x.mul(tmp.supernova.tree_eff.qu5)
+        if (hasTree('qu5')) x = x.mul(treeEff("qu5"))
         if (hasElement(138)) x = x.mul(elemEffect(138,1))
         x = x.mul(BUILDINGS.eff('cosmic_string'))
         x = x.mul(tmp.dark.shadowEff.bp||1)
@@ -239,12 +242,12 @@ function calcQuantum(dt) {
         createPopup(POPUP_GROUPS.en.html(),'enReached')
     }
 
-    if (hasUpgrade('br',9)) {
+    if (hasUpgrade('br',9) && tmp.atom.unl) {
         player.md.break.energy = player.md.break.energy.add(tmp.bd.energyGain.mul(inf_gs))
         player.md.break.mass = player.md.break.mass.add(tmp.bd.massGain.mul(inf_gs))
     }
 
-    for (let x = 0; x < TREE_TYPES.normal.length; x++) TREE_UPGS.buy(TREE_TYPES.normal[x], true)
+    if (tmp.sn.unl && (hasTree("qu_qol1") || hasInfUpgrade(4))) for (let x = 0; x < TREE_TYPES.normal.length; x++) TREE_UPGS.buy(TREE_TYPES.normal[x], true)
 
     calcEntropy(dt)
 }

@@ -14,7 +14,7 @@ const TOOLTIP_RES = {
         full: "Rage Power",
         desc() {
             let h = `<i>
-            Reach over <b>${formatMass(1e15)}</b> of normal mass to reset previous features for gain Rage Powers.
+            Reach over <b>${formatMass(1e14)}</b> of normal mass to reset previous features for gain Rage Powers.
             </i>`
 
             return h
@@ -24,7 +24,7 @@ const TOOLTIP_RES = {
         full: "Calm Power",
         desc() {
             let h = `<i>
-            Reach over <b>${formatMass(1e15)}</b> of normal mass to reset previous features for gain Calm Powers.
+            Reach over <b>${formatMass(1e14)}</b> of normal mass to reset previous features for gain Calm Powers.
             </i>`
 
             return h
@@ -106,7 +106,7 @@ const TOOLTIP_RES = {
             if (tmp.overflowBefore.dm.gte(tmp.overflow_start.dm))
             h += `<br>(<b>+${formatMass(tmp.overflowBefore.dm)}</b> gained before <b>overflow</b>)`;
 
-            if (player.md.break.active)
+            if (brokeDil())
             h += `
             <br class='line'>
             You have <b class='sky'>${player.md.break.energy.format(0)} ${player.md.break.energy.formatGain(tmp.bd.energyGain)}</b> Relativistic Energy.<br>
@@ -115,7 +115,7 @@ const TOOLTIP_RES = {
 
             h += `
             <br class='line'><i>
-            ${player.md.active?`Reach <b>${formatMass(tmp.md.mass_req)}</b> of normal mass to gain Relativistic Particles, or cancel dilation.`:"Dilate mass, then cancel."}<br><br>Dilating mass will force an atom reset. While mass is dilated, all pre-atom resources and atomic power gain will get their multipliers' exponents raised to 0.8<br>
+            ${inMD()?`Reach <b>${formatMass(tmp.md.mass_req)}</b> of normal mass to gain Relativistic Particles, or cancel dilation.`:"Dilate mass, then cancel."}<br><br>Dilating mass will force an atom reset. While mass is dilated, all pre-atom resources and atomic power gain will get their multipliers' exponents raised to 0.8<br>
             </i>`
 
             return h
@@ -128,12 +128,12 @@ const TOOLTIP_RES = {
             You became ${getScalingName('supernova')}Supernova <b>${player.supernova.times.format(0)}</b>  times
             <br class='line'>
             You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.<br>
-            You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.supernova.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
+            You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.sn.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
             `
 
-            if (!tmp.SN_passive) h += `<br class='line'>
+            if (!tmp.sn.gen) h += `<br class='line'>
             <i>
-            ${"Reach over <b>"+format(tmp.supernova.maxlimit)+"</b> collapsed stars to go Supernova"}.
+            ${"Reach over <b>"+format(tmp.sn.maxlimit)+"</b> collapsed stars to go Supernova"}.
             </i>`
 
             return h
@@ -145,6 +145,7 @@ const TOOLTIP_RES = {
             let h = `<i>
             ${"Reach over <b>"+formatMass(mlt(1e4))+"</b> of normal mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")}.
             </i>`
+            if (OURO.evo >= 4) h += `<br><b class='yellow'>Constellations persist until next Ouroboric!</b>`
 
             return h
         },
@@ -155,11 +156,10 @@ const TOOLTIP_RES = {
             let h = `<i>
             ${player.qu.rip.active ? "Our dimension is Big Ripped. Click to undo." : "Big Rip the Dimension."}
             <br><br>
-            While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.
-            `
+            While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.`
+
             if (OURO.evo >= 3) h += `<br><br>Because of Evolution 3, you cannot purchase Nebulae and Prototar Elements!`
             h += `</i>`
-
             return h
         },
     },
@@ -264,19 +264,11 @@ const TOOLTIP_RES = {
             return h
         },
     },
-
-    /**
-     * desc() {
-            let h = ``
-
-            return h
-        },
-    */
 }
 
-function updateTooltipResHTML(start=false) {
+function updateTooltipResHTML() {
     for (let id in TOOLTIP_RES) {
-        if (!start && hover_tooltip.id !== id+'_tooltip') continue;
+        if (hover_tooltip.id !== id+'_tooltip') continue;
 
         let tr_data = TOOLTIP_RES[id]
         let tr = tmp.el[id+'_tooltip']

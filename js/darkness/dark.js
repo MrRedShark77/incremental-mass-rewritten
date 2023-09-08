@@ -28,7 +28,7 @@ const DARK = {
         let a = player.dark.rays
         let x = {}
 
-        x.shadow = a.max(1).pow(2).pow(tmp.c16active?1:(tmp.fermions.effs[0][6]||1))
+        x.shadow = a.max(1).pow(2).pow(tmp.c16.in?1:fermEff(0, 6))
 		x.shadow = x.shadow.overflow('ee10',0.5)
 
         if (a.gte(1e9)) x.passive = a.div(1e9).max(1).log10().add(1).pow(3).div(100)
@@ -46,7 +46,6 @@ const DARK = {
     },
     doReset(force=false) {
         let qu = player.qu
-        let bmd = player.md.break
         let quSave = getQUSave()
 
         qu.points = E(0)
@@ -65,16 +64,16 @@ const DARK = {
         qu.rip.active = false
         qu.rip.amt = E(0)
 
-        let k = []
-
-        if (hasElement(127) || hasInfUpgrade(11)) k.push(8,9,11)
-        else bmd.active = false
-        bmd.energy = E(0)
-        bmd.mass = E(0)
-        for (let x = 0; x < 10; x++) bmd.upgs[x] = E(0)
-
-        if (!hasElement(204)) resetMainUpgs(4,k)
-        
+		let keepBR = hasElement(127) || hasInfUpgrade(11)
+		if (!hasElement(204)) resetMainUpgs(4, keepBR ? [8,9,11] : [])
+		if (tmp.atom.unl) {
+			let bmd = player.md.break
+			if (!keepBR) bmd.active = false
+			bmd.energy = E(0)
+			bmd.mass = E(0)
+			for (let x = 0; x < 10; x++) bmd.upgs[x] = E(0)
+		}
+   
         if (!hasElement(124)) {
             let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
             "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11']
@@ -99,15 +98,13 @@ const DARK = {
 
         if (!hasElement(127)) tmp.rank_tab = 0
         if (tmp.tab_name == "break-dil" && !hasElement(127)) tmp.stab[4] = 0
-
-        tmp.pass = 1
     },
     shadowGain() {
         if (CHALS.inChal(19)) return E(0)
         
         let x = E(1)
         x = x.mul(tmp.dark.rayEff.shadow)
-        x = x.mul(tmp.bd.upgs[11].eff||1)
+        x = x.mul(mdEff(11, true))
         if (hasElement(119)) x = x.mul(elemEffect(119))
         if (hasElement(135)) x = x.mul(elemEffect(135))
         x = x.mul(tmp.dark.abEff.shadow||1)
@@ -128,7 +125,7 @@ const DARK = {
         if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
         if (a.gte(1e25)) x.en = a.div(1e25).pow(3).overflow('ee10',1/3)
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
-        if (!tmp.c16active && OURO.evo < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
+        if (!tmp.c16.in && OURO.evo < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
 
         return x
     },
@@ -160,7 +157,7 @@ const DARK = {
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
         if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0,hasElement(234))
-        if (a.gte('e56000') && (hasElement(260) || !tmp.c16active)) {
+        if (a.gte('e56000') && (hasElement(260) || !tmp.c16.in)) {
             let e = a.div('e56000').log10().add(1).log10()
             if (hasElement(238)) e = e.pow(2)
             x.ApQ_Overflow = Decimal.pow(10,e)
@@ -199,8 +196,8 @@ function calcDark(dt) {
         }
     }
 
-    if (tmp.c16active) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
-    if (hasCharger(1) && OURO.evo < 2) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
+    if (tmp.c16.in) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
+    if (hasCharger(1) && tmp.bh.unl) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
 
     let eaUnl = tmp.eaUnl
 
@@ -238,7 +235,7 @@ function setupDarkHTML() {
 }
 
 function updateDarkHTML() {
-    let dtmp = tmp.dark, c16 = tmp.c16active, inf_gs = tmp.preInfGlobalSpeed
+    let dtmp = tmp.dark, c16 = tmp.c16.in, inf_gs = tmp.preInfGlobalSpeed
     if (tmp.tab_name == "dark-eff") {
         tmp.el.darkRay.setHTML(player.dark.rays.format(0))
         tmp.el.darkShadow.setHTML(player.dark.shadow.format(0)+" "+player.dark.shadow.formatGain(tmp.dark.shadowGain.mul(inf_gs)))

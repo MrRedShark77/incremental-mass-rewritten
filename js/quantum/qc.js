@@ -61,7 +61,7 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
-                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16active) i *= getEvo2Ch8Boost().toNumber()
+                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16.in) i *= getEvo2Ch8Boost().toNumber()
                 let x = [Math.max(0,1-0.05*i),i/10+1]
                 return x
             },
@@ -189,7 +189,7 @@ function updateQCTemp() {
     let s = 0
     let bs = 0
     for (let x = 0; x < QCs_len; x++) {
-        let m = QCs.getMod(x) * [1, 1, 1.5, 10][evo]
+        let m = QCs.getMod(x) * [1, 2, 1.5, 10][evo]
         let n = QCs.getMod(x) * [1, 2, 1.7, 10][evo]
         s += Math.round(n)
         tmp.qu.qc_eff[x] = QCs.ctn[x].eff(m*weak)
@@ -208,7 +208,7 @@ function updateQCHTML() {
         tmp.el["qc_tab"+x].setDisplay(tmp.qc_tab == x)
     }
     if (tmp.qc_tab == 0) {
-        tmp.el.qc_btn.setDisplay(!(player.qu.rip.active || tmp.c16active || inDarkRun()))
+        tmp.el.qc_btn.setDisplay(!tmp.rip.in)
         tmp.el.qc_btn.setTxt((QCs.active()?"Exit":"Enter") + " the Quantum Challenge")
         for (let x = 0; x < QCs_len; x++) {
             tmp.el["qcm_mod"+x].setTxt(QCs.getMod(x))
@@ -226,7 +226,7 @@ function updateQCHTML() {
 }
 
 function getQCForceDisp(mod) {
-	return `[${QC_FORCE[mod][OURO.evo]?.toString()??"???"}]`
+	return `[${QC_FORCE[mod][OURO.evo]?.toString()??"?"}]`
 }
 
 let QC_FORCE = {
@@ -235,25 +235,25 @@ let QC_FORCE = {
 		[10,2,10,10,5,0,2,10],
 		[10,2,10,10,1,0,2,5],
 		[10,2,0,5,1,0,2,0],
-        [3,0,0,5,1,0,2,0]
+		[3,0,0,5,1,0,2,0]
 	],
 	run: [
 		[8,8,8,8,8,8,8,8],
-		[5,5,5,5,5,5,5,5],
-		[7,7,7,7,7,7,0,7],
+		[5,5,5,5,5,5,4,5], //Bezier wants Aarex to nerf Evo 1 Dark Run
+		[7,7,7,7,7,7,0,7], //Suggested by Maxwell
 		[0,0,5,5,4,4,0,6]
 	],
 	14: [
 		[5,5,5,5,5,5,5,5],
 		[4,4,4,4,4,4,4,4],
 		[4,4,4,4,4,4,4,4],
-        [2,3,4,3,3,3,0,2],
+		[2,3,4,3,3,3,0,2],
 	],
 	15: [
 		[10,5,10,10,10,10,10,10],
 		[6,0,6,6,6,6,6,6],
 		[3,3,3,3,3,3,3,3],
-        [3,0,3,3,3,3,3,3],
+		[3,0,3,3,3,3,3,3],
 	],
 	16: [
 		[8,8,8,8,8,8,8,8],
