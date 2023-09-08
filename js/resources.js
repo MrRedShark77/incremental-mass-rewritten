@@ -51,21 +51,21 @@ const RESOURCES_DIS = {
         resetBtn() { FORMS.bh.reset() },
     },
     bh: {
-        unl: ()=>player.bh.unl && OURO.evo < 2,
+        unl: ()=>tmp.bh.unl,
         icon: "bh",
         class: "yellow",
 
         desc: (gs)=>formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true),
     },
     wormhole: {
-        unl: ()=>player.bh.unl && OURO.evo >= 2,
+        unl: ()=>FORMS.bh.unl() && OURO.evo >= 2,
         icon: "evolution/wormhole",
         class: "yellow",
 
-        desc: _ => formatMass(WORMHOLE.total()),
+        desc: () => formatMass(WORMHOLE.total()),
     },
     atom: {
-        unl: ()=>player.bh.unl && OURO.evo < 3,
+        unl: ()=>FORMS.bh.unl() && OURO.evo < 3,
         icon: "atom",
 
         desc: (gs)=>format(player.atom.points,0)+"<br>"+(hasElement(24)?formatGain(player.atom.points,tmp.atom.gain.mul(gs)):"(+"+format(tmp.atom.gain,0)+")"),
@@ -73,7 +73,7 @@ const RESOURCES_DIS = {
         resetBtn() { ATOM.reset() },
     },
     protostar: {
-        unl: ()=>player.bh.unl && OURO.evo >= 3,
+        unl: ()=>FORMS.bh.unl() && OURO.evo >= 3,
         icon: "evolution/protostar",
         class: "space",
 
@@ -86,17 +86,17 @@ const RESOURCES_DIS = {
         icon: "md",
         class: "green",
 
-        desc: (gs)=>format(player.md.particles,0)+"<br>"+(player.md.active?"(+"+format(tmp.md.rp_gain,0)+")":(hasTree("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(gs)):"(inactive)")),
+        desc: (gs)=>format(player.md.particles,0)+"<br>"+(inMD()?"(+"+format(tmp.md.rp_gain,0)+")":(hasTree("qol3")?formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(gs)):"(inactive)")),
 
         resetBtn() { MASS_DILATION.onactive() },
     },
     sn: {
-        unl: ()=>player.supernova.post_10 || player.supernova.times.gt(0),
+        unl: ()=>tmp.sn.unl,
         icon: "sn",
         class: "magenta",
 
         desc: (gs)=>{
-            let g = tmp.SN_passive ? tmp.supernova.passive.div(FPS) : tmp.supernova.bulk.sub(player.supernova.times).max(0)
+            let g = tmp.sn.gen ? tmp.sn.passive.div(FPS) : tmp.sn.bulk.sub(player.supernova.times).max(0)
             let h = tmp.inf_unl?format(g.mul(FPS),0)+"/sec":format(g,0)
             return format(player.supernova.times,0)+(player.supernova.post_10?"<br>(+"+h+")":"")
         },
@@ -104,7 +104,7 @@ const RESOURCES_DIS = {
         resetBtn() { if (player.supernova.post_10) SUPERNOVA.reset(false,false,true) },
     },
     qu: {
-        unl: ()=>quUnl() || player.chal.comps[12].gte(1),
+        unl: ()=>OURO.evo >= 4 || quUnl() || player.chal.comps[12].gte(1),
         icon: "qu",
         class: "light_green",
 
@@ -144,7 +144,7 @@ const RESOURCES_DIS = {
         icon: "corrupted",
         class: "corrupted_text",
 
-        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(232)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):tmp.c16active?"(+"+tmp.c16.shardGain.format(0)+")":"(inactive)"),
+        desc: (gs)=>format(player.dark.c16.shard,0)+"<br>"+(hasElement(232)?player.dark.c16.shard.formatGain(tmp.c16.shardGain):tmp.c16.in?"(+"+tmp.c16.shardGain.format(0)+")":"(inactive)"),
 
         resetBtn() { startC16() },
     },

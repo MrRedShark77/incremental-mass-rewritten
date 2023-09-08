@@ -6,11 +6,21 @@ const ATOM = {
             if (player.evo.wh.fabric.lt(1e3)) return E(0)
 			x = expMult(player.evo.wh.fabric.div(1e3), 0.2)
 			x = x.mul(appleEffect("ps"))
+            if (tmp.chal) x = x.mul(tmp.chal.eff[9]).mul(tmp.chal.eff[10])
+            if (hasElement(123)) x = x.mul(elemEffect(123))
+            if (hasElement(291)) x = x.mul(elemEffect(291))
+            if (hasElement(292)) x = x.mul(elemEffect(292))
+            if (hasElement(297)) x = x.mul(elemEffect(297))
+            if (hasElement(303)) x = x.mul(elemEffect(303))
+            if (tmp.sn.boson) x = x.mul(tmp.sn.boson.upgs.gluon[4].effect)
+
+            if (hasElement(169)) x = x.pow(1.05)
+            if (tmp.inf_unl) x = x.pow(theoremEff('atom',5))
 			return x
         } else if (evo >= 2) {
             if (player.evo.wh.fabric.lt(300)) return E(0)
             x = player.evo.wh.fabric.div(150).sub(1).sqrt()
-			if (!tmp.c16active) x = E(2).pow(x).mul(5)
+			if (!tmp.c16.in) x = E(2).pow(x).mul(5)
         } else {
             x = player.bh.mass.div(hasUpgrade("br",1)?1.5e156**0.5:1.5e156)
             if (x.lt(1)) return E(0)
@@ -18,7 +28,7 @@ const ATOM = {
         }
 
         if (hasUpgrade("rp",15)) x = x.mul(tmp.upgs?tmp.upgs[1][15].effect:E(1))
-        x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[0].effect) : x.mul(tmp.bosons.upgs.gluon[0].effect)
+        if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[0].effect) : x.mul(tmp.sn.boson.upgs.gluon[0].effect)
         if (hasElement(17)) x = x.pow(1.1)
         x = x.pow(tmp.prim.eff[3][0])
         if (hasElement(111)) x = x.pow(tmp.elements.effect[111])
@@ -29,25 +39,36 @@ const ATOM = {
         x = x.pow(glyphUpgEff(5))
         if (hasUpgrade('br',17)) x = x.pow(upgEffect(4,17))
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
+        if (tmp.dark.run) x = expMult(x,mgEff(2))
 
         return x.floor()
     },
     quarkGain() {
 		let x = tmp.atom.gain
-        if (tmp.atom.gain.lt(1)) return E(0)
+        if (x.lt(1)) return E(0)
 
-		if (OURO.evo >= 3) x = E(1.01).pow(expMult(x.sub(1), 1)).floor() //save +4 for later upgrades.
+		if (OURO.evo >= 3) {
+            let k = E(1), s = E(1e9)
+
+            if (hasElement(1)) k = k.add(0.25)
+            if (hasElement(84,1)) k = k.add(0.25)
+            if (hasElement(86,1)) k = k.add(0.1)
+
+            if (tmp.inf_unl) s = s.mul(theoremEff('time',4))
+
+            x = E(1.01).pow(expMult(x.overflow(s,hasElement(299)?2/3:0.5).sub(1), k)).floor()
+        }
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
-		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.1).add(1)
+		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.2).add(1)
 
-        if (!tmp.c16active) x = x.pow(escrowBoost("qk"))
+        if (!tmp.c16.in) x = x.pow(escrowBoost("qk"))
+
         if (hasUpgrade("bh",13)) x = x.mul(10)
         if (hasUpgrade("atom",8)) x = x.mul(tmp.upgs?tmp.upgs[3][8].effect:E(1))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
         if (hasElement(42)) x = x.mul(tmp.elements.effect[42])
-        if (player.md.upgs[6].gte(1)) x = x.mul(tmp.md.upgs[6].eff)
-        x = x.mul(tmp.md.upgs[9].eff)
+        if (hasMDUpg(6)) x = x.mul(mdEff(6))
+        x = x.mul(mdEff(9))
 
         if (hasElement(6)) x = hasElement(276) ? x.pow(tmp.elements.effect[6]) : x.mul(tmp.elements.effect[6])
         if (hasElement(67)) x = hasElement(236) || OURO.evo >= 2 ? x.pow(elemEffect(67)) : x.mul(tmp.elements.effect[67])
@@ -58,12 +79,13 @@ const ATOM = {
 
         if (tmp.inf_unl) x = x.pow(theoremEff('atom',0))
 
-        if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
+        if (tmp.dark.run) x = expMult(x,mgEff(2))
         if (tmp.inf_unl && OURO.evo >= 2) x = expMult(x,GPEffect(1).pow(-1))
 
-        let o = x
-        let os = tmp.c16active && OURO.evo < 2 ? E('ee6') : E(OURO.evo >= 2 ? 'ee70' : 'ee90').pow(treeEff('ct13')?tmp.chal.eff[15]:1), op = E(.5)
-
+        let os = E('ee90'), op = E(.5), o = x
+		if (OURO.evo >= 2) os = E("ee70")
+		if (tmp.chal) os = os.pow(tmp.chal.eff[15])
+		if (tmp.c16.in && OURO.evo < 2) os = E("ee6")
         os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
 
         if (hasUpgrade('atom',16)) os = os.pow(10)
@@ -97,10 +119,8 @@ const ATOM = {
 			return
 		}
 
-        let keep = []
-        for (let x = 0; x < player.mainUpg.bh.length; x++) if ([5].includes(player.mainUpg.bh[x])) keep.push(player.mainUpg.bh[x])
-        if (!hasInfUpgrade(18)) player.mainUpg.bh = keep
-        if (chal_reset && !hasUpgrade("atom",4) && !hasTree("chal2") ) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
+        if (!hasInfUpgrade(18)) resetMainUpgs(2,[5])
+        if (chal_reset && !hasUpgrade("atom",4) && !hasTree("chal2")) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
 
         player.bh.dm = E(0)
         BUILDINGS.reset('bhc')
@@ -112,18 +132,20 @@ const ATOM = {
             let x = greff.eff
             if (hasElement(3)) x = x.mul(tmp.elements.effect[3])
             if (hasElement(52)) x = x.mul(tmp.elements.effect[52])
-            x = hasElement(204) ? x.pow(tmp.bosons.upgs.gluon[0].effect) : x.mul(tmp.bosons.upgs.gluon[0].effect)
+            if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[0].effect) : x.mul(tmp.sn.boson.upgs.gluon[0].effect)
 
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
-            if (tmp.c16active || player.md.active || CHALS.inChal(10) || FERMIONS.onActive("02") || FERMIONS.onActive("03") || CHALS.inChal(11)) x = expMult(x,tmp.md.pen)
+            if (tmp.md.in) x = expMult(x,tmp.md.pen)
 
             if (hasGlyphUpg(12)) x = x.pow(greff.exp)
             if (hasUpgrade('bh',22)) x = x.pow(upgEffect(2,22))
-            if (tmp.c16active || inDarkRun()) x = expMult(x,mgEff(2))
+            if (tmp.dark.run) x = expMult(x,mgEff(2))
 
             let o = x
-            let os = tmp.c16active ? E('e500') : E('ee82').pow(treeEff('ct13')?tmp.chal.eff[15]:1)
+            let os = tmp.c16.in ? E('e500') : E('ee82')
+			if (tmp.chal) os = os.pow(tmp.chal.eff[15])
+			if (tmp.c16.in && OURO.evo < 2) os = E("e500")
             os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
             if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
 
@@ -171,7 +193,7 @@ const ATOM = {
         effect(i) {
             let p = player.atom.particles[i]
             let x = p.pow(2)
-            if (hasElement(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal.eff[9]).softcap(40000,0.1,0))
+            if (hasElement(12)) x = p.pow(p.add(1).log10().add(1).root(4).pow(tmp.chal ? tmp.chal.eff[9] : E(1)).softcap(40000,0.1,0))
             x = x.softcap('e3.8e4',0.9,2).softcap('e1.6e5',0.9,2)
             if (hasElement(61)) x = x.mul(p.add(1).root(2))
             if (!hasElement(169)) x = x.softcap('ee11',0.9,2).softcap('ee13',0.9,2)
@@ -182,14 +204,12 @@ const ATOM = {
             if (hasUpgrade("atom",7)) x = x.mul(tmp.upgs?tmp.upgs[3][7].effect:E(1))
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (hasUpgrade('atom',21)) x = expMult(x,5)
-            return x//.addTP(0.005)
+            return x.div(10)
         },
         powerEffect: [
             x=>{
                 let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(3)
                 let b = hasElement(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
-
-                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
 
                 return {eff1: a, eff2: b}
             },
@@ -207,7 +227,6 @@ const ATOM = {
                 :player.mass.max(1).log10().add(1).pow(bp.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
 				if (CHALS.inChal(17) && !hasUpgrade('atom',18)) b = E(1)
 
-                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
                 if (hasUpgrade('atom',18)) b = overflow(b,1e120,0.5)
 
                 return {eff1: a, eff2: b}
@@ -220,13 +239,13 @@ const ATOM = {
             },
         ],
         desc: [
-            x=>{ return `Boost Mass gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>`+
+            x=>{ return `Boost Mass gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>`+
                 (OURO.evo == 0 ? `Increases Tickspeed Power by ${format(x.eff2.mul(100))}%` : ``)
             },
-            x=>{ return `Boost Rage Power gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>` +
-                (OURO.evo < 2 ? `Boost Mass gain based on Rage Powers - ${hasUpgrade('atom',18)?"^"+format(x.eff2):format(x.eff2)+"x"}<br><br>` : ``)
+            x=>{ return `Boost Rage Power gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>` +
+                (OURO.evo < 2 ? `Boost Mass gain based on Rage Powers - ${hasUpgrade('atom',18)?formatPow(x.eff2):format(x.eff2)+"x"}<br><br>` : ``)
             },
-            x=>{ return `Boost Dark Matter gain by ${hasElement(105)?"^"+format(x.eff1):format(x.eff1)+"x"}<br><br>`+
+            x=>{ return `Boost Dark Matter gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>`+
                 (OURO.evo < 2 ? `Increases BH Condenser Power by ${format(x.eff2)}` : ``)
             },
         ],
@@ -245,17 +264,20 @@ function updateAtomTemp() {
     tt.quarkGainSec = 0.05
     if (hasElement(16)) tt.quarkGainSec += tmp.elements.effect[16]
     tt.canReset = ATOM.canReset()
-	if (!tt.unl) return
 
-    tt.atomicGain = ATOM.atomic.gain()
-    tt.atomicEff = ATOM.atomic.effect()
-    tt.particles = {}
-    for (let x = 0; x < ATOM.particles.names.length; x++) {
+    updateMDTemp()
+    updateStarsTemp()
+
+	if (!tt.unl) return
+	tt.atomicGain = ATOM.atomic.gain()
+	tt.atomicEff = ATOM.atomic.effect()
+	tt.particles = {}
+	for (let x = 0; x < ATOM.particles.names.length; x++) {
 		let pt = tt.particles[x] = {}
 		pt.effect = ATOM.particles.effect(x)
 		pt.powerGain = ATOM.particles.gain(x)
 		pt.powerEffect = ATOM.particles.powerEffect[x](player.atom.powers[x])
-    }
+	}
 }
 
 function setupAtomHTML() {

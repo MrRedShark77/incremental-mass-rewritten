@@ -201,13 +201,13 @@ function updateAscensionsTemp() {
     for (let x = 0; x < ASCENSIONS.names.length; x++) {
         tmp.ascensions.req[x] = ASCENSIONS.req(x)
         for (let y in ASCENSIONS.rewardEff[x]) {
-            if (ASCENSIONS.rewardEff[x][y]) tmp.ascensions.eff[x][y] = ASCENSIONS.rewardEff[x][y][0]()
+            if (hasAscension(x, y) && ASCENSIONS.rewardEff[x][y]) tmp.ascensions.eff[x][y] = ASCENSIONS.rewardEff[x][y][0]()
         }
     }
 }
 
 function updateAscensionsRewardHTML() {
-	let c16 = tmp.c16active
+	let c16 = tmp.c16.in
 	for (let x = 0; x < ASCENSIONS.names.length; x++) {
 		tmp.el["asc_reward_div_"+x].setDisplay(player.asc_reward == x)
 		if (player.asc_reward == x) {

@@ -16,7 +16,7 @@ const WORMHOLE = {
         if (player.qu.en.hr[0]) player.evo.wh.fabric = player.evo.wh.fabric.div(E(10).pow(dt).pow(player.qu.en.hr[3]))
         else if (tmp.passive >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
-        if (player.bh.unl) {
+        if (FORMS.bh.unl()) {
             for (let i = 0; i < Math.min(unls, player.evo.wh.origin == 6 ? 7 : 6); i++) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wormhole_mult[i].mul(dt),i)
         }
     },
@@ -29,15 +29,20 @@ const WORMHOLE = {
 		if (hasElement(158)) r = expMult(r, 1.05)
 
 		if (hasTree("bh1")) r = r.pow(treeEff("bh1"))
-		if (tmp.bosons) r = r.pow(tmp.bosons.upgs.photon[5].effect)
-		r = r.pow(glyphUpgEff(2))
-		r = r.pow(wormholeEffect(6))
+		if (tmp.sn.boson) r = r.pow(tmp.sn.boson.upgs.photon[5].effect)
+
+        let ne = nebulaEff("cyan")
+
+		r = r.pow(glyphUpgEff(2)).pow(wormholeEffect(6)).pow(ne[0]??1)
+
+        r = expMult(r,ne[1]??1)
 
 		if (i == 6) {
 			r = r.add(1).log10()
             if (hasCharger(6)) r = r.mul(3)
             if (hasElement(88,1)) r = r.mul(3)
 		}
+
         return r
     },
     total() {
@@ -54,6 +59,7 @@ const WORMHOLE = {
         if (hasElement(63)) p = p.mul(1.2)
         tmp.evo.wormhole_power = p
 
+		tmp.evo.wormhole_mult = []
         for (let [i,e] of Object.entries(this.effects)) {
             tmp.evo.wormhole_eff[i] = e[0](i < unls ? player.evo.wh.mass[i] : E(1))
             tmp.evo.wormhole_mult[i] = this.mult(i)
@@ -89,7 +95,7 @@ const WORMHOLE = {
         }
 
         tmp.el["wormhole_origin"].setDisplay(player.atom.unl || OURO.evo >= 3)
-        tmp.el["wormhole_rate_div"].setDisplay(player.supernova.times.gte(1) || quUnl() || OURO.evo >= 3)
+        tmp.el["wormhole_rate_div"].setDisplay(tmp.sn.unl || OURO.evo >= 3)
         tmp.el["wormhole_rate"].setHTML(formatPercent(wh.rate, 0))
     },
 
@@ -97,7 +103,7 @@ const WORMHOLE = {
         if (hasCharger(1)) return 7
         if (player.dark.unl) return 6
         if (quUnl()) return 5
-        if (player.supernova.times.gt(0)) return 4
+        if (tmp.sn.boson) return 4
         if (player.atom.unl) return 3
         return 2
     },
@@ -120,13 +126,17 @@ const WORMHOLE = {
             m => m.add(1).log10().div(5).add(1).pow(hasElement(150) ? -.2 : hasElement(125) ? -.15 : -.1),
             x => `Reduce Meditation's softcap weakness <b>${formatReduction(x)}</b>`,
         ],[
-            m => E(1).sub(m.add(1).log10().div((player.qu.rip.active ? hasElement(149) : hasElement(133)) ? 40 : 50).add(1).pow(-.4)).mul(1.1).toNumber(),
+            m => E(1).sub(m.add(1).log10().div(hasElement(player.qu.rip.active ? 149 : 133) ? 40 : 50).add(1).pow(-.4)).mul(1.1).toNumber(),
             x => `Raise Fabric. <b>+^${format(x,2)}</b>`,
         ],[
             m => m.add(1).log10().div(40).add(1).sqrt().softcap(3,0.5,0),
             x => `Raise meditation levels. <b>^${format(x,2)}</b>`+softcapHTML(x,3),
         ],[
-            m => m.add(1).mul(tmp.c16active ? 1e-3 : 1e-4).pow(tmp.c16active ? .5 : 1).add(1),
+            m => {
+                m = m.add(1).mul(tmp.c16active ? 1e-3 : 1e-4).pow(tmp.c16.in ? .5 : 1).add(1)
+                if (OURO.evo >= 3) m = expMult(m,0.5)
+                return m
+            },
             x => `Raise Wormhole formula. <b>^${format(x,2)} to exponent</b>`,
         ],
     ],
@@ -172,7 +182,7 @@ function splitWormhole(origin, mode) {
         mass[x] = mass[x].max(toAdd);
     }
     mass[origin] = mass[origin].sub(sum)
-    if (tmp.evo.wormhole_unls > 6 && tmp.c16active) mass[6] = mass[6].add(sum.add(1).log10().mul(tmp.evo.wormhole_mult[6]))
+    if (tmp.evo.wormhole_unls > 6 && tmp.c16.in) mass[6] = mass[6].add(sum.add(1).log10().mul(tmp.evo.wormhole_mult[6]))
 }
 
 function setupWormholeHTML() {

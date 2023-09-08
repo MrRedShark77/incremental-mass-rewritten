@@ -5,8 +5,8 @@ const MUONIC_ELEM = {
             get desc() { return OURO.evo >= 2 ? `Anti-Wormhole boosts Pion gain.` : `Mass of unstable black hole boosts Pion gain.` },
             cost: E(1000),
             eff() {
-                if (OURO.evo >= 2) return player.evo.wh.mass[6].div(1e4).max(1)
-                if (OURO.evo < 2) return player.bh.unstable.add(1).root(3)
+                if (OURO.evo >= 2) return player.evo.wh.mass[6].div(1e4).add(1).root(OURO.evo >= 3 ? 3 : 1)
+                if (OURO.evo < 2) return player.bh.unstable.add(1).root(2)
             },
             effDesc: x=>formatMult(x),
         },{
@@ -30,7 +30,7 @@ const MUONIC_ELEM = {
             desc: `Not affected by Neutronium-0, each pre-16 challenge’s completions boost each chroma gain.`,
             cost: E(1e20),
             eff() {
-                let c16 = tmp.c16active
+                let c16 = tmp.c16.in
                 let x = E(1)
                 for (let i = 1; i <= 15; i++) x = x.mul(Decimal.pow(c16?1.25:1.1,player.chal.comps[i].root(2)))
                 return x
@@ -46,6 +46,7 @@ const MUONIC_ELEM = {
             desc: `Remove the softcap of dark shadow’s fourth reward. Supernovas boost Pion gain.`,
             cost: E(1e42),
             eff() {
+                if (!tmp.sn.unl) return E(1)
                 return OURO.evo >= 2 ? player.supernova.times.div(1e5).add(1).pow(2) : player.supernova.times.div(1e6).add(1)
             },
             effDesc: x=>formatMult(x),
@@ -77,7 +78,7 @@ const MUONIC_ELEM = {
                 let x = hasElement(26,1)?tmp.chal.eff[15].root(2):overflow(tmp.chal.eff[15],10,0.5).pow(2)
                 return x
             },
-            effDesc: x=>"^"+format(x),
+            effDesc: x=>formatPow(x),
         },{
             desc: `Dimensional mass affects pre-theorem's level.`,
             cost: E(1e130),
@@ -96,7 +97,7 @@ const MUONIC_ELEM = {
                 let x = player.build.accelerator.amt.add(10).log10()
                 return x
             },
-            effDesc: x=>"^"+format(x),
+            effDesc: x=>formatPow(x),
         },{
             desc: `Atomic power’s free tickspeeds now append to cosmic strings at a logarithmic rate.`,
             cost: E(1e270),
@@ -178,7 +179,7 @@ const MUONIC_ELEM = {
             cs: true,
             desc: `Muon-Catalyzed Fusion speeds Corrupted Star.`,
             cost: E('e20'),
-            eff: _ => Decimal.pow(1.5,player.dark.exotic_atom.tier),
+            eff: () => Decimal.pow(1.5,player.dark.exotic_atom.tier),
             effDesc: x=>formatMult(x),
         },{
             desc: `Increase the base of C17’s reward by 1.`,
@@ -191,8 +192,8 @@ const MUONIC_ELEM = {
             desc: `The growth reductions of corrupted stars start later based on supernovas.`,
             cost: E('e3500'),
             eff() {
-                let x = player.supernova.times.add(1).overflow(10,0.5)
-                return x
+                if (!tmp.sn.unl) return E(1)
+                return player.supernova.times.add(1).overflow(10,0.5)
             },
             effDesc: x=>formatMult(x)+' later',
         },{
@@ -207,6 +208,7 @@ const MUONIC_ELEM = {
             desc: `Collapsed Stars boost starting of the growth reductions of corrupted stars.`,
             cost: E('e72'),
             eff() {
+                if (!tmp.star_unl) return E(1)
                 let x = player.stars.points.add(1).log10().add(1).log10().add(1)
                 if (hasElement(56,1)) x = x.pow(2)
                 return x
@@ -242,7 +244,7 @@ const MUONIC_ELEM = {
         },{
             desc: `Boost Supernova Generation based on beyond-ranks' maximum tier.`,
             get cost() { return OURO.evo >= 2 ? E('e5250') : E('e12100') },
-            eff: _ => Decimal.pow(2.5,tmp.beyond_ranks.max_tier),
+            eff: () => Decimal.pow(2.5,tmp.beyond_ranks.max_tier),
             effDesc: x=>formatMult(x),
         },{
             cs: true,
@@ -278,10 +280,10 @@ const MUONIC_ELEM = {
             cost: E('e20400'),
             eff() {
                 let x = exoticAEff(1,1,E(1)).root(5)
-                if (tmp.c16active) x = x.max(1).log10().add(1)
+                if (tmp.c16.in) x = x.max(1).log10().add(1)
                 return x
             },
-            effDesc: x=>"^"+format(x),
+            effDesc: x=>formatPow(x),
         },{
             desc: `Pion’s third reward is 50% stronger.`,
             cost: E('e23400'),
@@ -290,6 +292,7 @@ const MUONIC_ELEM = {
             desc: `Supernova divides Corrupted Star upgrade 1 and 2 costs.`,
             cost: E('e440'),
             eff() {
+                if (!tmp.sn.unl) return E(1)
                 let x = player.supernova.times.add(1)
                 if (hasElement(61,1)) x = x.pow(muElemEff(61))
                 return x
@@ -325,7 +328,7 @@ const MUONIC_ELEM = {
                 if (!tmp.inf_unl) return E(1)
                 return player.inf.theorem.div(10).add(1).root(2)
             },
-            effDesc: x=>"^"+format(x),
+            effDesc: x=>formatPow(x),
         },{
             cs: true,
             desc: `Unlock the seventh star generator.`,
@@ -340,7 +343,7 @@ const MUONIC_ELEM = {
         },{
             desc: `The growth reductions of corrupted stars start later based on Normal Energy.`,
             cost: E('e161800'),
-            eff: _ => tmp.inf_unl ? expMult(player.gp_resources[4].add(1),0.5) : E(1),
+            eff: () => tmp.inf_unl ? expMult(player.gp_resources[4].add(1),0.5) : E(1),
             effDesc: x=>formatMult(x)+" later",
         },{
             cs: true,
@@ -376,7 +379,7 @@ const MUONIC_ELEM = {
             berry: true,
             desc: `Tetr boosts Calm Power.`,
             cost: E(300),
-            eff: _ => player.ranks.tetr.add(1),
+            eff: () => player.ranks.tetr.add(1),
             effDesc: x=>formatMult(x),
         },{
             berry: true,
@@ -429,7 +432,7 @@ const MUONIC_ELEM = {
             cost: E(1e8),
         },{
             berry: true,
-            desc: `[ Placeholder: Protostars ]`,
+            desc: `+0.25 to the exponent of quark's formula from protostars.`,
             cost: E(2e8),
         },{
             berry: true,
@@ -437,7 +440,7 @@ const MUONIC_ELEM = {
             cost: E(5e8),
         },{
             berry: true,
-            desc: `[ Placeholder: Protostars ]`,
+            desc: `+0.1 to the exponent of quark's formula from protostars.`,
             cost: E(1e9),
         },{
             berry: true,
@@ -460,7 +463,7 @@ const MUONIC_ELEM = {
     getUnlLength() {
         let u = 11
 
-        if (OURO.unl()) u = [66,76,82,88,98,108,118][OURO.evo]
+        if (OURO.unl()) u = [66,76,82,88,94,98,104][OURO.evo]
         else {
             if (tmp.inf_unl) u += 4
             if (hasInfUpgrade(9)) u += 3
@@ -633,7 +636,7 @@ function updateExoticAtomsTemp() {
 
     tea.req_fp = fp
     tea.req = EXOTIC_ATOM.req()
-    tea.amount = EXOTIC_ATOM.getAmount()
+    tea.amount = OURO.evo >= 3 ? player.evo.proto.exotic_atoms : EXOTIC_ATOM.getAmount()
     tea.gain = EXOTIC_ATOM.gain()
 
     let s = Decimal.add(1,Math.max(t.sub(12),0)*0.1)

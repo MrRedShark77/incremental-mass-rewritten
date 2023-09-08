@@ -1,6 +1,6 @@
 const QCs = {
-    active() { return player.qu.qc.active || player.qu.rip.active || CHALS.inChal(14) || CHALS.inChal(15) || tmp.c16active || inDarkRun() },
-    getMod(x) { return tmp.c16active && OURO.evo >= 2 ? 10 : CHALS.inChal(15) ? (OURO.evo >= 2 ? 3 : OURO.evo == 1 ? [6,0,6,6,6,6,6,6][x] : [10,5,10,10,10,10,10,10][x]) : tmp.c16active || inDarkRun() ? (OURO.evo == 1 ? 5 : 8) : CHALS.inChal(14) ? (OURO.evo >= 1 ? 4 : 5) : player.qu.rip.active ? tmp.qc_rip[x] : player.qu.qc.mods[x] },
+    active() { return tmp.qc_force != undefined || player.qu.qc.active },
+    getMod(x) { return (tmp.qc_force || player.qu.qc.mods)[x] },
     incMod(x,i) { if (!this.active()) player.qu.qc.mods[x] = Math.min(Math.max(player.qu.qc.mods[x]+i,0),10) },
     enter() {
         if (!player.qu.qc.active) {
@@ -18,7 +18,7 @@ const QCs = {
     ctn: [
         {
             eff(i) {
-                return [1-0.03*i,2/(i+2)]
+                return [Math.max(0,1-0.03*i),2/(i+2)]
             },
             effDesc(x) { return `<b>^${format(x[0])}</b> to exponent of all-star resources.<br><b>^${format(x[1])}</b> to strength of star generators.` },
         },{
@@ -61,8 +61,8 @@ const QCs = {
         },{
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
-                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16active) i *= getEvo2Ch8Boost().toNumber()
-                let x = [1-0.05*i,i/10+1]
+                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16.in) i *= getEvo2Ch8Boost().toNumber()
+                let x = [Math.max(0,1-0.05*i),i/10+1]
                 return x
             },
             effDesc(x) { return `<b>^${format(x[0])}</b> to starting of pre-Quantum scaling.<br><b>${format(x[1]*100)}%</b> to strength of pre-Quantum scaling.` },
@@ -167,7 +167,13 @@ function updateQCModPresets() {
 
 function updateQCTemp() {
     let evo = OURO.evo
-    tmp.qc_rip = [[10,2,10,10,5,0,2,10], [10,2,10,10,1,0,2,5], [10,2,0,5,1,0,2,0], [10,10,10,10,10,10,10,10]][evo]
+    tmp.qc_force = undefined
+	if (player.qu.rip.active) tmp.qc_force = QC_FORCE.rip[evo]
+	if (player.dark.run.active) tmp.qc_force = QC_FORCE.run[evo]
+	for (var c of [14,15,16,20]) {
+		if (!CHALS.inChal(c)) continue
+		tmp.qc_force = QC_FORCE[c][evo]
+	}
 
     tmp.qu.qc_s_b = E(2)
     if (hasTree("qf4")) tmp.qu.qc_s_b = tmp.qu.qc_s_b.add(.5)
@@ -202,7 +208,7 @@ function updateQCHTML() {
         tmp.el["qc_tab"+x].setDisplay(tmp.qc_tab == x)
     }
     if (tmp.qc_tab == 0) {
-        tmp.el.qc_btn.setDisplay(!(player.qu.rip.active || tmp.c16active || inDarkRun()))
+        tmp.el.qc_btn.setDisplay(!tmp.rip.in)
         tmp.el.qc_btn.setTxt((QCs.active()?"Exit":"Enter") + " the Quantum Challenge")
         for (let x = 0; x < QCs_len; x++) {
             tmp.el["qcm_mod"+x].setTxt(QCs.getMod(x))
@@ -217,4 +223,48 @@ function updateQCHTML() {
             )
         }
     }
+}
+
+function getQCForceDisp(mod) {
+	return `[${QC_FORCE[mod][OURO.evo]?.toString()??"?"}]`
+}
+
+let QC_FORCE = {
+	//Number: Challenge
+	rip: [
+		[10,2,10,10,5,0,2,10],
+		[10,2,10,10,1,0,2,5],
+		[10,2,0,5,1,0,2,0],
+		[3,0,0,5,1,0,2,0]
+	],
+	run: [
+		[8,8,8,8,8,8,8,8],
+		[5,5,5,5,5,5,4,5], //Bezier wants Aarex to nerf Evo 1 Dark Run
+		[7,7,7,7,7,7,0,7], //Suggested by Maxwell
+		[0,0,5,5,3,4,0,6]
+	],
+	14: [
+		[5,5,5,5,5,5,5,5],
+		[4,4,4,4,4,4,4,4],
+		[4,4,4,4,4,4,4,4],
+		[2,2,2,2,1,2,0,2],
+	],
+	15: [
+		[10,5,10,10,10,10,10,10],
+		[6,0,6,6,6,6,6,6],
+		[3,3,3,3,3,3,3,3],
+		[3,0,3,3,1,3,1,3],
+	],
+	16: [
+		[8,8,8,8,8,8,8,8],
+		[5,5,5,5,5,5,5,5],
+		[10,10,10,10,10,10,10,10],
+		[10,10,10,10,7,10,10,10]
+	],
+	20: [
+		[10,5,10,10,10,10,10,10],
+		[6,0,6,6,6,6,6,6],
+		[10,10,10,10,10,10,10,10],
+		[6,0,6,6,5,6,6,6],
+	],
 }

@@ -60,6 +60,7 @@ const SCALE_START = {
 		fTier: E(100),
 		prestige0: E(320),
 		prestige1: E(200),
+		FSS: E(80),
 	},
 	meta: {
 		rank: E(1e4),
@@ -152,6 +153,7 @@ const SCALE_POWER= {
 		fTier: 6,
 		prestige0: 3,
 		prestige1: 3,
+		FSS: 4,
 	},
 	meta: {
 		rank: 1.0025,
@@ -188,6 +190,7 @@ const SCALE_FP = {
 
 const QCM8_SCALES = ['rank','tier','tetr','pent','hex','massUpg','tickspeed','bh_condenser','gamma_ray','supernova','fTier']
 const PreQ_SCALES = ['rank','tier','tetr','massUpg','tickspeed','bh_condenser','gamma_ray']
+const PreD_SCALES = [...PreQ_SCALES,'pent','hex','supernova','fTier','cosmic_str','prestige0','prestige1']
 const SCALE_TYPE = ['super', 'hyper', 'ultra', 'meta', 'exotic', 'supercritical', 'instant', 'mega'] // super, hyper, ultra, meta, exotic
 const FULL_SCALE_NAME = ['Super', 'Hyper', 'Ultra', 'Meta', 'Exotic', 'Supercritical', 'Instant', 'Mega']
 
@@ -201,8 +204,8 @@ const SCALING_RES = {
     massUpg(x=1) { return player.build["mass_"+(x+1)].amt },
 	bh_condenser(x=0) { return player.build.bhc.amt },
 	gamma_ray(x=0) { return player.build.cosmic_ray.amt },
-	supernova(x=0) { return player.supernova.times },
-	fTier(x=0, y=0) { return player.supernova.fermions.tiers[x][y] },
+	supernova(x=0) { return tmp.sn.unl ? player.supernova.times : E(0) },
+	fTier(x=0, y=0) { return tmp.sn.unl ? player.supernova.fermions.tiers[x][y] : E(0) },
 	cosmic_str(x=0) { return player.build.cosmic_string.amt },
 	prestige0() { return player.prestiges[0] },
 	prestige1() { return player.prestiges[1] },
@@ -307,9 +310,9 @@ function updateScalingTemp() {
 		}
 	}
 	let sqc8 = []
-	if (!CHALS.inChal(14) && !inDarkRun() && !tmp.c16active && !CHALS.inChal(15)) {
+	if (!tmp.dark.run && !CHALS.inChal(14) && !CHALS.inChal(15)) {
 		if (hasUpgrade("br",2)) sqc8.push("massUpg","rank","tier","tetr","pent",'hex')
-		if (player.md.break.active) sqc8.push("bh_condenser","gamma_ray")
+		if (brokeDil()) sqc8.push("bh_condenser","gamma_ray")
 	}
 	tmp.scaling_qc8 = sqc8
 }
@@ -335,9 +338,10 @@ function getScalingName(name, x=0, y=0) {
 }
 
 function getScalingStart(type, name) {
-	let c16 = tmp.c16active
+	let c16 = tmp.c16.in
 
 	let start = SCALE_START[SCALE_TYPE[type]][name]
+	let t_name = SCALE_TYPE[type]
 
 	if (tmp.c18active && C18_SCALING.includes(name)) return start
 
@@ -366,7 +370,7 @@ function getScalingStart(type, name) {
 			if (CHALS.inChal(1) || CHALS.inChal(10)) return E(50)
 		}
 		else if (name=="prestige0") {
-			if (player.md.break.upgs[9].gte(1)) start = start.add(10)
+			if (hasMDUpg(9, true)) start = start.add(10)
 			if (hasElement(175)) start = start.add(30)
 			if (hasElement(194)) start = start.mul(2)
 		}
@@ -430,13 +434,13 @@ function getScalingStart(type, name) {
 			if (player.ranks.pent.gte(1)) start = start.mul(1.1)
 			if (player.ranks.pent.gte(5)) start = start.mul(RANKS.effect.pent[5]())
 			if (hasPrestige(1,5)) start = start.mul(prestigeEff(1,5))
-			start = start.mul(tmp.radiation.bs.eff[14])
-			if (!hasUpgrade('br',24)) start = start.mul(tmp.bd.upgs[4].eff)
+			start = start.mul(radBoostEff(14))
+			if (!hasUpgrade('br',24)) start = start.mul(mdEff(4, true))
 		}
 		else if (name=="tickspeed") {
 			if (hasElement(68)) start = start.mul(2)
 			if (player.ranks.pent.gte(4)) start = start.mul(RANKS.effect.pent[4]())
-			start = start.mul(tmp.fermions.effs[0][5])
+			start = start.mul(fermEff(0, 5))
 			start = start.mul(getEnRewardEff(0))
 			if (hasElement(158)) start = start.pow(2)
 		}
@@ -484,7 +488,7 @@ function getScalingStart(type, name) {
 		}
 	} else if (type==6) {
 		if (name=="rank") {
-			if (hasUpgrade('br',24)) start = start.mul(tmp.bd.upgs[4].eff)
+			if (hasUpgrade('br',24)) start = start.mul(mdEff(4, true))
 		}
 	}
 
@@ -498,7 +502,7 @@ function getScalingStart(type, name) {
 	if (QCs.active() && QCM8_SCALES.includes(name) && type<4) if (!tmp.scaling_qc8.includes(name)) start = start.pow(tmp.qu.qc_eff[7][0])
 	if (hasUpgrade('br',14) && name=="fTier" && type==0) start = start.add(10)
 	if (hasElement(88) && name == "tickspeed") start = start.mul(player.qu.rip.active?100:10)
-	return start.max(type%4==3?2:1).floor()
+	return start.max(type%4==3?Decimal.pow(SCALE_POWER[t_name][name],tmp.scaling_power[t_name][name]).sub(1).pow(-1).max(2):1).floor()
 }
 
 function getScalingPower(type, name) {
@@ -506,7 +510,7 @@ function getScalingPower(type, name) {
 
 	let power = E(1)
 	if (name == "supernova" && (hasCharger(3)?type<5:type<3)) {
-		power = power.mul(tmp.fermions.effs[1][4])
+		power = power.mul(fermEff(1, 4))
 	}
 	if (name == "fTier" && type<4) {
 		if (hasTree("fn12")) power = power.mul(0.9)
@@ -639,15 +643,18 @@ function getScalingPower(type, name) {
 	if (hasPrestige(2,4) && rps.includes(name) && player.chal.comps[18].gte(1) && type == 4) power = power.mul(tmp.chal.eff[18][1])
 
 	let qf = tmp.qu.qc_eff[7][1]
-	if (!tmp.c16active) if (player.dark.run.upg[4] && inDarkRun() && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
+	if (!tmp.c16.in) if (player.dark.run.upg[4] && inDarkRun() && ['rank','tier','tetr','pent','hex'].includes(name)) qf **= 0.75 
 	if (QCs.active() && QCM8_SCALES.includes(name) && type<4) if (!tmp.scaling_qc8.includes(name)) power = power.mul(qf)
 	if (PreQ_SCALES.includes(name) && type<3) power = power.mul(getEnRewardEff(5))
+	if (OURO.evo >= 3 && PreD_SCALES.includes(name) && type<6) power = power.mul(nebulaEff('magenta'))
 
 	let p = ['prestige0','prestige1']
 	if (hasPrestige(3,10)) p.push('prestige2')
 	if (hasPrestige(0,388) && p.includes(name) && type<3) power = power.mul(prestigeEff(0,388,1))
 
 	if (hasPrestige(1,66) && name=="fTier") power = power.mul(0.8)
+
+	if (tmp.inf_unl && type == 4) power = power.mul(theoremEff('mass',6))
 
 	return power.max(type==3?0.5:0)
 }
@@ -677,7 +684,7 @@ function noScalings(type,name) {
 		if (hasBeyondRank(2,15) && OURO.evo < 2) return true
 	}
 	else if (name=="supernova") {
-		return tmp.SN_passive || type<3 && hasCharger(3)
+		return tmp.sn.gen || type<3 && hasCharger(3)
 	}
 	else if (name=="tickspeed") {
 		if (hasCharger(4)) return true
@@ -692,6 +699,7 @@ function noScalings(type,name) {
 		if (hasCharger(7)) return true
 	}
 	else if (name=="prestige0") {
+		if (type == 3 && OURO.evo >= 3) return true
 		if (type < 3 && hasBeyondRank(5,7)) return true
 	}
 	else if (name=="prestige1" || name=="prestige2") {

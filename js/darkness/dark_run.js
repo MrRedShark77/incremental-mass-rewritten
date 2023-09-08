@@ -3,7 +3,7 @@ const DARK_RUN = {
     mass_glyph_eff(i) {
         let x, g = player.dark.run.glyphs[i]
 
-        if (tmp.c16active) g = E(i == 5 ? 10 : 100)
+        if (tmp.c16.in) g = E(i == 5 ? 10 : 100)
         g = g.div(tmp.dark.glyph_weak)
 
         if (CHALS.inChal(20)) g = E(1.5e3)
@@ -28,13 +28,13 @@ const DARK_RUN = {
     ],
 
     mass_glyph_gain: [
-        ()=>player.mass.gte(OURO.evo>=1?'ee26':'ee39')?player.mass.log10().div(OURO.evo>=1?'e26':'e39').log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>player.mass.gte(OURO.evo>=3?'ee18':OURO.evo>=1?'ee26':'ee39')?player.mass.log10().div(OURO.evo>=3?'e18':OURO.evo>=1?'e26':'e39').log(1.1).add(1).softcap(50,0.5,0).mul(glyphUpgEff(7)).mul(tmp.dark.glyph_mult).floor():E(0),
         ()=>OURO.evo>=2?player.evo.wh.fabric.add(1).log10().div(5).pow(1.5).mul(tmp.dark.glyph_mult).floor()
 			:(player.bh.mass.gte(OURO.evo>=1?'e1e18':'e1.5e34')?player.bh.mass.log10().div(OURO.evo>=1?'1e18':1.5e34).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0)),
         ()=>player.atom.quarks.gte(OURO.evo>=1?'e1e17':'e3e32')?player.atom.quarks.log10().div(OURO.evo>=1?'1e17':3e32).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.md.mass.gte(OURO.evo>=1?'e1e9':'e1e21')?player.md.mass.log10().div(OURO.evo>=1?'1e9':1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.stars.points.gte(OURO.evo>=1?'e1e11':'e1.5e24')?player.stars.points.log10().div(OURO.evo>=1?'1e11':1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>tmp.prestiges.base.gte(OURO.evo>=1?1e10:1e13)?tmp.prestiges.base.div(OURO.evo>=1?1e10:1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>tmp.atom.unl&&player.md.mass.gte(OURO.evo>=1?'e1e9':'e1e21')?player.md.mass.log10().div(OURO.evo>=1?'1e9':1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>tmp.star_unl&&player.stars.points.gte(OURO.evo>=1?'e1e11':'e1.5e24')?player.stars.points.log10().div(OURO.evo>=1?'1e11':1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>tmp.prestiges.base.gte(OURO.evo>=3?1e9:OURO.evo>=1?1e10:1e13)?tmp.prestiges.base.div(OURO.evo>=3?1e9:OURO.evo>=1?1e10:1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
     ],
 
     upg_unl_length() {
@@ -55,7 +55,7 @@ const DARK_RUN = {
                 return {0: Math.floor(6*i+5)}
             },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 10,
             get desc() { return OURO.evo >= 2 ? `Raise Wormhole by 1.5 every level.` : `Raise mass of black hole gain by 1.5 every level.` },
@@ -64,7 +64,7 @@ const DARK_RUN = {
                 return {0: Math.floor(6*i+10), 1: Math.floor(6*i+5)}
             },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 5,
             desc: `Exotic rank starts x1.25 later every level.`,
@@ -72,7 +72,7 @@ const DARK_RUN = {
                 return {1: 6*i+10, 2: 6*i+5}
             },
             eff(i) { return 1.25**i },
-            effDesc: x=>"x"+format(x,2)+" later",
+            effDesc: x=>formatMult(x,2)+" later",
         },{
             max: 1,
             desc: `Rank tiers' nerf power from 8th QC modifier is weaker while dark running.`,
@@ -84,7 +84,7 @@ const DARK_RUN = {
                 return {2: 75+5*i, 3: 5*i+5}
             },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 100,
             desc: `Triple dark ray gain for each level.`,
@@ -93,7 +93,7 @@ const DARK_RUN = {
                 return {0: Math.floor(20+20*i), 1: Math.floor(20+20*i), 2: Math.floor(20+20*i)}
             },
             eff(i) { return 3**i },
-            effDesc: x=>"x"+format(x,0),
+            effDesc: x=>formatMult(x,0),
         },{
             max: 1,
             desc: `Gain x1.5 more Cyrillic Glyphs.`,
@@ -107,13 +107,13 @@ const DARK_RUN = {
                 return {3: Math.floor(35+5*i), 4: Math.floor(5*i+5)}
             },
             eff(i) { return OURO.evo >= 2 ? 1 - 0.05 * i : 10 ** i },
-            effDesc: x=>OURO.evo >= 2 ? formatReduction(x) : "^"+format(x,0),
+            effDesc: x=>OURO.evo >= 2 ? formatReduction(x) : formatPow(x,0),
         },{
             max: 5,
             desc: `Star generators are ^1.5 stronger every level.`,
             cost(i) { return {1: 200+10*i, 2: 200+10*i, 5: 40+5*i} },
             eff(i) { return 1.5**i },
-            effDesc: x=>"^"+format(x,2),
+            effDesc: x=>formatPow(x,2),
         },{
             max: 10,
             desc: `Prestige base's exponent is increased by 0.02 per level.`,
@@ -145,7 +145,7 @@ const DARK_RUN = {
                 return {0: 160+j, 1: 446+j, 2: 460+j, 3: 328+j, 4: 333+j, 5: 222+j}
             },
             eff(i) { return 1+i/8 },
-            effDesc: x=>"^"+format(x,3),
+            effDesc: x=>formatPow(x,3),
         },
     ],
 }
@@ -169,7 +169,7 @@ function glyphButton(i) {
 }
 
 function inDarkRun() {
-    return player.dark.run.active || CHALS.inChal(17) || CHALS.inChal(18) || CHALS.inChal(19) || CHALS.inChal(20)
+    return player.dark.run.active || player.chal.active >= 16
 }
 
 function darkRun(round) {
@@ -218,9 +218,10 @@ function buyGlyphUpgrade(i) {
 function updateDarkRunHTML() {
     let dtmp = tmp.dark, dra = player.dark.run.active
     let pin = player.dark.run.pin_upg, gum = tmp.mass_glyph_msg
-    let c16 = tmp.c16active
+    let c16 = tmp.c16.in
 
     tmp.el.dark_run_btn.setTxt(dra?"Exit Dark Run":"Start Dark Run")
+    tmp.el.dark_run_btn.setTooltip(`Dark Running will force a Dark reset, and will trap you into Big Rip with quantum challenge modifiers ${getQCForceDisp('run')}. You will produce <b>Glyphic Mass</b> based on resources which nerf things, and choosing a glyph to earn will exit a Dark Run.`)
     tmp.el.dark_run_rounds.setTxt(GLYPH_SEL.length?"Next Round":dra?"Rounds left: "+player.dark.run.round:"Rounds: " + player.dark.run.rounds)
     tmp.el.mg_max.setTxt("Max: " + ["OFF", "ON"][player.dark.run.gmode])
     tmp.el.mg_max_gain.setTxt(player.dark.run.gmode ? "∞" : format(player.dark.run.gamount,0))
@@ -286,35 +287,33 @@ function updateDarkRunHTML() {
 
 function updateDarkRunTemp() {
     let dtmp = tmp.dark
-    let dra = player.dark.run.active
+	dtmp.run = inDarkRun()
 
-    dtmp.glyph_upg_unls = DARK_RUN.upg_unl_length()
+    let w = 1
+    if (tmp.inf_unl) w /= theoremEff('time',3)
+    dtmp.glyph_weak = w
 
     dtmp.glyph_sel_max = 1 + OURO.evo
     dtmp.glyph_mult = E(dtmp.rayEff.glyph||1).mul(appleEffect('glyph'))
     if (hasPrestige(2,5)) dtmp.glyph_mult = dtmp.glyph_mult.mul(prestigeEff(2,5,1))
     dtmp.glyph_mult = dtmp.glyph_mult.mul(tmp.matters.FSS_eff[1])
 
-    let w = 1
-    if (tmp.inf_unl) w /= theoremEff('time',3)
-    dtmp.glyph_weak = w
+    let dra = player.dark.run.active
+    dtmp.glyph_upg_unls = DARK_RUN.upg_unl_length()
 
     let dp = 0
     if (hasElement(7,1)) dp += 3
-
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         dtmp.mass_glyph_eff[x] = DARK_RUN.mass_glyph_eff(x)
         let gain = DARK_RUN.mass_glyph_gain[x]()
         let mg = Decimal.max(0,(dra ? gain : E(0)).sub(player.dark.run.glyphs[x]))
         if (player.dark.run.gmode == 1) mg = Decimal.min(player.dark.run.gamount,mg)
         dtmp.mass_glyph_gain[x] = mg
-
         dtmp.mg_passive[x] = x < dp ? gain : 0
     }
 
     for (let x = 1; x < GLYPH_UPG_LEN; x++) {
         let u = DARK_RUN.upg[x]
-
         if (u.eff) tmp.glyph_upg_eff[x] = u.eff(player.dark.run.upg[x]||0)
     }
 }

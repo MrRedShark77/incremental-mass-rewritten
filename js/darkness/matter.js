@@ -3,7 +3,7 @@ const MATTERS = {
     colors: ['#0002',"#f002","#f0f2","#ffb6c122","#a0f2","#70f2","#06f2","#0cf2","#0f02","#bf02","#ff02","#f802","#fff2","#8882"],
 
     gain(i) {
-        let c16 = tmp.c16active, rdc = tmp.matters.reduction
+        let c16 = tmp.c16.in, rdc = tmp.matters.reduction
 		let x, m0 = i == 0 ? tmp.matters.amt_0 : player.dark.matters.amt[i-1]
         if (c16) {
             x = i == 12 ? E(1) : player.dark.matters.amt[i+1].add(1)
@@ -58,7 +58,7 @@ const MATTERS = {
     },
 
     firstUpgData(i) {
-        let c16 = tmp.c16active, rdc = tmp.matters.reduction
+        let c16 = tmp.c16.in, rdc = tmp.matters.reduction
 
 		let m0 = player.dark.matters.amt[i]
         let lvl = player.dark.matters.upg[i], pow = c16?1.25:Math.max(i-2,0)/10+1.5
@@ -76,9 +76,14 @@ const MATTERS = {
 			cost = lvl.add(1).pow(hasInfUpgrade(17)?2:3).mul(1e3)
 			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).floor()
 			eff = lvl.add(1).mul(expMult(lvl.add(1), .9).pow(GPEffect(2)))
+        	if (i == 0 && OURO.evo >= 3) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
 		}
 
-        let exp = hasInfUpgrade(17) && i > 0 && rdc < 2 ? lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1) : E(1)
+        let exp = E(1)
+		if (hasInfUpgrade(17) && i > 0) {
+			if (rdc < 2) exp = lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1)
+			if (OURO.evo >= 3) exp = lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1)
+		}
         return {cost, bulk, eff, exp}
     },
 
@@ -106,13 +111,16 @@ const MATTERS = {
             return x
         },
         bulk() {
-            let f = tmp.matters.FSS_base
+            let f = tmp.matters.FSS_base, fp = E(1)
 
             if (f.lt(OURO.evo>=2?1e3:1e43)) return E(0)
+
+            if (tmp.inf_unl) fp = fp.mul(theoremEff('time',6))
+
             let x = f.div(OURO.evo>=2?1e3:1e43).max(1).log(100).root(1.5)
             if (hasElement(217)) x = x.div(.8)
 
-            x = x.scaleEvery('FSS',true,[1,hasTree('ct10')?treeEff('ct10').pow(-1):1])
+            x = x.scaleEvery('FSS',true,[1,hasTree('ct10')?treeEff('ct10').pow(-1):1,fp])
             return x.add(1).floor()
         },
 
@@ -169,7 +177,7 @@ function updateMattersHTML() {
 
     let h = `10<sup>lg(lg(x))<sup>${format(tmp.matters.exponent)}</sup>`
 	if (rdc == 2) h = `lg(x)<sup>${format(tmp.matters.exponent)}</sup>`
-    else if (hasElement(256)) h += tmp.c16active ? `</sup>×(next matter)` : `×lg(next matter)</sup>`
+    else if (hasElement(256)) h += tmp.c16.in ? `</sup>×(next matter)` : `×lg(next matter)</sup>`
 
     tmp.el.matter_formula.setHTML(h)
     tmp.el.matter_req_div.setDisplay(player.dark.matters.unls<14)
@@ -216,7 +224,7 @@ function updateMattersHTML() {
 }
 
 function updateMattersTemp() {
-	let evo2 = OURO.evo >= 2, rdc = evo2 ? 2 : tmp.c16active ? 1 : 0
+	let evo2 = OURO.evo >= 2, rdc = evo2 ? 2 : tmp.c16.in ? 1 : 0
 	let mt = tmp.matters
 
 	mt.reduction = rdc

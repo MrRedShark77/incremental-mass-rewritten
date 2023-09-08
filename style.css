@@ -631,10 +631,11 @@ button {
 }
 .elem_detailed > button {
 	position: absolute;
-	left: 0;
+	right: 0;
 }
 .elem_detailed > div {
-	width: 300px;
+	width: 250px;
+	padding-right: 55px;
 	text-align: right;
 }
 
@@ -643,8 +644,11 @@ button {
 	color: white;
 	box-shadow: 3px 3px 3px #ff5555, -3px -3px 3px #5555ff, 3px 3px 3px #ff5555 inset, -3px -3px 3px #5555ff inset;
 	opacity: 0.1;
-	transform: scale(0.8);
 	animation: corrupted_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.elements.corrupted {
+	transform: scale(0.8);
 }
 
 .elements.paralyzed {
@@ -788,6 +792,7 @@ h4 {
 }
 
 *::-webkit-scrollbar-thumb {
+	border: solid 1px black;
     background-color: #888;
     border-radius: 10px;
 }
@@ -1271,6 +1276,10 @@ h4 {
 	overflow-x: auto;
 }
 
+#elements_table > div {
+	padding: 25px 0px;
+}
+
 #inf_popup {
 	color: black;
 	font-size: 16px;
@@ -1574,7 +1583,7 @@ h4 {
 
 #ouro_scene, #ouro_quotes {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -1592,7 +1601,6 @@ h4 {
 #ouro_quotes > span {
     position: fixed;
     left: 50%;
-    color: #007F3F7F;
     font-size: 18px;
 	transform: translateX(-50%);
 }
@@ -1707,7 +1715,7 @@ h4 {
 }
 
 .proto_table > button {
-	width: 300px;
+	width: 400px;
 	height: 100px;
 	border-color: #357;
 	box-shadow: 0px 0px 10px 0px #357;
@@ -1715,6 +1723,94 @@ h4 {
 }
 .proto_table > button:hover {
 	background-color: #246
+}
+
+#const_div {
+	position: relative;
+	margin: auto;
+	border: 4px solid transparent;
+	padding: 5px;
+	background: url('images/evolution/space.jpg') padding-box, linear-gradient(45deg, pink, darkorchid, pink, darkorchid) border-box;
+	width: 720px;
+	height: 480px;
+}
+
+#const_canvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+#const_scroll {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll;
+}
+
+#const_glow {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	box-shadow: inset #fff 0px 0px 20px;
+	pointer-events: none;
+}
+
+#const_table {
+	position: relative;
+	width: 100%;
+	height: 490px;
+}
+
+.zoviac_upg {
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	transform: translate(-50%,-50%);
+	cursor: pointer;
+}
+
+.zoviac_upg.bought {
+	box-shadow: 0 0 12px green, 0 0 12px green, 0 0 18px magenta
+}
+
+#zodiac_desc {
+	position: relative;
+	margin: auto;
+	width: 730px;
+	height: 100px;
+	margin-bottom: 5px;
+}
+
+#zodiac_desc > div {
+	position: absolute;
+	bottom: 0px;
+	width: 50%;
+}
+
+#zodiac_amount {
+	text-align: right;
+	right: 0px;
+}
+
+#zodiac_left {
+	text-align: left;
+	left: 0px;
+}
+
+#const_tier {
+	width: 400px;
+	max-width: 400px;
+}
+
+#zodiac_tabs {
+	margin: 3px;
 }
 
 @keyframes ouro_loop {

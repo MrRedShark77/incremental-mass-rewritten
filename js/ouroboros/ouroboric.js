@@ -1,6 +1,6 @@
 /* ORIGINAL BY AAREX, EDITED BY MRREDSHARK77 */
 const OURO = {
-    unl: _ => tmp.ouro.unl,
+    unl: () => tmp.ouro.unl,
     get save() {
         let s = {
             ouro: {
@@ -27,12 +27,21 @@ const OURO = {
                 proto: {
                     star: E(0),
                     dust: E(0),
+                    exotic_atoms: E(0),
                     nebula: {}
                 },
-            }
+				const: {
+					tier: 0,
+					upg: {}
+				},
+            },
         }
         for (let x = 0; x < WORMHOLE.maxLength; x++) s.evo.wh.mass[x] = E(0)
         for (var i in PROTOSTAR.nebulae) s.evo.proto.nebula[i] = E(0)
+        for (let [zi,z] of Object.entries(CONSTELLATION.zodiac)) s.evo.const[zi] = {
+            amount: E(0),
+            level: 0
+        }
         return s
     },
     load(force) {
@@ -47,21 +56,23 @@ const OURO = {
             unl,
             apple_eff: {},
             escrow_boosts: {},
-            fed: {},
         }
         tmp.evo = {
+            fed: {},
             meditation_eff: {},
-            meditation_loss: {},
-
             wormhole_eff: [],
-            wormhole_mult: [],
+            nebula_eff: {},
 
-            nebula_eff: {}
+            zodiac: {},
+            zodiac_eff: {}
         }
+
+        for (let zi in CONSTELLATION.zodiac) tmp.evo.zodiac[zi] = {}
+
         this.temp()
     },
 
-    canReset: _ => player.chal.comps[20].gte(1),
+    canReset: () => player.chal.comps[20].gte(1),
     reset(force) {
         if (!force && !this.canReset()) return
 
@@ -77,28 +88,44 @@ const OURO = {
         this.doReset()
     },
     doReset() {
-        INF.doReset()
-        INF.load(false)
-
         player.build.pe.amt = E(0)
         player.build.fvm.amt = E(0)
         if (OURO.unl()) {
 			player.ouro.apple = E(0)
 			player.evo.wh.origin = 0
+			player.evo.wh.unl = false
 		}
 
-        let newData = getPlayerData()
+        for (let i in CORE) tmp.core_eff[i] = []
+        INF.doReset()
+        INF.load(false)
+
+        let ek = []
+        if (OURO.evo >= 4) ek.push(293)
         let keep = {
             atom: {
-                elements: OURO.evo >= 3 ? [1] : [],
+                elements: ek,
                 muonic_el: unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry)
             }
         }
+
+        let newData = getPlayerData()
         let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
 
-        tmp.tab = 0; tmp.stab = [0]; player.options.nav_hide[3] = false
+		tmp.rp.unl = false
+		tmp.bh.unl = false
+		tmp.atom.unl = false
+		tmp.star_unl = false
+		tmp.sn = {}
+		destroyOldData()
+
+        tmp.tab = 0
+		tmp.stab = [0]
+		tmp.rank_tab = 0
+		player.options.nav_hide[3] = false
 		player.options.res_hide = {}
+        updateMuonSymbol()
     },
 
     temp() {
@@ -113,17 +140,18 @@ const OURO = {
         if (evo >= 1) tmp.evo.meditation_eff = MEDITATION.eff(player.evo.cp.level)
         if (evo >= 2) WORMHOLE.temp()
         if (evo >= 3) PROTOSTAR.temp()
+        if (evo >= 4) CONSTELLATION.temp()
     },
 
     calc(dt) {
         if (!this.unl()) return
-        const evo = this.evo
-
         calcSnake(dt)
 
+        const evo = this.evo
         if (evo >= 1) MEDITATION.calc(dt)
         if (evo >= 2) WORMHOLE.calc(dt)
         if (evo >= 3) PROTOSTAR.calc(dt)
+        if (evo >= 4) CONSTELLATION.calc(dt)
     },
 
     get evo() { return player.evo ? player.evo.times : 0 },
@@ -132,12 +160,12 @@ const OURO = {
         let x = {}, evo = this.evo
 
         if (evo == 1) {
-            if (player.bh.unl) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).div(3).max(1)
+            if (FORMS.bh.unl()) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).div(3).max(1)
             if (player.dark.unl) {
                 x.apple = player.evo.cp.level.add(1).log10().div(100).add(1).root(2)
                 x.quark_overflow = Decimal.pow(0.925,player.evo.cp.level.add(1).log10().sqrt())
             }
-            if (tmp.SN_passive) x.sn = expMult(player.evo.cp.level.add(1),0.4)
+            if (tmp.sn.gen) x.sn = expMult(player.evo.cp.level.add(1),0.4)
         } else if (evo == 2) {
             if (player.atom.unl) x.qk = player.evo.wh.mass[0].add(1).log10().add(1).sqrt()
             if (player.supernova.post_10) {
@@ -145,12 +173,35 @@ const OURO = {
                 x.apple = WORMHOLE.total().add(1).log10().div(20).add(1).cbrt()
             }
             if (hasTree("unl1")) x.rank = player.supernova.radiation.hz.add(10).log10().pow(-.1)
+        } else if (evo == 3) {
+            if (tmp.SN_passive && player.gal_prestige?.gt(0)) x.sn2 = Decimal.pow(2,player.gal_prestige.pow(1.25))
         }
 
         return x
     },
+}
 
-    //Fed Boosts
+const EVO = {
+	msg: [
+		null,
+		[
+			`<img src="images/rp.png"> Rage ➜ Calm <img src="images/evolution/calm_power.png">`,
+			`Break the madness of Infinity. Reincarnate as a serpent.`
+		],
+		[
+			`<img src="images/dm.png"> Dark Matter ➜ Fabric <img src="images/evolution/fabric.png">`,
+			`Evaporate what causes destruction. Black Hole.`
+		],
+		[
+			`<img src="images/atom.png"> Atoms ➜ Protostars <img src="images/evolution/protostar.png">`,
+			`The first glimpses of shattering, all starts small.`
+		],
+		[
+			`<img src="images/sn.png"> Supernova ➜ Constellation <img src="images/evolution/constellation.png">`,
+			`No longer exploding, now start exploring.`
+		],
+	],
+
     feed: [
         null,
         {},
@@ -164,11 +215,25 @@ const OURO = {
             e0_287: "corrupted",
             e0_289: "corrupted",
             e1_41: "paralyzed",
+            e1_57: "paralyzed",
             ch8: "paralyzed",
         },
         {
             e0_221: "paralyzed",
+            e1_19: "paralyzed",
+            e1_25: "paralyzed",
+            e1_29: "paralyzed",
+            e1_32: "paralyzed",
             e1_34: "paralyzed",
+            e1_39: "paralyzed",
+            e1_51: "paralyzed",
+            e1_52: "paralyzed",
+            e1_61: "paralyzed",
+            cs_ea_reward: "paralyzed",
+            ch15: "corrupted",
+        },
+        {
+
         },
     ],
     fed_msg: {
@@ -176,29 +241,13 @@ const OURO = {
         paralyzed: "<b class='saved_text'>[Paralyzed]</b>"
     },
     isFed(x) {
-        return tmp.ouro.fed[x]
+        return tmp.evo.fed[x]
     },
     update_fed() {
-        let tt = tmp.ouro.fed = {}
+        let tt = tmp.evo.fed = {}
         for (var i = 1; i <= OURO.evo; i++) tt = Object.assign(tt, this.feed[i])
     },
 }
-
-const EVOLUTION_DATA = [
-    null,
-    [
-        `<img src="images/rp.png"> Rage ➜ Calm <img src="images/evolution/calm_power.png">`,
-        `<span>Break the madness of Infinity. Reincarnate as a serpent.</span>`
-    ],
-    [
-        `<img src="images/dm.png"> Dark Matter ➜ Fabric <img src="images/evolution/fabric.png">`,
-        `<span>Evaporate what causes destruction. Black Hole.</span>`
-    ],
-    [
-        `<img src="images/atom.png"> Atoms ➜ Protostars <img src="images/evolution/protostar.png">`,
-        `<span>The first glimpses of shattering, all starts small.</span>`
-    ],
-]
 
 function escrowBoost(id,def=1) { return tmp.ouro.escrow_boosts[id] ?? def }
 
@@ -206,7 +255,7 @@ function setOuroScene(show=true) {
     tmp.el.ouro_scene.setDisplay(show);
 
     if (show) {
-        const evo = EVOLUTION_DATA[player.evo.times]
+        const evo = EVO.msg[player.evo.times]
 
         tmp.el.ouro_evo.setHTML(evo[0])
         tmp.el.ouro_quotes.setHTML(evo[1])
@@ -214,7 +263,7 @@ function setOuroScene(show=true) {
 }
 
 function canEvolve() {
-    return player.evo.times < 3
+    return player.evo.times < 4
 }
 
 function updateOuroborosHTML() {
@@ -223,7 +272,7 @@ function updateOuroborosHTML() {
     let map = tmp.tab_name
 
     if (map == 'mass') {
-        let unl = evo >= 1 && player.rp.unl
+        let unl = evo >= 1 && FORMS.rp.unl()
 
         tmp.el.meditation_div.setDisplay(unl)
         if (unl) {
@@ -278,11 +327,13 @@ function updateOuroborosHTML() {
         if (eff.quark_overflow) h += `Meditation weakens quark overflows (<b>${formatReduction(eff.quark_overflow)}</b>)<br>`
         if (eff.sn) h += `Meditation boosts supernova generation (<b>${formatMult(eff.sn)}</b>)<br>`
 
-        if (eff.qk) h += `First Wormhole raises Quarks (<b>^${format(eff.qk)}</b>)`.corrupt(tmp.c16active)+"<br>"
+        if (eff.qk) h += `First Wormhole raises Quarks (<b>^${format(eff.qk)}</b>)`.corrupt(tmp.c16.in)+"<br>"
         if (eff.chal) h += `Challenge 9 completions scale C5-8 slower (<b>${formatMult(eff.chal)}</b>)<br>`
         if (eff.rank) h += `Frequency weakens Super - Ultra Rank (<b>${formatReduction(eff.rank)}</b>)<br>`
 
-        if (eff.apple) h += `${[null, "Meditation", "Wormhole"][OURO.evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
+        if (eff.sn2) h += `Galactic prestige boosts supernova generation (<b>${formatMult(eff.sn2)}</b>)<br>`
+
+        if (eff.apple) h += `${[null, "Meditation", "Wormhole", "Protostar"][OURO.evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
 
         tmp.el.escrow_boosts.setHTML(h)
 
@@ -295,12 +346,15 @@ function updateOuroborosHTML() {
         WORMHOLE.html()
     } else if (tmp.tab_name == 'proto') {
         PROTOSTAR.html()
+    } else if (tmp.tab_name == 'constellation') {
+        CONSTELLATION.html()
     }
 }
 
 function setupOuroHTML() {
     setupWormholeHTML()
     PROTOSTAR.setupHTML()
+    CONSTELLATION.setupHTML()
 }
 
 //Others

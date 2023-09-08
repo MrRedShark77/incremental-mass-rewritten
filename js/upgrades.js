@@ -6,11 +6,11 @@ const UPGS = {
             inc: E(1.5)
         },
         2: {
-            start: E(50),
+            start: E(20),
             inc: E(4)
         },
         3: {
-            start: E(500),
+            start: E(100),
             inc: E(9)
         },
         4: {
@@ -37,20 +37,20 @@ const UPGS = {
         },
         ids: [null, 'rp', 'bh', 'atom', 'br'],
         cols: 4,
-        over(x,y) { player.main_upg_msg = [x,y] },
-        reset() { player.main_upg_msg = [0,0] },
+        over(x,y) { tmp.upgs.msg = [x,y] },
+        reset() { tmp.upgs.msg = [0,0] },
         1: {
             title: "Rage Upgrades",
             resName: "Rage Power",
             get res() { return player.rp.points },
             set res(x) { return player.rp.points = E(x) },
-            unl() { return player.rp.unl && OURO.evo < 1 },
-            auto_unl() { return hasUpgrade("bh",5) || tmp.inf_unl },
+            unl() { return tmp.rp.unl },
+            auto_unl() { return hasUpgrade("bh",4) || tmp.inf_unl },
             lens: 25,
             1: {
                 desc: "Boosters add Musclers.",
                 cost: E(1),
-                effect: _ => player.build.mass_2.amt.mul(2),
+                effect: () => player.build.mass_2.amt.mul(2),
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Musclers"
                 },
@@ -58,21 +58,21 @@ const UPGS = {
             2: {
                 desc: "Strongers add Boosters.",
                 cost: E(2),
-                effect: _ => player.build.mass_3.amt,
+                effect: () => player.build.mass_3.amt.mul(2),
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Boosters"
                 },
             },
             3: {
                 desc: "You can automatically buy mass upgrades.",
-                cost: E(4),
+                cost: E(30),
             },
             4: {
-                desc: "Ranks no longer reset anything.",
-                cost: E(10),
+                desc: "Rank 4 reward is better.",
+                cost: E(50),
             },
             5: {
-                desc: "You can automatically rank up.",
+                desc: "Double Rage Powers.",
                 cost: E(100),
             },
             6: {
@@ -81,7 +81,7 @@ const UPGS = {
             },
             7: {
                 desc: "Tickspeed adds Stronger.",
-                cost: E(1e7),
+                cost: E(1e4),
                 effect() {
                     let ret = hasAscension(0,1)?player.build.tickspeed.amt.div(3).add(1).mul(hasElement(38)?tmp.elements.effect[38].add(1):1):player.build.tickspeed.amt.div(3).add(hasElement(38)?tmp.elements.effect[38]:0)
                     return ret.floor()
@@ -102,12 +102,12 @@ const UPGS = {
                 },
             },
             9: {
-                unl() { return player.bh.unl },
+                unl() { return FORMS.bh.unl() },
                 desc: "Stronger power is increased by +^0.25.",
                 cost: E(1e31),
             },
             10: {
-                unl() { return player.bh.unl },
+                unl() { return FORMS.bh.unl() },
                 desc: "Super Rank scaling is 20% weaker.",
                 cost: E(1e43),
             },
@@ -144,7 +144,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             14: {
@@ -161,7 +161,7 @@ const UPGS = {
                     return ret
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             16: {
@@ -195,7 +195,7 @@ const UPGS = {
                     return x
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             20: {
@@ -203,7 +203,7 @@ const UPGS = {
                 desc: `Corrupted Shards boost normal mass gain.`,
                 cost: E('e2e357'),
                 effect() {
-                    if (tmp.c16active) return E(1)
+                    if (tmp.c16.in) return E(1)
                     let x = player.dark.c16.totalS.add(1)
                     return overflow(x,10,0.5).pow(2).overflow('e15000',0.25)
                 },
@@ -263,7 +263,7 @@ const UPGS = {
             resName: "Dark Matter",
             get res() { return player.bh.dm },
             set res(x) { return player.bh.dm = E(x) },
-            unl() { return player.bh.unl && OURO.evo < 2 },
+            unl() { return tmp.bh.unl },
             auto_unl() { return hasUpgrade("atom",2) || tmp.inf_unl },
             lens: 25,
             1: {
@@ -294,12 +294,12 @@ const UPGS = {
                 },
             },
             4: {
-                desc: "Tiers no longer reset anything.",
+                desc: "You can automatically buy Rage Power upgrades.",
                 cost: E(1e4),
             },
             5: {
                 unl() { return OURO.evo < 1 },
-                desc: "You can automatically buy tickspeed and Rage Power upgrades.",
+                desc: "You can automatically buy tickspeed.",
                 cost: E(5e5),
             },
             6: {
@@ -375,7 +375,7 @@ const UPGS = {
                 cost: E(1e210),
                 effect() {
                     let ret = player.atom.powers[1].add(1).pow(2)
-                    return overflow(ret,'ee108',0.25).min(tmp.c16active?'ee100':'ee110')
+                    return overflow(ret,'ee108',0.25).min(tmp.c16.in?'ee100':'ee110')
                 },
                 effDesc(x=this.effect()) {
                     return format(x)+"x"
@@ -386,8 +386,8 @@ const UPGS = {
                 desc: "Atomic Powers add Black Hole Condensers at a reduced rate.",
                 cost: E('e420'),
                 effect() {
-                    let ret = hasAscension(0,42) && tmp.atom.unl ? tmp.atom.atomicEff[0] : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0)
-                    return ret.floor()
+                    if (!tmp.atom.unl) return E(0)
+                    return hasAscension(0,42) ? tmp.atom.atomicEff[0] : player.atom.atomic.add(1).log(5).softcap(2e9,0.25,0).softcap(1e10,0.1,0).floor()
                 },
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)
@@ -398,7 +398,7 @@ const UPGS = {
                 desc: `Red matter's upgrade applies to mass gain at a reduced rate.`,
                 cost: E('e5e101'),
                 effect() {
-                    if (tmp.c16active) return E(1)
+                    if (tmp.c16.in) return E(1)
                     let x = tmp.matters.upg[0].eff.max(1).pow(0.75)
                     return x.overflow('e1000',0.5)
                 },
@@ -432,7 +432,7 @@ const UPGS = {
                     return x
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             20: {
@@ -440,7 +440,7 @@ const UPGS = {
                 desc: `Corrupted Shards boost mass of black hole gain.`,
                 cost: E('e1e273'),
                 effect() {
-                    if (tmp.c16active) return E(1)
+                    if (tmp.c16.in) return E(1)
                     let x = player.dark.c16.totalS.add(1)
                     return overflow(x,10,0.5).pow(3).overflow('e12000',0.25)
                 },
@@ -599,17 +599,17 @@ const UPGS = {
                 cost: E('e2015'),
             },
             13: {
-                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
+                unl() { return (brokeDil() && player.qu.rip.active) || hasElement(128) },
                 desc: "Cosmic Ray effect softcap starts x10 later.",
                 cost: E('e3.2e11'),
             },
             14: {
-                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
+                unl() { return (brokeDil() && player.qu.rip.active) || hasElement(128) },
                 desc: "Tickspeed, Black Hole Condenser and Cosmic Ray scalings up to Meta start x10 later.",
                 cost: E('e4.3e13'),
             },
             15: {
-                unl() { return (player.md.break.active && player.qu.rip.active) || hasElement(128) },
+                unl() { return (brokeDil() && player.qu.rip.active) || hasElement(128) },
                 desc: "Reduce Cosmic Ray scaling by 20%.",
                 cost: E('e3.4e14'),
             },
@@ -730,7 +730,7 @@ const UPGS = {
                     let x = player.qu.rip.amt.add(1).log10().add(1).pow(3)
                     return x
                 },
-                effDesc(x=this.effect()) { return "x"+format(x) },
+                effDesc(x=this.effect()) { return formatMult(x) },
             },
             6: {
                 desc: `Start with all Radiation features unlocked.`,
@@ -749,17 +749,17 @@ const UPGS = {
                 cost: E(1e7),
             },
             10: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Chromas are 10% stronger.`,
                 cost: E(2.5e8),
             },
             11: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Prestige Level no longer resets anything.`,
                 cost: E(1e10),
             },
             12: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return OURO.evo < 3 && (brokeDil() || tmp.inf_unl) },
                 desc: `Mass gain softcap^5 starts later based on Atom.`,
                 cost: E(1e16),
                 effect() {
@@ -769,22 +769,22 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "^"+format(x)+" later" },
             },
             13: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Death Shard gain is boosted based on Prestige Base.`,
                 cost: E(1e17),
                 effect() {
                     let x = (tmp.prestiges.base||E(1)).add(1).log10().tetrate(1.5).add(1)
                     return x.min('e2.5e4')
                 },
-                effDesc(x=this.effect()) { return "x"+format(x) },
+                effDesc(x=this.effect()) { return formatMult(x) },
             },
             14: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Super Fermion Tier starts 10 later (after QC8 nerf).`,
                 cost: E(1e22),
             },
             15: {
-                unl() { return player.md.break.active || tmp.inf_unl },
+                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
                 desc: `Blueprint Particles boost Pre-Quantum Global Speed slightly.`,
                 cost: E(1e24),
             },
@@ -794,7 +794,7 @@ const UPGS = {
                 cost: E(1e273),
             },
             17: {
-                unl() { return tmp.mass4Unl || tmp.inf_unl },
+                unl() { return OURO.evo < 2 && (tmp.mass4Unl || tmp.inf_unl) },
                 desc: `Dark matter raises atoms gain at a reduced rate.`,
                 cost: E('e386'),
                 effect() {
@@ -811,7 +811,7 @@ const UPGS = {
                     let x = Decimal.pow(2,player.mass.add(1).log10().add(1).log10().pow(1.5))
                     return x
                 },
-                effDesc(x=this.effect()) { return "x"+format(x) },
+                effDesc(x=this.effect()) { return formatMult(x) },
             },
             19: {
                 unl() { return tmp.brUnl || tmp.inf_unl },
@@ -823,7 +823,7 @@ const UPGS = {
                     if (hasAscension(0,33)) x = x.pow(2)
                     return x
                 },
-                effDesc(x=this.effect()) { return "x"+format(x)+" cheaper" },
+                effDesc(x=this.effect()) { return formatMult(x)+" cheaper" },
             },
             20: {
                 unl() { return player.dark.c16.first || tmp.inf_unl },
@@ -834,7 +834,7 @@ const UPGS = {
                     return overflow(x,10,0.5).pow(1.25)
                 },
                 effDesc(x=this.effect()) {
-                    return "x"+format(x)
+                    return formatMult(x)
                 },
             },
             21: {
@@ -894,7 +894,10 @@ function upgEffect(id,x,def=E(1)) { return tmp.upgs[id][x]?tmp.upgs[id][x].effec
 function resetMainUpgs(id,keep=[]) {
     let k = []
     let id2 = UPGS.main.ids[id]
-    for (let x = 0; x < player.mainUpg[id2].length; x++) if (keep.includes(player.mainUpg[id2][x])) k.push(player.mainUpg[id2][x])
+    for (let x of player.mainUpg[id2]) {
+		if (keep.includes(x)) k.push(x)
+		else tmp.upgs[id][x].has = false
+	}
     player.mainUpg[id2] = k
 }
 
@@ -903,9 +906,9 @@ function updateUpgNotify() {
 	delete tmp.upg_notify
 	if (!isPreferred("notify")) return
 
-	if (player.supernova.times.gte(1) || quUnl()) {
-		for (var [x, af] of Object.entries(tmp.supernova.tree_afford)) {
-			if (!af || !tmp.supernova.tree_had.includes(x)) continue
+	if (tmp.sn.boson) {
+		for (var [x, af] of Object.entries(tmp.sn.tree_afford)) {
+			if (!af || !tmp.sn.tree_had.includes(x)) continue
 			tmp.upg_notify = ["sn", x]
 			return
 		}
@@ -935,8 +938,8 @@ function goUpgNotify() {
 	if (!tmp.upg_notify) return
 	if (tmp.upg_notify[0] == "sn") {
 		goToTab("sn-tree")
-		tmp.tree_tab = tmp.supernova.tree_loc[tmp.upg_notify[1]]
-		tmp.supernova.tree_choosed = tmp.upg_notify[1]
+		tmp.sn.tree_tab = tmp.sn.tree_loc[tmp.upg_notify[1]]
+		tmp.sn.tree_choosed = tmp.upg_notify[1]
 	}
 	if (tmp.upg_notify[0] == "el") {
 		goToTab("elements")

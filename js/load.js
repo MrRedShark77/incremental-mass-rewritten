@@ -17,8 +17,7 @@ function loadGame(start=true, gotNaN=false) {
         let t = (Date.now() - player.offline.current)/1000
         if (player.offline.active && t > 60) simulateTime(t)
 
-        updateTooltipResHTML(true)
-        for (let x = 0; x < 3; x++) {
+        if (OURO.evo < 3) for (let x = 0; x < 3; x++) {
             let r = document.getElementById('ratio_d'+x)
             r.value = player.atom.dRatio[x]
             r.addEventListener('input', e=>{

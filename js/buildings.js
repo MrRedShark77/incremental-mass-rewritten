@@ -21,7 +21,7 @@ const BUILDINGS_DATA = {
         get beMultiplicative() { return hasAscension(0,1) },
 
         effect(x) {
-            let power = E(1)
+            let power = E(2)
             if (player.ranks.rank.gte(3)) power = power.add(RANKS.effect.rank[3]())
             power = power.mul(BUILDINGS.eff('mass_2'))
             power = power.mul(tmp.evo.meditation_eff.mass1??1)
@@ -86,7 +86,7 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+"+format(x.power)+"x",
-        get_effect: x => "x"+format(x.effect)+" to Muscler Power",
+        get_effect: x => formatMult(x.effect)+" to Muscler Power",
     },
     mass_3: {
         name: "Stronger",
@@ -124,7 +124,7 @@ const BUILDINGS_DATA = {
             if (hasUpgrade("rp",12)) step = step.add(tmp.upgs?tmp.upgs[1][12].effect:E(0))
             if (OURO.evo >= 1) step = step.mul(tmp.evo.meditation_eff.mass3??1)
             if (hasElement(4)) step = step.mul(tmp.elements.effect[4])
-            if (player.md.upgs[3].gte(1)) step = step.mul(tmp.md.upgs[3].eff)
+            if (hasMDUpg(3)) step = step.mul(mdEff(3))
 			step = step.mul(nebulaEff("red"))
             step = step.pow(BUILDINGS.eff('mass_4'))
 
@@ -184,7 +184,7 @@ const BUILDINGS_DATA = {
             tmp.overflow.stronger = calcOverflow(o,ret,os)
             tmp.overflow_start.stronger = [os,os2]
             tmp.overflow_power.stronger = [op,op2]
-			if (post_x) ret = ret.mul(x.div(tmp.c16active ? 1 : 1e140).max(1).sqrt())
+			if (post_x) ret = ret.mul(x.div(tmp.c16.in ? 1 : 1e140).max(1).sqrt())
 
             return {power: step, effect: ret, ss: ss}
         },
@@ -197,7 +197,7 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+^"+format(x.power),
-        get_effect: x => "^"+format(x.effect)+" to Booster Power"+(x.effect.gte(x.ss)?` <span class='soft'>(softcapped${x.effect.gte(1.8e5)?x.effect.gte(5e15)&&!player.ranks.pent.gte(15)?"^3":"^2":""})</span>`:""),
+        get_effect: x => formatPow(x.effect)+" to Booster Power"+(x.effect.gte(x.ss)?` <span class='soft'>(softcapped${x.effect.gte(1.8e5)?x.effect.gte(5e15)&&!player.ranks.pent.gte(15)?"^3":"^2":""})</span>`:""),
     },
     mass_4: {
         name: "Overpower",
@@ -234,14 +234,14 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+^"+format(x.power),
-        get_effect: x => "^"+format(x.effect)+" to Stronger Power"+x.effect.softcapHTML(x.ss),
+        get_effect: x => formatPow(x.effect)+" to Stronger Power"+x.effect.softcapHTML(x.ss),
     },
     tickspeed: {
         name: "Tickspeed",
 		icon: "tickspeed",
         scale: "tickspeed",
 
-        get isUnlocked() { return player.rp.unl && OURO.evo < 1 },
+        get isUnlocked() { return tmp.rp.unl },
         get autoUnlocked() { return hasUpgrade("bh",5) },
         get noSpend() { return hasUpgrade("atom",2) },
 
@@ -273,7 +273,7 @@ const BUILDINGS_DATA = {
 
             if (hasElement(63)) t = t.mul(25)
             t = t.mul(tmp.prim.eff[1][1])
-            t = t.mul(tmp.radiation.bs.eff[1])
+            t = t.mul(radBoostEff(1))
 
             step = E(1.5)
             step = step.add(tmp.chal.eff[6])
@@ -281,13 +281,13 @@ const BUILDINGS_DATA = {
             if (tmp.atom.unl) step = step.add(tmp.atom.particles[0].powerEffect.eff2)
             if (player.ranks.tier.gte(4)) step = step.add(RANKS.effect.tier[4]())
             if (player.ranks.rank.gte(40)) step = step.add(RANKS.effect.rank[40]())
-            step = step.mul(tmp.bosons.effect.z_boson[0])
-            step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
+            if (tmp.sn.boson) step = step.mul(tmp.sn.boson.effect.z_boson[0])
+            if (tmp.atom.unl) step = tmp.md.bd3 ? step.pow(tmp.md.mass_eff) : step.mul(tmp.md.mass_eff)
             if (hasElement(191)) step = step.pow(elemEffect(191))
-            step = step.pow(tmp.qu.chroma_eff[0])
+            if (tmp.sn.boson) step = step.pow(tmp.qu.chroma_eff[0])
             if (hasTree("t1")) step = step.pow(1.15)
 
-            ss = ss.mul(tmp.radiation.bs.eff[13])
+            ss = ss.mul(radBoostEff(13))
             let p = 0.1
             if (hasElement(86)) {
                 ss = ss.pow(2)
@@ -318,20 +318,20 @@ const BUILDINGS_DATA = {
 
         get bonus() {
             let x = E(0)
-            if (player.atom.unl && tmp.atom.atomicEff) x = x.add(tmp.atom.atomicEff[0])
+            if (tmp.atom.unl) x = x.add(tmp.atom.atomicEff[0])
             x = x.mul(getEnRewardEff(4))
             return x
         },
 
         get_power: x => (x.power.gte(10)?formatMult(x.power):formatPercent(x.power.sub(1)))
 		+(x.power.gte(x.ss)&&!hasUpgrade('rp',16)?" <span class='soft'>(softcapped)</span>":""),
-        get_effect: x => (hasElement(199) && !CHALS.inChal(15) ? "^"+format(x.effect) : formatMult(x.effect)) + " to mass gain",
+        get_effect: x => (hasElement(199) && !CHALS.inChal(15) ? formatPow(x.effect) : formatMult(x.effect)) + " to mass gain",
     },
     accelerator: {
         name: "Accelerator",
 		icon: "accelerator",
 
-        get isUnlocked() { return player.rp.unl && OURO.evo < 1 && hasElement(199) },
+        get isUnlocked() { return tmp.rp.unl && hasElement(199) },
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
@@ -372,14 +372,14 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+^"+format(x.power),
-        get_effect: x => "^"+format(x.effect)+" to Tickspeed Effect"+x.effect.softcapHTML(x.ss),
+        get_effect: x => formatPow(x.effect)+" to Tickspeed Effect"+x.effect.softcapHTML(x.ss),
     },
     bhc: {
         name: "Black Hole Condenser",
 		icon: "bhCondenser",
         scale: "bh_condenser",
 
-        get isUnlocked() { return player.bh.unl && OURO.evo < 2 },
+        get isUnlocked() { return tmp.bh.unl },
         get autoUnlocked() { return hasUpgrade("atom",2) },
         get noSpend() { return player.atom.unl },
 
@@ -389,18 +389,17 @@ const BUILDINGS_DATA = {
         set res(v) { player.bh.dm = v },
 
         cost(x=this.level) {
-            let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
-            if (hasCharger(6) && tmp.c16active) fp *= 1e6
+            let fp = hasCharger(6) ? 1 : fermEff(1, 5)
+            if (hasCharger(6) && tmp.c16.in) fp *= 1e6
 
             let fp2 = E(1)
-
             if (hasElement(248)) fp2 = fp2.mul(getEnRewardEff(0))
 
             return Decimal.pow(1.75,x.div(fp2).scaleEvery('bh_condenser',false,[1,1,1,fp]))
         },
         get bulk() {
-            let fp = hasCharger(6) ? 1 : tmp.fermions.effs[1][5]
-            if (hasCharger(6) && tmp.c16active) fp *= 1e6
+            let fp = hasCharger(6) ? 1 : fermEff(1, 5)
+            if (hasCharger(6) && tmp.c16.in) fp *= 1e6
 
             let fp2 = E(1)
 
@@ -414,37 +413,29 @@ const BUILDINGS_DATA = {
         get beMultiplicative() { return hasAscension(0,42) },
 
         effect(x) {
-            let t = x
-            t = t.mul(tmp.radiation.bs.eff[5])
             let pow = E(2)
-                pow = pow.add(tmp.chal.eff[6])
-                if (hasUpgrade("bh",2)) pow = pow.mul(tmp.upgs?tmp.upgs[2][2].effect:E(1))
-                if (tmp.atom.unl) pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
-                if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
-                pow = pow.mul(tmp.bosons.upgs.photon[1].effect)
-                pow = pow.mul(tmp.prim.eff[2][1])
-                pow = pow.mul(getEnRewardEff(3)[1])
-                pow = pow.mul(escrowBoost("bhc"))
-                if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
-                if (hasTree("bh2")) pow = pow.pow(1.15)
+			pow = pow.add(tmp.chal.eff[6])
+			if (hasUpgrade("bh",2)) pow = pow.mul(tmp.upgs?tmp.upgs[2][2].effect:E(1))
+			if (tmp.atom.unl) pow = pow.add(tmp.atom.particles[2].powerEffect.eff2)
+			if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
+			if (tmp.sn.boson) pow = pow.mul(tmp.sn.boson.upgs.photon[1].effect)
+			pow = pow.mul(tmp.prim.eff[2][1])
+			pow = pow.mul(getEnRewardEff(3)[1])
+			pow = pow.mul(escrowBoost("bhc"))
+			if (hasTree('bs5')) pow = pow.mul(tmp.sn.boson.effect.z_boson[0])
+			if (hasTree("bh2")) pow = pow.pow(1.15)
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
-            if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))
-            
+            if (hasBeyondRank(2,4)) pow = pow.pow(BUILDINGS.eff('accelerator'))            
             if (CHALS.inChal(17)) pow = E(1)
-            
-            let eff = pow.pow(t)
 
-            let os = tmp.c16active ? E('ee150') : E('ee10000'), op = E(0.5)
+            x = x.mul(radBoostEff(5))
+            let eff = pow.pow(x)
 
+            let os = tmp.c16.in ? E('ee150') : E('ee10000'), op = E(0.5), o = eff
             if (hasUpgrade('bh',21)) os = expMult(os, 2)
-
-            let o = eff
-
             eff = overflow(eff,os,op,2)
-
             tmp.overflow.BHCEffect = calcOverflow(o,eff,os,2)
             tmp.overflow_start.BHCEffect = [os]
-
             return {power: pow, effect: eff}
         },
 
@@ -463,11 +454,11 @@ const BUILDINGS_DATA = {
 		icon: "fvm",
         scale: "fvm",
 
-        get isUnlocked() { return player.bh.unl && hasCharger(1) && OURO.evo < 2 },
+        get isUnlocked() { return tmp.bh.unl && hasCharger(1) },
         get autoUnlocked() { return true },
         get noSpend() { return true },
 
-        get allowPurchase() { return tmp.c16active || hasElement(277) },
+        get allowPurchase() { return tmp.c16.in || hasElement(277) },
         denyPurchaseText: " outside C16",
 
         get res() { return player.bh.dm },
@@ -524,7 +515,7 @@ const BUILDINGS_DATA = {
         set res(v) { player.atom.points = v },
 
         cost(x=this.level) {
-            let fp = tmp.fermions.effs[1][5]
+            let fp = fermEff(1, 5)
 
             let fp2 = E(1)
 
@@ -533,7 +524,7 @@ const BUILDINGS_DATA = {
             return Decimal.pow(2,x.div(fp2).scaleEvery("gamma_ray",false,[1,1,1,fp]))
         },
         get bulk() {
-            let fp = tmp.fermions.effs[1][5]
+            let fp = fermEff(1, 5)
 
             let fp2 = E(1)
 
@@ -546,15 +537,15 @@ const BUILDINGS_DATA = {
 
         effect(x) {
             let t = x
-            t = t.mul(tmp.radiation.bs.eff[10])
+            t = t.mul(radBoostEff(10))
             let pow = E(2)
             if (hasUpgrade("atom",4)) pow = pow.add(tmp.upgs?tmp.upgs[3][4].effect:E(0))
             if (hasUpgrade("atom",11)) pow = pow.mul(tmp.upgs?tmp.upgs[3][11].effect:E(1))
-            if (hasTree("gr1")) pow = pow.mul(tmp.supernova.tree_eff.gr1)
-            pow = pow.mul(tmp.bosons.upgs.gluon[1].effect)
+            if (hasTree("gr1")) pow = pow.mul(treeEff("gr1"))
+            if (tmp.sn.boson) pow = pow.mul(tmp.sn.boson.upgs.gluon[1].effect)
             pow = pow.mul(tmp.prim.eff[3][1])
             pow = pow.mul(getEnRewardEff(3)[1])
-            if (hasTree('bs5')) pow = pow.mul(tmp.bosons.effect.z_boson[0])
+            if (hasTree('bs5')) pow = pow.mul(tmp.sn.boson.effect.z_boson[0])
             if (hasTree("gr2")) pow = pow.pow(1.25)
             if (hasElement(129)) pow = pow.pow(elemEffect(18))
 
@@ -574,7 +565,7 @@ const BUILDINGS_DATA = {
         },
 
         get bonus() {
-            let x = tmp.fermions.effs[0][0]||E(0)
+            let x = fermEff(0, 0, 0)
             x = x.mul(getEnRewardEff(4))
             return x
         },
