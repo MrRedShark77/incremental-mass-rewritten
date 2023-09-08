@@ -1,36 +1,19 @@
 const RANKS = {
     names: ['rank', 'tier', 'tetr', 'pent', 'hex'],
     fullNames: ['Rank', 'Tier', 'Tetr', 'Pent', 'Hex'],
-    reset(type) {
-        if (tmp.ranks[type].can) {
-            player.ranks[type] = player.ranks[type].add(1)
-            let reset = true
-            if (OURO.evo >= 1 || tmp.chal14comp || tmp.inf_unl) reset = false
-            else if (type == "rank" && hasUpgrade("rp",4)) reset = false
-            else if (type == "tier" && hasUpgrade("bh",4)) reset = false
-            else if (type == "tetr" && hasTree("qol5")) reset = false
-            else if (type == "pent" && hasTree("qol8")) reset = false
-            if (reset) this.doReset[type]()
-            updateRanksTemp()
+    reset(type, auto) {
+		if (!tmp.ranks[type].can) return
+		player.ranks[type] = player.ranks[type].add(this.gain(type))
+		if (!auto) this.doReset[type]()
+		updateRanksTemp()
 
-            addQuote(1)
-        }
+		addQuote(1)
     },
-    bulk(type) {
-        if (tmp.ranks[type].can) {
-            player.ranks[type] = player.ranks[type].max(tmp.ranks[type].bulk.max(player.ranks[type].add(1)))
-            let reset = true
-            if (OURO.evo >= 1 || tmp.chal14comp || tmp.inf_unl) reset = false
-            if (type == "rank" && hasUpgrade("rp",4)) reset = false
-            else if (type == "tier" && hasUpgrade("bh",4)) reset = false
-            else if (type == "tetr" && hasTree("qol5")) reset = false
-            else if (type == "pent" && hasTree("qol8")) reset = false
-            if (reset) this.doReset[type]()
-            updateRanksTemp()
-        }
+    gain(type) {
+        return tmp.ranks[type].bulk.sub(player.ranks[type]).max(0)
     },
     unl: {
-        tier() { return OURO.evo >= 3 || player.ranks.rank.gte(3) || player.ranks.tier.gte(1) || hasUpgrade("atom",3) || hasTree("unl1") || tmp.inf_unl },
+        tier() { return OURO.evo >= 3 || player.ranks.rank.gte(1) || player.ranks.tier.gte(1) || FORMS.rp.unl() },
         tetr() { return OURO.evo >= 3 || hasUpgrade("atom",3) || hasTree("unl1") || tmp.inf_unl },
         pent() { return hasTree("unl1") || tmp.inf_unl },
         hex() { return tmp.chal13comp || tmp.inf_unl },
@@ -59,10 +42,10 @@ const RANKS = {
     },
     autoSwitch(rn) { player.auto_ranks[rn] = !player.auto_ranks[rn] },
     autoUnl: {
-        rank() { return OURO.evo >= 1 || hasUpgrade("rp",5) || tmp.inf_unl },
-        tier() { return OURO.evo >= 1 || hasUpgrade("rp",6) || tmp.inf_unl },
-        tetr() { return OURO.evo >= 1 || hasUpgrade("atom",5) || tmp.inf_unl },
-        pent() { return OURO.evo >= 1 || hasTree("qol8") || tmp.inf_unl },
+        rank() { return OURO.evo >= 1 || player.ranks.tier.gte(1) || FORMS.rp.unl() },
+        tier() { return OURO.evo >= 1 || hasUpgrade("rp",6) },
+        tetr() { return OURO.evo >= 1 || hasUpgrade("atom",5) },
+        pent() { return OURO.evo >= 1 || hasTree("qol8") },
         hex() { return true },
     },
     desc: {
@@ -70,11 +53,10 @@ const RANKS = {
             '1': "unlock mass upgrade 1.",
             '2': "unlock mass upgrade 2, reduce mass upgrade 1 scaling by 20%.",
             '3': "unlock mass upgrade 3, reduce mass upgrade 2 scaling by 20%, and mass upgrade 1 boosts itself.",
-            '4': "reduce mass upgrade 3 scaling by 20%.",
+            '4': "reduce mass upgrade 3 scaling by 20%. Ranks boost mass by (x/3)^2.",
             '5': "mass upgrade 2 boosts itself.",
-            '6': "boost mass gain by (x+1)^2, where x is rank.",
             '13': "triple mass gain.",
-            '17': "Rank 6 reward effect is better. [(x+1)^2 ➜ (x+1)^x^1/3]",
+            '17': "Rank 4 reward effect is better. [^2 -> ^x^1/3]",
             '34': "mass upgrade 3 softcaps 1.2x later.",
             '40': "adds tickspeed power based on ranks.",
             '45': "rank boosts Rage Powers gain.",
@@ -86,8 +68,8 @@ const RANKS = {
             '800': "make mass gain softcap 0.25% weaker based on rank, hardcaps at 25%.",
         },
         tier: {
-            '1': "reduce rank requirements by 20%.",
-            '2': "raise mass gain by 1.15",
+            '1': "reduce rank requirements by 20%. Ranks can be automated.",
+            '2': "boost mass by x2, ^1.15",
             '3': "reduce all mass upgrade scalings by 20%.",
             '4': "adds +5% tickspeed power for every tier you have, softcaps at +40%.",
             '6': "boost rage powers based on tiers.",
@@ -138,9 +120,12 @@ const RANKS = {
                 let ret = player.build.mass_2.amt.div(40)
                 return ret
             },
-            '6'() {
-                let ret = player.ranks.rank.add(1).pow(player.ranks.rank.gte(17)?player.ranks.rank.add(1).root(3):2)
-                return ret
+            '4'() {
+				let b = 3, e = 2
+				if (hasUpgrade("rp", 4)) b--
+				if (player.ranks.rank.gte(17)) e = player.ranks.rank.add(1).root(3)
+
+				return player.ranks.rank.div(b).pow(e)
             },
             '40'() {
                 let ret = player.ranks.rank.root(2).div(100)
@@ -232,8 +217,8 @@ const RANKS = {
     effDesc: {
         rank: {
             3(x) { return "+"+format(x) },
+            4(x) { return formatMult(x) },
             5(x) { return "+"+format(x) },
-            6(x) { return format(x)+"x" },
             40(x) {  return "+"+format(x.mul(100))+"%" },
             45(x) { return format(x)+"x" },
             300(x) { return format(x)+"x" },
@@ -1025,8 +1010,9 @@ function updateRanksHTML() {
                     }
                 }
     
+				let gain = RANKS.gain(rn)
                 tmp.el["ranks_scale_"+x].setTxt(getScalingName(rn))
-                tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0))
+                tmp.el["ranks_amt_"+x].setTxt(format(player.ranks[rn],0) + (gain.gt(0) ? "+"+format(gain,0) : ""))
                 tmp.el["ranks_"+x].setClasses({btn: true, reset: true, locked: !tmp.ranks[rn].can})
                 tmp.el["ranks_desc_"+x].setTxt(desc)
                 tmp.el["ranks_req_"+x].setTxt(x==0?formatMass(tmp.ranks[rn].req):RANKS.fullNames[x-1]+" "+format(tmp.ranks[rn].req,0))

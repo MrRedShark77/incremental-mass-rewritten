@@ -14,7 +14,7 @@ const TOOLTIP_RES = {
         full: "Rage Power",
         desc() {
             let h = `<i>
-            Reach over <b>${formatMass(1e15)}</b> of normal mass to reset previous features for gain Rage Powers.
+            Reach over <b>${formatMass(1e14)}</b> of normal mass to reset previous features for gain Rage Powers.
             </i>`
 
             return h
@@ -24,7 +24,7 @@ const TOOLTIP_RES = {
         full: "Calm Power",
         desc() {
             let h = `<i>
-            Reach over <b>${formatMass(1e15)}</b> of normal mass to reset previous features for gain Calm Powers.
+            Reach over <b>${formatMass(1e14)}</b> of normal mass to reset previous features for gain Calm Powers.
             </i>`
 
             return h

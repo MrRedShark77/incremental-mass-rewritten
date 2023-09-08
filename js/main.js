@@ -42,15 +42,15 @@ const FORMS = {
     },
     massGain() {
         let x = E(2).add(BUILDINGS.eff('mass_1',undefined,0))
-        if (player.ranks.rank.gte(6)) x = x.mul(RANKS.effect.rank[6]())
+        if (player.ranks.rank.gte(4)) x = x.mul(RANKS.effect.rank[4]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
-        if (hasUpgrade("bh",10)) x = x.mul(tmp.upgs?tmp.upgs[2][10].effect:E(1))
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
+        if (player.ranks.tier.gte(2)) x = x.mul(2)
+        if (hasUpgrade("bh",10)) x = x.mul(tmp.upgs?tmp.upgs[2][10].effect:E(1))
         if (tmp.star_unl) x = x.mul(tmp.stars.effect[0])
         if (hasTree("m1") && !hasElement(164)) x = x.mul(treeEff("m1"))
-
-        if (OURO.unl()) x = x.mul(appleEffect('mass')[0])
         if (tmp.sn.boson) x = x.mul(tmp.sn.boson.effect.pos_w[0])
+        if (OURO.unl()) x = x.mul(appleEffect('mass')[0])
         if (OURO.evo < 2 && tmp.atom.unl) x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
 
         if (tmp.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
@@ -266,12 +266,13 @@ const FORMS = {
     rp: {
         unl() { return OURO.evo >= 1 ? player.evo.cp.unl : tmp.rp.unl },
         gain() {
-            if (player.mass.lt(1e15)) return E(0)
+            if (player.mass.lt(1e14)) return E(0)
             if (OURO.evo == 0 || OURO.evo >= 2) if (tmp.c16.in || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
 
-            let gain = player.mass.div(1e15).root(3), evo = OURO.evo
+            let gain = player.mass.div(1e14).root(3), evo = OURO.evo
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
+			if (hasUpgrade("rp",5)) gain = gain.mul(2)
             if (hasUpgrade("bh",6)) gain = gain.mul(tmp.upgs?tmp.upgs[2][6].effect:E(1))
             if (evo == 0 && hasTree("rp1")) gain = gain.mul(treeEff('rp1'))
 

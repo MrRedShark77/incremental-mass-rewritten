@@ -21,7 +21,7 @@ const BUILDINGS_DATA = {
         get beMultiplicative() { return hasAscension(0,1) },
 
         effect(x) {
-            let power = E(1)
+            let power = E(2)
             if (player.ranks.rank.gte(3)) power = power.add(RANKS.effect.rank[3]())
             power = power.mul(BUILDINGS.eff('mass_2'))
             power = power.mul(tmp.evo.meditation_eff.mass1??1)

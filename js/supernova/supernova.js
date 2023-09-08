@@ -36,7 +36,7 @@ const SUPERNOVA = {
 			BUILDINGS.reset('cosmic_ray')
 
 			if (!hasInfUpgrade(18)) {
-				let list_keep = [2,5], keep = []
+				let list_keep = [2,5,9]
 				if (hasTree("qol2")) list_keep.push(6)
 				resetMainUpgs(3,list_keep)
 			}
@@ -123,10 +123,10 @@ function calcSupernova(dt) {
             SUPERNOVA.reset()
         }
     }
-	if (tmp.sn.gen) player.supernova.times = player.supernova.times.add(tmp.sn.passive.mul(dt))
-	else if (hasTree("qu_qol4")) player.supernova.times = player.supernova.times.max(tmp.sn.bulk)
 
-    if (su.times.gte(1) || quUnl()) su.stars = su.stars.add(tmp.sn.star_gain.mul(dt).mul(tmp.preQUGlobalSpeed))
+	if (tmp.sn.gen) su.times = su.times.add(tmp.sn.passive.mul(dt))
+	else if (hasTree("qu_qol4")) su.times = su.times.max(tmp.sn.bulk)
+    if (tmp.sn.unl) su.stars = su.stars.add(tmp.sn.star_gain.mul(dt).mul(tmp.preQUGlobalSpeed))
 
     if (!su.post_10 && su.times.gte(10)) {
         su.post_10 = true
@@ -245,17 +245,19 @@ function updateSupernovaTemp() {
 				}
 			}
 
-            let req = check && (!t.req || t.req())
-			if (check && !req) {
+            let req = false
+			if (check) {
+				if (!CS_TREE.includes(id) && no_req1) req = true
+				if (CS_TREE.includes(id) && (tmp.inf_unl || OURO.unl())) req = true
 				if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
-				if (no_req1 && !CS_TREE.includes(id)) req = true
+				if (!req) req = !t.req || t.req()
 			}
 
             let can = req && (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost)
             tsn.tree_loc[id] = i
             tsn.tree_unlocked[id] = unl
             tsn.tree_afford[id] = can
-            if (can && !(c16 && CORRUPTED_TREE.includes(id))) tsn.tree_afford2[i].push(id)
+            if (can) tsn.tree_afford2[i].push(id)
             if (unl && t.effect) tsn.tree_eff[id] = t.effect()
         }
     }
@@ -279,6 +281,7 @@ function updateSupernovaEndingHTML() {
         tmp.el.sns4.setOpacity(Math.max(Math.min(tmp.sn.time-14,1),0))
         tmp.el.sns5.setVisible(tmp.sn.time>17)
         tmp.el.sns5.setOpacity(Math.max(Math.min(tmp.sn.time-17,1),0))
+        return
     }
 
     if (tmp.tab_name == "sn-tree") {

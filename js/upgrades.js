@@ -6,11 +6,11 @@ const UPGS = {
             inc: E(1.5)
         },
         2: {
-            start: E(50),
+            start: E(20),
             inc: E(4)
         },
         3: {
-            start: E(500),
+            start: E(100),
             inc: E(9)
         },
         4: {
@@ -45,7 +45,7 @@ const UPGS = {
             get res() { return player.rp.points },
             set res(x) { return player.rp.points = E(x) },
             unl() { return tmp.rp.unl },
-            auto_unl() { return hasUpgrade("bh",5) || tmp.inf_unl },
+            auto_unl() { return hasUpgrade("bh",4) || tmp.inf_unl },
             lens: 25,
             1: {
                 desc: "Boosters add Musclers.",
@@ -58,21 +58,21 @@ const UPGS = {
             2: {
                 desc: "Strongers add Boosters.",
                 cost: E(2),
-                effect: () => player.build.mass_3.amt,
+                effect: () => player.build.mass_3.amt.mul(2),
                 effDesc(x=this.effect()) {
                     return "+"+format(x,0)+" Boosters"
                 },
             },
             3: {
                 desc: "You can automatically buy mass upgrades.",
-                cost: E(4),
+                cost: E(30),
             },
             4: {
-                desc: "Ranks no longer reset anything.",
-                cost: E(10),
+                desc: "Rank 4 reward is better.",
+                cost: E(50),
             },
             5: {
-                desc: "You can automatically rank up.",
+                desc: "Double Rage Powers.",
                 cost: E(100),
             },
             6: {
@@ -81,7 +81,7 @@ const UPGS = {
             },
             7: {
                 desc: "Tickspeed adds Stronger.",
-                cost: E(1e7),
+                cost: E(1e4),
                 effect() {
                     let ret = hasAscension(0,1)?player.build.tickspeed.amt.div(3).add(1).mul(hasElement(38)?tmp.elements.effect[38].add(1):1):player.build.tickspeed.amt.div(3).add(hasElement(38)?tmp.elements.effect[38]:0)
                     return ret.floor()
@@ -294,12 +294,12 @@ const UPGS = {
                 },
             },
             4: {
-                desc: "Tiers no longer reset anything.",
+                desc: "You can automatically buy Rage Power upgrades.",
                 cost: E(1e4),
             },
             5: {
                 unl() { return OURO.evo < 1 },
-                desc: "You can automatically buy tickspeed and Rage Power upgrades.",
+                desc: "You can automatically buy tickspeed.",
                 cost: E(5e5),
             },
             6: {
