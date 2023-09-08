@@ -1986,7 +1986,7 @@ function buyElement(x, layer=player.atom.elemLayer) {
 
 function buyAllElements() {
 	let layer = player.atom.elemLayer
-	for (let i = 1; i < tmp.elements.unl_length[layer]; i++) buyElement(i, layer)
+	for (let i = 1; i <= tmp.elements.unl_length[layer]; i++) buyElement(i, layer)
 }
 
 function setupElementsHTML() {

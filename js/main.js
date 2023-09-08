@@ -44,17 +44,17 @@ const FORMS = {
         let x = E(2).add(BUILDINGS.eff('mass_1',undefined,0))
         if (player.ranks.rank.gte(4)) x = x.mul(RANKS.effect.rank[4]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
-        if (hasUpgrade("bh",10)) x = x.mul(tmp.upgs?tmp.upgs[2][10].effect:E(1))
+        if (hasUpgrade("bh", 10)) x = x.mul(tmp.upgs[2][10].effect)
+        if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         if (tmp.star_unl) x = x.mul(tmp.stars.effect[0])
         if (hasTree("m1")) x = x.mul(treeEff("m1")[0])
         if (tmp.sn.boson) x = x.mul(tmp.sn.boson.effect.pos_w[0])
         if (OURO.unl()) x = x.mul(appleEffect('mass')[0])
-        if (OURO.evo < 2 && tmp.atom.unl) x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
 
         if (tmp.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
 		if (tmp.atom.unl) {
-			if (!hasElement(105)) x = x.mul(tmp.atom.particles[0].powerEffect.eff1)
-			else x = x.pow(tmp.atom.particles[0].powerEffect.eff1)
+			if (OURO.evo < 2) x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
+			x = hasElement(105) ? x.pow(tmp.atom.particles[0].powerEffect.eff1) : x.mul(tmp.atom.particles[0].powerEffect.eff1)
 		}
 
         if (!hasElement(199) || CHALS.inChal(15)) x = x.mul(BUILDINGS.eff('tickspeed'))

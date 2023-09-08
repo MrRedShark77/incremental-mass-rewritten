@@ -216,7 +216,7 @@ const BUILDINGS_DATA = {
 
         get_cost: x => formatMass(x),
 
-        effect(x) {         
+        effect(x) {
             let step = E(.005)
             if (hasUpgrade('rp',17)) step = step.add(.005)
             if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
