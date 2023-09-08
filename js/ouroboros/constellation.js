@@ -113,7 +113,7 @@ const CONSTELLATION = {
             zt.unl[ui] = unl
             zt.can[ui] = can
             if (u.effect) tmp.evo.zodiac_eff[zi+"-"+ui] = u.effect()
-            if (u.oct && cu[zi+"-"+u]) ap += u.oct
+            if (u.oct && cu[zi+"-"+ui]) ap += u.oct
         }
 
         return ap
@@ -193,7 +193,7 @@ const CONSTELLATION = {
                     let unl = zt.unl[ui], bought = hasZodiacUpg(zi,ui)
                     u_el.setDisplay(unl)
                     if (unl) {
-						u_el.setClasses( { zoviac_upg: true, tooltip: true, bought } )
+						u_el.setClasses( { zoviac_upg: true, tooltip: true } )
                         u_el.setAttr('tooltip-html',u.desc
                         + (u.effDesc && bought
                             ? "<br class='line'> Effect: " + u.effDesc(tmp.evo.zodiac_eff[zi+"-"+ui])
