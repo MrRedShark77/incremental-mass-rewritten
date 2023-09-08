@@ -363,7 +363,7 @@ const CHALS = {
         unl() { return OURO.evo < 2 && (player.chal.comps[1].gte(1) || player.atom.unl) },
         title: "Anti-Tickspeed",
         desc: "You cannot buy Tickspeed.",
-        reward: `Each completion adds +7.5% to Tickspeed Power.`,
+        reward: `Each completion adds +9% to Tickspeed Power.`,
         max: E(100),
         inc: E(10),
         pow: E(1.3),
@@ -372,7 +372,7 @@ const CHALS = {
             let sp = E(0.5)
             if (hasElement(8)) sp = sp.pow(0.25)
             if (hasElement(39)) sp = E(1)
-            let ret = x.mul(0.075).add(1).softcap(1.3,sp,0).sub(1)
+            let ret = x.mul(0.09).add(1).softcap(1.3,sp,0).sub(1)
             return ret
         },
         effDesc(x) { return "+"+format(x.mul(100))+"%"+(x.gte(0.3)?" <span class='soft'>(softcapped)</span>":"") },
@@ -404,7 +404,7 @@ const CHALS = {
         start: E(1.736881338559743e133),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
+            let ret = hasElement(133) ? x.root(4/3).mul(0.02).add(1) : x.root(1.5).mul(0.02).add(1)
             return overflow(ret.softcap(3,0.25,0),1e12,0.5)
         },
         effDesc(x) { return formatPow(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },

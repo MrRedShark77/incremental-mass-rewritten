@@ -162,7 +162,7 @@ function setupStarsHTML() {
 }
 
 function updateStarsScreenHTML() {
-    let show = OURO.evo < 4 && !tmp.sn.gen && player.supernova.times.lt(1e5)
+    let show = tmp.star_unl && !tmp.sn.gen && player.supernova.times.lt(1e5)
 
     tmp.el.star.setDisplay(show)
     if (show && (!tmp.sn.reached || player.supernova.post_10)) {

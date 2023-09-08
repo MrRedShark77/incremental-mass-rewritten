@@ -1775,7 +1775,7 @@ const ELEMENTS = {
                             if (player.chal.comps[8].gte(1)) u += 14
                             if (hasElement(18)) u += 3
                             if (MASS_DILATION.unlocked()) u += 15
-                            if (tmp.star_unl) u += 18
+                            if (STARS.unlocked()) u += 18
                         }
                         if (player.supernova.post_10) u += 3
                         if (player.supernova.fermions.unl) u += 10

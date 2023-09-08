@@ -59,7 +59,7 @@ const ATOM = {
             x = E(1.01).pow(expMult(x.overflow(s,hasElement(299)?2/3:0.5).sub(1), k)).floor()
         }
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
-		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.1).add(1)
+		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.2).add(1)
 
         if (!tmp.c16.in) x = x.pow(escrowBoost("qk"))
 
@@ -204,14 +204,12 @@ const ATOM = {
             if (hasUpgrade("atom",7)) x = x.mul(tmp.upgs?tmp.upgs[3][7].effect:E(1))
             if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
             if (hasUpgrade('atom',21)) x = expMult(x,5)
-            return x//.addTP(0.005)
+            return x.div(10)
         },
         powerEffect: [
             x=>{
                 let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(3)
                 let b = hasElement(29) ? x.add(1).log2().pow(1.25).mul(0.01) : x.add(1).pow(2.5).log2().mul(0.01)
-
-                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
 
                 return {eff1: a, eff2: b}
             },
@@ -229,7 +227,6 @@ const ATOM = {
                 :player.mass.max(1).log10().add(1).pow(bp.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
 				if (CHALS.inChal(17) && !hasUpgrade('atom',18)) b = E(1)
 
-                // if (hasPrestige(1,400)) a = overflow(a,1e100,0.5)
                 if (hasUpgrade('atom',18)) b = overflow(b,1e120,0.5)
 
                 return {eff1: a, eff2: b}
