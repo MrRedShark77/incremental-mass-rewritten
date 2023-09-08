@@ -86,7 +86,7 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+"+format(x.power)+"x",
-        get_effect: x => "x"+format(x.effect)+" to Muscler Power",
+        get_effect: x => formatMult(x.effect)+" to Muscler Power",
     },
     mass_3: {
         name: "Stronger",
@@ -197,7 +197,7 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+^"+format(x.power),
-        get_effect: x => "^"+format(x.effect)+" to Booster Power"+(x.effect.gte(x.ss)?` <span class='soft'>(softcapped${x.effect.gte(1.8e5)?x.effect.gte(5e15)&&!player.ranks.pent.gte(15)?"^3":"^2":""})</span>`:""),
+        get_effect: x => formatPow(x.effect)+" to Booster Power"+(x.effect.gte(x.ss)?` <span class='soft'>(softcapped${x.effect.gte(1.8e5)?x.effect.gte(5e15)&&!player.ranks.pent.gte(15)?"^3":"^2":""})</span>`:""),
     },
     mass_4: {
         name: "Overpower",
@@ -234,7 +234,7 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+^"+format(x.power),
-        get_effect: x => "^"+format(x.effect)+" to Stronger Power"+x.effect.softcapHTML(x.ss),
+        get_effect: x => formatPow(x.effect)+" to Stronger Power"+x.effect.softcapHTML(x.ss),
     },
     tickspeed: {
         name: "Tickspeed",
@@ -325,7 +325,7 @@ const BUILDINGS_DATA = {
 
         get_power: x => (x.power.gte(10)?formatMult(x.power):formatPercent(x.power.sub(1)))
 		+(x.power.gte(x.ss)&&!hasUpgrade('rp',16)?" <span class='soft'>(softcapped)</span>":""),
-        get_effect: x => (hasElement(199) && !CHALS.inChal(15) ? "^"+format(x.effect) : formatMult(x.effect)) + " to mass gain",
+        get_effect: x => (hasElement(199) && !CHALS.inChal(15) ? formatPow(x.effect) : formatMult(x.effect)) + " to mass gain",
     },
     accelerator: {
         name: "Accelerator",
@@ -372,7 +372,7 @@ const BUILDINGS_DATA = {
         },
 
         get_power: x => "+^"+format(x.power),
-        get_effect: x => "^"+format(x.effect)+" to Tickspeed Effect"+x.effect.softcapHTML(x.ss),
+        get_effect: x => formatPow(x.effect)+" to Tickspeed Effect"+x.effect.softcapHTML(x.ss),
     },
     bhc: {
         name: "Black Hole Condenser",

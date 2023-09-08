@@ -17,6 +17,7 @@ const MEDITATION = {
 
 		cp = cp.mul(appleEffect('cp_lvl'))
 		cp = cp.mul(wormholeEffect(0))
+		if (hasZodiacUpg('aries','u2')) cp = cp.mul(zodiacUpgEff('aries','u2'))
 
 		if (OURO.evo >= 2) cp = cp.pow(wormholeEffect(5))
 		else if (hasElement(158)) cp = cp.pow(1.5)
@@ -51,6 +52,6 @@ const MEDITATION = {
 }
 
 function cpProd() {
-	let log = player.evo.cp.best.max(1).div(player.evo.cp.points.max(1)).log10()
-	return tmp.rp.gain.mul(log.add(1))
+	let r = player.evo.cp.best.div(player.evo.cp.points.add(1)).sqrt()
+	return tmp.rp.gain.mul(r.max(1))
 }

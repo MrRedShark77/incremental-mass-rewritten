@@ -244,7 +244,7 @@ function calcQuantum(dt) {
         player.md.break.mass = player.md.break.mass.add(tmp.bd.massGain.mul(inf_gs))
     }
 
-    if (hasTree("qu_qol1") || hasInfUpgrade(4)) for (let x = 0; x < TREE_TYPES.normal.length; x++) TREE_UPGS.buy(TREE_TYPES.normal[x], true)
+    for (let x = 0; x < TREE_TYPES.normal.length; x++) TREE_UPGS.buy(TREE_TYPES.normal[x], true)
 
     calcEntropy(dt)
 }

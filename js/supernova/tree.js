@@ -72,6 +72,7 @@ const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
 
 const TREE_UPGS = {
     buy(x, auto=false) {
+        if (tmp.supernova.noTree) return
         if ((tmp.supernova.tree_choosed == x || auto) && tmp.supernova.tree_afford[x]) {
             if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
             else if (this.ids[x].cs) player.dark.c16.shard = player.dark.c16.shard.sub(this.ids[x].cost).max(0)
@@ -178,7 +179,7 @@ const TREE_UPGS = {
                 : E(1e100).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
                 return x
             },
-            effDesc(x) { return hasElement(164)||hasElement(219)?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e100).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
+            effDesc(x) { return hasElement(164)||hasElement(219)?formatPow(x):(format(x)+"x"+(x.max(1).log(1e100).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
         },
         m2: {
             branch: ["m1"],
@@ -194,10 +195,11 @@ const TREE_UPGS = {
                 let x = player.supernova.times.mul(0.0125).add(1)
                 return x
             },
-            effDesc(x) { return "^"+format(x)+" later" },
+            effDesc(x) { return formatPow(x)+" later" },
         },
         t1: {
             branch: ["m1", 'rp1'],
+            unl() { return OURO.evo < 1 },
             req() { return player.supernova.chal.noTick && player.mass.gte(E("1.5e1.650056e6").pow(hasTree('bh2')?1.46:1)) },
             reqDesc() {return `Reach ${formatMass(E("1.5e1.650056e6").pow(hasTree('bh2')?1.46:1))} without buying Tickspeed in a Supernova run. You can still obtain Tickspeed from Cosmic Rays.`},
             desc: `Tickspeed Power is raised to the 1.15th.`,
@@ -215,7 +217,7 @@ const TREE_UPGS = {
                 : E(1e50).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
                 return x
             },
-            effDesc(x) { return OURO.evo >= 1?formatMult(x):hasElement(165)?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e50).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
+            effDesc(x) { return OURO.evo >= 1?formatMult(x):hasElement(165)?formatPow(x):(format(x)+"x"+(x.max(1).log(1e50).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
         },
         bh1: {
             branch: ["c"],
@@ -227,7 +229,7 @@ const TREE_UPGS = {
                 : E(1e35).pow(player.supernova.stars.add(1).log10().pow(5).softcap(1e3,0.25,0))
                 return x
             },
-            effDesc(x) { return hasElement(166)||OURO.evo>=2?"^"+format(x):(format(x)+"x"+(x.max(1).log(1e35).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
+            effDesc(x) { return hasElement(166)||OURO.evo>=2?formatPow(x):(format(x)+"x"+(x.max(1).log(1e35).gte(1e3)?" <span class='soft'>(softcapped)</span>":"")) },
         },
         bh2: {
             branch: ['bh1'],
@@ -264,7 +266,7 @@ const TREE_UPGS = {
                 let x = player.supernova.times.max(0).root(10).mul(0.1).add(1)
                 return x
             },
-            effDesc(x) { return "^"+format(x) },
+            effDesc(x) { return formatPow(x) },
         },
         s4: {
             branch: ["s3"],
@@ -339,6 +341,7 @@ const TREE_UPGS = {
         },
         chal1: {
             req() { return player.supernova.times.gte(4) },
+            unl() { return OURO.evo < 3 },
             reqDesc: `4 Supernovas.`,
             desc: `Add 100 more C7 & C8 maximum completions.`,
             cost: E(6000),
@@ -366,7 +369,8 @@ const TREE_UPGS = {
             cost: E(1e4),
         },
         chal4: {
-            get branch() { return OURO.evo >= 2 ? ["chal3"] : ["chal2","chal3"] },
+            unl() { return OURO.evo >= 3 },
+            get branch() { return OURO.evo >= 3 ? undefined : OURO.evo >= 2 ? ["chal3"] : ["chal2","chal3"] },
             desc: `Unlock the 9th Challenge.`,
             cost: E(1.5e4),
         },
@@ -412,6 +416,7 @@ const TREE_UPGS = {
         },
         gr1: {
             branch: ["bh1"],
+            unl() { return OURO.evo < 3 },
             desc: `BH Condensers power boost Cosmic Rays power.`,
             req() { return player.supernova.times.gte(7) },
             reqDesc: `7 Supernovas.`,
@@ -515,8 +520,8 @@ const TREE_UPGS = {
         },
         fn6: {
             branch: ["fn2"],
-            req() { return player.mass.gte(uni('e4e4')) && FERMIONS.onActive("02") && CHALS.inChal(5) },
-            reqDesc() { return `Reach ${formatMass(uni("e4e4"))} while in [Charm] & Challenge 5.` },
+            req() { return OURO.evo >= 3 || player.mass.gte(uni('e4e4')) && FERMIONS.onActive("02") && CHALS.inChal(5) },
+            reqDesc() { return OURO.evo >= 3 ? `YOU CAN AFFORD BECAUSE OF A EVOLUTION!` : `Reach ${formatMass(uni("e4e4"))} while in [Charm] & Challenge 5.` },
             desc: `Unlock 2 more types of U-Quark & U-Fermion.`,
             cost: E(1e48),
         },
@@ -788,6 +793,7 @@ const TREE_UPGS = {
         },
         qu_qol5: {
             qf: true,
+            unl() { return OURO.evo < 3 },
             branch: ["qu_qol1"],
             req() {
                 for (let x = 5; x <= 8; x++) if (player.chal.comps[x].gte(1) && x != 7) return false
@@ -810,7 +816,7 @@ const TREE_UPGS = {
         },
         qu_qol7: {
             qf: true,
-            get branch() { return OURO.evo >= 2 ? ["qu_qol5"] : ["qu_qol3","qu_qol5"] },
+            get branch() { return OURO.evo >= 3 ? ["qu_qol4"] : OURO.evo >= 2 ? ["qu_qol5"] : ["qu_qol3","qu_qol5"] },
             req() {
                 if (OURO.evo >= 1) return true
                 for (let x = 9; x <= 12; x++) if (player.chal.comps[x].gte(1)) return false
@@ -872,7 +878,7 @@ const TREE_UPGS = {
                 let x = (player.qu.qc.shard+1)**0.75
                 return x
             },
-            effDesc(x) { return "^"+format(x)+" later" },
+            effDesc(x) { return formatPow(x)+" later" },
         },
         qc2: {
             unl() { return player.qu.en.unl },
@@ -916,7 +922,7 @@ const TREE_UPGS = {
                 let x = (player.qu.qc.shard+1)**0.5
                 return x
             },
-            effDesc(x) { return "x"+format(x) },
+            effDesc(x) { return formatMult(x) },
         },
 
         // Other
@@ -993,7 +999,7 @@ const TREE_UPGS = {
                 let x = tmp.c16.best_bh_eff.add(1)
                 return overflow(x,10,0.5)
             },
-            effDesc(x) { return "^"+format(x) },
+            effDesc(x) { return formatPow(x) },
         },
         ct2: {
             branch: ['ct1'],
@@ -1005,7 +1011,7 @@ const TREE_UPGS = {
                 let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return x
             },
-            effDesc(x) { return "x"+format(x) },
+            effDesc(x) { return formatMult(x) },
         },
         ct3: {
             branch: ['ct1'],
@@ -1049,7 +1055,7 @@ const TREE_UPGS = {
                 let x = hasElement(237) ? expMult(tmp.qu.chroma_eff[2],0.5) : overflow(tmp.qu.chroma_eff[2],10,0.5).root(3)
                 return x
             },
-            effDesc(x) { return "x"+format(x) },
+            effDesc(x) { return formatMult(x) },
         },
         ct6: {
             branch: ['ct1'],
@@ -1064,7 +1070,7 @@ const TREE_UPGS = {
                 let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return overflow(x,10,0.5)
             },
-            effDesc(x) { return "^"+format(x)+" later" },
+            effDesc(x) { return formatPow(x)+" later" },
         },
         ct7: {
             branch: ['ct5'],
@@ -1085,7 +1091,7 @@ const TREE_UPGS = {
                 let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return x
             },
-            effDesc(x) { return "x"+format(x) },
+            effDesc(x) { return formatMult(x) },
         },
         ct9: {
             branch: ['ct3'],
@@ -1131,7 +1137,7 @@ const TREE_UPGS = {
                 x = tmp.c16active ? x.root(3) : x.pow(2)
                 return x
             },
-            effDesc(x) { return "^"+format(x)+" later" },
+            effDesc(x) { return formatPow(x)+" later" },
         },
         ct12: {
             branch: ['ct9'],
@@ -1170,7 +1176,7 @@ const TREE_UPGS = {
                 let x = tmp.c16.best_bh_eff.add(1).pow(2)
                 return x
             },
-            effDesc(x) { return "^"+format(x)+" later" },
+            effDesc(x) { return formatPow(x)+" later" },
         },
         ct15: {
             branch: ['ct8'],
@@ -1182,20 +1188,20 @@ const TREE_UPGS = {
                 let x = player.dark.c16.totalS.add(1).root(2)
                 return x
             },
-            effDesc(x) { return "x"+format(x) },
+            effDesc(x) { return formatMult(x) },
         },
         ct16: {
-            unl: ()=>tmp.eaUnl,
+            unl: ()=>tmp.eaUnl || tmp.epUnl,
             branch: ['ct10'],
 
             desc: `Best mass of black hole in C16 boosts Kaon & Pion gain.`,
-            get cost() { return E(OURO.evo >= 2 ? 1e12 : 5e16) },
+            get cost() { return E(OURO.evo >= 3 ? 1e15 : OURO.evo >= 2 ? 1e12 : 5e16) },
 
             effect() {
                 let x = tmp.c16.best_bh_eff.div(1e5).add(1).pow(2)
                 return x
             },
-            effDesc(x) { return "x"+format(x) },
+            effDesc(x) { return formatMult(x) },
         },
     },
 }

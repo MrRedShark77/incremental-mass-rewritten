@@ -137,7 +137,7 @@ const BOSONS = {
                     if (tmp.c16active) y = overflow(y,10,0.5)
                     return y
                 },
-                effDesc(x) { return hasElement(204)?"^"+format(x):format(x)+"x" },
+                effDesc(x) { return hasElement(204)?formatPow(x):format(x)+"x" },
             },{
                 desc: "Boost BH Condenser Power.",
                 get unl() { return OURO.evo < 2 },
@@ -158,7 +158,7 @@ const BOSONS = {
                     ? Decimal.pow(1.1,player.stars.points.add(10).log10().log10().add(1).mul(x.add(10).log10()).root(2).sub(1))
                     : player.stars.points.add(1).log10().add(1).pow(x.mul(0.2)).softcap(1e15,0.6,0)
                 },
-                effDesc(x) { return hasElement(204)?"^"+format(x):format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return hasElement(204)?formatPow(x):format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: "All-Star resources gain is boosted by Photon.",
                 cost(x) { return E(5).pow(x.pow(1.25)).mul(1e5) },
@@ -175,13 +175,13 @@ const BOSONS = {
                     }
                     return x
                 },
-                effDesc(x) { return hasElement(213)?"^"+format(x):format(x)+"x" },
+                effDesc(x) { return hasElement(213)?formatPow(x):format(x)+"x" },
             },{
                 desc: "Boost Fabric.",
                 get unl() { return OURO.evo >= 2 },
                 cost(x) { return E(1e5).pow(x.pow(1.5)) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1) ? x.log(1e5).root(1.5).add(1).floor() : E(0) },
-                effect: x => x.add(1),
+                effect: x => x.add(1).overflow('e50000',0.5),
                 effDesc(x) { return formatMult(x) },
             },{
                 desc: "Raise Wormhole Multiplier.",
@@ -189,12 +189,13 @@ const BOSONS = {
                 cost(x) { return E(1e5).pow(x.pow(5).add(1)) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1e5) ? x.sub(1).log(1e5).root(5).add(1).floor() : E(0) },
                 effect: x => x.add(1),
-                effDesc(x) { return "^"+format(x) },
+                effDesc(x) { return formatPow(x) },
             },
         ],
         gluon: [
             {
                 desc: "Gain more Atoms & Atomic Powers based on Gluon.",
+                get unl() { return OURO.evo < 3 },
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
@@ -204,9 +205,10 @@ const BOSONS = {
                     if (tmp.c16active) y = overflow(y,10,0.5)
                     return y
                 },
-                effDesc(x) { return hasElement(204)?"^"+format(x):format(x)+"x" },
+                effDesc(x) { return hasElement(204)?formatPow(x):format(x)+"x" },
             },{
                 desc: "Boost Cosmic Ray Power.",
+                get unl() { return OURO.evo < 3 },
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
@@ -224,7 +226,7 @@ const BOSONS = {
                     ? Decimal.pow(1.1,player.atom.quarks.add(10).log10().log10().add(1).mul(x.add(10).log10()).root(2).sub(1))
                     : player.atom.quarks.add(1).log10().add(1).pow(x.mul(0.125)).softcap(1e15,0.6,0)
                 },
-                effDesc(x) { return hasElement(204)?"^"+format(x):format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
+                effDesc(x) { return hasElement(204)?formatPow(x):format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: "Supernova requirement is decreased based on Gluon.",
                 get unl() { return OURO.evo < 2 },
@@ -236,6 +238,20 @@ const BOSONS = {
                     return y
                 },
                 effDesc(x) { return "/"+format(x)+(x.gte(5.5)&&!hasPrestige(0,28)?" <span class='soft'>(softcapped)</span>":"") },
+            },{
+                desc: "Boost Protostars.",
+                get unl() { return OURO.evo >= 3 },
+                cost(x) { return E(1e5).pow(x.pow(3).add(1)) },
+                bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.sub(1).log(1e5).root(3).add(1).floor() : E(0) },
+                effect: x => x.add(1).overflow('e25000',0.5),
+                effDesc(x) { return formatMult(x) },
+            },{
+                desc: "Gain more nebular dusts based on Gluon.",
+                get unl() { return OURO.evo >= 3 },
+                cost(x) { return E(1e10).pow(x.pow(1.5).add(1)) },
+                bulk(x=player.supernova.bosons.gluon) { return x.gte(1e10) ? x.sub(1).log(1e10).root(1.5).add(1).floor() : E(0) },
+                effect: x => expMult(player.supernova.bosons.gluon.add(1).log10().add(1).pow(x.add(1).log10()),0.5),
+                effDesc(x) { return formatMult(x) },
             },
         ],
     },

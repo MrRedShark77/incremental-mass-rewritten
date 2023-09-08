@@ -96,7 +96,7 @@ const INF = {
         if (!iu11) resetMainUpgs(4,[8])
 
         let e = [14,18,24,30,122,124,131,136,143,194]
-        if (OURO.evo >= 3) e.push(1)
+        if (OURO.evo >= 3) e.push(293)
         if (hasInfUpgrade(2)) e.push(202)
         if (hasInfUpgrade(3)) e.push(161)
         if (iu15) e.push(218)
@@ -300,6 +300,8 @@ const INF = {
         if (hasUpgrade('bh',25)) x = x.mul(upgEffect(2,25))
         if (hasUpgrade('atom',25)) x = x.mul(upgEffect(3,25))
 
+        if (hasElement(302)) x = x.mul(elemEffect(302))
+
         return x.max(1).floor()
     },
 
@@ -390,7 +392,7 @@ const INF = {
                 effectDesc: x => formatMult(x,0),
             },{
                 title: "Muonic Automation",
-                desc: "Automate muonic elements and muon-catalyzed fusion.",
+                get desc() { return `Automate muonic elements and ${OURO.evo >= 3 ? `exotic nebulae` : `muon-catalyzed fusion`}.` },
                 cost: E(6e6),
             },{
                 title: "Corrupted Peak",
@@ -419,7 +421,7 @@ const INF = {
             },{
                 title: "Better Infinity",
                 desc: "Improve Infinity Points formula.",
-                get cost() { return OURO.evo == 2 ? E(1e204) : E(1e225) },
+                get cost() { return OURO.evo == 3 ? E(1e220) : OURO.evo == 2 ? E(1e204) : E(1e225) },
             },
         ],
     ],
@@ -430,7 +432,7 @@ const INF = {
         2,
         6,
         9,
-        22,
+        20,
     ],
 
     dim_mass: {
@@ -635,7 +637,7 @@ function updateInfHTML() {
         for (let r in INF.upgs) {
             r = parseInt(r)
 
-            let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte([10,4,2][OURO.evo]))
+            let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte([10,4,2,3][OURO.evo]))
 
             tmp.el['iu_row'+r].setDisplay(unl)
 
