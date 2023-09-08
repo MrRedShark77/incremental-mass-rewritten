@@ -44,11 +44,9 @@ const FORMS = {
         let x = E(2).add(BUILDINGS.eff('mass_1',undefined,0))
         if (player.ranks.rank.gte(4)) x = x.mul(RANKS.effect.rank[4]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
-        if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
-        if (player.ranks.tier.gte(2)) x = x.mul(2)
         if (hasUpgrade("bh",10)) x = x.mul(tmp.upgs?tmp.upgs[2][10].effect:E(1))
         if (tmp.star_unl) x = x.mul(tmp.stars.effect[0])
-        if (hasTree("m1") && !hasElement(164)) x = x.mul(treeEff("m1"))
+        if (hasTree("m1")) x = x.mul(treeEff("m1")[0])
         if (tmp.sn.boson) x = x.mul(tmp.sn.boson.effect.pos_w[0])
         if (OURO.unl()) x = x.mul(appleEffect('mass')[0])
         if (OURO.evo < 2 && tmp.atom.unl) x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
@@ -89,7 +87,7 @@ const FORMS = {
         .softcap(tmp.massSoftGain8,tmp.massSoftPower8,0)
 
         if (tmp.star_unl) x = x.pow(tmp.stars.effect[1])
-        if (tmp.sn.unl && hasElement(164)) x = x.pow(treeEff("m1"))
+        if (hasTree("m1")) x = x.pow(treeEff("m1")[1])
 
         x = x.pow(glyphUpgEff(1))
 

@@ -196,7 +196,7 @@ const CONSTELLATION = {
 						u_el.setClasses( { zoviac_upg: true, tooltip: true, bought } )
                         u_el.setAttr('tooltip-html',u.desc
                         + (u.effDesc && bought
-                            ? "<br class='line'> Effect: " + u.effDesc(zt.eff[ui])
+                            ? "<br class='line'> Effect: " + u.effDesc(tmp.evo.zodiac_eff[zi+"-"+ui])
                             : bought
                             ? ""
                             : "<br class='line'> Cost: " + u.cost.format(0) + " " + z.name

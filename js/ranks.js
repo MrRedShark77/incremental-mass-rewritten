@@ -654,7 +654,7 @@ function updateRanksTemp() {
 
     for (let x = 0; x < RANKS.names.length; x++) {
         let rn = RANKS.names[x]
-        if (x > 0) tmp.ranks[rn].can = player.ranks[RANKS.names[x-1]].gte(tmp.ranks[rn].req)
+        if (x > 0) tmp.ranks[rn].can = RANKS.gain(rn).gt(0) && player.ranks[RANKS.names[x-1]].gte(tmp.ranks[rn].req)
     }
 
     // Prestige

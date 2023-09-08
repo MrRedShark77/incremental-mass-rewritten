@@ -1638,7 +1638,7 @@ const ELEMENTS = {
         },{
             inf: true,
             desc: `Unlock 20th Challenge.`,
-            get cost() { return OURO.evo >= 2 ? E(1e256) : E(Number.MAX_VALUE) },
+            get cost() { return OURO.evo >= 3 ? E(1e300) : OURO.evo >= 2 ? E(1e256) : E(Number.MAX_VALUE) },
         },{
             proto: true,
             desc: `Stardust boosts Protostars at a reduced rate.`,
@@ -1719,17 +1719,17 @@ const ELEMENTS = {
         },{
             proto: true,
             desc: `Exotic II Nebulae boost infinity points gain.`,
-            cost: E('e10000'),
+            cost: E('e6000'),
             effect() {
                 if (!tmp.ouro.unl) return E(1)
-                let x = Decimal.pow(2,expMult(player.evo.proto.nebula.ext2,0.75))
+                let x = Decimal.pow(2,expMult(player.evo.proto.nebula.ext2,0.8))
                 return x
             },
             effDesc(x) { return formatMult(x) },
         },{
             proto: true,
             desc: `Anti-wormhole boosts protostars slightly.`,
-            cost: E('e10600'),
+            cost: E('e6200'),
             effect() {
                 if (!tmp.ouro.unl) return E(1)
                 let x = player.evo.wh.mass[6].add(1).overflow('ee4',0.5)
@@ -1739,7 +1739,7 @@ const ELEMENTS = {
         },{
             proto: true,
             desc: `Stardust boosts supernova generation.`,
-            cost: E('e13000'),
+            cost: E('e7500'),
             effect() {
                 if (!tmp.ouro.unl) return E(1)
                 let x = player.evo.proto.dust.add(1).log10().add(1)

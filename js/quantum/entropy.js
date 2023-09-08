@@ -205,7 +205,7 @@ function calcEntropy(dt) {
     let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
 	let bh = OURO.evo >= 2 ? player.evo.wh.fabric : player.bh.mass
 
-    if (hasMDUpg(10, true) && player.qu.en.unl){
+    if ((OURO.evo >= 3 || hasMDUpg(10, true)) && player.qu.en.unl){
 		let s1 = Decimal.pow(4,player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));
