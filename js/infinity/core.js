@@ -104,7 +104,7 @@ const CORE = {
                 
                 x = overflow(x,100,0.5)
 
-                if (tmp.c16active) x = x.log10().add(1)
+                if (tmp.c16.in) x = x.log10().add(1)
 
                 if (tmp.NHDimprove) x = x.pow(10)
 
@@ -115,7 +115,7 @@ const CORE = {
 
                 x = overflow(x,100,0.5)
 
-                if (tmp.c16active) x = x.log10().add(1)
+                if (tmp.c16.in) x = x.log10().add(1)
 
                 if (tmp.NHDimprove) x = x.pow(10)
 
@@ -186,7 +186,7 @@ const CORE = {
             () => OURO.evo >= 1 ? `Gain more meditation.` : `Increase accelerator's power.`,
             `Boost Exotic Atom gain.`,
             () => OURO.evo >= 3 ? `Boost protostars gain.` : `Boost dilated mass gain.`,
-            `Gain more Nebular Dust.`,
+            `Gain more Stardust.`,
         ],
         res: `Exotic Atom`,
         boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1)},
@@ -790,17 +790,14 @@ function updateCoreTemp() {
     tmp.core_lvl = INF.level()
 
     let c20 = CHALS.inChal(20)
-
     let ss = E(1e3)
-
     if (hasElement(272)) ss = ss.mul(elemEffect(272))
-
     tmp.meta_score_ss = ss
 
     for (let i in CORE) {
         let t = CORE[i], s = tmp.core_score[i], eff = tmp.core_eff[i], ct = core_tmp[i]
 
-        let boost = t.boost?t.boost():1
+        let boost = (!t.unl||t.unl())&&t.boost?t.boost():0
 
         for (let j = 0; j < MAX_STARS; j++) {
             let sc = Decimal.pow(ct.total_s[j].mul(Decimal.pow(boost, ct.total_s[j].add(1).log10().add(1))),ct.total_p)

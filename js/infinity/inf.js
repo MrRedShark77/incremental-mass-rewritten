@@ -106,82 +106,95 @@ const INF = {
         player.atom.muonic_el = unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].cs || MUONIC_ELEM.upgs[x].berry)
 
         for (let x = 1; x <= (hasElement(229) ? 15 : 16); x++) player.chal.comps[x] = E(0)
-        player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
-        "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
 
         player.ranks.beyond = E(0)
         for (let x = 0; x < PRESTIGES.names.length; x++) player.prestiges[x] = E(0)
+
+		// Ouroboric
+        if (OURO.unl()) player.evo = deepUndefinedAndDecimal({
+			times: player.evo.times,
+			cp: { unl: OURO.evo >= 1 },
+			wh: {
+				unl: OURO.evo >= 2,
+				auto: player.evo.wh.auto,
+				origin: player.evo.wh.origin,
+				rate: player.evo.wh.rate,
+			},
+			const: player.evo.const
+		}, OURO.save.evo)
 
         // Reset
         player.ranks[RANKS.names[RANKS.names.length-1]] = E(0)
         RANKS.doReset[RANKS.names[RANKS.names.length-1]]()
 
-        player.rp.points = E(0)
-        BUILDINGS.reset('tickspeed')
-        BUILDINGS.reset('accelerator')
-        player.bh.mass = E(0)
-        if (OURO.unl()) player.evo = deepUndefinedAndDecimal({
-			times: player.evo.times,
-			wh: {
-				auto: player.evo.wh.auto,
-				origin: player.evo.wh.origin,
-				rate: player.evo.wh.rate,
+		if (tmp.rp.unl) {
+			player.rp.points = E(0)
+			BUILDINGS.reset('tickspeed')
+			BUILDINGS.reset('accelerator')
+		}
+		if (tmp.bh.unl) {
+			player.bh.mass = E(0)
+			player.bh.dm = E(0)
+			BUILDINGS.reset('bhc')
+
+			if (!hasElement(242)) BUILDINGS.reset('fvm')
+			player.bh.unstable = E(0)
+		}
+
+		player.atom.points = E(0)
+		player.atom.quarks = E(0)
+		if (tmp.atom.unl) {
+			player.atom.atomic = E(0)
+			player.atom.particles = [E(0),E(0),E(0)]
+			player.atom.powers = [E(0),E(0),E(0)]
+			player.atom.atomic = E(0)
+			BUILDINGS.reset('cosmic_ray')
+
+			player.md.active = false
+			player.md.particles = E(0)
+			player.md.mass = E(0)
+			for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
+		}
+
+		if (tmp.sn.unl) {
+			player.stars.unls = 0
+			player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
+			player.stars.points = E(0)
+			BUILDINGS.reset('star_booster')
+
+			tmp.sn.time = 0
+			player.supernova.chal.noTick = true
+			player.supernova.chal.noBHC = true
+
+			if (CHALS.inChal(19) || !hasElement(47,1)) player.supernova.times = E(0)
+			player.supernova.stars = E(0)
+			player.supernova.tree = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
+			"qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11', 'qu_qol12', 'qu0']
+
+			player.supernova.bosons = {
+				pos_w: E(0),
+				neg_w: E(0),
+				z_boson: E(0),
+				photon: E(0),
+				gluon: E(0),
+				graviton: E(0),
+				hb: E(0),
 			}
-		}, OURO.save.evo)
+			for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
 
-        player.atom.atomic = E(0)
-        player.bh.dm = E(0)
-        BUILDINGS.reset('bhc')
+			player.supernova.fermions.points = [E(0),E(0)]
 
-        tmp.supernova.time = 0
+			for (let x = 0; x < 2; x++) for (let y = 0; y < 7; y++) player.supernova.fermions.tiers[x][y] = E(0)
 
-        player.atom.points = E(0)
-        player.atom.quarks = E(0)
-        player.atom.particles = [E(0),E(0),E(0)]
-        player.atom.powers = [E(0),E(0),E(0)]
-        player.atom.atomic = E(0)
-        BUILDINGS.reset('cosmic_ray')
-
-        player.md.active = false
-        player.md.particles = E(0)
-        player.md.mass = E(0)
-        for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(0)
-
-        player.stars.unls = 0
-        player.stars.generators = [E(0),E(0),E(0),E(0),E(0),E(0),E(0),E(0)]
-        player.stars.points = E(0)
-        BUILDINGS.reset('star_booster')
-
-        player.supernova.chal.noTick = true
-        player.supernova.chal.noBHC = true
-
-        if (CHALS.inChal(19) || !hasElement(47,1)) player.supernova.times = E(0)
-        player.supernova.stars = E(0)
-
-        player.supernova.bosons = {
-            pos_w: E(0),
-            neg_w: E(0),
-            z_boson: E(0),
-            photon: E(0),
-            gluon: E(0),
-            graviton: E(0),
-            hb: E(0),
-        }
-        for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(0)
-
-        player.supernova.fermions.points = [E(0),E(0)]
-
-        for (let x = 0; x < 2; x++) for (let y = 0; y < 7; y++) player.supernova.fermions.tiers[x][y] = E(0)
-
-        player.supernova.radiation.hz = hasUpgrade('br',6)?E(1e50):E(0)
-        for (let x = 0; x < 7; x++) {
-            player.supernova.radiation.ds[x] = E(0)
-            for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
-        }
+			player.supernova.radiation.hz = hasUpgrade('br',6)?E(1e50):E(0)
+			for (let x = 0; x < 7; x++) {
+				player.supernova.radiation.ds[x] = E(0)
+				for (let y = 0; y < 2; y++) player.supernova.radiation.bs[2*x+y] = E(0)
+			}
+		}
 
         // Quantum
         let qu = player.qu
-        let bmd = player.md.break
         let quSave = getQUSave()
 
         qu.times = E(10)
@@ -202,10 +215,13 @@ const INF = {
         qu.rip.active = false
         qu.rip.amt = E(0)
 
-        if (!iu11) bmd.active = false
-        bmd.energy = E(0)
-        bmd.mass = E(0)
-        for (let x = 0; x < 12; x++) if (x != 10) bmd.upgs[x] = E(0)
+		if (tmp.atom.unl) {
+			let bmd = player.md.break
+			if (!iu11) bmd.active = false
+			bmd.energy = E(0)
+			bmd.mass = E(0)
+			for (let x = 0; x < 12; x++) if (x != 10) bmd.upgs[x] = E(0)
+		}
 
         // Dark Reset
         let dark = player.dark
@@ -234,9 +250,6 @@ const INF = {
         }
 
         dark.exotic_atom = darkSave.exotic_atom
-
-        if (!hasElement(242)) BUILDINGS.reset('fvm')
-        player.bh.unstable = E(0)
 
         // Other
         if (!hasInfUpgrade(11)) {

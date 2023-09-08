@@ -1583,7 +1583,7 @@ h4 {
 
 #ouro_scene, #ouro_quotes {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -1601,7 +1601,6 @@ h4 {
 #ouro_quotes > span {
     position: fixed;
     left: 50%;
-    color: #007F3F7F;
     font-size: 18px;
 	transform: translateX(-50%);
 }
@@ -1726,7 +1725,7 @@ h4 {
 	background-color: #246
 }
 
-#constellation_div {
+#const_div {
 	position: relative;
 	margin: auto;
 	border: 4px solid transparent;
@@ -1736,7 +1735,7 @@ h4 {
 	height: 480px;
 }
 
-#constellation_canvas {
+#const_canvas {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -1744,7 +1743,7 @@ h4 {
 	height: 100%;
 }
 
-#constellation_scroll {
+#const_scroll {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -1753,7 +1752,7 @@ h4 {
 	overflow-y: scroll;
 }
 
-#constellation_glow {
+#const_glow {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -1763,7 +1762,7 @@ h4 {
 	pointer-events: none;
 }
 
-#constellation_table {
+#const_table {
 	position: relative;
 	width: 100%;
 	height: 490px;
@@ -1775,6 +1774,10 @@ h4 {
 	height: 50px;
 	transform: translate(-50%,-50%);
 	cursor: pointer;
+}
+
+.zoviac_upg.bought {
+	box-shadow: 0 0 12px green, 0 0 12px green, 0 0 18px magenta
 }
 
 #zodiac_desc {
@@ -1801,7 +1804,7 @@ h4 {
 	left: 0px;
 }
 
-#constellation_tier {
+#const_tier {
 	width: 400px;
 	max-width: 400px;
 }

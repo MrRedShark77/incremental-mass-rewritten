@@ -16,8 +16,6 @@ function resetTemp() {
 
         start: false,
 
-        sn_tab: 0,
-        tree_tab: 0,
         tab: 0,
         stab: [0],
         tab_name: "mass",
@@ -45,12 +43,10 @@ function resetTemp() {
             eff: {},
         },
 
-        bd: {
-            upgs: [],
-        },
+		rp: {},
+        upgs: { msg: [0,0] },
 
-        upgs: {},
-
+		bh: {},
 		atom: {},
         elements: {
             choosed: 0,
@@ -65,42 +61,7 @@ function resetTemp() {
             max_tier: [1,1],
             unl_length: [0,0],
         },
-    
-        fermions: {
-            ch: [0,0],
-            gains: [E(0),E(0)],
-            maxTier: [[],[]],
-            tiers: [[],[]],
-            effs:  [[],[]],
-            bonuses: [[],[]],
-        },
-    
-        supernova: {
-            time: 0,
-            tree_choosed: "",
-            tree_had: [],
-            tree_had2: [],
-            auto_tree: [],
-            tree_eff: {},
-            tree_unlocked: {},
-            tree_afford: {},
-            tree_afford2: [],
-            tree_loc: {},
-        },
-    
-        radiation: {
-            unl: false,
-            ds_gain: [],
-            ds_eff: [],
-            bs: {
-                sum: [],
-                lvl: [],
-                bonus_lvl: [],
-                cost: [],
-                bulk: [],
-                eff: [],
-            },
-        },
+        sn: {},
 
         qu: {
             chroma_gain: [],
@@ -252,25 +213,7 @@ function resetTemp() {
     for (let x = 0; x < ASCENSIONS.names.length; x++) tmp.ascensions.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs[x] = {}
-    for (let j = 0; j < TREE_TAB.length; j++) {
-        tmp.supernova.tree_had2[j] = []
-        tmp.supernova.tree_afford2[j] = []
-    }
     for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
-    for (let i = 0; i < TREE_IDS.length; i++) {
-        for (let j = 0; j < TREE_TAB.length; j++) {
-            for (let k = 0; k < TREE_IDS[i][j].length; k++) {
-                let id = TREE_IDS[i][j][k]
-                if (id != "") {
-                    let u = TREE_UPGS.ids[id]
-                    tmp.supernova.tree_had2[j].push(id)
-                    tmp.supernova.tree_had.push(id)
-                    // if (u && !u.qf && !u.cs) tmp.supernova.auto_tree.push(id)
-                }
-            }
-        }
-    }
-    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) tmp.bd.upgs[x] = {}
     for (let x = 0; x < SCALE_TYPE.length; x++) {
         let st = SCALE_TYPE[x]
 
@@ -311,7 +254,7 @@ function updateMassTemp() {
 
 function updateTickspeedTemp() {
     if (OURO.evo >= 1) return
-    tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : tmp.fermions.effs[1][2]
+    tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : fermEff(1, 2)
 }
 
 function updateUpgradesTemp() {
@@ -323,6 +266,7 @@ function updateUpgradesTemp() {
 
 function updateRagePowerTemp() {
     if (!tmp.rp) tmp.rp = {}
+    tmp.rp.unl = OURO.evo < 1 && player.rp.unl
     tmp.rp.gain = FORMS.rp.gain()
     tmp.rp.can = tmp.rp.gain.gte(1)
 }
@@ -331,7 +275,7 @@ function updateBlackHoleTemp() {
     let t = tmp.bh = {}
     t.dm_gain = FORMS.bh.DM_gain()
     t.dm_can = t.dm_gain.gte(1)
-    t.unl = player.bh.unl && OURO.evo < 2
+    t.unl = player.bh?.unl
 
 	if (!t.unl) return
     t.massSoftGain = FORMS.bh.massSoftGain()
@@ -344,7 +288,6 @@ function updateBlackHoleTemp() {
 
     // Unstable
     t = tmp.unstable_bh
-    
     t.p = E(1)
     if (tmp.inf_unl) t.p = t.p.div(theoremEff('bh',2))
     if (hasUpgrade('bh',23)) t.p = t.p.div(.75)
@@ -363,10 +306,10 @@ function updateTemp() {
 
     OURO.temp()
 
-    tmp.passive = (evo>=3?player.bh.unl:hasUpgrade("atom",6))?2:
-		(evo>=2?player.rp.unl:hasUpgrade("bh",6)||hasUpgrade("atom",6))?1:0
+    tmp.passive = (evo>=3?FORMS.bh.unl():hasUpgrade("atom",6))?2:
+		(evo>=2?FORMS.rp.unl():hasUpgrade("bh",6)||hasUpgrade("atom",6))?1:0
 
-    tmp.c16active = CHALS.inChal(16)
+    tmp.c16.in = CHALS.inChal(16)
     tmp.c18active = CHALS.inChal(18)
 
     tmp.chal13comp = player.chal.comps[13].gte(1)
@@ -386,28 +329,20 @@ function updateTemp() {
     tmp.c18reward = player.chal.comps[18].gte(4)
     tmp.fifthRowUnl = hasElement(270)
 
-    tmp.SN_passive = hasElement(36,1)
-
     tmp.NHDimprove = hasElement(268)
 
     updateInfTemp()
     updateC16Temp()
     updateDarkTemp()
     updateQuantumTemp()
-
-    updateRadiationTemp()
-    updateFermionsTemp()
-    updateBosonsTemp()
     updateSupernovaTemp()
 
     updateElementsTemp()
-    updateMDTemp()
+    updateAtomTemp()
     updateUpgradesTemp()
     updateChalTemp()
-    updateAtomTemp()
     BUILDINGS.temp()
 
-    updateStarsTemp()
     updateScalingTemp()
     updateRagePowerTemp()
     updateBlackHoleTemp()

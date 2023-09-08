@@ -99,7 +99,7 @@ function calc(dt) {
 	if (tmp.chal.unl) player.chal.unl = true
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
-		if (tmp.brUnl && x < 4 || RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.bulk(rn)
+		if (tmp.brUnl && x < 4 || RANKS.autoUnl[rn]() && player.auto_ranks[rn]) RANKS.reset(rn, true)
 	}
 	if (player.auto_ranks.beyond && (hasBeyondRank(2,1)||hasInfUpgrade(10)||OURO.evo>=1)) BEYOND_RANKS.reset(true)
 	for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]() && player.auto_pres[x]) PRESTIGES.reset(x,true)
@@ -122,7 +122,7 @@ function calc(dt) {
 		player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(du_gs))
 		for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(du_gs))
 
-		if (hasTree("qol3")) player.md.particles = player.md.particles.add(player.md.active ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
+		if (hasTree("qol3")) player.md.particles = player.md.particles.add(inMD() ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
 		player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(du_gs))
 
 		if (hasElement(24)) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
@@ -141,7 +141,6 @@ function calc(dt) {
 	BUILDINGS.tick()
 
 	if (hasTree("qol6")) CHALS.exit(true)
-
 	if (hasTree("qu_qol3") && OURO.evo < 2) for (let x = 1; x <= 4; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
 	if (hasTree("qu_qol5") && OURO.evo < 3) for (let x = 5; x <= 8; x++) player.chal.comps[x] = player.chal.comps[x].max(tmp.chal.bulk[x].min(tmp.chal.max[x]))
     if (OURO.evo < 4) {
@@ -160,7 +159,7 @@ function onPass(offline) {
 	player.atom.muonic_el = chunkify(player.atom.muonic_el)
 	calcNextElements()
 	updateUpgNotify()
-	OURO.update_fed()
+	EVO.update_fed()
 }
 
 function getPlayerData() {
@@ -269,7 +268,6 @@ function getPlayerData() {
             },
         },
         reset_msg: "",
-        main_upg_msg: [0,0],
         options: {
             font: 'Verdana',
             notation: 'sc',
@@ -330,11 +328,9 @@ function loadPlayer(load) {
     const DATA = getPlayerData()
     player = deepNaN(load, DATA)
     player = deepUndefinedAndDecimal(player, DATA)
-    convertStringToDecimal()
 
     player.qu.qc.presets = player.qu.qc.presets.slice(0,5)
     player.reset_msg = ""
-    player.main_upg_msg = [0,0]
     player.chal.choosed = 0
     if (player.dark.run.gmode == 2) player.dark.run.gmode = 0
     if (player.dark.c16.first && player.dark.c16.totalS.eq(0) && player.dark.c16.shard.gt(0)) player.dark.c16.totalS = player.dark.c16.shard
@@ -395,27 +391,48 @@ function deepUndefinedAndDecimal(obj, data) {
     return obj
 }
 
-function convertStringToDecimal() {
-    for (let x = 1; x <= CHALS.cols; x++) player.chal.comps[x] = E(player.chal.comps[x])
-    for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) player.md.upgs[x] = E(player.md.upgs[x]||0)
-    for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) player.md.break.upgs[x] = E(player.md.break.upgs[x]||0)
-    for (let x in BOSONS.upgs.ids) for (let y in BOSONS.upgs[BOSONS.upgs.ids[x]]) player.supernova.b_upgs[BOSONS.upgs.ids[x]][y] = E(player.supernova.b_upgs[BOSONS.upgs.ids[x]][y]||0)
-}
-
 function destroyOldData() {
 	delete player.massUpg
+	delete player.main_upg_msg
 	delete player.tickspeed
 	delete player.accelerator
 	delete player.autoMassUpg
 	delete player.autoTickspeed
 	delete player.autoAccel
-	delete player.bh.autoCondenser
-	delete player.bh.autoFVM
 	delete player.atom.auto_gr
 	delete player.qu.auto_cr
+
+	let evo = OURO.evo
+	if (evo >= 1) {
+		if (player.rp.unl) player.evo.cp.unl = player.rp.unl
+		delete player.rp
+	}
+	if (evo >= 2) {
+		if (player.bh.unl) player.evo.wh.unl = player.bh.unl
+		delete player.bh
+	} else {
+		delete player.bh.autoCondenser
+		delete player.bh.autoFVM
+	}
+	if (evo >= 3) {
+		delete player.atom.points
+		delete player.atom.atomic
+		delete player.atom.particles
+		delete player.atom.powers
+		delete player.atom.ratio
+		delete player.atom.dRatio
+		delete player.md
+	}
+	if (evo >= 4) {
+		delete player.stars
+		delete player.supernova
+	}
+
+	//Ouroboric
+	delete player.evo?.constellation
 }
 
-function cannotSave() { return tmp.supernova.reached && player.supernova.times.lt(1) && !quUnl() || tmp.inf_reached && !hasInfUpgrade(16) || onImport }
+function cannotSave() { return tmp.sn.reached && player.supernova.times.lt(1) && !quUnl() || tmp.inf_reached && !hasInfUpgrade(16) || onImport }
 
 function save() {
     let str = btoa(JSON.stringify(player))
@@ -570,9 +587,9 @@ function simulateTime(sec) {
     let ticks = sec * FPS
     let bonusDiff = 0
     let player_before = clonePlayer(player,getPlayerData());
-    if (ticks > 1000) {
-        bonusDiff = (ticks - 1000) / FPS / 1000
-        ticks = 1000
+    if (ticks > 500) {
+        bonusDiff = (ticks - 500) / FPS / 500
+        ticks = 500
     }
     for (let i=0; i<ticks; i++) {
         updateTemp()
@@ -583,14 +600,14 @@ function simulateTime(sec) {
 
     let s = {
         mass: player.mass.max(1).div(player_before.mass.max(1)).log10(),
-        bh_mass: player.bh.mass.max(1).div(player_before.bh.mass.max(1)).log10(),
+        bh_mass: tmp.bh.unl ? player.bh.mass.max(1).div(player_before.bh.mass.max(1)).log10() : E(1),
         quarks: player.atom.quarks.max(1).div(player_before.atom.quarks.max(1)).log10(),
-        sn: player.supernova.times.sub(player_before.supernova.times),
+        sn: tmp.sn.unl ? player.supernova.times.sub(player_before.supernova.times) : E(1),
     }
 
     let s2 = {
         mass: player.mass.max(1).log10().max(1).div(player_before.mass.max(1).log10().max(1)).log10(),
-        bh_mass: player.bh.mass.max(1).log10().max(1).div(player_before.bh.mass.max(1).log10().max(1)).log10(),
+        bh_mass: tmp.bh.unl ? player.bh.mass.max(1).log10().max(1).div(player_before.bh.mass.max(1).log10().max(1)).log10() : E(1),
         quarks: player.atom.quarks.max(1).log10().max(1).div(player_before.atom.quarks.max(1).log10().max(1)).log10(),
     }
 

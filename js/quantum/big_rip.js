@@ -10,7 +10,7 @@ const BIG_RIP = {
         if (hasElement(90)) x = x.mul(tmp.elements.effect[90]||1)
         if (hasElement(94)) x = x.mul(tmp.elements.effect[94]||1)
         if (hasPrestige(0,2)) x = x.mul(4)
-        if (player.md.break.upgs[6].gte(1)) x = x.mul(tmp.bd.upgs[6].eff?tmp.bd.upgs[6].eff[1]:1)
+        if (hasMDUpg(6, true)) x = x.mul(mdEff(6, true)[1] || 1)
         if (hasUpgrade('br',13)) x = x.mul(upgEffect(4,13))
         if (hasUpgrade('br',23)) x = x.mul(upgEffect(4,23))
 
@@ -21,5 +21,6 @@ const BIG_RIP = {
 }
 
 function updateBigRipTemp() {
+    tmp.rip.in = player.qu.rip.active || tmp.dark.run
     tmp.rip.gain = BIG_RIP.gain()
 }

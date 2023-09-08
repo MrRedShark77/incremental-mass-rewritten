@@ -3,7 +3,7 @@ const DARK_RUN = {
     mass_glyph_eff(i) {
         let x, g = player.dark.run.glyphs[i]
 
-        if (tmp.c16active) g = E(i == 5 ? 10 : 100)
+        if (tmp.c16.in) g = E(i == 5 ? 10 : 100)
         g = g.div(tmp.dark.glyph_weak)
 
         if (CHALS.inChal(20)) g = E(1.5e3)
@@ -32,8 +32,8 @@ const DARK_RUN = {
         ()=>OURO.evo>=2?player.evo.wh.fabric.add(1).log10().div(5).pow(1.5).mul(tmp.dark.glyph_mult).floor()
 			:(player.bh.mass.gte(OURO.evo>=1?'e1e18':'e1.5e34')?player.bh.mass.log10().div(OURO.evo>=1?'1e18':1.5e34).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0)),
         ()=>player.atom.quarks.gte(OURO.evo>=1?'e1e17':'e3e32')?player.atom.quarks.log10().div(OURO.evo>=1?'1e17':3e32).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.md.mass.gte(OURO.evo>=1?'e1e9':'e1e21')?player.md.mass.log10().div(OURO.evo>=1?'1e9':1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
-        ()=>player.stars.points.gte(OURO.evo>=1?'e1e11':'e1.5e24')?player.stars.points.log10().div(OURO.evo>=1?'1e11':1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>tmp.atom.unl&&player.md.mass.gte(OURO.evo>=1?'e1e9':'e1e21')?player.md.mass.log10().div(OURO.evo>=1?'1e9':1e21).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
+        ()=>tmp.star_unl&&player.stars.points.gte(OURO.evo>=1?'e1e11':'e1.5e24')?player.stars.points.log10().div(OURO.evo>=1?'1e11':1.5e24).log(1.1).add(1).softcap(50,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
         ()=>tmp.prestiges.base.gte(OURO.evo>=1?1e10:1e13)?tmp.prestiges.base.div(OURO.evo>=1?1e10:1e13).log(1.1).add(1).softcap(10,0.5,0).mul(tmp.dark.glyph_mult).floor():E(0),
     ],
 
@@ -169,7 +169,7 @@ function glyphButton(i) {
 }
 
 function inDarkRun() {
-    return player.dark.run.active || CHALS.inChal(17) || CHALS.inChal(18) || CHALS.inChal(19) || CHALS.inChal(20)
+    return player.dark.run.active || player.chal.active >= 16
 }
 
 function darkRun(round) {
@@ -218,7 +218,7 @@ function buyGlyphUpgrade(i) {
 function updateDarkRunHTML() {
     let dtmp = tmp.dark, dra = player.dark.run.active
     let pin = player.dark.run.pin_upg, gum = tmp.mass_glyph_msg
-    let c16 = tmp.c16active
+    let c16 = tmp.c16.in
 
     tmp.el.dark_run_btn.setTxt(dra?"Exit Dark Run":"Start Dark Run")
     tmp.el.dark_run_btn.setTooltip(`Dark Running will force a Dark reset, and will trap you into Big Rip with quantum challenge modifiers ${getQCForceDisp('run')}. You will produce <b>Glyphic Mass</b> based on resources which nerf things, and choosing a glyph to earn will exit a Dark Run.`)
@@ -287,6 +287,7 @@ function updateDarkRunHTML() {
 
 function updateDarkRunTemp() {
     let dtmp = tmp.dark
+	dtmp.run = inDarkRun()
 
     let w = 1
     if (tmp.inf_unl) w /= theoremEff('time',3)
@@ -302,20 +303,17 @@ function updateDarkRunTemp() {
 
     let dp = 0
     if (hasElement(7,1)) dp += 3
-
     for (let x = 0; x < MASS_GLYPHS_LEN; x++) {
         dtmp.mass_glyph_eff[x] = DARK_RUN.mass_glyph_eff(x)
         let gain = DARK_RUN.mass_glyph_gain[x]()
         let mg = Decimal.max(0,(dra ? gain : E(0)).sub(player.dark.run.glyphs[x]))
         if (player.dark.run.gmode == 1) mg = Decimal.min(player.dark.run.gamount,mg)
         dtmp.mass_glyph_gain[x] = mg
-
         dtmp.mg_passive[x] = x < dp ? gain : 0
     }
 
     for (let x = 1; x < GLYPH_UPG_LEN; x++) {
         let u = DARK_RUN.upg[x]
-
         if (u.eff) tmp.glyph_upg_eff[x] = u.eff(player.dark.run.upg[x]||0)
     }
 }

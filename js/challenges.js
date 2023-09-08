@@ -70,16 +70,19 @@ function updateChalTemp() {
 
     tmp.chal.unl = false
     for (let x = 1; x <= CHALS.cols; x++) {
+		let unl = CHALS[x].unl()
+        if (unl) tmp.chal.unl = true
+
+        let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:E(1)
+        if (x == 9) q = Decimal.min(q,'e150')
+        if (x < 20) q = x <= 16 ? q.pow(p) : q.mul(p)
+        if (OURO.evo >= 2 && [6,8].includes(x)) q = E(1)
+        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
+
         let data = CHALS.getChalData(x)
         tmp.chal.max[x] = CHALS.getMax(x)
         tmp.chal.goal[x] = data.goal
         tmp.chal.bulk[x] = data.bulk
-        let q = x<=8?s:hasElement(174)&&x<=12?s.root(5):hasTree('ct5')&&x<=v?w:E(1)
-        if (x == 9) q = Decimal.min(q,'e150')
-        if (x < 20) q = x <= 16 ? q.pow(p) : q.mul(p)
-        if (OURO.evo == 2 && [6,8].includes(x)) q = E(1)
-        tmp.chal.eff[x] = CHALS[x].effect(FERMIONS.onActive("05")?E(0):player.chal.comps[x].mul(q))
-        if (CHALS[x].unl()) tmp.chal.unl = true
     }
     tmp.chal.format = player.chal.active != 0 ? CHALS.getFormat() : format
     tmp.chal.gain = player.chal.active != 0 ? tmp.chal.bulk[player.chal.active].min(tmp.chal.max[player.chal.active]).sub(player.chal.comps[player.chal.active]).max(0).floor() : E(0)
@@ -122,7 +125,7 @@ const CHALS = {
         if (player.chal.active == 0) {
             if (ch == 16) {
                 player.dark.c16.first = true
-                tmp.c16active = true
+                tmp.c16.in = true
                 addQuote(10)
             }
             player.chal.active = ch
@@ -360,7 +363,7 @@ const CHALS = {
         unl() { return OURO.evo < 2 && (player.chal.comps[1].gte(1) || player.atom.unl) },
         title: "Anti-Tickspeed",
         desc: "You cannot buy Tickspeed.",
-        reward: `Each completion adds +7.5% to Tickspeed Power.`,
+        reward: `Each completion adds +9% to Tickspeed Power.`,
         max: E(100),
         inc: E(10),
         pow: E(1.3),
@@ -369,7 +372,7 @@ const CHALS = {
             let sp = E(0.5)
             if (hasElement(8)) sp = sp.pow(0.25)
             if (hasElement(39)) sp = E(1)
-            let ret = x.mul(0.075).add(1).softcap(1.3,sp,0).sub(1)
+            let ret = x.mul(0.09).add(1).softcap(1.3,sp,0).sub(1)
             return ret
         },
         effDesc(x) { return "+"+format(x.mul(100))+"%"+(x.gte(0.3)?" <span class='soft'>(softcapped)</span>":"") },
@@ -401,7 +404,7 @@ const CHALS = {
         start: E(1.736881338559743e133),
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
-            let ret = hasElement(133) ? x.root(4/3).mul(0.01).add(1) : x.root(1.5).mul(0.01).add(1)
+            let ret = hasElement(133) ? x.root(4/3).mul(0.02).add(1) : x.root(1.5).mul(0.02).add(1)
             return overflow(ret.softcap(3,0.25,0),1e12,0.5)
         },
         effDesc(x) { return formatPow(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
@@ -426,7 +429,7 @@ const CHALS = {
         effDesc(x) { return hasCharger(3)?formatReduction(x)+" weaker":format(E(1).sub(x).mul(100))+"% weaker"+(x.log(0.97).gte(5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     6: {
-        unl() { return (player.chal.comps[5].gte(1) || player.supernova.times.gte(1) || quUnl()) && OURO.evo < 3 },
+        unl() { return (player.chal.comps[5].gte(1) || tmp.sn.unl) && OURO.evo < 3 },
         title: "No Tickspeed & Condenser",
         get desc() { return `You cannot ${OURO.evo >= 2 ? "Meditate or split Wormhole" : "buy Tickspeed or BH Condenser"}.` },
         reward: () => OURO.evo >= 2 ? `Gain +10% more Fabric per completion.` : `Every completion adds 10% to tickspeed and BH condenser power.`,
@@ -441,7 +444,7 @@ const CHALS = {
         effDesc(x) { return OURO.evo>=2?formatMult(x):"+"+format(x)+"x"+(x.gte(0.5)?" <span class='soft'>(softcapped)</span>":"") },
     },
     7: {
-        unl() { return (player.chal.comps[6].gte(1) || player.supernova.times.gte(1) || quUnl()) && OURO.evo < 3 },
+        unl() { return (player.chal.comps[6].gte(1) || tmp.sn.unl) && OURO.evo < 3 },
         title: "No Rage Powers",
         get desc() { return `You cannot gain ${OURO.evo >= 2 ? "calm powers" : "rage powers"}. Instead, ${OURO.evo >= 2 ? "fabric" : "dark matters"} are gained from mass at a reduced rate. Additionally, mass gain softcap is stronger.` },
         reward: ()=>(betterC7Effect()?`Pre-Impossible challenges scale weaker by completions, but this reward doesn't affect C7.`:`Each completion increases challenges 1-4 cap by 2.`) + `<br><span class="yellow">On 16th completion, unlock Elements</span>`,
@@ -458,10 +461,10 @@ const CHALS = {
         effDesc(x) { return betterC7Effect()?formatReduction(x)+" weaker":"+"+format(x,0) },
     },
     8: {
-        unl() { return (player.chal.comps[7].gte(1) || player.supernova.times.gte(1) || quUnl()) && OURO.evo < 3 },
+        unl() { return (player.chal.comps[7].gte(1) || tmp.sn.unl) && OURO.evo < 3 },
         title: "White Hole",
         get desc() { return OURO.evo >= 2 ? "Fabric & Wormhole masses are square-rooted." : "Dark Matter & Mass from Black Hole gains are rooted by 8." },
-        reward: () => OURO.evo >= 2 ? `Gain +20% more Fabric per completion.` : `Dark Matter & Mass from Black Hole gains are raised by completions.<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,
+        reward: () => (OURO.evo >= 2 ? `Gain +20% more Fabric per completion.` : `Dark Matter & Mass from Black Hole gains are raised by completions.`) + `<br><span class="yellow">On first completion, unlock 3 rows of Elements</span>`,
         max: E(50),
         inc: E(80),
         pow: E(1.3),
@@ -499,7 +502,7 @@ const CHALS = {
         unl() { return hasTree("chal5") },
         title: "The Reality I",
         desc: "You are trapped in mass dilation and challenges 1-8.",
-        reward: () => OURO.evo >= 3 ? `Gain +10% more protostars per completion.` : `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)<br><span class="yellow">On first completion, unlock Fermions!</span>`,
+        reward: () => (OURO.evo >= 3 ? `Gain +10% more protostars per completion.` : `The exponent of the RP formula is multiplied by completions. (this effect doesn't work while in this challenge)`) + `<br><span class="yellow">On first completion, unlock Fermions!</span>`,
         max: E(100),
         inc: E('e2000'),
         pow: E(2),
@@ -574,7 +577,7 @@ const CHALS = {
         unl() { return hasElement(168) },
         title: "The Reality II",
         get desc() { return `You are trapped in c1-12 and quantum challenge with modifiers ${getQCForceDisp(15)}.` },
-        reward: `Normal mass's overflow starts later based on completions.<br><span class="yellow">On first completion, unlock more features!</span>`,
+        reward: `Mass, Atomic & Quark overflows scale later.<br><span class="yellow">On first completion, unlock more features!</span>`,
         max: E(100),
         inc: E('e1e6'),
         pow: E(2),

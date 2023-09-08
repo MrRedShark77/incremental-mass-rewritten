@@ -42,7 +42,7 @@ const PROTOSTAR = {
 
 	dust_mult() {
 		let x = E(1)
-		if (tmp.bosons) x = x.mul(tmp.bosons.upgs.gluon[5].effect)
+		if (tmp.sn.boson) x = x.mul(tmp.sn.boson.upgs.gluon[5].effect)
 		if (tmp.inf_unl) x = x.pow(theoremEff('atom',6))
 		return x
 	},
@@ -107,7 +107,7 @@ const PROTOSTAR = {
 			undiminishDisp: "cyan and magenta",
 			res: n => n.red.add(n.green),
 			resDisp: "red and green",
-			unl: () => player.supernova.times.gte(1) || quUnl(),
+			unl: () => tmp.sn.unl,
 			eff: n => [n.cbrt().div(10).add(1), hasElement(301) ? n.add(1).log10().cbrt().div(60).add(1) : undefined],
 			effDisp: e => formatPow(e[0]) + " Star Generators" + (e[1] ? ", " + formatPow(e[1]) + ' to exponent' : "")
 		},
@@ -116,7 +116,7 @@ const PROTOSTAR = {
 			undiminishDisp: "yellow and magenta",
 			res: n => n.green.add(n.blue),
 			resDisp: "green and blue",
-			unl: () => player.supernova.times.gte(1) || quUnl(),
+			unl: () => tmp.sn.unl,
 			eff: n => [n.add(1).root(4), hasElement(301) ? n.add(1).log10().cbrt().div(80).add(1) : undefined],
 			effDisp: e => formatPow(e[0]) + " Wormhole" + (e[1] ? ", " + formatPow(e[1]) + ' to exponent' : "")
 		},
@@ -161,7 +161,7 @@ const PROTOSTAR = {
 	},
 	html() {
 		tmp.el.proto_star.setTxt(player.evo.proto.star.format(0))
-		tmp.el.proto_dust.setHTML(`<h4>${format(player.evo.proto.dust,0)}</h4> ${OURO.evo>=4?"Stardust":"Nebular Dust"}`)
+		tmp.el.proto_dust.setHTML(player.evo.proto.dust.format(0))
 		tmp.el.proto_dust_prod.setTxt(player.evo.proto.dust.formatGain(tmp.evo.dust_prod))
 		tmp.el.ea_amount.setHTML(tmp.epUnl?`<h4>${format(player.evo.proto.exotic_atoms,0)}</h4> Exotic Atoms <span>${player.evo.proto.exotic_atoms.formatGain(tmp.evo.eaGain)}</span>`:"")
 		for (var [i, ni] of Object.entries(Object.keys(this.nebulae))) {
