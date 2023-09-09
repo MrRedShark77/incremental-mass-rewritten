@@ -204,9 +204,10 @@ function getEnRewardEff(x,def=1) { return tmp.en.rewards_eff[x] ?? E(def) }
 function calcEntropy(dt) {
     let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
 	let bh = OURO.evo >= 2 ? player.evo.wh.fabric : player.bh.mass
+	let hz = OURO.evo >= 4 ? E(1) : player.supernova.radiation.hz
 
     if ((OURO.evo >= 3 || hasMDUpg(10, true)) && player.qu.en.unl){
-		let s1 = Decimal.pow(4,player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
+		let s1 = Decimal.pow(4,hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
 		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));
         if (isNaN(s1.mag)) s1=E(0)
@@ -223,10 +224,10 @@ function calcEntropy(dt) {
     if (player.qu.en.eth[0]) {
         player.qu.en.eth[3] += dt
         player.qu.en.eth[1] = player.qu.en.eth[1].add(tmp.en.gain.eth.mul(dt))
-        let s = player.supernova.radiation.hz.div(player.supernova.radiation.hz.max(1).pow(dt).pow(player.qu.en.eth[3]**(2/3))).sub(1)
+        let s = OURO.evo >= 4 ? hz : hz.div(hz.max(1).pow(dt).pow(player.qu.en.eth[3]**(2/3))).sub(1)
         if (isNaN(s.mag)) s=E(1)
         if (s.lt(1)) ENTROPY.switch(0)
-        else player.supernova.radiation.hz = s
+        else if (tmp.sn.unl) player.supernova.radiation.hz = s
     }
     if (player.qu.en.hr[0]) {
         player.qu.en.hr[3] += dt

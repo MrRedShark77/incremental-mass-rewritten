@@ -184,7 +184,7 @@ function updateSupernovaTemp() {
 	}
 
 	let tsn = tmp.sn
-    tsn.unl = OURO.evo < 4 && (player.supernova.times.gt(1) || quUnl())
+    tsn.unl = OURO.evo < 4 && (player.supernova.times.gte(1) || quUnl())
     tsn.gen = hasElement(36,1)
     if (tsn.gen) {
         tsn.reached = false
