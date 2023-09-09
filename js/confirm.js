@@ -58,7 +58,13 @@ const CONFIRMS_FUNCTION = {
             player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
             player.qu.qc.active = false
         }
-        if (player.qu.times.gte(10) || OURO.unl() || force) {
+		if (OURO.evo >= 5) {
+			if (!force) {
+				player.evo.cosmo.unl = 1
+				player.evo.cosmo.elixir = player.evo.cosmo.elixir.add(tmp.qu.gain)
+			}
+			QUANTUM.doReset(force)
+		} else if (player.qu.times.gte(10) || OURO.unl() || force) {
             if (!force) {
                 player.qu.points = player.qu.points.add(tmp.qu.gain)
                 player.qu.times = player.qu.times.add(tmp.qu.gainTimes)

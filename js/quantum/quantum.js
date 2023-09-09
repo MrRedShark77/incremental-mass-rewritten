@@ -26,8 +26,12 @@ const QUANTUM = {
     },
     enter(auto=false,force=false,rip=false,bd=false) {
         if (tmp.qu.gain.gte(1) || force) {
-            if (player.confirms.qu&&!auto&&!force) createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
-            ()=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',()=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
+			if (player.confirms.qu&&!auto&&!force) {
+				if (OURO.evo >= 5) createConfirm("Are you sure you want to reset?",'quReset',
+				()=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))
+				else createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
+				()=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',()=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
+			}
             else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)
         }
     },
@@ -153,7 +157,9 @@ const QUANTUM = {
     },
 }
 
-function quUnl() { return player.qu.times.gte(1) }
+function quUnl() {
+	return OURO.evo >= 5 ? player.evo.cosmo.unl : player.qu.times.gte(1)
+}
 
 function getQUSave() {
     let s = {

@@ -16,7 +16,7 @@ const CONSTELLATION = {
             name: "Aries",
             tier: 1,
             gain(mult) {
-                let x = tmp.evo.global_zodiac_mult.mul(mult)
+                let x = tmp.evo.zodiac.mult.mul(mult)
                 return x
             },
             cap: 3,
@@ -60,7 +60,7 @@ const CONSTELLATION = {
         this.zodiacTemp(zi)
     },
     upgGen(zi=zodiac_tab) {
-        if (tmp.evo.zodiac_perks<1) return
+        if (tmp.evo.zodiac.perks<1) return
         player.evo.const[zi].level++
         this.temp()
     },
@@ -112,7 +112,7 @@ const CONSTELLATION = {
             let can = unl && zp.amount.gte(u.cost)
             zt.unl[ui] = unl
             zt.can[ui] = can
-            if (u.effect) tmp.evo.zodiac_eff[zi+"-"+ui] = u.effect()
+            if (u.effect) tmp.evo.zodiac.eff[zi+"-"+ui] = u.effect()
             if (u.oct && cu[zi+"-"+u]) ap += u.oct
         }
 
@@ -120,18 +120,19 @@ const CONSTELLATION = {
     },
 
     temp() {
-        const ct = player.evo.const.tier
-        tmp.evo.global_zodiac_mult = this.globalMult()
+        const ct = tmp.evo.zodiac, tr = player.evo.const.tier
+        ct.mult = this.globalMult()
+
         let ap = 0, lp = 0, cp = 0
-        for ([zi,z] of Object.entries(this.zodiac)) {
-            let zt = tmp.evo.zodiac[zi], zp = player.evo.const[zi]
+        for (let [zi,z] of Object.entries(this.zodiac)) {
+            let zt = ct[zi] = {}, zp = player.evo.const[zi]
             let lvl = zp.level
 
             zt.gain = z.gain(Decimal.pow(2.5, lvl))
-            if (ct >= z.tier) cp += zt.cap = z.cap + this.zodiacTemp(zi)
+            if (tr >= z.tier) cp += zt.cap = z.cap + this.zodiacTemp(zi)
             lp += lvl
         }
-        tmp.evo.zodiac_perks = Math.max(0, Math.max(cp - 2, 0) + ap - lp)
+        ct.perks = Math.max(0, Math.max(cp - 2, 0) + ap - lp)
     },
     
     calc(dt) {
@@ -173,7 +174,7 @@ const CONSTELLATION = {
             let ztp = player.evo.const[zodiac_tab], ztt = tmp.evo.zodiac[zodiac_tab]
 
             tmp.el.zodiac_amount.setHTML(`Level ${format(ztp.level,0)} / ${format(ztt.cap,0)}<br><h3>${ztp.amount.format(0)} ${this.zodiac[zodiac_tab].name}</h3><br>${ztp.amount.formatGain(ztt.gain)}`)
-            tmp.el.zodiac_perk.setTxt(format(tmp.evo.zodiac_perks,0)+" Perks")
+            tmp.el.zodiac_perk.setTxt(format(tmp.evo.zodiac.perks,0)+" Perks")
 
             tmp.el.const_table.changeStyle('height',CONSTELLATION_MAX_HEIGHTS[zodiac_tab]+'px')
 
@@ -196,7 +197,7 @@ const CONSTELLATION = {
 						u_el.setClasses( { zoviac_upg: true, tooltip: true, bought } )
                         u_el.setAttr('tooltip-html',u.desc
                         + (u.effDesc && bought
-                            ? "<br class='line'> Effect: " + u.effDesc(tmp.evo.zodiac_eff[zi+"-"+ui])
+                            ? "<br class='line'> Effect: " + u.effDesc(tmp.evo.zodiac.eff[zi+"-"+ui])
                             : bought
                             ? ""
                             : "<br class='line'> Cost: " + u.cost.format(0) + " " + z.name
@@ -214,7 +215,7 @@ const CONSTELLATION = {
 }
 
 function hasZodiacUpg(zi,ui) { return tmp.ouro.unl && player.evo.const.upg[zi+"-"+ui] }
-function zodiacUpgEff(zi,ui,def=E(1)) { return tmp.evo.zodiac_eff[zi+"-"+ui] ?? def }
+function zodiacUpgEff(zi,ui,def=E(1)) { return tmp.evo.zodiac.eff[zi+"-"+ui] ?? def }
 function getZodiacAmount(zi) { return player.evo.const[zi].amount }
 
 const CONSTELLATION_MAX_HEIGHTS = (()=>{

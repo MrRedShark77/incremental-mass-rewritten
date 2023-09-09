@@ -1813,6 +1813,35 @@ h4 {
 	margin: 3px;
 }
 
+.cosmo_gal {
+	position: relative;
+	width: 120px;
+	height: 120px;
+	border: 3px solid #143A3D;
+}
+
+.cosmo_gal.highlight {
+	border-color: #0098a3;
+	box-shadow: 0 0 12px #0098a3;
+}
+
+.cosmo_gal > .gal_sym {
+	position: absolute;
+	transform: translateY(-50%);
+	top: 50%;
+	width: 120px;
+	font-size: 60px;
+
+	color: #BFE5E8;
+	text-shadow: 0 0 24px #BFE5E8
+}
+
+.cosmo_gal > .gal_tier {
+	position: absolute;
+	bottom: 0;
+	width: 120px;
+}
+
 @keyframes ouro_loop {
     0%{
         transform: translate(-50%, -50%) rotate(0)

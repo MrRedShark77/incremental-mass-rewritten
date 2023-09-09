@@ -150,6 +150,15 @@ const TOOLTIP_RES = {
             return h
         },
     },
+    ue: {
+        full: "Universal Elixir",
+        desc() {
+            return `<i>
+				Reach over <b>${formatMass(mlt(1e4))}</b> of normal mass to go Cosmic.
+				<br><b class='yellow'>Constellations persist until next Ouroboric!</b>
+			</i>`
+        },
+    },
     br: {
         full: "Death Shard",
         desc() {

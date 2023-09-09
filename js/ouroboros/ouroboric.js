@@ -34,6 +34,12 @@ const OURO = {
 					tier: 0,
 					upg: {}
 				},
+				cosmo: {
+					elixir: E(0),
+					roll_time: 15,
+					galaxy: [],
+					cluster: []
+				}
             },
         }
         for (let x = 0; x < WORMHOLE.maxLength; x++) s.evo.wh.mass[x] = E(0)
@@ -42,6 +48,8 @@ const OURO = {
             amount: E(0),
             level: 0
         }
+        for (let i = 0; i < COSMIC.galaxy_len; i++) s.evo.cosmo.galaxy.push({ type: 0, tier: -1 })
+        for (let i = 0; i < COSMIC.cluster_len; i++) s.evo.cosmo.cluster.push(E(0))
         return s
     },
     load(force) {
@@ -62,12 +70,9 @@ const OURO = {
             meditation_eff: {},
             wormhole_eff: [],
             nebula_eff: {},
-
-            zodiac: {},
-            zodiac_eff: {}
+            zodiac: { eff: {} },
+            cosmo: { eff: {} },
         }
-
-        for (let zi in CONSTELLATION.zodiac) tmp.evo.zodiac[zi] = {}
 
         this.temp()
     },
@@ -141,6 +146,7 @@ const OURO = {
         if (evo >= 2) WORMHOLE.temp()
         if (evo >= 3) PROTOSTAR.temp()
         if (evo >= 4) CONSTELLATION.temp()
+        if (evo >= 5) COSMIC.temp()
     },
 
     calc(dt) {
@@ -152,6 +158,7 @@ const OURO = {
         if (evo >= 2) WORMHOLE.calc(dt)
         if (evo >= 3) PROTOSTAR.calc(dt)
         if (evo >= 4) CONSTELLATION.calc(dt)
+        if (evo >= 5) COSMIC.calc(dt)
     },
 
     get evo() { return player.evo ? player.evo.times : 0 },
@@ -348,6 +355,8 @@ function updateOuroborosHTML() {
         PROTOSTAR.html()
     } else if (tmp.tab_name == 'constellation') {
         CONSTELLATION.html()
+    } else if (tmp.tab_name == 'cosmo') {
+        COSMIC.html()
     }
 }
 
@@ -355,6 +364,7 @@ function setupOuroHTML() {
     setupWormholeHTML()
     PROTOSTAR.setupHTML()
     CONSTELLATION.setupHTML()
+    COSMIC.setupHTML()
 }
 
 //Others
