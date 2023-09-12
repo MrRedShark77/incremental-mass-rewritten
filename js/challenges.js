@@ -405,7 +405,7 @@ const CHALS = {
         effect(x) {
             if (hasElement(64)) x = x.mul(1.5)
             let ret = hasElement(133) ? x.root(4/3).mul(0.02).add(1) : x.root(1.5).mul(0.02).add(1)
-            return overflow(ret.softcap(3,0.25,0),1e12,0.5)
+            return overflow(ret.softcap(1.2,2,1).softcap(3,0.25,0),1e12,0.5)
         },
         effDesc(x) { return formatPow(x)+(x.gte(3)?" <span class='soft'>(softcapped)</span>":"") },
     },

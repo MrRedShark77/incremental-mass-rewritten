@@ -1986,7 +1986,7 @@ function buyElement(x, layer=player.atom.elemLayer) {
 
 function buyAllElements() {
 	let layer = player.atom.elemLayer
-	for (let i = 1; i < tmp.elements.unl_length[layer]; i++) buyElement(i, layer)
+	for (let i = 1; i <= tmp.elements.unl_length[layer]; i++) buyElement(i, layer)
 }
 
 function setupElementsHTML() {
@@ -2144,15 +2144,16 @@ function updateElementsTemp() {
     }
     tElem.cannot = cannot
 
-    tElem.unl_length = [ELEMENTS.getUnlLength(),MUONIC_ELEM.getUnlLength()]
+    tElem.unl_length = [ELEMENTS.getUnlLength(), MUONIC_ELEM.getUnlLength()]
+    tElem.max_tier = [1,1]
+	for (var [i, u] of Object.entries(tElem.unl_length)) {
+		while (u > ELEMENTS.exp[tElem.max_tier[i]]) tElem.max_tier[i]++
+	}
+
     for (let x of ELEM_EFFECT) {
 		if (x > tElem.unl_length[0]) return
         tElem.effect[x] = ELEMENTS.upgs[x].effect()
     }
-
-    tElem.max_tier = [1,1]
-    if (evo >= 1 || player.dark.unl) tElem.max_tier[0]++
-    if (evo >= 1 || tmp.brokenInf) tElem.max_tier[0]++
 }
 
 //Chunks!
