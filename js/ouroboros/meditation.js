@@ -54,5 +54,6 @@ const MEDITATION = {
 function cpProd() {
     let g = tmp.rp.gain, cp = player.evo.cp
     let r = cp.best.max(1).div(cp.points.add(g).max(1)).sqrt()
+	if (isNaN(r.mag)) r = E(1)
     return g.mul(r)
 }
