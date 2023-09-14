@@ -505,6 +505,19 @@ function importy() {
             player.options.font = 'Wingding'
             return
         }
+        else if (st == 'Q3OvX1Zt5:id') {
+            addNotify('Please lift mass, please!!!<br><img style="width: 100%; height: 100%" src="https://www.davelabowitz.com/wp-content/uploads/Sisyphus-e1557869810488.jpg">')
+            var s = document.getElementById('sisyphus'), f = () => {
+                s.style.display='block'
+                s.style.animation='sisyphus 2s linear'
+                setTimeout(()=>{
+                    s.style.display='none'
+                },2e3)
+                setTimeout(f,(Math.random()*4+4)*1e3)
+            }
+            setTimeout(f,1e3)
+            return
+        }
         if (loadgame != null) {
             let keep = player
             try {

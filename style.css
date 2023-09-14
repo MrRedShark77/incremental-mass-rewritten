@@ -13,6 +13,12 @@
 }
 
 @font-face {
+	font-family: 'Better VCR';
+	src: url('fonts/better-vcr_0.ttf');
+	size-adjust: 90%;
+}
+
+@font-face {
 	font-family: 'Cousine';
 	src: url('fonts/Cousine-Regular.ttf');
 }
@@ -101,6 +107,11 @@
 	font-family: 'Source Serif Pro';
 	src: url('fonts/SourceSerifPro-Regular.ttf');
 	size-adjust: 110%;
+}
+
+@font-face {
+	font-family: 'VCR OSD Mono';
+	src: url('fonts/VCR_OSD_MONO_1.001.ttf');
 }
 
 @font-face {
@@ -1811,6 +1822,26 @@ h4 {
 
 #zodiac_tabs {
 	margin: 3px;
+}
+
+#sisyphus {
+	position: fixed;
+	top: 0px; left: 0px;
+	width: 100%; height: 100%;
+	background-image: url('https://www.davelabowitz.com/wp-content/uploads/Sisyphus-e1557869810488.jpg');
+	opacity: 0;
+	display: none;
+	background-size: 100% 100%;
+	z-index: 2;
+}
+
+@keyframes sisyphus {
+	0%,100% {
+		opacity: 0;
+	}
+	33%,67% {
+		opacity: 1;
+	}
 }
 
 @keyframes ouro_loop {
