@@ -13,6 +13,12 @@
 }
 
 @font-face {
+	font-family: 'Better VCR';
+	src: url('fonts/better-vcr_0.ttf');
+	size-adjust: 90%;
+}
+
+@font-face {
 	font-family: 'Cousine';
 	src: url('fonts/Cousine-Regular.ttf');
 }
@@ -101,6 +107,11 @@
 	font-family: 'Source Serif Pro';
 	src: url('fonts/SourceSerifPro-Regular.ttf');
 	size-adjust: 110%;
+}
+
+@font-face {
+	font-family: 'VCR OSD Mono';
+	src: url('fonts/VCR_OSD_MONO_1.001.ttf');
 }
 
 @font-face {
@@ -1248,15 +1259,9 @@ h4 {
 	border-radius: 15px 0 0 15px;
 }
 
-#nav_extra_hider {
-	left: 0;
-	bottom: 90px !important;
-	border-radius: 0 15px 15px 0;
-}
-
 #nav_pin_hider {
 	left: 0;
-	bottom: 155px !important;
+	bottom: 90px !important;
 	border-radius: 0 15px 15px 0;
 }
 
@@ -1638,8 +1643,8 @@ h4 {
 }
 
 #snake_movement > button {
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
 }
 
 .wormhole-div {
@@ -1768,7 +1773,7 @@ h4 {
 	height: 490px;
 }
 
-.zoviac_upg {
+.zodiac_upg {
 	position: absolute;
 	width: 50px;
 	height: 50px;
@@ -1776,7 +1781,7 @@ h4 {
 	cursor: pointer;
 }
 
-.zoviac_upg.bought {
+.zodiac_upg.bought {
 	box-shadow: 0 0 12px green, 0 0 12px green, 0 0 18px magenta
 }
 
@@ -1840,6 +1845,26 @@ h4 {
 	position: absolute;
 	bottom: 0;
 	width: 120px;
+}
+
+#sisyphus {
+	position: fixed;
+	top: 0px; left: 0px;
+	width: 100%; height: 100%;
+	background-image: url('https://www.davelabowitz.com/wp-content/uploads/Sisyphus-e1557869810488.jpg');
+	opacity: 0;
+	display: none;
+	background-size: 100% 100%;
+	z-index: 2;
+}
+
+@keyframes sisyphus {
+	0%,100% {
+		opacity: 0;
+	}
+	33%,67% {
+		opacity: 1;
+	}
 }
 
 @keyframes ouro_loop {

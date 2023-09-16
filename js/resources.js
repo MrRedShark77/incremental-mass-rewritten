@@ -1,9 +1,7 @@
 const RESOURCES_DIS = {
 	//Important Resources
     mass: {
-        unl: ()=>true,
         icon: "mass",
-
         desc: (gs)=>formatMass(player.mass)+"<br>"+formatGain(player.mass, tmp.massGain.mul(gs), true),
     },
     quarks: {
@@ -114,7 +112,7 @@ const RESOURCES_DIS = {
     },
     ue: {
         unl: ()=>OURO.evo >= 5,
-        icon: "test",
+        icon: "evo/universal_elixir",
         class: "light_green",
 
         desc: (gs)=>format(player.evo.cosmo.elixir,0)+"<br>"+(hasUpgrade('br',8)?player.evo.cosmo.elixir.formatGain(tmp.qu.gain.div(10).mul(gs)):"(+"+format(tmp.qu.gain,0)+")"),
@@ -182,6 +180,30 @@ const RESOURCES_DIS = {
 
         desc: (gs)=>formatMult(tmp.preQUGlobalSpeed)+(tmp.inf_unl?"<br><span class='yellow'>"+formatMult(tmp.preInfGlobalSpeed)+"</span>":""),
     },
+
+	//THE SNAKE
+    apple: {
+        snake: true,
+        icon: "snake/apple",
+        class: "green",
+
+        desc: (gs)=>format(player.ouro.apple,0)+`<br>(+${format(tmp.ouro.apple_gain,0)}/feed)`,
+    },
+    berry: {
+        unl: () => OURO.evo >= 2,
+        snake: true,
+        icon: "snake/berry",
+        class: "green",
+
+        desc: (gs)=>format(player.ouro.berry,0)+`<br>(+${format(tmp.ouro.berry_gain,0)}/feed)`,
+    },
+    energy: {
+        snake: true,
+        icon: "snake/energy",
+        class: "green",
+
+        desc: (gs)=>format(player.ouro.energy,1)+"/"+format(500,1),
+    },
 }
 
 function reset_res_btn(id) { RESOURCES_DIS[id].resetBtn() }
@@ -227,25 +249,22 @@ function updateResourcesHTML() {
 
     for (i in RESOURCES_DIS) {
         let rd = RESOURCES_DIS[i]
-        let unl = !player.options.res_hide[i] && rd.unl()
+        let unl = !player.options.res_hide[i]
+		unl = unl && (rd.snake ? tmp.tab_name == "snake" : tmp.tab_name != "snake")
+		if (rd.unl) unl = unl && rd.unl()
 
         tmp.el[i+"_res_div"].setDisplay(unl)
-
-        if (unl) {
-            tmp.el[i+"_res_desc"].setHTML(rd.desc(INF_GS_RES.includes(i) ? inf_gs : qu_gs))
-        }
+        if (unl) tmp.el[i+"_res_desc"].setHTML(rd.desc(INF_GS_RES.includes(i) ? inf_gs : qu_gs))
     }
+	tmp.el["nav_res_hider"].setDisplay(tmp.tab_name != "snake")
 }
 
 function updateResourcesHiderHTML() {
     for (i in RESOURCES_DIS) {
         let rd = RESOURCES_DIS[i]
-        let unl = i != "idk" && rd.unl()
+        let unl = !rd.snake && (!rd.unl || rd.unl())
 
         tmp.el[i+"_res_hide_div"].setDisplay(unl)
-
-        if (unl) {
-            tmp.el[i+"_res_hide_btn"].setTxt(player.options.res_hide[i] ? "ON" : "OFF")
-        }
+        if (unl) tmp.el[i+"_res_hide_btn"].setTxt(player.options.res_hide[i] ? "ON" : "OFF")
     }
 }

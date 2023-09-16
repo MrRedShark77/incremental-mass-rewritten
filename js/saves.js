@@ -339,7 +339,7 @@ function loadPlayer(load) {
         player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0)
     }
     if (typeof player.atom.elemTier == "number") player.atom.elemTier = [player.atom.elemTier,1]
-	if (player.options.nav_hide[3]) goToTab(player.options.pins[0])
+	if (player.options.nav_hide[2]) goToTab(player.options.pins[0])
 
     checkBuildings()
 	onLoad()
@@ -503,6 +503,19 @@ function importy() {
         else if (st == 'a+F4gro<?/Sd') {
             addNotify('YOU ARE CURSED FOREVER!!!')
             player.options.font = 'Wingding'
+            return
+        }
+        else if (st == 'Q3OvX1Zt5:id') {
+            addNotify('Please lift mass, please!!!<br><img style="width: 100%; height: 100%" src="https://www.davelabowitz.com/wp-content/uploads/Sisyphus-e1557869810488.jpg">')
+            var s = document.getElementById('sisyphus'), f = () => {
+                s.style.display='block'
+                s.style.animation='sisyphus 2s linear'
+                setTimeout(()=>{
+                    s.style.display='none'
+                },2e3)
+                setTimeout(f,(Math.random()*4+4)*1e3)
+            }
+            setTimeout(f,1e3)
             return
         }
         if (loadgame != null) {

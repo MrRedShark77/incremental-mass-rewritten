@@ -116,8 +116,7 @@
                 <div id="nav_btns">
                     <button id="nav_left_hider" onclick="hideNavigation(0)"><iconify-icon icon="ic:round-arrow-back-ios" width="35"></iconify-icon></button>
                     <button id="nav_right_hider" onclick="hideNavigation(1)"><iconify-icon icon="ic:round-arrow-forward-ios" width="35"></iconify-icon></button>
-                    <button id="nav_extra_hider" onclick="hideNavigation(2)"><iconify-icon icon="mdi:plus" width="35"></iconify-icon></button>
-                    <button id="nav_pin_hider" onclick="hideNavigation(3)"><iconify-icon icon="mdi:pin" width="35"></iconify-icon></button>
+                    <button id="nav_pin_hider" onclick="hideNavigation(2)"><iconify-icon icon="mdi:pin" width="35"></iconify-icon></button>
                     <button id="nav_res_hider" onclick="goToTab('res-hide')"><iconify-icon icon="mdi:eye" width="35"></iconify-icon></button>
                 </div>
                 <div style="min-height: 60px">
@@ -126,6 +125,16 @@
                     <div id="upg_notify">
 						<h4 class='red' id="upg_notify_msg"></h4><br>
 						<button class='btn' onclick="goUpgNotify()">Go to upgrade!</button>
+					</div>
+                    <div id="snake_upper">
+						<div id="snake_stats"></div>
+						<div id="snake_movement">
+							<button onclick="recordMovement(0)">↑</button><br>
+							<button onclick="recordMovement(3)">←</button>
+							<button onclick="recordMovement(2)">↓</button>
+							<button onclick="recordMovement(1)">→</button><br>
+							<button class='tooltip' tooltip-html="Get 200 energy to perform a boom." id="snake_boom" onclick="boomSnake()">💥</button>
+						</div>
 					</div>
                     <div class="saved_text" id="saved">Evolution stands in favor. Saved from Corruption.</div>
                 </div>
@@ -623,7 +632,6 @@
                         <img src="images/snake/arrow.png" id="arrow_image" style="display: none;">
                         <img src="images/snake/snake_texture.png" id="snake_texture" style="display: none;">
 
-                        <div id="snake_stats"></div>
 						<div id="snake_canvas_div">
 							<canvas id="snake_canvas" width=640 height=480></canvas>
 						</div>
@@ -634,21 +642,12 @@
                                 <button onclick="player.options.snake_speed = 2">➤➤➤</button>
                                 <button onclick="player.options.snake_speed = 3">➤➤➤➤</button>
                             </div>
-                            <div id="snake_movement">
-                                <button onclick="recordMovement(0)">↑</button><br>
-                                <button onclick="recordMovement(3)">←</button>
-                                <button onclick="recordMovement(2)">↓</button>
-                                <button onclick="recordMovement(1)">→</button><br>
-                                <button id="snake_boom" onclick="boomSnake()">💥</button>
-                            </div>
                         </div>
                         <div class="table_center">
-                            <div id="apples" style="width: 50%; min-width: 400px;"></div>
+                            <div id="snake_boosts" style="width: 50%; min-width: 400px;"></div>
                             <div style="width: 50%; min-width: 400px;">
                                 <h3>Escrow Boosts</h3>
-                                <div id="escrow_boosts" class="sky"></div><br>
-                                <h3>Other Resources</h3>
-                                <div id="ouro_other_res"></div>
+                                <div id="escrow_boosts" class="sky"></div>
                             </div>
                         </div>
                     </div><div id="tab_div-wh">
@@ -749,6 +748,7 @@
                 <button class='btn' onclick="setOuroScene(false)">Redeem</button>
             </div>
         </div>
+        <div id="sisyphus"></div>
     </div>
 </body>
 </html>

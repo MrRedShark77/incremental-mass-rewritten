@@ -893,10 +893,10 @@ function hasUpgrade(id,x) { return tmp.upgs[UPGS.main.ids.indexOf(id)]?.[x]?.has
 function upgEffect(id,x,def=E(1)) { return tmp.upgs[id][x]?tmp.upgs[id][x].effect:def }
 function resetMainUpgs(id,keep=[]) {
     let k = []
-    let id2 = UPGS.main.ids[id]
+    let id2 = UPGS.main.ids[id], ut = tmp.upgs[id]
     for (let x of player.mainUpg[id2]) {
 		if (keep.includes(x)) k.push(x)
-		else tmp.upgs[id][x].has = false
+		else if (ut !== undefined) ut[x].has = false
 	}
     player.mainUpg[id2] = k
 }

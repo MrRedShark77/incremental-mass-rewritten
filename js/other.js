@@ -62,6 +62,7 @@ const POPUP_GROUPS = {
             <button class="btn" style="font-family: 'Andy Bold';" onclick="player.options.font = 'Andy Bold'">Andy Bold</button>
             <button class="btn" style="font-family: Arial, Helvetica, sans-ser;" onclick="player.options.font = 'Arial, Helvetica, sans-ser'">Arial</button>
             <button class="btn" style="font-family: Bahnschrift;" onclick="player.options.font = 'Bahnschrift'">Bahnschrift</button>
+            <button class="btn" style="font-family: 'Better VCR';" onclick="player.options.font = 'Better VCR'">Better VCR</button>
             <button class="btn" style="font-family: Courier;" onclick="player.options.font = 'Courier'">Courier</button>
             <button class="btn" style="font-family: Cousine;" onclick="player.options.font = 'Cousine'">Cousine</button>
             <button class="btn" style="font-family: 'Flexi IBM VGA False';" onclick="player.options.font = 'Flexi IBM VGA False'">Flexi IBM VGA False</button>
@@ -79,6 +80,7 @@ const POPUP_GROUPS = {
             <button class="btn" style="font-family: 'Roboto Mono';" onclick="player.options.font = 'Roboto Mono'">Roboto Mono</button>
             <button class="btn" style="font-family: 'Source Sans Pro';" onclick="player.options.font = 'Source Sans Pro'">Source Sans Pro</button>
             <button class="btn" style="font-family: 'Source Serif Pro';" onclick="player.options.font = 'Source Serif Pro'">Source Serif Pro</button>
+            <button class="btn" style="font-family: 'VCR OSD Mono';" onclick="player.options.font = 'VCR OSD Mono'">VCR OSD Mono</button>
             <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="player.options.font = 'Verdana, Geneva, Tahoma, sans-serif'">Verdana</button>
         `,
     },
@@ -367,7 +369,7 @@ function keyEvent(e) {
         else if (k == 68 || k == 39) recordMovement(1)
         else if (k == 83 || k == 40) recordMovement(2)
         else if (k == 65 || k == 37) recordMovement(3)
-    } else if (!player.options.nav_hide[3]) {
+    } else if (!player.options.nav_hide[2]) {
         if (k == 38 || k == 40) {
             let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
     
@@ -411,7 +413,7 @@ function keyEvent(e) {
 function hideNavigation(i) { player.options.nav_hide[i] = !player.options.nav_hide[i]; updateNavigation() }
 
 function updateNavigation() {
-    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_extra_hider"],["nav_pin_hider"]]
+    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_pin_hider"]]
     let w = 450
 
     for (let i in player.options.nav_hide) {
@@ -427,14 +429,14 @@ function updateNavigation() {
     tmp.el.main_app.changeStyle('width',p)
     tmp.el.nav_btns.changeStyle('width',p)
 
-	tmp.el.stabs.setDisplay(!player.options.nav_hide[3])
+	tmp.el.stabs.setDisplay(!player.options.nav_hide[2])
 	PINS.update()
 }
 
 function prefer(x) {
 	player.options.prefer[x] = !player.options.prefer[x]
 	if (x == "pin") {
-		player.options.nav_hide[3] = false
+		player.options.nav_hide[2] = false
 		updateNavigation()
 	}
 }

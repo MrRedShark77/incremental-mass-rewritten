@@ -130,6 +130,7 @@ function updateUpperHTML() {
 	if (player.chal.active > 0) mode = "chal"
 	if (player.supernova?.pin_req) mode = "req"
 	if (tmp.upg_notify) mode = "upg"
+	if (tmp.tab_name == "snake") mode = "snake"
 	if (tmp.ouro.time != undefined) mode = "saved"
 	
 	tmp.el.chal_upper.setDisplay(mode == "chal")
@@ -152,7 +153,8 @@ function updateUpperHTML() {
 		if (nt[0] == "sn") tmp.el.upg_notify_msg.setHTML(`[!] Neutron Tree [${nt[1]}] is available! [!]`)
 		if (nt[0] == "ch") tmp.el.upg_notify_msg.setHTML(`[!] Charger [${nt[1]}] is available! [!]`)
 	}
-	
+
+	tmp.el.snake_upper.setDisplay(mode == "snake")
 	tmp.el.saved.setDisplay(mode == "saved")
 	if (mode == "saved") tmp.el.saved.setOpacity(0.2 - Math.abs(5 - tmp.ouro.time) / 25)
 }
