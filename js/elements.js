@@ -154,7 +154,7 @@ function updateUpperHTML() {
 		if (nt[0] == "ch") tmp.el.upg_notify_msg.setHTML(`[!] Charger [${nt[1]}] is available! [!]`)
 	}
 
-	tmp.el.snake_upper.setDisplay(mode == "snake")
+	tmp.el.snake_stats.setDisplay(mode == "snake")
 	tmp.el.saved.setDisplay(mode == "saved")
 	if (mode == "saved") tmp.el.saved.setOpacity(0.2 - Math.abs(5 - tmp.ouro.time) / 25)
 }
@@ -173,6 +173,7 @@ function updateTickspeedHTML() {
 function updateRanksRewardHTML() {
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
+		tmp.el[`stats_${rn}_btn`].setDisplay(player.ranks[rn].gt(0))
 		tmp.el["ranks_reward_div_"+x].setDisplay(player.ranks_reward == x)
 		if (player.ranks_reward == x) {
 			let keys = Object.keys(RANKS.desc[rn])
@@ -183,11 +184,15 @@ function updateRanksRewardHTML() {
 			}
 		}
 	}
+
+	let byd = player.ranks_reward == 'beyond'
+	tmp.el[`stats_beyond_rank_btn`].setDisplay(tmp.brUnl)
+	tmp.el.br_rewards_table.setDisplay(byd)
+	if (byd) updateBeyondRanksRewardHTML()
 }
 
 function updatePrestigesRewardHTML() {
 	let c16 = tmp.c16.in
-	// tmp.el["pres_reward_name"].setTxt(PRESTIGES.fullNames[player.pres_reward])
 	for (let x = 0; x < PRES_LEN; x++) {
 		tmp.el["pres_reward_div_"+x].setDisplay(player.pres_reward == x)
 		if (player.pres_reward == x) {
@@ -396,7 +401,6 @@ function updateHTML() {
 		else if (tmp.tab_name == 'rank-reward') updateRanksRewardHTML()
 		else if (tmp.tab_name == "scaling") updateScalingHTML()
 		else if (tmp.tab_name == "pres-reward") updatePrestigesRewardHTML()
-		else if (tmp.tab_name == "bd-reward") updateBeyondRanksRewardHTML()
 		else if (tmp.tab_name == "asc-reward") updateAscensionsRewardHTML()
 		else if (tmp.tab_name == "main-upg") updateMainUpgradesHTML()
 		else if (tmp.tab_name == "particles") updateAtomHTML()

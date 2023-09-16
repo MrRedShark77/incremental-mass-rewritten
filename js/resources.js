@@ -13,7 +13,7 @@ const RESOURCES_DIS = {
     },
 
     rp: {
-        unl: ()=>OURO.evo < 1,
+        unl: ()=>OURO.evo < 1 && player.quotes.includes(1),
         icon: "rp",
         class: "red",
 
@@ -112,7 +112,7 @@ const RESOURCES_DIS = {
     },
     ue: {
         unl: ()=>OURO.evo >= 5,
-        icon: "evo/universal_elixir",
+        icon: "evolution/universal_elixir",
         class: "light_green",
 
         desc: (gs)=>format(player.evo.cosmo.elixir,0)+"<br>"+(hasUpgrade('br',8)?player.evo.cosmo.elixir.formatGain(tmp.qu.gain.div(10).mul(gs)):"(+"+format(tmp.qu.gain,0)+")"),
@@ -120,7 +120,7 @@ const RESOURCES_DIS = {
         resetBtn() { QUANTUM.enter() },
     },
     br: {
-        unl: ()=>hasTree("unl4"),
+        unl: ()=>OURO.evo < 5 && ( hasTree("unl4") || OURO.evo>=4 && player.qu.times.gte(1e3) ),
         icon: "br",
         class: "light_red",
 

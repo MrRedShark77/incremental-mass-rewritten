@@ -23,7 +23,7 @@ const ENTROPY = {
 
         x = x.pow(exoticAEff(0,2))
         if (tmp.inf_unl) x = x.pow(theoremEff('proto',4))
-        if (hasElement(185)) x = overflow(x,tmp.en.cap.max(10),0.25)
+        if (hasElement(185) || OURO.evo >= 4) x = overflow(x,tmp.en.cap.max(10),0.25)
 
         return x
     },
@@ -151,11 +151,12 @@ const ENTROPY = {
             scale: {s: 20, p: 2.5},
 
             eff(i) {
-                if (tmp.c16.in) return E(1)
-                let x = player.qu.en.amt.add(1).log10().pow(0.75).mul(i).div(1500).add(1)
-                return overflow(x,50,0.5)
+                let o = OURO.evo >= 4
+                if (!o && tmp.c16.in) return E(1)
+                let x = o ? player.qu.en.amt.add(1).log10().add(1).pow(i.add(1).log10().add(1).pow(2).sub(1)) : player.qu.en.amt.add(1).log10().pow(0.75).mul(i).div(1500).add(1).overflow(50,0.5)
+                return x
             },
-            desc(x) { return `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.`.corrupt(tmp.c16.in) },
+            desc(x) { return OURO.evo >= 4 ? `Protostars are increased by ${formatMult(x)} (based on Entropy).` : `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.`.corrupt(tmp.c16.in) },
         },
     ],
     nextReward(i) {
@@ -202,20 +203,21 @@ const ENTROPY = {
 function getEnRewardEff(x,def=1) { return tmp.en.rewards_eff[x] ?? E(def) }
 
 function calcEntropy(dt) {
-    let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
-	let bh = OURO.evo >= 2 ? player.evo.wh.fabric : player.bh.mass
-	let hz = OURO.evo >= 4 ? E(1) : player.supernova.radiation.hz
+    let inf_gs = tmp.preInfGlobalSpeed.mul(dt), evo = OURO.evo
+	let bh = evo >= 2 ? player.evo.wh.fabric : player.bh.mass
+	let hz = evo >= 4 ? player.evo.proto.dust : player.supernova.radiation.hz
 
-    if ((OURO.evo >= 3 || hasMDUpg(10, true)) && player.qu.en.unl){
+    if ((evo >= 3 || hasMDUpg(10, true)) && player.qu.en.unl){
 		let s1 = Decimal.pow(4,hz.add(1).log10().add(1).log10().add(1).log10().add(1)).mul(2.25);
-		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
+		if (evo >= 4 || hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
+
 		s1 = s1.mul(getEnRewardEff(2));
         if (isNaN(s1.mag)) s1=E(0)
 		if(player.qu.en.eth[2].lt(s1))player.qu.en.eth[2] = s1;
         
 		s1 = E(2.25);
-		if (tmp.bh.unl) s1 = s1.mul(Decimal.pow(4,bh.add(1).log10().add(1).log10().add(1).log10().add(1)))
-		if (hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
+		if (evo >= 4 || tmp.bh.unl) s1 = s1.mul(Decimal.pow(4,bh.add(1).log10().add(1).log10().add(1).log10().add(1)))
+		if (evo >= 4 || hasTree("en1")) s1 = s1.add(s1.pow(2)).add(s1.pow(3).div(3)); else s1 = s1.add(s1.pow(2).div(2));
 		s1 = s1.mul(getEnRewardEff(2));
         s1 = s1.mul(tmp.dark.abEff.hr||1)
         if (isNaN(s1.mag)) s1=E(0)
@@ -224,7 +226,8 @@ function calcEntropy(dt) {
     if (player.qu.en.eth[0]) {
         player.qu.en.eth[3] += dt
         player.qu.en.eth[1] = player.qu.en.eth[1].add(tmp.en.gain.eth.mul(dt))
-        let s = OURO.evo >= 4 ? hz : hz.div(hz.max(1).pow(dt).pow(player.qu.en.eth[3]**(2/3))).sub(1)
+
+        let s = evo >= 4 ? hz : hz.div(hz.max(1).pow(dt).pow(player.qu.en.eth[3]**(2/3))).sub(1)
         if (isNaN(s.mag)) s=E(1)
         if (s.lt(1)) ENTROPY.switch(0)
         else if (tmp.sn.unl) player.supernova.radiation.hz = s
@@ -233,7 +236,7 @@ function calcEntropy(dt) {
         player.qu.en.hr[3] += dt
         player.qu.en.hr[1] = player.qu.en.hr[1].add(tmp.en.gain.hr.mul(dt))
 
-        let s = OURO.evo >= 2 ? bh : bh.div(bh.max(1).pow(dt).pow(player.qu.en.hr[3]**(2/3))).sub(1)
+        let s = evo >= 2 ? bh : bh.div(bh.max(1).pow(dt).pow(player.qu.en.hr[3]**(2/3))).sub(1)
         if (isNaN(s.mag)) s = E(1)
 
         if (s.lt(1)) ENTROPY.switch(1)
@@ -241,7 +244,7 @@ function calcEntropy(dt) {
     }
 
     let a = player.qu.en.amt.add(tmp.en.gain.amt.mul(inf_gs))
-    if (!hasElement(185)) a = a.min(tmp.en.cap)
+    if (!hasElement(185) && OURO.evo < 4) a = a.min(tmp.en.cap)
     player.qu.en.amt = a
 
     for (let x = 0; x < ENTROPY.rewards.length; x++) player.qu.en.rewards[x] = player.qu.en.rewards[x].max(tmp.en.rewards[x])
@@ -253,6 +256,7 @@ function updateEntropyTemp() {
     if (hasElement(96)) rbr.push(3)
     if (hasElement(109)) rbr.push(0)
     if (hasElement(130)) rbr.push(5,7)
+    if (OURO.evo>=4) rbr.push(7)
     tmp.en.reward_br = rbr
 
     tmp.en.s_p = 1
@@ -281,7 +285,7 @@ function updateEntropyTemp() {
 function updateEntropyHTML() {
     let inf_gs = tmp.preInfGlobalSpeed
 
-    tmp.el.enEva1.setTxt(player.supernova.radiation.hz.format())
+    tmp.el.enEva1.setTxt(OURO.evo >= 4 ? `You have ${format(player.evo.proto.dust)} Stardust` : `Your frequency is ${player.supernova.radiation.hz.format()} Hz`)
     tmp.el.enEva2.setTxt(OURO.evo >= 2 ? format(player.evo.wh.fabric) + " Fabric" : formatMass(player.bh.mass) + " of Black Hole")
 
     tmp.el.enAmt1.setTxt(player.qu.en.eth[2].format())

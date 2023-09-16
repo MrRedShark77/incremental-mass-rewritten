@@ -22,6 +22,8 @@ const DARK = {
         if (hasUpgrade('br',20)) x = x.mul(upgEffect(4,20))
         if (hasUpgrade('rp',21)) x = x.mul(upgEffect(1,21))
 
+        x = x.pow(nebulaEff('orange'))
+
         return x.floor()
     },
     rayEffect() {
@@ -85,7 +87,7 @@ const DARK = {
 
         if (!hasElement(194)) for (let x = 0; x < player.prestiges.length; x++) player.prestiges[x] = E(0)
 
-		if (!hasElement(161)) {
+		if (!hasElement(161) && OURO.evo < 4) {
 			let ke = []
 			let noReset = hasElement(143)
 			for (let e of unchunkify(player.atom.elements)) {
@@ -112,6 +114,7 @@ const DARK = {
         if (hasPrestige(1,22)) x = x.pow(1.1)
         if (tmp.inf_unl) x = x.pow(theoremEff('time',2))
 		if (hasElement(18, 1) && OURO.evo >= 2) x = x.pow(1.5)
+        x = x.pow(nebulaEff('orange'))
         return x
     },
     shadowEff() {

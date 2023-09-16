@@ -15,7 +15,7 @@ const RANKS = {
     unl: {
         tier() { return OURO.evo >= 3 || player.ranks.rank.gte(1) || player.ranks.tier.gte(1) || FORMS.rp.unl() },
         tetr() { return OURO.evo >= 3 || hasUpgrade("atom",3) || hasTree("unl1") || tmp.inf_unl },
-        pent() { return hasTree("unl1") || tmp.inf_unl },
+        pent() { return OURO.evo >= 4 || hasTree("unl1") || tmp.inf_unl },
         hex() { return tmp.chal13comp || tmp.inf_unl },
     },
     doReset: {
@@ -142,7 +142,7 @@ const RANKS = {
                 return ret
             },
             '380'() {
-                let ret = E(10).pow(player.ranks.rank.sub(379).pow(1.5).pow(player.ranks.tier.gte(55)?RANKS.effect.tier[55]():1).softcap(1000,0.5,0))
+                let ret = OURO.evo>=4 ? E(1) : E(10).pow(player.ranks.rank.sub(379).pow(1.5).pow(player.ranks.tier.gte(55)?RANKS.effect.tier[55]():1).softcap(1000,0.5,0))
                 return ret
             },
             '800'() {
@@ -1121,11 +1121,11 @@ const PRES_BEFOREC13 = [40,7]
 
 const GAL_PRESTIGE = {
     req() {
-        let x = Decimal.pow(10,player.gal_prestige.scaleEvery('gal_prestige').pow(1.5)).mul(OURO.evo>=2?1e13:1e17)
+        let x = Decimal.pow(10,player.gal_prestige.scaleEvery('gal_prestige').pow(1.5)).mul(OURO.evo>=4?1e30:OURO.evo>=2?1e13:1e17)
         return x
     },
     reset() {
-        if (player.supernova.times.gte(tmp.gp.req)) {
+        if (tmp.gp.res.gte(tmp.gp.req)) {
             player.gal_prestige = player.gal_prestige.add(1)
             INF.doReset()
         }
@@ -1135,7 +1135,7 @@ const GAL_PRESTIGE = {
 
         switch (i) {
             case 0:
-                if (gp.gte(1)) {
+                if (gp.gte(1) && OURO.evo < 4) {
                     x = player.stars.points.add(1).log10().add(1).log10().add(1).pow(gp.root(1.5)).sub(1)
                 }
             break;
@@ -1151,7 +1151,7 @@ const GAL_PRESTIGE = {
             break;
             case 3:
                 if (gp.gte(6)) {
-                    x = player.supernova.radiation.hz.add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5)).sub(1)
+                    x = (OURO.evo >= 4 && tmp.ouro.unl ? player.evo.proto.star : player.supernova.radiation.hz.add(1).log10()).add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5)).sub(1)
                 }
             break;
             case 4:
@@ -1160,7 +1160,7 @@ const GAL_PRESTIGE = {
                 }
             break;
             case 5:
-                if (gp.gte(14)) {
+                if (gp.gte(14) && OURO.evo < 4) {
                     x = player.supernova.bosons.hb.add(10).log10().log10().add(1).pow(gp.sub(13).root(1.5)).sub(1)
                 }
             break;
@@ -1204,6 +1204,7 @@ function GPEffect(i,def=1) { return tmp.gp.res_effect[i]||def }
 
 function updateGPTemp() {
     tmp.gp.req = GAL_PRESTIGE.req()
+    tmp.gp.res = OURO.evo >= 4 ? player.evo.proto.dust : player.supernova.times
 
     for (let i = 0; i < GAL_PRESTIGE.res_length; i++) {
         tmp.gp.res_gain[i] = GAL_PRESTIGE.gain(i)
@@ -1212,39 +1213,39 @@ function updateGPTemp() {
 }
 
 function updateGPHTML() {
-    let unl = hasElement(262) && tmp.sn.unl
+    let unl = hasElement(262)
 
     tmp.el.galactic_prestige_div.setDisplay(unl)
 
     if (unl) {
-        let gp = player.gal_prestige
+        let gp = player.gal_prestige, evo = OURO.evo
 
         tmp.el.gal_prestige.setHTML(gp.format(0))
         tmp.el.gal_prestige_scale.setHTML(getScalingName('gal_prestige'))
         tmp.el.gp_btn.setHTML(`
-        Reset Supernovas (force an Infinity reset), but Galactic Prestige up. Next Galactic Prestige reveals its treasure or happens nothing.<br><br>
-        Require: <b>${tmp.gp.req.format()}</b> Supernovas
+        Force an Infinity reset, but Galactic Prestige up. Next Galactic Prestige reveals its treasure or happens nothing.<br><br>
+        Require: <b>${tmp.gp.req.format()}</b> ${evo >= 4?'Stardust':'Supernovas'}
         `)
-        tmp.el.gp_btn.setClasses({btn: true, galactic: true, locked: player.supernova.times.lt(tmp.gp.req)})
+        tmp.el.gp_btn.setClasses({btn: true, galactic: true, locked: tmp.gp.res.lt(tmp.gp.req)})
 
         let h = '', res = player.gp_resources, res_gain = tmp.gp.res_gain, res_effect = tmp.gp.res_effect
 
-        if (gp.gte(1)) h += `You have <h4>${res[0].format(0)}</h4> ${res[0].formatGain(res_gain[0])} Galactic Stars (based on collapsed stars and galactic prestige), 
+        if (gp.gte(1) && evo < 4) h += `You have <h4>${res[0].format(0)}</h4> ${res[0].formatGain(res_gain[0])} Galactic Stars (based on collapsed stars and galactic prestige), 
         which strengthens star generators by <h4>${formatPercent(res_effect[0].sub(1))}</h4> exponentially.<br>`
 
         if (gp.gte(2)) h += `You have <h4>${formatMass(res[1])}</h4> ${res[1].formatGain(res_gain[1],true)} of Prestige Mass (based on prestige base and galactic prestige), 
-        which ${OURO.evo >= 2 ? "raises Quarks" : "weakens mass overflow^1-2"} by <h4>${OURO.evo >= 2 ? "^" + format(res_effect[1].pow(-1)) + " on exponent" : formatReduction(res_effect[1])}</h4>.<br>`
+        which ${evo >= 2 ? "raises Quarks" : "weakens mass overflow^1-2"} by <h4>${evo >= 2 ? "^" + format(res_effect[1].pow(-1)) + " on exponent" : formatReduction(res_effect[1])}</h4>.<br>`
 
         if (gp.gte(4)) h += `You have <h4>${res[2].format(0)}</h4> ${res[2].formatGain(res_gain[2])} Galactic Matter (based on fading matter and galactic prestige), 
         which increases to the base of all Matter upgrades by <h4>+${format(res_effect[2])}</h4>.<br>`
 
-        if (gp.gte(6)) h += `You have <h4>${res[3].format(0)}</h4> ${res[3].formatGain(res_gain[3])} Redshift (based on frequency and galactic prestige), 
+        if (gp.gte(6)) h += `You have <h4>${res[3].format(0)}</h4> ${res[3].formatGain(res_gain[3])} Redshift (based on ${evo>=4?'protostars':'frequency'} and galactic prestige), 
         which reduces Rank requirement by <h4>^${format(res_effect[3],5)}</h4>.<br>`
 
         if (gp.gte(9)) h += `You have <h4>${res[4].format(0)}</h4> ${res[4].formatGain(res_gain[4])} Normal Energy (based on corrupted star and galactic prestige), 
         which weaken corrupted star reduction by <h4>${formatReduction(res_effect[4])}</h4>.<br>`
 
-        if (gp.gte(14)) h += `You have <h4>${res[5].format(0)}</h4> ${res[5].formatGain(res_gain[5])} Dilatons (based on higgs bosons and galactic prestige), 
+        if (gp.gte(14) && evo < 4) h += `You have <h4>${res[5].format(0)}</h4> ${res[5].formatGain(res_gain[5])} Dilatons (based on higgs bosons and galactic prestige), 
         which increases Pre-Infinity Global Speed by <h4>${formatMult(res_effect[5])}</h4>.<br>`
 
         tmp.el.gp_rewards.setHTML(h)

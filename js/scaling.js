@@ -662,16 +662,20 @@ function getScalingPower(type, name) {
 function noScalings(type,name) {
 	if (tmp.c18active && C18_SCALING.includes(name)) return false
 
+	let e = OURO.evo
+
 	if (name=="rank") {
-		if (type<4 && hasPrestige(1,127)) return true
+		if (e >= 4 && type < 5) return true
+		else if (type<4 && hasPrestige(1,127)) return true
 		else if (type == 4 && hasAscension(0,15)) return true
 	}
 	else if (name=="tier") {
-		if (type<4 && hasPrestige(1,127)) return true
+		if (e >= 4 && type < 5) return true
+		else if (type<4 && hasPrestige(1,127)) return true
 		else if (type == 4 && hasAscension(0,15)) return true
 	}
 	else if (name=="tetr") {
-		return hasCharger(8)
+		return hasCharger(8) || hasElement(313)
 	}
 	else if (name=="pent") {
 		return hasElement(243)
@@ -680,8 +684,8 @@ function noScalings(type,name) {
 		if (type<2 && hasAscension(0,15)) return true
 	}
 	else if (name=="massUpg") {
-		if (type == 2 && OURO.evo >= 2) return true
-		if (hasBeyondRank(2,15) && OURO.evo < 2) return true
+		if (type == 2 && e >= 2) return true
+		if (hasBeyondRank(2,15) && e < 2) return true
 	}
 	else if (name=="supernova") {
 		return tmp.sn.gen || type<3 && hasCharger(3)
@@ -699,7 +703,7 @@ function noScalings(type,name) {
 		if (hasCharger(7)) return true
 	}
 	else if (name=="prestige0") {
-		if (type == 3 && OURO.evo >= 3) return true
+		if (type == 3 && e >= 3) return true
 		if (type < 3 && hasBeyondRank(5,7)) return true
 	}
 	else if (name=="prestige1" || name=="prestige2") {

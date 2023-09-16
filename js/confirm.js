@@ -73,7 +73,7 @@ const CONFIRMS_FUNCTION = {
             ENTROPY.reset(1)
             updateQuantumTemp()
             QUANTUM.doReset(force)
-            if (rip) {
+            if (rip && tmp.sn.unl) {
                 if (hasUpgrade('br',4)) for (let x = 0; x < 2; x++) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(2)
             }
 

@@ -34,7 +34,7 @@ const OURO = {
 					tier: 0,
 					upg: {}
 				},
-				cosmo: {
+                cosmo: {
 					elixir: E(0),
 					roll_time: 15,
 					galaxy: [],
@@ -100,6 +100,9 @@ const OURO = {
 			player.evo.wh.origin = 0
 			player.evo.wh.unl = false
 		}
+
+        player.evo.const = this.save.evo.const
+
 
         for (let i in CORE) tmp.core_eff[i] = []
         INF.doReset()
@@ -207,6 +210,10 @@ const EVO = {
 			`<img src="images/sn.png"> Supernova ➜ Constellation <img src="images/evolution/constellation.png">`,
 			`No longer exploding, now start exploring.`
 		],
+        [
+			`<img src="images/qu.png"> Quantum ➜ Cosmic <img src="images/evolution/universal_elixir.png">`,
+			`Big Rip was a bad sign. You're reconstructing.`
+		],
 	],
 
     feed: [
@@ -240,7 +247,10 @@ const EVO = {
             ch15: "corrupted",
         },
         {
-
+            cs_sn_speed: "paralyzed",
+        },
+        {
+            
         },
     ],
     fed_msg: {
@@ -270,7 +280,7 @@ function setOuroScene(show=true) {
 }
 
 function canEvolve() {
-    return player.evo.times < 4
+    return player.evo.times < 5
 }
 
 function updateOuroborosHTML() {
@@ -343,6 +353,7 @@ function updateOuroborosHTML() {
         if (eff.apple) h += `${[null, "Meditation", "Wormhole", "Protostar"][OURO.evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
 
         tmp.el.escrow_boosts.setHTML(h)
+        tmp.el.escrow_boosts_div.setDisplay(h != "")
         tmp.el.snake_boom.setDisplay(OURO.evo >= 2)
     } else if (tmp.tab_name == 'wh') {
         WORMHOLE.html()

@@ -26,11 +26,14 @@ const SUPERNOVA = {
 
         list_keep = [21,36]
         if (OURO.evo >= 3) list_keep.push(293)
-        if (hasUpgrade("br",1)) list_keep.push(1)
-        if (hasTree("qol1")) list_keep.push(14,18)
-        if (hasTree("qol2")) list_keep.push(24)
-        if (hasTree("qol3")) list_keep.push(43)
-        if (quUnl()) list_keep.push(30)
+        if (OURO.evo >= 4) list_keep.push(1,14,18,24,30,43)
+        else {
+            if (hasUpgrade("br",1)) list_keep.push(1)
+            if (hasTree("qol1")) list_keep.push(14,18)
+            if (hasTree("qol2")) list_keep.push(24)
+            if (hasTree("qol3")) list_keep.push(43)
+            if (quUnl()) list_keep.push(30)
+        }
         keep = []
         for (let x of unchunkify(player.atom.elements)) if (list_keep.includes(x) || x > 86 && x <= 290) keep.push(x)
         player.atom.elements = keep

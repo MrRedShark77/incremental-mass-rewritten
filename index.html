@@ -126,16 +126,7 @@
 						<h4 class='red' id="upg_notify_msg"></h4><br>
 						<button class='btn' onclick="goUpgNotify()">Go to upgrade!</button>
 					</div>
-                    <div id="snake_upper">
-						<div id="snake_stats"></div>
-						<div id="snake_movement">
-							<button onclick="recordMovement(0)">↑</button><br>
-							<button onclick="recordMovement(3)">←</button>
-							<button onclick="recordMovement(2)">↓</button>
-							<button onclick="recordMovement(1)">→</button><br>
-							<button class='tooltip' tooltip-html="Get 200 energy to perform a boom." id="snake_boom" onclick="boomSnake()">💥</button>
-						</div>
-					</div>
+					<div id="snake_stats"></div>
                     <div class="saved_text" id="saved">Evolution stands in favor. Saved from Corruption.</div>
                 </div>
                 <div class="main-line"></div>
@@ -276,14 +267,13 @@
                     <div id="tab_div-rank-reward">
                         <div id="ranks_reward_btn" class="table_center stab_btn"></div><br>
                         <div id="ranks_rewards_table"></div>
+                        <div id="br_rewards_table"></div>
                     </div><div id="tab_div-scaling">
                         <div id="scaling_btn" class="table_center stab_btn"></div><br>
                         <div id="scaling_table"></div>
                     </div><div id="tab_div-pres-reward">
                         <div id="pres_reward_btn" class="table_center stab_btn"></div><br>
                         <div id="pres_rewards_table"></div>
-                    </div><div id="tab_div-bd-reward">
-                        <div id="br_rewards_table"></div>
                     </div><div id="tab_div-asc-reward">
                         <div id="asc_reward_btn" class="table_center stab_btn"></div><br>
                         <div id="asc_rewards_table"></div>
@@ -519,7 +509,7 @@
                     </div><div id="tab_div-entropy">
                         <div class="table_center" style="min-height: 250px">
                             <div style="width: 33.3%; min-width: 300px;">
-                                Your frequency is <span id="enEva1">0</span> Hz<br><br>
+                                <span id="enEva1">0</span><br><br>
                                 <button id="evaBtn1" class="btn half_full" onclick="ENTROPY.switch(0)">Evaporate your frequency to gain Enthalpy</button><br><br>
                                 You have <span id="enAmt1">0</span> Enthalpy, which increases Entropy gain by <span id="enEff1">0</span>
                             </div><div style="width: 33.3%; min-width: 300px;">
@@ -641,11 +631,20 @@
                                 <button onclick="player.options.snake_speed = 1">➤➤</button>
                                 <button onclick="player.options.snake_speed = 2">➤➤➤</button>
                                 <button onclick="player.options.snake_speed = 3">➤➤➤➤</button>
-                            </div>
+                            </div><div id="snake_movement">
+								<button onclick="recordMovement(0)">↑</button><br>
+								<button onclick="recordMovement(3)">←</button>
+								<button onclick="recordMovement(2)">↓</button>
+								<button onclick="recordMovement(1)">→</button><br>
+								<button class='tooltip' tooltip-html="Get 200 energy to perform a boom." id="snake_boom" onclick="boomSnake()">💥</button>
+							</div>
                         </div>
                         <div class="table_center">
-                            <div id="snake_boosts" style="width: 50%; min-width: 400px;"></div>
                             <div style="width: 50%; min-width: 400px;">
+                                <h3>Apple Boosts</h3>
+								<div id="snake_boosts"></div>
+                            </div>
+                            <div id="escrow_boosts_div" style="width: 50%; min-width: 400px;">
                                 <h3>Escrow Boosts</h3>
                                 <div id="escrow_boosts" class="sky"></div>
                             </div>
@@ -723,7 +722,7 @@
                         <button class="btn tooltip" onclick="window.open('https://boosty.to/mrredshark77')" tooltip-html="Support the original creator of IMR!">Donate</button>
 
 						<br><br>
-                        Incremental Mass Rewritten v0.8 Beta 4 - By MrRedShark77<br>
+                        Incremental Mass Rewritten v0.8 Beta 5 - By MrRedShark77<br>
                         The game is inspired by Distance Incremental & Synergism<br>
                         Contributors: <span style="cursor: pointer;" onclick='addNotify(`where lemon<br><img src="https://i.imgflip.com/57cc98.jpg" style="width:100%">`)'>Bézier</span>, 16777216 & Aarex (Artists)<br><br><br>
                         Total time played: <span id="total_time">X</span>

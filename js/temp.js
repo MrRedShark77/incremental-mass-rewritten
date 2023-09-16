@@ -1,9 +1,8 @@
 var tmp = {}
 
-function resetTemp() {
+function getTempData() {
     let d = new Date()
-    keep = [tmp.el, tmp.prevSave]
-    tmp = {
+    let s = {
         tree_time: 0,
 
         preQUGlobalSpeed: E(1),
@@ -202,30 +201,37 @@ function resetTemp() {
         ouro: {},
     }
 
-    for (let x in BUILDINGS_DATA) tmp.build[x] = {
+    for (let x in BUILDINGS_DATA) s.build[x] = {
         bulk: E(0),
 		total: E(0),
 		bonus: E(0),
         effect: {},
     }
 
-    for (let x = 0; x < PRES_LEN; x++) tmp.prestiges.eff[x] = {}
-    for (let x = 0; x < ASCENSIONS.names.length; x++) tmp.ascensions.eff[x] = {}
-    for (let x in BEYOND_RANKS.rewardEff) tmp.beyond_ranks.eff[x] = {}
-    for (let x = 1; x <= UPGS.main.cols; x++) tmp.upgs[x] = {}
-    for (let x = 0; x < TABS[1].length; x++) tmp.stab.push(0)
+    for (let x = 0; x < PRES_LEN; x++) s.prestiges.eff[x] = {}
+    for (let x = 0; x < ASCENSIONS.names.length; x++) s.ascensions.eff[x] = {}
+    for (let x in BEYOND_RANKS.rewardEff) s.beyond_ranks.eff[x] = {}
+    for (let x = 1; x <= UPGS.main.cols; x++) s.upgs[x] = {}
+    for (let x = 0; x < TABS[1].length; x++) s.stab.push(0)
     for (let x = 0; x < SCALE_TYPE.length; x++) {
         let st = SCALE_TYPE[x]
 
-        tmp.scaling_power[st] = {}
-        tmp.scaling_start[st] = {}
-        tmp.no_scalings[st] = []
+        s.scaling_power[st] = {}
+        s.scaling_start[st] = {}
+        s.no_scalings[st] = []
     }
-    for (let x = 0; x < MATTERS_LEN; x++) tmp.matters.upg[x] = {} 
+    for (let x = 0; x < MATTERS_LEN; x++) s.matters.upg[x] = {} 
     for (let i in CORE) {
-        tmp.core_score[i] = [0,0,0,0]
-        tmp.core_eff[i] = []
+        s.core_score[i] = [0,0,0,0]
+        s.core_eff[i] = []
     }
+
+    return s
+}
+
+function resetTemp() {
+    keep = [tmp.el, tmp.prevSave]
+    tmp = getTempData()
     tmp.el = keep[0]
     tmp.prevSave = keep[1]
 }

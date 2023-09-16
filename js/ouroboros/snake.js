@@ -415,6 +415,7 @@ function berryGain() {
 	let x = E(300).pow(OURO.evo - 1)
 	if (hasElement(68,1)) x = x.mul(muElemEff(68)[1])
 	if (hasElement(71,1)) x = x.mul(2)
+	if (hasZodiacUpg('aries','u4')) x = x.mul(zodiacUpgEff('aries','u4'))
 	return x.round()
 }
 
@@ -423,14 +424,14 @@ function appleEffects() {
 
 	eff.mass = [expMult(a.div(10).add(1), a.div(100).add(1).log10().add(1)), a.div(1e8).add(1).pow(2)]
 	eff.cp = a.div(10).add(1).pow(hasElement(90,1)?.8:hasElement(76,1)?.6:.5)
-	if (player.atom.unl) eff.cp_lvl = a.add(1).pow(.1)
+	if (player.atom.unl) eff.cp_lvl = a.add(1).pow(hasElement(91,1)?.25:.1)
 
 	if (evo >= 2 && FORMS.bh.unl()) {
-		eff.fabric = a.div(100).add(1).pow(1/3)
-		eff.wh_loss = a.add(1).log10().add(1).pow(.2)
+		eff.fabric = hasElement(91,1)?a.div(10).add(1).pow(0.5):a.div(100).add(1).pow(1/3)
+		eff.wh_loss = a.add(1).log10().add(1).pow(hasElement(92,1)?1/3:.2)
 	}
 	if (evo >= 3 && player.atom.unl) {
-		eff.ps = a.div(1e3).add(1).pow(1/4)
+		eff.ps = hasElement(92,1)?a.div(1e2).add(1).pow(1/3):a.div(1e3).add(1).pow(1/4)
 		eff.ps_dim = a.div(1e3).add(1).pow(-1/6)
 	}
 	if (evo <= 6 && player.dark.unl) {

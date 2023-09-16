@@ -416,7 +416,7 @@ function updateNavigation() {
     let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_pin_hider"]]
     let w = 450
 
-    for (let i in player.options.nav_hide) {
+    for (let i in ids) {
         let h = player.options.nav_hide[i]
 
         tmp.el[ids[i][0]].setClasses({toggled: h})
@@ -453,6 +453,7 @@ function setupStatsHTML() {
     for (let i in RANKS.names) {
         h += `<div id="stats_${RANKS.names[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.ranks_reward = ${i}">${RANKS.fullNames[i]}</button></div>`
     }
+	h += `<div id="stats_beyond_rank_btn" style="width: 145px"><button class="btn_tab" onclick="player.ranks_reward = 'beyond'">Beyond</button></div>`
 
     new Element("ranks_reward_btn").setHTML(h)
 
@@ -481,11 +482,8 @@ function setupStatsHTML() {
     new Element("asc_reward_btn").setHTML(h)
 }
 
-function updateStatsHTML() {
-    if (tmp.tab_name == 'rank-reward') for (let i in RANKS.names) {
-        tmp.el[`stats_${RANKS.names[i]}_btn`].setDisplay(player.ranks[RANKS.names[i]].gt(0))
-    }
-    else if (tmp.tab_name == "scaling") for (let i in SCALE_TYPE) {
+function updateStatsHTML() { 
+    if (tmp.tab_name == "scaling") for (let i in SCALE_TYPE) {
         tmp.el[`stats_${SCALE_TYPE[i]}_btn`].setDisplay(tmp.scaling[SCALE_TYPE[i]].length>0)
     }
     else if (tmp.tab_name == "pres-reward") for (let i in PRESTIGES.names) {

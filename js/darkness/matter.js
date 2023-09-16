@@ -31,10 +31,12 @@ const MATTERS = {
 			x = x.mul(glyphUpgEff(14,1))
 			if (hasBeyondRank(1,7)) x = x.mul(beyondRankEffect(1,7))
 
-			x = x.mul(tmp.matters.FSS_eff[0])
+			x = x[hasElement(305)?"pow":"mul"](tmp.matters.FSS_eff[0])
 			if (hasElement(4,1)) x = x.pow(1.1)
 			if (hasElement(227)) x = x.pow(elemEffect(227))
 			if (i < MATTERS_LEN-1) x = x.pow(tmp.matters.upg[i+1].exp)
+
+            if (OURO.evo>=4 && c16 && i == 0) x = expMult(x,1/3)
 		} else {
 			x = x.mul(xx)
 			if (x.lt(1)) return x
@@ -73,8 +75,8 @@ const MATTERS = {
         if (i==0) eff = eff.overflow('e2500',0.5).overflow('e75000',1/3)
 
         if (rdc == 2) {
-			cost = lvl.add(1).pow(hasInfUpgrade(17)?2:3).mul(1e3)
-			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).floor()
+			cost = lvl.add(1).scale('ee15',3,'dil').pow(hasInfUpgrade(17)?2:3).mul(1e3)
+			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).scale('ee15',3,'dil',true).floor()
 			eff = lvl.add(1).mul(expMult(lvl.add(1), .9).pow(GPEffect(2)))
         	if (i == 0 && OURO.evo >= 3) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
 		}
@@ -136,14 +138,15 @@ const MATTERS = {
         },
 
         effect() {
-            let fss = player.dark.matters.final
+            let fss = player.dark.matters.final, rdc = tmp.matters.reduction
             fss = fss.mul(tmp.dark.abEff.fss||1)
 
             let x = Decimal.pow(2,fss.pow(1.25))
-            if (tmp.matters.reduction == 1) {
+            if (rdc == 1) {
                 x = x.log10().div(10).add(1)
                 if (hasElement(247)) x = x.pow(1.5)
             }
+            if (hasElement(305)) x = x.max(1).log10().root(2).div(2).add(1)
 
             let y = fss.mul(.15).add(1)
             return [x,y]
@@ -218,7 +221,7 @@ function updateMattersHTML() {
 
     tmp.el.FSS_eff1.setHTML(
         player.dark.matters.final.gt(0)
-        ? `Thanks to FSS, your Matters gain is boosted by ^${tmp.matters.FSS_eff[0].format(1)}`.corrupt(rdc == 1 && !hasElement(11,1))
+        ? `Thanks to FSS, your Matters gain is boosted by ${(rdc==2&&!hasElement(305)?formatMult:formatPow)(tmp.matters.FSS_eff[0],2)}`.corrupt(rdc == 1 && !hasElement(11,1))
         : ''
     )
 }
@@ -244,6 +247,7 @@ function updateMattersTemp() {
     if (hasBeyondRank(1,1)) e = e.add(.5)
     if (hasPrestige(0,1337)) e = e.add(prestigeEff(0,1337,0))
     if (hasElement(14,1)) e = e.add(muElemEff(14,0))
+    e = e.mul(nebulaEff('turquoise'))
 
     mt.exponent = e    
     mt.req_unl = evo2 ? E(1e5) : Decimal.pow(1e100,Decimal.pow(1.2,Math.max(0,player.dark.matters.unls-4)**1.5))

@@ -10,7 +10,6 @@ const TABS_DATA = {
     'rank-reward': { name: "Ranks Rewards" },
     'scaling'    : { name: "Scaling" },
     'pres-reward': { name: "Prestige Rewards" },
-    'bd-reward'  : { name: "Beyond-Ranks Rewards" },
     'asc-reward' : { name: "Ascension Rewards" },
 
     'main-upg': { name: "Main Upgrades" },
@@ -92,9 +91,9 @@ const TABS = [
         ['main-upg', () => tmp.upgs.unl],
         ['elements', null, () => [1,2].includes(OURO.evo)],
     ] },
-    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
-        'chal',
-        ['qc', () => hasTree("unl3")],
+    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl || OURO.evo==4 && player.qu.times.gte(200) }, stab: [
+        ['chal', () => player.chal.unl],
+        ['qc', () => hasTree("unl3") || OURO.evo==4 && player.qu.times.gte(200), ()=>OURO.evo<5],
     ] },
     { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && OURO.evo < 3 }, style: "atom", stab: [
         'particles',
@@ -137,14 +136,13 @@ const TABS = [
         ['tp', () => hasInfUpgrade(9), () => OURO.evo > 0],
         ['c-star', () => tmp.CS_unl],
     ] },
-    { name: "Stats", icon: "material-symbols:query-stats", stab: [
+    { name: "Stats", icon: "material-symbols:query-stats", unl() { return player.quotes.includes(1) }, stab: [
         'rank-reward',
-        ['scaling', () => tmp.scaling && tmp.scaling.super.length>0],
+        ['scaling', () => tmp.scaling.super?.length>0],
         ['pres-reward', () => hasUpgrade("br",9)],
-        ['bd-reward', () => tmp.brUnl],
         ['asc-reward', () => tmp.ascensions_unl],
     ] },
-    { name: "Options", icon: "mdi:gear", stab: [
+    { name: "Options", icon: "mdi:gear", unl() { return player.quotes.includes(1) }, stab: [
         'options',
         'res-hide',
     ] },
@@ -192,25 +190,29 @@ function updateTabsHTML() {
 		}
 
 		if (tab.stab) {
-			tmp.el["stabs"+x].setDisplay(x == tmp.tab)
-			if (x == tmp.tab) for (let [y,stab] of Object.entries(tab.stab))  {
-                let id, unl = true
+			let st_unl = 0
+			if (x == tmp.tab) {
+				for (let [y,stab] of Object.entries(tab.stab))  {
+					let id, unl = true
+					if (Array.isArray(stab)) {
+						if (stab[2]) {
+							unl = stab[2]()
+							tmp.el["stab_div"+x+"_"+y].setDisplay(unl)
+						}
 
-                if (Array.isArray(stab)) {
-                    if (stab[2]) {
-                        unl = stab[2]()
-                        tmp.el["stab_div"+x+"_"+y].setDisplay(unl)
-                    }
+						unl = unl && (!stab[1] || stab[1]())
+						tmp.el["stab"+x+"_"+y].setDisplay(unl)
+						id = stab[0]
+					} else id = stab
 
-                    tmp.el["stab"+x+"_"+y].setDisplay(unl && (!stab[1] || stab[1]()))
-                    id = stab[0]
-                }
-                else id = stab
-
-                td = TABS_DATA[id]
-				
-				if (unl) tmp.el["stab"+x+"_"+y].setClasses({btn_tab: true, [td.style ?? "normal"]: true, choosed: y == tmp.stab[x]})
+					td = TABS_DATA[id]
+					if (unl) {
+						st_unl++
+						tmp.el["stab"+x+"_"+y].setClasses({btn_tab: true, [td.style ?? "normal"]: true, choosed: y == tmp.stab[x]})
+					}
+				}
 			}
+			tmp.el["stabs"+x].setDisplay(x == tmp.tab && st_unl > 1)
 		}
 	}
 
@@ -278,8 +280,8 @@ const PINS = {
 			tmp.el["pin_div"+i].setDisplay(unl)
 			if (!unl) continue
 
-			tmp.el["pin"+i].setTxt(TABS_DATA[p].name)
-			tmp.el["pin"+i].setClasses({btn_tab: true, [ TABS_DATA[p].style ]: true, choosed: tmp.tab_name == p})
+			tmp.el["pin"+i].setTxt(TABS_DATA[p]?.name ?? "[removed]")
+			tmp.el["pin"+i].setClasses({btn_tab: true, [ TABS_DATA[p]?.style ]: true, choosed: tmp.tab_name == p})
 		}
 	},
 }
