@@ -58,7 +58,7 @@ function chooseTab(x, stab=false) {
     else tmp.stab[tmp.tab] = x
 
     tmp.stab[tmp.tab] ??= 0
-	if (player.options.nav_hide[3]) PINS.open_menu()
+	if (player.options.nav_hide[2]) PINS.open_menu()
 
     updateTabTemp()
 }
@@ -135,14 +135,14 @@ const TABS = [
         ['tp', () => hasInfUpgrade(9), () => OURO.evo > 0],
         ['c-star', () => tmp.CS_unl],
     ] },
-    { name: "Stats", icon: "material-symbols:query-stats", unl() { return !player.options.nav_hide[2] }, stab: [
+    { name: "Stats", icon: "material-symbols:query-stats", stab: [
         'rank-reward',
         ['scaling', () => tmp.scaling && tmp.scaling.super.length>0],
         ['pres-reward', () => hasUpgrade("br",9)],
         ['bd-reward', () => tmp.brUnl],
         ['asc-reward', () => tmp.ascensions_unl],
     ] },
-    { name: "Options", icon: "mdi:gear", unl() { return !player.options.nav_hide[2] }, stab: [
+    { name: "Options", icon: "mdi:gear", stab: [
         'options',
         'res-hide',
     ] },
@@ -242,7 +242,7 @@ const PINS = {
 		let pins = player.options.pins
 		if (pins.includes(i)) {
 			pins.splice(pins.indexOf(i),1)
-			if (pins.length == 0 && player.options.nav_hide[3]) PINS.open_menu()
+			if (pins.length == 0 && player.options.nav_hide[2]) PINS.open_menu()
 		} else if (pins.length >= PINS.max) addNotify(`Can't handle more than ${PINS.max} pins!`)
 		else pins.push(i)
 	},
@@ -252,7 +252,7 @@ const PINS = {
 	},
 
 	open_menu() {
-		player.options.nav_hide[3] = !player.options.nav_hide[3]
+		player.options.nav_hide[2] = !player.options.nav_hide[2]
 		updateNavigation()
 	},
 
@@ -267,8 +267,8 @@ const PINS = {
 		tmp.el["nav_pin_hider"].setDisplay(player.options.pins.length > 0 && isPreferred("pin"))
 		tmp.el["pin_btn"].setDisplay(isPreferred("pin"))
 		tmp.el["pin_btn"].setTxt(player.options.pins.includes(tmp.tab_name) ? "Unpin" : "Pin")
-		tmp.el["pins_stabs"].setDisplay(player.options.nav_hide[3])
-		if (!player.options.nav_hide[3]) return
+		tmp.el["pins_stabs"].setDisplay(player.options.nav_hide[2])
+		if (!player.options.nav_hide[2]) return
 
 		for (let i = 0; i < PINS.max; i++) {
 			let p = player.options.pins[i]

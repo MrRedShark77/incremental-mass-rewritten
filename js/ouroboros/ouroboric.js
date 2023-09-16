@@ -123,7 +123,7 @@ const OURO = {
         tmp.tab = 0
 		tmp.stab = [0]
 		tmp.rank_tab = 0
-		player.options.nav_hide[3] = false
+		player.options.nav_hide[2] = false
 		player.options.res_hide = {}
         updateMuonSymbol()
     },
@@ -319,7 +319,7 @@ function updateOuroborosHTML() {
         if (eff.dark) h += `<br>${formatMult(eff.dark,2)} to Dark Rays`
         if (eff.glyph) h += `<br>${formatMult(eff.glyph,2)} to Mass Glyphs`
 
-        tmp.el.apples.setHTML(`You have <h3>${player.ouro.apple.format(0)}</h3> apples. (+${tmp.ouro.apple_gain.format(0)}/feed)<b class='sky'>${h}</b>`)
+        tmp.el.snake_boosts.setHTML(`<b class='sky'>${h}</b>`)
 
         h = ``, eff = tmp.ouro.escrow_boosts
 
@@ -336,11 +336,6 @@ function updateOuroborosHTML() {
         if (eff.apple) h += `${[null, "Meditation", "Wormhole", "Protostar"][OURO.evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
 
         tmp.el.escrow_boosts.setHTML(h)
-
-        h = `You have <h4>${player.ouro.berry.format(0)}</h4> strawberries that can be spent for muonic elements. (+${tmp.ouro.berry_gain.format(0)}/feed)<br>`
-        if (OURO.evo >= 2) h += `You have <h4>${format(player.ouro.energy)} / ${format(500,0)}</h4> energy. You need 200 energy before you can boom.<br>`
-
-        tmp.el.ouro_other_res.setHTML(h)
         tmp.el.snake_boom.setDisplay(OURO.evo >= 2)
     } else if (tmp.tab_name == 'wh') {
         WORMHOLE.html()

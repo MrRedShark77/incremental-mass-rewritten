@@ -339,7 +339,7 @@ function loadPlayer(load) {
         player.supernova.fermions.tiers[i][x] = player.supernova.fermions.tiers[i][x].min(typeof f.maxTier == "function" ? f.maxTier() : f.maxTier||1/0)
     }
     if (typeof player.atom.elemTier == "number") player.atom.elemTier = [player.atom.elemTier,1]
-	if (player.options.nav_hide[3]) goToTab(player.options.pins[0])
+	if (player.options.nav_hide[2]) goToTab(player.options.pins[0])
 
     checkBuildings()
 	onLoad()

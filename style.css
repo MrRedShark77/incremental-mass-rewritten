@@ -1259,15 +1259,9 @@ h4 {
 	border-radius: 15px 0 0 15px;
 }
 
-#nav_extra_hider {
-	left: 0;
-	bottom: 90px !important;
-	border-radius: 0 15px 15px 0;
-}
-
 #nav_pin_hider {
 	left: 0;
-	bottom: 155px !important;
+	bottom: 90px !important;
 	border-radius: 0 15px 15px 0;
 }
 
@@ -1649,8 +1643,8 @@ h4 {
 }
 
 #snake_movement > button {
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
 }
 
 .wormhole-div {

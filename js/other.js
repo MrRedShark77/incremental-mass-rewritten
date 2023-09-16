@@ -369,7 +369,7 @@ function keyEvent(e) {
         else if (k == 68 || k == 39) recordMovement(1)
         else if (k == 83 || k == 40) recordMovement(2)
         else if (k == 65 || k == 37) recordMovement(3)
-    } else if (!player.options.nav_hide[3]) {
+    } else if (!player.options.nav_hide[2]) {
         if (k == 38 || k == 40) {
             let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
     
@@ -413,7 +413,7 @@ function keyEvent(e) {
 function hideNavigation(i) { player.options.nav_hide[i] = !player.options.nav_hide[i]; updateNavigation() }
 
 function updateNavigation() {
-    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_extra_hider"],["nav_pin_hider"]]
+    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_pin_hider"]]
     let w = 450
 
     for (let i in player.options.nav_hide) {
@@ -429,14 +429,14 @@ function updateNavigation() {
     tmp.el.main_app.changeStyle('width',p)
     tmp.el.nav_btns.changeStyle('width',p)
 
-	tmp.el.stabs.setDisplay(!player.options.nav_hide[3])
+	tmp.el.stabs.setDisplay(!player.options.nav_hide[2])
 	PINS.update()
 }
 
 function prefer(x) {
 	player.options.prefer[x] = !player.options.prefer[x]
 	if (x == "pin") {
-		player.options.nav_hide[3] = false
+		player.options.nav_hide[2] = false
 		updateNavigation()
 	}
 }
