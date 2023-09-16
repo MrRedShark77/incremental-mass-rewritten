@@ -699,7 +699,7 @@ const UPGS = {
             resName: "Death Shard",
             get res() { return player.qu.rip.amt },
             set res(x) { return player.qu.rip.amt = E(x) },
-            unl() { return player.qu.rip.first },
+            unl() { return OURO.evo < 5 && player.qu.rip.first },
             auto_unl() { return hasElement(132) || tmp.inf_unl },
             lens: 25,
             1: {

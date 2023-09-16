@@ -28,6 +28,7 @@
     <script src="js/buildings.js"></script>
     <script src="js/debug.js"></script>
 
+    <script src="js/ouroboros/cosmic.js"></script>
     <script src="js/ouroboros/constellation.js"></script>
     <script src="js/ouroboros/protostar.js"></script>
     <script src="js/ouroboros/wormhole.js"></script>
@@ -509,7 +510,7 @@
                     </div><div id="tab_div-entropy">
                         <div class="table_center" style="min-height: 250px">
                             <div style="width: 33.3%; min-width: 300px;">
-                                Your frequency is <span id="enEva1">0</span> Hz<br><br>
+                                <span id="enEva1">0</span><br><br>
                                 <button id="evaBtn1" class="btn half_full" onclick="ENTROPY.switch(0)">Evaporate your frequency to gain Enthalpy</button><br><br>
                                 You have <span id="enAmt1">0</span> Enthalpy, which increases Entropy gain by <span id="enEff1">0</span>
                             </div><div style="width: 33.3%; min-width: 300px;">
@@ -684,6 +685,11 @@
 
                             </div></div><div id="const_glow"></div>
                         </div>
+                    </div><div id="tab_div-cosmo">
+						Reroll in: <span id="reroll_time"></span>
+						<div class='table_center' id="galaxy_table"></div>
+						<br class="line">
+						<div class='table_center' id="cluster_table"></div>
                     </div>
                     
                     <div id="tab_div-options">
@@ -718,7 +724,7 @@
                         <button class="btn tooltip" onclick="window.open('https://boosty.to/mrredshark77')" tooltip-html="Support the original creator of IMR!">Donate</button>
 
 						<br><br>
-                        Incremental Mass Rewritten v0.8 Beta 4 - By MrRedShark77<br>
+                        Incremental Mass Rewritten v0.8 Beta 5 - By MrRedShark77<br>
                         The game is inspired by Distance Incremental & Synergism<br>
                         Contributors: <span style="cursor: pointer;" onclick='addNotify(`where lemon<br><img src="https://i.imgflip.com/57cc98.jpg" style="width:100%">`)'>Bézier</span>, 16777216 & Aarex (Artists)<br><br><br>
                         Total time played: <span id="total_time">X</span>

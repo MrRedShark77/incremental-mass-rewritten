@@ -459,6 +459,26 @@ const MUONIC_ELEM = {
             desc: `Apple's second effect is stronger.`,
             cost: E(2e10),
         },
+        {
+            berry: true,
+            desc: `Apple's third 4 effects are stronger.`,
+            cost: E(5e10),
+        },
+        {
+            berry: true,
+            desc: `Apple's fifth 6 effects are stronger.`,
+            cost: E(1e11),
+        },
+        {
+            berry: true,
+            desc: `Protostar's formula is better.`,
+            cost: E(3e11),
+        },
+        {
+            berry: true,
+            desc: `Remove quark overflow.`,
+            cost: E(1e12),
+        },
     ],
     getUnlLength() {
         let u = 11

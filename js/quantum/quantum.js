@@ -1,7 +1,13 @@
 const QUANTUM = {
     gain() {
-        let x = player.mass.max(1).log10().div(1e13)
+        let x = player.mass.max(1).log10().div(OURO.evo>=4 ? 1e12 : 1e13)
         if (x.lt(1)) return E(0)
+        if (OURO.evo>=5) {
+            x = x.max(1).log10().add(1)
+
+            return x
+        }
+
         x = x.max(0).pow(hasTree("qu11")?3:1.5)
 
         x = x.mul(tmp.qu.qc_s_eff)
@@ -26,8 +32,12 @@ const QUANTUM = {
     },
     enter(auto=false,force=false,rip=false,bd=false) {
         if (tmp.qu.gain.gte(1) || force) {
-            if (player.confirms.qu&&!auto&&!force) createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
-            ()=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',()=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
+            if (player.confirms.qu&&!auto&&!force) {
+				if (OURO.evo >= 5) createConfirm("Are you sure you want to reset?",'quReset',
+				()=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))
+				else createConfirm("Are you sure to go Quantum? Going Quantum will reset all previous except QoL mechanicals",'quReset',
+				()=>{createConfirm("ARE YOU SURE ABOUT IT???",'quReset',()=>CONFIRMS_FUNCTION.qu(auto,force,rip,bd))})
+			}
             else CONFIRMS_FUNCTION.qu(auto,force,rip,bd)
         }
     },
@@ -133,6 +143,9 @@ const QUANTUM = {
         [E(6), `Double Quantum Foam gain.`],
         [E(8), `Pre-Quantum global speed affects Blueprint Particles and Chroma at a reduced rate.`],
         [E(10), `Supernova stars are boosted by Quantizes (capped at 1e10). Unlock Auto-Quantum.`],
+        [E(20), `Unlock Primordium`],
+        [E(200), `Unlock Quantum Challenge.`],
+        [E(1e3), `Unlock Big Rip.`],
     ],
     auto: {
         mode: ["Amount","Time"],
@@ -153,7 +166,7 @@ const QUANTUM = {
     },
 }
 
-function quUnl() { return player.qu.times.gte(1) }
+function quUnl() { return OURO.evo >= 5 ? player.evo.cosmo.unl : player.qu.times.gte(1) }
 
 function getQUSave() {
     let s = {
@@ -203,6 +216,8 @@ function getQUSave() {
 }
 
 function calcQuantum(dt) {
+    if (OURO.evo >= 5) return;
+
     let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
 
     if (player.mass.gte(mlt(1e4)) && !player.qu.reached && player.chal.comps[12].gte(1)) {
@@ -285,8 +300,9 @@ function updateQuantumHTML() {
     else if (tmp.tab_name == "chroma") updateChromaHTML()
     else if (tmp.tab_name == "qu-mil") {
         tmp.el.qu_times.setTxt(format(player.qu.times,0))
-
+        let u = OURO.evo>=4?10:7
         for (let x = 0; x < QUANTUM.mils.length; x++) {
+            tmp.el['qu_mil'+x].setDisplay(x<u)
             tmp.el['qu_mil'+x].changeStyle('background-color',tmp.qu.mil_reached[x]?'#2f22':'#4442')
             tmp.el['qu_mil_goal'+x].setTxt(format(QUANTUM.mils[x][0],0))
         }

@@ -650,7 +650,7 @@ function updateInfHTML() {
         for (let r in INF.upgs) {
             r = parseInt(r)
 
-            let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte([10,4,2,3][OURO.evo]))
+            let unl = (r == 0 || player.inf.theorem.gte(INF.upg_row_req[r-1])) && (r < 5 || player.chal.comps[19].gte([10,4,2,3,2][OURO.evo]))
 
             tmp.el['iu_row'+r].setDisplay(unl)
 

@@ -59,6 +59,11 @@ const CORRUPTED_STAR = {
 			eff: cs => cs.add(1).log10().add(1).pow(1.5),
 			eff_desc: i => `Increase passive Supernova generation. <h4>${formatMult(i)}</h4>`
 		},
+        sd_mult: {
+			unl: () => OURO.evo >= 4 && hasElement(38,1),
+			eff: cs => cs.add(1).log10().add(1).pow(3),
+			eff_desc: i => `Increase stardust generation. <h4>${formatMult(i)}</h4>`
+		},
 		ea_reward: {
 			unl: () => hasElement(43,1),
 			eff: cs => cs.add(1).log10().root(2).div(20),
@@ -83,6 +88,7 @@ function updateCSTemp() {
     if (hasElement(40,1)) ss_mul = ss_mul.mul(muElemEff(40))
     if (hasElement(50,1)) ss_mul = ss_mul.mul(muElemEff(50))
     if (hasElement(65,1)) ss_mul = ss_mul.mul(muElemEff(65))
+    if (hasElement(308)) ss_mul = ss_mul.mul(elemEffect(308))
 
     if (hasElement(300)) ss_mul = ss_mul.pow(elemEffect(300))
 
@@ -110,7 +116,7 @@ function updateCSTemp() {
 }
 
 function hasCSEffect(i) { return tmp.cs_effect[i] !== undefined }
-function CSEffect(i, def = E(1)) { return EVO.isFed("cs_"+i) ? def : tmp.cs_effect[i] ?? def }
+function CSEffect(i, def = E(1)) { return EVO.isFed("cs_"+i) || !tmp.inf_unl ? def : tmp.cs_effect[i] ?? def }
 
 function buyCSUpg(i) {
     let bulk

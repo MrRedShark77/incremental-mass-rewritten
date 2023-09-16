@@ -51,6 +51,7 @@ const TABS_DATA = {
     "wh"           : { name: "Wormhole", style: "bh" },
     "proto"        : { name: "Protostar", style: "space" },
     "constellation": { name: "Constellation", style: "sn" },
+    "cosmo"        : { name: "Cosmic", style: "qu" },
 }
 
 function chooseTab(x, stab=false) {
@@ -91,9 +92,9 @@ const TABS = [
         ['main-upg', () => tmp.upgs.unl],
         ['elements', null, () => [1,2].includes(OURO.evo)],
     ] },
-    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
-        'chal',
-        ['qc', () => hasTree("unl3")],
+    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl || OURO.evo==4 && player.qu.times.gte(200) }, stab: [
+        ['chal', () => player.chal.unl],
+        ['qc', () => hasTree("unl3") || OURO.evo==4 && player.qu.times.gte(200), ()=>OURO.evo<5],
     ] },
     { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && OURO.evo < 3 }, style: "atom", stab: [
         'particles',
@@ -106,7 +107,8 @@ const TABS = [
         'wh',
         'proto',
         ['star', null, () => tmp.star_unl],
-        ['constellation', null, () => OURO.evo >= 4]
+        ['constellation', null, () => OURO.evo >= 4],
+        ['cosmo', ()=>quUnl(), () => OURO.evo >= 5],
     ] },
     { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return tmp.sn.unl }, style: "sn", stab: [
         'sn-tree',
@@ -114,7 +116,7 @@ const TABS = [
         ['ferm', () => player.supernova.fermions.unl],
         ['rad', () => hasTree("unl1")],
     ] },
-    { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu", stab: [
+    { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() && OURO.evo < 5 }, style: "qu", stab: [
         'chroma',
         ['bp', null, () => OURO.evo >= 3 ],
         ['prim', () => PRIM.unl()],

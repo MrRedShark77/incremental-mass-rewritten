@@ -58,7 +58,13 @@ const CONFIRMS_FUNCTION = {
             player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
             player.qu.qc.active = false
         }
-        if (player.qu.times.gte(10) || OURO.unl() || force) {
+        if (OURO.evo >= 5) {
+			if (!force) {
+				player.evo.cosmo.unl = 1
+				player.evo.cosmo.elixir = player.evo.cosmo.elixir.add(tmp.qu.gain)
+			}
+			QUANTUM.doReset(force)
+		} else if (player.qu.times.gte(10) || OURO.unl() || force) {
             if (!force) {
                 player.qu.points = player.qu.points.add(tmp.qu.gain)
                 player.qu.times = player.qu.times.add(tmp.qu.gainTimes)
@@ -67,7 +73,7 @@ const CONFIRMS_FUNCTION = {
             ENTROPY.reset(1)
             updateQuantumTemp()
             QUANTUM.doReset(force)
-            if (rip) {
+            if (rip && tmp.sn.unl) {
                 if (hasUpgrade('br',4)) for (let x = 0; x < 2; x++) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(2)
             }
 

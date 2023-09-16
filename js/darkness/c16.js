@@ -141,6 +141,7 @@ function corruptedShardGain() {
 		x = x.mul(x.log10().mul(2).add(1).pow(2))
 		if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 		x = x.mul(exoticAEff(0,0))
+        x = x.pow(nebulaEff('purple'))
 	} else {
 		let bh = player.bh.mass, req = OURO.evo >= 1 ? 1e65 : 1e90
 		if (hasElement(232)) bh = player.dark.c16.bestBH.max(req)

@@ -106,7 +106,7 @@ function calc(dt) {
 	for (let x = 1; x <= UPGS.main.cols; x++) {
 		let id = UPGS.main.ids[x]
 		let upg = UPGS.main[x]
-		if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) buyUpgrade(id, y)
+		if (upg.unl()) if (upg.auto_unl ? upg.auto_unl() : false) if (player.auto_mainUpg[id]) for (let y = 1; y <= upg.lens; y++) buyUpgrade(id, y)
 	}
 	if (evo < 1) if (tmp.passive >= 1) player.rp.points = player.rp.points.add(tmp.rp.gain.mul(du_gs))
 	if (evo < 2) {

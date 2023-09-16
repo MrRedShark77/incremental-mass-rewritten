@@ -658,7 +658,7 @@ const CHALS = {
         You cannot become/generate supernovas, produce star resources, dark ray (it is capped at ${format(1e12)}), dark shadow, and abyssal blot, nor purchase tree upgrades. You are stuck in dark run with 1000 all glyphs (unaffected by weakness). This challenge resets supernova.
         `},
         get reward() { return `
-        Generate more supernovas by completions.<br><span class="yellow">On ${["10th","4th","2nd","3rd"][OURO.evo]} completion, unlock sixth row of infinity upgrades${OURO.evo>=3?" and seventh star in the theorem":""}.</span>
+        Generate more ${OURO.evo>=4?'stardust':'supernovas'} by completions.<br><span class="yellow">On ${["10th","4th","2nd","3rd","2nd"][OURO.evo]} completion, unlock sixth row of infinity upgrades${OURO.evo>=3?" and seventh star in the theorem":""}.</span>
         `},
         max: E(100),
         inc: E('1e10'),

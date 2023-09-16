@@ -4,7 +4,7 @@ const ATOM = {
         let x, evo = OURO.evo;
 		if (evo >= 3) {
             if (player.evo.wh.fabric.lt(1e3)) return E(0)
-			x = expMult(player.evo.wh.fabric.div(1e3), 0.2)
+			x = expMult(player.evo.wh.fabric.div(1e3), hasElement(93,1)?0.35:0.2)
 			x = x.mul(appleEffect("ps"))
             if (tmp.chal) x = x.mul(tmp.chal.eff[9]).mul(tmp.chal.eff[10])
             if (hasElement(123)) x = x.mul(elemEffect(123))
@@ -13,6 +13,7 @@ const ATOM = {
             if (hasElement(297)) x = x.mul(elemEffect(297))
             if (hasElement(303)) x = x.mul(elemEffect(303))
             if (tmp.sn.boson) x = x.mul(tmp.sn.boson.upgs.gluon[4].effect)
+            if (evo >= 4) x = x.mul(getEnRewardEff(7))
 
             if (hasElement(169)) x = x.pow(1.05)
             if (tmp.inf_unl) x = x.pow(theoremEff('atom',5))
@@ -46,8 +47,9 @@ const ATOM = {
     quarkGain() {
 		let x = tmp.atom.gain
         if (x.lt(1)) return E(0)
+        let evo = OURO.evo
 
-		if (OURO.evo >= 3) {
+		if (evo >= 3) {
             let k = E(1), s = E(1e9)
 
             if (hasElement(1)) k = k.add(0.25)
@@ -59,7 +61,7 @@ const ATOM = {
             x = E(1.01).pow(expMult(x.overflow(s,hasElement(299)?2/3:0.5).sub(1), k)).floor()
         }
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
-		else x = x.log10().pow(OURO.evo >= 2 ? 2 : 1.2).add(1)
+		else x = x.log10().pow(evo >= 2 ? 2 : 1.2).add(1)
 
         if (!tmp.c16.in) x = x.pow(escrowBoost("qk"))
 
@@ -71,7 +73,7 @@ const ATOM = {
         x = x.mul(mdEff(9))
 
         if (hasElement(6)) x = hasElement(276) ? x.pow(tmp.elements.effect[6]) : x.mul(tmp.elements.effect[6])
-        if (hasElement(67)) x = hasElement(236) || OURO.evo >= 2 ? x.pow(elemEffect(67)) : x.mul(tmp.elements.effect[67])
+        if (hasElement(67)) x = hasElement(236) || evo >= 2 ? x.pow(elemEffect(67)) : x.mul(tmp.elements.effect[67])
         if (hasElement(47)) x = x.pow(1.1)
         if (hasPrestige(1,7)) x = x.pow(prestigeEff(1,7))
 
@@ -80,19 +82,23 @@ const ATOM = {
         if (tmp.inf_unl) x = x.pow(theoremEff('atom',0))
 
         if (tmp.dark.run) x = expMult(x,mgEff(2))
-        if (tmp.inf_unl && OURO.evo >= 2) x = expMult(x,GPEffect(1).pow(-1))
+        if (tmp.inf_unl && evo >= 2) x = expMult(x,GPEffect(1).pow(-1))
 
         let os = E('ee90'), op = E(.5), o = x
-		if (OURO.evo >= 2) os = E("ee70")
-		if (tmp.chal) os = os.pow(tmp.chal.eff[15])
-		if (tmp.c16.in && OURO.evo < 2) os = E("ee6")
-        os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
 
-        if (hasUpgrade('atom',16)) os = os.pow(10)
-        if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
+        if (hasElement(94,1)) os = EINF
+        else {
+            if (evo >= 2) os = E("ee70")
+            if (tmp.chal) os = os.pow(tmp.chal.eff[15])
+            if (tmp.c16.in && evo < 2) os = E("ee6")
+            os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
 
-        if (hasElement(45,1)) op = op.pow(0.75)
-        op = op.pow(escrowBoost('quark_overflow'))
+            if (hasUpgrade('atom',16)) os = os.pow(10)
+            if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
+
+            if (hasElement(45,1)) op = op.pow(0.75)
+            op = op.pow(escrowBoost('quark_overflow'))
+        }
 
         x = overflow(x,os,op)
 

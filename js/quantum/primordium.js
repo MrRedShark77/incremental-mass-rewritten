@@ -1,5 +1,5 @@
 const PRIM = {
-    unl() { return hasTree('unl2') },
+    unl() { return hasTree('unl2') || OURO.evo>=4 && player.qu.times.gte(20) },
     getTheorems() {
         let b = tmp.prim.t_base
         let x = player.qu.bp.max(1).log(b).mul(2).mul(tmp.chal?tmp.chal.eff[14]:1)
@@ -136,7 +136,13 @@ function updatePrimordiumTemp() {
     tp.w = [6,6,6,6,2,2,2,1]
     tp.total_w = 31
 
-    if (hasTree('qu_qol10')) {
+    let o = OURO.evo >= 4
+
+    if (o) {
+        tp.w = [0,0,0,0,0,0,0,0]
+        tp.total_w = 0
+    }
+    else if (hasTree('qu_qol10')) {
         tp.w = [0,0,0,0,2,2,2,1]
         tp.total_w -= 24
 
@@ -170,7 +176,8 @@ function updatePrimordiumTemp() {
         if (tmp.c16.in) {
             pp = E(0)
         } else {
-            if (hasTree('qu_qol10') && i < 4) pp = pt
+            if (o) pp = pt
+            else if (hasTree('qu_qol10') && i < 4) pp = pt
             else if (hasTree('qu_qol11') && i < 6) pp = pt
             else if (hasTree('qu_qol12') && i < 8) pp = pt
 

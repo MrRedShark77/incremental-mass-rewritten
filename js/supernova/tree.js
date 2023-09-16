@@ -72,7 +72,7 @@ const NO_REQ_QU = ['qol1','qol2','qol3','qol4','qol5',
 
 const TREE_UPGS = {
     buy(x, auto=false) {
-        if ((tmp.sn.tree_choosed == x || auto) && tmp.sn.tree_afford[x]) {
+        if (tmp.sn.unl && (tmp.sn.tree_choosed == x || auto) && tmp.sn.tree_afford[x]) {
             if (this.ids[x].qf) player.qu.points = player.qu.points.sub(this.ids[x].cost).max(0)
             else if (this.ids[x].cs) player.dark.c16.shard = player.dark.c16.shard.sub(this.ids[x].cost).max(0)
             else player.supernova.stars = player.supernova.stars.sub(this.ids[x].cost).max(0)

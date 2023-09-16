@@ -134,7 +134,7 @@ const WORMHOLE = {
         ],[
             m => {
                 m = m.add(1).mul(tmp.c16active ? 1e-3 : 1e-4).pow(tmp.c16.in ? .5 : 1).add(1)
-                if (OURO.evo >= 3) m = expMult(m,0.5)
+                if (OURO.evo >= 3 && !hasZodiacUpg('gemini','u3')) m = expMult(m,0.5)
                 return m
             },
             x => `Raise Wormhole formula. <b>^${format(x,2)} to exponent</b>`,

@@ -1638,7 +1638,7 @@ const ELEMENTS = {
         },{
             inf: true,
             desc: `Unlock 20th Challenge.`,
-            get cost() { return OURO.evo >= 3 ? E(1e300) : OURO.evo >= 2 ? E(1e256) : E(Number.MAX_VALUE) },
+            get cost() { return E([Number.MAX_VALUE,Number.MAX_VALUE,1e256,1e300,'e333'][OURO.evo] ?? Number.MAX_VALUE) },
         },{
             proto: true,
             desc: `Stardust boosts Protostars at a reduced rate.`,
@@ -1670,23 +1670,22 @@ const ELEMENTS = {
         },{
             proto: true,
             desc: `Quarks raise normal mass slightly.`,
-            cost: E(1e15),
+            get cost() { return E(OURO.evo>=4 ? 1e14 : 1e15) },
             effect() {
-                let x = player.atom.quarks.add(1).log10().add(1).root(15)
-                return x.softcap(1e6,3,'log')
+                let x = hasElement(312) ? expMult(player.atom.quarks.add(1).log10().add(1),0.5) : player.atom.quarks.add(1).log10().add(1).root(15).softcap(1e6,3,'log')
+                return x
             },
-            effDesc(x) { return formatPow(x) + x.softcapHTML(1e6) },
+            effDesc(x) { return formatPow(x) + x.softcapHTML(1e6,hasElement(312)) },
         },{
             proto: true,
             desc: `Dark Shadow’s second reward is better.`,
             cost: E(1e24),
         },{
             proto: true,
-            desc: `Collapsed stars boost protostars gain.`,
+            get desc() { return `${OURO.evo>=4?"Fading matters":"Collapsed stars"} boost protostars gain.` },
             cost: E(1e42),
             effect() {
-                if (!tmp.star_unl) return E(1)
-                return player.stars.points.add(1).log10().add(1).log10().add(1).pow(2)
+                return OURO.evo>=4?expMult(player.dark.matters.amt[12].add(1),hasElement(306) ? 0.75 : 0.5):player.stars.points.add(1).log10().add(1).pow(2)
             },
             effDesc(x) { return formatMult(x) },
         },{
@@ -1746,6 +1745,62 @@ const ELEMENTS = {
                 return x
             },
             effDesc(x) { return formatMult(x) },
+        },{
+            proto: true,
+            desc: `FSS’s effect to Matters now provides an exponential boost.`,
+            cost: E('e65'),
+        },{
+            proto: true,
+            desc: `Biennseptium-297 is better.`,
+            cost: E('e75'),
+        },{
+            proto: true,
+            desc: `Red matter’s upgrade now applies to Calm Powers gain at a reduced rate.`,
+            cost: E('e22222'),
+            effect() {
+                let x = expMult(player.dark.matters.upg[0].add(1),2/3)
+                return x
+            },
+            effDesc(x) { return formatMult(x) },
+        },{
+            proto: true,
+            desc: `Corrupted shard boosts the starting reduction of corrupted star at a reduced rate.`,
+            cost: E('e24444'),
+            effect() {
+                let x = player.dark.c16.totalS.add(1).log10().add(1).pow(10)
+                return x
+            },
+            effDesc(x) { return formatMult(x) },
+        },{
+            proto: true,
+            desc: `Wormhole boosts stardust at an extremely reduced rate.`,
+            cost: E('e33333'),
+            effect() {
+                if (!tmp.ouro.unl) return E(1)
+                let x = WORMHOLE.total().add(1).log10().add(1).pow(2)
+                return x
+            },
+            effDesc(x) { return formatMult(x) },
+        },{
+            proto: true,
+            desc: `Improve orange nebulae.`,
+            cost: E('e43333'),
+        },{
+            proto: true,
+            desc: `Improve purple nebulae.`,
+            cost: E('e47777'),
+        },{
+            proto: true,
+            desc: `Improve Biennbium-292 greatly.`,
+            cost: E('e59999'),
+        },{
+            proto: true,
+            desc: `Improve Biennbium-292 greatly.`,
+            cost: E('e59999'),
+        },{
+            proto: true,
+            desc: `Remove all scalings from Tetr.`,
+            cost: E('e155555'),
         },
     ],
     /*
@@ -1762,7 +1817,7 @@ const ELEMENTS = {
     getUnlLength() {
         let u = 4
 
-        if (OURO.unl()) u = 290+[0,0,0,14,21,28,35][OURO.evo]??0
+        if (OURO.unl()) u = 290+[0,0,0,14,24,31,38][OURO.evo]??0
         else {
             if (tmp.inf_unl) u = 218
             else {
@@ -1813,20 +1868,20 @@ const ELEM_TYPES = {
 	final: {
 		title: "???",
 		get: (i, l, eu) => l == 0 && i == 118,
-		can: () => hasInfUpgrade(6) || player.qu.rip.active,
+		can: () => OURO.evo < 5 && ( hasInfUpgrade(6) || player.qu.rip.active ),
 		get res() { return player.atom.quarks },
 		set res(x) { player.atom.quarks = E(x) },
-		resDisp: x => format(x, 0) + " Quarks in Big Rip"
+		resDisp: x => format(x, 0) + (OURO.evo >= 5 ? " Quarks" : " Quarks in Big Rip")
 	},
 
 	//Challenges
 	br: {
 		title: "Ripped",
 		get: (i, l, eu) => l == 0 && BR_ELEM.includes(i),
-		can: () => hasInfUpgrade(6) || player.qu.rip.active,
+		can: () => OURO.evo >= 5 || hasInfUpgrade(6) || player.qu.rip.active,
 		get res() { return player.atom.quarks },
 		set res(x) { player.atom.quarks = E(x) },
-		resDisp: x => format(x, 0) + " Quarks in Big Rip"
+		resDisp: x => format(x, 0) + (OURO.evo >= 5 ? " Quarks" : " Quarks in Big Rip")
 	},
 	c16: {
 		title: "C16",
@@ -1869,7 +1924,7 @@ const ELEM_TYPES = {
 	proto: {
 		title: "Proto",
 		get: (i, l, eu) => eu.proto,
-        can: () => !tmp.c16active && (hasElement(210) || !player.qu.rip.active),
+        can: () => !tmp.c16active && (hasElement(210) || !player.qu.rip.active || OURO.evo>=4),
 		get res() { return player.evo.proto.star },
 		set res(x) { player.evo.proto.star = E(x) },
 		resDisp: x => format(x, 0) + " Protostars"

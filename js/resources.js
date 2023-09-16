@@ -104,7 +104,7 @@ const RESOURCES_DIS = {
         resetBtn() { if (player.supernova.post_10) SUPERNOVA.reset(false,false,true) },
     },
     qu: {
-        unl: ()=>OURO.evo >= 4 || quUnl() || player.chal.comps[12].gte(1),
+        unl: ()=>OURO.evo >= 4 ? OURO.evo < 5 : quUnl() || player.chal.comps[12].gte(1),
         icon: "qu",
         class: "light_green",
 
@@ -112,8 +112,17 @@ const RESOURCES_DIS = {
 
         resetBtn() { QUANTUM.enter() },
     },
+    ue: {
+        unl: ()=>OURO.evo >= 5,
+        icon: "test",
+        class: "light_green",
+
+        desc: (gs)=>format(player.evo.cosmo.elixir,0)+"<br>"+(hasUpgrade('br',8)?player.evo.cosmo.elixir.formatGain(tmp.qu.gain.div(10).mul(gs)):"(+"+format(tmp.qu.gain,0)+")"),
+
+        resetBtn() { QUANTUM.enter() },
+    },
     br: {
-        unl: ()=>hasTree("unl4"),
+        unl: ()=>OURO.evo < 5 && ( hasTree("unl4") || OURO.evo>=4 && player.qu.times.gte(1e3) ),
         icon: "br",
         class: "light_red",
 
