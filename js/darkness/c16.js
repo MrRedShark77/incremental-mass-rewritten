@@ -57,7 +57,7 @@ const UNSTABLE_BH = {
         return x
     },
     getProduction(x,gain) {
-        return pow10(x.max(0).root(tmp.unstable_bh.p.mul(2))).add(gain).log10().pow(tmp.unstable_bh.p.mul(2))
+        return E(10).pow(x.max(0).root(tmp.unstable_bh.p.mul(2))).add(gain).log10().pow(tmp.unstable_bh.p.mul(2))
     },
     calcProduction() {
         let bh = player.bh.unstable
@@ -149,7 +149,7 @@ function corruptedShardGain() {
 		if (hasUpgrade('br',25)) w *= 0.8
 
 		x = bh.max(1).log10()
-		x = pow10(x.overflow(1e70,(1/3)**w).overflow(1e9,0.5**w).div(Math.log10(req)).root(hasElement(223) ? 2.9 : 3).sub(1))
+		x = E(10).pow(x.overflow(1e70,(1/3)**w).overflow(1e9,0.5**w).div(Math.log10(req)).root(hasElement(223) ? 2.9 : 3).sub(1))
 		if (hasPrestige(3,4)) x = x.mul(prestigeEff(3,4))
 		x = x.mul(exoticAEff(0,0))
 		x = x.overflow('ee12',0.25)

@@ -907,7 +907,7 @@ const ELEMENTS = {
             effect() {
                 let pb = tmp.prestiges.base
                 if (EVO.amt >= 4) pb = pb.root(10)
-                let x = hasPrestige(0,218) ? pow10(pb.add(1).log10().root(2)) : pb.add(1).log10().add(1)
+                let x = hasPrestige(0,218) ? E(10).pow(pb.add(1).log10().root(2)) : pb.add(1).log10().add(1)
                 return x.softcap(1e12,0.25,0)
             },
             effDesc(x) { return formatMult(x)+softcapHTML(x,1e12) },
@@ -1392,7 +1392,7 @@ const ELEMENTS = {
             cost: E('ee1155'),
             effect() {
                 if (!tmp.inf_unl) return E(1)
-                return hasElement(273) ? pow10(player.inf.theorem.pow(2)) : player.inf.theorem.add(1).tetrate(1.75)
+                return hasElement(273) ? E(10).pow(player.inf.theorem.pow(2)) : player.inf.theorem.add(1).tetrate(1.75)
             },
             effDesc(x) { return formatMult(x) },
         },{

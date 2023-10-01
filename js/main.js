@@ -666,7 +666,7 @@ function formatGain(a,e,mass) {
     
         if (a.gte(1e100)) {
             const oom = g.div(a).log10().mul(FPS)
-            if (mass && oom.gte(1e9) && a.lt(MAX_ARVS)) return "(+" + formatARV(pow10(oom)) + "/s)"
+            if (mass && oom.gte(1e9) && a.lt(MAX_ARVS)) return "(+" + formatARV(E(10).pow(oom)) + "/s)"
             if (oom.gte(1)) return "(+" + oom.format() + " OoMs/s)"
         }
     }

@@ -4,8 +4,9 @@ const RANKS = {
     reset(type, auto) {
 		if (!tmp.ranks[type].can) return
 		player.ranks[type] = player.ranks[type].add(this.gain(type))
-
 		if (!auto) this.doReset[type]()
+		updateRanksTemp()
+
 		addQuote(1)
     },
     gain(type) {
@@ -140,7 +141,7 @@ const RANKS = {
                 return ret
             },
             '380'() {
-                let ret = EVO.amt>=4 ? E(1) : pow10(player.ranks.rank.sub(379).pow(1.5).pow(player.ranks.tier.gte(55)?RANKS.effect.tier[55]():1).softcap(1000,0.5,0))
+                let ret = EVO.amt>=4 ? E(1) : E(10).pow(player.ranks.rank.sub(379).pow(1.5).pow(player.ranks.tier.gte(55)?RANKS.effect.tier[55]():1).softcap(1000,0.5,0))
                 return ret
             },
             '800'() {
@@ -581,6 +582,8 @@ const PRESTIGES = {
                 }
                 QUANTUM.enter(false,true,false,true)
             }
+            
+            updateRanksTemp()
         }
     },
 }
@@ -716,13 +719,13 @@ const BEYOND_RANKS = {
         return x
     },
     getRankFromTier(i,r=player.ranks.beyond) {
-        let hp = pow10(Decimal.pow(Decimal.sub(i.scale(tmp.beyond_ranks.scale_start,tmp.beyond_ranks.scale_pow,0),1).div(tmp.beyond_ranks.tier_power),1/.8)).ceil()
+        let hp = E(10).pow(Decimal.pow(Decimal.sub(i.scale(tmp.beyond_ranks.scale_start,tmp.beyond_ranks.scale_pow,0),1).div(tmp.beyond_ranks.tier_power),1/.8)).ceil()
 
         return r.div(hp).floor()
     },
     getRequirementFromTier(i,t=tmp.beyond_ranks.latestRank,mt=tmp.beyond_ranks.max_tier) {
         let s = tmp.beyond_ranks.scale_start, p = tmp.beyond_ranks.scale_pow
-        return pow10(Decimal.pow(Decimal.div(mt.add(1).scale(s,p,0).sub(1),tmp.beyond_ranks.tier_power),1/.8).sub(Decimal.pow(Decimal.sub(mt,i).add(1).scale(s,p,0).sub(1).div(tmp.beyond_ranks.tier_power),1/.8))).mul(Decimal.add(t,1)).ceil()
+        return E(10).pow(Decimal.pow(Decimal.div(mt.add(1).scale(s,p,0).sub(1),tmp.beyond_ranks.tier_power),1/.8).sub(Decimal.pow(Decimal.sub(mt,i).add(1).scale(s,p,0).sub(1).div(tmp.beyond_ranks.tier_power),1/.8))).mul(Decimal.add(t,1)).ceil()
     },
     getRankDisplayFromValue(r) {
         let tier = this.getTier(r), current = this.getRankFromTier(tier,r);
@@ -1106,7 +1109,7 @@ function updateRanksHTML() {
 const PRES_BEFOREC13 = [40,7]
 
 const GAL_PRESTIGE = {
-    req: () => pow10(player.gal_prestige.scaleEvery('gal_prestige').pow(EVO.amt>=4&&hasElement(281)?1.25:1.5)).mul(EVO.amt>=4?1e30:EVO.amt>=2?1e13:1e17),
+    req: () => E(10).pow(player.gal_prestige.scaleEvery('gal_prestige').pow(EVO.amt>=4&&hasElement(281)?1.25:1.5)).mul(EVO.amt>=4?1e30:EVO.amt>=2?1e13:1e17),
     reset() {
         if (tmp.gp.res.gte(tmp.gp.req)) {
             player.gal_prestige = player.gal_prestige.add(1)

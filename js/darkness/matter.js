@@ -10,7 +10,7 @@ const MATTERS = {
         } else if (rdc == 2) {
             x = m0.max(1).log10().add(1).pow(tmp.matters.exponent)
         } else {
-            x = pow10(m0.max(1).log10().max(1).log10().add(1).pow(tmp.matters.exponent).sub(1))
+            x = E(10).pow(m0.max(1).log10().max(1).log10().add(1).pow(tmp.matters.exponent).sub(1))
         }
 
 		let xx = E(1)

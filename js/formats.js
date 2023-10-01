@@ -180,9 +180,9 @@ const FORMATS = {
         } else {
             if (ex.gte("eeee10")) {
                 let slog = ex.slog()
-                return (slog.gte(1e9)?'':pow10(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
+                return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
             }
-            let m = ex.div(pow10(e))
+            let m = ex.div(E(10).pow(e))
             return (e.log10().gte(9)?'':m.toFixed(4))+'e'+this.format(e,0)
         }
       }
@@ -195,7 +195,7 @@ const FORMATS = {
         else {
           if (ex.gte("eeee10")) {
             let slog = ex.slog()
-            return (slog.gte(1e9)?'':pow10(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
+            return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
           }
           let m = ex.div(E(1000).pow(e.div(3).floor()))
           return (e.log10().gte(9)?'':m.toFixed(E(4).sub(e.sub(e.div(3).floor().mul(3)))))+'e'+this.format(e.div(3).floor().mul(3),0)
@@ -209,9 +209,9 @@ const FORMATS = {
 			return formatShort(ex, acc)
 		} else if (ex.gte("eeee10")) {
 			let slog = ex.slog()
-			return (slog.gte(1e9)?'':pow10(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
+			return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
 		} else {
-			let m = ex.div(pow10(e))
+			let m = ex.div(E(10).pow(e))
 			let a = E(4).sub(e.log10().floor())
 			return (a.lt(0)?'':m.toFixed(a))+'e'+format(e, 0)
 		}
@@ -226,7 +226,7 @@ const FORMATS = {
         ex = E(ex)
         let layer = ex.max(1).log10().max(1).log(INFINITY_NUM.log10()).floor()
         if (layer.lte(0)) return format(ex,acc,"sc")
-        ex = pow10(ex.max(1).log10().div(INFINITY_NUM.log10().pow(layer)).sub(layer.gte(1)?1:0))
+        ex = E(10).pow(ex.max(1).log10().div(INFINITY_NUM.log10().pow(layer)).sub(layer.gte(1)?1:0))
         let meta = layer.div(10).floor()
         let layer_id = layer.toNumber()%10-1
         return format(ex,layer.gte(1)?3:acc,"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?formatPow(meta,0,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])

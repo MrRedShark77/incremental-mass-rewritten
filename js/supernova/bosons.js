@@ -87,7 +87,7 @@ const BOSONS = {
             let a = x.add(1).pow(2e4)
             if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3).softcap(1e15,0.1,0))
             if (tmp.c16.in) a = overflow(a,10,0.5)
-            if (EVO.amt >= 2) a = a.min(pow10(Number.MAX_VALUE))
+            if (EVO.amt >= 2) a = a.min(E(10).pow(Number.MAX_VALUE))
             let b = expMult(x.add(1),2/3,2)
             let c = E(1)
             if (hasElement(250)) c = x.add(1).log10().add(1).root(EVO.amt >= 2 ? 20 : 10)
@@ -230,7 +230,7 @@ const BOSONS = {
             },{
                 desc: "Supernova requirement is decreased based on Gluon.",
                 get unl() { return EVO.amt < 2 },
-                cost(x) { return pow10(x.pow(1.25)).mul(1e5) },
+                cost(x) { return E(10).pow(x.pow(1.25)).mul(1e5) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.div(1e5).max(1).log10().root(1.25).add(1).floor() : E(0) },
                 effect(x) {
                     let y = player.supernova.bosons.gluon.add(1).log10().add(1).log10().mul(x.pow(fermEff(0, 3)).root(3)).div(10).add(1)

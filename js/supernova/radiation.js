@@ -17,8 +17,7 @@ const RADIATION = {
         return x
     },
     ds_gain(i) {
-        if (!tmp.sn.rad.ds_unl[i]) return E(0)
-
+        if (i>0&&player.supernova.radiation.hz.lt(RADIATION.unls[i])) return E(0)
         let x = E(5).mul(tmp.qu.prim.eff[6][0])
         if (hasTree('rad2')) x = x.mul(10)
         if (player.ranks.pent.gte(2)) x = x.mul(RANKS.effect.pent[2]())
@@ -47,7 +46,9 @@ const RADIATION = {
         let cost = E(f1).pow(b.div(fp).pow(f2)).mul(f3)
 
         let d = player.supernova.radiation.ds[Math.floor(i/2)]
-        let bulk = d.lt(f3) ? E(0) : d.div(f3).max(1).log(f1).max(0).root(f2).mul(fp).add(1).floor()        
+        let bulk = d.lt(f3) ? E(0) : d.div(f3).max(1).log(f1).max(0).root(f2).mul(fp).add(1).floor()
+
+        
 
         return [cost,bulk]
     },
@@ -56,13 +57,12 @@ const RADIATION = {
         return x
     },
     getLevelEffect(i) {
-		let b = E(0)
-        if (tmp.sn.rad.ds_unl[i] && !FERMIONS.onActive("15")) {
-			b = tmp.sn.rad.bs.lvl[i].add(tmp.sn.rad.bs.bonus_lvl[i])
-			if (hasAscension(0,23)) b = b.mul(this.getA23Bonus(i))
-		}
+        let b = tmp.sn.rad.bs.lvl[i].add(tmp.sn.rad.bs.bonus_lvl[i])
+        if (hasAscension(0,23)) b = b.mul(this.getA23Bonus(i))
+        if (FERMIONS.onActive("15") || Math.floor(i/3)>0&&player.supernova.radiation.hz.lt(RADIATION.unls[Math.floor(i/3)])) b = E(0)
 
-        return this.boosts[i].eff(b)
+        let x = this.boosts[i].eff(b)
+        return x
     },
     getbonusLevel(i) {
         let x = E(0)
@@ -259,7 +259,6 @@ function updateRadiationTemp() {
 		tmp.sn.rad = {
             ds_gain: [],
             ds_eff: [],
-            ds_unl: [],
             bs: {
                 sum: [],
                 lvl: [],
@@ -271,25 +270,25 @@ function updateRadiationTemp() {
         }
 	}
 
-	let rs = player.supernova.radiation, rt = tmp.sn.rad
-    rt.bs.fp = RADIATION.getBoostsFP()
+	let tr = tmp.sn.rad
+    tr.bs.fp = RADIATION.getBoostsFP()
     for (let x = RAD_LEN - 1; x >= 0; x--) {
-        rt.ds_unl[x] = player.supernova.radiation.hz.lt(RADIATION.unls[x])
-
-        rt.bs.sum[x] = rs.bs[2*x].add(rs.bs[2*x+1])
+        tr.bs.sum[x] = player.supernova.radiation.bs[2*x].add(player.supernova.radiation.bs[2*x+1])
         for (let y = 0; y < 3; y++) {
-            rt.bs.lvl[3*x+y] = rt.bs.sum[x].add(2-y).div(3).floor()
-            rt.bs.bonus_lvl[3*x+y] = RADIATION.getbonusLevel(3*x+y)
+            tr.bs.lvl[3*x+y] = tr.bs.sum[x].add(2-y).div(3).floor()
+            tr.bs.bonus_lvl[3*x+y] = RADIATION.getbonusLevel(3*x+y)
         }
-        for (let y = 0; y < 2; y++) [rt.bs.cost[2*x+y],rt.bs.bulk[2*x+y]] = RADIATION.getBoostData(2*x+y)
+        for (let y = 0; y < 2; y++) [tr.bs.cost[2*x+y],tr.bs.bulk[2*x+y]] = RADIATION.getBoostData(2*x+y)
 
-        rt.ds_gain[x] = RADIATION.ds_gain(x)
-        rt.ds_eff[x] = RADIATION.ds_eff(x)
+        tr.ds_gain[x] = RADIATION.ds_gain(x)
+        tr.ds_eff[x] = RADIATION.ds_eff(x)
     }
-    for (let x = 0; x < RAD_LEN*3; x++) rt.bs.eff[x] = RADIATION.getLevelEffect(x)
+    for (let x = 0; x < RAD_LEN*3; x++) {
+        tr.bs.eff[x] = RADIATION.getLevelEffect(x)
+    }
 
-    rt.hz_gain = RADIATION.hz_gain()
-    rt.hz_effect = RADIATION.hz_effect()
+    tr.hz_gain = RADIATION.hz_gain()
+    tr.hz_effect = RADIATION.hz_effect()
 }
 
 function setupRadiationHTML() {

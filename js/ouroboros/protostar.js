@@ -28,7 +28,7 @@ const PROTOSTAR = {
 		tt.eaGain = this.eaGain()
 	},
 	calc(dt) {
-		if (EVO.amt >= 4 && player.qu.en.eth[0]) player.evo.proto.dust = player.evo.proto.dust.div(pow10(dt).pow(player.qu.en.eth[3]))
+		if (EVO.amt >= 4 && player.qu.en.eth[0]) player.evo.proto.dust = player.evo.proto.dust.div(E(10).pow(dt).pow(player.qu.en.eth[3]))
         else if (player.atom.unl) player.evo.proto.dust = player.evo.proto.dust.add(tmp.evo.dust_prod.mul(dt))
 
 		if (tmp.passive >= 3) player.evo.proto.star = player.evo.proto.star.add(tmp.atom.gain.mul(dt))

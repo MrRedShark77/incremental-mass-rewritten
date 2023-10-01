@@ -158,7 +158,7 @@ function getTempData() {
 
         inf_reached: false,
         inf_time: 0,
-        inf_limit: pow10(Number.MAX_VALUE),
+        inf_limit: E(10).pow(Number.MAX_VALUE),
         iu_eff: [],
 
         core_chance: CORE_CHANCE_MIN,

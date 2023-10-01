@@ -34,7 +34,7 @@ Decimal.prototype.scale = function (s, p, mode, rev=false) {
         if ([1, "exp"].includes(mode)) x = rev ? x.div(s).max(1).log(p).add(s) : Decimal.pow(p,x.sub(s)).mul(s)
         if ([2, "dil"].includes(mode)) {
             let s10 = s.log10()
-            x = rev ? pow10(x.log10().div(s10).root(p).mul(s10)) : pow10(x.log10().div(s10).pow(p).mul(s10))
+            x = rev ? E(10).pow(x.log10().div(s10).root(p).mul(s10)) : E(10).pow(x.log10().div(s10).pow(p).mul(s10))
         }
         if ([3, "alt_exp"].includes(mode)) x = rev ? x.div(s).max(1).log(p).add(1).mul(s) : Decimal.pow(p,x.div(s).sub(1)).mul(s)
     }
@@ -151,6 +151,7 @@ function onPass(offline) {
 	if (!tmp.pass) return
 	tmp.pass = 0
 
+	EVO.update()
 	updateTemp()
 	player.atom.elements = chunkify(player.atom.elements)
 	player.atom.muonic_el = chunkify(player.atom.muonic_el)
@@ -549,7 +550,7 @@ function overflow(number, start, power, meta=1) {
 	if (number.gt(start)) {
 		if (meta == 1) {
 			let s = start.log10()
-			number = pow10(number.log10().div(s).pow(power).mul(s))
+			number = number.log10().div(s).pow(power).mul(s).pow10()
 		} else {
 			let s = start.iteratedlog(10,meta)
 			number = Decimal.iteratedexp(10,meta,number.iteratedlog(10,meta).div(s).pow(power).mul(s));
@@ -557,8 +558,6 @@ function overflow(number, start, power, meta=1) {
 	}
 	return number;
 }
-
-function pow10(x) { return E(x).pow10() }
 
 Decimal.prototype.overflow = function (start, power, meta) { return overflow(this.clone(), start, power, meta) }
 

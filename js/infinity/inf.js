@@ -267,10 +267,10 @@ const INF = {
 
         for (let i = 0; i < GAL_PRESTIGE.res_length; i++) player.gp_resources[i] = E(0)
     },
-    req: pow10(Number.MAX_VALUE),
+    req: E(10).pow(Number.MAX_VALUE),
     limit() {
 		if (!tmp.inf_unl) return this.req
-        return pow10(pow10(Decimal.pow(1.05,player.inf.theorem.scaleEvery('inf_theorem').pow(1.25)).mul(Math.log10(Number.MAX_VALUE))))
+        return E(10).pow(E(10).pow(Decimal.pow(1.05,player.inf.theorem.scaleEvery('inf_theorem').pow(1.25)).mul(Math.log10(Number.MAX_VALUE))))
     },
     goInf(limit=false) {
         if (player.mass.gte(this.req)) {
@@ -288,7 +288,7 @@ const INF = {
     gain() {
         if (player.mass.lt(this.req)) return E(0)
         let x = player.mass.add(1).log10().add(1).log10().sub(307).root(hasInfUpgrade(20) ? 1.9 : 2).div(2)
-        x = pow10(x.sub(1))
+        x = E(10).pow(x.sub(1))
 
         if (hasInfUpgrade(5)) x = x.mul(infUpgEffect(5))
         if (hasElement(17,1)) x = x.mul(muElemEff(17))

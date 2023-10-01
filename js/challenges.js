@@ -651,7 +651,7 @@ const CHALS = {
         get inc() { return E(EVO.amt >= 4 ? 1e3 : 1e10) },
         get pow() { return E(3) },
         get start() { return E(EVO.amt >= 4 ? 'ee2600' : EVO.amt >= 2 ? 'ee666' : EVO.amt >= 1 ? 'ee2555' : 'ee5555') },
-        effect: (x) => EVO.amt >= 4 ? pow10(x.sub(3)).max(1) : Decimal.pow(100,expMult(x.mul(10),2/3).div(10)),
+        effect: (x) => EVO.amt >= 4 ? E(10).pow(x.sub(3)).max(1) : Decimal.pow(100,expMult(x.mul(10),2/3).div(10)),
         effDesc(x) { return formatMult(x) },
     },
     20: {

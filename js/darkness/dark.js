@@ -163,7 +163,7 @@ const DARK = {
         if (a.gte('e56000') && (hasElement(260) || !tmp.c16.in)) {
             let e = a.div('e56000').log10().add(1).log10()
             if (hasElement(238)) e = e.pow(2)
-            x.ApQ_Overflow = pow10(e)
+            x.ApQ_Overflow = E(10).pow(e)
         }
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1)
         if (a.gte('ee7')) {

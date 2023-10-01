@@ -182,7 +182,7 @@ const UPGS = {
                 desc: `Fading matter's upgrade applies to rage powers gain at a reduce rate.`,
                 cost: E('e1.5e128'),
                 effect() {
-                    let x = pow10(tmp.matters.upg[12].eff.max(1).log10().pow(.8))
+                    let x = E(10).pow(tmp.matters.upg[12].eff.max(1).log10().pow(.8))
                     return overflow(x,1e20,0.5)
                 },
                 effDesc(x=this.effect()) {

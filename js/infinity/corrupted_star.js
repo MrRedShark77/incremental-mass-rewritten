@@ -147,7 +147,7 @@ function getCSUpgRequirement(i, lvl=player.inf.cs_double[i]) {
             x = Decimal.pow(1e3, lvl.add(1)).div(tmp.cs.sale)
         break;
         case 1:
-            x = pow10(lvl).mul(1e35).div(tmp.cs.sale)
+            x = E(10).pow(lvl).mul(1e35).div(tmp.cs.sale)
         break;
     }
 

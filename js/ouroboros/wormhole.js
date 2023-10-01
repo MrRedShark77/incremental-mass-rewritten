@@ -13,7 +13,7 @@ const WORMHOLE = {
     },
     calc(dt) {
         const evo = EVO.amt, unls = tmp.evo.wormhole_unls, mass = player.evo.wh.mass
-        if (player.qu.en.hr[0]) player.evo.wh.fabric = player.evo.wh.fabric.div(pow10(dt).pow(player.qu.en.hr[3]))
+        if (player.qu.en.hr[0]) player.evo.wh.fabric = player.evo.wh.fabric.div(E(10).pow(dt).pow(player.qu.en.hr[3]))
         else if (tmp.passive >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
         if (FORMS.bh.unl()) {

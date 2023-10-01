@@ -119,6 +119,8 @@ const ASCENSIONS = {
                 for (let j = i-1; j >= 0; j--) player.ascensions[j] = E(0)
                 INF.doReset()
             }
+
+            updateRanksTemp()
         }
     },
 }

@@ -345,7 +345,7 @@ const BUILDINGS_DATA = {
         set res(v) { player.rp.points = v },
 
         cost(x=this.level) {
-            return pow10(Decimal.pow(1.5,x))
+            return E(10).pow(Decimal.pow(1.5,x))
         },
         get bulk() {
             return this.res.max(1).log10().max(1).log(1.5).add(1).floor()
@@ -472,7 +472,7 @@ const BUILDINGS_DATA = {
             let p = 1.5
             if (hasBeyondRank(1,137)) p **= 0.8
 
-            return pow10(x.scaleEvery('fvm',false).pow(p)).mul(1e300)
+            return E(10).pow(x.scaleEvery('fvm',false).pow(p)).mul(1e300)
         },
         get bulk() {
             let p = 1.5
@@ -865,7 +865,7 @@ function getMassUpgradeCost(i, lvl) {
     if (i==4) {
         if (hasInfUpgrade(2)) start = E(1e10)
         let pow = 1.5
-        cost = pow10(Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
+        cost = E(10).pow(Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
     } else {
         fp = tmp.massFP
         
@@ -887,7 +887,7 @@ function getMassUpgradeBulk(i) {
     if (i==4) {
         if (hasInfUpgrade(2)) start = E(1e10)
         let pow = 1.5
-        if (player.mass.gte(pow10(start))) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
+        if (player.mass.gte(E(10).pow(start))) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
     } else {
         fp = tmp.massFP
         

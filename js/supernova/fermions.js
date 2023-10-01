@@ -147,7 +147,7 @@ const FERMIONS = {
                     return E('e1000').pow(t.pow(1.5)).mul("e3e4")
                 },
                 calcTier() {
-                    let res = EVO.amt >= 1 ? pow10(player.evo.cp.points.root(2)) : player.rp.points
+                    let res = EVO.amt >= 1 ? E(10).pow(player.evo.cp.points.root(2)) : player.rp.points
                     if (res.lt('e3e4')) return E(0)
                     let x = res.div('e3e4').max(1).log('e1000').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)
@@ -489,7 +489,7 @@ function updateFermionsTemp() {
 function updateFermionsHTML() {
 	let tf = tmp.sn.ferm
     let r = [
-        [tmp.atom.unl ? player.atom.atomic : E(1), tmp.atom.unl ? player.md.particles : E(1), player.mass, EVO.amt >= 1 ? pow10(player.evo.cp.points.root(2)) : player.rp.points, tmp.atom.unl ? player.md.mass : E(1), BUILDINGS.eff('tickspeed','eff_bottom'), tf.prod[0]],
+        [tmp.atom.unl ? player.atom.atomic : E(1), tmp.atom.unl ? player.md.particles : E(1), player.mass, EVO.amt >= 1 ? E(10).pow(player.evo.cp.points.root(2)) : player.rp.points, tmp.atom.unl ? player.md.mass : E(1), BUILDINGS.eff('tickspeed','eff_bottom'), tf.prod[0]],
         [player.atom.quarks, EVO.amt >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, tmp.bh.unl ? player.bh.dm : E(1), player.stars.points, EVO.amt >= 3 ? E(2).pow(player.evo.proto.star.cbrt()) : player.atom.points, BUILDINGS.eff('tickspeed','power'), tf.prod[1]]
     ]
     for (i = 0; i < 2; i++) {
