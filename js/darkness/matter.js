@@ -10,7 +10,7 @@ const MATTERS = {
         } else if (rdc == 2) {
             x = m0.max(1).log10().add(1).pow(tmp.matters.exponent)
         } else {
-            x = Decimal.pow(10,m0.max(1).log10().max(1).log10().add(1).pow(tmp.matters.exponent).sub(1))
+            x = pow10(m0.max(1).log10().max(1).log10().add(1).pow(tmp.matters.exponent).sub(1))
         }
 
 		let xx = E(1)
@@ -27,7 +27,7 @@ const MATTERS = {
 				x = x.mul(tmp.matters.upg[i+1].eff)
 				if (hasElement(256)) x = x.mul(expMult(player.dark.matters.amt[i+1].max(1), .75))
 			}
-            if (OURO.evo >= 4 && i == 0) x = x.div(1e4)
+            if (EVO.amt >= 4 && i == 0) x = x.div(1e4)
 
 			x = x.mul(tmp.dark.abEff.mexp||1)
 			x = x.mul(glyphUpgEff(14,1))
@@ -40,7 +40,7 @@ const MATTERS = {
 			if (hasElement(227)) x = x.pow(elemEffect(227))
 			if (i < MATTERS_LEN-1) x = x.pow(tmp.matters.upg[i+1].exp)
 
-            if (OURO.evo>=4 && c16 && i == 0) x = expMult(x,1/3)
+            if (EVO.amt>=4 && c16 && i == 0) x = expMult(x,1/3)
 		} else {
 			x = x.mul(xx)
 			if (x.lt(1)) return x
@@ -82,13 +82,13 @@ const MATTERS = {
 			cost = lvl.add(1).pow(hasInfUpgrade(17)?2:3).mul(1e3)
 			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).floor()
 			eff = lvl.add(1).mul(expMult(lvl.add(1),.9).pow(GPEffect(2)))
-        	if (i == 0 && OURO.evo >= 3) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
+        	if (i == 0 && EVO.amt >= 3) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
 		}
 
         let exp = E(1)
 		if (hasInfUpgrade(17) && i > 0) {
 			if (rdc < 2) exp = lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1)
-			if (OURO.evo == 3) exp = lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1)
+			if (EVO.amt == 3) exp = lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1)
 		}
         return {cost, bulk, eff, exp}
     },
@@ -98,7 +98,7 @@ const MATTERS = {
             let x = E(1)
             for (let i = 0; i < 13; i++) {
 				let xx = player.dark.matters.amt[i].add(1).log10().add(1)
-				if (hasElement(15, 1) && OURO.evo >= 2) xx = xx.sqrt()
+				if (hasElement(15, 1) && EVO.amt >= 2) xx = xx.sqrt()
 				else xx = xx.log10().add(1)
 				x = x.mul(xx)
 			}
@@ -113,17 +113,17 @@ const MATTERS = {
             f = f.scaleEvery('FSS',false,[1,hasTree('ct10')?treeEff('ct10').pow(-1):1])
             if (hasElement(217)) f = f.mul(.8)
 
-            let x = Decimal.pow(100,Decimal.pow(f,1.5)).mul(OURO.evo>=2?1e3:1e43)
+            let x = Decimal.pow(100,Decimal.pow(f,1.5)).mul(EVO.amt>=2?1e3:1e43)
             return x
         },
         bulk() {
             let f = tmp.matters.FSS_base, fp = E(1)
 
-            if (f.lt(OURO.evo>=2?1e3:1e43)) return E(0)
+            if (f.lt(EVO.amt>=2?1e3:1e43)) return E(0)
 
             if (tmp.inf_unl) fp = fp.mul(theoremEff('time',6))
 
-            let x = f.div(OURO.evo>=2?1e3:1e43).max(1).log(100).root(1.5)
+            let x = f.div(EVO.amt>=2?1e3:1e43).max(1).log(100).root(1.5)
             if (hasElement(217)) x = x.div(.8)
 
             x = x.scaleEvery('FSS',true,[1,hasTree('ct10')?treeEff('ct10').pow(-1):1,fp])
@@ -229,7 +229,7 @@ function updateMattersHTML() {
 }
 
 function updateMattersTemp() {
-	let evo2 = OURO.evo >= 2
+	let evo2 = EVO.amt >= 2
 	let mt = tmp.matters
 
 	mt.reduction = evo2 ? 2 : tmp.c16.in ? 1 : 0

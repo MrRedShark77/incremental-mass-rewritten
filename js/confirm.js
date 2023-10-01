@@ -1,6 +1,6 @@
 const CONFIRMS_FUNCTION = {
     rp() {
-        let g = tmp.rp.gain, r = OURO.evo >= 1 ? player.evo.cp : player.rp
+        let g = tmp.rp.gain, r = EVO.amt >= 1 ? player.evo.cp : player.rp
 
         r.points = r.points.add(g)
 		r.unl = true
@@ -11,7 +11,7 @@ const CONFIRMS_FUNCTION = {
     bh() {
         let g = tmp.bh.dm_gain
 
-        if (OURO.evo >= 2) {
+        if (EVO.amt >= 2) {
 			player.evo.wh.fabric = player.evo.wh.fabric.add(g)
 			player.evo.wh.unl = true
         } else {
@@ -24,7 +24,7 @@ const CONFIRMS_FUNCTION = {
         addQuote(3)
     },
     atom() {
-		if (OURO.evo >= 3) player.evo.proto.star = player.evo.proto.star.add(tmp.atom.gain)
+		if (EVO.amt >= 3) player.evo.proto.star = player.evo.proto.star.add(tmp.atom.gain)
         else player.atom.points = player.atom.points.add(tmp.atom.gain)
         player.atom.quarks = player.atom.quarks.add(tmp.atom.quarkGain)
         player.atom.unl = true

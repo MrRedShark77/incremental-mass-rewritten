@@ -4,10 +4,10 @@ const CORE = {
         icon: `N`,
         preEff: [
             `Boost normal mass gain.`,
-            () => OURO.evo >= 2 ? `Weaken Mass Upgrade scalings.` : `Boost normal mass overflow starting.`,
+            () => EVO.amt >= 2 ? `Weaken Mass Upgrade scalings.` : `Boost normal mass overflow starting.`,
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
-            () => OURO.evo >= 4 ? `Weaken Stronger Overflow^1.` : `Boost normal mass overflow^2 starting.`,
+            () => EVO.amt >= 4 ? `Weaken Stronger Overflow^1.` : `Boost normal mass overflow^2 starting.`,
             `Increase the exponent of ascension base.`,
             `Weaken Exotic scalings.`,
         ],
@@ -20,8 +20,8 @@ const CORE = {
                 return x
             },
             s => {
-                if (OURO.evo >= 2) s = s.add(1).log10().div(5).add(1).pow(-.3)
-                if (OURO.evo < 2) {
+                if (EVO.amt >= 2) s = s.add(1).log10().div(5).add(1).pow(-.3)
+                if (EVO.amt < 2) {
 					s = s.add(1).pow(s.root(2).mul(2)).overflow(100,0.5)
 					if (tmp.NHDimprove) s = s.pow(10)
 				}
@@ -33,12 +33,12 @@ const CORE = {
                 return x
             },
             s => {
-                let x = s.root(OURO.evo >= 2 ? 4 : 2)
+                let x = s.root(EVO.amt >= 2 ? 4 : 2)
                 if (tmp.NHDimprove) x = x.pow(2)
                 return x
             },
             s => {
-                if (OURO.evo >= 4) return s.div(2e4).max(2).log(2).pow(-1)
+                if (EVO.amt >= 4) return s.div(2e4).max(2).log(2).pow(-1)
                 let x = s.add(1).pow(s.root(1.5))
                 return overflow(x,100,0.5)
             },
@@ -48,10 +48,10 @@ const CORE = {
         ],
         effDesc: [
             x => formatPow(x),
-            x => OURO.evo >= 2 ? formatReduction(x) : formatPow(x),
+            x => EVO.amt >= 2 ? formatReduction(x) : formatPow(x),
             x => formatMult(x),
             x => "+"+format(x),
-            x => OURO.evo >= 4 ? formatReduction(x) : formatPow(x),
+            x => EVO.amt >= 4 ? formatReduction(x) : formatPow(x),
             x => "+"+format(x),
             x => formatReduction(x),
             x => formatMult(x),
@@ -63,7 +63,7 @@ const CORE = {
         ],
     },
     bh: {
-        unl: () => OURO.evo < 2,
+        unl: () => EVO.amt < 2,
         title: `Hawking Theorem`,
         icon: `Λ`,
         preEff: [
@@ -129,11 +129,11 @@ const CORE = {
         icon: `Ξ`,
         preEff: [
             `Boost quarks gain.`,
-            () => OURO.evo >= 4 ? `Increase quark formula from protostars.` : `Boost quark & atomic power overflows starting.`,
+            () => EVO.amt >= 4 ? `Increase quark formula from protostars.` : `Boost quark & atomic power overflows starting.`,
             `Increase overpower's power.`,
-            () => OURO.evo >= 1 ? `Gain more meditation.` : `Increase accelerator's power.`,
+            () => EVO.amt >= 1 ? `Gain more meditation.` : `Increase accelerator's power.`,
             `Boost Exotic Atom gain.`,
-            () => OURO.evo >= 3 ? `Boost protostars gain.` : `Boost dilated mass gain.`,
+            () => EVO.amt >= 3 ? `Boost protostars gain.` : `Boost dilated mass gain.`,
             `Gain more Stardust.`,
         ],
         res: `Exotic Atom`,
@@ -146,9 +146,9 @@ const CORE = {
                 return x
             },
             s => {
-                if (OURO.evo >= 4) return s.div(tmp.c16.in ? 1e5 : 1e4).min(.11)
+                if (EVO.amt >= 4) return s.div(tmp.c16.in ? 1e5 : 1e4).min(.11)
 
-                let x = s.add(1).pow(s.root(2).mul(OURO.evo >= 2 ? 1 : 2))
+                let x = s.add(1).pow(s.root(2).mul(EVO.amt >= 2 ? 1 : 2))
                 x = overflow(x,100,0.5)
                 if (tmp.NHDimprove) x = x.pow(10)
                 return x
@@ -156,11 +156,11 @@ const CORE = {
             s => {
                 let x = s.root(4)
                 if (tmp.NHDimprove) x = x.pow(1.5)
-                if (hasAscension(0,1)) x = x.mul(OURO.evo >= 4 ? 5 : 10)
+                if (hasAscension(0,1)) x = x.mul(EVO.amt >= 4 ? 5 : 10)
                 return x.div(1e4)
             },
             s => {
-                let evo1 = OURO.evo >= 1
+                let evo1 = EVO.amt >= 1
                 let x = evo1 ? s.add(1).pow(2) : s.root(4)
                 if (tmp.NHDimprove) x = x.pow(1.5)
                 if (hasAscension(0,1)) x = x.mul(10)
@@ -173,11 +173,11 @@ const CORE = {
         ],
         effDesc: [
             x => formatPow(x),
-            x => OURO.evo >= 4 ? "+"+format(x,4) : formatPow(x),
+            x => EVO.amt >= 4 ? "+"+format(x,4) : formatPow(x),
             x => "+"+format(x,4),
-            x => OURO.evo >= 1 ? formatMult(x) : "+"+format(x),
+            x => EVO.amt >= 1 ? formatMult(x) : "+"+format(x),
             x => formatPow(x),
-            x => formatPow(x)+(OURO.evo >= 3 ? "" : " to exponent"),
+            x => formatPow(x)+(EVO.amt >= 3 ? "" : " to exponent"),
             x => formatPow(x),
             x => formatMult(x),
         ],
@@ -188,7 +188,7 @@ const CORE = {
         ],
     },
     proto: {
-        unl: () => OURO.evo < 5,
+        unl: () => EVO.amt < 5,
         title: `Protoversal Theorem`,
         icon: `Π`,
         preEff: [
@@ -234,9 +234,9 @@ const CORE = {
         preEff: [
             `Boost pre-infinity global speed.`,
             `Boost pre-quantum global speed.`,
-            () => OURO.evo >= 4 ? `Raise Dark Effect resources.` : `Raise Dark Shadow & Abyssal Blots.`,
+            () => EVO.amt >= 4 ? `Raise Dark Effect resources.` : `Raise Dark Shadow & Abyssal Blots.`,
             `Weaken each glyphic mass nerfing.`,
-            () => OURO.evo >= 3 ? `Boost the softcap of quark's formula from protostars starting.` : `Boost Exotic Atom Reward Strength.`,
+            () => EVO.amt >= 3 ? `Boost the softcap of quark's formula from protostars starting.` : `Boost Exotic Atom Reward Strength.`,
             `Boost supernova generation.`,
             `Cheapen FSS.`,
         ],
@@ -245,9 +245,9 @@ const CORE = {
         eff: [
             s => s.add(1),
             s => s.add(1).log10().root(2).div(100).add(1),
-            s => OURO.evo >= 4 ? s.div(400).max(2).log(2).sqrt() : s.add(1).log10().div(100).add(1),
+            s => EVO.amt >= 4 ? s.div(400).max(2).log(2).sqrt() : s.add(1).log10().div(100).add(1),
             s => s.add(1).log10().div(100).add(1).pow(-1),
-            s => OURO.evo >= 3 ? expMult(s.add(1),1.5) : s.add(1).log10().root(2).div(5),
+            s => EVO.amt >= 3 ? expMult(s.add(1),1.5) : s.add(1).log10().root(2).div(5),
             s => s.add(1).root(3),
             s => s.add(1).log10().pow(1.5).div(10).add(1),
             s => E(0),
@@ -257,7 +257,7 @@ const CORE = {
             x => formatPow(x),
             x => formatPow(x),
             x => formatReduction(x),
-            x => OURO.evo >= 3 ? formatMult(x) : "+"+formatPercent(x),
+            x => EVO.amt >= 3 ? formatMult(x) : "+"+formatPercent(x),
             x => formatMult(x),
             x => formatMult(x),
             x => formatMult(x),
@@ -509,7 +509,7 @@ function createPreTheorem() {
             m[i] = Math.random()
             if (m[i] < CORE_CHANCE_MIN && i < 4) n = true
         }
-        if (sav.type && Math.random() > 0.05 * OURO.evo) t = sav.type
+        if (sav.type && Math.random() > 0.05 * EVO.amt) t = sav.type
         if (sav.star) {
 			sav.star.forEach((o,i)=>{
 				if (o) m[i] = 0
@@ -626,8 +626,8 @@ function updateCoreTemp() {
     let t = 4
     if (tmp.c18reward) t++
     if (hasElement(58,1)) t++
-    if (OURO.evo >= 4 && hasElement(58,1)) t++
-    if (OURO.evo == 3 && player.chal.comps[19].gte(1)) t++
+    if (EVO.amt >= 4 && hasElement(58,1)) t++
+    if (EVO.amt == 3 && player.chal.comps[19].gte(1)) t++
 
     for (let i = 0; i < MAX_STARS; i++) {
         let l = E(1).mul(CSEffect("theorem_luck"))
@@ -636,8 +636,8 @@ function updateCoreTemp() {
         core_star_chances[i] = i < t ? getCoreChance(i) : E(0)
     }
 
-    if (player.inf.theorem.gte(6) && OURO.evo < 2) tmp.min_core_len++
-    if (OURO.evo >= 5) tmp.min_core_len--
+    if (player.inf.theorem.gte(6) && EVO.amt < 2) tmp.min_core_len++
+    if (EVO.amt >= 5) tmp.min_core_len--
 
     tmp.core_lvl = INF.level()
 

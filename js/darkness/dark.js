@@ -23,7 +23,7 @@ const DARK = {
         if (hasUpgrade('rp',21)) x = x.mul(upgEffect(1,21))
         x = x.mul(escrowBoost('dark'))
         x = x.pow(nebulaEff('orange'))
-        if (tmp.inf_unl && OURO.evo >= 4) x = x.pow(theoremEff('time',2))
+        if (tmp.inf_unl && EVO.amt >= 4) x = x.pow(theoremEff('time',2))
 
         return x.floor()
     },
@@ -44,7 +44,7 @@ const DARK = {
         if (hasElement(118)||force) getResetConfirm("dark")
     },
     doReset(force=false) {
-		if (OURO.evo >= 5) resetEvolutionSave("dark")
+		if (EVO.amt >= 5) resetEvolutionSave("dark")
 
         let qu = player.qu
         let quSave = getQUSave()
@@ -112,7 +112,7 @@ const DARK = {
 
         if (hasPrestige(1,22)) x = x.pow(1.1)
         if (tmp.inf_unl) x = x.pow(theoremEff('time',2))
-		if (hasElement(18, 1) && OURO.evo >= 2) x = x.pow(1.5)
+		if (hasElement(18, 1) && EVO.amt >= 2) x = x.pow(1.5)
         x = x.pow(nebulaEff('orange'))
         return x
     },
@@ -123,13 +123,13 @@ const DARK = {
         x.mass = hasCharger(4) ? overflow(a.add(1),10,0.25) : a.add(1).log10().add(1).root(2)
 
         if (a.gte(1e6)) x.bp = a.div(1e6).pow(10).overflow('ee8',0.5,0)
-        if (a.gte(1e11) && OURO.evo < 4) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
+        if (a.gte(1e11) && EVO.amt < 4) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
         if (a.gte(1e25)) {
-			if (OURO.evo >= 4) x.qkf = a.div(1e25).log10().add(1).log10().div(10).min(.21)
+			if (EVO.amt >= 4) x.qkf = a.div(1e25).log10().add(1).log10().div(10).min(.21)
 			x.en = a.div(1e25).pow(3).overflow('ee10',1/3)
 		}
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
-        if (!tmp.c16.in && OURO.evo < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
+        if (!tmp.c16.in && EVO.amt < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
 
         return x
     },
@@ -150,11 +150,11 @@ const DARK = {
         let a = player.dark.abyssalBlot
 
         x.shadow = a.add(1).log10().add(1).pow(2)
-        if (OURO.evo >= 1) x.shadow = expMult(x.shadow,2)
+        if (EVO.amt >= 1) x.shadow = expMult(x.shadow,2)
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
         if (a.gte(1e120)) {
-			if (OURO.evo >= 4) x.qkf = a.max(1).log10().max(1).log10().sub(2).div(10).max(0).min(.05)
-			if (OURO.evo < 4) x.hr = a.div(1e120).log10().add(1).pow(2)
+			if (EVO.amt >= 4) x.qkf = a.max(1).log10().max(1).log10().sub(2).div(10).max(0).min(.05)
+			if (EVO.amt < 4) x.hr = a.div(1e120).log10().add(1).pow(2)
 		}
         if (a.gte(1e180)) x.pb = a.div(1e180).log10().add(1).pow(hasPrestige(1,167)?player.dark.matters.final.add(1).root(2):1)
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
@@ -163,7 +163,7 @@ const DARK = {
         if (a.gte('e56000') && (hasElement(260) || !tmp.c16.in)) {
             let e = a.div('e56000').log10().add(1).log10()
             if (hasElement(238)) e = e.pow(2)
-            x.ApQ_Overflow = Decimal.pow(10,e)
+            x.ApQ_Overflow = pow10(e)
         }
         if (a.gte('e125500')) x.fss = a.div('e56000').log10().add(1).log10().div(10).add(1)
         if (a.gte('ee7')) {
@@ -199,7 +199,7 @@ function calcDark(dt) {
         }
     }
 
-    if (tmp.c16.in) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
+    if (tmp.c16.in) player.dark.c16.bestBH = player.dark.c16.bestBH.max(EVO.amt >= 2 ? WORMHOLE.total() : player.bh.mass)
     if (hasCharger(1) && tmp.bh.unl) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
 
     let eaUnl = tmp.ea.unl

@@ -12,8 +12,8 @@ const WORMHOLE = {
         return this.step(x,dt).sub(x)
     },
     calc(dt) {
-        const evo = OURO.evo, unls = tmp.evo.wormhole_unls, mass = player.evo.wh.mass
-        if (player.qu.en.hr[0]) player.evo.wh.fabric = player.evo.wh.fabric.div(E(10).pow(dt).pow(player.qu.en.hr[3]))
+        const evo = EVO.amt, unls = tmp.evo.wormhole_unls, mass = player.evo.wh.mass
+        if (player.qu.en.hr[0]) player.evo.wh.fabric = player.evo.wh.fabric.div(pow10(dt).pow(player.qu.en.hr[3]))
         else if (tmp.passive >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
         if (FORMS.bh.unl()) {
@@ -45,7 +45,7 @@ const WORMHOLE = {
     },
     total() {
         let r = E(0)
-        if (OURO.evo >= 2) for (let m of player.evo.wh.mass) r = r.add(m)
+        if (EVO.amt >= 2) for (let m of player.evo.wh.mass) r = r.add(m)
         return r
     },
     temp() {
@@ -91,8 +91,8 @@ const WORMHOLE = {
             }
         }
 
-        tmp.el["wormhole_origin"].setDisplay(player.atom.unl || OURO.evo >= 3)
-        tmp.el["wormhole_rate_div"].setDisplay(tmp.sn.unl || OURO.evo >= 3)
+        tmp.el["wormhole_origin"].setDisplay(player.atom.unl || EVO.amt >= 3)
+        tmp.el["wormhole_rate_div"].setDisplay(tmp.sn.unl || EVO.amt >= 3)
         tmp.el["wormhole_rate"].setHTML(formatPercent(wh.rate, 0))
     },
 
@@ -130,8 +130,8 @@ const WORMHOLE = {
             x => `Raise meditation levels. <b>^${format(x,2)}</b>`+softcapHTML(x,3),
         ],[
             m => {
-                m = m.mul(tmp.c16.in && OURO.evo < 4 ? 1e-3 : 1e-4).pow(tmp.c16.in || OURO.evo >= 4 ? .5 : 1).add(1)
-                if (OURO.evo == 3) m = expMult(m,0.5)
+                m = m.mul(tmp.c16.in && EVO.amt < 4 ? 1e-3 : 1e-4).pow(tmp.c16.in || EVO.amt >= 4 ? .5 : 1).add(1)
+                if (EVO.amt == 3) m = expMult(m,0.5)
                 return m
             },
             x => `Raise Wormhole formula. <b>^${format(x,2)}</b>`,

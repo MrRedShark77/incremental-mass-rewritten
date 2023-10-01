@@ -1,5 +1,5 @@
 const PRIM = {
-    unl() { return hasTree('unl2') || OURO.evo>=4 && player.qu.times.gte(20) },
+    unl() { return hasTree('unl2') || EVO.amt>=4 && player.qu.times.gte(20) },
     getTheorems() {
         let b = tmp.qu.prim.t_base
         let x = player.qu.bp.max(1).log(b).mul(2).mul(tmp.chal?tmp.chal.eff[14]:1)
@@ -135,7 +135,7 @@ function updatePrimordiumTemp() {
 
     tp.w = [6,6,6,6,2,2,2,1]
     tp.total_w = 31
-	for (let i = 0; i < (hasTree('qu_qol12') || OURO.evo >= 4 ? 8 : hasTree('qu_qol11') ? 6 : hasTree('qu_qol10') ? 4 : 0); i++) {
+	for (let i = 0; i < (hasTree('qu_qol12') || EVO.amt >= 4 ? 8 : hasTree('qu_qol11') ? 6 : hasTree('qu_qol10') ? 4 : 0); i++) {
 		tp.total_w -= tp.w[i]
 		tp.w[i] = 0
 	}
@@ -179,7 +179,7 @@ function updatePrimordiumHTML() {
         tmp.el["prim_part"+i].setTxt(format(tmp.qu.prim.parts[i],0)+(tmp.qu.prim.bonus[i].gt(0)?(p_mul ? " × " : " + ")+tmp.qu.prim.bonus[i].format(0):""))
         tmp.el["prim_part_eff"+i].setHTML(PRIM.particle.effDesc[i](tmp.qu.prim.eff[i]))
 
-        tmp.el["prim_lock"+i].setDisplay(tmp.qu.prim.w[i] && OURO.evo >= 2)
+        tmp.el["prim_lock"+i].setDisplay(tmp.qu.prim.w[i] && EVO.amt >= 2)
         tmp.el["prim_lock"+i].setClasses({ btn: true, locked: !PRIM.canLock(i) })
         tmp.el["prim_lock"+i].setTxt(player.qu.prim.lock.includes(i) ? "Unlock" : "Lock")
     }

@@ -4,18 +4,17 @@ const RANKS = {
     reset(type, auto) {
 		if (!tmp.ranks[type].can) return
 		player.ranks[type] = player.ranks[type].add(this.gain(type))
-		if (!auto) this.doReset[type]()
-		updateRanksTemp()
 
+		if (!auto) this.doReset[type]()
 		addQuote(1)
     },
     gain(type) {
         return tmp.ranks[type].bulk.sub(player.ranks[type]).max(1)
     },
     unl: {
-        tier() { return OURO.evo >= 3 || player.ranks.rank.gte(1) || player.ranks.tier.gte(1) || FORMS.rp.unl() },
-        tetr() { return OURO.evo >= 3 || hasUpgrade("atom",3) || hasTree("unl1") || tmp.inf_unl },
-        pent() { return OURO.evo >= 4 || hasTree("unl1") || tmp.inf_unl },
+        tier() { return EVO.amt >= 3 || player.ranks.rank.gte(1) || player.ranks.tier.gte(1) || FORMS.rp.unl() },
+        tetr() { return EVO.amt >= 3 || hasUpgrade("atom",3) || hasTree("unl1") || tmp.inf_unl },
+        pent() { return EVO.amt >= 4 || hasTree("unl1") || tmp.inf_unl },
         hex() { return tmp.chal13comp || tmp.inf_unl },
     },
     doReset: {
@@ -41,10 +40,10 @@ const RANKS = {
         },
     },
     autoUnl: {
-        rank() { return OURO.evo >= 1 || player.ranks.tier.gte(1) || FORMS.rp.unl() },
-        tier() { return OURO.evo >= 1 || hasUpgrade("rp",6) },
-        tetr() { return OURO.evo >= 1 || hasUpgrade("atom",4) },
-        pent() { return OURO.evo >= 1 || hasTree("qol8") },
+        rank() { return EVO.amt >= 1 || player.ranks.tier.gte(1) || FORMS.rp.unl() },
+        tier() { return EVO.amt >= 1 || hasUpgrade("rp",6) },
+        tetr() { return EVO.amt >= 1 || hasUpgrade("atom",4) },
+        pent() { return EVO.amt >= 1 || hasTree("qol8") },
         hex() { return true },
     },
     desc: {
@@ -141,7 +140,7 @@ const RANKS = {
                 return ret
             },
             '380'() {
-                let ret = OURO.evo>=4 ? E(1) : E(10).pow(player.ranks.rank.sub(379).pow(1.5).pow(player.ranks.tier.gte(55)?RANKS.effect.tier[55]():1).softcap(1000,0.5,0))
+                let ret = EVO.amt>=4 ? E(1) : pow10(player.ranks.rank.sub(379).pow(1.5).pow(player.ranks.tier.gte(55)?RANKS.effect.tier[55]():1).softcap(1000,0.5,0))
                 return ret
             },
             '800'() {
@@ -302,7 +301,7 @@ const PRESTIGES = {
         let x = EINF, fp = this.fp(i), y = player.prestiges[i]
         switch (i) {
             case 0:
-                x = Decimal.pow(1.1,y.scaleEvery('prestige0',false,[0,0,0,fp]).pow(1.1)).mul(OURO.evo>=2?2e12:2e13)
+                x = Decimal.pow(1.1,y.scaleEvery('prestige0',false,[0,0,0,fp]).pow(1.1)).mul(EVO.amt>=2?2e12:2e13)
                 break;
             case 1:
                 x = y.div(fp).scaleEvery('prestige1',false).pow(1.25).mul(3).add(4)
@@ -326,7 +325,7 @@ const PRESTIGES = {
         let x = E(0), y = i==0?tmp.prestiges.base:player.prestiges[i-1], fp = this.fp(i)
         switch (i) {
             case 0:
-                if (y.gte(OURO.evo>=2?2e12:2e13)) x = y.div(OURO.evo>=2?2e12:2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true,[0,0,0,fp]).add(1)
+                if (y.gte(EVO.amt>=2?2e12:2e13)) x = y.div(EVO.amt>=2?2e12:2e13).max(1).log(1.1).max(0).root(1.1).scaleEvery('prestige0',true,[0,0,0,fp]).add(1)
                 break;
             case 1:
                 if (y.gte(4)) x = y.sub(4).div(3).max(0).root(1.25).scaleEvery('prestige1',true).mul(fp).add(1)
@@ -361,18 +360,18 @@ const PRESTIGES = {
         ()=>hasElement(267),
     ],
     noReset: [
-        ()=>hasUpgrade('br',11)||tmp.inf_unl||OURO.evo >= 1,
-        ()=>tmp.chal13comp||tmp.inf_unl||OURO.evo >= 1,
-        ()=>tmp.chal15comp||tmp.inf_unl||OURO.evo >= 1,
-        ()=>tmp.inf_unl||OURO.evo >= 1,
-        ()=>hasElement(267)||OURO.evo >= 1,
+        ()=>hasUpgrade('br',11)||tmp.inf_unl||EVO.amt >= 1,
+        ()=>tmp.chal13comp||tmp.inf_unl||EVO.amt >= 1,
+        ()=>tmp.chal15comp||tmp.inf_unl||EVO.amt >= 1,
+        ()=>tmp.inf_unl||EVO.amt >= 1,
+        ()=>hasElement(267)||EVO.amt >= 1,
     ],
     autoUnl: [
-        ()=>tmp.chal13comp||tmp.inf_unl||OURO.evo >= 1,
-        ()=>tmp.chal14comp||tmp.inf_unl||OURO.evo >= 1,
-        ()=>tmp.chal15comp||tmp.inf_unl||OURO.evo >= 1,
-        ()=>tmp.inf_unl||OURO.evo >= 1,
-        ()=>hasElement(267)||OURO.evo >= 1,
+        ()=>tmp.chal13comp||tmp.inf_unl||EVO.amt >= 1,
+        ()=>tmp.chal14comp||tmp.inf_unl||EVO.amt >= 1,
+        ()=>tmp.chal15comp||tmp.inf_unl||EVO.amt >= 1,
+        ()=>tmp.inf_unl||EVO.amt >= 1,
+        ()=>hasElement(267)||EVO.amt >= 1,
     ],
     rewards: [
         {
@@ -472,7 +471,7 @@ const PRESTIGES = {
             },x=>formatMult(x)],
             "382": [()=>{
                 let x = player.prestiges[0].max(0).root(2).div(1e3)
-                if (hasPrestige(0,1337) && OURO.evo < 4) x = x.mul(10)
+                if (hasPrestige(0,1337) && EVO.amt < 4) x = x.mul(10)
                 return x
             },x=>"+"+format(x)],
             "388": [()=>{
@@ -582,8 +581,6 @@ const PRESTIGES = {
                 }
                 QUANTUM.enter(false,true,false,true)
             }
-            
-            updateRanksTemp()
         }
     },
 }
@@ -605,7 +602,7 @@ function updateRanksTemp() {
     let ifp = E(1)
     if (tmp.inf_unl) ifp = ifp.mul(theoremEff('mass',2))
     let fp2 = tmp.qu.chroma_eff[1][0]
-    let tetr_fp2 = hasAscension(0,15) && OURO.evo >= 4 ? 1 : !hasElement(243) && hasCharger(8) ? 1 : fp2
+    let tetr_fp2 = hasAscension(0,15) && EVO.amt >= 4 ? 1 : !hasElement(243) && hasCharger(8) ? 1 : fp2
     let rt_fp2 = !hasElement(243) && hasPrestige(1,127) ? (tmp.c16.in ? 5e2 : 1) : fp2
 
     let ffp = E(1)
@@ -682,7 +679,7 @@ function updateRanksTemp() {
     if (hasUpgrade('rp',22)) rcs = rcs.mul(upgEffect(1,22))
     if (hasElement(287)) rcs = rcs.mul(elemEffect(287))
 
-    tmp.ranks.collapse.start = OURO.evo >= 1 ? EINF : rcs
+    tmp.ranks.collapse.start = EVO.amt >= 1 ? EINF : rcs
 
     tmp.beyond_ranks.scale_start = 24
     tmp.beyond_ranks.scale_pow = 1.6
@@ -719,13 +716,13 @@ const BEYOND_RANKS = {
         return x
     },
     getRankFromTier(i,r=player.ranks.beyond) {
-        let hp = Decimal.pow(10,Decimal.pow(Decimal.sub(i.scale(tmp.beyond_ranks.scale_start,tmp.beyond_ranks.scale_pow,0),1).div(tmp.beyond_ranks.tier_power),1/.8)).ceil()
+        let hp = pow10(Decimal.pow(Decimal.sub(i.scale(tmp.beyond_ranks.scale_start,tmp.beyond_ranks.scale_pow,0),1).div(tmp.beyond_ranks.tier_power),1/.8)).ceil()
 
         return r.div(hp).floor()
     },
     getRequirementFromTier(i,t=tmp.beyond_ranks.latestRank,mt=tmp.beyond_ranks.max_tier) {
         let s = tmp.beyond_ranks.scale_start, p = tmp.beyond_ranks.scale_pow
-        return Decimal.pow(10,Decimal.pow(Decimal.div(mt.add(1).scale(s,p,0).sub(1),tmp.beyond_ranks.tier_power),1/.8).sub(Decimal.pow(Decimal.sub(mt,i).add(1).scale(s,p,0).sub(1).div(tmp.beyond_ranks.tier_power),1/.8))).mul(Decimal.add(t,1)).ceil()
+        return pow10(Decimal.pow(Decimal.div(mt.add(1).scale(s,p,0).sub(1),tmp.beyond_ranks.tier_power),1/.8).sub(Decimal.pow(Decimal.sub(mt,i).add(1).scale(s,p,0).sub(1).div(tmp.beyond_ranks.tier_power),1/.8))).mul(Decimal.add(t,1)).ceil()
     },
     getRankDisplayFromValue(r) {
         let tier = this.getTier(r), current = this.getRankFromTier(tier,r);
@@ -736,7 +733,7 @@ const BEYOND_RANKS = {
         if (player.ranks.hex.gte(tmp.beyond_ranks.req) && (!auto || tmp.beyond_ranks.bulk.gt(player.ranks.beyond))) {
             player.ranks.beyond = auto ? player.ranks.beyond.max(tmp.beyond_ranks.bulk) : player.ranks.beyond.add(1)
 
-            if (hasBeyondRank(2,2)||hasInfUpgrade(10)||OURO.evo>=1) return;
+            if (hasBeyondRank(2,2)||hasInfUpgrade(10)||EVO.amt>=1) return;
 
             player.ranks.hex = E(0)
             DARK.doReset()
@@ -850,7 +847,7 @@ const BEYOND_RANKS = {
         3: {
             1: [
                 ()=>{
-                    let x = Decimal.pow(OURO.evo >= 2 ? 0.995 : 0.99, player.mass.div(1.5e56).max(1).log10().div(1e9).max(1).log10().div(15).root(3))
+                    let x = Decimal.pow(EVO.amt >= 2 ? 0.995 : 0.99, player.mass.div(1.5e56).max(1).log10().div(1e9).max(1).log10().div(15).root(3))
                     return x
                 },
                 x=>formatReduction(x)+" weaker",
@@ -1109,7 +1106,7 @@ function updateRanksHTML() {
 const PRES_BEFOREC13 = [40,7]
 
 const GAL_PRESTIGE = {
-    req: () => Decimal.pow(10, player.gal_prestige.scaleEvery('gal_prestige').pow(OURO.evo>=4&&hasElement(281)?1.25:1.5)).mul(OURO.evo>=4?1e30:OURO.evo>=2?1e13:1e17),
+    req: () => pow10(player.gal_prestige.scaleEvery('gal_prestige').pow(EVO.amt>=4&&hasElement(281)?1.25:1.5)).mul(EVO.amt>=4?1e30:EVO.amt>=2?1e13:1e17),
     reset() {
         if (tmp.gp.res.gte(tmp.gp.req)) {
             player.gal_prestige = player.gal_prestige.add(1)
@@ -1121,7 +1118,7 @@ const GAL_PRESTIGE = {
 
         switch (i) {
             case 0:
-                if (gp.gte(1) && OURO.evo < 4) x = player.stars.points.add(1).log10().add(1).log10().add(1).pow(gp.root(1.5)).sub(1)
+                if (gp.gte(1) && EVO.amt < 4) x = player.stars.points.add(1).log10().add(1).log10().add(1).pow(gp.root(1.5)).sub(1)
             break;
             case 1:
                 if (gp.gte(2)) x = tmp.prestiges.base.add(1).log10().add(1).pow(gp.sub(1).root(1.5)).sub(1)
@@ -1130,16 +1127,16 @@ const GAL_PRESTIGE = {
                 if (gp.gte(4)) x = player.dark.matters.amt[12].add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(3).root(1.5)).sub(1)
             break;
             case 3:
-                if (gp.gte(6)) x = (OURO.evo >= 4 && tmp.ouro.unl ? player.evo.proto.star : player.supernova.radiation.hz.add(1).log10()).add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5)).sub(1)
+                if (gp.gte(6)) x = (EVO.amt >= 4 && tmp.ouro.unl ? player.evo.proto.star : player.supernova.radiation.hz.add(1).log10()).add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5)).sub(1)
             break;
             case 4:
                 if (gp.gte(9)) x = player.inf.cs_amount.add(1).log10().add(1).pow(2).pow(gp.sub(8).root(1.5)).sub(1)
             break;
             case 5:
-                if (gp.gte(14) && OURO.evo < 4) x = player.supernova.bosons.hb.add(10).log10().log10().add(1).pow(gp.sub(13).root(1.5)).sub(1)
+                if (gp.gte(14) && EVO.amt < 4) x = player.supernova.bosons.hb.add(10).log10().log10().add(1).pow(gp.sub(13).root(1.5)).sub(1)
             break;
             case 6:
-                if (gp.gte(2) && OURO.evo >= 4) x = E(5).pow(gp).mul(player.build.mass_4.amt.pow(2)).div(1e6)
+                if (gp.gte(2) && EVO.amt >= 4) x = E(5).pow(gp).mul(player.build.mass_4.amt.pow(2)).div(1e6)
             break;
         }
 
@@ -1153,7 +1150,7 @@ const GAL_PRESTIGE = {
 
         switch (i) {
             case 0:
-                x = res.add(1).log10().root([2,3].includes(OURO.evo) ? 3 : 2).div(20).add(1)
+                x = res.add(1).log10().root([2,3].includes(EVO.amt) ? 3 : 2).div(20).add(1)
             break;
             case 1:
                 x = Decimal.pow(0.97,res.add(1).log10().overflow(10,0.5).root(2))
@@ -1185,7 +1182,7 @@ function GPEffect(i,def=1) { return tmp.gp.res_effect[i]||def }
 
 function updateGPTemp() {
     tmp.gp.req = GAL_PRESTIGE.req()
-    tmp.gp.res = OURO.evo >= 4 ? player.evo.proto.dust : player.supernova.times
+    tmp.gp.res = EVO.amt >= 4 ? player.evo.proto.dust : player.supernova.times
 
     for (let i = 0; i < GAL_PRESTIGE.res_length; i++) {
         tmp.gp.res_gain[i] = GAL_PRESTIGE.gain(i)
@@ -1194,11 +1191,11 @@ function updateGPTemp() {
 }
 
 function updateGPHTML() {
-    let unl = tmp.inf_unl && (hasElement(262) || OURO.evo >= 4)
+    let unl = tmp.inf_unl && (hasElement(262) || EVO.amt >= 4)
     tmp.el.galactic_prestige_div.setDisplay(unl)
 
     if (unl) {
-        let gp = player.gal_prestige, evo = OURO.evo
+        let gp = player.gal_prestige, evo = EVO.amt
 
         tmp.el.gal_prestige.setHTML(gp.format(0))
         tmp.el.gal_prestige_scale.setHTML(getScalingName('gal_prestige'))

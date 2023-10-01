@@ -21,7 +21,7 @@ const BIG_RIP = {
         if (hasUpgrade('br',23)) x = x.mul(upgEffect(4,23))
 
         x = x.pow(theoremEff('proto',5))
-        if (OURO.evo>=3) x = x.pow(1.25)
+        if (EVO.amt>=3) x = x.pow(1.25)
 
         return x.floor()
     },

@@ -147,7 +147,7 @@ const FERMIONS = {
                     return E('e1000').pow(t.pow(1.5)).mul("e3e4")
                 },
                 calcTier() {
-                    let res = OURO.evo >= 1 ? Decimal.pow(10,player.evo.cp.points.root(2)) : player.rp.points
+                    let res = EVO.amt >= 1 ? pow10(player.evo.cp.points.root(2)) : player.rp.points
                     if (res.lt('e3e4')) return E(0)
                     let x = res.div('e3e4').max(1).log('e1000').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)
@@ -160,7 +160,7 @@ const FERMIONS = {
                 desc(x) {
                     return `4th Photon & Gluon upgrades are ${format(x)}x stronger`+(x.gte(1.5)?" <span class='soft'>(softcapped)</span>":"")
                 },
-                get inc() { return OURO.evo >= 1 ? "10^CP^0.5" : "Rage Power" },
+                get inc() { return EVO.amt >= 1 ? "10^CP^0.5" : "Rage Power" },
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },{
                 unl: () => tmp.atom.unl,
@@ -172,12 +172,12 @@ const FERMIONS = {
                 },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
-                    return E('ee4').pow(t.pow(1.5)).mul(uni(OURO.evo >= 2 ? 'e4e4' : 'e5.75e5'))
+                    return E('ee4').pow(t.pow(1.5)).mul(uni(EVO.amt >= 2 ? 'e4e4' : 'e5.75e5'))
                 },
                 calcTier() {
                     let res = player.md.mass
-                    if (res.lt(uni(OURO.evo >= 2 ? 'e4e4' : 'e5.75e5'))) return E(0)
-                    let x = res.div(uni(OURO.evo >= 2 ? 'e4e4' : 'e5.75e5')).max(1).log('ee4').max(0).root(1.5)
+                    if (res.lt(uni(EVO.amt >= 2 ? 'e4e4' : 'e5.75e5'))) return E(0)
+                    let x = res.div(uni(EVO.amt >= 2 ? 'e4e4' : 'e5.75e5')).max(1).log('ee4').max(0).root(1.5)
                     return FERMIONS.getTierScaling(x, true)
                 },
                 eff(i, t) {
@@ -191,7 +191,7 @@ const FERMIONS = {
                 cons: "U-Quarks, Photons & Gluons do nothing",
                 isMass: true,
             },{
-                unl: () => OURO.evo == 0,
+                unl: () => EVO.amt == 0,
                 maxTier() {
                     if (hasElement(173)) return EINF
                     let x = 10
@@ -222,7 +222,7 @@ const FERMIONS = {
                 inc: "Tickspeed Effect",
                 cons: "Challenges are disabled",
             },{
-                get base() { return OURO.evo >= 3 ? 1e2 : OURO.evo >= 1 ? 1e8 : 1e10 },
+                get base() { return EVO.amt >= 3 ? 1e2 : EVO.amt >= 1 ? 1e8 : 1e10 },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x, false, true)
                     return Decimal.pow(1.5,t).mul(this.base)
@@ -278,7 +278,7 @@ const FERMIONS = {
                     return E('e4e4').pow(t.pow(1.25)).mul("e6e5")
                 },
                 calcTier() {
-                    let res = OURO.evo >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass
+                    let res = EVO.amt >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass
                     if (res.lt('e6e5')) return E(0)
                     let x = res.div('e6e5').max(1).log('e4e4').max(0).root(1.25)
                     return FERMIONS.getTierScaling(x, true)
@@ -291,11 +291,11 @@ const FERMIONS = {
                 desc(x) {
                     return `x${format(x)} to Higgs Bosons & Gravitons gain`+(x.gte(1e6)?" <span class='soft'>(softcapped)</span>":"")
                 },
-                get isMass() { return OURO.evo < 2 },
-                get inc() { return OURO.evo >= 2 ? "2^Fabric^0.5" : "Mass of Black Hole" },
+                get isMass() { return EVO.amt < 2 },
+                get inc() { return EVO.amt >= 2 ? "2^Fabric^0.5" : "Mass of Black Hole" },
                 cons: "The power from the mass of the BH formula is always -1",
             },{
-                unl: () => OURO.evo == 0,
+                unl: () => EVO.amt == 0,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e5e3').pow(t.pow(1.5)).mul("e4.5e5")
@@ -352,12 +352,12 @@ const FERMIONS = {
                     return x
                 },
                 nextTierAt(x) {
-                    let evo = OURO.evo
+                    let evo = EVO.amt
                     let t = FERMIONS.getTierScaling(x)
                     return E('e1.5e7').pow(t.pow(2)).mul("e3.5e8").pow(evo >= 3 ? 1e-5 : evo >= 2 ? 1e-3 : 1)
                 },
                 calcTier() {
-                    let evo = OURO.evo
+                    let evo = EVO.amt
                     let res = evo >= 3 ? E(2).pow(player.evo.proto.star.cbrt()) : player.atom.points
                     if (res.lt(evo >= 3 ? 'e3.5e3' : evo >= 2 ? 'e3.5e5' : 'e3.5e8')) return E(0)
                     let x = res.root(evo >= 3 ? 1e-5 : evo >= 2 ? 1e-3 : 1).div('e3.5e8').max(1).log('e1.5e7').max(0).root(2)
@@ -374,10 +374,10 @@ const FERMIONS = {
                     let w = formatReduction(x)
                     return hasCharger(3)?`Meta & Exotic Supernovas scale ${w} weaker`:`Pre-Meta-Supernova Scalings are ${w} weaker`
                 },
-                get inc() { return OURO.evo >= 3 ? "2^Protostars^0.33" : "Atom" },
+                get inc() { return EVO.amt >= 3 ? "2^Protostars^0.33" : "Atom" },
                 cons: "U-Leptons, Z<sup>0</sup> bosons do nothing",
             },{
-                unl: () => OURO.evo == 0,
+                unl: () => EVO.amt == 0,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('10').pow(t.pow(1.5)).mul('e80')
@@ -400,7 +400,7 @@ const FERMIONS = {
                 inc: "Tickspeed Power",
                 cons: "Radiation Boosts are disabled",
             },{
-                get base() { return OURO.evo >= 1 ? 1e6 : 1e11 },
+                get base() { return EVO.amt >= 1 ? 1e6 : 1e11 },
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x, false, true)
                     return Decimal.pow(1.5,t).mul(this.base)
@@ -489,8 +489,8 @@ function updateFermionsTemp() {
 function updateFermionsHTML() {
 	let tf = tmp.sn.ferm
     let r = [
-        [tmp.atom.unl ? player.atom.atomic : E(1), tmp.atom.unl ? player.md.particles : E(1), player.mass, OURO.evo >= 1 ? Decimal.pow(10,player.evo.cp.points.root(2)) : player.rp.points, tmp.atom.unl ? player.md.mass : E(1), BUILDINGS.eff('tickspeed','eff_bottom'), tf.prod[0]],
-        [player.atom.quarks, OURO.evo >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, tmp.bh.unl ? player.bh.dm : E(1), player.stars.points, OURO.evo >= 3 ? E(2).pow(player.evo.proto.star.cbrt()) : player.atom.points, BUILDINGS.eff('tickspeed','power'), tf.prod[1]]
+        [tmp.atom.unl ? player.atom.atomic : E(1), tmp.atom.unl ? player.md.particles : E(1), player.mass, EVO.amt >= 1 ? pow10(player.evo.cp.points.root(2)) : player.rp.points, tmp.atom.unl ? player.md.mass : E(1), BUILDINGS.eff('tickspeed','eff_bottom'), tf.prod[0]],
+        [player.atom.quarks, EVO.amt >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, tmp.bh.unl ? player.bh.dm : E(1), player.stars.points, EVO.amt >= 3 ? E(2).pow(player.evo.proto.star.cbrt()) : player.atom.points, BUILDINGS.eff('tickspeed','power'), tf.prod[1]]
     ]
     for (i = 0; i < 2; i++) {
         tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tf.gains[i].mul(tmp.qu.speed)))

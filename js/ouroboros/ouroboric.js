@@ -75,6 +75,7 @@ const OURO = {
             zodiac: { eff: {} },
             cosmo: { eff: {} },
         }
+		EVO.update()
 
         this.temp()
     },
@@ -106,6 +107,7 @@ const OURO = {
 			player.evo.wh.unl = false
 			player.evo.const = this.save.evo.const
 			player.evo.const.upg = tmp.evo.zodiac.keep
+			EVO.update()
 		}
 
         for (let i in CORE) tmp.core_eff[i] = []
@@ -114,7 +116,7 @@ const OURO = {
 
         let keep = {
             atom: {
-				unl: OURO.evo >= 5,
+				unl: EVO.amt >= 5,
                 elements: keepElementsOnOuroboric(),
                 muonic_el: unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry && !EVO.isFed("e1_" + x))
             }
@@ -141,14 +143,13 @@ const OURO = {
 
     temp() {
         if (!this.unl()) return
-        const evo = this.evo
-
         tmp.ouro.powerups = getActivatedPowerups()
         tmp.ouro.escrow_boosts = this.escrow_boosts()
         tmp.ouro.apple_gain = appleGain()
         tmp.ouro.berry_gain = berryGain()
         tmp.ouro.apple_eff = appleEffects()
 
+        const evo = EVO.amt
         if (evo >= 1) tmp.evo.meditation_eff = MEDITATION.eff(player.evo.cp.level)
         if (evo >= 2) WORMHOLE.temp()
         if (evo >= 3) PROTOSTAR.temp()
@@ -160,7 +161,7 @@ const OURO = {
         if (!this.unl()) return
         calcSnake(dt)
 
-        const evo = this.evo
+        const evo = EVO.amt
         if (evo >= 1) MEDITATION.calc(dt)
         if (evo >= 2) WORMHOLE.calc(dt)
         if (evo >= 3) PROTOSTAR.calc(dt)
@@ -168,11 +169,8 @@ const OURO = {
         if (evo >= 5) COSMIC.calc(dt)
     },
 
-    get evo() { return player.evo?.times ?? 0 },
-
     escrow_boosts() {
-        let x = {}, evo = this.evo
-
+        let x = {}, evo = EVO.amt
         if (evo == 1) {
             if (FORMS.bh.unl()) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).div(3).max(1)
             if (player.dark.unl) {
@@ -197,6 +195,7 @@ const OURO = {
 }
 
 const EVO = {
+    get amt() { return tmp.evo.amt ?? 0 },
 	msg: [
 		null,
 		[
@@ -268,8 +267,9 @@ const EVO = {
     },
     isFed: x => tmp.evo.fed[x],
     update() {
-        let tt = tmp.evo.fed = {}
-        for (var i = 1; i <= OURO.evo; i++) tt = Object.assign(tt, this.feed[i])
+        let tt = tmp.evo
+		tt.amt = OURO.unl() ? player.evo.times : 0
+        for (var i = 1; i <= tt.amt; i++) tt.fed = Object.assign(tt.fed, this.feed[i])
     },
 }
 
@@ -291,7 +291,7 @@ function canEvolve() {
 }
 
 function updateOuroborosHTML() {
-    const evo = OURO.evo
+    const evo = EVO.amt
 
     let map = tmp.tab_name
     if (map == 'mass') {
@@ -390,7 +390,7 @@ function getEvo2Ch8Boost() {
 }
 
 function keepElementsOnOuroboric(ek = []) {
-	let e = OURO.evo
+	let e = EVO.amt
 	if (e >= 3) ek.push(285)
 	if (e >= 4) ek.push(24,262,293,304)
 	if (e >= 5) ek.push(14)
@@ -402,7 +402,7 @@ function resetEvolutionSave(order) {
 	if (order == "bh" || inf) {
 		player.evo.cp.points = E(0)
 		if (!["bh", "atom"].includes(order)) player.evo.cp.best = E(0)
-		if (!hasElement(70,1) || (OURO.evo >= 2 && CHALS.inChal(6)) || inf) player.evo.cp.level = E(0)
+		if (!hasElement(70,1) || (EVO.amt >= 2 && CHALS.inChal(6)) || inf) player.evo.cp.level = E(0)
 		player.evo.cp.m_time = 0
 	}
 	if (order == "atom" || inf) {

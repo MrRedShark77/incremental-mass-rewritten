@@ -28,7 +28,7 @@ const PROTOSTAR = {
 		tt.eaGain = this.eaGain()
 	},
 	calc(dt) {
-		if (OURO.evo >= 4 && player.qu.en.eth[0]) player.evo.proto.dust = player.evo.proto.dust.div(E(10).pow(dt).pow(player.qu.en.eth[3]))
+		if (EVO.amt >= 4 && player.qu.en.eth[0]) player.evo.proto.dust = player.evo.proto.dust.div(pow10(dt).pow(player.qu.en.eth[3]))
         else if (player.atom.unl) player.evo.proto.dust = player.evo.proto.dust.add(tmp.evo.dust_prod.mul(dt))
 
 		if (tmp.passive >= 3) player.evo.proto.star = player.evo.proto.star.add(tmp.atom.gain.mul(dt))
@@ -66,7 +66,7 @@ const PROTOSTAR = {
 	nebula_req(i) {
 		let t = NEBULAE_TIER[i]
 		if (i.includes('ext') && t == 1) {
-			return Decimal.pow(2, player.evo.proto.nebula[i].sub(tmp.evo.nebula_undim[i]).max(0).add(1).pow(1.5)).mul(OURO.evo >= 4 ? 5e15 : 5e49)
+			return Decimal.pow(2, player.evo.proto.nebula[i].sub(tmp.evo.nebula_undim[i]).max(0).add(1).pow(1.5)).mul(EVO.amt >= 4 ? 5e15 : 5e49)
 		}
 		return player.evo.proto.nebula[i].sub(tmp.evo.nebula_undim[i]).max(0).add(1).pow(1+t).mul(10**t)
 	},
@@ -74,9 +74,9 @@ const PROTOSTAR = {
 		let t = NEBULAE_TIER[i], ext = i.includes('ext')
 		if (ext && t == 1) {
 			if (tmp.c16.in) return E(0)
-			return tmp.evo.nebula_res[i].div(OURO.evo >= 4 ? 5e15 : 5e49).max(1).log(2).root(1.5).add(tmp.evo.nebula_undim[i]).floor()
+			return tmp.evo.nebula_res[i].div(EVO.amt >= 4 ? 5e15 : 5e49).max(1).log(2).root(1.5).add(tmp.evo.nebula_undim[i]).floor()
 		}
-		if (!ext && OURO.evo < 4) {
+		if (!ext && EVO.amt < 4) {
 			let cond1 = tmp.c16.in || player.qu.rip.active
 			let cond2 = !hasElement(169) || NEBULAE_TIER[i] > 1
 			if (cond1 && cond2) return E(0)
@@ -92,7 +92,7 @@ const PROTOSTAR = {
 			color: "#f00",
 			undiminish: n => n.green.mul(n.blue).cbrt(),
 			undiminishDisp: "green and blue",
-			eff: n => n.add(1).pow(hasElement(294) ? (OURO.evo >= 4 ? .2 : .5) : .1),
+			eff: n => n.add(1).pow(hasElement(294) ? (EVO.amt >= 4 ? .2 : .5) : .1),
 			effDisp: e => formatMult(e) + " Stronger Power"
 		},
 		green: {
@@ -112,7 +112,7 @@ const PROTOSTAR = {
 		ext1: {
 			name: "Exotic I",
 			color: "#f30",
-			undiminish: n => player.dark.c16.totalS.mul(expMult(player.evo.proto.exotic_atoms, 0.5)).add(1).log10().div(OURO.evo >= 4 ? 50 : 1),
+			undiminish: n => player.dark.c16.totalS.mul(expMult(player.evo.proto.exotic_atoms, 0.5)).add(1).log10().div(EVO.amt >= 4 ? 50 : 1),
 			undiminishDisp: "corrupted shards and exotic atoms",
 			resDisp: "stardust",
 
@@ -158,7 +158,7 @@ const PROTOSTAR = {
 		ext2: {
 			name: "Exotic II",
 			color: "#f30",
-			undiminish: n => OURO.evo >= 4 ? E(0) : player.evo.wh.mass[6].add(1).log10().mul(player.dark.matters.final).root(4).div(10),
+			undiminish: n => EVO.amt >= 4 ? E(0) : player.evo.wh.mass[6].add(1).log10().mul(player.dark.matters.final).root(4).div(10),
 			undiminishDisp: "anti-wormhole and FSS",
 			res: n => n.ext1,
 			resDisp: "Exotic I",
@@ -170,7 +170,7 @@ const PROTOSTAR = {
 		//Tier 3
 		orange: {
 			color: "#f70",
-			unl: () => [4,5].includes(OURO.evo) && player.dark.unl,
+			unl: () => [4,5].includes(EVO.amt) && player.dark.unl,
 			undiminish: n => n.turquoise.mul(n.purple).root(5),
 			undiminishDisp: "turquoise and purple",
 			res: n => n.red.add(1).log2().add(1).mul(n.yellow.add(1).log2().add(1)).pow(2).sub(1),
@@ -180,7 +180,7 @@ const PROTOSTAR = {
 		},
 		turquoise: {
 			color: "#0f9",
-			unl: () => [4,5,6].includes(OURO.evo) && tmp.matterUnl,
+			unl: () => [4,5,6].includes(EVO.amt) && tmp.matterUnl,
 			undiminish: n => n.orange.mul(n.purple).root(5),
 			undiminishDisp: "orange and purple",
 			res: n => n.green.add(1).log2().add(1).mul(n.cyan.add(1).log2().add(1)).pow(2).sub(1),
@@ -190,7 +190,7 @@ const PROTOSTAR = {
 		},
 		purple: {
 			color: "#70f",
-			unl: () => [4,5,6].includes(OURO.evo) && player.dark.c16.first,
+			unl: () => [4,5,6].includes(EVO.amt) && player.dark.c16.first,
 			undiminish: n => player.dark.c16.shard.max(1).log10().div(10).add(1),
 			undiminishDisp: "corrupted shard",
 			res: n => n.blue.add(1).log2().add(1).mul(n.magenta.add(1).log2().add(1)).sub(1),

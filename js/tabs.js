@@ -77,35 +77,35 @@ function updateTabTemp() {
 const TABS = [
     { name: "Main", icon: "pajamas:weight", stab: [
         'mass',
-        ['bh', () => FORMS.bh.unl(), () => OURO.evo < 2],
-        ['wh', () => FORMS.bh.unl(), () => OURO.evo == 2],
-        ['atomic', () => player.atom.unl, () => OURO.evo < 3 ],
-        ['star', () => tmp.star_unl, () => OURO.evo < 3 ],
-        ['elements', null, () => OURO.evo >= 3 ],
-        ['bp', () => quUnl(), () => OURO.evo < 3 ],
-        ['tp', () => hasInfUpgrade(9), () => OURO.evo < 1],
-        ['snake', null, () => OURO.evo > 0],
+        ['bh', () => FORMS.bh.unl(), () => EVO.amt < 2],
+        ['wh', () => FORMS.bh.unl(), () => EVO.amt == 2],
+        ['atomic', () => player.atom.unl, () => EVO.amt < 3 ],
+        ['star', () => tmp.star_unl, () => EVO.amt < 3 ],
+        ['elements', null, () => EVO.amt >= 3 ],
+        ['bp', () => quUnl(), () => EVO.amt < 3 ],
+        ['tp', () => hasInfUpgrade(9), () => EVO.amt < 1],
+        ['snake', null, () => EVO.amt > 0],
     ] },
-    { name: "Upgrades", icon: "carbon:upgrade", unl() { return [1,2].includes(OURO.evo) || tmp.upgs.unl }, stab: [
+    { name: "Upgrades", icon: "carbon:upgrade", unl() { return [1,2].includes(EVO.amt) || tmp.upgs.unl }, stab: [
         ['main-upg', () => tmp.upgs.unl],
-        ['elements', null, () => [1,2].includes(OURO.evo)],
+        ['elements', null, () => [1,2].includes(EVO.amt)],
     ] },
     { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
         ['chal', () => player.chal.unl],
-        ['qc', () => hasTree("unl3") || OURO.evo == 4 && player.qu.times.gte(200), ()=>OURO.evo<5],
+        ['qc', () => hasTree("unl3") || EVO.amt == 4 && player.qu.times.gte(200), ()=>EVO.amt<5],
     ] },
-    { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && OURO.evo < 3 }, style: "atom", stab: [
+    { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && EVO.amt < 3 }, style: "atom", stab: [
         'particles',
-        ['elements', () => player.chal.comps[7].gte(1) || tmp.sn.unl, () => OURO.evo < 1],
+        ['elements', () => player.chal.comps[7].gte(1) || tmp.sn.unl, () => EVO.amt < 1],
         ['dil', () => MASS_DILATION.unlocked()],
         ['break-dil', () => hasUpgrade("br",9)],
         ['ext-atom', () => tmp.ea.unl],
     ] },
-    { name: "Space", icon: "bx:planet", color: "space", unl() { return OURO.evo >= 3 }, style: "space", stab: [
+    { name: "Space", icon: "bx:planet", color: "space", unl() { return EVO.amt >= 3 }, style: "space", stab: [
         'wh',
         'proto',
         ['star', null, () => tmp.star_unl],
-        ['constellation', null, () => OURO.evo >= 4],
+        ['constellation', null, () => EVO.amt >= 4],
         ['cosmo', () => player.evo.cosmo.unl]
     ] },
     { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return tmp.sn.unl }, style: "sn", stab: [
@@ -116,7 +116,7 @@ const TABS = [
     ] },
     { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu", stab: [
         'chroma',
-        ['bp', null, () => OURO.evo >= 3 ],
+        ['bp', null, () => EVO.amt >= 3 ],
         ['prim', () => PRIM.unl()],
         ['entropy', () => player.qu.en.unl],
         ['auto-qu', () => tmp.qu.mil_reached[6]],
@@ -132,7 +132,7 @@ const TABS = [
         'inf-core',
         'core-eff',
         'inf-upgs',
-        ['tp', () => hasInfUpgrade(9), () => OURO.evo > 0],
+        ['tp', () => hasInfUpgrade(9), () => EVO.amt > 0],
         ['c-star', () => tmp.cs.unl],
     ] },
     { name: "Stats", icon: "material-symbols:query-stats", unl() { return player.quotes.includes(1) }, stab: [

@@ -5,7 +5,7 @@ const CONSTELLATION = {
     require: [
         [()=>player.evo.proto.dust.gte(1e3),()=>`${format(1e3)} Stardust`],
         [()=>player.evo.proto.dust.gte(5e4)&&tmp.evo.zodiac.aries.has>=4,()=>`${format(5e4)} Stardust, 4 Aries Upgrades`],
-        [()=>player.evo.proto.dust.gte(1e8)&&player.qu.times.gt(0),()=>`${format(1e8)} Stardust, First ${OURO.evo>=5?'Cosmic':'Quantum'}`],
+        [()=>player.evo.proto.dust.gte(1e8)&&player.qu.times.gt(0),()=>`${format(1e8)} Stardust, First ${EVO.amt>=5?'Cosmic':'Quantum'}`],
         [()=>false,()=>`??? Stardust, Evolution 5`],
     ],
     tier() {

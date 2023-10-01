@@ -34,7 +34,7 @@ Decimal.prototype.scale = function (s, p, mode, rev=false) {
         if ([1, "exp"].includes(mode)) x = rev ? x.div(s).max(1).log(p).add(s) : Decimal.pow(p,x.sub(s)).mul(s)
         if ([2, "dil"].includes(mode)) {
             let s10 = s.log10()
-            x = rev ? Decimal.pow(10,x.log10().div(s10).root(p).mul(s10)) : Decimal.pow(10,x.log10().div(s10).pow(p).mul(s10))
+            x = rev ? pow10(x.log10().div(s10).root(p).mul(s10)) : pow10(x.log10().div(s10).pow(p).mul(s10))
         }
         if ([3, "alt_exp"].includes(mode)) x = rev ? x.div(s).max(1).log(p).add(1).mul(s) : Decimal.pow(p,x.div(s).sub(1)).mul(s)
     }
@@ -86,7 +86,7 @@ function calc(dt) {
     }
 
     if (tmp.inf_time != 0) return
-	let evo = OURO.evo
+	let evo = EVO.amt
 	onPass()
 	OURO.calc(dt)
 
@@ -98,7 +98,7 @@ function calc(dt) {
 		let rn = RANKS.names[x]
 		if (tmp.brUnl && x < 4 || RANKS.autoUnl[rn]()) RANKS.reset(rn, true)
 	}
-	if (hasBeyondRank(2,1)||hasInfUpgrade(10)||OURO.evo>=1) BEYOND_RANKS.reset(true)
+	if (hasBeyondRank(2,1)||hasInfUpgrade(10)||EVO.amt>=1) BEYOND_RANKS.reset(true)
 	for (let x = 0; x < PRES_LEN; x++) if (PRESTIGES.autoUnl[x]()) PRESTIGES.reset(x,true)
 
 	//Upgrades
@@ -151,7 +151,6 @@ function onPass(offline) {
 	if (!tmp.pass) return
 	tmp.pass = 0
 
-	EVO.update()
 	updateTemp()
 	player.atom.elements = chunkify(player.atom.elements)
 	player.atom.muonic_el = chunkify(player.atom.muonic_el)
@@ -382,7 +381,7 @@ function destroyOldData() {
 	delete player.atom.auto_gr
 	delete player.qu.auto_cr
 
-	let evo = OURO.evo
+	let evo = EVO.amt
 	if (evo >= 1) {
 		if (player.rp.unl) player.evo.cp.unl = player.rp.unl
 		delete player.rp
@@ -543,15 +542,23 @@ function findNaN(obj, str=false, data=getPlayerData(), node='player') {
     return false
 }
 
-function overflow(number, start, power, meta=1){
-	if(isNaN(number.mag))return new Decimal(0);
-	start=Decimal.iteratedexp(10,meta-1,1.0001).max(start);
-	if(number.gte(start)){
-        let s = start.iteratedlog(10,meta)
-		number=Decimal.iteratedexp(10,meta,number.iteratedlog(10,meta).div(s).pow(power).mul(s));
+function overflow(number, start, power, meta=1) {
+	if (isNaN(number.mag)) return new Decimal(0)
+	start = E(start)
+
+	if (number.gt(start)) {
+		if (meta == 1) {
+			let s = start.log10()
+			number = pow10(number.log10().div(s).pow(power).mul(s))
+		} else {
+			let s = start.iteratedlog(10,meta)
+			number = Decimal.iteratedexp(10,meta,number.iteratedlog(10,meta).div(s).pow(power).mul(s));
+		}
 	}
 	return number;
 }
+
+function pow10(x) { return E(x).pow10() }
 
 Decimal.prototype.overflow = function (start, power, meta) { return overflow(this.clone(), start, power, meta) }
 
@@ -600,7 +607,7 @@ let OFFLINE = {
 function checkPostLoad() {
 	if (!tmp.start) return
 
-	if (OURO.evo < 3) for (let x = 0; x < 3; x++) {
+	if (EVO.amt < 3) for (let x = 0; x < 3; x++) {
 		let r = document.getElementById('ratio_d'+x)
 		r.value = player.atom.dRatio[x]
 		r.addEventListener('input', e=>{

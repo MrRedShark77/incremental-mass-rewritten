@@ -7,7 +7,7 @@ const BUILDINGS_DATA = {
         scale: "massUpg",
 
         get isUnlocked() { return player.ranks.rank.gte(1) || hasUpgrade("atom",1) },
-        get autoUnlocked() { return OURO.evo >= 1 || hasUpgrade('rp',3) },
+        get autoUnlocked() { return EVO.amt >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -51,7 +51,7 @@ const BUILDINGS_DATA = {
         scale: "massUpg",
 
         get isUnlocked() { return player.ranks.rank.gte(2) || hasUpgrade("atom",1) },
-        get autoUnlocked() { return OURO.evo >= 1 || hasUpgrade('rp',3) },
+        get autoUnlocked() { return EVO.amt >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -94,7 +94,7 @@ const BUILDINGS_DATA = {
         scale: "massUpg",
 
         get isUnlocked() { return player.ranks.rank.gte(3) || hasUpgrade("atom",1) },
-        get autoUnlocked() { return OURO.evo >= 1 || hasUpgrade('rp',3) },
+        get autoUnlocked() { return EVO.amt >= 1 || hasUpgrade('rp',3) },
         get noSpend() { return hasUpgrade('bh',1) },
 
         get res() { return player.mass },
@@ -110,9 +110,9 @@ const BUILDINGS_DATA = {
         get beMultiplicative() { return hasAscension(0,1) },
 
         effect(x) {
-            let post_x = hasElement(8,1) && OURO.evo >= 2
+            let post_x = hasElement(8,1) && EVO.amt >= 2
             if (hasElement(81)) x = x.pow(1.1)
-			if (OURO.evo < 2 && hasElement(80)) x = x.mul(hasElement(80)?25:1)
+			if (EVO.amt < 2 && hasElement(80)) x = x.mul(hasElement(80)?25:1)
 
 			let ss = E(10)
             if (player.ranks.rank.gte(34)) ss = ss.add(2)
@@ -122,7 +122,7 @@ const BUILDINGS_DATA = {
             if (player.ranks.tetr.gte(2)) step = step.add(RANKS.effect.tetr[2]())
             if (hasUpgrade("rp",9)) step = step.add(0.25)
             if (hasUpgrade("rp",12)) step = step.add(upgEffect(1,12,0))
-            if (OURO.evo >= 1) step = step.mul(tmp.evo.meditation_eff.mass3??1)
+            if (EVO.amt >= 1) step = step.mul(tmp.evo.meditation_eff.mass3??1)
             if (hasElement(4)) step = step.mul(elemEffect(4))
             if (hasMDUpg(3)) step = step.mul(mdEff(3))
 			step = step.mul(nebulaEff("red"))
@@ -138,29 +138,29 @@ const BUILDINGS_DATA = {
                 sp2 **= 0.9
                 ss2 = ss2.mul(3)
             }
-            if (hasElement(149) && OURO.evo < 2) {
+            if (hasElement(149) && EVO.amt < 2) {
                 sp **= 0.5
                 sp3 **= 0.9
             }
-            if (hasElement(150) && OURO.evo < 2) {
+            if (hasElement(150) && EVO.amt < 2) {
                 sp **= 0.9
                 sp3 **= 0.925
             }
-            if (OURO.evo) {
+            if (EVO.amt) {
                 let w = tmp.evo.meditation_eff.mass3_softcap??1
                 sp = Decimal.pow(sp,w)
                 sp2 = Decimal.pow(sp2,w)
                 sp3 = Decimal.pow(sp3,w)
             }
-			if (OURO.evo < 2) step = step.softcap(1e43,hasElement(160)?0.85:0.75,0)
+			if (EVO.amt < 2) step = step.softcap(1e43,hasElement(160)?0.85:0.75,0)
 
             let ret = step.mul(post_x ? 1 : x).add(1).softcap(ss,sp,0).softcap(1.8e5,sp3,0)
             ret = ret.mul(tmp.qu.prim.eff[0])
-			if (QCs.active() && OURO.evo >= 4) ret = ret.mul(tmp.qu.qc.eff[9])
+			if (QCs.active() && EVO.amt >= 4) ret = ret.mul(tmp.qu.qc.eff[9])
             if (!player.ranks.pent.gte(15)) ret = ret.softcap(ss2,sp2,0)
 
             let o = ret
-            let os = E(OURO.evo >= 2 ? 'e70' : 'e115').mul(getFragmentEffect('mass')), os2 = E(OURO.evo >= 2 ? 'e600' : 'e1555')
+            let os = E(EVO.amt >= 2 ? 'e70' : 'e115').mul(getFragmentEffect('mass')), os2 = E(EVO.amt >= 2 ? 'e600' : 'e1555')
             let op = E(.5), op2 = E(0.25)
             if (hasElement(210)) os = os.mul(elemEffect(210))
             if (hasElement(27,1)) {
@@ -182,7 +182,7 @@ const BUILDINGS_DATA = {
                 op = op.pow(0.85)
                 op2 = op2.pow(0.85)
             }
-            if (tmp.inf_unl && OURO.evo >= 4) op = op.pow(theoremEff("mass", 4))
+            if (tmp.inf_unl && EVO.amt >= 4) op = op.pow(theoremEff("mass", 4))
 
             ret = overflow(ret,os,op)
             ret = overflow(ret,os2,op2)
@@ -228,7 +228,7 @@ const BUILDINGS_DATA = {
             if (tmp.inf_unl) step = step.add(theoremEff('atom',2,0))
             if (hasUpgrade('rp',19)) step = step.mul(upgEffect(1,19,0))
 
-            let ss = OURO.evo >= 4 ? EINF : E(10)
+            let ss = EVO.amt >= 4 ? EINF : E(10)
             let eff = step.mul(x).add(1).softcap(ss,0.5,0)                
             return {power: step, effect: eff, ss}
         },
@@ -345,7 +345,7 @@ const BUILDINGS_DATA = {
         set res(v) { player.rp.points = v },
 
         cost(x=this.level) {
-            return Decimal.pow(10,Decimal.pow(1.5,x))
+            return pow10(Decimal.pow(1.5,x))
         },
         get bulk() {
             return this.res.max(1).log10().max(1).log(1.5).add(1).floor()
@@ -472,13 +472,13 @@ const BUILDINGS_DATA = {
             let p = 1.5
             if (hasBeyondRank(1,137)) p **= 0.8
 
-            return Decimal.pow(10,x.scaleEvery('fvm',false).pow(p)).mul(1e300)
+            return pow10(x.scaleEvery('fvm',false).pow(p)).mul(1e300)
         },
         get bulk() {
             let p = 1.5
             if (hasBeyondRank(1,137)) p **= 0.8
 
-            return this.res.div(1e300).max(1).log(10).root(p).scaleEvery('fvm',true).add(1).floor()
+            return this.res.div(1e300).max(1).log10().root(p).scaleEvery('fvm',true).add(1).floor()
         },
 
         get_cost: x => format(x,0) + " Dark Matter",
@@ -511,7 +511,7 @@ const BUILDINGS_DATA = {
 		icon: "gamma_ray",
         scale: "gamma_ray",
 
-        get isUnlocked() { return player.atom.unl && OURO.evo < 3 },
+        get isUnlocked() { return player.atom.unl && EVO.amt < 3 },
         get autoUnlocked() { return hasElement(18) },
         get noSpend() { return hasElement(18) },
 
@@ -865,7 +865,7 @@ function getMassUpgradeCost(i, lvl) {
     if (i==4) {
         if (hasInfUpgrade(2)) start = E(1e10)
         let pow = 1.5
-        cost = Decimal.pow(10,Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
+        cost = pow10(Decimal.pow(inc,lvl.scaleEvery('massUpg4').pow(pow)).mul(start))
     } else {
         fp = tmp.massFP
         
@@ -887,7 +887,7 @@ function getMassUpgradeBulk(i) {
     if (i==4) {
         if (hasInfUpgrade(2)) start = E(1e10)
         let pow = 1.5
-        if (player.mass.gte(Decimal.pow(10,start))) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
+        if (player.mass.gte(pow10(start))) bulk = player.mass.max(1).log10().div(start).max(1).log(inc).max(0).root(pow).scaleEvery('massUpg4',true).add(1).floor()
     } else {
         fp = tmp.massFP
         

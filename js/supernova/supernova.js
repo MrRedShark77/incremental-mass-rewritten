@@ -6,7 +6,7 @@ const SUPERNOVA = {
     doReset() {
         let br = tmp.qu.rip.in
         tmp.sn.time = 0
-		if (OURO.evo >= 3) {
+		if (EVO.amt >= 3) {
             let keep = {
                 nebula: {},
                 ea: player.evo.proto.exotic_atoms
@@ -21,14 +21,14 @@ const SUPERNOVA = {
         player.atom.quarks = E(0)
 
         list_keep = [21,36]
-        if (OURO.evo >= 4) list_keep.push(14,18,24,30,43)
+        if (EVO.amt >= 4) list_keep.push(14,18,24,30,43)
         else {
             if (hasTree("qol1")) list_keep.push(14,18)
             if (hasTree("qol2")) list_keep.push(24)
             if (hasTree("qol3")) list_keep.push(43)
             if (quUnl()) list_keep.push(30)
         }
-        if (hasUpgrade("br",1)) list_keep.push(OURO.evo >= 4 ? 305 : 1)
+        if (hasUpgrade("br",1)) list_keep.push(EVO.amt >= 4 ? 305 : 1)
         keepElementsOnOuroboric(list_keep)
 
         keep = []
@@ -177,13 +177,13 @@ function calcSupernova(dt) {
 }
 
 function updateSupernovaTemp() {
-	if (OURO.evo >= 4) {
+	if (EVO.amt >= 4) {
 		tmp.sn = {}
 		return
 	}
 
 	let tsn = tmp.sn
-    tsn.unl = OURO.evo < 4 && (player.supernova.times.gte(1) || quUnl())
+    tsn.unl = EVO.amt < 4 && (player.supernova.times.gte(1) || quUnl())
     tsn.gen = hasElement(36,1)
     if (tsn.gen) {
         tsn.reached = false
@@ -227,50 +227,7 @@ function updateSupernovaTemp() {
 	updateRadiationTemp()
 	updateFermionsTemp()
     updateBosonsTemp()
-	if (!tsn.unl) return
-
-    let c16 = tmp.c16.in
-    let no_req1 = hasInfUpgrade(0)
-    let can_buy = !CHALS.inChal(19)
-	let tree = player.supernova.tree.concat(player.dark.c16.tree)
-
-    for (let i = 0; i < TREE_TAB.length; i++) {
-        tsn.tree_afford2[i] = []
-        for (let j = 0; j < tsn.tree_had2[i].length; j++) {
-            let id = tsn.tree_had2[i][j]
-            let t = TREE_UPGS.ids[id]
-
-            let branch = t.branch||[]
-            let unl = !t.unl||t.unl()
-            let bought = tree.includes(id)
-			let check = unl && can_buy && !bought
-			if (check) {
-				for (let x of branch) {
-					if (!tree.includes(x)) {
-						unl = false
-						break
-					}
-				}
-			}
-
-            let req = false
-			if (check) {
-				if (!CS_TREE.includes(id) && no_req1) req = true
-				if (CS_TREE.includes(id) && (tmp.inf_unl || OURO.unl())) req = true
-				if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
-				if (!req) req = !t.req || t.req()
-			}
-
-            let can = unl && req && (t.qf?player.qu.points:t.cs?player.dark.c16.shard:player.supernova.stars).gte(t.cost)
-            tsn.tree_loc[id] = i
-            tsn.tree_unlocked[id] = unl
-            tsn.tree_afford[id] = can
-            if (can) tsn.tree_afford2[i].push(id)
-            if (unl && t.effect) tsn.tree_eff[id] = t.effect()
-        }
-    }
-
-    tsn.star_gain = SUPERNOVA.starGain()
+	updateTreeTemp()
 }
 
 function supernovaAni() {

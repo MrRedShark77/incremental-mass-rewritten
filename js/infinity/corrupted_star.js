@@ -57,7 +57,7 @@ const CORRUPTED_STAR = {
 			eff_desc: i => `Increase passive Supernova generation. <h4>${formatMult(i)}</h4>`
 		},
         sd_mult: {
-			unl: () => OURO.evo >= 4 && hasElement(38,1),
+			unl: () => EVO.amt >= 4 && hasElement(38,1),
 			eff: cs => cs.add(1).log10().div(1).add(1).pow(2),
 			eff_desc: i => `Increase stardust generation. <h4>${formatMult(i)}</h4>`
 		},
@@ -67,7 +67,7 @@ const CORRUPTED_STAR = {
 			eff_desc: i => `Strengthen Exotic Atom rewards. <h4>+${format(i)}</h4>`
 		},
         c16_exp: {
-			unl: () => OURO.evo >= 3 && hasElement(43,1),
+			unl: () => EVO.amt >= 3 && hasElement(43,1),
 			eff: cs => cs.add(1).log10().div(5).add(1).log10().add(1),
 			eff_desc: i => `Raise corrupted shards gain. <h4>${formatPow(i)}</h4>`
 		},
@@ -147,7 +147,7 @@ function getCSUpgRequirement(i, lvl=player.inf.cs_double[i]) {
             x = Decimal.pow(1e3, lvl.add(1)).div(tmp.cs.sale)
         break;
         case 1:
-            x = Decimal.pow(10, lvl).mul(1e35).div(tmp.cs.sale)
+            x = pow10(lvl).mul(1e35).div(tmp.cs.sale)
         break;
     }
 
@@ -162,7 +162,7 @@ function bulkCSUpgRequirement(i, amt) {
             x = amt.mul(tmp.cs.sale).log(1e3).sub(1)
         break;
         case 1:
-            x = amt.mul(tmp.cs.sale).div(1e35).max(1).log(10)
+            x = amt.mul(tmp.cs.sale).div(1e35).max(1).log10()
         break;
     }
 

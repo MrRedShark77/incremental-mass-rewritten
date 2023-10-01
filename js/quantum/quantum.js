@@ -1,8 +1,8 @@
 const QUANTUM = {
     gain() {
-        let x = player.mass.max(1).log10().div(OURO.evo>=4 ? 1e12 : 1e13)
+        let x = player.mass.max(1).log10().div(EVO.amt>=4 ? 1e12 : 1e13)
         if (x.lt(1)) return E(0)
-        if (OURO.evo >= 5) return x.max(1).log10().add(1)
+        if (EVO.amt >= 5) return x.max(1).log10().add(1)
 
         x = x.max(0).pow(hasTree("qu11")?3:1.5)
         x = x.mul(tmp.qu.qc.s_eff)
@@ -10,7 +10,7 @@ const QUANTUM = {
         if (hasTree("qf1")) x = x.mul(treeEff("qf1"))
         if (hasTree("qf2")) x = x.mul(treeEff("qf2"))
         if (hasTree("qf3")) x = x.mul(treeEff("qf3"))
-        if (hasElement(80) && OURO.evo >= 2) x = x.mul(100)
+        if (hasElement(80) && EVO.amt >= 2) x = x.mul(100)
         if (hasPrestige(0,2)) x = x.mul(4)
 
         x = x.pow(theoremEff('proto',5))
@@ -21,8 +21,8 @@ const QUANTUM = {
         if (hasTree("qu7")) x = x.mul(treeEff("qu7"))
         if (hasTree("qu9")) x = x.mul(treeEff("qu9"))
         if (hasElement(139)) x = x.mul(elemEffect(139,1))
-        if (tmp.qu.mil_reached[7] && OURO.evo >= 4) x = x.mul(player.qu.points.add(1).log10())
-        if (tmp.qu.mil_reached[8] && OURO.evo >= 4) x = x.mul(E(2).pow(player.qu.qc.shard))
+        if (tmp.qu.mil_reached[7] && EVO.amt >= 4) x = x.mul(player.qu.points.add(1).log10())
+        if (tmp.qu.mil_reached[8] && EVO.amt >= 4) x = x.mul(E(2).pow(player.qu.qc.shard))
         return x
     },
     enter(auto=false,force=false,rip=false) {
@@ -30,7 +30,7 @@ const QUANTUM = {
     },
 	performReset(force, rip) {
 		if (!force) {
-			if (OURO.evo >= 5) {
+			if (EVO.amt >= 5) {
 				player.evo.cosmo.unl = 1
 				player.evo.cosmo.elixir = player.evo.cosmo.elixir.add(tmp.qu.gain)
 			} else {
@@ -45,7 +45,7 @@ const QUANTUM = {
 
 		QUANTUM.doReset(force)
 		addQuote(7)
-		if (OURO.evo < 5) return
+		if (EVO.amt < 5) return
 
 		ENTROPY.reset(0)
 		ENTROPY.reset(1)
@@ -177,7 +177,7 @@ const QUANTUM = {
     },
 }
 
-function quUnl() { return OURO.evo < 5 && player.qu.times.gte(1) }
+function quUnl() { return EVO.amt < 5 && player.qu.times.gte(1) }
 
 function getQUSave() {
     let s = {
@@ -227,7 +227,7 @@ function getQUSave() {
 }
 
 function calcQuantum(dt) {
-    if (OURO.evo >= 5) return;
+    if (EVO.amt >= 5) return;
 
     let inf_gs = tmp.preInfGlobalSpeed.mul(dt)
     if (quUnl()) {
@@ -300,7 +300,7 @@ function updateQuantumHTML() {
     else if (tmp.tab_name == "chroma") updateChromaHTML()
     else if (tmp.tab_name == "qu-mil") {
         tmp.el.qu_times.setTxt(format(player.qu.times,0))
-        let u = OURO.evo>=4?10:7
+        let u = EVO.amt>=4?10:7
         for (let x = 0; x < QUANTUM.mils.length; x++) {
             tmp.el['qu_mil'+x].setDisplay(x<u)
             tmp.el['qu_mil'+x].changeStyle('background-color',tmp.qu.mil_reached[x]?'#2f22':'#4442')

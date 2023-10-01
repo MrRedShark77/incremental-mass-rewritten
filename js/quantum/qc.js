@@ -17,20 +17,20 @@ const QCs = {
     names: ["Black Dwarf","Time Anomaly","Hypertiered","Melted Interactions","Intense Catalyst","Ex-Challenge","Spatial Dilation","Extreme Scaling","Rotten Apples","Demuscle","Insanity"],
     ctn: [
         {
-            shown: () => OURO.evo < 4,
+            shown: () => EVO.amt < 4,
             eff(i) {
                 return [Math.max(0,1-0.03*i),2/(i+2)]
             },
             effDesc(x) { return `<b>${formatPow(x[0])}</b> to exponent of all-star resources.<br><b>${formatPow(x[1])}</b> to strength of star generators.` },
         },{
-            unl: () => OURO.evo < 4,
+            unl: () => EVO.amt < 4,
             eff(i) {
                 let x = E(2).pow(i**2)
                 return x
             },
             effDesc(x) { return `<b>${formatMult(x.pow(-1),0)}</b> to pre-Quantum global speed.` },
         },{
-            shown: () => OURO.evo < 4,
+            shown: () => EVO.amt < 4,
             eff(i) {
                 let x = i**1.5*0.15+1
                 return x
@@ -38,19 +38,19 @@ const QCs = {
             effDesc(x) { return `<b>${formatMult(x)}</b> to requirements of any Fermions.` },
         },{
             eff: i => 0.9**(i**1.25),
-            effDesc: x => OURO.evo >= 4 ? `<b>${formatMult(x)}</b> to Protostars.` : `<b>${formatPow(x)}</b> to multiplier from Bosonic & Radiation resources.`,
+            effDesc: x => EVO.amt >= 4 ? `<b>${formatMult(x)}</b> to Protostars.` : `<b>${formatPow(x)}</b> to multiplier from Bosonic & Radiation resources.`,
         },{
             eff: i => 0.8**(i**1.25),
             effDesc: x => `<b>${formatPow(x)}</b> to multiplier from pre-Supernova resources, except all star resources.`,
         },{
-            shown: () => OURO.evo < 4,
+            shown: () => EVO.amt < 4,
             eff(i) {
                 let x = 1.2**i
                 return x
             },
             effDesc(x) { return `<b>${formatMult(x)}</b> to requirements of any pre-Quantum Challenge.` },
         },{
-            unl: () => OURO.evo < 4,
+            unl: () => EVO.amt < 4,
             eff(i) {
                 if (hasElement(163)) i /= 2
                 let x = i**1.5/2+1
@@ -58,24 +58,24 @@ const QCs = {
             },
             effDesc(x) { return `<b>^${format(x)}</b> to Mass Dilation’s penalty.` },
         },{
-            unl: () => OURO.evo < 4,
+            unl: () => EVO.amt < 4,
             eff(i) {
                 if (hasElement(98) && player.qu.rip.active) i *= 0.8
-                if (hasCharger(7) && OURO.evo >= 2 && tmp.c16.in) i *= getEvo2Ch8Boost().toNumber()
+                if (hasCharger(7) && EVO.amt >= 2 && tmp.c16.in) i *= getEvo2Ch8Boost().toNumber()
                 let x = [Math.max(0,1-0.05*i),i/10+1]
                 return x
             },
             effDesc(x) { return `<b>${formatPow(x[0])}</b> to starting of pre-Quantum scaling.<br><b>${formatPercent(x[1])}%</b> to strength of pre-Quantum scaling.` },
         },{
-            shown: () => OURO.evo >= 4,
+            shown: () => EVO.amt >= 4,
             eff: i => 0.6**((i/10)**1.25),
             effDesc: x => `<b>${formatMult(x)}</b> to apple boost efficiency`,
         },{
-            shown: () => OURO.evo >= 4,
+            shown: () => EVO.amt >= 4,
             eff: i => 0.5**((i/10)**1.25),
             effDesc: x => `<b>${formatMult(x)}</b> to stronger effect`,
         },{
-            shown: () => OURO.evo >= 4,
+            shown: () => EVO.amt >= 4,
             eff: i => 0.05**((i/10)**1.25),
             effDesc: x => `<b>${formatMult(x)}</b> to meditation efficiency`,
         },
@@ -179,7 +179,7 @@ function updateQCModPresets() {
 }
 
 function updateQCTemp() {
-    let evo = OURO.evo
+    let evo = EVO.amt
 	let tqc = tmp.qu.qc
 
     tqc.force = undefined
@@ -242,7 +242,7 @@ function updateQCHTML() {
 }
 
 function getQCForceDisp(mod) {
-	mod = QC_FORCE[mod]?.[OURO.evo]
+	mod = QC_FORCE[mod]?.[EVO.amt]
 	if (!mod) return "[?]"
 
 	let h = ""

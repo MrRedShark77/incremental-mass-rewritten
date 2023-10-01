@@ -182,7 +182,7 @@ const UPGS = {
                 desc: `Fading matter's upgrade applies to rage powers gain at a reduce rate.`,
                 cost: E('e1.5e128'),
                 effect() {
-                    let x = Decimal.pow(10,tmp.matters.upg[12].eff.max(1).log10().pow(.8))
+                    let x = pow10(tmp.matters.upg[12].eff.max(1).log10().pow(.8))
                     return overflow(x,1e20,0.5)
                 },
                 effDesc(x=this.effect()) {
@@ -274,7 +274,7 @@ const UPGS = {
                 cost: E(1),
             },
             2: {
-                unl() { return OURO.evo < 1 },
+                unl() { return EVO.amt < 1 },
                 desc: "Tickspeeds boost BH Condenser Power.",
                 cost: E(10),
                 effect() {
@@ -301,7 +301,7 @@ const UPGS = {
                 cost: E(1e3),
             },
             5: {
-                unl() { return OURO.evo < 1 },
+                unl() { return EVO.amt < 1 },
                 desc: "You can automatically buy tickspeed.",
                 cost: E(1e4),
             },
@@ -363,7 +363,7 @@ const UPGS = {
                 cost: E(1e80),
             },
             12: {
-                unl() { return player.atom.unl && OURO.evo < 1 },
+                unl() { return player.atom.unl && EVO.amt < 1 },
                 desc: "Hyper Tickspeed scales 15% weaker.",
                 cost: E(1e120),
             },
@@ -484,7 +484,7 @@ const UPGS = {
                 cost: E('ee261500'),
                 effect() {
                     let x = expMult(tmp.c16.best_bh_eff,0.4)
-                    if (OURO.evo >= 1) x = x.pow(1.4)
+                    if (EVO.amt >= 1) x = x.pow(1.4)
                     return x
                 },
                 effDesc(x=this.effect()) {
@@ -497,7 +497,7 @@ const UPGS = {
             resName: "Atom",
             get res() { return player.atom.points },
             set res(x) { return player.atom.points = E(x) },
-            unl() { return player.atom.unl && OURO.evo < 3 },
+            unl() { return player.atom.unl && EVO.amt < 3 },
             auto_unl() { return hasTree("qol1") || tmp.inf_unl },
             lens: 25,
             1: {
@@ -505,7 +505,7 @@ const UPGS = {
                 cost: E(1),
             },
             2: {
-                unl() { return OURO.evo < 2 },
+                unl() { return EVO.amt < 2 },
                 desc: "You can automatically buy BH Condenser and upgrades. Tickspeed no longer spends Rage Powers.",
                 cost: E(100),
             },
@@ -514,7 +514,7 @@ const UPGS = {
                 cost: E(1e4),
             },
             4: {
-                unl() { return OURO.evo < 2 },
+                unl() { return EVO.amt < 2 },
                 desc: "Keep Challenges 1-4 and automate Tetr. BH Condensers add Cosmic Ray Power.",
                 cost: E(1e9),
                 effect() {
@@ -530,17 +530,17 @@ const UPGS = {
                 cost: E(1e16),
             },
             6: {
-                get desc() { return `Gain 100% of Dark Matters gained from reset per second.` + (OURO.evo >= 2 ? "" : "Mass gain from Black Hole softcap starts later.") },
-                get cost() { return OURO.evo >= 2 ? E(1e3) : E(1e18) },
+                get desc() { return `Gain 100% of Dark Matters gained from reset per second.` + (EVO.amt >= 2 ? "" : "Mass gain from Black Hole softcap starts later.") },
+                get cost() { return EVO.amt >= 2 ? E(1e3) : E(1e18) },
                 effect() {
-                    if (OURO.evo < 2) return player.atom.atomic.add(1).pow(0.5)
+                    if (EVO.amt < 2) return player.atom.atomic.add(1).pow(0.5)
                 },
                 effDesc(x=this.effect()) {
-                    if (OURO.evo < 2) return format(x)+"x later"
+                    if (EVO.amt < 2) return format(x)+"x later"
                 },
             },
             7: {
-                unl() { return OURO.evo < 1 },
+                unl() { return EVO.amt < 1 },
                 desc: "Tickspeed boosts each particle powers gain.",
                 cost: E(1e24),
                 effect() {
@@ -591,7 +591,7 @@ const UPGS = {
             },
             12: {
                 unl() { return MASS_DILATION.unlocked() },
-                get desc() { return OURO.evo >= 2 ? "Wormhole effects are better." : "Mass from Black Hole effect is better." },
+                get desc() { return EVO.amt >= 2 ? "Wormhole effects are better." : "Mass from Black Hole effect is better." },
                 cost: E('e2015'),
             },
             13: {
@@ -627,7 +627,7 @@ const UPGS = {
                 },
             },
             18: {
-                unl() { return (tmp.mass4Unl || tmp.inf_unl) && OURO.evo < 2 },
+                unl() { return (tmp.mass4Unl || tmp.inf_unl) && EVO.amt < 2 },
                 desc: `Neutron Power's second effect now provides an expontial boost and applies to mass of black hole.`,
                 cost: E('e4.2e120'),
             },
@@ -672,7 +672,7 @@ const UPGS = {
                 cost: E('ee54000'),
             },
             24: {
-                unl() { return tmp.fifthRowUnl && OURO.evo < 2 },
+                unl() { return tmp.fifthRowUnl && EVO.amt < 2 },
                 desc: `Star Siltation starts ^2 later to exponent.`,
                 cost: E('ee87000'),
             },
@@ -682,7 +682,7 @@ const UPGS = {
                 cost: E('ee111111'),
                 effect() {
                     let x = player.inf.dim_mass.add(10).log10().pow(2.7)
-                    if (OURO.evo >= 1) x = x.pow(1.4)
+                    if (EVO.amt >= 1) x = x.pow(1.4)
                     return x
                 },
                 effDesc(x=this.effect()) {
@@ -695,11 +695,11 @@ const UPGS = {
             resName: "Death Shard",
             get res() { return player.qu.rip.amt },
             set res(x) { return player.qu.rip.amt = E(x) },
-            unl() { return OURO.evo < 5 && player.qu.rip.first },
+            unl() { return EVO.amt < 5 && player.qu.rip.first },
             auto_unl() { return hasElement(132) || tmp.inf_unl },
             lens: 25,
             1: {
-                get desc() { return `Keep ${OURO.evo >= 4 ? "Trinilpentium-305" : "Hydrogen-1"}.` },
+                get desc() { return `Keep ${EVO.amt >= 4 ? "Trinilpentium-305" : "Hydrogen-1"}.` },
                 cost: E(5),
             },
             2: {
@@ -745,17 +745,17 @@ const UPGS = {
                 cost: E(1e7),
             },
             10: {
-                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
+                unl() { return brokeDil() || tmp.inf_unl || EVO.amt >= 3 },
                 desc: `Chromas are 10% stronger.`,
                 cost: E(2.5e8),
             },
             11: {
-                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
+                unl() { return brokeDil() || tmp.inf_unl || EVO.amt >= 3 },
                 desc: `Prestige no longer resets anything.`,
                 cost: E(1e10),
             },
             12: {
-                unl() { return OURO.evo < 3 && (brokeDil() || tmp.inf_unl) },
+                unl() { return EVO.amt < 3 && (brokeDil() || tmp.inf_unl) },
                 desc: `Mass gain softcap^5 starts later based on Atom.`,
                 cost: E(1e16),
                 effect() {
@@ -765,7 +765,7 @@ const UPGS = {
                 effDesc(x=this.effect()) { return "^"+format(x)+" later" },
             },
             13: {
-                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
+                unl() { return brokeDil() || tmp.inf_unl || EVO.amt >= 3 },
                 desc: `Death Shard gain is boosted based on Prestige Base.`,
                 cost: E(1e17),
                 effect() {
@@ -775,12 +775,12 @@ const UPGS = {
                 effDesc(x=this.effect()) { return formatMult(x) },
             },
             14: {
-                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
+                unl() { return brokeDil() || tmp.inf_unl || EVO.amt >= 3 },
                 desc: `Super Fermion Tier starts 10 later (after QC8 nerf).`,
                 cost: E(1e22),
             },
             15: {
-                unl() { return brokeDil() || tmp.inf_unl || OURO.evo >= 3 },
+                unl() { return brokeDil() || tmp.inf_unl || EVO.amt >= 3 },
                 desc: `Blueprint Particles boost Pre-Quantum Global Speed slightly.`,
                 cost: E(1e24),
             },
@@ -790,7 +790,7 @@ const UPGS = {
                 cost: E(1e273),
             },
             17: {
-                unl() { return OURO.evo < 2 && (tmp.mass4Unl || tmp.inf_unl) },
+                unl() { return EVO.amt < 2 && (tmp.mass4Unl || tmp.inf_unl) },
                 desc: `Dark matter raises atoms gain at a reduced rate.`,
                 cost: E('e386'),
                 effect() {
@@ -918,7 +918,7 @@ function updateUpgNotify() {
 			}
 		}
 	}
-	if (OURO.evo >= 4 && player.evo.const.tier) {
+	if (EVO.amt >= 4 && player.evo.const.tier) {
 		for (var [i, can] of Object.entries(tmp.evo.zodiac.can)) {
 			if (!can) continue
 			tmp.upg_notify = ["zd"].concat(i.split("-"))

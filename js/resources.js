@@ -14,7 +14,7 @@ const RESOURCES_DIS = {
     },
 
     rp: {
-        unl: ()=>OURO.evo < 1 && player.quotes.includes(1),
+        unl: ()=>EVO.amt < 1 && player.quotes.includes(1),
         icon: "rp",
         class: "light_red",
 
@@ -23,7 +23,7 @@ const RESOURCES_DIS = {
         resetBtn() { FORMS.rp.reset() },
     },
     cp: {
-        unl: ()=>OURO.evo >= 1,
+        unl: ()=>EVO.amt >= 1,
         icon: "evolution/calm_power",
         class: "light_red",
 
@@ -32,16 +32,16 @@ const RESOURCES_DIS = {
         resetBtn() { FORMS.rp.reset() },
     },
     dm: {
-        unl: ()=>FORMS.bh.see() && OURO.evo < 2,
+        unl: ()=>FORMS.bh.see() && EVO.amt < 2,
         icon: "dm",
         class: "bh",
 
-        desc: (gs)=>format(player.bh.dm,0)+"<br>"+(tmp.passive >= 2 ? formatGain(player.bh.dm, tmp.bh.dm_gain.mul(gs)) : tmp.bh.dm_can ? "(+"+format(tmp.bh.dm_gain,0)+")" : OURO.evo >= 1 ? `(requires ${format(5e3, 0)} CP)` : `(requires ${format(1e25, 0)} RP)`),
+        desc: (gs)=>format(player.bh.dm,0)+"<br>"+(tmp.passive >= 2 ? formatGain(player.bh.dm, tmp.bh.dm_gain.mul(gs)) : tmp.bh.dm_can ? "(+"+format(tmp.bh.dm_gain,0)+")" : EVO.amt >= 1 ? `(requires ${format(5e3, 0)} CP)` : `(requires ${format(1e25, 0)} RP)`),
     
         resetBtn() { FORMS.bh.reset() },
     },
     fabric: {
-        unl: ()=>FORMS.bh.see() && OURO.evo >= 2,
+        unl: ()=>FORMS.bh.see() && EVO.amt >= 2,
         icon: "evolution/fabric",
         class: "bh",
 
@@ -57,23 +57,23 @@ const RESOURCES_DIS = {
         desc: (gs)=>formatMass(player.bh.mass)+"<br>"+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(gs), true),
     },
     wormhole: {
-        unl: ()=>FORMS.bh.unl() && OURO.evo >= 2,
+        unl: ()=>FORMS.bh.unl() && EVO.amt >= 2,
         icon: "evolution/wormhole",
         class: "bh",
 
         desc: () => formatMass(WORMHOLE.total()),
     },
     atom: {
-        unl: ()=>FORMS.bh.unl() && OURO.evo < 3,
+        unl: ()=>FORMS.bh.unl() && EVO.amt < 3,
         icon: "atom",
         class: "cyan",
 
-        desc: (gs)=>format(player.atom.points,0) + "<br>" + (tmp.passive >= 3 ? formatGain(player.atom.points, tmp.atom.gain.mul(gs)) : tmp.atom.canReset ? "(+"+format(tmp.atom.gain,0)+")" : OURO.evo >= 2 ? `(requires ${format(300, 0)} Fabric)` : `(requires ${formatMass(1.5e156, 0)} mass of BH)`),
+        desc: (gs)=>format(player.atom.points,0) + "<br>" + (tmp.passive >= 3 ? formatGain(player.atom.points, tmp.atom.gain.mul(gs)) : tmp.atom.canReset ? "(+"+format(tmp.atom.gain,0)+")" : EVO.amt >= 2 ? `(requires ${format(300, 0)} Fabric)` : `(requires ${formatMass(1.5e156, 0)} mass of BH)`),
 
         resetBtn() { ATOM.reset() },
     },
     protostar: {
-        unl: ()=>FORMS.bh.unl() && OURO.evo >= 3,
+        unl: ()=>FORMS.bh.unl() && EVO.amt >= 3,
         icon: "evolution/protostar",
         class: "cyan",
 
@@ -104,16 +104,16 @@ const RESOURCES_DIS = {
         resetBtn() { if (player.supernova.post_10) SUPERNOVA.reset(false,false,true) },
     },
     qu: {
-        unl: ()=>OURO.evo >= 4 ? OURO.evo < 5 : quUnl() || player.chal.comps[12].gte(1),
+        unl: ()=>EVO.amt >= 4 ? EVO.amt < 5 : quUnl() || player.chal.comps[12].gte(1),
         icon: "qu",
         class: "light_green",
 
-        desc: (gs)=>format(player.qu.points,0) + "<br>" + (hasUpgrade('br',8) ? player.qu.points.formatGain(tmp.qu.gain.div(10).mul(gs)) : tmp.qu.gain.gt(0) ? "(+"+format(tmp.qu.gain,0)+")" : `(requires ${formatMass(OURO.evo >= 4 ? "ee12" : "ee13", 0)})`),
+        desc: (gs)=>format(player.qu.points,0) + "<br>" + (hasUpgrade('br',8) ? player.qu.points.formatGain(tmp.qu.gain.div(10).mul(gs)) : tmp.qu.gain.gt(0) ? "(+"+format(tmp.qu.gain,0)+")" : `(requires ${formatMass(EVO.amt >= 4 ? "ee12" : "ee13", 0)})`),
 
         resetBtn() { QUANTUM.enter() },
     },
     ue: {
-        unl: ()=>OURO.evo >= 5,
+        unl: ()=>EVO.amt >= 5,
         icon: "evolution/universal_elixir",
         class: "light_green",
 
@@ -122,7 +122,7 @@ const RESOURCES_DIS = {
         resetBtn() { QUANTUM.enter() },
     },
     br: {
-        unl: ()=>OURO.evo < 5 && (OURO.evo >= 4 ? tmp.qu.mil_reached[9] : hasTree("unl4")),
+        unl: ()=>EVO.amt < 5 && (EVO.amt >= 4 ? tmp.qu.mil_reached[9] : hasTree("unl4")),
         icon: "br",
         class: "red",
 

@@ -1,7 +1,7 @@
 const STARS = {
-    unlocked() { return OURO.evo >= 3 ? OURO.evo < 4 : hasElement(36) },
+    unlocked() { return EVO.amt >= 3 ? EVO.amt < 4 : hasElement(36) },
     gain() {
-        if (OURO.evo >= 4) return E(0)
+        if (EVO.amt >= 4) return E(0)
 
         let x = player.stars.generators[0]
         if (hasMDUpg(8)) x = x.mul(mdEff(8))
@@ -12,7 +12,7 @@ const STARS = {
         if (hasElement(182)) x = x.pow(10)
         if (hasUpgrade('bh',17)) x = x.pow(upgEffect(2,17))
 
-        let os = E(OURO.evo >= 2?'eee7':'eee5'), op = E(0.5)
+        let os = E(EVO.amt >= 2?'eee7':'eee5'), op = E(0.5)
         if (hasUpgrade('atom',24)) os = expMult(os,2)
         
         let o = x
@@ -25,7 +25,7 @@ const STARS = {
         return x
     },
     softGain() {
-        if (hasUpgrade('atom',22) || OURO.evo >= 3) return EINF
+        if (hasUpgrade('atom',22) || EVO.amt >= 3) return EINF
         let s = E("e1000").pow(fermEff(1, 0))
         return s
     },
@@ -44,10 +44,10 @@ const STARS = {
 			,player.ranks.tetr.softcap(30000,0.15,0).mul(p).softcap(5,hasTree("s2")?1.5:5,1).softcap(9,0.3,0)
 			,(hasElement(69)?player.ranks.pent.mul(pp):E(0)).softcap(9,0.5,0)]
 		r = r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1)))
-		if (OURO.evo >= 2) r = r.softcap(1e40,3,3)
+		if (EVO.amt >= 2) r = r.softcap(1e40,3,3)
 		x = s.max(1).log10().add(1).pow(r)
 		x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("ee24",0.91,2)
-		if (tmp.qu.rip.in || OURO.evo >= 2) x = x.softcap('ee33',0.9,2)
+		if (tmp.qu.rip.in || EVO.amt >= 2) x = x.softcap('ee33',0.9,2)
         if (tmp.c16.in) x = E(1)
 
         return [x.min('ee70'), hasElement(162) ? this.expEffect() : E(1)]
@@ -68,7 +68,7 @@ const STARS = {
 		}
         if (tmp.c16.in) x = overflow(x,10,0.5)
 
-		x = x.overflow(OURO.evo >= 2 ? 'e1000' : 'e3000', 0.5)
+		x = x.overflow(EVO.amt >= 2 ? 'e1000' : 'e3000', 0.5)
 		return x
 	},
     generators: {

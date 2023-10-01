@@ -50,7 +50,7 @@ const FORMS = {
 
         if (tmp.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
 		if (tmp.atom.unl) {
-			if (OURO.evo < 2) x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
+			if (EVO.amt < 2) x = hasUpgrade('atom',18) ? x.pow(tmp.atom.particles[1].powerEffect.eff2) : x.mul(tmp.atom.particles[1].powerEffect.eff2)
 			x = hasElement(105) ? x.pow(tmp.atom.particles[0].powerEffect.eff1) : x.mul(tmp.atom.particles[0].powerEffect.eff1)
 		}
 
@@ -97,7 +97,7 @@ const FORMS = {
         if (hasElement(295)) x = x.pow(elemEffect(295))
 
         if (tmp.dark.run) x = expMult(x,mgEff(0))
-		if (OURO.evo < 2) {
+		if (EVO.amt < 2) {
 			let o = x
 			let os = tmp.c16.in ? E('ee5') : E('ee69').pow(tmp.chal.eff[15])
 			let op = E(.5)
@@ -226,7 +226,7 @@ const FORMS = {
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     massSoftGain6() {
-        if (player.ranks.hex.gte(48) || OURO.evo >= 2) return EINF
+        if (player.ranks.hex.gte(48) || EVO.amt >= 2) return EINF
         let s = mlt(1e22)
         s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s.max(1)
@@ -236,7 +236,7 @@ const FORMS = {
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     massSoftGain7() {
-        if (player.ranks.hex.gte(62) || OURO.evo >= 2) return EINF
+        if (player.ranks.hex.gte(62) || EVO.amt >= 2) return EINF
         let s = mlt(1e36)
         if (hasElement(159)) s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s.max(1)
@@ -247,7 +247,7 @@ const FORMS = {
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     massSoftGain8() {
-        if (player.ranks.hex.gte(157) || OURO.evo >= 2) return EINF
+        if (player.ranks.hex.gte(157) || EVO.amt >= 2) return EINF
         let s = E('ee63')
         if (hasElement(159)) s = s.pow(tmp.dark.abEff.msoftcap||1)
         return s.max(1)
@@ -258,12 +258,12 @@ const FORMS = {
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     rp: {
-        unl() { return OURO.evo >= 1 ? player.evo.cp.unl : tmp.rp.unl },
+        unl() { return EVO.amt >= 1 ? player.evo.cp.unl : tmp.rp.unl },
         gain() {
             if (player.mass.lt(1e14)) return E(0)
-            if (OURO.evo == 0 || OURO.evo >= 2) if (tmp.c16.in || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
+            if (EVO.amt == 0 || EVO.amt >= 2) if (tmp.c16.in || CHALS.inChal(7) || CHALS.inChal(10)) return E(0)
 
-            let gain = player.mass.div(1e14).root(3), evo = OURO.evo
+            let gain = player.mass.div(1e14).root(3), evo = EVO.amt
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
 			if (hasUpgrade("rp",5)) gain = gain.mul(2)
@@ -308,9 +308,9 @@ const FORMS = {
     },
     bh: {
         see() { return FORMS.rp.unl() },
-        unl() { return OURO.evo >= 2 ? player.evo.wh.unl : tmp.bh.unl },
+        unl() { return EVO.amt >= 2 ? player.evo.wh.unl : tmp.bh.unl },
         DM_gain() {
-            const evo = OURO.evo;
+            const evo = EVO.amt;
             if (tmp.c16.in) return player.dark.matters.amt[0]
 
             let gain = E(0)
@@ -460,7 +460,7 @@ const FORMS = {
             if (tmp.bh.dm_can) getResetConfirm("bh")
         },
         doReset() {
-            if (OURO.evo >= 1) resetEvolutionSave("bh")
+            if (EVO.amt >= 1) resetEvolutionSave("bh")
             else {
 				if (!hasInfUpgrade(18)) resetMainUpgs(1,[3,5,6])
 				player.rp.points = E(0)
@@ -495,9 +495,10 @@ function loop() {
     diff = Date.now()-date;
     player.offline.current = date
 
-    updateHTML()
     calc(diff/1000*devSpeed)
     date = Date.now()
+
+    updateHTML()
 }
 
 function format(ex, acc=2, type=player.options.notation) {
@@ -665,7 +666,7 @@ function formatGain(a,e,mass) {
     
         if (a.gte(1e100)) {
             const oom = g.div(a).log10().mul(FPS)
-            if (mass && oom.gte(1e9) && a.lt(MAX_ARVS)) return "(+" + formatARV(Decimal.pow(10,oom)) + "/s)"
+            if (mass && oom.gte(1e9) && a.lt(MAX_ARVS)) return "(+" + formatARV(pow10(oom)) + "/s)"
             if (oom.gte(1)) return "(+" + oom.format() + " OoMs/s)"
         }
     }

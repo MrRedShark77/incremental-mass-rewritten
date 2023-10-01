@@ -23,7 +23,7 @@ const ENTROPY = {
 
         x = x.pow(exoticAEff(0,2))
         if (tmp.inf_unl) x = x.pow(theoremEff('proto',4))
-        if (hasElement(185) || OURO.evo >= 4) x = overflow(x,tmp.qu.en.cap.max(10),0.25)
+        if (hasElement(185) || EVO.amt >= 4) x = overflow(x,tmp.qu.en.cap.max(10),0.25)
 
         return x
     },
@@ -87,7 +87,7 @@ const ENTROPY = {
 
             eff(i) {
                 let b = 3
-                if (OURO.evo >= 4) b--
+                if (EVO.amt >= 4) b--
                 if (hasElement(97)) b++
                 let x = Decimal.pow(b,i)
                 return x.overflow('ee5',0.5)
@@ -126,7 +126,7 @@ const ENTROPY = {
 
             eff(i) {
                 let x = i.root(2).div(10).add(1).pow(-1)
-                if (OURO.evo >= 2) x = x.max(.15)
+                if (EVO.amt >= 2) x = x.max(.15)
                 return x
             },
             desc(x) { return `All pre-Supernova, pre-Pent & pre-Meta scalings are <b>${formatReduction(x)}</b> weaker.` },
@@ -155,13 +155,13 @@ const ENTROPY = {
                 if (tmp.c16.in) return E(1)
 
 				let en_p = player.qu.en.amt.add(1).log10()
-				if (OURO.evo >= 4) {
+				if (EVO.amt >= 4) {
 					return en_p.div(tmp.qu.rip.in ? 15 : 10).add(1).pow(i.sqrt()).min(Number.MAX_VALUE)
 				} else {
 					return en_p.pow(0.75).mul(i).div(1500).add(1).overflow(50,0.5)
 				}
             },
-            desc(x) { return OURO.evo >= 4 ? `Protostars are increased by ${formatMult(x)}. (based on Entropy)` : `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.`.corrupt(tmp.c16.in) },
+            desc(x) { return EVO.amt >= 4 ? `Protostars are increased by ${formatMult(x)}. (based on Entropy)` : `Radiation effects are boosted by <b>^${x.format()}</b> based on Entropy.`.corrupt(tmp.c16.in) },
         },
     ],
     nextReward(i) {
@@ -208,7 +208,7 @@ const ENTROPY = {
 function getEnRewardEff(x,def=1) { return tmp.qu.en.rewards_eff[x] ?? E(def) }
 
 function calcEntropy(dt) {
-    let inf_gs = tmp.preInfGlobalSpeed.mul(dt), evo = OURO.evo
+    let inf_gs = tmp.preInfGlobalSpeed.mul(dt), evo = EVO.amt
 	let bh = evo >= 2 ? player.evo.wh.fabric : player.bh.mass
 	let hz = evo >= 4 ? player.evo.proto.dust : player.supernova.radiation.hz
 
@@ -250,7 +250,7 @@ function calcEntropy(dt) {
     }
 
     let a = player.qu.en.amt.add(tmp.qu.en.gain.amt.mul(inf_gs))
-    if (!hasElement(185) && OURO.evo < 4) a = a.min(tmp.qu.en.cap)
+    if (!hasElement(185) && EVO.amt < 4) a = a.min(tmp.qu.en.cap)
     player.qu.en.amt = a
 
     for (let x = 0; x < ENTROPY.rewards.length; x++) player.qu.en.rewards[x] = player.qu.en.rewards[x].max(tmp.qu.en.rewards[x])
@@ -263,7 +263,7 @@ function updateEntropyTemp() {
     if (hasElement(96)) rbr.push(3)
     if (hasElement(109)) rbr.push(0)
     if (hasElement(130)) rbr.push(5,7)
-    if (OURO.evo >= 4) rbr.push(3,6,7)
+    if (EVO.amt >= 4) rbr.push(3,6,7)
 
     ten.s_p = 1
     if (tmp.inf_unl) ten.s_p *= theoremEff('proto',2)
@@ -289,8 +289,8 @@ function updateEntropyTemp() {
 function updateEntropyHTML() {
     let inf_gs = tmp.preInfGlobalSpeed
 
-    tmp.el.enEva1.setTxt(OURO.evo >= 4 ? `You have ${format(player.evo.proto.dust)} Stardust` : `Your frequency is ${player.supernova.radiation.hz.format()} Hz`)
-    tmp.el.enEva2.setTxt(OURO.evo >= 2 ? format(player.evo.wh.fabric) + " Fabric" : formatMass(player.bh.mass) + " of Black Hole")
+    tmp.el.enEva1.setTxt(EVO.amt >= 4 ? `You have ${format(player.evo.proto.dust)} Stardust` : `Your frequency is ${player.supernova.radiation.hz.format()} Hz`)
+    tmp.el.enEva2.setTxt(EVO.amt >= 2 ? format(player.evo.wh.fabric) + " Fabric" : formatMass(player.bh.mass) + " of Black Hole")
 
     tmp.el.enAmt1.setTxt(player.qu.en.eth[2].format())
     tmp.el.enAmt2.setTxt(player.qu.en.amt.format(1) + " / " + tmp.qu.en.cap.format(1))

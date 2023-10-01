@@ -448,7 +448,7 @@ function getScalingStart(type, name) {
 			start = start.mul(exoticAEff(0,1))
 			if (hasAscension(1,4)) start = start.mul(2)
 			if (hasBeyondRank(14,1)) start = start.mul(beyondRankEffect(14,1))
-			if (OURO.evo >= 4) start = start.add(5e4)
+			if (EVO.amt >= 4) start = start.add(5e4)
 		} else if (name=="fTier") {
 			if (hasAscension(0,2)) start = start.pow(2)
 		}
@@ -505,8 +505,8 @@ function getScalingPower(type, name) {
 			if (hasElement(74)) power = power.mul(0.75)
 		} else if (name=="massUpg") {
 			if (hasUpgrade("rp",8)) power = power.mul(upgEffect(1,8))
-			if (hasCharger(7) && OURO.evo >= 2) power = power.mul(getEvo2Ch8Boost())
-			if (OURO.evo >= 2) power = power.mul(theoremEff("mass", 1))
+			if (hasCharger(7) && EVO.amt >= 2) power = power.mul(getEvo2Ch8Boost())
+			if (EVO.amt >= 2) power = power.mul(theoremEff("mass", 1))
 		} else if (name=='tickspeed') {
 			power = power.mul(tmp.chal?tmp.chal.eff[1].tick:1)
 		} else if (name=='bh_condenser') {
@@ -541,8 +541,8 @@ function getScalingPower(type, name) {
 			if (hasElement(37)) power = power.mul(elemEffect(37))
 		} else if (name=="massUpg") {
 			if (hasUpgrade("rp",8)) power = power.mul(upgEffect(1,8))
-			if (hasCharger(7) && OURO.evo >= 2) power = power.mul(getEvo2Ch8Boost())
-			if (OURO.evo >= 2) power = power.mul(theoremEff("mass", 1))
+			if (hasCharger(7) && EVO.amt >= 2) power = power.mul(getEvo2Ch8Boost())
+			if (EVO.amt >= 2) power = power.mul(theoremEff("mass", 1))
 		} else if (name=='tickspeed') {
 			if (hasUpgrade("bh",12)) power = power.mul(0.85)
 			if (hasElement(27)) power = power.mul(0.75)
@@ -623,7 +623,7 @@ function noScalings(type,name) {
 	if (hasElement(311) && ["tier", "pent", "hex"].includes(name)) return true
 	if (hasElement(313) && [2,3,4,5].includes(type)) return true
 
-	let e = OURO.evo
+	let e = EVO.amt
 	if (name=="rank") {
 		if (e >= 4 && type < 5) return true
 		else if (type<4 && hasPrestige(1,127)) return true

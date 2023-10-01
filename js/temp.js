@@ -22,6 +22,9 @@ function getTempData() {
         popup: [],
         saving: 0,
 
+        massFP: E(1),
+        build: {},
+
         prestiges: {
             req: [],
             bulk: [],
@@ -135,9 +138,7 @@ function getTempData() {
         scaling_qc8: [],
         no_scalings: {},
 
-        c16: {
-            shardGain: E(0),
-        },
+        c16: {},
 
         unstable_bh: {
             p: 1,
@@ -157,7 +158,7 @@ function getTempData() {
 
         inf_reached: false,
         inf_time: 0,
-        inf_limit: Decimal.pow(10,Number.MAX_VALUE),
+        inf_limit: pow10(Number.MAX_VALUE),
         iu_eff: [],
 
         core_chance: CORE_CHANCE_MIN,
@@ -179,10 +180,6 @@ function getTempData() {
             res_gain: [],
             res_effect: [],
         },
-
-        massFP: E(1),
-        build: {},
-        ouro: {},
     }
 
     for (let x in BUILDINGS_DATA) s.build[x] = {
@@ -243,20 +240,20 @@ function updateMassTemp() {
 }
 
 function updateTickspeedTemp() {
-    if (OURO.evo >= 1) return
+    if (EVO.amt >= 1) return
     tmp.tickspeedFP = hasCharger(4) && !hasElement(17,1) ? 1 : fermEff(1, 2)
 }
 
 function updateUpgradesTemp() {
     tmp.massFP = E(1);
-    if (hasElement(248) && OURO.evo < 2) tmp.massFP = tmp.massFP.mul(getEnRewardEff(0))
+    if (hasElement(248) && EVO.amt < 2) tmp.massFP = tmp.massFP.mul(getEnRewardEff(0))
     
     UPGS.main.temp()
 }
 
 function updateRagePowerTemp() {
     if (!tmp.rp) tmp.rp = {}
-    tmp.rp.unl = OURO.evo < 1 && player.rp.unl
+    tmp.rp.unl = EVO.amt < 1 && player.rp.unl
     tmp.rp.gain = FORMS.rp.gain()
     tmp.rp.can = tmp.rp.gain.gte(1)
 }
@@ -289,7 +286,7 @@ function updateBlackHoleTemp() {
 function updateTemp() {
     updateTabTemp()
 
-    const evo = OURO.evo
+    const evo = EVO.amt
 
     tmp.offlineActive = player.offline.time > 1
     tmp.offlineMult = tmp.offlineActive?player.offline.time+1:1
@@ -311,7 +308,7 @@ function updateTemp() {
     tmp.moreUpgs = hasElement(192)
     tmp.mass4Unl = hasElement(202)
     tmp.brUnl = hasElement(208)
-    tmp.epUnl = hasCharger(5) && OURO.evo >= 3
+    tmp.epUnl = hasCharger(5) && EVO.amt >= 3
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.tfUnl = hasElement(230)
     tmp.c18reward = player.chal.comps[18].gte(4)

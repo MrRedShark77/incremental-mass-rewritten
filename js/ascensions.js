@@ -67,12 +67,12 @@ const ASCENSIONS = {
         ()=>tmp.c18reward,
     ],
     noReset: [
-        ()=>OURO.evo >= 1||hasElement(267),
-        ()=>OURO.evo >= 1,
+        ()=>EVO.amt >= 1||hasElement(267),
+        ()=>EVO.amt >= 1,
     ],
     autoUnl: [
-        ()=>OURO.evo >= 1||hasElement(267),
-        ()=>OURO.evo >= 1,
+        ()=>EVO.amt >= 1||hasElement(267),
+        ()=>EVO.amt >= 1,
     ],
     rewards: [
         {
@@ -119,8 +119,6 @@ const ASCENSIONS = {
                 for (let j = i-1; j >= 0; j--) player.ascensions[j] = E(0)
                 INF.doReset()
             }
-
-            updateRanksTemp()
         }
     },
 }
@@ -183,7 +181,7 @@ function updateAscensionsHTML() {
 }
 
 function updateAscensionsTemp() {
-    tmp.asc.unl = OURO.evo > 1 ? hasInfUpgrade(16) : player.chal.comps[17].gte(4)
+    tmp.asc.unl = EVO.amt > 1 ? hasInfUpgrade(16) : player.chal.comps[17].gte(4)
     tmp.asc.tierExp = ASCENSIONS.tierExponent()
     tmp.asc.baseMul = ASCENSIONS.base()
     tmp.asc.baseExp = ASCENSIONS.baseExponent()

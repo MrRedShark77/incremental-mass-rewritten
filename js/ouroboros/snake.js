@@ -165,7 +165,7 @@ function snakeMove(s, you) {
 function snakeStep() {
 	// Snakes
 	let s = snake
-	if (Math.random() < 0.1 && OURO.evo >= 3 && s.snakes.length < 3) {
+	if (Math.random() < 0.1 && EVO.amt >= 3 && s.snakes.length < 3) {
 		let even = Math.random() > 0.5
 		s.snakes.push({
 			bodies: [[{ x: even ? -8 : 7, y: 0 }, "1h"]],
@@ -241,13 +241,13 @@ function spawnApples() {
 	let berry = Math.random() < 1/3, luck = 1 / Math.random(), rot = Math.randomInt(0,4)
 	for (var i = 1; i <= len; i++) {
 		let type = "apple", tier
-		if (OURO.evo >= 2 && Math.random() < (hasElement(81, 1) ? 1/25 : 1/50)) {
+		if (EVO.amt >= 2 && Math.random() < (hasElement(81, 1) ? 1/25 : 1/50)) {
 			let POWERUPS = getPowerups()
 			let powerup = POWERUPS[Math.randomInt(0, POWERUPS.length)]
 			type = "powerup"
 			tier = powerup
 		} else if (berry && type != "powerup") {
-			type = OURO.evo >= 4 && Math.random() < .5 ? "starfruit" : "berry"
+			type = EVO.amt >= 4 && Math.random() < .5 ? "starfruit" : "berry"
 		}
 		else tier = rollAppleTier(luck) //Elund - Green Apples
 
@@ -259,7 +259,7 @@ function spawnApples() {
 
 function rollAppleTier(luck = 1) {
 	let r = E(Math.random()).div(luck).log(1 / (hasZodiacUpg("taurus", "u6") ? zodiacEff("taurus", "u6", 10) : 10)).max(0).add(1).floor()
-	return r.min(OURO.evo >= 2 ? 3 + OURO.evo : 2)
+	return r.min(EVO.amt >= 2 ? 3 + EVO.amt : 2)
 }
 
 function drawSnake() {
@@ -351,7 +351,7 @@ function recordMovement(i) {
 }
 
 function boomUnl() {
-	return OURO.evo >= 2 && !hasElement(97, 1)
+	return EVO.amt >= 2 && !hasElement(97, 1)
 }
 
 function boomSnake(auto) {
@@ -463,7 +463,7 @@ function getPowerups() {
 	if (hasElement(92, 1) && boomUnl()) POWERUPS.push("boom")
 	if (!hasElement(95, 1)) POWERUPS.push("frenzy")
 	if (!hasElement(97, 1)) POWERUPS.push("combo")
-	if (OURO.evo >= 4) POWERUPS.push("align")
+	if (EVO.amt >= 4) POWERUPS.push("align")
 	return POWERUPS
 }
 
@@ -501,12 +501,12 @@ function appleGain() {
 	if (hasElement(82,1)) x = x.pow(2)
 	if (hasElement(68,1)) x = x.mul(muElemEff(68)[0])
 	if (hasElement(71,1)) x = x.mul(2)
-	if (OURO.evo >= 2 && hasElement(59)) x = x.mul(10)
+	if (EVO.amt >= 2 && hasElement(59)) x = x.mul(10)
 	return x.pow(appleGainExp()).round()
 }
 
 function berryGain() {
-	let x = E(300).pow(OURO.evo - 1)
+	let x = E(300).pow(EVO.amt - 1)
 	if (hasElement(68,1)) x = x.mul(muElemEff(68)[1])
 	if (hasElement(71,1)) x = x.mul(2)
 	if (hasZodiacUpg('aries','u4')) x = x.mul(zodiacEff('aries','u4'))
@@ -514,10 +514,10 @@ function berryGain() {
 }
 
 function appleEffects() {
-	let a = player.ouro.apple, eff = {}, evo = OURO.evo
+	let a = player.ouro.apple, eff = {}, evo = EVO.amt
 	if (QCs.active()) a = a.mul(tmp.qu.qc.eff[8])
 
-	eff.mass = [QCs.active() && OURO.evo >= 4 ? E(1) : expMult(a.div(10).add(1), a.div(100).add(1).log10().add(1)), a.div(1e8).add(1).pow(2)]
+	eff.mass = [QCs.active() && EVO.amt >= 4 ? E(1) : expMult(a.div(10).add(1), a.div(100).add(1).log10().add(1)), a.div(1e8).add(1).pow(2)]
 	eff.cp = a.div(10).add(1).pow(hasElement(90,1)?.7:hasElement(76,1)?.6:.5)
 	if (player.atom.unl) eff.cp_lvl = a.add(1).pow(hasElement(90,1)?.25:.1)
 

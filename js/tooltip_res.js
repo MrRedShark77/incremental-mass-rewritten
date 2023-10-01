@@ -28,7 +28,7 @@ const TOOLTIP_RES = {
     dm: {
         full: "Dark Matter",
         desc() {
-            let r = OURO.evo >= 1 ? `<b>${format(5e3)}</b> Calm Power` : `<b>${format(1e25)}</b> Rage Power`
+            let r = EVO.amt >= 1 ? `<b>${format(5e3)}</b> Calm Power` : `<b>${format(1e25)}</b> Rage Power`
             return `<i>Reach over ${r} to reset all previous features for gain Dark Matters.</i>`
         },
     },
@@ -41,7 +41,7 @@ const TOOLTIP_RES = {
     bh: {
         full: "Black Hole",
         desc() {
-            if (OURO.evo >= 2) return ``
+            if (EVO.amt >= 2) return ``
 
             let h = `You have <b>${formatMass(player.bh.mass)}</b> of black hole.`;
 
@@ -63,7 +63,7 @@ const TOOLTIP_RES = {
     atom: {
         full: "Atom",
         desc() {
-            let r = OURO.evo >= 2 ? `<b>${format(300,0)}</b> Fabric` : `<b>${formatMass(uni(1e100))}</b> of black hole`
+            let r = EVO.amt >= 2 ? `<b>${format(300,0)}</b> Fabric` : `<b>${formatMass(uni(1e100))}</b> of black hole`
 
             return `<i>Reach over ${r} to reset all previous features for gain Atoms & Quarks.</i>`
         },
@@ -132,9 +132,9 @@ const TOOLTIP_RES = {
         full: "Quantum Foam",
         desc() {
             let h = `<i>
-            Reach over <b>${formatMass(mlt(OURO.evo>=4 ? 1e3 : 1e4))}</b> of normal mass to ${QCs.active()?"complete Quantum Challenge":"go Quantum"}.
+            Reach over <b>${formatMass(mlt(EVO.amt>=4 ? 1e3 : 1e4))}</b> of normal mass to ${QCs.active()?"complete Quantum Challenge":"go Quantum"}.
             </i>`
-            if (OURO.evo >= 4) h += `<br><b class='snake'>Constellation features stay until next Ouroboric.</b>`
+            if (EVO.amt >= 4) h += `<br><b class='snake'>Constellation features stay until next Ouroboric.</b>`
 
             return h
         },
@@ -152,8 +152,8 @@ const TOOLTIP_RES = {
             let h = `<i>
             ${player.qu.rip.active ? "Our dimension is Big Ripped. Click to undo." : "Big Rip the Dimension."} (Force a Quantum reset)
             <br><br>
-            While in Big Rip, some Entropic Rewards don't work, all Primordium effects are 50% weaker${OURO.evo >= 4 ? "" : "except for Epsilon Particles, which don't work, [qu2] and [qu10] don't work"}, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.</i>`
-			if (OURO.evo == 3) h += "<br class='line'>For this evolution, you can't get Nebulae and buy Protostar Elements!"
+            While in Big Rip, some Entropic Rewards don't work, all Primordium effects are 50% weaker${EVO.amt >= 4 ? "" : "except for Epsilon Particles, which don't work, [qu2] and [qu10] don't work"}, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.</i>`
+			if (EVO.amt == 3) h += "<br class='line'>For this evolution, you can't get Nebulae and buy Protostar Elements!"
 			return h
         },
     },
@@ -203,7 +203,7 @@ const TOOLTIP_RES = {
         full: "Corrupted Shard",
         desc() {
             let h = `
-            Your best ${ OURO.evo >= 2 ? "Wormhole" : "mass of black hole" } in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
+            Your best ${ EVO.amt >= 2 ? "Wormhole" : "mass of black hole" } in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
 			<br class='line'>
             ${ player.chal.active == 16 ? "Exit the 16th Challenge." : "Start the 16th Challenge." } (Force a FSS reset!)<br>	
             ${CHALS[16].desc}`

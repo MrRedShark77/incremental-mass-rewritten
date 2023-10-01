@@ -2,11 +2,11 @@ const MUONIC_ELEM = {
     upgs: [
         null,
         {
-            get desc() { return OURO.evo >= 2 ? `Anti-Wormhole boosts Pion gain.` : `Mass of unstable black hole boosts Pion gain.` },
+            get desc() { return EVO.amt >= 2 ? `Anti-Wormhole boosts Pion gain.` : `Mass of unstable black hole boosts Pion gain.` },
             cost: E(1000),
             eff() {
-                if (OURO.evo >= 2) return player.evo.wh.mass[6].div(1e4).add(1).root(OURO.evo >= 3 ? 3 : 1)
-                if (OURO.evo < 2) return player.bh.unstable.add(1).root(2)
+                if (EVO.amt >= 2) return player.evo.wh.mass[6].div(1e4).add(1).root(EVO.amt >= 3 ? 3 : 1)
+                if (EVO.amt < 2) return player.bh.unstable.add(1).root(2)
             },
             effDesc: x=>formatMult(x),
         },{
@@ -40,14 +40,14 @@ const MUONIC_ELEM = {
             desc: `You can now automatically earn Cyrillic, Deutsch, and Swedish glyphs outside Dark Run, and they don’t affect dark run’s nerf.`,
             cost: E(1e23),
         },{
-            get desc() { return OURO.evo >= 2 ? `Stronger boosts after overflow.` : `C9’s effect softcap is 1% weaker.` },
-            get cost() { return E(OURO.evo >= 4 ? 1e25 : OURO.evo >= 2 ? 1e29 : 1e32) },
+            get desc() { return EVO.amt >= 2 ? `Stronger boosts after overflow.` : `C9’s effect softcap is 1% weaker.` },
+            get cost() { return E(EVO.amt >= 4 ? 1e25 : EVO.amt >= 2 ? 1e29 : 1e32) },
         },{
             desc: `Remove the softcap of dark shadow’s fourth reward. Supernovas boost Pion gain.`,
             cost: E(1e42),
             eff() {
                 if (!tmp.sn.unl) return E(1)
-                return OURO.evo >= 2 ? player.supernova.times.div(1e5).add(1).pow(2) : player.supernova.times.div(1e6).add(1)
+                return EVO.amt >= 2 ? player.supernova.times.div(1e5).add(1).pow(2) : player.supernova.times.div(1e6).add(1)
             },
             effDesc: x=>formatMult(x),
         },{
@@ -64,15 +64,15 @@ const MUONIC_ELEM = {
             cost: E(1e81),
         },{
             desc: `Final Star Shards increase Matter formula.`,
-            get cost() { return OURO.evo >= 2 ? E(1e90) : E(1e100) },
+            get cost() { return EVO.amt >= 2 ? E(1e90) : E(1e100) },
             eff() {
                 let x = player.dark.matters.final.root(2).div(5)
                 return x
             },
             effDesc: x=>"+"+format(x),
         },{
-            get desc() { return OURO.evo >= 2 ? "Greatly improve FSS base formula." : `C15's reward affects mass overflow^2 starting.` },
-            get cost() { return OURO.evo >= 2 ? E(1e95) : E(1e111) },
+            get desc() { return EVO.amt >= 2 ? "Greatly improve FSS base formula." : `C15's reward affects mass overflow^2 starting.` },
+            get cost() { return EVO.amt >= 2 ? E(1e95) : E(1e111) },
             eff() {
                 if (!tmp.chal) return E(1)
                 let x = hasElement(26,1)?tmp.chal.eff[15].root(2):overflow(tmp.chal.eff[15],10,0.5).pow(2)
@@ -86,15 +86,15 @@ const MUONIC_ELEM = {
             desc: `Quantum times boost infinity points gain. De-nullify [Tau]’s effect, but its formula is changed.`,
             cost: E(1e150),
             eff() {
-                let x = player.qu.times.add(1).log10().add(1).pow(OURO.evo >= 2 ? 2 : 1)
+                let x = player.qu.times.add(1).log10().add(1).pow(EVO.amt >= 2 ? 2 : 1)
                 return x
             },
             effDesc: x=>formatMult(x),
         },{
-            get desc() { return OURO.evo >= 2 ? `Raise Dark Shadows by ^1.5.` : `Accelerators raise the Argon-18's effect at an extremely reduced rate (after first overflow).`},
-            get cost() { return OURO.evo >= 2 ? E(1e160) : E(1e170) },
+            get desc() { return EVO.amt >= 2 ? `Raise Dark Shadows by ^1.5.` : `Accelerators raise the Argon-18's effect at an extremely reduced rate (after first overflow).`},
+            get cost() { return EVO.amt >= 2 ? E(1e160) : E(1e170) },
             eff: () => player.build.accelerator.amt.add(10).log10(),
-            effDesc: x => OURO.evo < 2 ? formatPow(x) : undefined,
+            effDesc: x => EVO.amt < 2 ? formatPow(x) : undefined,
         },{
             desc: `Atomic power’s free tickspeeds now append to cosmic strings at a logarithmic rate.`,
             cost: E(1e270),
@@ -142,7 +142,7 @@ const MUONIC_ELEM = {
             desc: `Prestige Base multiplies stronger overflow^1-2 starting.`,
             cost: E('e1050'),
             eff() {
-				if (OURO.evo >= 4) return tmp.prestiges.base.max(1).log10().div(1e5).max(1).pow(100)
+				if (EVO.amt >= 4) return tmp.prestiges.base.max(1).log10().div(1e5).max(1).pow(100)
                 return overflow(tmp.prestiges.base.add(1),1e10,.5,2)
             },
             effDesc: x=>formatMult(x)+" later",
@@ -196,7 +196,7 @@ const MUONIC_ELEM = {
             cost: E('e56'),
         },{
             desc: `Pion’s first reward now provides an exponential boost.`,
-            get cost() { return OURO.evo >= 2 ? E('e4000') : E('e7300') },
+            get cost() { return EVO.amt >= 2 ? E('e4000') : E('e7300') },
         },{
             cs: true,
             desc: `Collapsed Stars boost starting of the growth reductions of corrupted stars.`,
@@ -214,7 +214,7 @@ const MUONIC_ELEM = {
             cost: E('e110'),
         },{
             desc: `Double corrupted star’s speed per infinity theorem.`,
-            get cost() { return OURO.evo >= 2 ? E('e4500') : E('e8100') },
+            get cost() { return EVO.amt >= 2 ? E('e4500') : E('e8100') },
             eff() {
                 if (!tmp.inf_unl) return E(1)
                 return E(2).pow(player.inf.theorem)
@@ -226,7 +226,7 @@ const MUONIC_ELEM = {
             cost: E('e130'),
         },{
             desc: `The exponent of ascension base is increased by Renown at a reduced rate.`,
-            get cost() { return OURO.evo >= 2 ? E('e4700') : E('e8600') },
+            get cost() { return EVO.amt >= 2 ? E('e4700') : E('e8600') },
             eff() {
                 let x = player.prestiges[3].root(2).div(100)
                 return x
@@ -234,10 +234,10 @@ const MUONIC_ELEM = {
             effDesc: x=>"+^"+format(x),
         },{
             desc: `Quark overflow is 25% weaker.`,
-            get cost() { return OURO.evo >= 2 ? E('e4900') : E('e9200') },
+            get cost() { return EVO.amt >= 2 ? E('e4900') : E('e9200') },
         },{
             desc: `Boost Supernova Generation based on beyond-ranks' maximum tier.`,
-            get cost() { return OURO.evo >= 2 ? E('e5250') : E('e12100') },
+            get cost() { return EVO.amt >= 2 ? E('e5250') : E('e12100') },
             eff: () => Decimal.pow(2.5,tmp.beyond_ranks.max_tier),
             effDesc: x=>formatMult(x),
         },{
@@ -250,8 +250,8 @@ const MUONIC_ELEM = {
             },
             effDesc: x=>formatMult(x),
         },{
-            get desc() { return OURO.evo >= 2 ? `Infinity Theorems raise Pions and Kaons, and boost its reward strength.` : `Hawking Theorem’s fifth star now affects black hole’s effect.` },
-            get cost() { return OURO.evo >= 2 ? E('e5460') : E('e14900') },
+            get desc() { return EVO.amt >= 2 ? `Infinity Theorems raise Pions and Kaons, and boost its reward strength.` : `Hawking Theorem’s fifth star now affects black hole’s effect.` },
+            get cost() { return EVO.amt >= 2 ? E('e5460') : E('e14900') },
         },{
             desc: `Pre-Infinity global speed now affects supernova generation.`,
             cost: E('e15900'),
@@ -283,17 +283,17 @@ const MUONIC_ELEM = {
             cost: E('e23400'),
         },{
             cs: true,
-            get desc() { return `${OURO.evo >= 4 ? "Stardust" : "Supernova"} cheapens Corrupted Star upgrades.` },
+            get desc() { return `${EVO.amt >= 4 ? "Stardust" : "Supernova"} cheapens Corrupted Star upgrades.` },
             cost: E('e440'),
             eff() {
                 let x = E(1)
-				if (OURO.evo >= 4) x = player.evo.proto.dust.add(1)
+				if (EVO.amt >= 4) x = player.evo.proto.dust.add(1)
 				else if (tmp.sn.unl) x = player.supernova.times.add(1)
 
                 if (hasElement(61,1)) x = x.pow(muElemEff(61))
                 return x
             },
-            effDesc: x=>OURO.evo>=4?undefined:"/"+format(x),
+            effDesc: x=>EVO.amt>=4?undefined:"/"+format(x),
         },{
             cs: true,
             desc: `Unlock the sixth star generator.`,
@@ -309,8 +309,8 @@ const MUONIC_ELEM = {
             cost: E('e35000'),
         },{
             cs: true,
-            get desc() { return OURO.evo >= 4 ? `Unlock Theorem Stars 6 - 7.` : `Unlock sixth star in the theorem.` },
-            get cost() { return E(OURO.evo >= 4 ? 'e700' : OURO.evo >= 2 ? 'e780' : 'e840') },
+            get desc() { return EVO.amt >= 4 ? `Unlock Theorem Stars 6 - 7.` : `Unlock sixth star in the theorem.` },
+            get cost() { return E(EVO.amt >= 4 ? 'e700' : EVO.amt >= 2 ? 'e780' : 'e840') },
         },{
             desc: `Muonic Arsenic-33 is even better.`,
             cost: E('e91000'),
@@ -354,7 +354,7 @@ const MUONIC_ELEM = {
             desc: `Calm Power boosts Apples & Strawberries.`,
             cost: E(50),
             eff() {
-                let x = OURO.evo >= 1 ? player.evo.cp.best.add(1).log10().add(1) : E(1)
+                let x = EVO.amt >= 1 ? player.evo.cp.best.add(1).log10().add(1) : E(1)
                 let y = x.root(2)
                 return [x, y]
             },
@@ -381,7 +381,7 @@ const MUONIC_ELEM = {
             berry: true,
             desc: `Improve 3rd Meditation effect base.`,
             cost: E(500),
-            eff: () => OURO.evo >= 1 ? player.evo.cp.level.div(1e7).add(1).sqrt() : E(1),
+            eff: () => EVO.amt >= 1 ? player.evo.cp.level.div(1e7).add(1).sqrt() : E(1),
             effDesc: x=>formatMult(x),
         },{
             berry: true,
@@ -490,7 +490,7 @@ const MUONIC_ELEM = {
     getUnlLength() {
         let u = 11
 
-        if (OURO.unl()) u = [66,76,82,88,94,98,104][OURO.evo]
+        if (OURO.unl()) u = [66,76,82,88,94,98,104][EVO.amt]
         else {
             if (tmp.inf_unl) u += 4
             if (hasInfUpgrade(9)) u += 3
@@ -580,13 +580,13 @@ const EXOTIC_ATOM = {
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
         if (hasPrestige(1,247)) x = x.mul(prestigeEff(1,247))
         if (hasElement(1,1) && hasElement(30,1)) x = x.mul(muElemEff(1))
-        if (OURO.evo >= 2 && hasElement(48, 1)) x = x.pow(player.inf.theorem.add(1).log10().add(1.5))
+        if (EVO.amt >= 2 && hasElement(48, 1)) x = x.pow(player.inf.theorem.add(1).log10().add(1.5))
 
         let y = xy.div(5)
         if (hasElement(1,1)) y = y.mul(muElemEff(1))
         if (hasElement(9,1)) y = y.mul(muElemEff(9))
         if (hasElement(12,1)&&hasPrestige(1,247)) y = y.mul(prestigeEff(1,247))
-        if (OURO.evo >= 2 && hasElement(48, 1)) y = y.pow(player.inf.theorem.add(1).log10().add(1.5))
+        if (EVO.amt >= 2 && hasElement(48, 1)) y = y.pow(player.inf.theorem.add(1).log10().add(1.5))
 
         if (hasPrestige(1,510)) [x,y] = [x.pow(1.1),y.pow(1.1)]
         return [x,y]
@@ -650,7 +650,7 @@ const EXOTIC_ATOM = {
 
 function updateExoticAtomsTemp() {
     let tea = tmp.ea, t = player.dark.exotic_atom.tier
-    tea.unl = hasCharger(5) && OURO.evo < 3
+    tea.unl = hasCharger(5) && EVO.amt < 3
 
     for (let i = 1; i <= tmp.elements.unl_length[1]; i++) {
         let u = MUONIC_ELEM.upgs[i]
@@ -662,7 +662,7 @@ function updateExoticAtomsTemp() {
 
     tea.req_fp = fp
     tea.req = EXOTIC_ATOM.req()
-    tea.amount = OURO.evo >= 3 ? player.evo.proto.exotic_atoms : EXOTIC_ATOM.getAmount()
+    tea.amount = EVO.amt >= 3 ? player.evo.proto.exotic_atoms : EXOTIC_ATOM.getAmount()
     tea.gain = EXOTIC_ATOM.gain()
 
     let s = Decimal.add(1,Math.max(t.sub(12),0)*0.1)
