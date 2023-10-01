@@ -5,7 +5,7 @@ const TABS_DATA = {
     'star'  : { name: "Stars", style: "sn" },
     'bp'    : { name: "Indescribable Matter", style: "qu" },
     'tp'    : { name: "The Parallel", style: "inf" },
-    'snake' : { name: "The Snake", style: "snake" },
+    'snake' : { name: "The Snake", style: "snake", snake: true },
 
     'rank-reward': { name: "Ranks Rewards" },
     'scaling'    : { name: "Scaling" },
@@ -45,10 +45,9 @@ const TABS_DATA = {
     'c-star'  : { name: "Corrupted Star" },
 
     'options' : { name: "Options" },
-    'res-hide': { name: "Resource Hider" },
 
     "wh"           : { name: "Wormhole", style: "bh" },
-    "proto"        : { name: "Protostar", style: "space" },
+    "proto"        : { name: "Protostar", style: "atom" },
     "constellation": { name: "Constellation", style: "sn" },
     "cosmo"        : { name: "Cosmic", style: "qu" },
 }
@@ -64,14 +63,14 @@ function chooseTab(x, stab=false) {
 }
 
 function updateTabTemp() {
-    let s = TABS[tmp.tab].stab
+	tmp.tab_name = ""
+	tmp.inSnake = false
 
+    let s = TABS[tmp.tab].stab
     if (s) {
         let t = s[tmp.stab[tmp.tab]]
-
         tmp.tab_name = Array.isArray(t) ? t[0] : t
-    } else {
-        tmp.tab_name = ""
+	    tmp.inSnake = TABS_DATA[tmp.tab_name].snake ?? false
     }
 }
 
@@ -91,23 +90,23 @@ const TABS = [
         ['main-upg', () => tmp.upgs.unl],
         ['elements', null, () => [1,2].includes(OURO.evo)],
     ] },
-    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl || OURO.evo==4 && player.qu.times.gte(200) }, stab: [
+    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
         ['chal', () => player.chal.unl],
-        ['qc', () => hasTree("unl3") || OURO.evo==4 && player.qu.times.gte(200), ()=>OURO.evo<5],
+        ['qc', () => hasTree("unl3") || OURO.evo == 4 && player.qu.times.gte(200), ()=>OURO.evo<5],
     ] },
     { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && OURO.evo < 3 }, style: "atom", stab: [
         'particles',
-        ['elements', () => player.chal.comps[7].gte(16) || tmp.sn.unl, () => OURO.evo < 1],
+        ['elements', () => player.chal.comps[7].gte(1) || tmp.sn.unl, () => OURO.evo < 1],
         ['dil', () => MASS_DILATION.unlocked()],
         ['break-dil', () => hasUpgrade("br",9)],
-        ['ext-atom', () => tmp.eaUnl],
+        ['ext-atom', () => tmp.ea.unl],
     ] },
     { name: "Space", icon: "bx:planet", color: "space", unl() { return OURO.evo >= 3 }, style: "space", stab: [
         'wh',
         'proto',
         ['star', null, () => tmp.star_unl],
         ['constellation', null, () => OURO.evo >= 4],
-        ['cosmo', () => OURO.evo >= 5]
+        ['cosmo', () => player.evo.cosmo.unl]
     ] },
     { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return tmp.sn.unl }, style: "sn", stab: [
         'sn-tree',
@@ -115,7 +114,7 @@ const TABS = [
         ['ferm', () => player.supernova.fermions.unl],
         ['rad', () => hasTree("unl1")],
     ] },
-    { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() && OURO.evo < 5 }, style: "qu", stab: [
+    { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu", stab: [
         'chroma',
         ['bp', null, () => OURO.evo >= 3 ],
         ['prim', () => PRIM.unl()],
@@ -134,17 +133,16 @@ const TABS = [
         'core-eff',
         'inf-upgs',
         ['tp', () => hasInfUpgrade(9), () => OURO.evo > 0],
-        ['c-star', () => tmp.CS_unl],
+        ['c-star', () => tmp.cs.unl],
     ] },
     { name: "Stats", icon: "material-symbols:query-stats", unl() { return player.quotes.includes(1) }, stab: [
         'rank-reward',
         ['scaling', () => tmp.scaling.super?.length>0],
         ['pres-reward', () => hasUpgrade("br",9)],
-        ['asc-reward', () => tmp.ascensions_unl],
+        ['asc-reward', () => tmp.asc.unl],
     ] },
     { name: "Options", icon: "mdi:gear", unl() { return player.quotes.includes(1) }, stab: [
         'options',
-        'res-hide',
     ] },
 ]
 
@@ -252,7 +250,7 @@ const PINS = {
 	},
 	go(i) {
 		i = player.options.pins[i]
-		if (!goToTab(i)) createConfirm("This tab might be locked or removed! Do you want to remove?",'cantGo',_=>PINS.pin(i))
+		if (!goToTab(i)) createConfirm("This tab might be locked or removed! Do you want to remove?",'cantGo',()=>PINS.pin(i))
 	},
 
 	open_menu() {
@@ -269,7 +267,7 @@ const PINS = {
 	},
 	update() {
 		tmp.el["nav_pin_hider"].setDisplay(player.options.pins.length > 0 && isPreferred("pin"))
-		tmp.el["pin_btn"].setDisplay(isPreferred("pin"))
+		tmp.el["pin_btn"].setDisplay(player.quotes.includes(1) && isPreferred("pin"))
 		tmp.el["pin_btn"].setTxt(player.options.pins.includes(tmp.tab_name) ? "Unpin" : "Pin")
 		tmp.el["pins_stabs"].setDisplay(player.options.nav_hide[2])
 		if (!player.options.nav_hide[2]) return

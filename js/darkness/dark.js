@@ -7,7 +7,7 @@ const DARK = {
     gain() {
         let x = E(1)
 
-        x = x.mul(tmp.dark.shadowEff.ray).mul(appleEffect('dark'))
+        x = x.mul(tmp.dark.shadowEff.ray)
         if (tmp.chal) x = x.mul(tmp.chal.eff[13])
         if (player.ranks.hex.gte(4)) x = x.mul(RANKS.effect.hex[4]())
         if (hasElement(141)) x = x.mul(10)
@@ -21,8 +21,9 @@ const DARK = {
 
         if (hasUpgrade('br',20)) x = x.mul(upgEffect(4,20))
         if (hasUpgrade('rp',21)) x = x.mul(upgEffect(1,21))
-
+        x = x.mul(escrowBoost('dark'))
         x = x.pow(nebulaEff('orange'))
+        if (tmp.inf_unl && OURO.evo >= 4) x = x.pow(theoremEff('time',2))
 
         return x.floor()
     },
@@ -33,20 +34,18 @@ const DARK = {
         x.shadow = a.max(1).pow(2).pow(tmp.c16.in?1:fermEff(0, 6))
 		x.shadow = x.shadow.overflow('ee10',0.5)
 
-        if (a.gte(1e9)) x.passive = a.div(1e9).max(1).log10().add(1).pow(3).div(100)
+        if (a.gte(1e9)) x.passive = a.div(1e9).max(1).log10().add(1).pow(2).div(100)
         if (a.gte(1e22)) x.glyph = a.div(1e22).max(1).log10().add(1).root(2).sub(1).div(10).add(1)
         if (a.gte(1e130)) x.dChal = a.div(1e130).max(1).log10().mul(20).softcap(100,0.5,0,hasBeyondRank(3,12)).floor()
 
         return x
     },
     reset(force=false) {
-        if (hasElement(118)||force) {
-            if (force) this.doReset()
-            else if (player.confirms.dark) createConfirm("Are you sure you want to raise dark?",'dark',CONFIRMS_FUNCTION.dark)
-            else CONFIRMS_FUNCTION.dark()
-        }
+        if (hasElement(118)||force) getResetConfirm("dark")
     },
     doReset(force=false) {
+		if (OURO.evo >= 5) resetEvolutionSave("dark")
+
         let qu = player.qu
         let quSave = getQUSave()
 
@@ -76,7 +75,7 @@ const DARK = {
 			for (let x = 0; x < 10; x++) bmd.upgs[x] = E(0)
 		}
    
-        if (!hasElement(124)) {
+        if (!hasElement(124) && tmp.sn.unl) {
             let qk = ["qu_qol1", "qu_qol2", "qu_qol3", "qu_qol4", "qu_qol5", "qu_qol6", "qu_qol7", "qu_qol8", "qu_qol9", "qu_qol8a", "unl1", "unl2", "unl3", "unl4",
             "qol1", "qol2", "qol3", "qol4", "qol5", "qol6", "qol7", "qol8", "qol9", 'qu_qol10', 'qu_qol11']
 
@@ -87,7 +86,7 @@ const DARK = {
 
         if (!hasElement(194)) for (let x = 0; x < player.prestiges.length; x++) player.prestiges[x] = E(0)
 
-		if (!hasElement(161) && OURO.evo < 4) {
+		if (!hasElement(161)) {
 			let ke = []
 			let noReset = hasElement(143)
 			for (let e of unchunkify(player.atom.elements)) {
@@ -98,7 +97,7 @@ const DARK = {
 
         QUANTUM.doReset(true,true)
 
-        if (!hasElement(127)) tmp.rank_tab = 0
+        if (!hasElement(127)) tmp.ranks.tab = 0
         if (tmp.tab_name == "break-dil" && !hasElement(127)) tmp.stab[4] = 0
     },
     shadowGain() {
@@ -118,15 +117,17 @@ const DARK = {
         return x
     },
     shadowEff() {
-        let x = {}
-        let a = player.dark.shadow
+        let x = {}, a = player.dark.shadow
 
         x.ray = hasElement(296) ? expMult(a.add(1),0.5) : hasElement(143) ? a.add(1).log2().add(1).pow(1.5) : a.add(1).log10().add(1)
         x.mass = hasCharger(4) ? overflow(a.add(1),10,0.25) : a.add(1).log10().add(1).root(2)
 
-        if (a.gte(1e6)) x.bp = a.div(1e6).pow(10).overflow('e1e8',0.5,0)
-        if (a.gte(1e11)) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
-        if (a.gte(1e25)) x.en = a.div(1e25).pow(3).overflow('ee10',1/3)
+        if (a.gte(1e6)) x.bp = a.div(1e6).pow(10).overflow('ee8',0.5,0)
+        if (a.gte(1e11) && OURO.evo < 4) x.sn = a.div(1e11).add(1).log10().div(10).add(1).softcap(7.5,0.25,0,hasElement(9,1))
+        if (a.gte(1e25)) {
+			if (OURO.evo >= 4) x.qkf = a.div(1e25).log10().add(1).log10().div(10).min(.21)
+			x.en = a.div(1e25).pow(3).overflow('ee10',1/3)
+		}
         if (tmp.chal14comp) x.ab = a.add(1).pow(2)
         if (!tmp.c16.in && OURO.evo < 2 && a.gte(1e130)) x.bhp = a.div(1e130).log10().div(5)
 
@@ -140,7 +141,6 @@ const DARK = {
         x = x.mul(tmp.dark.shadowEff.ab||1)
         if (hasElement(189)) x = x.mul(elemEffect(189))
         if (hasElement(153)) x = x.pow(elemEffect(153))
-
         if (tmp.inf_unl) x = x.pow(theoremEff('time',2))
 
         return x
@@ -152,11 +152,11 @@ const DARK = {
         x.shadow = a.add(1).log10().add(1).pow(2)
         if (OURO.evo >= 1) x.shadow = expMult(x.shadow,2)
         x.msoftcap = a.add(1).log10().root(2).div(2).add(1)
-        if (a.gte(1e120)) x.hr = a.div(1e120).log10().add(1).pow(2)
-        if (a.gte(1e180)) {
-            x.pb = a.div(1e180).log10().add(1).pow(hasPrestige(1,167)?player.dark.matters.final.add(1).root(2):1)
-            // x.pb = overflow(x.pb,1e20,0.5)
-        }
+        if (a.gte(1e120)) {
+			if (OURO.evo >= 4) x.qkf = a.max(1).log10().max(1).log10().sub(2).div(10).max(0).min(.05)
+			if (OURO.evo < 4) x.hr = a.div(1e120).log10().add(1).pow(2)
+		}
+        if (a.gte(1e180)) x.pb = a.div(1e180).log10().add(1).pow(hasPrestige(1,167)?player.dark.matters.final.add(1).root(2):1)
         if (a.gte('e345')) x.csp = a.div('e345').log10().add(1).pow(2)
         if (a.gte('e800') && tmp.matterUnl) x.mexp = a.div('e800').log10().div(10).add(1).root(2.5)
         if (a.gte('e2500') && hasElement(199)) x.accelPow = a.div('e2500').log10().add(1).log10().add(1).pow(1.5).softcap(5,0.2,0,hasElement(234))
@@ -202,11 +202,11 @@ function calcDark(dt) {
     if (tmp.c16.in) player.dark.c16.bestBH = player.dark.c16.bestBH.max(OURO.evo >= 2 ? WORMHOLE.total() : player.bh.mass)
     if (hasCharger(1) && tmp.bh.unl) player.bh.unstable = UNSTABLE_BH.getProduction(player.bh.unstable,tmp.unstable_bh.gain.mul(dt))
 
-    let eaUnl = tmp.eaUnl
+    let eaUnl = tmp.ea.unl
 
     if (eaUnl) {
         if (player.dark.exotic_atom.tier.gt(0)) {
-            for (let i = 0; i < 2; i++) player.dark.exotic_atom.amount[i] = player.dark.exotic_atom.amount[i].add(tmp.exotic_atom.gain[i].mul(dt))
+            for (let i = 0; i < 2; i++) player.dark.exotic_atom.amount[i] = player.dark.exotic_atom.amount[i].add(tmp.ea.gain[i].mul(dt))
         }
     }
 
@@ -251,6 +251,7 @@ function updateDarkHTML() {
         `
 
         if (eff.bp) e += `<br>Boosts blueprint particles gain by <b>x${eff.bp.format(3)}</b>`
+        if (eff.qkf) e += `<br>Improves quark formula from protostars <b>+${formatPow(eff.qkf)}</b>`
         if (eff.sn) e += `<br>Makes you becoming <b>x${eff.sn.format(3)}</b> more supernovas`+eff.sn.softcapHTML(7.5,hasElement(9,1))
         if (eff.en) e += `<br>Boosts entropy earned by <b>x${eff.en.format(3)}</b>`
         if (eff.ab) e += `<br>Boosts abyssal blots earned by <b>x${eff.ab.format(3)}</b>`
@@ -269,6 +270,7 @@ function updateDarkHTML() {
                 <br>Makes mass gain softcaps 4-${hasElement(159)?8:6} start <b>^${eff.msoftcap.format(3)}</b> later
             `
 
+			if (eff.qkf) e += `<br>Improves quark formula from protostars <b>+${formatPow(eff.qkf)}</b>`
             if (eff.hr) e += `<br>Boosts hawking radiation gain by <b>x${eff.hr.format(3)}</b>`
             if (eff.pb) e += `<br>Boosts prestige base's multiplier by <b>x${eff.pb.format(3)}</b>`
             if (eff.csp) e += `<br>Boosts cosmic string's power by <b>x${eff.csp.format(3)}</b>`

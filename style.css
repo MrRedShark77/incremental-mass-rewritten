@@ -126,8 +126,8 @@
 	text-align: center;
 }
 
-p {
-	line-height: 0.6;
+a {
+	color: #def
 }
 
 body {
@@ -145,13 +145,17 @@ table, tr {
 }
 
 button {
-    border: solid 2px white;
-    background-color: #171717;
+    border: solid 2px #444;
+    background-color: #1b1b1b;
 	color: white;
     font-size: 14px;
 	cursor: pointer;
 	transition-property: background-color, border, transform, box-shadow;
 	transition-duration: 0.15s;
+}
+
+button * {
+	pointer-events: none
 }
 
 .line {
@@ -160,12 +164,12 @@ button {
 	width: 100%;
 	margin-top: 6px;
 	height: 6px;
-	border-top: solid 2px white;
+	border-top: solid 2px #222;
 }
 
 .main-line {
 	width: 100%;
-	border-bottom: solid 2px white;
+	border-bottom: solid 2px #222;
 	height: 5px;
 	margin-bottom: 13px;
 }
@@ -190,7 +194,7 @@ button {
 	width: 400px;
 	min-height: 10px;
 	color: white;
-	border: solid 2px white;
+	border: solid 2px #222;
 	background-color: #171717;
 	padding: 7px 25px;
 	transition-duration: 0.75s;
@@ -229,7 +233,6 @@ button {
 	color: hsl(237, 15%, 47%);
 	font-weight: bold;
 	text-shadow: 0px 1px 0px hsl(252, 19%, 57%);
-	pointer-events: none;
 }
 
 .stab_btn .btn_tab {
@@ -254,8 +257,16 @@ button {
 	background-color: #444;
 }
 
+.img_chal.in {
+	background-color: #52520b;
+}
+
+.img_chal.comp {
+	background-color: #00520b;
+}
+
 .light_red {
-	color: lightcoral;
+	color: #f55;
 }
 
 .red {
@@ -263,11 +274,15 @@ button {
 }
 
 .orange {
-	color: orange;
+	color: #f50;
 }
 
 .yellow {
-	color: yellow;
+	color: #fb0;
+}
+
+.gold {
+	color: #fe0;
 }
 
 .limegreen {
@@ -291,7 +306,7 @@ button {
 }
 
 .magenta {
-	color: magenta;
+	color: #f08;
 }
 
 .gray {
@@ -303,10 +318,12 @@ button {
 }
 
 .saved_text {
-	text-shadow: 2px 2px 3px #0f0, -2px -2px 3px #7f0, 0 0 60px #0f0
+	color: #bfb;
+	text-shadow: 1px 1px 3px #0f0, -1px -1px 3px #7f0, 0 0 24px #0f0
 }
 
 .corrupted_text {
+	color: white;
 	animation: corrupted_text 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
 
@@ -425,30 +442,33 @@ button {
 	min-height: 40px;
 }
 
+.bh,
 .btn_tab.bh {
-	color: gold;
-	border-color: gold;
+	color: #fe5;
 }
-
-.btn_tab.bh:hover {
-	background-color: #493e00;
+.btn_tab.bh {
+	border-color: #fe5;
+}
+.btn_tab.bh:hover,
+.btn_tab.bh.choosed {
+	background-color: #542;
 }
 
 .btn_tab.atom {
-	color: #3157be;
-	border-color: #3157be;
+	color: #07f;
+	border-color: #07f;
 }
-
-.btn_tab.atom:hover {
-	background-color: #172857;
+.btn_tab.atom:hover,
+.btn_tab.atom.choosed {
+	background-color: #124;
 }
 
 .btn_tab.sn {
-	color: #ff009d;
-	border-color: #ff009d;
+	color: #f08;
+	border-color: #f08;
 }
-
-.btn_tab.sn:hover {
+.btn_tab.sn:hover,
+.btn_tab.sn.choosed {
 	background-color: #500031;
 }
 
@@ -456,8 +476,8 @@ button {
 	color: lightgreen;
 	border-color: lightgreen;
 }
-
-.btn_tab.qu:hover {
+.btn_tab.qu:hover,
+.btn_tab.qu.choosed {
 	background-color: #005a00;
 }
 
@@ -465,35 +485,38 @@ button {
 	color: #666;
 	border-color: #666;
 }
-
-.btn_tab.dark:hover {
+.btn_tab.dark:hover,
+.btn_tab.dark.choosed {
 	background-color: #222;
 }
 
 .btn_tab.inf {
-	color: orange;
-	border-color: orange;
+	color: #fb0;
+	border-color: #fb0;
 }
-
-.btn_tab.inf:hover {
+.btn_tab.inf:hover,
+.btn_tab.inf.choosed {
 	background-color: #220;
 }
 
+.snake,
 .btn_tab.snake {
-	color: #0d3;
-	border-color: #0d3;
+	color: #227F33;
 }
-
-.btn_tab.snake:hover {
-	background-color: #051;
+.btn_tab.snake {
+	border-color: #227F33;
+}
+.btn_tab.snake:hover,
+.btn_tab.snake.choosed {
+	background-color: #0E4A2D;
 }
 
 .space {
 	color: #357;
 	border-color: #357;
 }
-
-.btn_tab.space:hover {
+.btn_tab.space:hover,
+.btn_tab.space.choosed {
 	background-color: #123;
 }
 
@@ -501,8 +524,8 @@ button {
 	color: #25ff30;
 	border-color: #25ff30;
 }
-
-.btn_tab.dilation:hover {
+.btn_tab.dilation:hover,
+.btn_tab.dilation.choosed {
 	background-color: #0a470d;
 }
 
@@ -510,8 +533,8 @@ button {
 	color: #00cea1;
 	border-color: #00cea1; 
 }
-
-.btn_tab.break_dilation:hover {
+.btn_tab.break_dilation:hover,
+.btn_tab.break_dilation.choosed {
 	background-color: #0a4735;
 }
 
@@ -528,7 +551,7 @@ button {
 
 .btn_tree {
 	background-color: black;
-	border: solid 2px white;
+	border: solid 2px #222;
 	margin: 15px;
 	width: 54px;
 	height: 54px;
@@ -607,10 +630,10 @@ button {
 }
 
 .elements.br {
-	border-color: #ff3939
+	border-color: red
 }
 .elements.br.bought {
-	box-shadow: 0px 0px 10px 0px #ff39397e;
+	box-shadow: 0px 0px 10px 0px #f007;
 	background-color: #800
 }
 
@@ -633,6 +656,7 @@ button {
 	font-size: var(--elem-symbol-size);
 	width: 50px;
 	height: 50px;
+	border-color: white;
 	background-color: #444;
 }
 
@@ -656,6 +680,11 @@ button {
 	box-shadow: 3px 3px 3px #ff5555, -3px -3px 3px #5555ff, 3px 3px 3px #ff5555 inset, -3px -3px 3px #5555ff inset;
 	opacity: 0.1;
 	animation: corrupted_div 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.elements.cannot {
+	border-color: red;
+	transform: scale(0.8);
 }
 
 .elements.corrupted {
@@ -717,7 +746,6 @@ button {
 
 .btn {
 	cursor: pointer;
-	background-color: #444;
 	font-size: 12px;
 	max-width: 250px;
 	padding: 7px 25px;
@@ -733,6 +761,12 @@ button {
 	width: 250px;
 }
 
+.btn.locked {
+	border-color: #222;
+	background: #171717;
+	color: #777;
+}
+
 .btn.locked,
 .img_btn.locked,
 .elements.locked {
@@ -746,13 +780,9 @@ button {
 	cursor: default;
 }
 
-.chal_comp {
-	background-color: #00520b;
-}
-
 .input_ratio {
 	width: 100px;
-	border: solid 2px white;
+	border: solid 2px #222;
 	background-color: #171717;
 }
 
@@ -760,7 +790,7 @@ button {
 	color: white;
 	font-size: 20px;
 	width: 200px;
-	border: solid 2px white;
+	border: solid 2px #222;
 	background-color: #171717;
 	text-align: left;
 }
@@ -838,7 +868,8 @@ h4 {
 	cursor: default;
 }
 
-.md:not(.locked):hover {
+.md:not(.locked):hover,
+.md.bought {
 	border-color: #00ce00;
 	background-color: #003a00;
 	box-shadow: 0 0 10px #00ce00;
@@ -849,7 +880,8 @@ h4 {
 	background-color: #171717;
 }
 
-.bd:not(.locked):hover {
+.bd:not(.locked):hover,
+.bd.bought {
 	border-color: #00cea1;
 	background-color: #00363a !important;
 	box-shadow: 0 0 10px #00cea1;
@@ -860,7 +892,8 @@ h4 {
 	background-color: #171717;
 }
 
-.charger:not(.locked):hover {
+.charger:not(.locked):hover,
+.charger.bought {
 	border-color: #47cbff;
 	background-color: #009ddb !important;
 	box-shadow: 2px 2px 6px #47cbff, 2px 2px 6px #47cbff inset, -2px -2px 6px white, -2px -2px 6px white inset;
@@ -1071,7 +1104,7 @@ h4 {
     top: 50%;
     transform: translate(-50%, -50%);
 	color: white;
-	border: solid 2px white;
+	border: solid 2px #222;
 	background-color: #171717;
 	padding: 7px 25px;
 	pointer-events: auto;
@@ -1110,7 +1143,7 @@ h4 {
 	width: 196px;
 	height: 100%;
 	overflow-y: auto;
-	border-right: solid 2px white;
+	border-right: solid 2px #222;
 }
 
 #tabs > div {
@@ -1172,7 +1205,7 @@ h4 {
 	width: 246px;
 	height: 100%;
 	overflow-y: auto;
-	border-left: solid 2px white;
+	border-left: solid 2px #222;
 }
 
 #resources_table > div {
@@ -1194,13 +1227,15 @@ h4 {
 	font-size: 12px;
 }
 
-#resources_table > div > div.reset {
+#resources_table > div > div.reset,
+#resources_table.force_btn > div > div {
 	border: 1px solid;
 	transition-duration: 0.2s;
 	cursor: pointer
 }
 
-#resources_table > div > div.reset:hover {
+#resources_table > div > div.reset:hover,
+#resources_table.force_btn > div > div:hover {
 	background: #444
 }
 
@@ -1234,6 +1269,7 @@ h4 {
 	height: 50px;
 	pointer-events: all;
 	background-color: white;
+	border: none;
 }
 
 #nav_btns > button > iconify-icon {
@@ -1314,8 +1350,8 @@ h4 {
 }
 
 .theorem_div.bh {
-	color: yellow;
-	border-color: yellow;
+	color: #fd7;
+	border-color: #fd7;
 }
 
 .theorem_div.atom {
@@ -1407,10 +1443,6 @@ h4 {
 	left: 2px;
 }
 
-.theorem_div * {
-	pointer-events: none;
-}
-
 #pre_theorem {
 	align-items: center;
 	min-height: 120px;
@@ -1492,8 +1524,7 @@ h4 {
 .inf_upg > * {
 	position: absolute;
 	transform: translate(-50%, -50%);
-	transition-duration: 1s;
-	pointer-events: none;
+	transition-duration: 0.5s;
 }
 
 .inf_upg.locked {
@@ -1516,19 +1547,15 @@ h4 {
 .inf_upg > div {
 	width: 100%;
 	left: 50%;
-	opacity: 0;
-	filter: blur(3px);
+	opacity: 0
 }
 
 .inf_upg:hover > div {
-    opacity: 1;
-    filter: blur(0px);
+    opacity: 1
 }
 
 .inf_upg:hover > img {
-	opacity: 0;
-	filter: blur(3px);
-	transform: scale(0.5) translate(-100%, -100%);
+	filter: blur(6px)
 }
 
 #iu_row4 > .inf_upg {
@@ -1545,15 +1572,11 @@ h4 {
 	position: relative;
 	border-color: #0098a3;
 	background-color: #0000;
-	text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black;
+
 	width: 300px;
 	height: 120px;
 	max-width: 300px;
 	max-height: 120px;
-}
-
-.galactic * {
-	pointer-events: none;
 }
 
 .galactic:before {
@@ -1565,7 +1588,7 @@ h4 {
 	width: 100%;
 	height: 100%;
 	background-image: url('images/galactic_texture.png');
-	animation: gal_spin-1 30s cubic-bezier(.42,0,.58,1) infinite, gal_spin-2 10s cubic-bezier(.42,0,.58,1) infinite;
+	animation: gal_spin 5s linear infinite;
 	z-index: -1;
 }
 
@@ -1650,9 +1673,9 @@ h4 {
 .wormhole-div {
 	position: relative;
 
-	width: 200px;
-	height: 200px;
-	margin: 15px;
+	width: 175px;
+	height: 175px;
+	margin: 5px;
 	padding: 10px;
 	background: #210;
 	border: solid 2px #b60;
@@ -1668,7 +1691,7 @@ h4 {
 
 .wormhole-div.none {
 	background: #111;
-	border: solid 2px #333;
+	border: solid 2px #222;
 	box-shadow: #111 0px 0px 20px;
 }
 
@@ -1683,20 +1706,18 @@ h4 {
 	box-shadow: #6b0 0px 0px 20px;
 }
 
-.wormhole-div > div:not(.wh-id) {
+.wormhole-div > div {
 	position: absolute;
 	left: 0px;
 	width: 100%;
 }
 
 .wormhole-div > .wh-id {
-	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
 	opacity: 0.5;
 }
 .wormhole-div > .wh-mult {
-	top: 20px;
+	top: 40px;
 }
 .wormhole-div > .wh-mass {
 	font-size: 16px;
@@ -1720,10 +1741,9 @@ h4 {
 }
 
 .proto_table > button {
-	width: 400px;
-	height: 100px;
+	width: 350px;
+	height: 75px;
 	border-color: #357;
-	box-shadow: 0px 0px 10px 0px #357;
 	background-color: #123
 }
 .proto_table > button:hover {
@@ -1757,16 +1777,6 @@ h4 {
 	overflow-y: scroll;
 }
 
-#const_glow {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 100%;
-	height: 100%;
-	box-shadow: inset #fff 0px 0px 20px;
-	pointer-events: none;
-}
-
 #const_table {
 	position: relative;
 	width: 100%;
@@ -1781,8 +1791,13 @@ h4 {
 	cursor: pointer;
 }
 
+.zodiac_upg.locked {
+	transform: translate(-50%,-50%) scale(0.9);
+	filter: brightness(0.4)
+}
+
 .zodiac_upg.bought {
-	box-shadow: 0 0 12px green, 0 0 12px green, 0 0 18px magenta
+	filter: drop-shadow(0 0 20px magenta);
 }
 
 #zodiac_desc {
@@ -1818,33 +1833,41 @@ h4 {
 	margin: 3px;
 }
 
-.cosmo_gal {
+.cosmo {
 	position: relative;
 	width: 120px;
 	height: 120px;
 	border: 3px solid #143A3D;
+	padding: 0
 }
 
-.cosmo_gal.highlight {
+.cosmo.highlight {
 	border-color: #0098a3;
-	box-shadow: 0 0 12px #0098a3;
+	box-shadow: 0 0 12px #0098a3
 }
 
-.cosmo_gal > .gal_sym {
+.cosmo > div {
 	position: absolute;
+	left: -1.5px;
+	width: 120px;
+	text-align: center;
+}
+
+.cosmo > .sym {
 	transform: translateY(-50%);
 	top: 50%;
-	width: 120px;
-	font-size: 60px;
-
-	color: #BFE5E8;
-	text-shadow: 0 0 24px #BFE5E8
+	font-size: 48px;
+	color: #BFE5E8
 }
 
-.cosmo_gal > .gal_tier {
-	position: absolute;
+.cosmo > .tier {
+	top: 20px;
+	color: #BFE5E8
+}
+
+.cosmo > .desc {
 	bottom: 0;
-	width: 120px;
+	font-size: 8px
 }
 
 #sisyphus {
@@ -1876,36 +1899,14 @@ h4 {
     }
 }
 
-@keyframes gal_spin-1 {
+@keyframes gal_spin {
 	0% {
+		background-size: 75px;
 		background-position: 0px 0px;
 	}
-	20% {
-		background-position: -450px -150px;
-	}
-	45% {
-		background-position: 180px -70px;
-	}
-	65% {
-		background-position: 120px 270px;
-	}
-	90% {
-		background-position: -330px 60px;
-	}
 	100% {
-		background-position: 150px -100px;
-	}
-}
-
-@keyframes gal_spin-2 {
-	0%, 100% {
-		background-size: 50px;
-	}
-	25%, 75% {
-		background-size: 30px;
-	}
-	50% {
-		background-size: 80px;
+		background-size: 75px;
+		background-position: 300px 300px;
 	}
 }
 

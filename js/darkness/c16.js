@@ -2,9 +2,7 @@ const CHARGERS = [
     {
         get req() { return E(OURO.evo >= 1 ? 1e65 : 1e90) },
         cost: E(3),
-        desc: `
-        Multiply all matters gain by 1e10, and square mass of black hole gain.
-        `,
+        desc: `Multiply all matters gain by 1e10, and square mass of black hole gain.`,
     },{
         req: E('e1000'),
         cost: E(1000),
@@ -19,16 +17,16 @@ const CHARGERS = [
         desc: `Remove all pre-Meta scalings from Supernova. [Neut-Muon]'s effect is now changed. Denullify C5's effect, but it's changed.`,
     },{
         req: E('e33000'),
-        get cost() { return E(OURO.evo >= 2 ? 2e7 : 5e8) },
+        get cost() { return E(OURO.evo >= 4 ? 5e6 : OURO.evo >= 2 ? 2e7 : 5e8) },
         desc: `Dark Shadow's first reward is overpowered. Remove all scalings from Tickspeed, but nullify [Tau]'s effect.`,
     },{
         req: E('e77000'),
-        get cost() { return E(OURO.evo >= 3 ? 1e14 : OURO.evo >= 2 ? 5e7 : 5e10) },
+        get cost() { return [E(5e10), E(5e10), E(5e7), E(1e14), E(5e9)][OURO.evo] },
         get desc() { return OURO.evo >= 3 ? `Unlock Exotic Protostars.<br><b class='saved_text'>[ Evolved Exotic ]</b>` : `Unlock Exotic Atoms in Atom tab, and unlock new elements' layer.` },
     },{
         req: E('ee6'),
-        get cost() { return E(OURO.evo >= 2 ? 3e10 : 1e26) },
-        get desc() { return OURO.evo >= 2 ? `Corrupted Shards formula is better. Triple Anti-Wormhole.` : `Remove all scalings from BHC. [Neut-Tau]'s effect no longer affects BHC's cheapness. In C16, BHC is 1,000,000x cheaper.` },
+        get cost() { return E(OURO.evo >= 4 ? 1e7 : OURO.evo >= 2 ? 3e10 : 1e26) },
+        get desc() { return OURO.evo >= 2 ? `Corrupted Shards formula is better. Corrupted Shards boost Anti-Wormhole.` : `Remove all scalings from BHC. [Neut-Tau]'s effect no longer affects BHC's cheapness. In C16, BHC is 1,000,000x cheaper.` },
     },{
         req: E('e1.6e6'),
         get cost() { return E(OURO.evo >= 2 ? 2e17 : 5e30) },
@@ -124,18 +122,18 @@ function setupC16HTML() {
 }
 
 function corruptedShardGain() {
-    let w = 1
-    if (hasUpgrade('br',25)) w *= 0.8
-
 	let x
 	if (OURO.evo >= 2) {
-		let e = 25
+		let e = 25, dil = 3
 		if (hasElement(223) && OURO.evo >= 3) e -= 5
 		if (hasCharger(6)) e -= 5
-		x = expMult((hasElement(232) ? player.dark.c16.bestBH : WORMHOLE.total()).add(1).root(e), 3)
+		if (OURO.evo >= 4) e *= 2, dil = 2
+
+		x = expMult((hasElement(232) ? player.dark.c16.bestBH : WORMHOLE.total()).add(1).root(e), dil)
 		if (hasCharger(2)) {
 			let y = player.evo.wh.mass[6].div(5e3).pow(2).max(1)
-			if (OURO.evo >= 3) y = expMult(y,0.5)
+			if (OURO.evo >= 4) y = y.log10().add(1)
+			if (OURO.evo >= 3) y = expMult(y, 0.5)
 			x = x.mul(y)
 		}
 		x = x.mul(x.log10().mul(2).add(1).pow(2))
@@ -146,6 +144,9 @@ function corruptedShardGain() {
 		let bh = player.bh.mass, req = OURO.evo >= 1 ? 1e65 : 1e90
 		if (hasElement(232)) bh = player.dark.c16.bestBH.max(req)
 		else if (!tmp.c16.in || bh.lt(req)) return E(0)
+
+		let w = 1
+		if (hasUpgrade('br',25)) w *= 0.8
 
 		x = bh.max(1).log10()
 		x = Decimal.pow(10,x.overflow(1e70,(1/3)**w).overflow(1e9,0.5**w).div(Math.log10(req)).root(hasElement(223) ? 2.9 : 3).sub(1))
@@ -170,28 +171,27 @@ function updateC16HTML() {
     tmp.el.c16_info.setDisplay(!evo2)
 
     let e = hasInfUpgrade(15)?12:8
-
     for (let i in CHARGERS) {
         i = parseInt(i)
         let c = CHARGERS[i], id = 'charger'+i
         tmp.el[id+"_div"].setDisplay(i<e)
         if (i>=e) continue;
 
-        let req = canCharge(i)
+        let req = canCharge(i), has = hasCharger(i)
 
-        tmp.el[id+"_req"].setHTML(EVO.fed_msg[tmp.evo.fed["ch"+i]] ?? `Requires: <b>${formatMass(c.req)}</b> of black hole.`)
-        tmp.el[id+"_cost"].setHTML(`Cost: <b>${c.cost.format(0)}</b> Corrupted Shard.`)
+        tmp.el[id+"_req"].setHTML(EVO.fed_msg[tmp.evo.fed["ch"+i]] ?? `Req: <b>${formatMass(c.req)}</b> of black hole.`)
+        tmp.el[id+"_cost"].setHTML(`Cost: <b>${c.cost.format(0)}</b> Corrupted Shard`)
 
         tmp.el[id+"_req"].setDisplay(!req)
         tmp.el[id+"_desc"].setDisplay(req)
         tmp.el[id+"_desc"].setHTML(c.desc)
-        tmp.el[id+"_cost"].setDisplay(req && !hasCharger(i))
+        tmp.el[id+"_cost"].setDisplay(req && !has)
 
-        tmp.el[id+"_div"].setClasses({btn: true, full: true, charger: true, locked: !req || cs.lt(c.cost) || hasCharger(i)})
+        tmp.el[id+"_div"].setClasses({btn: true, full: true, charger: true, bought: has, locked: !has && (!req || cs.lt(c.cost))})
     }
 }
 
-const CORRUPTED_ELEMENTS = [40,64,67,150,162,187,199,200,204]
+const CORRUPTED_ELEMENTS = [40,64,67,150,162,187,199,200,204,305]
 
 let C16_ANI = {
 	squares: [],

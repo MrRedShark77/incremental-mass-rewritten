@@ -51,7 +51,7 @@ const POPUP_GROUPS = {
         M☉ (mass of Sun): 333,054 M⊕ = 1.989e33 g<br>
         MMWG (mass of Milky Way Galaxy): 1.5e12 M☉ = 2.9835e45 g<br>
         uni (mass of Universe): 50,276,520,864 MMWG = 1.5e56 g<br>
-        mlt (mass of Multiverse): 1e1e9 uni (logarithmic)<br>
+        mlt (mass of Multiverse): 1ee9 uni (logarithmic)<br>
         mgv (mass of Megaverse): 1e15 mlt<br>
         giv (mass of Gigaverse): 1e15 mgv<br>
         arv^n (mass of n-th Archverse): 1e15 arv^n-1<br>
@@ -86,16 +86,18 @@ const POPUP_GROUPS = {
     },
     notations: {
         html: `
-            <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
-            <button class="btn" onclick="player.options.notation = 'eng'">Engineering</button>
-            <button class="btn" onclick="player.options.notation = 'inf'">Infinity</button>
-            <button class="btn" onclick="player.options.notation = 'mixed_sc'">Mixed Scientific</button>
-            <button class="btn" onclick="player.options.notation = 'layer'">Prestige Layer</button>
+            <button class="btn" onclick="player.options.notation = 'mixed_sc'">Default</button>
             <button class="btn" onclick="player.options.notation = 'sc'">Scientific</button>
-            <button class="btn" onclick="player.options.notation = 'st'">Standard</button>
             <button class="btn" onclick="player.options.notation = 'old_sc'">Old Scientific</button>
+			<br class='line'>
+            <button class="btn" onclick="player.options.notation = 'eng'">Engineering</button>
+            <button class="btn" onclick="player.options.notation = 'st'">Standard</button>
+            <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
             <button class="btn" onclick="player.options.notation = 'omega'">Omega</button>
             <button class="btn" onclick="player.options.notation = 'omega_short'">Omega Short</button>
+            <button class="btn" onclick="player.options.notation = 'inf'">Infinity</button>
+            <button class="btn" onclick="player.options.notation = 'layer'">Prestige Layer</button>
+            <button class="btn" onclick="player.options.notation = 'upsital'">Bezier's Upsital</button>
         `,
     },
     supernova10: {
@@ -117,37 +119,6 @@ const POPUP_GROUPS = {
         `,
         width: 400,
         height: 150,
-        otherStyle: {
-            'font-size': "14px",
-        },
-    },
-    qu: {
-        html() { return `
-            Congratulations!<br><br>You have reached ${formatMass(mlt(1e4))} of mass after beating Challenge 12!<br><br>
-            <b>You need to go Quantum!</b>
-        `},
-        width: 400,
-        height: 150,
-        otherStyle: {
-            'font-size': "14px",
-        },
-    },
-    qus1: {
-        html() { return `
-            <img src="images/qu_story1.png"><br><br>
-            Mass has collapsed while going Quantum! It looks like evaporation! But at what cost?
-        `},
-        button: "Uhh Oh",
-        otherStyle: {
-            'font-size': "14px",
-        },
-    },
-    qus2: {
-        html() { return `
-            <img src="images/qu_story2.png"><br><br>
-            Don’t worry, new mechanics will arrive for you!
-        `},
-        button: "Cool",
         otherStyle: {
             'font-size': "14px",
         },
@@ -194,7 +165,7 @@ const QUOTES = [
     `,`
     <h2>Chapter 7: Scale to Quantum</h2><br>
     <img class='quote' src='images/quotes/7.png'><br>
-    Mass has collapsed in quantum scale! Good luck on new features!
+    Mass has collapsed by quantum fluctuation!
     `,`
     <h2>Chapter 8: Ripping Universe</h2><br>
     <img class='quote' src='images/quotes/8.png'><br>
@@ -500,3 +471,6 @@ function checkImage(imageSrc, good, bad) {
     img.onerror = bad;
     img.src = imageSrc;
 }
+
+//debugger
+devSpeed = 1

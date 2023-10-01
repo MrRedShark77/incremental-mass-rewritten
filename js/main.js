@@ -14,7 +14,6 @@ const ST_NAMES = [
 		["","Hc","DHe","THt","TeH","PHc","HHe","HpH","OHt","EHc"]
 	]
 ]
-const CONFIRMS = ['rp', 'bh', 'atom', 'sn', 'qu', 'br', 'dark', 'inf']
 
 const FORMS = {
     getPreInfGlobalSpeed() {
@@ -25,18 +24,16 @@ const FORMS = {
         return x
     },
     getPreQUGlobalSpeed() {
-        let x = E(1), inf = tmp.preInfGlobalSpeed
+        let inf = tmp.preInfGlobalSpeed
         if (tmp.c16.in) return inf.div(100)
+        if (!quUnl()) return inf
 
-        if (quUnl()) x = x.mul(tmp.qu.bpEff)
-        if (hasElement(103)) x = x.mul(tmp.elements.effect[103])
-
-        if (hasUpgrade("br",3)) x = x.pow(tmp.upgs[4][3].effect)
+        let x = tmp.qu.bpEff
+        if (hasElement(103)) x = x.mul(elemEffect(103))
+        if (hasUpgrade("br",3)) x = x.pow(upgEffect(4,3))
         if (hasPrestige(0,5)) x = x.pow(2)
-
         if (tmp.inf_unl) x = x.pow(theoremEff('time',1))
-
-        if (QCs.active()) x = x.div(tmp.qu.qc_eff[1])
+        if (QCs.active()) x = x.div(tmp.qu.qc.eff[1])
 
         return x.mul(inf)
     },
@@ -44,7 +41,7 @@ const FORMS = {
         let x = E(2).add(BUILDINGS.eff('mass_1',undefined,0))
         if (player.ranks.rank.gte(4)) x = x.mul(RANKS.effect.rank[4]())
         if (player.ranks.rank.gte(13)) x = x.mul(3)
-        if (hasUpgrade("bh", 10)) x = x.mul(tmp.upgs[2][10].effect)
+        if (hasUpgrade("bh", 10)) x = x.mul(upgEffect(2,10))
         if (player.ranks.rank.gte(380)) x = x.mul(RANKS.effect.rank[380]())
         if (tmp.star_unl) x = x.mul(tmp.stars.effect[0])
         if (hasTree("m1")) x = x.mul(treeEff("m1")[0])
@@ -67,7 +64,7 @@ const FORMS = {
             x = expMult(x,tmp.md.pen)
             if (hasElement(28)) x = x.pow(1.5)
         }
-        if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+        if (QCs.active()) x = x.pow(tmp.qu.qc.eff[4])
 
         x = x.pow(tmp.dark.shadowEff.mass)
         if (hasElement(85, 1)) x = x.pow(appleEffect('mass')[1])
@@ -79,7 +76,6 @@ const FORMS = {
         .softcap(tmp.massSoftGain3,tmp.massSoftPower3,0)
         .softcap(tmp.massSoftGain4,tmp.massSoftPower4,0)
         .softcap(tmp.massSoftGain5,tmp.massSoftPower5,0)
-
         if (hasElement(117)) x = x.pow(10)
 
         x = x.softcap(tmp.massSoftGain6,tmp.massSoftPower6,0)
@@ -160,8 +156,8 @@ const FORMS = {
         let s = E(1.5e156)
         if (CHALS.inChal(3) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e150)
         if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) s = s.div(1e100)
-        if (hasUpgrade("bh",7)) s = s.mul(tmp.upgs?tmp.upgs[2][7].effect:E(1))
-        if (hasUpgrade("rp",13)) s = s.mul(tmp.upgs?tmp.upgs[1][13].effect:E(1))
+        if (hasUpgrade("bh",7)) s = s.mul(upgEffect(2,7))
+        if (hasUpgrade("rp",13)) s = s.mul(upgEffect(1,13))
         if (hasPrestige(0,1)) s = s.pow(10)
         return s.min(tmp.massSoftGain2||1/0).max(1)
     },
@@ -186,26 +182,26 @@ const FORMS = {
         return s.min(tmp.massSoftGain3||1/0).max(1)
     },
     massSoftPower2() {
-        let p = E(tmp.rip.in ? 0.1 : 0.25)
+        let p = E(tmp.qu.rip.in ? 0.1 : 0.25)
         if (hasElement(51)) p = p.pow(0.9)
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     massSoftGain3() {
         if (player.ranks.hex.gte(13)) return EINF
-        let s = tmp.rip.in ? uni("ee7") : uni("ee8")
+        let s = tmp.qu.rip.in ? uni("ee7") : uni("ee8")
         if (hasTree("m3")) s = s.pow(treeEff("m3"))
         s = s.pow(radBoostEff(2))
         if (hasPrestige(0,1)) s = s.pow(10)
         return s.max(1)
     },
     massSoftPower3() {
-        let p = E(tmp.rip.in ? 0.1 : 0.2)
-        if (hasElement(77)) p = p.pow(tmp.rip.in?0.95:0.825)
+        let p = E(tmp.qu.rip.in ? 0.1 : 0.2)
+        if (hasElement(77)) p = p.pow(tmp.qu.rip.in?0.95:0.825)
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     massSoftGain4() {
         if (player.ranks.hex.gte(17)) return EINF
-        let s = mlt(tmp.rip.in ? 0.1 : 1e4)
+        let s = mlt(tmp.qu.rip.in ? 0.1 : 1e4)
         if (player.ranks.pent.gte(8)) s = s.pow(RANKS.effect.pent[8]())
         if (hasTree('qc1')) s = s.pow(treeEff('qc1'))
         if (hasPrestige(0,1)) s = s.pow(10)
@@ -214,12 +210,12 @@ const FORMS = {
     },
     massSoftPower4() {
         let p = E(0.1)
-        if (hasElement(100)) p = p.pow(tmp.rip.in?0.8:0.5)
+        if (hasElement(100)) p = p.pow(tmp.qu.rip.in?0.8:0.5)
         return p.pow(tmp.evo.meditation_eff.mass_softcap??1)
     },
     massSoftGain5() {
         if (player.ranks.hex.gte(36)) return EINF
-        let s = mlt(tmp.rip.in?1e4:1e12)
+        let s = mlt(tmp.qu.rip.in?1e4:1e12)
         if (hasPrestige(0,8)) s = s.pow(prestigeEff(0,8))
         if (hasUpgrade("br",12)) s = s.pow(upgEffect(4,12))
         s = s.pow(tmp.dark.abEff.msoftcap||1)
@@ -271,7 +267,7 @@ const FORMS = {
             if (player.ranks.rank.gte(45)) gain = gain.mul(RANKS.effect.rank[45]())
             if (player.ranks.tier.gte(6)) gain = gain.mul(RANKS.effect.tier[6]())
 			if (hasUpgrade("rp",5)) gain = gain.mul(2)
-            if (hasUpgrade("bh",6)) gain = gain.mul(tmp.upgs?tmp.upgs[2][6].effect:E(1))
+            if (hasUpgrade("bh",6)) gain = gain.mul(upgEffect(2,6))
             if (evo == 0 && hasTree("rp1")) gain = gain.mul(treeEff('rp1'))
 
 			if (tmp.atom.unl) {
@@ -282,9 +278,9 @@ const FORMS = {
             if (hasUpgrade("bh",8)) gain = gain.pow(1.15)
             gain = gain.pow(tmp.chal.eff[4])
             if (CHALS.inChal(4) || CHALS.inChal(10) || FERMIONS.onActive("03")) gain = gain.root(10)
-            gain = gain.pow(tmp.prim.eff[1][0])
+            gain = gain.pow(tmp.qu.prim.eff[1][0])
 
-            if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
+            if (QCs.active()) gain = gain.pow(tmp.qu.qc.eff[4])
             if (tmp.md.in) gain = expMult(gain,tmp.md.pen)
 
             if (evo == 0 && hasElement(165)) gain = gain.pow(treeEff('rp1'))
@@ -297,17 +293,13 @@ const FORMS = {
                 if (hasElement(72,1)) gain = gain.mul(muElemEff(72))
                 gain = gain.mul(wormholeEffect(2))
 			    gain = gain.mul(nebulaEff("green"))
-                if (hasElement(307)) gain = gain.mul(elemEffect(307))
 				if (evo == 2 && (tmp.dark.run)) gain = gain.pow(mgEff(1))
             }
 
             return gain.floor()
         },
         reset() {
-            if (tmp.rp.can) {
-                if (player.confirms.rp) createConfirm("Are you sure you want to reset?",'rpReset',CONFIRMS_FUNCTION.rage)
-                else CONFIRMS_FUNCTION.rage()
-            }
+            if (tmp.rp.can) getResetConfirm("rp")
         },
         doReset() {
             player.ranks[RANKS.names[RANKS.names.length-1]] = E(0)
@@ -324,7 +316,7 @@ const FORMS = {
             let gain = E(0)
             if (evo == 0 || CHALS.inChal(7) || CHALS.inChal(10)) {
                 if (tmp.rp.unl) gain = player.rp.points.div(1e25)
-                if (CHALS.inChal(7) || CHALS.inChal(10)) gain = player.mass.div(1e180)
+                if (CHALS.inChal(7) || CHALS.inChal(10)) gain = player.mass.div(1e175)
                 if (gain.lt(1)) return E(0)
                 gain = gain.root(4)
             } else {
@@ -343,9 +335,9 @@ const FORMS = {
 			}
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) gain = gain.root(8)
             if (evo < 2) gain = gain.pow(tmp.chal.eff[8])
-            gain = gain.pow(tmp.prim.eff[2][0])
+            gain = gain.pow(tmp.qu.prim.eff[2][0])
 
-            if (QCs.active()) gain = gain.pow(tmp.qu.qc_eff[4])
+            if (QCs.active()) gain = gain.pow(tmp.qu.qc.eff[4])
             if (tmp.md.in) gain = expMult(gain,tmp.md.pen)
 
             if (tmp.sn.boson && hasElement(204)) gain = gain.pow(tmp.sn.boson.upgs.photon[0].effect)
@@ -371,13 +363,14 @@ const FORMS = {
                 if (CHALS.inChal(8)) gain = gain.sqrt()
                 if (tmp.sn.boson) gain = gain.mul(tmp.sn.boson.upgs.photon[4].effect)
 			    gain = gain.mul(nebulaEff("blue"))
+				if (evo >= 4) gain = gain.mul(tmp.qu.chroma_eff[0])
 				if (tmp.dark.run) gain = gain.pow(mgEff(1))
             }
 
             return gain.floor()
         },
         massPowerGain() {
-            let x = E(0.35)
+            let x = E(1/3)
             if (FERMIONS.onActive("11")) return E(-1)
             if (hasElement(59)) x = E(0.45)
             x = x.add(radBoostEff(4, 0))
@@ -386,14 +379,14 @@ const FORMS = {
         },
         massGain() {
             let x = tmp.bh.formula.mul(BUILDINGS.eff('bhc'))
-            if (hasUpgrade("rp",11)) x = x.mul(tmp.upgs?tmp.upgs[1][11].effect:E(1))
-            if (hasUpgrade("bh",14)) x = x.mul(tmp.upgs?tmp.upgs[2][14].effect:E(1))
-            if (hasElement(46) && !hasElement(162)) x = x.mul(tmp.elements.effect[46])
+            if (hasUpgrade("rp",11)) x = x.mul(upgEffect(1,11))
+            if (hasUpgrade("bh",14)) x = x.mul(upgEffect(2,14))
+            if (hasElement(46) && !hasElement(162)) x = x.mul(elemEffect(46))
             if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.photon[0].effect) : x.mul(tmp.sn.boson.upgs.photon[0].effect)
             if (CHALS.inChal(8) || CHALS.inChal(10) || FERMIONS.onActive("12")) x = x.root(8)
             x = x.pow(tmp.chal.eff[8])
 
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[4])
             if (tmp.md.in) x = expMult(x,tmp.md.pen)
             x = x.softcap(tmp.bh.massSoftGain, .5, 0)
 
@@ -446,7 +439,7 @@ const FORMS = {
         },
         massSoftGain() {
             let s = E(1.5e156)
-            if (hasUpgrade("atom",6)) s = s.mul(tmp.upgs?tmp.upgs[3][6].effect:E(1))
+            if (hasUpgrade("atom",6)) s = s.mul(upgEffect(3,6))
             return s
         },
 		formula() {
@@ -454,7 +447,7 @@ const FORMS = {
 		},
         fSoftStart() {
             let x = uni("e3e9")
-            if (hasElement(71)) x = x.pow(tmp.elements.effect[71])
+            if (hasElement(71)) x = x.pow(elemEffect(71))
             x = x.pow(radBoostEff(20))
             return x
         },
@@ -464,18 +457,11 @@ const FORMS = {
             return x
         },
         reset() {
-            if (tmp.bh.dm_can) {
-                if (player.confirms.bh) createConfirm("Are you sure you want to reset?",'bhReset',CONFIRMS_FUNCTION.bh)
-                else CONFIRMS_FUNCTION.bh()
-            }
+            if (tmp.bh.dm_can) getResetConfirm("bh")
         },
         doReset() {
-            if (OURO.evo >= 1) {
-                let s = OURO.save.evo.cp
-                if (!hasElement(70,1) || (OURO.evo >= 2 && CHALS.inChal(6))) player.evo.cp.level = s.level
-                player.evo.cp.points = s.points
-                player.evo.cp.m_time = s.m_time
-            } else {
+            if (OURO.evo >= 1) resetEvolutionSave("bh")
+            else {
 				if (!hasInfUpgrade(18)) resetMainUpgs(1,[3,5,6])
 				player.rp.points = E(0)
 				BUILDINGS.reset('tickspeed')
@@ -489,7 +475,7 @@ const FORMS = {
 			if (CHALS.inChal(17) && !hasElement(201)) return E(1)
 
 			let x = (hasUpgrade('atom',12)?player.bh.mass.add(1).pow(1.25):player.bh.mass.mul(5).add(1).root(4))
-			if (hasElement(89)) x = x.pow(tmp.elements.effect[89])
+			if (hasElement(89)) x = x.pow(elemEffect(89))
 
 			if (hasElement(201)) x = Decimal.add(1.1,exoticAEff(0,5,0)).pow(x.max(1).log10().add(1).log10().pow(.8))
 			if (hasUpgrade('bh',18)) x = x.pow(2.5)
@@ -510,74 +496,22 @@ function loop() {
     player.offline.current = date
 
     updateHTML()
-    calc(diff/1000)
+    calc(diff/1000*devSpeed)
     date = Date.now()
 }
 
-function format(ex, acc=4, max=12, type=player.options.notation) {
+function format(ex, acc=2, type=player.options.notation) {
     if (tmp.aprilEnabled && Math.random() < .9) return "Troll"
 
     ex = E(ex)
-
     neg = ex.lt(0)?"-":""
+    if (neg) ex = ex.mul(-1)
+    if (ex.lt(10**-acc)) return (0).toFixed(acc)
     if (ex.mag == Infinity) return neg + 'Infinite'
     if (Number.isNaN(ex.mag)) return neg + 'NaN'
-    if (ex.lt(0)) ex = ex.mul(-1)
-    if (ex.eq(0)) return ex.toFixed(acc)
-    let e = ex.log10().floor()
-    switch (type) {
-        case "sc":
-            if (ex.log10().lt(Math.min(-acc,0)) && acc > 1) {
-                let e = ex.log10().ceil()
-                let m = ex.div(e.eq(-1)?E(0.1):E(10).pow(e))
-                let be = e.mul(-1).max(1).log10().gte(9)
-                return neg+(be?'':m.toFixed(4))+'e'+format(e, 0, max, "sc")
-            } else if (e.lt(max)) {
-                let a = Math.max(Math.min(acc-e.toNumber(), acc), 0)
-                return neg+(a>0?ex.toFixed(a):ex.toFixed(a).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
-            } else {
-                if (ex.gte("eeee10")) {
-                    let slog = ex.slog()
-                    return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + format(slog.floor(), 0)
-                }
-                let m = ex.div(E(10).pow(e))
-                let be = e.log10().gte(9)
-                return neg+(be?'':m.toFixed(4))+'e'+format(e, 0, max, "sc")
-            }
-        case "st":
-            let e3 = ex.log(1e3).floor()
-			if (e3.lt(1)) {
-				return neg+ex.toFixed(Math.max(Math.min(acc-e.toNumber(), acc), 0))
-			} else {
-				let e3_mul = e3.mul(3)
-				let ee = e3.log10().floor()
-				if (ee.gte(3000)) return "e"+format(e, acc, max, "st")
 
-				let final = ""
-				if (e3.lt(4)) final = ["", "K", "M", "B"][Math.round(e3.toNumber())]
-				else {
-					let ee3 = Math.floor(e3.log(1e3).toNumber())
-					if (ee3 < 100) ee3 = Math.max(ee3 - 1, 0)
-					e3 = e3.sub(1).div(E(10).pow(ee3*3))
-					while (e3.gt(0)) {
-						let div1000 = e3.div(1e3).floor()
-						let mod1000 = e3.sub(div1000.mul(1e3)).floor().toNumber()
-						if (mod1000 > 0) {
-							if (mod1000 == 1 && !ee3) final = "U"
-							if (ee3) final = FORMATS.standard.tier2(ee3) + (final ? "-" + final : "")
-							if (mod1000 > 1) final = FORMATS.standard.tier1(mod1000) + final
-						}
-						e3 = div1000
-						ee3++
-					}
-				}
-
-				let m = ex.div(E(10).pow(e3_mul))
-				return neg+(ee.gte(10)?'':(m.toFixed(E(3).sub(e.sub(e3_mul)).add(acc==0?0:1).toNumber()))+' ')+final
-			}
-        default:
-            return neg+FORMATS[type].format(ex, acc, max)
-    }
+	let f = FORMATS[type] ?? FORMATS.mixed_sc
+    return neg+f.format(ex, acc)
 }
 
 function turnOffline() { player.offline.active = !player.offline.active }
@@ -761,10 +695,10 @@ function formatMass(ex) {
 
 function formatTime(ex,acc=2,type="s") {
     ex = E(ex)
-    if (ex.gte(86400)) return format(ex.div(86400).floor(),0,12,"sc")+":"+formatTime(ex.mod(86400),acc,'d')
-    if (ex.gte(3600)||type=="d") return (ex.div(3600).gte(10)||type!="d"?"":"0")+format(ex.div(3600).floor(),0,12,"sc")+":"+formatTime(ex.mod(3600),acc,'h')
+    if (ex.gte(86400)) return format(ex.div(86400).floor(), 0) + "d, " + formatTime(ex.mod(86400),acc,'d')
+    if (ex.gte(3600)||type=="d") return format(ex.div(3600).floor(), 0)+":"+formatTime(ex.mod(3600),acc,'h')
     if (ex.gte(60)||type=="h") return (ex.div(60).gte(10)||type!="h"?"":"0")+format(ex.div(60).floor(),0,12,"sc")+":"+formatTime(ex.mod(60),acc,'m')
-    return (ex.gte(10)||type!="m" ?"":"0")+format(ex,acc,12,"sc")
+    return (ex.gte(10) || type != "m" ? "" : "0") + format(ex, acc) + (type == "s" ? "s" : "")
 }
 
 function formatReduction(ex,acc) { ex = E(ex); return format(E(1).sub(ex).mul(100),acc)+"%" }
@@ -779,10 +713,11 @@ function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Deci
 
 function overflowFormat(x,inv=false) { return (inv?"raised":"rooted")+" by <b>"+format(x)+"</b>" }
 
-function capitalFirst(str) {
+function capitalFirst(str, firstOnly) {
 	if (str=="" || str==" ") return str
+	if (firstOnly) return str[0].toUpperCase() + str.slice(1)
 	return str
 		.split(" ")
-		.map(x => x[0].toUpperCase() + x.slice(1))
+		.map(x => capitalFirst(x, true))
 		.join(" ");
 }

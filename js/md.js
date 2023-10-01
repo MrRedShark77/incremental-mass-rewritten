@@ -3,7 +3,7 @@ const MASS_DILATION = {
     penalty() {
         let x = 0.8
         if (FERMIONS.onActive("02")) x **= 2
-        if (QCs.active() && (brokeDil() ? !player.qu.rip.active : true)) x **= tmp.qu.qc_eff[6]
+        if (QCs.active() && (brokeDil() ? !player.qu.rip.active : true)) x **= tmp.qu.qc.eff[6]
         return x
     },
     onactive() {
@@ -17,7 +17,7 @@ const MASS_DILATION = {
         let x = E(2).add(mdEff(5, false, 0)).mul(tmp.chal && !CHALS.inChal(10) ? tmp.chal.eff[10] : 1)
         if (!inMD() && hasTree("d1")) x = x.mul(1.25)
         if (FERMIONS.onActive("01")) x = x.div(10)
-        if (QCs.active()) x = x.mul(tmp.qu.qc_eff[4])
+        if (QCs.active()) x = x.mul(tmp.qu.qc.eff[4])
         if (hasElement(24) && hasPrestige(0,40)) x = x.mul(tmp.elements.effect[24])
         if (tmp.dark.run) x = x.pow(mgEff(3))
         return x
@@ -41,15 +41,15 @@ const MASS_DILATION = {
         let pow = E(2).add(mdEff(1, true, 0))
         let x = player.md.particles.pow(pow)
         x = x.mul(mdEff(0))
-        if (hasElement(22)) x = x.mul(tmp.elements.effect[22])
-        if (hasElement(35)) x = x.mul(tmp.elements.effect[35])
-        if (hasElement(40)) x = x.mul(tmp.elements.effect[40][0])
+        if (hasElement(22)) x = x.mul(elemEffect(22))
+        if (hasElement(35)) x = x.mul(elemEffect(22))
+        if (hasElement(40)) x = x.mul(elemEffect(40, [1, 1])[0])
         if (hasElement(32)) x = x.pow(1.05)
-        if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+        if (QCs.active()) x = x.pow(tmp.qu.qc.eff[4])
 
         x = x.softcap(tmp.md.massSoftcap1,0.5,0)
 
-        if (hasElement(40)) x = x.pow(tmp.elements.effect[40][1])
+        if (hasElement(40)) x = x.pow(elemEffect(40, [1, 1])[1])
 
         x = expMult(x,theoremEff('atom',5))
 
@@ -104,7 +104,7 @@ const MASS_DILATION = {
                 cost(x) { return tmp.md.bd3 ? E(10).pow(E(1.25).pow(x)).mul(100) : E(10).pow(x).mul(100) },
                 bulk() { return player.md.mass.gte(100)?(tmp.md.bd3 ? player.md.mass.div(100).max(1).log10().max(1).log(1.25).add(1).floor() : player.md.mass.div(100).max(1).log10().add(1).floor()):E(0) },
                 effect(x) {
-                    if (tmp.md.bd3) return x.mul(mdEff(11)).root(tmp.rip.in ? 3 : 2).mul(tmp.rip.in ? 0.05 : 0.1).add(1)
+                    if (tmp.md.bd3) return x.mul(mdEff(11)).root(tmp.qu.rip.in ? 3 : 2).mul(tmp.qu.rip.in ? 0.05 : 0.1).add(1)
                     if (hasElement(83)) return expMult(x,2,1.5).add(1)
                     return hasMDUpg(7)?x.mul(mdEff(11)).root(1.5).mul(0.25).add(1):x.mul(tmp.md.upgs[11].eff||1).root(2).mul(0.15).add(1)
                 },
@@ -205,18 +205,7 @@ const MASS_DILATION = {
 
     break: {
         toggle() {
-            let bd = player.md.break
-
-            if (bd.active) createConfirm("Are you sure you want to fix Dilation?",'bd',()=>{
-                bd.active = false
-        
-                bd.energy = E(0)
-                bd.mass = E(0)
-                for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) bd.upgs[x] = E(0)
-
-                QUANTUM.enter(false,true,false,true)
-            })
-            else bd.active = true
+            player.md.break.active = true
         },
         energyGain() {
             if (!brokeDil()) return E(0)
@@ -229,7 +218,7 @@ const MASS_DILATION = {
             x = x.add(1).pow(p).sub(1)
             if (hasPrestige(0,10)) x = x.mul(prestigeEff(0,10))
             x = x.mul(mdEff(5, true))
-            if (hasElement(116)) x = x.mul(tmp.elements.effect[116]||1)
+            if (hasElement(116)) x = x.mul(elemEffect(116))
 
             return x
         },
@@ -337,13 +326,13 @@ const MASS_DILATION = {
                     cost(x) { return uni(1e100) },
                     bulk() { return player.md.break.mass.gte(uni(1e100))?E(1):E(0) },
                     effect(y) {
-                        let x = (tmp.preQUGlobalSpeed||E(1)).add(1).root(10)
+                        let x = (tmp.qu.speed||E(1)).add(1).root(10)
 
                         return x
                     },
                     effDesc(x) { return format(x)+"x" },
                 },{
-                    desc: `Super Prestige Level starts 10 later.`,
+                    desc: `Super Prestige starts 10 later.`,
                     maxLvl: 1,
                     cost(x) { return uni(1e120) },
                     bulk() { return player.md.break.mass.gte(uni(1e120))?E(1):E(0) },
@@ -461,9 +450,9 @@ function updateBDTemp() {
 }
 
 function updateMDHTML() {
-    tmp.el.md_particles.setTxt(format(player.md.particles,0)+(hasTree("qol3")?" "+formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(tmp.preQUGlobalSpeed)):""))
+    tmp.el.md_particles.setTxt(format(player.md.particles,0)+(hasTree("qol3")?" "+formatGain(player.md.particles,tmp.md.passive_rp_gain.mul(tmp.qu.speed)):""))
     tmp.el.md_eff.setTxt(tmp.md.bd3 ? "^"+tmp.md.mass_eff.format() : tmp.md.mass_eff.gte(10)?format(tmp.md.mass_eff)+"x":format(tmp.md.mass_eff.sub(1).mul(100))+"%")
-    tmp.el.md_mass.setTxt(formatMass(player.md.mass)+" "+formatGain(player.md.mass,tmp.md.mass_gain.mul(tmp.preQUGlobalSpeed),true))
+    tmp.el.md_mass.setTxt(formatMass(player.md.mass)+" "+formatGain(player.md.mass,tmp.md.mass_gain.mul(tmp.qu.speed),true))
     tmp.el.md_btn.setTxt(inMD()
         ?(tmp.md.rp_gain.gte(1)?`Cancel for ${format(tmp.md.rp_gain,0)} Relativistic particles`:`Reach ${formatMass(tmp.md.mass_req)} to gain Relativistic particles, or cancel dilation`)
         :"Dilate Mass"
@@ -473,11 +462,10 @@ function updateMDHTML() {
         let unl = upg.unl?upg.unl():true
         tmp.el["md_upg"+x+"_div"].setVisible(unl)
         if (unl) {
-            tmp.el["md_upg"+x+"_div"].setClasses({btn: true, full: true, md: true, locked: !tmp.md.upgs[x].can })
+            let has = player.md.upgs[x].gte(upg.maxLvl||1/0)
+            tmp.el["md_upg"+x+"_div"].setClasses({btn: true, full: true, md: true, bought: has, locked: !has && !tmp.md.upgs[x].can })
             if ((upg.maxLvl||1/0) > 1) tmp.el["md_upg"+x+"_lvl"].setTxt(format(player.md.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
-            if (upg.effDesc) {
-                tmp.el["md_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.md.upgs[x].eff))
-            }
+            if (upg.effDesc) tmp.el["md_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.md.upgs[x].eff))
             tmp.el["md_upg"+x+"_cost"].setTxt(player.md.upgs[x].lt(upg.maxLvl||EINF)?"Cost: "+formatMass(tmp.md.upgs[x].cost):"")
         }
     }
@@ -494,8 +482,7 @@ function updateBDHTML() {
     let bd = player.md.break
     let c16 = tmp.c16.in
 
-    tmp.el.bd_btn.setTxt(bd.active?"Fix Dilation":"Break Dilation")
-
+    tmp.el.bd_btn.setDisplay(!bd.active)
     tmp.el.bd_energy.setTxt(bd.energy.format(1)+" "+bd.energy.formatGain(tmp.bd.energyGain.mul(inf_gs)))
     tmp.el.bd_mass.setTxt(formatMass(bd.mass)+" "+bd.mass.formatGain(tmp.bd.massGain.mul(inf_gs),true))
 
@@ -504,7 +491,8 @@ function updateBDHTML() {
         let unl = upg.unl?upg.unl():true
         tmp.el["bd_upg"+x+"_div"].setVisible(unl)
         if (unl) {
-            tmp.el["bd_upg"+x+"_div"].setClasses({btn: true, full: true, bd: true, locked: !tmp.bd.upgs[x].can, corrupted_text2: x == 2 && c16})
+            let has = player.md.break.upgs[x].gte(upg.maxLvl||1/0)
+            tmp.el["bd_upg"+x+"_div"].setClasses({btn: true, full: true, bd: true, bought: has, locked: !has && !tmp.bd.upgs[x].can, corrupted_text2: x == 2 && c16 })
             if ((upg.maxLvl||1/0) > 1) tmp.el["bd_upg"+x+"_lvl"].setTxt(format(bd.upgs[x],0)+(upg.maxLvl!==undefined?" / "+format(upg.maxLvl,0):""))
             if (upg.effDesc) tmp.el["bd_upg"+x+"_eff"].setHTML(upg.effDesc(tmp.bd.upgs[x].eff))
             tmp.el["bd_upg"+x+"_cost"].setTxt(bd.upgs[x].lt(upg.maxLvl||EINF)?"Cost: "+formatMass(tmp.bd.upgs[x].cost):"")

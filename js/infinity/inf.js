@@ -23,7 +23,6 @@ const INF = {
 				cs_double: [E(0),E(0)],
 			},
 			ascensions: new Array(ASCENSIONS.names.length).fill(E(0)),
-			auto_asc: [],
 			asc_reward: 0,
 
 			gal_prestige: E(0),
@@ -36,7 +35,7 @@ const INF = {
 		let unl = force ?? (player.inf && E(player.inf.theorem).gt(0))
 		if (unl) player = deepUndefinedAndDecimal(player, this.save)
 		else for (var i in this.save) {
-			if (!["auto_asc", "asc_reward"].includes(i)) delete player[i]
+			if (!["asc_reward"].includes(i)) delete player[i]
 		}
 
 		tmp.inf_unl = unl
@@ -96,14 +95,14 @@ const INF = {
         if (!iu11) resetMainUpgs(4,[8])
 
         let e = [14,18,24,30,122,124,131,136,143,194]
-        if (OURO.evo >= 3) e.push(293)
+        keepElementsOnOuroboric(e)
         if (hasInfUpgrade(2)) e.push(202)
         if (hasInfUpgrade(3)) e.push(161)
         if (iu15) e.push(218)
         for (let i of unchunkify(player.atom.elements)) if (i > 218 && i <= 290) e.push(i)
 
         player.atom.elements = e
-        player.atom.muonic_el = unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].cs || MUONIC_ELEM.upgs[x].berry)
+        player.atom.muonic_el = unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].cs || x > 66)
 
         for (let x = 1; x <= (hasElement(229) ? 15 : 16); x++) player.chal.comps[x] = E(0)
 
@@ -111,17 +110,7 @@ const INF = {
         for (let x = 0; x < PRESTIGES.names.length; x++) player.prestiges[x] = E(0)
 
 		// Ouroboric
-        if (OURO.unl()) player.evo = deepUndefinedAndDecimal({
-			times: player.evo.times,
-			cp: { unl: OURO.evo >= 1 },
-			wh: {
-				unl: OURO.evo >= 2,
-				auto: player.evo.wh.auto,
-				origin: player.evo.wh.origin,
-				rate: player.evo.wh.rate,
-			},
-			const: player.evo.const
-		}, OURO.save.evo)
+        if (OURO.unl()) resetEvolutionSave("inf")
 
         // Reset
         player.ranks[RANKS.names[RANKS.names.length-1]] = E(0)
@@ -253,7 +242,7 @@ const INF = {
 
         // Other
         if (!hasInfUpgrade(11)) {
-            tmp.rank_tab = 0
+            tmp.ranks.tab = 0
             tmp.stab[4] = 0
         }
         
@@ -286,8 +275,7 @@ const INF = {
     goInf(limit=false) {
         if (player.mass.gte(this.req)) {
             if (limit || player.inf.pt_choosed >= 0 || hasElement(239)) CONFIRMS_FUNCTION.inf(limit)
-            else if (player.confirms.inf) createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
-            else CONFIRMS_FUNCTION.inf(limit)
+            else createConfirm(`Are you sure you want to go infinity without selecting any theorem?`,'inf',()=>{CONFIRMS_FUNCTION.inf(limit)})
         }
     },
     level() {
@@ -504,10 +492,8 @@ function updateInfTemp() {
     tmp.inf_reached = player.mass.gte(tmp.inf_limit)
 	if (!tmp.inf_unl) return
 
-	//Bonus
     updateAscensionsTemp()
     updateGPTemp()
-
     updateCSTemp()
     tmp.dim_mass_gain = INF.dim_mass.gain()
     tmp.dim_mass_eff = INF.dim_mass.effect()
@@ -575,6 +561,7 @@ function calcInf(dt) {
 			},3000)
 		}
     }
+	if (tmp.inf_time) player.mass = tmp.inf_limit
 	if (!tmp.inf_unl) return
 
     if (!player.inf.reached && player.mass.gte(INF.req)) player.inf.reached=true
@@ -584,7 +571,7 @@ function calcInf(dt) {
 
     player.inf.dim_mass = player.inf.dim_mass.add(tmp.dim_mass_gain.mul(dt))
 
-    if (hasElement(232)) {
+    if (hasElement(232) && !tmp.pass) {
         let cs = tmp.c16.shardGain
         player.dark.c16.shard = player.dark.c16.shard.add(cs.mul(dt))
         player.dark.c16.totalS = player.dark.c16.totalS.add(cs.mul(dt))
@@ -599,18 +586,24 @@ function calcInf(dt) {
         player.inf.total = player.inf.total.add(ig)
     }
 
-    if (tmp.CS_unl) player.inf.cs_amount = CORRUPTED_STAR.calcNextGain(player.inf.cs_amount,tmp.cs_speed.mul(dt))
+    if (tmp.cs.unl) {
+		player.inf.cs_amount = CORRUPTED_STAR.calcNextGain(player.inf.cs_amount,tmp.cs.speed.mul(dt))
+		if (hasElement(285)) {
+			buyCSUpg(0)
+			buyCSUpg(1)
+		}
+	}
 
     if (hasElement(253)) {
         for (let i in player.inf.core) {
             let p = player.inf.core[i]
-            if (p) {
-                player.inf.fragment[p.type]=player.inf.fragment[p.type].add(calcFragmentBase(p,p.star,p.power).mul(dt/100))
-            }
+            if (p) player.inf.fragment[p.type]=player.inf.fragment[p.type].add(calcFragmentBase(p,p.star,p.power).mul(dt/100))
         }
     }
 
-	for (let x = 0; x < ASCENSIONS.names.length; x++) if (ASCENSIONS.autoUnl[x]() && player.auto_asc[x]) ASCENSIONS.reset(x,true)
+	for (let x = 0; x < ASCENSIONS.names.length; x++) if (ASCENSIONS.autoUnl[x]()) ASCENSIONS.reset(x,true)
+
+	if (hasElement(304) && tmp.gp.res.gte(tmp.gp.req)) player.gal_prestige = player.gal_prestige.add(1)
     for (let i = 0; i < GAL_PRESTIGE.res_length; i++) player.gp_resources[i] = player.gp_resources[i].add(tmp.gp.res_gain[i].mul(dt))
 }
 

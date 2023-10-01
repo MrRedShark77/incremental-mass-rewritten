@@ -1,5 +1,5 @@
 const CONFIRMS_FUNCTION = {
-    rage() {
+    rp() {
         let g = tmp.rp.gain, r = OURO.evo >= 1 ? player.evo.cp : player.rp
 
         r.points = r.points.add(g)
@@ -53,67 +53,19 @@ const CONFIRMS_FUNCTION = {
             else SUPERNOVA.reset(false,false,false,true)
         }
     },
-    qu(auto,force,rip,bd) {
-        if (QCs.active() && !rip && !bd && !player.qu.rip.active && !tmp.dark.run && !CHALS.inChal(14) && !CHALS.inChal(15)) {
-            player.qu.qc.shard = tmp.qu.qc_s+tmp.qu.qc_s_bouns
-            player.qu.qc.active = false
-        }
-		if (OURO.evo >= 5) {
-			if (!force) {
-				player.evo.cosmo.unl = 1
-				player.evo.cosmo.elixir = player.evo.cosmo.elixir.add(tmp.qu.gain)
-			}
-			QUANTUM.doReset(force)
-		} else if (player.qu.times.gte(10) || OURO.unl() || force) {
-            if (!force) {
-                player.qu.points = player.qu.points.add(tmp.qu.gain)
-                player.qu.times = player.qu.times.add(tmp.qu.gainTimes)
-            }
-            ENTROPY.reset(0)
-            ENTROPY.reset(1)
-            updateQuantumTemp()
-            QUANTUM.doReset(force)
-            if (rip && tmp.sn.unl) {
-                if (hasUpgrade('br',4)) for (let x = 0; x < 2; x++) for (let y = 0; y < 6; y++) player.supernova.fermions.tiers[x][y] = E(2)
-            }
-
-            addQuote(7)
-        } else {
+    qu(auto,force,rip) {
+		if (quUnl() || OURO.unl()) QUANTUM.performReset(force, rip)
+        else {
             document.body.style.animation = "implode 2s 1"
-            setTimeout(()=>{
-                addQuote(7)
-
-                if (player.qu.times.lte(0)) {
-                    createPopup(POPUP_GROUPS.qus2.html(),'qus2');
-                    createPopup(POPUP_GROUPS.qus1.html(),'qus1');
-                }
-                
-                player.qu.points = player.qu.points.add(tmp.qu.gain)
-                player.qu.times = player.qu.times.add(tmp.qu.gainTimes)
-
-                updateQuantumTemp()
-                
-                QUANTUM.doReset(force)
-            },1000)
+            setTimeout(()=>QUANTUM.performReset(force, rip),1000)
             setTimeout(()=>{
                 document.body.style.animation = ""
             },2000)
         }
-        player.qu.auto.time = 0
     },
     enterQC() {
         player.qu.qc.active = !player.qu.qc.active
         QUANTUM.doReset(player.qu.qc.active)
-    },
-    bigRip() {
-        if (tmp.dark.run) return
-        if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.rip.gain)
-        player.qu.qc.active = false
-        player.qu.rip.first = true
-        player.qu.rip.active = !player.qu.rip.active
-        QUANTUM.enter(false,true,true)
-
-        addQuote(8)
     },
     dark() {
         player.dark.unl = true
@@ -131,18 +83,17 @@ const CONFIRMS_FUNCTION = {
             if (player.inf.theorem.eq(0)) addTheorem('mass',[0,1,1,1,1,1,1,1],E(1),E(1))
             else addSelectedTheorem(true)
         } else if (hasElement(239) && player.inf.pt_choosed < 0) {
-            let fl = Decimal.floor(tmp.core_lvl), pm = getPowerMult()
+            let fl = Decimal.floor(tmp.core_lvl)
             for (let i in player.inf.pre_theorem) {
                 let t = player.inf.pre_theorem[i]
-                player.inf.fragment[t.type] = player.inf.fragment[t.type].add(calcFragmentBase(t,chanceToBool(t.star_c),pm.mul(t.power_m).mul(100).add(100).round().div(100),fl).div(4)) // Math.round(100+pm*t.power_m*100)/100
+                player.inf.fragment[t.type] = player.inf.fragment[t.type].add(calcFragmentBase(t,chanceToBool(t.star_c),getPower(t.power_m),fl).div(4)) // Math.round(100+pm*t.power_m*100)/100
             }
         }
 
         if (player.inf.theorem.eq(0)) {
             player.inf.points = player.inf.points.add(2)
             player.inf.total = player.inf.total.add(2)
-        }
-        else {
+        } else {
             player.inf.points = player.inf.points.add(tmp.IP_gain)
             player.inf.total = player.inf.total.add(tmp.IP_gain)
         }
@@ -159,7 +110,54 @@ const CONFIRMS_FUNCTION = {
 
         addQuote(11)
     },
-    t_switch() {
-        
-    },
+}
+
+const RESET_CONFIRMS = {
+	rp: {
+		color: `red`,
+		title: `1: Rage`,
+		gain: "Rage Power",
+		unls: "Tickspeed and Upgrades",
+		quoteSkip: 2
+	},
+	bh: {
+		color: `yellow`,
+		title: `2: Black Hole`,
+		gain: "Dark Matters",
+		unls: "Black Hole",
+		quoteSkip: 3
+	},
+	atom: {
+		title: `3: Atomic`,
+		gain: "Atoms and Quarks",
+		unls: "Cosmic Rays and Quarks",
+		quoteSkip: 4
+	},
+	qu: {
+		color: `light_green`,
+		title: `5: Quantum`,
+		gain: "Quantum Foam",
+		unls: "Cosmic Strings and Chroma",
+		quoteSkip: 7
+	},
+	dark: {
+		color: `gray`,
+		title: `6: Darkness`,
+		gain: "Dark Rays",
+		unls: "Element Tier 2",
+		quoteSkip: 9
+	}
+}
+
+function getResetConfirm(id, func) {
+	if (!func) func = CONFIRMS_FUNCTION[id]
+
+	let d = RESET_CONFIRMS[id]
+	if (player.quotes.includes(d.quoteSkip)) func()
+	else createConfirm(`
+		<h3 class='${d.color}'>${d.title} reset</h3><br>
+		This resets almost everything up to this point, in exchange for ${d.gain}.
+		<br class='line'>
+		<b class='yellow'>You'll also unlock: ${d.unls}</b>
+	`, id, func)
 }

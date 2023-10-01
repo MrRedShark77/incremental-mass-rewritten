@@ -284,7 +284,7 @@ const TREE_UPGS = {
             branch: ["qol1"],
             req() { return player.supernova.times.gte(3) },
             reqDesc: `3 Supernovas.`,
-            desc: `Start with Chromium-24 and Atom upgrade 6 unlocked.`,
+            desc: `Keep Chromium-24 and Atom upgrades 3 & 6 on Supernova.`,
             cost: E(2000),
         },
         qol3: {
@@ -492,7 +492,7 @@ const TREE_UPGS = {
         fn2: {
             branch: ["fn1"],
             req() { return OURO.evo >= 3 || (player.mass.div('1.5e56').gte("ee6") && inMD() && FERMIONS.onActive("01")) },
-            reqDesc() { return OURO.evo >= 3 ? `YOU CAN AFFORD BECAUSE OF A EVOLUTION!` : `Reach ${formatMass(E('e1e6').mul(1.5e56))} while dilating mass in [Down]` },
+            reqDesc() { return OURO.evo >= 3 ? `YOU CAN AFFORD BECAUSE OF A EVOLUTION!` : `Reach ${formatMass(E('ee6').mul(1.5e56))} while dilating mass in [Down]` },
             desc: `Unlock 2 more types of U-Quark & U-Fermion.`,
             cost: E(1e33),
         },
@@ -718,7 +718,7 @@ const TREE_UPGS = {
             desc: `Chromas are affected by Quantum Shard’s effect.`,
             cost: E(1e21),
             effect() {
-                let x = tmp.qu.qc_s_eff.max(1)
+                let x = tmp.qu.qc.s_eff.max(1)
                 return x
             },
             effDesc(x) { return format(x,1)+"x" },
@@ -883,7 +883,7 @@ const TREE_UPGS = {
             unl() { return player.qu.en.unl },
             qf: true,
             branch: ['qc1'],
-            req() { return tmp.qu.qc_s >= 70 && player.mass.gte(uni('ee5')) && QCs.active() },
+            req() { return tmp.qu.qc.s >= 70 && player.mass.gte(uni('ee5')) && QCs.active() },
             reqDesc() { return `Reach ${formatMass(uni('ee5'))} of mass with QS 70 build (before bonus from [qc2]).` },
             desc: `Get 1 extra shard when a nerf reaches 10.`,
             cost: E(1e27),
@@ -896,10 +896,7 @@ const TREE_UPGS = {
             reqDesc() { return `Get 88 Quantum Shards.` },
             desc: `Quantum Shard's base is increased by Prestige Base.`,
             cost: E(1e78),
-            effect() {
-                let x = (tmp.prestiges.base||E(1)).add(1).log10().div(10)
-                return x
-            },
+            effect: () => E(tmp.prestiges.base||1).add(1).log10().div(10),
             effDesc(x) { return "+"+format(x) },
         },
         en1: {
@@ -913,7 +910,7 @@ const TREE_UPGS = {
             unl() { return player.qu.rip.first },
             qf: true,
             branch: ['qu5'],
-            req() { return tmp.qu.qc_s >= 76 && player.mass.gte(uni('e7500')) && QCs.active() },
+            req() { return tmp.qu.qc.s >= 76 && player.mass.gte(uni('e7500')) && QCs.active() },
             reqDesc() { return `Reach ${formatMass(uni('e7500'))} of mass with 76 QS build (before bonus from [qc2]).` },
             desc: `Quantum Shards boost Death Shard gain.`,
             cost: E(1e58),
@@ -1018,8 +1015,8 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free fermion tiers.`,
             cost: E(50),
 
-            req() { return tmp.c16.in && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e81') },
-            reqDesc() { return `Reach ${formatMass('1e81')} of black hole during C16 & [Meta-Quark].` },
+            req() { return tmp.c16.in && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('e81') },
+            reqDesc() { return `Reach ${formatMass('e81')} of black hole during C16 & [Meta-Quark].` },
 
             effect() {
                 let x = tmp.c16.best_bh_eff.add(1).log10().mul(1.5)
@@ -1098,12 +1095,12 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free radiation boosts.`,
             cost: E(5000),
 
-            req() { return tmp.c16.in && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('1e400') && player.build.bhc.amt.lte(0) },
-            reqDesc() { return `Reach ${formatMass('1e400')} of black hole during C16 & [Meta-Lepton] without buying BH Condensers.` },
+            req() { return tmp.c16.in && player.supernova.fermions.choosed == "16" && player.bh.mass.gte('e400') && player.build.bhc.amt.lte(0) },
+            reqDesc() { return `Reach ${formatMass('e400')} of black hole during C16 & [Meta-Lepton] without buying BH Condensers.` },
 
             effect() {
                 let x = tmp.c16.best_bh_eff.root(3)
-                return x.overflow('1e300',0.25)
+                return x.overflow('e300',0.25)
             },
             effDesc(x) { return "+"+format(x) },
         },
@@ -1144,11 +1141,11 @@ const TREE_UPGS = {
             desc: `Best mass of black hole in C16 adds free primordium particles.`,
             cost: E(5e7),
 
-            req() { return tmp.c16.in && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('1e1960') && player.build.bhc.amt.lte(0) },
-            reqDesc() { return `Reach ${formatMass('1e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
+            req() { return tmp.c16.in && player.supernova.fermions.choosed == "06" && player.bh.mass.gte('e1960') && player.build.bhc.amt.lte(0) },
+            reqDesc() { return `Reach ${formatMass('e1960')} of black hole during C16 & [Meta-Quark] without buying BH Condensers.` },
 
             effect() {
-                let x = tmp.c16.best_bh_eff.root(2).overflow('1e430',0.25)
+                let x = tmp.c16.best_bh_eff.root(2).overflow('e430',0.25)
                 return x
             },
             effDesc(x) { return "+"+format(x) },
@@ -1190,7 +1187,7 @@ const TREE_UPGS = {
             effDesc(x) { return formatMult(x) },
         },
         ct16: {
-            unl: ()=>tmp.eaUnl || tmp.epUnl,
+            unl: ()=>tmp.ea.unl || tmp.epUnl,
             branch: ['ct10'],
 
             desc: `Best mass of black hole in C16 boosts Kaon & Pion gain.`,

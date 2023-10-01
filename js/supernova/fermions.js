@@ -8,7 +8,7 @@ const FERMIONS = {
     gain(i) {
         if (!player.supernova.fermions.unl) return E(0)
         let x = E(10)
-        let base = E(1.25).add(tmp.prim.eff[5][0])
+        let base = E(1.25).add(tmp.qu.prim.eff[5][0])
         if (hasTree("unl1")) x = x.mul(tmp.sn.rad.hz_effect)
         for (let j = 0; j < FERMIONS.types[i].length; j++) x = x.mul(base.pow(player.supernova.fermions.tiers[i][j]))
         if (hasTree("fn1") && tmp.sn) x = x.mul(treeEff("fn1"))
@@ -24,19 +24,18 @@ const FERMIONS = {
         }
     },
     choose(i,x) {
-        if (player.confirms.sn) createConfirm("Are you sure to switch any type of any Fermion?",'switchF', ()=>CONFIRMS_FUNCTION.switchF(i,x))
-        else CONFIRMS_FUNCTION.switchF(i,x)
+        CONFIRMS_FUNCTION.switchF(i,x)
     },
     bonus(i,j) {
         let x = E(0)
-        if (hasTree("prim3") && j < 6) x = x.add(tmp.prim.eff[5][1].min(j>2&&!hasElement(172)?4:EINF))
+        if (hasTree("prim3") && j < 6) x = x.add(tmp.qu.prim.eff[5][1].min(j>2&&!hasElement(172)?4:EINF))
         if (hasTree('ct3')) x = x.add(treeEff('ct3'))
         return x
     },
     fp() {
         let x = E(1)
         if (hasTree("qu1")) x = x.mul(1.2)
-        if (QCs.active()) x = x.div(tmp.qu.qc_eff[2])
+        if (QCs.active()) x = x.div(tmp.qu.qc.eff[2])
         return x
     },
     fp2() {
@@ -73,7 +72,7 @@ const FERMIONS = {
     types: [
         [
             {
-                unl: _ => tmp.atom.unl,
+                unl: () => tmp.atom.unl,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e50').pow(t.pow(1.25)).mul("e800")
@@ -94,7 +93,7 @@ const FERMIONS = {
                 inc: "Atomic Powers",
                 cons: "^0.6 to the exponent of Atomic Powers gain",
             },{
-                unl: _ => tmp.atom.unl,
+                unl: () => tmp.atom.unl,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e50').pow(t.pow(1.25)).mul("e400")
@@ -164,7 +163,7 @@ const FERMIONS = {
                 get inc() { return OURO.evo >= 1 ? "10^CP^0.5" : "Rage Power" },
                 cons: "You are trapped in Mass Dilation and Challenges 3-5",
             },{
-                unl: _ => tmp.atom.unl,
+                unl: () => tmp.atom.unl,
                 maxTier() {
                     if (hasElement(156)) return EINF
                     let x = 30
@@ -296,7 +295,7 @@ const FERMIONS = {
                 get inc() { return OURO.evo >= 2 ? "2^Fabric^0.5" : "Mass of Black Hole" },
                 cons: "The power from the mass of the BH formula is always -1",
             },{
-                unl: _ => OURO.evo == 0,
+                unl: () => OURO.evo == 0,
                 nextTierAt(x) {
                     let t = FERMIONS.getTierScaling(x)
                     return E('e5e3').pow(t.pow(1.5)).mul("e4.5e5")
@@ -345,7 +344,7 @@ const FERMIONS = {
                 inc: "Collapsed Star",
                 cons: "Star generators are decreased to ^0.5",
             },{
-                unl: _ => tmp.atom.unl,
+                unl: () => tmp.atom.unl,
                 maxTier() {
                     if (hasElement(156)) return EINF
                     let x = 25
@@ -494,7 +493,7 @@ function updateFermionsHTML() {
         [player.atom.quarks, OURO.evo >= 2 ? E(2).pow(player.evo.wh.fabric.sqrt()) : player.bh.mass, tmp.bh.unl ? player.bh.dm : E(1), player.stars.points, OURO.evo >= 3 ? E(2).pow(player.evo.proto.star.cbrt()) : player.atom.points, BUILDINGS.eff('tickspeed','power'), tf.prod[1]]
     ]
     for (i = 0; i < 2; i++) {
-        tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tf.gains[i].mul(tmp.preQUGlobalSpeed)))
+        tmp.el["f"+FERMIONS.names[i]+"Amt"].setTxt(format(player.supernova.fermions.points[i],2)+" "+formatGain(player.supernova.fermions.points[i],tf.gains[i].mul(tmp.qu.speed)))
         let unls = FERMIONS.getUnlLength(i)
         for (let x = 0; x < FERMIONS.types[i].length; x++) {
             let f = FERMIONS.types[i][x]

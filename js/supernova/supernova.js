@@ -1,15 +1,11 @@
 const SUPERNOVA = {
     reset(force=false, chal=false, post=false, fermion=false) {
-        if (!chal && !post && !fermion) {
-            if (force && player.confirms.sn) createConfirm("Are you sure to reset without being Supernova?",'sn',()=>CONFIRMS_FUNCTION.sn(force,chal,post,fermion))
-            else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
-        }
+        if (force && !chal && !post && !fermion && !quUnl()) createConfirm("Are you sure to restart?",'sn',()=>CONFIRMS_FUNCTION.sn(force,chal,post,fermion))
         else CONFIRMS_FUNCTION.sn(force,chal,post,fermion)
     },
     doReset() {
-        let br = tmp.rip.in
+        let br = tmp.qu.rip.in
         tmp.sn.time = 0
-        if (OURO.unl()) player.evo.cp.best = E(0)
 		if (OURO.evo >= 3) {
             let keep = {
                 nebula: {},
@@ -25,15 +21,16 @@ const SUPERNOVA = {
         player.atom.quarks = E(0)
 
         list_keep = [21,36]
-        if (OURO.evo >= 3) list_keep.push(293)
-        if (OURO.evo >= 4) list_keep.push(1,14,18,24,30,43)
+        if (OURO.evo >= 4) list_keep.push(14,18,24,30,43)
         else {
-            if (hasUpgrade("br",1)) list_keep.push(1)
             if (hasTree("qol1")) list_keep.push(14,18)
             if (hasTree("qol2")) list_keep.push(24)
             if (hasTree("qol3")) list_keep.push(43)
             if (quUnl()) list_keep.push(30)
         }
+        if (hasUpgrade("br",1)) list_keep.push(OURO.evo >= 4 ? 305 : 1)
+        keepElementsOnOuroboric(list_keep)
+
         keep = []
         for (let x of unchunkify(player.atom.elements)) if (list_keep.includes(x) || x > 86 && x <= 290) keep.push(x)
         player.atom.elements = keep
@@ -49,7 +46,7 @@ const SUPERNOVA = {
 
 			if (!hasInfUpgrade(18)) {
 				let list_keep = [2,5,9]
-				if (hasTree("qol2")) list_keep.push(6)
+				if (hasTree("qol2")) list_keep.push(3,6)
 				resetMainUpgs(3,list_keep)
 			}
 
@@ -112,7 +109,7 @@ const SUPERNOVA = {
         if (hasElement(49,1)) x = x.mul(muElemEff(49))
         if (hasElement(274)) x = x.mul(elemEffect(274))
         if (hasElement(304)) x = x.mul(elemEffect(304))
-        if (hasUpgrade('br',22)) x = x.mul(tmp.prim.eff[7])
+        if (hasUpgrade('br',22)) x = x.mul(tmp.qu.prim.eff[7])
         x = x.mul(theoremEff('time',5)).mul(escrowBoost('sn')).mul(escrowBoost('sn2'))
 
         return x
@@ -120,14 +117,7 @@ const SUPERNOVA = {
 }
 
 function calcSupernova(dt) {
-    if (OURO.evo >= 4) return;
-
-    let du_gs = tmp.preQUGlobalSpeed.mul(dt)
     let su = player.supernova
-
-    if (player.build.tickspeed.amt.gte(1)) su.chal.noTick = false
-    if (player.build.bhc.amt.gte(1)) su.chal.noBHC = false
-
     if (tmp.sn.reached && (tmp.start || su.times.gte(1)) && !su.post_10) {
         if (supernovaAni()) tmp.sn.time += dt
         else {
@@ -135,10 +125,15 @@ function calcSupernova(dt) {
             SUPERNOVA.reset()
         }
     }
+    if (!tmp.sn.unl) return
+
+    let du_gs = tmp.qu.speed.mul(dt)
+    if (player.build.tickspeed.amt.gte(1)) su.chal.noTick = false
+    if (player.build.bhc.amt.gte(1)) su.chal.noBHC = false
 
 	if (tmp.sn.gen) su.times = su.times.add(tmp.sn.passive.mul(dt))
 	else if (hasTree("qu_qol4")) su.times = su.times.max(tmp.sn.bulk)
-    if (tmp.sn.unl) su.stars = su.stars.add(tmp.sn.star_gain.mul(dt).mul(tmp.preQUGlobalSpeed))
+    if (tmp.sn.unl) su.stars = su.stars.add(tmp.sn.star_gain.mul(dt).mul(tmp.qu.speed))
 
     if (!su.post_10 && su.times.gte(10)) {
         su.post_10 = true
@@ -177,6 +172,7 @@ function calcSupernova(dt) {
     if (hasTree("unl1")) {
         if (!player.qu.en.eth[0]) su.radiation.hz = su.radiation.hz.add(tmp.sn.rad.hz_gain.mul(du_gs))
         for (let x = 0; x < RAD_LEN; x++) su.radiation.ds[x] = su.radiation.ds[x].add(tmp.sn.rad.ds_gain[x].mul(du_gs))
+		RADIATION.autoBuyBoosts()
     }
 }
 
@@ -285,19 +281,19 @@ function updateSupernovaEndingHTML() {
     if (tmp.sn.reached && tmp.start && supernovaAni()) {
         tmp.tab = 5
         tmp.stab[5] ||= 0
-        document.body.style.backgroundColor = `hsl(0, 0%, ${7-Math.min(tmp.sn.time/4,1)*7}%)`
-        tmp.el.supernova_scene.setDisplay(tmp.sn.time>4)
-        tmp.el.sns1.setOpacity(Math.max(Math.min(tmp.sn.time-4,1),0))
-        tmp.el.sns2.setOpacity(Math.max(Math.min(tmp.sn.time-7,1),0))
-        tmp.el.sns3.setOpacity(Math.max(Math.min(tmp.sn.time-10,1),0))
-        tmp.el.sns4.setOpacity(Math.max(Math.min(tmp.sn.time-14,1),0))
-        tmp.el.sns5.setVisible(tmp.sn.time>17)
-        tmp.el.sns5.setOpacity(Math.max(Math.min(tmp.sn.time-17,1),0))
+        document.body.style.backgroundColor = `hsl(0, 0%, ${7-Math.min(tmp.sn.time/2,1)*7}%)`
+        tmp.el.supernova_scene.setDisplay(tmp.sn.time>2)
+        tmp.el.sns1.setOpacity(Math.max(Math.min(tmp.sn.time-2,1),0))
+        tmp.el.sns2.setOpacity(Math.max(Math.min(tmp.sn.time-2.5,1),0))
+        tmp.el.sns3.setOpacity(Math.max(Math.min(tmp.sn.time-3,1),0))
+        tmp.el.sns4.setOpacity(Math.max(Math.min(tmp.sn.time-3.5,1),0))
+        tmp.el.sns5.setVisible(tmp.sn.time>4)
+        tmp.el.sns5.setOpacity(Math.max(Math.min(tmp.sn.time-4,1),0))
         return
     }
 
     if (tmp.tab_name == "sn-tree") {
-        tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.sn.star_gain.mul(tmp.preQUGlobalSpeed)))
+        tmp.el.neutronStar.setTxt(format(player.supernova.stars,2)+" "+formatGain(player.supernova.stars,tmp.sn.star_gain.mul(tmp.qu.speed)))
         updateTreeHTML()
     }
     else if (tmp.tab_name == "boson") updateBosonsHTML()

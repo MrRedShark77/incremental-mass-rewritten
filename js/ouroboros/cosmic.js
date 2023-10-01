@@ -1,49 +1,24 @@
 const COSMIC = {
 	roll(a) {
 		for (let i of a) {
-			let g = player.evo.cosmo.galaxy[i]
-			g.type = Math.randomInt(0, 4)
-			g.tier = Math.min(Math.floor(Math.log10(1 / Math.random()) / Math.log10(5)), this.cluster_len - 1)
+			let g = player.evo.cosmo.uni[i] ?? { mode: 0 }
+			g.type = this.types[Math.randomInt(0, this.types.length)]
+			g.tier = E(Math.random()).log(0.1).add(1).floor()
+			player.evo.cosmo.uni[i] = g
 		}
 	},
 	rollAll() {
 		let a = []
-		for (let i = 0; i < this.galaxy_len; i++) a.push(i)
+		for (let i = 0; i < this.len; i++) if (!player.evo.cosmo.uni[i]) a.push(i)
 		this.roll(a)
 	},
-
-	galaxy_len: 6,
-
-	canGroup(i) {
-		return tmp.evo.cosmo.can[i] != undefined && player.evo.cosmo.cluster[i].lt(this.clusterCap(i))
-	},
-	group(i) {
-		if (!this.canGroup(i)) return
-		player.evo.cosmo.cluster[i] = player.evo.cosmo.cluster[i].add(1)
-		this.roll(tmp.evo.cosmo.can[i])
-		delete tmp.evo.cosmo.can[i]
-	},
-	clusterCap(i) {
-		return E(5).mul(i == this.cluster_len - 1 ? 1 : player.evo.cosmo.cluster[i+1].add(1))
-	},
-	clusters: [
-		{
-			eff: i => 1,
-			desc: x => `Boost something. <h4>${formatMult(x)}</h4>`,
-		}, {
-			eff: i => 1,
-			desc: x => `Boost something again. <h4>${formatMult(x)}</h4>`,
-		}, {
-			eff: i => 1,
-			desc: x => `Boost something yet again. <h4>${formatMult(x)}</h4>`,
-		}
-	],
 
 	//Calculation
 	calc(dt) {
 		let cs = player.evo.cosmo
 		if (!cs.unl) return
 
+		cs.score = cs.score.max(tmp.evo.cosmo.score)
 		cs.roll_time -= dt
 		if (cs.roll_time < 0) {
 			this.rollAll()
@@ -51,71 +26,61 @@ const COSMIC = {
 		}
 	},
 	temp() {
-		let gr = [], gr_i = []
-		for (let i = 0; i < this.cluster_len; i++) {
-			gr.push([])
-			gr_i.push([])
+		let cs = player.evo.cosmo, ct = tmp.evo.cosmo
+		let cn = [], ci = ct.highlight = []
+		ct.score = E(0)
+		for (var i = 0; i < this.len; i++) {
+			let g = cs.uni[i]
+			if (!g || cn.includes(g.type)) continue
+
+			cn.push(g.type)
+			ci.push(i)
+			ct.score = ct.score.add(g.tier)
 		}
 
-		for (let i = 0; i < this.galaxy_len; i++) {
-			let g = player.evo.cosmo.galaxy[i]
-			if (g.tier == -1) continue
-			if (gr[g.tier].includes(g.type)) continue
-			if (gr[g.tier].length == 4) continue
-			gr[g.tier].push(g.type)
-			gr_i[g.tier].push(i)
+		ct.eff = {}
+		for (var [i, c] of Object.entries(this.cluster_effs)) {
+			if (!c.unl()) continue
+			ct.eff[i] = c.eff(cs.score)
 		}
+	},
 
-		let tcc = tmp.evo.cosmo.can = {}
-		let tch = []
-		for (let i = 0; i < this.cluster_len; i++) {
-			if (gr[i].length < 4) continue
-			tcc[i] = gr_i[i]
-			tch = tch.concat(tcc[i])
+	//Galaxies
+	len: 6,
+	types: ["g0", "g1", "g2", "g3", "ch"],
+	click(x) {
+		player.evo.cosmo.uni[x] = undefined
+	},
+	cluster_effs: {
+		test: {
+			unl: () => true,
+			eff: i => i,
+			disp: () => "This will be fully implemented in 0.8 release."
 		}
-		tmp.evo.cosmo.highlight = tch
-
-		let tce = tmp.evo.cosmo.eff = []
-		for (var i = 0; i < this.cluster_len; i++) tce[i] = this.clusters[i].eff(player.evo.cosmo.cluster[i])
 	},
 
 	//Tab
 	setupHTML() {
 		let h = ``
-		for (var i = 0; i < this.galaxy_len; i++) h += `<div id="galaxy_${i}"></div>`
-		new Element("galaxy_table").setHTML(h)
-
-		h = ``
-		for (var i = 0; i < this.cluster_len; i++) h += `<button id="cluster_${i}" onclick='COSMIC.group(${i})'></button>`
-		new Element("cluster_table").setHTML(h)
+		for (var i = 0; i < this.len; i++) h += `<button id="uni_${i}" onclick="COSMIC.click(${i})"></button>`
+		new Element("uni_table").setHTML(h)
 	},
 	html() {
-		let cs = player.evo.cosmo
+		let cs = player.evo.cosmo, ct = tmp.evo.cosmo
 		tmp.el.reroll_time.setTxt(formatTime(cs.roll_time))
 
-		for (var i = 0; i < this.galaxy_len; i++) {
-			let g = cs.galaxy[i]
-			tmp.el["galaxy_"+i].setClasses( { cosmo_gal: true, highlight: tmp.evo.cosmo.highlight.includes(i) } )
-			tmp.el["galaxy_"+i].setHTML(g.tier >= 0 ? `
-				<div class="gal_sym">${g.type}</div>
-				<div class="gal_tier">${g.tier}</div>
+		for (var i = 0; i < this.len; i++) {
+			let g = cs.uni[i]
+			tmp.el["uni_"+i].setClasses( { cosmo: true, highlight: ct.highlight.includes(i) } )
+			tmp.el["uni_"+i].setHTML(g != undefined ? `
+				<div class="tier">${format(g.tier, 0)}</sup></div>
+				<div class="sym">${g.type}</div>
+				<div class="desc">(Click to prune)</div>
 			` : ``)
 		}
 
-		for (var i = 0; i < this.cluster_len; i++) {
-			tmp.el["cluster_"+i].setClasses({ galactic: true, locked: !this.canGroup(i) })
-			tmp.el["cluster_"+i].setHTML(`
-				<h4>Cluster Tier ${i+1}</h4><br>
-				${cs.cluster[i].format(0)} / ${this.clusterCap(i).format(0)}
-				<br class='line'>
-				${this.clusters[i].desc(clusterEff(i))}
-			`)
-		}
+		let h = ""
+		for (var [i, c] of Object.entries(ct.eff)) h += this.cluster_effs[i].disp(c) + "<br>"
+		tmp.el["cluster_div"].setHTML(`<h4>Score: ${format(ct.score, 0)} | Best: ${format(cs.score, 0)}</h4><br>`+h)
 	}
-}
-
-COSMIC.cluster_len = COSMIC.clusters.length
-
-function clusterEff(i, def = 1) {
-	return tmp.evo.cosmo.eff[i] ?? E(def)
 }

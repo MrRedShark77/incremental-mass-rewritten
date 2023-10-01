@@ -37,7 +37,7 @@ const STARS = {
         let x = E(1)
 		let [p, pp] = [E(1), E(1)]
 		if (hasElement(48)) p = p.mul(1.1)
-		if (hasElement(76)) [p, pp] = tmp.rip.in?[p.mul(1.1), pp.mul(1.1)]:[p.mul(1.25), pp.mul(1.25)]
+		if (hasElement(76)) [p, pp] = tmp.qu.rip.in?[p.mul(1.1), pp.mul(1.1)]:[p.mul(1.25), pp.mul(1.25)]
 		let [s,r,t1,t2,t3] = [player.stars.points.mul(p)
 			,player.ranks.rank.softcap(2.5e6,0.25,0).mul(p)
 			,player.ranks.tier.softcap(1.5e5,0.25,0).mul(p)
@@ -46,8 +46,8 @@ const STARS = {
 		r = r.mul(t1.pow(2)).add(1).pow(t2.add(1).pow(5/9).mul(0.25).mul(t3.pow(0.85).mul(0.0125).add(1)))
 		if (OURO.evo >= 2) r = r.softcap(1e40,3,3)
 		x = s.max(1).log10().add(1).pow(r)
-		x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("e1e24",0.91,2)
-		if (tmp.rip.in || OURO.evo >= 2) x = x.softcap('ee33',0.9,2)
+		x = x.softcap("ee15",0.95,2).softcap("e5e22",0.95,2).softcap("ee24",0.91,2)
+		if (tmp.qu.rip.in || OURO.evo >= 2) x = x.softcap('ee33',0.9,2)
         if (tmp.c16.in) x = E(1)
 
         return [x.min('ee70'), hasElement(162) ? this.expEffect() : E(1)]
@@ -85,16 +85,16 @@ const STARS = {
             if (FERMIONS.onActive("13")) pow = E(0.5)
             else {
                 if (hasElement(50)) pow = pow.mul(1.05)
-                if (hasTree("s3")) pow = pow.mul(tmp.sn.tree_eff.s3)
+                if (hasTree("s3")) pow = pow.mul(treeEff("s3"))
                 pow = pow.mul(glyphUpgEff(9))
             }
-            if (QCs.active() && pow.gte(1)) pow = pow.pow(tmp.qu.qc_eff[0][1])
+            if (QCs.active() && pow.gte(1)) pow = pow.pow(tmp.qu.qc.eff[0][1])
 
             let x = E(player.stars.unls > i ? 1 : 0).add(player.stars.generators[i+1]||0).pow(pow).mul(5)
-            if (hasElement(49) && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.elements.effect[49])
-            if (hasTree("s1") && i==tmp.stars.max_unlocks-1) x = x.mul(tmp.sn.tree_eff.s1)
+            if (hasElement(49) && i==tmp.stars.max_unlocks-1) x = x.mul(elemEffect(49))
+            if (hasTree("s1") && i==tmp.stars.max_unlocks-1) x = x.mul(treeEff("s1"))
             if (hasMDUpg(8)) x = x.mul(mdEff(8))
-            if (hasElement(54)) x = x.mul(tmp.elements.effect[54])
+            if (hasElement(54)) x = x.mul(elemEffect(54))
             x = x.mul(BUILDINGS.eff('star_booster'))
         
             let ne = nebulaEff("yellow")
@@ -105,7 +105,7 @@ const STARS = {
 
             x = expMult(x,GPEffect(0))
             x = expMult(x,ne[1]??1)
-            if (QCs.active()) x = expMult(x,tmp.qu.qc_eff[0][0])
+            if (QCs.active()) x = expMult(x,tmp.qu.qc.eff[0][0])
             return x
         },
     },
@@ -189,7 +189,7 @@ function updateStarsScreenHTML() {
 function updateStarsHTML() {
     tmp.el.starSoft1.setDisplay(tmp.stars.gain.gte(tmp.stars.softGain))
 	tmp.el.starSoftStart1.setTxt(format(tmp.stars.softGain))
-    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+(tmp.sn.gen?"":" / "+format(tmp.sn.maxlimit,2))+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.preQUGlobalSpeed)))
+    tmp.el.stars_Amt.setTxt(format(player.stars.points,2)+(tmp.sn.gen?"":" / "+format(tmp.sn.maxlimit,2))+" "+formatGain(player.stars.points,tmp.stars.gain.mul(tmp.qu.speed)))
     tmp.el.stars_Eff.setHTML(`<h4>${formatMult(tmp.stars.effect[0])}</h4>`+(hasElement(162)?`, <h4>^${format(tmp.stars.effect[1])}</h4>`:``)+(tmp.sn.gen?`, +<h4>${tmp.sn.passive.format(0)}</h4>/s to supernova gain`:''))
     tmp.el.stars_Eff.setClasses({corrupted_text2: tmp.c16.in})
 
@@ -202,7 +202,7 @@ function updateStarsHTML() {
         let unl = player.stars.unls > x
         tmp.el["star_gen_div_"+x].setDisplay(unl)
         if (tmp.el["star_gen_arrow_"+x]) tmp.el["star_gen_arrow_"+x].setDisplay(unl)
-        if (unl) tmp.el["star_gen_"+x].setHTML(format(player.stars.generators[x],2)+"<br>"+formatGain(player.stars.generators[x],tmp.stars.generators_gain[x].mul(tmp.preQUGlobalSpeed)))
+        if (unl) tmp.el["star_gen_"+x].setHTML(format(player.stars.generators[x],2)+"<br>"+formatGain(player.stars.generators[x],tmp.stars.generators_gain[x].mul(tmp.qu.speed)))
     }
 
     BUILDINGS.update('star_booster')

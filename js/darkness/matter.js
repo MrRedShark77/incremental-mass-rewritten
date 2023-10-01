@@ -27,11 +27,15 @@ const MATTERS = {
 				x = x.mul(tmp.matters.upg[i+1].eff)
 				if (hasElement(256)) x = x.mul(expMult(player.dark.matters.amt[i+1].max(1), .75))
 			}
+            if (OURO.evo >= 4 && i == 0) x = x.div(1e4)
+
 			x = x.mul(tmp.dark.abEff.mexp||1)
 			x = x.mul(glyphUpgEff(14,1))
 			if (hasBeyondRank(1,7)) x = x.mul(beyondRankEffect(1,7))
 
-			x = x[hasElement(305)?"pow":"mul"](tmp.matters.FSS_eff[0])
+			if (hasElement(309)) x = x.pow(tmp.matters.FSS_eff[0])
+			else x = x.mul(tmp.matters.FSS_eff[0])
+
 			if (hasElement(4,1)) x = x.pow(1.1)
 			if (hasElement(227)) x = x.pow(elemEffect(227))
 			if (i < MATTERS_LEN-1) x = x.pow(tmp.matters.upg[i+1].exp)
@@ -75,16 +79,16 @@ const MATTERS = {
         if (i==0) eff = eff.overflow('e2500',0.5).overflow('e75000',1/3)
 
         if (rdc == 2) {
-			cost = lvl.add(1).scale('ee15',3,'dil').pow(hasInfUpgrade(17)?2:3).mul(1e3)
-			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).scale('ee15',3,'dil',true).floor()
-			eff = lvl.add(1).mul(expMult(lvl.add(1), .9).pow(GPEffect(2)))
+			cost = lvl.add(1).pow(hasInfUpgrade(17)?2:3).mul(1e3)
+			bulk = m0.div(1e3).root(hasInfUpgrade(17)?2:3).floor()
+			eff = lvl.add(1).mul(expMult(lvl.add(1),.9).pow(GPEffect(2)))
         	if (i == 0 && OURO.evo >= 3) eff = eff.overflow('e5e5',0.5).softcap('e5e5',0.1,0)
 		}
 
         let exp = E(1)
 		if (hasInfUpgrade(17) && i > 0) {
 			if (rdc < 2) exp = lvl.add(1).log10().mul(base).div(c16 ? 1e4 : 1e3).add(1)
-			if (OURO.evo >= 3) exp = lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1)
+			if (OURO.evo == 3) exp = lvl.add(1).log10().mul(base).root(3).div(c16 ? 1e4 : 1e3).add(1)
 		}
         return {cost, bulk, eff, exp}
     },
@@ -146,7 +150,7 @@ const MATTERS = {
                 x = x.log10().div(10).add(1)
                 if (hasElement(247)) x = x.pow(1.5)
             }
-            if (hasElement(305)) x = x.max(1).log10().root(2).div(2).add(1)
+            if (hasElement(309)) x = fss.div(3).add(1).root(3)
 
             let y = fss.mul(.15).add(1)
             return [x,y]
@@ -194,13 +198,11 @@ function updateMattersHTML() {
             let amt = i == 0 ? tmp.matters.amt_0 : player.dark.matters.amt[i-1]
 
             tmp.el['matter_amt'+i].setTxt(format(amt,0))
-            tmp.el['matter_gain'+i].setTxt(i == 0 ? amt.formatGain(tmp.bh.dm_gain.mul(tmp.preQUGlobalSpeed)) : amt.formatGain(tmp.matters.gain[i-1].mul(inf_gs)))
+            tmp.el['matter_gain'+i].setTxt(i == 0 ? amt.formatGain(tmp.bh.dm_gain.mul(tmp.qu.speed)) : amt.formatGain(tmp.matters.gain[i-1].mul(inf_gs)))
 
             if (i > 0) {
                 let tu = tmp.matters.upg[i-1]
-
                 tmp.el['matter_upg_btn'+i].setClasses({btn: true, full: true, locked: amt.lt(tu.cost)})
-
                 tmp.el['matter_upg_eff'+i].setHTML((rdc?"x":"^")+tu.eff.format(2)+(tu.exp.gt(1) ? ", ^" + tu.exp.format() + (rdc?"":" to exponent") : ""))
                 tmp.el['matter_upg_cost'+i].setHTML(tu.cost.format(0))
             }
@@ -221,26 +223,25 @@ function updateMattersHTML() {
 
     tmp.el.FSS_eff1.setHTML(
         player.dark.matters.final.gt(0)
-        ? `Thanks to FSS, your Matters gain is boosted by ${(rdc==2&&!hasElement(305)?formatMult:formatPow)(tmp.matters.FSS_eff[0],2)}`.corrupt(rdc == 1 && !hasElement(11,1))
+        ? `Thanks to FSS, your Matters gain is boosted by ${(rdc==2&&hasElement(309)?formatPow:formatMult)(tmp.matters.FSS_eff[0],2)}`.corrupt(rdc == 1 && !hasElement(11,1))
         : ''
     )
 }
 
 function updateMattersTemp() {
-	let evo2 = OURO.evo >= 2, rdc = evo2 ? 2 : tmp.c16.in ? 1 : 0
+	let evo2 = OURO.evo >= 2
 	let mt = tmp.matters
 
-	mt.reduction = rdc
+	mt.reduction = evo2 ? 2 : tmp.c16.in ? 1 : 0
     mt.FSS_base = MATTERS.final_star_shard.base()
     mt.FSS_req = MATTERS.final_star_shard.req()
     mt.FSS_eff = MATTERS.final_star_shard.effect()
 
     mt.str = E(1)
     if (hasBeyondRank(1,2)) mt.str = mt.str.mul(beyondRankEffect(1,2))
-    if (hasElement(29,1)) mt.str = mt.str.mul(Decimal.max(1,tmp.exotic_atom.strength.root(2)))
+    if (hasElement(29,1)) mt.str = mt.str.mul(Decimal.max(1,tmp.ea.strength.root(2)))
 
     let e = Decimal.add(2,glyphUpgEff(11,0)).add(exoticAEff(1,5,0))
-
     if (hasPrestige(0,382)) e = e.add(prestigeEff(0,382,0))
     if (player.ranks.hex.gte(91)) e = e.add(.15)
     if (hasElement(206)) e = e.add(elemEffect(206,0))

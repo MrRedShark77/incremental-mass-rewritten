@@ -5,7 +5,7 @@ const WORMHOLE = {
         let p = tmp.evo.wormhole_power, pp = Decimal.mul(2,p)
         if (CHALS.inChal(8)) pp = pp.div(2)
 
-        x = Decimal.pow(p.add(1.5),x.root(pp)).root(pp).add(t).pow(pp).log(p.add(1.5)).pow(pp)
+        x = Decimal.pow(p.add(1.5), x.root(pp)).root(pp).add(t).pow(pp).log(p.add(1.5)).pow(pp)
         return isNaN(x.mag) ? E(0) : x.max(0)
     },
     calcGain(x,dt) {
@@ -30,17 +30,15 @@ const WORMHOLE = {
 
 		if (hasTree("bh1")) r = r.pow(treeEff("bh1"))
 		if (tmp.sn.boson) r = r.pow(tmp.sn.boson.upgs.photon[5].effect)
+		r = r.pow(glyphUpgEff(2)).pow(wormholeEffect(6))
 
         let ne = nebulaEff("cyan")
-
-		r = r.pow(glyphUpgEff(2)).pow(wormholeEffect(6)).pow(ne[0]??1)
-
-        r = expMult(r,ne[1]??1)
+        r = expMult(r.pow(ne[0]??1),ne[1]??1)
 
 		if (i == 6) {
 			r = r.add(1).log10()
-            if (hasCharger(6)) r = r.mul(3)
-            if (hasElement(88,1)) r = r.mul(3)
+			r = r.mul(player.evo.wh.mass[6].add(10).log10())
+            if (hasCharger(6)) r = r.mul(player.dark.c16.shard.max(1).log10().div(2).max(1))
 		}
 
         return r
@@ -55,7 +53,6 @@ const WORMHOLE = {
         tmp.evo.wormhole_unls = unls
 
         let p = appleEffect('wh_loss', E(1))
-        if (tmp.upgs.effect) p = p.mul(upgEffect(3, 6))
         if (hasElement(63)) p = p.mul(1.2)
         tmp.evo.wormhole_power = p
 
@@ -133,11 +130,11 @@ const WORMHOLE = {
             x => `Raise meditation levels. <b>^${format(x,2)}</b>`+softcapHTML(x,3),
         ],[
             m => {
-                m = m.add(1).mul(tmp.c16active ? 1e-3 : 1e-4).pow(tmp.c16.in ? .5 : 1).add(1)
-                if (OURO.evo >= 3 && !hasZodiacUpg('gemini','u3')) m = expMult(m,0.5)
+                m = m.mul(tmp.c16.in && OURO.evo < 4 ? 1e-3 : 1e-4).pow(tmp.c16.in || OURO.evo >= 4 ? .5 : 1).add(1)
+                if (OURO.evo == 3) m = expMult(m,0.5)
                 return m
             },
-            x => `Raise Wormhole formula. <b>^${format(x,2)} to exponent</b>`,
+            x => `Raise Wormhole formula. <b>^${format(x,2)}</b>`,
         ],
     ],
 
@@ -188,14 +185,12 @@ function splitWormhole(origin, mode) {
 function setupWormholeHTML() {
     let h = ''
     for (let i = 0; i < WORMHOLE.maxLength; i++) {
-        h += `
-        <div class='wormhole-div' id='wormhole${i}-div' onclick="activateWormhole(${i})">
+        h += `<div class='wormhole-div' id='wormhole${i}-div' onclick="activateWormhole(${i})">
             <div id='wormhole${i}-id' class='wh-id'></div>
             <div id='wormhole${i}-mult' class='wh-mult'>A</div>
             <div id='wormhole${i}-mass' class='wh-mass'>B</div>
             <div id='wormhole${i}-effect' class='wh-effect'>C</div>
-        </div>
-        `
+        </div>`
     }
 
     new Element('wormhole_table').setHTML(h)

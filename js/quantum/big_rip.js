@@ -1,14 +1,20 @@
 const BIG_RIP = {
     rip() {
-        if (!player.qu.rip.active && player.confirms.br) createConfirm(`Are you sure you want to Big Rip the Dimension?`,'br',CONFIRMS_FUNCTION.bigRip)
-        else CONFIRMS_FUNCTION.bigRip()
+        if (tmp.dark.run) return
+        if (player.qu.rip.active) player.qu.rip.amt = player.qu.rip.amt.add(tmp.qu.rip.gain)
+        player.qu.qc.active = false
+        player.qu.rip.first = true
+        player.qu.rip.active = !player.qu.rip.active
+        QUANTUM.enter(false,true,true)
+
+        addQuote(8)
     },
     gain() {
         let x = player.mass.add(1).log10().div(2e5).max(0)
         if (x.lt(1)) return E(0)
         if (hasTree('br1')) x = x.mul(treeEff('br1'))
-        if (hasElement(90)) x = x.mul(tmp.elements.effect[90]||1)
-        if (hasElement(94)) x = x.mul(tmp.elements.effect[94]||1)
+        if (hasElement(90)) x = x.mul(elemEffect(90))
+        if (hasElement(94)) x = x.mul(elemEffect(94))
         if (hasPrestige(0,2)) x = x.mul(4)
         if (hasMDUpg(6, true)) x = x.mul(mdEff(6, true)[1] || 1)
         if (hasUpgrade('br',13)) x = x.mul(upgEffect(4,13))
@@ -22,6 +28,6 @@ const BIG_RIP = {
 }
 
 function updateBigRipTemp() {
-    tmp.rip.in = player.qu.rip.active || tmp.dark.run
-    tmp.rip.gain = BIG_RIP.gain()
+    tmp.qu.rip.in = player.qu.rip.active || tmp.dark.run
+    tmp.qu.rip.gain = BIG_RIP.gain()
 }

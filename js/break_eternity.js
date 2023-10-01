@@ -65,7 +65,7 @@
     var powersOf10 = [];
 
     for (var i = NUMBER_EXP_MIN + 1; i <= NUMBER_EXP_MAX; i++) {
-      powersOf10.push(Number("1e" + i));
+      powersOf10.push(Number("e" + i));
     }
 
     var indexOf0InPowersOf10 = 323;

@@ -17,14 +17,16 @@ const MEDITATION = {
 
 		cp = cp.mul(appleEffect('cp_lvl'))
 		cp = cp.mul(wormholeEffect(0))
-		if (hasZodiacUpg('aries','u2')) cp = cp.mul(zodiacUpgEff('aries','u2'))
 
 		if (OURO.evo >= 2) cp = cp.pow(wormholeEffect(5))
 		else if (hasElement(158)) cp = cp.pow(1.5)
+		if (hasZodiacUpg('aries','u2')) cp = cp.pow(zodiacEff('aries','u2'))
+
 		return cp.floor()
 	},
 	eff(lvl) {
 		let eff = {}, weak_mult = E(1)
+		if (QCs.active() && OURO.evo >= 4) lvl = lvl.mul(tmp.qu.qc.eff[10])
 
 		eff.mass1 = lvl.add(1)
 		if (hasElement(67,1)) eff.mass2 = lvl.div(100).add(1)

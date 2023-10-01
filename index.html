@@ -110,14 +110,13 @@
         <div id="star"></div>
 		<canvas id="c16_ctx"></canvas>
         <div class="table_center" style="height: 100%; width: 100%;">
-            <div id="tabs">
-            </div>
+            <div id="tabs"></div>
             <div id="main_app" style="width: calc(100% - 450px); height: 100%; overflow-y: auto; overflow-x: hidden; position: relative;">
                 <div id="nav_btns">
                     <button id="nav_left_hider" onclick="hideNavigation(0)"><iconify-icon icon="ic:round-arrow-back-ios" width="35"></iconify-icon></button>
                     <button id="nav_right_hider" onclick="hideNavigation(1)"><iconify-icon icon="ic:round-arrow-forward-ios" width="35"></iconify-icon></button>
                     <button id="nav_pin_hider" onclick="hideNavigation(2)"><iconify-icon icon="mdi:pin" width="35"></iconify-icon></button>
-                    <button id="nav_res_hider" onclick="goToTab('res-hide')"><iconify-icon icon="mdi:eye" width="35"></iconify-icon></button>
+                    <button id="nav_res_hider" onclick="tmp.res_hide = !tmp.res_hide"><iconify-icon icon="mdi:eye" width="35"></iconify-icon></button>
                 </div>
                 <div style="min-height: 60px">
                     <div id="chal_upper"></div>
@@ -139,11 +138,11 @@
                     <div id="tab_div-mass">
                         <div id="rank_tabs" class="table_center stab_btn" style="min-height: 55px;">
                             <div style="width: 145px">
-                                <button onclick="tmp.rank_tab = 0" class="btn_tab">Ranks</button>
+                                <button onclick="tmp.ranks.tab = 0" class="btn_tab">Ranks</button>
                             </div><div style="width: 145px">
-                                <button onclick="tmp.rank_tab = 1" class="btn_tab">Prestiges</button>
+                                <button onclick="tmp.ranks.tab = 1" class="btn_tab">Prestiges</button>
                             </div><div style="width: 145px">
-                                <button onclick="tmp.rank_tab = 2" class="btn_tab" id="asc_btn">Ascensions</button>
+                                <button onclick="tmp.ranks.tab = 2" class="btn_tab" id="asc_btn">Ascensions</button>
                             </div>
                         </div>
                         <div id="rank_tab0">
@@ -152,17 +151,10 @@
                                 <div id="ranks_table" class="table_center"></div>
                                 <div style="width: 400px; display: none;" id="beyond_ranks">
                                     <div class="table_center" style="align-items: center;">
-                                        <button id="br_auto" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('beyond')">OFF</button>
-                                        <div style="margin-left: 5px; text-align: left;" id="br_amt">
-                                            Hept 0
-                                        </div>
+                                        <div id="br_amt"></div>
                                     </div>
                                     <br>
-                                    <button onclick="BEYOND_RANKS.reset()" class="btn reset" style="max-width: 380px;" id="br_desc">
-                                        Reset your hexs (hexes) (and force a darkness reset) but hept/oct/enne etc. up.<br>
-                                        To Hept up, require Hex ???<br>
-                                        To Oct up, require Hept ???
-                                    </button>
+                                    <button onclick="BEYOND_RANKS.reset()" class="btn reset" style="max-width: 380px;" id="br_desc"></button>
                                 </div>
                             </div>
                             <br><br>
@@ -220,11 +212,11 @@
                         <div class="table_center">
                             <div style="width: 50%; min-width: 600px;">
                                 You have <h4 id="bhMass2">X</h4> of Black Hole<br>
-                                <span class="green">Which boosts mass gain by <h4 id="bhEffect">X</h4></span><br><br>
+                                <span class="bh">Which boosts mass gain by <h4 id="bhEffect">X</h4></span><br><br>
                                 Black Hole mass's gain formula - (x + 1)<sup id="bhMassPower">0.33</sup> * <span id="bhCondenserEffect">X</span>
                             </div><div style="width: 50%; min-width: 600px;" id="unstable_bhUnl">
                                 You have <h4 id="bhUnstable" class="corrupted_text">X</h4> of Unstable Black Hole<br>
-                                <span class="green">Which boosts mass of black hole gain by <h4 id="bhUnstableEffect">X</h4></span><br><br>
+                                <span class="bh">Which boosts mass of black hole gain by <h4 id="bhUnstableEffect">X</h4></span><br><br>
                                 Unstable BH's production is decreased based on its mass
                             </div>
                         </div>
@@ -233,20 +225,20 @@
                         <div id="building_fvm"></div>
                         <br><div>
                             <span id="massSoft2" class="red">After <b id="massSoftStart2">X</b> of mass gain from black hole, its mass gain will be softcapped!</span><br>
-                            <span id="bhOverflow"></span>
 							<span id="bhFSoft" class="red">The formula softcaps at <b id="bhFSoftStart">X</b>!</span><br>
+                            <span id="bhOverflow"></span>
                             <div id="bhOverflow2" style="color: rgb(255, 197, 215)"></div>
                             <br><div id="bhcEffectOverflow" style="color: rgb(194, 177, 255)"></div>
                         </div>
                     </div><div id="tab_div-atomic">
                         You have <h4 id="atomicAmt">X</h4> Atomic Power<br>
-                        <span class="green" id="atomicEff">Which provides <h4>X</h4> free Tickspeeds</span><br><br>
+                        <span class="cyan" id="atomicEff">Which provides <h4>X</h4> free Tickspeeds</span><br><br>
                         <div id="building_cosmic_ray"></div><br><div>
                             <span id="atomicOverflow"></span>
                         </div>
                     </div><div id="tab_div-star">
                         You collapsed <h4 id="stars_Amt">X</h4> stars, which multiplies mass gain based on all rank types.<br>
-                        <span class="green">Currently: <span id="stars_Eff">X</span></span><br><br>
+                        <span class="magenta">Currently: <span id="stars_Eff">X</span></span><br><br>
                         <button id="star_btn" class="btn" onclick="STARS.generators.unl()">X</button>
                         <br><br>
                         <div id="stars_table" class="table_center"></div><br><br>
@@ -255,11 +247,11 @@
                         <div id="starSiltation" style="color: rgb(194, 177, 255)"></div>
                     </div><div id="tab_div-bp">
                         You have <h4 id="bpAmt">0</h4> Blueprint Particles<br>
-                        <span class="green">Which increases pre-Quantum global speed by <h4 id="bpEff">1</h4>x</span><br><br>
+                        <span class="light_green">Which increases pre-Quantum global speed by <h4 id="bpEff">1</h4>x</span><br><br>
                         <div id="building_cosmic_string"></div>
                     </div><div id="tab_div-tp">
                         You have <h4 id="dim_mass">X</h4> of dimensional mass
-                        <div class="green">Which boosts meta-score of equipped theorems by <h4 id="dim_mass_eff">X</h4></div>
+                        <div class="yellow">Which boosts meta-score of equipped theorems by <h4 id="dim_mass_eff">X</h4></div>
                         <br>
                         <div id="building_pe"></div>
                     </div>
@@ -285,7 +277,7 @@
                     </div>
                     
                     <div id="tab_div-chal">
-                        Note: Click any image to show challenge description. Click again to enter any challenge<br><br>
+						Click an image to show a challenge. Click again to start.<br><br>
                         <div class="table_center" style="width: 100%;">
                             <div style="width: calc(50%);">
                                 <div id="chals_table"></div>
@@ -293,13 +285,17 @@
                                 <button class="btn" id="chal_exit" onclick="CHALS.exit()">Exit Challenge</button><br><br>
                                 <div id="chal_desc_div">
                                     <button class="btn" id="chal_enter" onclick="enterChal()"></button>
-                                    <button class="btn" id="chal_auto" onclick="player.options.auto_retry = !player.options.auto_retry"></button>
-                                    <p id="chal_ch_title"></p>
-                                    <span class="red" id="chal_ch_desc"></span><br>
-                                    <span class="red" id="chal_ch_reset"></span>
-                                    <p id="chal_ch_goal"></p>
+                                    <button class="btn" id="chal_auto" onclick="player.options.auto_retry = !player.options.auto_retry"></button><br>
+
+                                    <h4 id="chal_ch_title"></h4><br>
+                                    <span id="chal_ch_desc"></span>
+									<br class='line'>
+                                    <span class="red" id="chal_ch_reset"></span><br>
+                                    <span id="chal_ch_goal"></span>
+									<br class='line'>
                                     <span class="green" id="chal_ch_reward"></span><br>
-                                    <span class="green" id="chal_ch_eff"></span>
+                                    <span class="green" id="chal_ch_eff"></span><br>
+                                    <span id="chal_ch_comp" style='font-size: 10px'></span>
                                 </div>
                             </div>
                         </div>
@@ -309,9 +305,9 @@
                         <button class="btn" onclick="QCs.enter()" id="qc_btn">Enter the Quantum Challenge</button><br><br>
                         <div class="table_center" style="min-height: 30px;">
                             <div style="width: 145px">
-                                <button onclick="tmp.qc_tab = 0" class="btn_tab">Modifications</button>
+                                <button onclick="tmp.qu.qc.tab = 0" class="btn_tab">Modifications</button>
                             </div><div style="width: 145px">
-                                <button onclick="tmp.qc_tab = 1" class="btn_tab">Presets</button>
+                                <button onclick="tmp.qu.qc.tab = 1" class="btn_tab">Presets</button>
                             </div>
                         </div><br>
                         <div id="qc_tab0">
@@ -345,7 +341,7 @@
                         <div style="min-height: 70px;">
 							<div id="elem_ch_div">
 								<span id="elem_desc" class='sky'>X</span><br>
-								Cost: <span id="elem_cost">X</span><br>
+								<span id="elem_cost">X</span><br>
 								<span id="elem_eff" class='green'>X</span>
 							</div><div id="elem_next_div">
 								<div class='table_center' id="elem_next_ch">
@@ -497,7 +493,7 @@
                         = <span id="auto_qu_res"></span>
                     </div><div id="tab_div-prim">
                         You have <span id="prim_theorem">0</span> Primordium Theorem (based on Blueprint Particles)<br>
-                        (+1 at <span id="prim_next_theorem">X</span>)<br><br>
+                        <span id="prim_next_theorem">X</span><br><br>
                         <div id="prim_btns">
                             <button class="btn" onclick="giveRandomPParticles(1)">Give 1</button>
                             <button class="btn" onclick="giveRandomPParticles(10)">Give 10</button>
@@ -588,16 +584,16 @@
                             </div><div style="width: 50%; min-width: 500px;">
                                 <h2>Inventory</h2><br>
                                 <button id="rerollBtn" onclick="rerollTheorems()"></button>
-                                <button onclick="removeTheorem()">Remove selected</button>
-                                <button onclick="savageTheorem()" class="tooltip" tooltip-html="Reroll with selected only but with new theorem stars.">Savage selected</button>
-                                <button onclick="formTheorem()" id="formTBtn">Form selected into fragments</button>
+                                <button onclick="savageTheorem()" class="tooltip" tooltip-html="Reroll with selected only but with new theorem stars.">Savage</button>
+                                <button id="removeTBtn" onclick="removeTheorem()">Remove</button>
+                                <button id="formTBtn" onclick="formTheorem()">Form into fragments</button>
                                 <div id="theorem_inv_table" class="table_center"></div>
                             </div>
                         </div>
                     </div><div id="tab_div-core-eff">
                         <div id="core_eff_div"></div>
                     </div><div id="tab_div-inf-upgs">
-                        <p>You have <b id="ip_amt">???</b> Infinity Points. Hover any upgrade to see its description.</p>
+                        You have <b id="ip_amt">???</b> Infinity Points. Hover any upgrade to see its description.
                         <div id="inf_upg_table"></div>
                     </div><div id="tab_div-c-star">
                         <div class="table_center">
@@ -643,8 +639,7 @@
                             <div style="width: 50%; min-width: 400px;">
                                 <h3>Apple Boosts</h3>
 								<div id="snake_boosts"></div>
-                            </div>
-                            <div id="escrow_boosts_div" style="width: 50%; min-width: 400px;">
+                            </div><div id="escrow_boosts_div" style="width: 50%; min-width: 400px;">
                                 <h3>Escrow Boosts</h3>
                                 <div id="escrow_boosts" class="sky"></div>
                             </div>
@@ -681,13 +676,12 @@
                             <canvas id="const_canvas" width="730" height="490"></canvas>
                             <div id="const_scroll"><div id="const_table">
 
-                            </div></div><div id="const_glow"></div>
+                            </div></div>
                         </div>
                     </div><div id="tab_div-cosmo">
-						Reroll in: <span id="reroll_time"></span>
-						<div class='table_center' id="galaxy_table"></div>
-						<br class="line">
-						<div class='table_center' id="cluster_table"></div>
+						<div class='table_center' id="uni_table"></div><br>
+						Reroll: <span id="reroll_time"></span><br>
+						<div id="cluster_div"></div>
                     </div>
                     
                     <div id="tab_div-options">
@@ -695,8 +689,8 @@
                         <button class="btn" onclick="exporty()">Save to file</button>
                         <button class="btn" onclick="export_copy()">Export</button>
                         <button class="btn" onclick="importy()">Import</button>
-                        <button class="btn" onclick="turnOffline()">Offline Production: <span id="offline_active">ON</span></button>
-                        <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',()=>wipe(true))">HARD RESET</button>
+                        <button class="btn" onclick="turnOffline()">Offline: <span id="offline_active">ON</span></button>
+                        <button class="btn" onclick="createConfirm('Are you sure you want to RESET your progress to new game?','wipe',()=>wipe())">HARD RESET</button>
 
 						<br><br>
                         <h2>Displays</h2><br>
@@ -707,29 +701,21 @@
                         <button class="btn" id="tree_anim_btn" onclick="changeTreeAnimation()">Tree Animation: <span id="tree_anim">ON</span></button>
 
 						<br><br>
-                        <h2>Confirmations</h2><br>
-                        <div id="confirm_table" class="table_center"></div>
-
-						<br><br>
                         <h2>Preferences</h2><br>
                         <button class="btn" id="prefer_notify" onclick="prefer('notify')">Notifications: OFF</button>
                         <button class="btn" id="prefer_pin" onclick="prefer('pin')">Pins: OFF</button>
 
 						<br><br>
                         <h2>Others</h2><br>
-                        <button class="btn" onclick="createPopup(POPUP_GROUPS.help.html,'help')">Help</button>
                         <button class="btn" onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord</button>
                         <button class="btn tooltip" onclick="window.open('https://boosty.to/mrredshark77')" tooltip-html="Support the original creator of IMR!">Donate</button>
 
 						<br><br>
-                        Incremental Mass Rewritten v0.8 Beta 5 - By MrRedShark77<br>
-                        The game is inspired by Distance Incremental & Synergism<br>
+                        Incremental Mass Rewritten v0.8 Beta 5 - <a href="https://mrredshark77.github.io/" target="_newtab">By MrRedShark77</a><br>
+                        The game is inspired by <a href="https://jacorb90.me/Distance-Incremental/main.html" target="_newtab">Distance Incremental</a> & <a href="https://pseudo-corp.github.io/SynergismOfficial/" target="_newtab">Synergism</a><br>
                         Contributors: <span style="cursor: pointer;" onclick='addNotify(`where lemon<br><img src="https://i.imgflip.com/57cc98.jpg" style="width:100%">`)'>Bézier</span>, 16777216 & Aarex (Artists)<br><br><br>
                         Total time played: <span id="total_time">X</span>
-                    </div><div id="tab_div-res-hide">
-                        <div id="res_hider_table" class="table_center"></div>
-                    </div>
-                    <div style="position: absolute; bottom: 35px; right: 35px;">
+                    </div><div style="position: absolute; bottom: 35px; right: 35px;">
                         <img id="omega_badge" src="images/omega.png">
                     </div>
                 </div>

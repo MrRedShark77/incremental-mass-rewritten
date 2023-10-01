@@ -6,7 +6,7 @@ const BOSONS = {
             
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -18,7 +18,7 @@ const BOSONS = {
             
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -29,7 +29,7 @@ const BOSONS = {
             let x = E(0.1).mul(tmp.sn.boson.effect.graviton?tmp.sn.boson.effect.graviton[0]:1)
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("sn4")) x = x.pow(1.5)
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -41,7 +41,7 @@ const BOSONS = {
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2")) x = x.mul(treeEff("bs2")[1])
             x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.photon[2]?tmp.sn.boson.upgs.photon[2].effect:1) : x.mul(tmp.sn.boson.upgs.photon[2]?tmp.sn.boson.upgs.photon[2].effect:1)
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -53,7 +53,7 @@ const BOSONS = {
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2")) x = x.mul(treeEff("bs2")[0])
             x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[2]?tmp.sn.boson.upgs.gluon[2].effect:1) : x.mul(tmp.sn.boson.upgs.gluon[2]?tmp.sn.boson.upgs.gluon[2].effect:1)
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -63,7 +63,7 @@ const BOSONS = {
         graviton() {
             let x = E(0.1).mul(tmp.sn.boson.effect.graviton?tmp.sn.boson.effect.graviton[0]:1).mul(fermEff(1, 1))
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -74,7 +74,7 @@ const BOSONS = {
             let x = E(0.1).mul(fermEff(1, 1))
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs1")) x = x.mul(treeEff("bs1"))
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -110,7 +110,7 @@ const BOSONS = {
             return [a]
         },
         hb(x) {
-            let a = x.add(1).log10().max(0).root(2).mul(tmp.prim.eff[4])
+            let a = x.add(1).log10().max(0).root(2).mul(tmp.qu.prim.eff[4])
             if (hasTree("qu10") && !player.qu.rip.active) a = a.mul(treeEff('qu10'))
             if (tmp.c16.in) a = a.pow(.2)
             return [a.overflow('e700',0.5)]
@@ -314,7 +314,7 @@ function updateBosonsHTML() {
 
     for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
-        tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.sn.boson.gain[id].mul(tmp.preQUGlobalSpeed)))
+        tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.sn.boson.gain[id].mul(tmp.qu.speed)))
         if (tmp.sn.boson.effect[id]) for (let y in tmp.sn.boson.effect[id]) {
             if (y == '2' && id == 'pos_w') tmp.el[id+"_eff"+y].setHTML(hasElement(250) ? ',<br>and raise mass gain by ' + format(tmp.sn.boson.effect[id][y]) : '')
             else tmp.el[id+"_eff"+y].setTxt(format(tmp.sn.boson.effect[id][y]))

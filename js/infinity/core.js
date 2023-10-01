@@ -7,18 +7,16 @@ const CORE = {
             () => OURO.evo >= 2 ? `Weaken Mass Upgrade scalings.` : `Boost normal mass overflow starting.`,
             `Make pre-beyond ranks cheaper.`,
             `Increase the exponent of prestige base.`,
-            `Boost normal mass overflow^2 starting.`,
+            () => OURO.evo >= 4 ? `Weaken Stronger Overflow^1.` : `Boost normal mass overflow^2 starting.`,
             `Increase the exponent of ascension base.`,
             `Weaken Exotic scalings.`,
         ],
         res: `Normal Mass`,
-        boost() {return player.mass.add(1).log10().add(1).log10().add(1).log10().add(1)},
+        boost: () => player.mass.add(1).log10().add(1).log10().add(1).log10().add(1),
         eff: [
             s => {
                 let x = s.add(1).pow(s.root(2)).overflow(100,0.5)
-
                 if (tmp.NHDimprove) x = x.pow(10)
-
                 return x
             },
             s => {
@@ -31,56 +29,36 @@ const CORE = {
             },
             s => {
                 let x = s.root(2).div(10).add(1).root(2)
-
                 if (tmp.NHDimprove) x = x.pow(2)
-
                 return x
             },
             s => {
                 let x = s.root(OURO.evo >= 2 ? 4 : 2)
-
                 if (tmp.NHDimprove) x = x.pow(2)
-
                 return x
             },
             s => {
+                if (OURO.evo >= 4) return s.div(2e4).max(2).log(2).pow(-1)
                 let x = s.add(1).pow(s.root(1.5))
-
                 return overflow(x,100,0.5)
             },
-            s => {
-                let x = s.add(1).log10().div(50)
-
-                return x
-            },
-            s => {
-                let x = Decimal.pow(0.95,s.add(1).log10().root(2))
-
-                return x
-            },
-            s => {
-                let x = E(0)
-
-                return x
-            },
+            s => s.add(1).log10().div(50),
+            s => E(.95).pow(s.add(1).log10().root(2)),
+            s => E(0),
         ],
         effDesc: [
             x => formatPow(x),
-            x => formatPow(x),
+            x => OURO.evo >= 2 ? formatReduction(x) : formatPow(x),
             x => formatMult(x),
             x => "+"+format(x),
-            x => formatPow(x),
+            x => OURO.evo >= 4 ? formatReduction(x) : formatPow(x),
             x => "+"+format(x),
             x => formatReduction(x),
             x => formatMult(x),
         ],
 
         fragment: [
-            f=>{
-                let x = f.add(1).pow(2)
-
-                return x
-            },
+            f => f.add(1).pow(2),
             x => `Stronger overflow starts <b>${formatMult(x)}</b> later.`,
         ],
     },
@@ -97,64 +75,38 @@ const CORE = {
             `Weaken BH mass overflows.`,
         ],
         res: `Mass of Black Hole`,
-        boost() {return player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1)},
+        boost: () => player.bh.mass.add(1).log10().add(1).log10().add(1).log10().add(1),
         eff: [
             s => {
-                let x = s.add(1).pow(s.root(2))
-                
+                let x = s.add(1).pow(s.root(2))                
                 x = overflow(x,100,0.5)
 
                 if (tmp.c16.in) x = x.log10().add(1)
-
                 if (tmp.NHDimprove) x = x.pow(10)
-
                 return x
             },
             s => {
                 let x = s.add(1).pow(s.root(2).mul(2))
-
                 x = overflow(x,100,0.5)
 
                 if (tmp.c16.in) x = x.log10().add(1)
-
                 if (tmp.NHDimprove) x = x.pow(10)
-
                 return x
             },
             s => {
-                let x = s.add(1).log10().div(100).add(1).pow(-1) // Math.pow(1+Math.log10(s+1)/100,-1)
-
+                let x = s.add(1).log10().div(100).add(1).pow(-1)
                 if (tmp.NHDimprove) x = x.pow(2)
-
                 return x
             },
             s => {
                 let x = s.add(1).root(2).overflow(10,0.5)
-
                 if (tmp.NHDimprove) x = x.pow(2)
-
                 return x
             },
-            s => {
-                let x = s.add(1).log10().div(10).add(1)
-
-                return x
-            },
-            s => {
-                let x = s.gt(0) ? Decimal.pow(0.95,s.add(1).ssqrt().root(2)) : E(1)
-
-                return x
-            },
-            s => {
-                let x = E(0)
-
-                return x
-            },
-            s => {
-                let x = E(0)
-
-                return x
-            },
+            s => s.add(1).log10().div(10).add(1),
+            s => s.gt(0) ? Decimal.pow(0.95,s.add(1).ssqrt().root(2)) : E(1),
+            s => E(0),
+            s => E(0),
         ],
         effDesc: [
             x => formatPow(x),
@@ -168,11 +120,7 @@ const CORE = {
         ],
 
         fragment: [
-            f=>{
-                let x = f.add(1).log10().div(10).add(1)
-
-                return x
-            },
+            f => f.add(1).log10().div(10).add(1),
             x => `Raise mass of unstable black hole gain to the <b>${format(x)}</b>th power.`,
         ],
     },
@@ -181,7 +129,7 @@ const CORE = {
         icon: `Ξ`,
         preEff: [
             `Boost quarks gain.`,
-            `Boost quark & atomic power overflows starting.`,
+            () => OURO.evo >= 4 ? `Increase quark formula from protostars.` : `Boost quark & atomic power overflows starting.`,
             `Increase overpower's power.`,
             () => OURO.evo >= 1 ? `Gain more meditation.` : `Increase accelerator's power.`,
             `Boost Exotic Atom gain.`,
@@ -189,71 +137,45 @@ const CORE = {
             `Gain more Stardust.`,
         ],
         res: `Exotic Atom`,
-        boost() {return tmp.exotic_atom.amount.add(1).log10().add(1).log10().add(1)},
+        boost() {return tmp.ea.amount.add(1).log10().add(1).log10().add(1)},
         eff: [
             s => {
-                let x = s.add(1).pow(s.root(2))
-                
+                let x = s.add(1).pow(s.root(2))                
                 x = overflow(x,100,0.5)
-
                 if (tmp.NHDimprove) x = x.pow(10)
-
                 return x
             },
             s => {
+                if (OURO.evo >= 4) return s.div(tmp.c16.in ? 1e5 : 1e4).min(.11)
+
                 let x = s.add(1).pow(s.root(2).mul(OURO.evo >= 2 ? 1 : 2))
-
                 x = overflow(x,100,0.5)
-
                 if (tmp.NHDimprove) x = x.pow(10)
-
                 return x
             },
             s => {
                 let x = s.root(4)
-
                 if (tmp.NHDimprove) x = x.pow(1.5)
-
-                if (hasAscension(0,1)) x = x.mul(10)
-
+                if (hasAscension(0,1)) x = x.mul(OURO.evo >= 4 ? 5 : 10)
                 return x.div(1e4)
             },
             s => {
                 let evo1 = OURO.evo >= 1
                 let x = evo1 ? s.add(1).pow(2) : s.root(4)
-
                 if (tmp.NHDimprove) x = x.pow(1.5)
-
                 if (hasAscension(0,1)) x = x.mul(10)
-
                 return evo1 ? x : x.div(1e4)
             },
-            s => {
-                let x = s.add(1).log10().root(2).div(10).add(1)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().root(2).div(10).add(1)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().add(1).root(4)
-
-                return x
-            },
-            s => {
-                let x = E(0)
-
-                return x
-            },
+            s => s.add(1).log10().root(2).div(10).add(1),
+            s => s.add(1).log10().root(2).div(10).add(1),
+            s => s.add(1).log10().add(1).root(4),
+            s => E(0),
         ],
         effDesc: [
             x => formatPow(x),
-            x => formatPow(x),
-            x => "+"+format(x),
-            x => OURO.evo >= 1?formatMult(x):"+"+format(x),
+            x => OURO.evo >= 4 ? "+"+format(x,4) : formatPow(x),
+            x => "+"+format(x,4),
+            x => OURO.evo >= 1 ? formatMult(x) : "+"+format(x),
             x => formatPow(x),
             x => formatPow(x)+(OURO.evo >= 3 ? "" : " to exponent"),
             x => formatPow(x),
@@ -261,15 +183,12 @@ const CORE = {
         ],
 
         fragment: [
-            f=>{
-                let x = f.add(1)
-
-                return x
-            },
+            f => f.add(1),
             x => `Boost kaon & pion gains by <b>${formatMult(x)}</b>.`,
         ],
     },
     proto: {
+        unl: () => OURO.evo < 5,
         title: `Protoversal Theorem`,
         icon: `Π`,
         preEff: [
@@ -284,46 +203,14 @@ const CORE = {
         res: `Quantum Foam`,
         boost() {return player.qu.points.add(1).log10().add(1).log10().add(1)},
         eff: [
-            s => {
-                let x = s.add(1).log10().div(2).add(1) // Math.log10(s+1)/2+1
-
-                return x
-            },
-            s => {
-                let x = Decimal.pow(1.25,s.add(1).log10())
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().div(100).add(1).pow(-1)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().div(10).add(1).pow(-1)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().root(3).div(10).add(1)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().root(2).div(10).add(1)
-
-                return x
-            },
-            s => {
-                let x = expMult(s.add(1).log10().add(1).mul(10),2).div(10)
-
-                return x
-            },
-            s => {
-                let x = E(0)
-
-                return x
-            },
+            s => s.add(1).log10().div(2).add(1),
+            s => Decimal.pow(1.25,s.add(1).log10()),
+            s => s.add(1).log10().div(100).add(1).pow(-1),
+            s => s.add(1).log10().div(10).add(1).pow(-1),
+            s => s.add(1).log10().root(3).div(10).add(1),
+            s => s.add(1).log10().root(2).div(10).add(1),
+            s => expMult(s.add(1).log10().add(1).mul(10),2).div(10),
+            s => E(0),
         ],
         effDesc: [
             x => formatMult(x),
@@ -337,11 +224,7 @@ const CORE = {
         ],
 
         fragment: [
-            f=>{
-                let x = f.add(1).log10().root(2).div(100).add(1)
-
-                return x
-            },
+            f => f.add(1).log10().root(2).div(100).add(1),
             x => `Raise chromas gain to the <b>${format(x)}</b>th power.`,
         ],
     },
@@ -351,7 +234,7 @@ const CORE = {
         preEff: [
             `Boost pre-infinity global speed.`,
             `Boost pre-quantum global speed.`,
-            `Boost dark shadow & abyssal blot gains.`,
+            () => OURO.evo >= 4 ? `Raise Dark Effect resources.` : `Raise Dark Shadow & Abyssal Blots.`,
             `Weaken each glyphic mass nerfing.`,
             () => OURO.evo >= 3 ? `Boost the softcap of quark's formula from protostars starting.` : `Boost Exotic Atom Reward Strength.`,
             `Boost supernova generation.`,
@@ -360,46 +243,14 @@ const CORE = {
         res: `Corrupted Shard`,
         boost() {return player.dark.c16.totalS.add(1).log10().add(1).log10().add(1)},
         eff: [
-            s => {
-                let x = s.add(1)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().root(2).div(100).add(1) // Math.log10(s+1)**0.5/100+1
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().div(100).add(1) // Math.log10(s+1)/100+1
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().div(100).add(1).pow(-1) // Math.pow(1+Math.log10(s+1)/100,-1)
-
-                return x
-            },
-            s => {
-                let x = OURO.evo >= 3 ? expMult(s.add(1),1.5) : s.add(1).log10().root(2).div(5)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).root(3)
-
-                return x
-            },
-            s => {
-                let x = s.add(1).log10().pow(1.5).div(10).add(1)
-
-                return x
-            },
-            s => {
-                let x = E(0)
-
-                return x
-            },
+            s => s.add(1),
+            s => s.add(1).log10().root(2).div(100).add(1),
+            s => OURO.evo >= 4 ? s.div(400).max(2).log(2).sqrt() : s.add(1).log10().div(100).add(1),
+            s => s.add(1).log10().div(100).add(1).pow(-1),
+            s => OURO.evo >= 3 ? expMult(s.add(1),1.5) : s.add(1).log10().root(2).div(5),
+            s => s.add(1).root(3),
+            s => s.add(1).log10().pow(1.5).div(10).add(1),
+            s => E(0),
         ],
         effDesc: [
             x => formatMult(x),
@@ -413,25 +264,20 @@ const CORE = {
         ],
 
         fragment: [
-            f=>{
-                let x = f.overflow(1e100,0.5).add(1).log10().root(2).div(50).add(1).pow(-1)
-
-                return x.toNumber()
-            },
+            f => f.overflow(1e100,0.5).add(1).log10().root(2).div(50).add(1).pow(-1),
             x => `Weaken beyond rank’s next tier requirement by <b>${formatReduction(x)}</b>.`,
         ],
     },
 }
 
 const MAX_STARS = 8
-
 const MAX_CORE_LENGTH = 5
 const MIN_CORE_LENGTH = 4
 const MAX_INV_LENGTH = 100
 
 const CORE_CHANCE_MIN = 0.1
 const CORE_TYPE = Object.keys(CORE)
-const MIN_STAR_CHANCES = [0.1,0.1,0.1,0.1,0.01,0.01,0.01,0.000125] // new Array(MAX_STARS).fill(0.1)
+const MIN_STAR_CHANCES = [0.1,0.1,0.1,0.1,0.005,0.005,0.001,0.000125]
 
 const MAX_CORE_FIT = 1
 
@@ -441,7 +287,12 @@ var core_star_luck = []
 var core_star_chances = []
 
 function getCoreChance(i, lvl=tmp.core_lvl) { return Decimal.sub(1,Decimal.pow(Decimal.sub(1,Decimal.pow(MIN_STAR_CHANCES[i],core_star_luck[i].pow(-1))),lvl.floor().pow(0.4))) }
-function getPowerMult(lvl=tmp.core_lvl) { return lvl.sub(1).floor().root(2).div(100).mul(CSEffect("power_mult")) }
+function getPower(m) {
+	let r = tmp.core_lvl.floor().sub(m)
+	r = r.root(2).div(100)
+	r = r.mul(CSEffect("power_mult"))
+	return r.add(1)
+}
 function chanceToBool(arr) { return arr.map((x,i) => core_star_chances[i].gt(x)) }
 
 function resetCoreTemp() {
@@ -459,7 +310,7 @@ resetCoreTemp()
 
 var t_choosed = "-"
 var changeCoreFromBestLevel = () => {
-    let lvl = Decimal.floor(tmp.core_lvl), power = getPowerMult(tmp.core_lvl).mul(100).add(100).round().div(100)
+    let lvl = Decimal.floor(tmp.core_lvl), power = getPower()
     for (let i = 0; i < MAX_CORE_LENGTH; i++) if (player.inf.core[i]) {
         if (lvl.gt(player.inf.core[i].level)) player.inf.core[i].level=lvl
         if (power.gt(player.inf.core[i].power)) player.inf.core[i].power=power
@@ -493,7 +344,7 @@ function calcFragmentBase(data,s,p,level) {
     let lvl = level||data.level, m = 0
     s.forEach(i=>{m += i})
 
-    return p.mul(1.5).pow(lvl.sub(1)).mul(Decimal.pow(m,p.mul(2))).mul(lvl).floor() // Decimal.pow(1.5*p,lvl-1).mul(m**(2*p)*lvl).floor()
+    return p.mul(1.5).pow(lvl.sub(1)).mul(Decimal.pow(m,p.mul(2))).mul(lvl).floor()
 }
 
 function getTheoremPreEffects(data,s,p,level) {
@@ -537,15 +388,13 @@ function updateCoreHTML() {
     tmp.el.pt_lvl.setHTML(`<b>${format(fl,0)}</b> (${formatPercent(lvl.sub(fl))})`)
 
     if (TS_visible) {
-        let pm = getPowerMult()
-
         for (let i = 0; i < player.inf.pre_theorem.length; i++) {
             let pt = tmp.el['preT'+i]
             pt.setDisplay(reached)
 
             if (!reached) continue
 
-            let p = player.inf.pre_theorem[i], s = chanceToBool(p.star_c), power = pm.mul(p.power_m).mul(100).add(100).round().div(100).max(p.min_pow || 0)
+            let p = player.inf.pre_theorem[i], s = chanceToBool(p.star_c), power = getPower(p.power_m).max(p.min_pow || 0)
             pt.setClasses({theorem_div:true, tooltip:true, [p.type]:true, choosed: player.inf.pt_choosed == i})
             pt.setHTML(getTheoremHTML({type: p.type, level: fl, power, star: s},true))
 
@@ -558,6 +407,8 @@ function updateCoreHTML() {
     }
 
     tmp.el.rerollBtn.setTxt(`Reroll (${player.inf.reroll.format(0)})`)
+    tmp.el.rerollBtn.setDisplay(player.inf.theorem.gte(5))
+    tmp.el.removeTBtn.setDisplay(!tmp.tfUnl)
     tmp.el.formTBtn.setDisplay(tmp.tfUnl)
 }
 
@@ -693,7 +544,7 @@ function addSelectedTheorem(onInf) {
 	}
 
 	let td = player.inf.pre_theorem[player.inf.pt_choosed==-1?Math.floor(Math.random()*4):player.inf.pt_choosed]
-    addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),getPowerMult().mul(td.power_m).add(1),td.min_pow)
+    addTheorem(td.type,td.star_c,tmp.core_lvl.floor(),getPower(td.power_m),td.min_pow)
 }
 
 function getFragmentEffect(id,def=1) { return tmp.fragment_eff[id]||def }
@@ -775,17 +626,18 @@ function updateCoreTemp() {
     let t = 4
     if (tmp.c18reward) t++
     if (hasElement(58,1)) t++
-    if (OURO.evo >= 3 && player.chal.comps[19].gte(1)) t++
+    if (OURO.evo >= 4 && hasElement(58,1)) t++
+    if (OURO.evo == 3 && player.chal.comps[19].gte(1)) t++
 
     for (let i = 0; i < MAX_STARS; i++) {
-        let l = E(1)
-        if (i < 4) l = l.mul(CSEffect("theorem_luck"))
+        let l = E(1).mul(CSEffect("theorem_luck"))
 
         core_star_luck[i] = l
         core_star_chances[i] = i < t ? getCoreChance(i) : E(0)
     }
 
     if (player.inf.theorem.gte(6) && OURO.evo < 2) tmp.min_core_len++
+    if (OURO.evo >= 5) tmp.min_core_len--
 
     tmp.core_lvl = INF.level()
 

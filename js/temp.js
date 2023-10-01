@@ -5,7 +5,6 @@ function getTempData() {
     let s = {
         tree_time: 0,
 
-        preQUGlobalSpeed: E(1),
         preInfGlobalSpeed: E(1),
 
         cx: 0,
@@ -18,15 +17,10 @@ function getTempData() {
         tab: 0,
         stab: [0],
         tab_name: "mass",
-        qc_tab: 0,
-        qc_ch: -1,
         pass: 1,
         notify: [],
         popup: [],
         saving: 0,
-        rank_tab: 0,
-
-        scaling_qc8: [],
 
         prestiges: {
             req: [],
@@ -63,27 +57,28 @@ function getTempData() {
         sn: {},
 
         qu: {
+			speed: E(1),
             chroma_gain: [],
             chroma_eff: [],
             mil_reached: [],
-            qc_eff: [],
-        },
 
-        prim: {
-            eff: [],
-            w: [6,6,6,6,2,2,2,1],
-        },
-
-        en: {
-            gain: {},
-            eff: {},
-            rewards: [],
-            rewards_eff: [],
-            reward_br: [],
-        },
-
-        rip: {
-            
+			prim: {
+				eff: [],
+				w: [6,6,6,6,2,2,2,1],
+			},
+            qc: {
+				tab: 0,
+				ch: -1,
+				eff: [],
+			},
+			en: {
+				gain: {},
+				eff: {},
+				rewards: [],
+				rewards_eff: [],
+				reward_br: [],
+			},
+			rip: {},
         },
 
         dark: {
@@ -111,14 +106,12 @@ function getTempData() {
             quark: E(1),
             stronger: E(1),
         },
-
         overflowBefore: {
             dm: E(0),
             mass: E(0),
             bh: E(0),
             quark: E(0),
         },
-
         overflow_start: {
             dm: E('ee30'),
             mass: E('ee69'),
@@ -127,24 +120,19 @@ function getTempData() {
             atomic: E('ee82'),
             stronger: E('e115')
         },
-
         overflow_power: {
             mass: E(.5),
             bh: E(0.5),
             stronger: E(.5),
         },
 
-        rank_collapse: { start: E('1e14'), power: E(2), reduction: E(1) },
-
         mass_glyph_msg: 0,
-
         glyph_upg_eff: [],
 
         scaling: {},
-
         scaling_power: {},
         scaling_start: {},
-
+        scaling_qc8: [],
         no_scalings: {},
 
         c16: {
@@ -156,7 +144,7 @@ function getTempData() {
             fvm_eff: {},
         },
 
-        exotic_atom: {
+        ea: {
             amount: E(0),
             gain: [E(0),E(0)],
             eff: [[],[]],
@@ -170,16 +158,16 @@ function getTempData() {
         inf_reached: false,
         inf_time: 0,
         inf_limit: Decimal.pow(10,Number.MAX_VALUE),
+        iu_eff: [],
 
         core_chance: CORE_CHANCE_MIN,
         core_lvl: E(1),
         core_score: {},
         core_eff: {},
         fragment_eff: {},
+        cs: { eff: {} },
 
-        iu_eff: [],
-
-        ascensions: {
+        asc: {
             req: [],
             bulk: [],
             eff: [],
@@ -187,17 +175,13 @@ function getTempData() {
             base: E(1),
         },
 
-        cs_effect: {},
-
         gp: {
             res_gain: [],
             res_effect: [],
         },
 
         massFP: E(1),
-
         build: {},
-
         ouro: {},
     }
 
@@ -209,7 +193,7 @@ function getTempData() {
     }
 
     for (let x = 0; x < PRES_LEN; x++) s.prestiges.eff[x] = {}
-    for (let x = 0; x < ASCENSIONS.names.length; x++) s.ascensions.eff[x] = {}
+    for (let x = 0; x < ASCENSIONS.names.length; x++) s.asc.eff[x] = {}
     for (let x in BEYOND_RANKS.rewardEff) s.beyond_ranks.eff[x] = {}
     for (let x = 1; x <= UPGS.main.cols; x++) s.upgs[x] = {}
     for (let x = 0; x < TABS[1].length; x++) s.stab.push(0)
@@ -230,13 +214,13 @@ function getTempData() {
 }
 
 function resetTemp() {
-    keep = [tmp.el, tmp.prevSave]
-    tmp = getTempData()
-    tmp.el = keep[0]
-    tmp.prevSave = keep[1]
+    tmp = deepUndefinedAndDecimal({
+		el: tmp.el,
+		prevSave: tmp.prevSave,
+		start: tmp.start,
+		pass: 1,
+	}, getTempData())
 }
-
-resetTemp()
 
 function updateMassTemp() {
     tmp.massSoftPower = FORMS.massSoftPower()
@@ -312,7 +296,8 @@ function updateTemp() {
 
     OURO.temp()
 
-    tmp.passive = (evo>=3?FORMS.bh.unl():hasUpgrade("atom",6))?2:
+    tmp.passive = (evo>=5?true:hasElement(24))?3:
+		(evo>=3?FORMS.bh.unl():hasUpgrade("atom",6))?2:
 		(evo>=2?FORMS.rp.unl():hasUpgrade("bh",6)||hasUpgrade("atom",6))?1:0
 
     tmp.c16.in = CHALS.inChal(16)
@@ -327,11 +312,8 @@ function updateTemp() {
     tmp.mass4Unl = hasElement(202)
     tmp.brUnl = hasElement(208)
     tmp.epUnl = hasCharger(5) && OURO.evo >= 3
-    tmp.eaUnl = hasCharger(5) && OURO.evo < 3
     tmp.brokenInf = hasInfUpgrade(16)
     tmp.tfUnl = hasElement(230)
-    tmp.ascensions_unl = player.chal.comps[17].gte(4)
-    tmp.CS_unl = hasElement(251)
     tmp.c18reward = player.chal.comps[18].gte(4)
     tmp.fifthRowUnl = hasElement(270)
 
@@ -357,5 +339,5 @@ function updateTemp() {
     updateMassTemp()
 
     tmp.preInfGlobalSpeed = FORMS.getPreInfGlobalSpeed()
-    tmp.preQUGlobalSpeed = FORMS.getPreQUGlobalSpeed()
+    tmp.qu.speed = FORMS.getPreQUGlobalSpeed()
 }

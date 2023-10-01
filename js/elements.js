@@ -1,42 +1,37 @@
 function setupHTML() {
-	let table
-
 	setupTabHTML()
 
-	let ranks_table = new Element("ranks_table")
-	table = ""
+	let table = ""
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
 		table += `<div style="width: 300px" id="ranks_div_${x}">
-			<button id="ranks_auto_${x}" class="btn" style="width: 80px;" onclick="RANKS.autoSwitch('${rn}')">OFF</button>
 			<span id="ranks_scale_${x}""></span>${RANKS.fullNames[x]} <h4 id="ranks_amt_${x}">X</h4><br><br>
 			<button onclick="RANKS.reset('${rn}')" class="btn reset" id="ranks_${x}">
-				Reset your ${x>0?RANKS.fullNames[x-1]+"s":'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<span id="ranks_desc_${x}"></span><br>
+				Reset your ${x>0?RANKS.fullNames[x-1]+"s":'mass and upgrades'}, but ${RANKS.fullNames[x]} up.<br>
 				Req: <span id="ranks_req_${x}">X</span>
+				<span id="ranks_desc_${x}"></span>
 			</button>
 		</div>`
 	}
-	ranks_table.setHTML(table)
+	new Element("ranks_table").setHTML(table)
 
-	let pres_table = new Element("pres_table")
 	table = ""
 	for (let x = 0; x < PRES_LEN; x++) {
 		table += `<div style="width: 300px" id="pres_div_${x}">
-			<button id="pres_auto_${x}" class="btn" style="width: 80px;" onclick="PRESTIGES.autoSwitch(${x})">OFF</button>
 			<span id="pres_scale_${x}""></span>${PRESTIGES.fullNames[x]} <h4 id="pres_amt_${x}">X</h4><br><br>
 			<button onclick="PRESTIGES.reset(${x})" class="btn reset" id="pres_${x}">
-				${x>0?"Reset your "+PRESTIGES.fullNames[x-1]+"s":'Force a Quantum reset'}, but ${PRESTIGES.fullNames[x]} up.<span id="pres_desc_${x}"></span><br>
+				${x>0?"Reset your "+PRESTIGES.fullNames[x-1]+"s":'Force a Quantum reset'}, but ${PRESTIGES.fullNames[x]} up.<br>
 				Req: <span id="pres_req_${x}">X</span>
+				<span id="pres_desc_${x}"></span>
 			</button>
 		</div>`
 	}
-	pres_table.setHTML(table)
+	new Element("pres_table").setHTML(table)
 
 	setupAscensionsHTML()
 
 	BUILDINGS.setup()
 
-	let ranks_rewards_table = new Element("ranks_rewards_table")
 	table = ""
 	for (let x = 0; x < RANKS.names.length; x++) {
 		let rn = RANKS.names[x]
@@ -47,9 +42,8 @@ function setupHTML() {
 		}
 		table += `</div>`
 	}
-	ranks_rewards_table.setHTML(table)
+	new Element("ranks_rewards_table").setHTML(table)
 
-	let pres_rewards_table = new Element("pres_rewards_table")
 	table = ""
 	for (let x = 0; x < PRES_LEN; x++) {
 		table += `<div id="pres_reward_div_${x}">`
@@ -59,9 +53,8 @@ function setupHTML() {
 		}
 		table += `</div>`
 	}
-	pres_rewards_table.setHTML(table)
+	new Element("pres_rewards_table").setHTML(table)
 
-	let br_rewards_table = new Element("br_rewards_table")
 	table = ""
 	for (let x in BEYOND_RANKS.rewards) {
 		x = Number(x)
@@ -71,21 +64,20 @@ function setupHTML() {
 		}
 		table += '<br>'
 	}
-	br_rewards_table.setHTML(table)
+	new Element("br_rewards_table").setHTML(table)
 
-	let main_upgs_table = new Element("main_upgs_table")
 	table = ""
 	for (let x = 1; x <= UPGS.main.cols; x++) {
 		let id = UPGS.main.ids[x]
-		table += `<div id="main_upg_${x}_div" style="width: 230px; margin: 0px 10px;"><b>${UPGS.main[x].title}</b><br><br><div style="font-size: 13px; min-height: 50px" id="main_upg_${x}_res"></div><br><div class="table_center" style="justify-content: start;">`
+		table += `<div id="main_upg_${x}_div" style="width: 230px; margin: 0px 10px;"><h4>${UPGS.main[x].title}</h4><br><div style="font-size: 13px; min-height: 50px" id="main_upg_${x}_res"></div><div class="table_center" style="justify-content: start;">`
 		for (let y = 1; y <= UPGS.main[x].lens; y++) {
 			let key = UPGS.main[x][y]
 			table += `<img onclick="buyUpgrade('${id}', ${y})" onmouseover="UPGS.main.over(${x},${y})" onmouseleave="UPGS.main.reset()"
 			 style="margin: 3px;" class="img_btn" id="main_upg_${x}_${y}" src="${key.noImage?`images/test.png`:`images/upgrades/main_upg_${id+y}.png`}">`
 		}
-		table += `</div><br><button id="main_upg_${x}_auto" class="btn" style="width: 80px;" onclick="player.auto_mainUpg.${id} = !player.auto_mainUpg.${id}">OFF</button></div>`
+		table += `</div></div>`
 	}
-	main_upgs_table.setHTML(table)
+	new Element("main_upgs_table").setHTML(table)
 
 	let scaling_table = new Element("scaling_table")
 	table = ""
@@ -115,13 +107,6 @@ function setupHTML() {
 	setupInfHTML()
 	setupOuroHTML()
 
-	let confirm_table = new Element("confirm_table")
-	table = ""
-	for (let x = 0; x < CONFIRMS.length; x++) {
-		table += `<div style="width: 100px" id="confirm_div_${x}"><img src="images/${x == 1 ? "dm" : CONFIRMS[x]}.png"><br><button onclick="player.confirms.${CONFIRMS[x]} = !player.confirms.${CONFIRMS[x]}" class="btn" id="confirm_btn_${x}">OFF</button></div>`
-	}
-	confirm_table.setHTML(table)
-
     reloadElements()
 }
 
@@ -136,8 +121,9 @@ function updateUpperHTML() {
 	tmp.el.chal_upper.setDisplay(mode == "chal")
 	if (mode == "chal") {
 		let data = CHALS.getChalData(player.chal.active, tmp.chal.bulk[player.chal.active].max(player.chal.comps[player.chal.active]))
-		tmp.el.chal_upper.setHTML(`You are now in [${CHALS[player.chal.active].title}] Challenge! Go over ${tmp.chal.format(tmp.chal.goal[player.chal.active])+CHALS.getResName(player.chal.active)} to complete.
-		<br>+${tmp.chal.gain} Completions (+1 at ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)})`)
+		tmp.el.chal_upper.setHTML(`You are in [${CHALS[player.chal.active].title}] Challenge!
+		(+${format(tmp.chal.gain,0)})<br>
+		Goal: ${tmp.chal.format(data.goal)+CHALS.getResName(player.chal.active)}`)
 	}
 	
 	tmp.el.requirement.setDisplay(mode == "req")
@@ -151,6 +137,7 @@ function updateUpperHTML() {
 		let nt = tmp.upg_notify
 		if (nt[0] == "el") tmp.el.upg_notify_msg.setHTML(`[!] ${["","Muonic "][nt[1]]+ELEMENTS.fullNames[nt[2]]} is available! [!]`)
 		if (nt[0] == "sn") tmp.el.upg_notify_msg.setHTML(`[!] Neutron Tree [${nt[1]}] is available! [!]`)
+		if (nt[0] == "zd") tmp.el.upg_notify_msg.setHTML(`[!] ${capitalFirst(nt[1])} [${nt[2]}] is available! [!]`)
 		if (nt[0] == "ch") tmp.el.upg_notify_msg.setHTML(`[!] Charger [${nt[1]}] is available! [!]`)
 	}
 
@@ -240,7 +227,9 @@ function updateMainUpgradesHTML() {
 		let upg1 = UPGS.main[tmp.upgs.msg[0]]
 		let upg2 = UPGS.main[tmp.upgs.msg[0]][tmp.upgs.msg[1]]
 		let msg = "<span class='sky'>"+(typeof upg2.desc == "function" ? upg2.desc() : upg2.desc)+"</span><br><span>Cost: "+format(upg2.cost,0)+" "+upg1.resName+"</span>"
-		if (upg2.effDesc !== undefined) msg += "<br><span class='green'>Currently: "+upg2.effDesc(tmp.upgs[tmp.upgs.msg[0]][tmp.upgs.msg[1]].effect)+"</span>"
+
+		let eff = upg2.effDesc && upg2.effDesc(tmp.upgs[tmp.upgs.msg[0]][tmp.upgs.msg[1]].effect)
+		if (eff) msg += "<br><span class='green'>Currently: "+eff+"</span>"
 		tmp.el.main_upg_msg.setHTML(msg)
 	} else tmp.el.main_upg_msg.setTxt("")
 	for (let x = 1; x <= UPGS.main.cols; x++) {
@@ -255,14 +244,12 @@ function updateMainUpgradesHTML() {
 				tmp.el["main_upg_"+x+"_"+y].changeStyle("visibility", unl2?"visible":"hidden")
 				if (unl2) tmp.el["main_upg_"+x+"_"+y].setClasses({img_btn: true, locked: !canGetUpgrade(id, y), bought: hasUpgrade(id, y)})
 			}
-			tmp.el["main_upg_"+x+"_auto"].setDisplay(upg.auto_unl ? upg.auto_unl() : false)
-			tmp.el["main_upg_"+x+"_auto"].setTxt(player.auto_mainUpg[id]?"ON":"OFF")
 		}
 	}
 }
 
 function updateBlackHoleHTML() {
-	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(tmp.preQUGlobalSpeed), true))
+	tmp.el.bhMass2.setHTML(formatMass(player.bh.mass)+" "+formatGain(player.bh.mass, tmp.bh.mass_gain.mul(tmp.qu.speed), true))
 	tmp.el.bhMassPower.setTxt(format(tmp.bh.massPowerGain))
 	tmp.el.bhFSoft.setDisplay(tmp.bh.formula.gte(tmp.bh.fSoftStart))
 	tmp.el.bhFSoftStart.setTxt(formatMass(tmp.bh.fSoftStart))
@@ -297,25 +284,6 @@ function updateBlackHoleHTML() {
 
 function updateOptionsHTML() {
 	if (tmp.tab_name == "options") {
-		for (let x = 0; x < CONFIRMS.length; x++) {
-			let unl = 
-			CONFIRMS[x] == "sn"
-			?(tmp.sn.unl)
-			:CONFIRMS[x] == "qu"
-			?quUnl()
-			:CONFIRMS[x] == "br"
-			?player.qu.rip.first
-			:CONFIRMS[x] == "inf"
-			?tmp.inf_unl
-			:CONFIRMS[x] == "bh"
-			?FORMS.bh.unl()
-			:CONFIRMS[x] == "rp"
-			?FORMS.rp.unl()
-			:player[CONFIRMS[x]].unl
-	
-			tmp.el["confirm_div_"+x].setDisplay(unl)
-			tmp.el["confirm_btn_"+x].setTxt(player.confirms[CONFIRMS[x]] ? "ON":"OFF")
-		}
 		tmp.el.total_time.setTxt(formatTime(player.time))
 		tmp.el.offline_active.setTxt(player.offline.active?"ON":"OFF")
 		tmp.el.tree_anim_btn.setDisplay(tmp.sn.unl)
@@ -324,8 +292,6 @@ function updateOptionsHTML() {
 		tmp.el.mass_type.setTxt(["Short",'Long'][player.options.massType])
 		tmp.el.prefer_notify.setTxt("Notifications: " + (isPreferred("notify") ? "ON" : "OFF"))
 		tmp.el.prefer_pin.setTxt("Pins: " + (isPreferred("pin") ? "ON" : "OFF"))
-	} else if (tmp.tab_name == "res-hide") {
-		updateResourcesHiderHTML()
 	}
 
 	tmp.el.omega_badge.setDisplay(tmp.tab_name == "options" && localStorage.getItem("imr_secret_badge1") == "1")
@@ -344,7 +310,7 @@ function updateHTML() {
     tmp.el.app.setDisplay(tmp.inf_time != 2 && tmp.inf_time != 3 && tmp.start && !supernovaAni() && displayMainTab)
 	updateSupernovaEndingHTML()
 	updateTabsHTML()
-	if (!player.options.nav_hide[1]) updateResourcesHTML()
+	updateResourcesHTML()
 	if (hover_tooltip) updateTooltipResHTML()
 	updateUpperHTML()
 	if (tmp.start && (!tmp.sn.reached || player.supernova.post_10) && displayMainTab) {
@@ -355,7 +321,7 @@ function updateHTML() {
 		if (tmp.tab_name == "mass") {
 			updateRanksHTML()
 			
-			if (tmp.rank_tab == 0) {
+			if (tmp.ranks.tab == 0) {
 				updateMassUpgradesHTML()
 				updateTickspeedHTML()
 

@@ -5,7 +5,8 @@ const TOOLTIP_RES = {
             let h = `You have pushed <b>${formatMass(player.mass)}</b>.`;
 
             if (tmp.overflowBefore.mass.gte(tmp.overflow_start.mass[0]))
-            h += `<br>(<b>+${formatMass(tmp.overflowBefore.mass)}</b> gained before <b>overflow</b>)`;
+            h += `<br>(<b>+${formatMass(tmp.overflowBefore.mass)}</b> gained before <b>overflow</b>)<br>`;
+            h += "<br>Click to see mass values."
 
             return h
         },
@@ -22,13 +23,7 @@ const TOOLTIP_RES = {
     },
     cp: {
         full: "Calm Power",
-        desc() {
-            let h = `<i>
-            Reach over <b>${formatMass(1e14)}</b> of normal mass to reset previous features for gain Calm Powers.
-            </i>`
-
-            return h
-        },
+        desc: () => `<i>Reach over <b>${formatMass(1e14)}</b> of normal mass to reset previous features for gain Calm Powers.</i>`
     },
     dm: {
         full: "Dark Matter",
@@ -70,11 +65,7 @@ const TOOLTIP_RES = {
         desc() {
             let r = OURO.evo >= 2 ? `<b>${format(300,0)}</b> Fabric` : `<b>${formatMass(uni(1e100))}</b> of black hole`
 
-            let h = `<i>
-            Reach over ${r} to reset all previous features for gain Atoms & Quarks.
-            </i>`
-
-            return h
+            return `<i>Reach over ${r} to reset all previous features for gain Atoms & Quarks.</i>`
         },
     },
     protostar: {
@@ -89,9 +80,9 @@ const TOOLTIP_RES = {
             if (tmp.overflowBefore.quark.gte(tmp.overflow_start.quark))
             h += `<br>(<b>+${format(tmp.overflowBefore.quark,0)}</b> gained before <b>overflow</b>)`;
 
-            if (tmp.eaUnl || tmp.epUnl) h += `
+            if (tmp.ea.unl || tmp.epUnl) h += `
             <br class='line'>
-            You have <b class='orange'>${tmp.exotic_atom.amount.format(0)}</b> Exotic Atoms.
+            You have <b class='orange'>${tmp.ea.amount.format(0)}</b> Exotic Atoms.
             `
             return h
         },
@@ -100,7 +91,7 @@ const TOOLTIP_RES = {
         full: "Mass Dilation",
         desc() {
             let h = `
-            You have <b>${formatMass(player.md.mass)} ${player.md.mass.formatGain(tmp.md.mass_gain.mul(tmp.preQUGlobalSpeed),true)}</b> of dilated mass.
+            You have <b>${formatMass(player.md.mass)} ${player.md.mass.formatGain(tmp.md.mass_gain.mul(tmp.qu.speed),true)}</b> of dilated mass.
             `
 
             if (tmp.overflowBefore.dm.gte(tmp.overflow_start.dm))
@@ -127,14 +118,12 @@ const TOOLTIP_RES = {
             let h = `
             You became ${getScalingName('supernova')}Supernova <b>${player.supernova.times.format(0)}</b>  times
             <br class='line'>
-            You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.preQUGlobalSpeed))}</b> Collapsed Star.<br>
-            You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.sn.star_gain.mul(tmp.preQUGlobalSpeed))}</b> Neutron Star.
+            You have <b>${player.stars.points.format(0)} ${player.stars.points.formatGain(tmp.stars.gain.mul(tmp.qu.speed))}</b> Collapsed Star.<br>
+            You have <b>${player.supernova.stars.format(0)} ${player.supernova.stars.formatGain(tmp.sn.star_gain.mul(tmp.qu.speed))}</b> Neutron Star.
             `
 
             if (!tmp.sn.gen) h += `<br class='line'>
-            <i>
-            ${"Reach over <b>"+format(tmp.sn.maxlimit)+"</b> collapsed stars to go Supernova"}.
-            </i>`
+            <i>Reach over <b>${format(tmp.sn.maxlimit)}</b> collapsed stars to go Supernova.</i>`
 
             return h
         },
@@ -143,9 +132,9 @@ const TOOLTIP_RES = {
         full: "Quantum Foam",
         desc() {
             let h = `<i>
-            ${"Reach over <b>"+formatMass(mlt(OURO.evo>=4 ? 1e3 : 1e4))+"</b> of normal mass to "+(QCs.active()?"complete Quantum Challenge":"go Quantum")}.
+            Reach over <b>${formatMass(mlt(OURO.evo>=4 ? 1e3 : 1e4))}</b> of normal mass to ${QCs.active()?"complete Quantum Challenge":"go Quantum"}.
             </i>`
-            if (OURO.evo >= 4) h += `<br><b class='yellow'>Constellations persist until next Ouroboric!</b>`
+            if (OURO.evo >= 4) h += `<br><b class='snake'>Constellation features stay until next Ouroboric.</b>`
 
             return h
         },
@@ -153,23 +142,19 @@ const TOOLTIP_RES = {
     ue: {
         full: "Universal Elixir",
         desc() {
-            return `<i>
-				Reach over <b>${formatMass(mlt(1e3))}</b> of normal mass to go Cosmic.
-				<br><b class='yellow'>Constellations persist until next Ouroboric!</b>
-			</i>`
+            return `Reach over <b>${formatMass(mlt(1e3))}</b> of normal mass to go Cosmic.
+			<br><b class='green'>Constellations persist until next Ouroboric!</b>`
         },
     },
     br: {
         full: "Death Shard",
         desc() {
             let h = `<i>
-            ${player.qu.rip.active ? "Our dimension is Big Ripped. Click to undo." : "Big Rip the Dimension."}
+            ${player.qu.rip.active ? "Our dimension is Big Ripped. Click to undo." : "Big Rip the Dimension."} (Force a Quantum reset)
             <br><br>
-            While in Big Rip, Entropy Rewards don't work, all Primordium effects are 50% weaker except for Epsilon Particles, which don't work, supernova tree upgrades qu2 and qu10 don't work, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.`
-
-            if (OURO.evo >= 3) h += `<br><br>Because of Evolution 3, you cannot purchase Nebulae and Prototar Elements!`
-            h += `</i>`
-            return h
+            While in Big Rip, some Entropic Rewards don't work, all Primordium effects are 50% weaker${OURO.evo >= 4 ? "" : "except for Epsilon Particles, which don't work, [qu2] and [qu10] don't work"}, and you are trapped in Quantum Challenge with modifiers ${getQCForceDisp("rip")}. Death Shards are gained based on your normal mass while in Big Rip. Unlock various upgrades from Big Rip.</i>`
+			if (OURO.evo == 3) h += "<br class='line'>For this evolution, you can't get Nebulae and buy Protostar Elements!"
+			return h
         },
     },
     dark: {
@@ -183,9 +168,8 @@ const TOOLTIP_RES = {
                 h += `<br class='line'>`
             }
             
-            h += `<i>
-            Require <b>Oganesson-118</b> to go Dark.
-            </i>`
+            h += `<i>Require <b>Oganesson-118</b> to go Dark.</i><br>
+			This resets everything up to this point!`
 
             return h
         },
@@ -193,16 +177,16 @@ const TOOLTIP_RES = {
     speed: {
         full: "Global Speed",
         desc() {
-            let h = `<i>
-            Pre-Quantum: Speeds up the production of pre-Quantum resources (after exponent, dilation, etc.).
-            </i>`
-
-            if (tmp.inf_unl) h += `
-            <br class='line'>
-            <i>
-            Pre-Infinity: Speeds up the production of pre-Infinity resources. Applies pre-Quantum global speed. (after exponent, dilation, etc.)
-            </i>
-            `
+            let h = ``
+			if (quUnl()) h += `<i class='light_green'>
+				Pre-Quantum: Speeds up the production of pre-Quantum resources (after exponent, dilation, etc.).
+			</i><br>`
+			if (tmp.inf_unl) h += `<i class='yellow'>
+				Pre-Infinity: Speeds up the production of pre-Infinity resources. Applies pre-Quantum global speed. (after exponent, dilation, etc.)
+            </i><br>`
+			if (devSpeed != 1) h += `<i class='white'>
+				Developer: Console-exclusive command [devSpeed], speeds up everything
+            </i><br>`
 
             return h
         },
@@ -210,14 +194,9 @@ const TOOLTIP_RES = {
     fss: {
         full: "Final Star Shard (FSS)",
         desc() {
-            let h = `
-            Your FSS base is <b>${tmp.matters.FSS_base.format(0)}</b>.
+            return `Your FSS base is <b>${tmp.matters.FSS_base.format(0)}</b>.
             <br class='line'>
-            <i>
-            Reach over <b>${tmp.matters.FSS_req.format(0)}</b> of FSS's base to get Final Star Shard.
-            </i>`
-
-            return h
+            <i>Reach over <b>${tmp.matters.FSS_req.format(0)}</b> of FSS's base to get Final Star Shard.</i>`
         },
     },
     corrupt: {
@@ -225,15 +204,9 @@ const TOOLTIP_RES = {
         desc() {
             let h = `
             Your best ${ OURO.evo >= 2 ? "Wormhole" : "mass of black hole" } in the 16th Challenge is <b>${formatMass(player.dark.c16.bestBH)}</b>.
-            <br class='line'>
-            <i>
-            ${ player.chal.active == 16 ? "Exit the 16th Challenge." : "Start the 16th Challenge." } Earn <b>Corrupted Shards</b> based on your mass of black hole, when exiting the challenge${OURO.evo >= 2 ? "" : `with more than <b>${formatMass(OURO.evo >= 1 ? 1e70 : 1e100)}</b> of black hole`}.<br><br>
-            • You cannot gain rage powers, and all matters' formulas are disabled, and they generate each other. Red matter generates dark matter.<br>
-            • Pre-C16 features, such as rank, prestige tiers, main upgrades, elements, tree upgrades, etc. may be corrupted (disabled).<br>
-            • You are trapped in Mass Dilation & Dark Run with 100 all glyphs (10 slovak glyphs).<br>
-            • Primordium particles are disabled.<br>
-            • Pre-Quantum global speed is always set to /100.<br>
-            </i>`
+			<br class='line'>
+            ${ player.chal.active == 16 ? "Exit the 16th Challenge." : "Start the 16th Challenge." } (Force a FSS reset!)<br>	
+            ${CHALS[16].desc}`
 
             return h
         },
@@ -241,16 +214,15 @@ const TOOLTIP_RES = {
     inf: {
         full: "Infinity",
         desc() {
-			if (!tmp.inf_unl) return ``
+			if (!tmp.inf_unl) return `Reach ${formatMass(INF.req)} to go Infinity.`
             let h = `
             Your ${getScalingName('inf_theorem')}Infinity Theorem is <b class="yellow">${player.inf.theorem.format(0)}</b>.
             <br class='line'>
             <i>
-            Reach over <b>${formatMass(INF.req)}</b> of normal mass to get Infinity Points and choose Theorem in Core.
+            Reach over <b>${formatMass(INF.req)}</b> of normal mass to get Infinity Points and choose Theorem in Core.<br>
+            Going Infinity resets everything darkness as well!
             <br><br>
             Your normal mass limit is <b>${formatMass(tmp.inf_limit)}</b>
-            <br><br>
-            Going Infinity resets everything darkness as well!
             </i>`
 
             return h
@@ -265,8 +237,8 @@ const TOOLTIP_RES = {
             You're currently at Evolution <b class="limegreen">${player.evo.times}</b>. Evolving will cause something to be changed...
             <br class='line'>
             <i>
-            Complete <b class="yellow">Challenge 20</b> first to Evolve.
-            <br><br>
+            Complete <b class="yellow">Challenge 20</b> to Evolve.
+            <br>
             Ouroboric resets everything up to this point, and so Apples!
             </i>`
 
@@ -282,6 +254,6 @@ function updateTooltipResHTML() {
         let tr_data = TOOLTIP_RES[id]
         let tr = tmp.el[id+'_tooltip']
 
-        if (tr) tr.setTooltip(`<h3>[ ${tr_data.full} ]</h3>`+(tr_data.desc?"<br class='line'>"+tr_data.desc():""))
+        if (tr) tr.setTooltip(`<h3 class="${RESOURCES_DIS[id].class}">${tr_data.full}</h3>`+(tr_data.desc?"<br class='line'>"+tr_data.desc():""))
     }
 }
