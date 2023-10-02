@@ -110,7 +110,7 @@ const INF = {
         for (let x = 0; x < PRESTIGES.names.length; x++) player.prestiges[x] = E(0)
 
 		// Ouroboric
-        if (OURO.unl()) resetEvolutionSave("inf")
+        if (OURO.unl) resetEvolutionSave("inf")
 
         // Reset
         player.ranks[RANKS.names[RANKS.names.length-1]] = E(0)

@@ -111,17 +111,16 @@ function snakeMove(s, you) {
 	let keep = []
 	gs.apples.forEach((x,w) => {
 		let special = x.type == "powerup" || (x.type == "apple" && x.tier.gte(4) && (!hasElement(94, 1) || !you))
+		if (you && hasPowerup("align") && !special) {
+			if (m.x != 0 && old_head.x == x.x) getNewSnakePosition(x, m)
+			if (m.y != 0 && old_head.y == x.y) getNewSnakePosition(x, m)
+		}
+
 		let aim_range = aim && !special ? 1 : 0
 		if (Math.abs(x.x - head_move.x) + Math.abs(x.y - head_move.y) <= aim_range && (you || !special)) {
 			feedSomething(x,w,you)
 			feedSomethingOnSnake(s,you)
-		} else {
-			if (you && hasPowerup("align") && !special) {
-				if (m.x != 0 && old_head.x == x.x) getNewSnakePosition(x, m)
-				if (m.y != 0 && old_head.y == x.y) getNewSnakePosition(x, m)
-			}
-			keep.push(x)
-		}
+		} else keep.push(x)
 	})
 
 	// Enemy Killing
@@ -409,7 +408,7 @@ function feedSomething(obj,target,you) {
 			player.ouro.apple = player.ouro.apple.add(base.pow(obj.tier.sub(1)).mul(tmp.ouro.apple_gain).mul(snake.accel))
 		break;
 		case 'starfruit':
-			player.evo.proto.dust = player.evo.proto.dust.add(tmp.evo.dust_prod.mul(snake.accel * 5))
+			player.evo.proto.dust = player.evo.proto.dust.add(tmp.evo.neb.dust_prod.mul(snake.accel * 5))
 			CONSTELLATION.calc(snake.accel * 5)
 			snake.star = 2
 		break;

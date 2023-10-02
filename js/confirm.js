@@ -54,7 +54,7 @@ const CONFIRMS_FUNCTION = {
         }
     },
     qu(auto,force,rip) {
-		if (quUnl() || OURO.unl()) QUANTUM.performReset(force, rip)
+		if (quUnl() || OURO.unl) QUANTUM.performReset(force, rip)
         else {
             document.body.style.animation = "implode 2s 1"
             setTimeout(()=>QUANTUM.performReset(force, rip),1000)

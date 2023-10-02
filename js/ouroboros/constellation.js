@@ -345,7 +345,7 @@ const CONSTELLATION = {
     },
 }
 
-function hasZodiacUpg(zi,ui) { return tmp.ouro.unl && player.evo.const.upg[zi+"-"+ui] }
+function hasZodiacUpg(zi,ui) { return OURO.unl && player.evo.const.upg[zi+"-"+ui] }
 function zodiacEff(zi,ui,def=E(1)) { return tmp.evo.zodiac.eff[zi+"-"+ui] ?? def }
 function getZodiacAmount(zi) { return player.evo.const[zi].amount }
 

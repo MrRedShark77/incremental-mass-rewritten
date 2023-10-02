@@ -188,7 +188,7 @@ const BOSONS = {
                 get unl() { return EVO.amt >= 2 },
                 cost(x) { return E(1e5).pow(x.pow(5).add(1)) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1e5) ? x.sub(1).log(1e5).root(5).add(1).floor() : E(0) },
-                effect: x => x.add(1),
+                effect: x => x.add(1).overflow('e20000',0.5),
                 effDesc(x) { return formatPow(x) },
             },
         ],

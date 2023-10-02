@@ -78,9 +78,8 @@ const UNSTABLE_BH = {
 }
 
 function startC16() {
-    if (player.chal.active == 16 && !player.options.auto_retry) {
-        CHALS.exit()
-    } else {
+    if (player.chal.active == 16 && !player.options.auto_retry) CHALS.exit()
+    else {
         CHALS.exit()
         CHALS.enter(16)
     }
@@ -179,7 +178,7 @@ function updateC16HTML() {
 
         let req = canCharge(i), has = hasCharger(i)
 
-        tmp.el[id+"_req"].setHTML(EVO.fed_msg[tmp.evo.fed["ch"+i]] ?? `Req: <b>${formatMass(c.req)}</b> of black hole.`)
+        tmp.el[id+"_req"].setHTML(EVO.fed_msg[tmp.ouro.fed["ch"+i]] ?? `Req: <b>${formatMass(c.req)}</b> of black hole.`)
         tmp.el[id+"_cost"].setHTML(`Cost: <b>${c.cost.format(0)}</b> Corrupted Shard`)
 
         tmp.el[id+"_req"].setDisplay(!req)

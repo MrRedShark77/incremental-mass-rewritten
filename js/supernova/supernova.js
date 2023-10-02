@@ -231,7 +231,7 @@ function updateSupernovaTemp() {
 }
 
 function supernovaAni() {
-	return tmp.sn.reached && !tmp.sn.unl && !OURO.unl()
+	return tmp.sn.reached && !tmp.sn.unl && !OURO.unl
 }
 
 function updateSupernovaEndingHTML() {

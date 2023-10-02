@@ -1609,15 +1609,13 @@ h4 {
 	background: linear-gradient(0.25turn, #560000, #564300, #00563c, #000056, #340056);
 }
 
-#ouro_scene, #ouro_quotes {
+#ouro_scene {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1
-}
-#ouro_scene {
+    z-index: 1;
     background: linear-gradient(transparent, #0F3F27)
 }
 #ouro_scene > *:not(#ouro_quotes) {

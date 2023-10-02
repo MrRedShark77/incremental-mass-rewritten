@@ -14,7 +14,7 @@ const ATOM = {
             if (hasElement(303)) x = x.mul(elemEffect(303))
             if (tmp.sn.boson) x = x.mul(tmp.sn.boson.upgs.gluon[4].effect)
             if (evo >= 4) x = x.mul(getEnRewardEff(7))
-		    if (QCs.active() && EVO.amt >= 4) x = x.mul(tmp.qu.qc.eff[3])
+		    if (QCs.active() && evo >= 4) x = x.mul(tmp.qu.qc.eff[3])
 
             if (hasElement(169)) x = x.pow(1.05)
             if (tmp.inf_unl) x = x.pow(theoremEff('atom',5))

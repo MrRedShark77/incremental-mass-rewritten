@@ -1610,8 +1610,9 @@ const ELEMENTS = {
         },{
             inf: true,
             desc: `Unlock 20th Challenge.`,
-            get cost() { return E([Number.MAX_VALUE,Number.MAX_VALUE,1e256,1e300,Number.MAX_VALUE][EVO.amt] ?? Number.MAX_VALUE) },
+            get cost() { return E(OURO.evo == 3 ? 1e300 : OURO.evo == 2 ? 1e295 : Number.MAX_VALUE) },
         },{
+            proto: true,
             desc: `Stardust boosts Protostars at a reduced rate.`,
             cost: E(1e3),
             effect() {
@@ -1643,23 +1644,21 @@ const ELEMENTS = {
             effDesc(x) { return formatPow(x) + x.softcapHTML(1e6, hasElement(310)) },
         },{
             desc: `Dark Shadow’s second reward is better.`,
-            cost: E(1e23),
+            cost: E(1e24),
         },{
             get desc() { return EVO.amt >= 4 ? `Dark Rays boost Protostars.` : `Collapsed stars boost Protostars.` },
             get cost() { return E(EVO.amt >= 4 ? 1e28 : 1e42) },
             effect() {
-				if (EVO.amt >= 4) return expMult(player.dark.rays.add(1), .5).pow(hasElement(306) ? 1.5 : 1)
-				return player.stars.points.add(1).log10().add(1).pow(2)
-			},
-            effDesc: x => formatMult(x),
+                if (EVO.amt >= 4) return expMult(player.dark.rays.add(1), .5).pow(hasElement(306) ? 1.5 : 1)
+
+                if (!tmp.star_unl) return E(1)
+                return player.stars.points.add(1).log10().add(1).log10().add(1).pow(2)
+            },
+            effDesc(x) { return formatMult(x) },
         },{
             desc: `Protostars boost Exotic Atoms.`,
             cost: E(1e150),
-            effect() {
-                if (!tmp.ouro.unl) return E(1)
-                let x = expMult(player.evo.proto.star.add(1),0.5)
-                return x
-            },
+            effect: () => expMult(player.evo.proto.star.add(1),0.5),
             effDesc(x) { return formatMult(x) },
         },{
             desc: `The softcap of quark’s formula from protostars is weaker.`,
@@ -1675,27 +1674,19 @@ const ELEMENTS = {
         },{
             desc: `Exotic II Nebulae boost infinity points gain.`,
             cost: E('e6000'),
-            effect() {
-                if (!tmp.ouro.unl) return E(1)
-                return E(2).pow(expMult(player.evo.proto.nebula.ext2,0.8))
-            },
+            effect: () => E(2).pow(expMult(player.evo.proto.nebula.ext2,0.8)),
             effDesc(x) { return formatMult(x) },
         },{
+            proto: true,
             desc: `Anti-wormhole boosts protostars slightly.`,
             cost: E('e6200'),
-            effect() {
-                let r = OURO.unl() ? player.evo.wh.mass[6].add(1) : E(1)
-                if (EVO.amt < 4) r = r.overflow('ee4',0.5)
-                return r
-            },
-            effDesc: x => formatMult(x),
+            effect: () => player.evo.wh.mass[6].add(1).overflow('ee4',0.5),
+            effDesc(x) { return formatMult(x) },
         },{
-            desc: `Stardust boosts supernova generation. Automate Galactic Prestige.`,
+            proto: true,
+            desc: `Stardust boosts supernova generation.`,
             cost: E('e7500'),
-            effect() {
-                if (!tmp.ouro.unl) return E(1)
-                return player.evo.proto.dust.add(1).log10().add(1)
-            },
+            effect: () => player.evo.proto.dust.add(1).log10().add(1),
             effDesc(x) { return formatMult(x) },
         },{
             desc: `Quantum Shards improve Quark Formula.`,
@@ -1726,7 +1717,7 @@ const ELEMENTS = {
             cost: E(1e240),
 
             effect() {
-				let sd = OURO.unl() ? player.evo.proto.dust : E(1)
+				let sd = OURO.unl ? player.evo.proto.dust : E(1)
 				return sd.div(1e12).max(1).log10().div(5).max(1).pow(-.6)
 			},
             effDesc: x => formatReduction(x) + " weaker",
@@ -1755,7 +1746,7 @@ const ELEMENTS = {
     */
     getUnlLength() {
         let u = 0
-        if (OURO.unl()) u = 290+[0,0,0,14,22,31,38][EVO.amt]??0
+        if (OURO.unl) u = 290+[0,0,0,14,22,31,38][EVO.amt]??0
         else if (tmp.inf_unl) {
 			u = 218
 			if (tmp.brokenInf) u += 12
@@ -2052,7 +2043,7 @@ function updateElementsHTML() {
     if (ch) {
         let eu = elem_const.upgs[ch]
         let eff = tElem[["effect","mu_effect"][elayer]]
-        let fed = tmp.evo.fed["e"+elayer+"_"+ch]
+        let fed = tmp.ouro.fed["e"+elayer+"_"+ch]
 
         tmp.el.elem_desc.setHTML("<b>["+["","Muonic "][elayer]+ELEMENTS.fullNames[ch]+"]</b> "+(fed?EVO.fed_msg[fed]:eu.desc))
         tmp.el.elem_desc.setClasses({sky: true, corrupted_text2: c16 && isElemCorrupted(ch,elayer)})
@@ -2082,7 +2073,7 @@ function updateElementsHTML() {
                     upg.setVisible(unl2)
                     if (unl2) {
                         let eu = elem_const.upgs[x]
-                        let fed = tmp.evo.fed["e"+elayer+"_"+x]
+                        let fed = tmp.ouro.fed["e"+elayer+"_"+x]
                         upg.setClasses(
 							fed ? {elements: true, locked: true, [ fed ]: true} :
 							c16 && isElemCorrupted(x,elayer) ? {elements: true, locked: true, corrupted: true} :

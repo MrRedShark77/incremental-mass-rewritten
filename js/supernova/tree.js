@@ -1254,7 +1254,7 @@ function updateTreeTemp() {
 			if (check) {
 				let cs = CS_TREE.includes(id)
 				if (!cs && no_req1) req = true
-				if (cs && (tmp.inf_unl || OURO.unl())) req = true
+				if (cs && (tmp.inf_unl || OURO.unl)) req = true
 				if (tmp.qu.mil_reached[1] && NO_REQ_QU.includes(id)) req = true
 				if (!req) req = !t.req || t.req()
 			}
@@ -1397,7 +1397,7 @@ function updateTreeHTML() {
     if (tmp.sn.tree_choosed == "") tmp.el.tree_desc.setHTML(``)
     else {
         let t_ch = TREE_UPGS.ids[ch]
-        let req = CS_TREE.includes(ch) && (tmp.inf_unl || OURO.unl()) ? "Require-free thanks to evolving!" : !t_ch.req || hasTree(ch) ? "" : `<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`
+        let req = CS_TREE.includes(ch) && (tmp.inf_unl || OURO.unl) ? "Require-free thanks to evolving!" : !t_ch.req || hasTree(ch) ? "" : `<span class="${t_ch.req()?"green":"red"}">${t_ch.reqDesc?" Requirement: "+(typeof t_ch.reqDesc == "function"?t_ch.reqDesc():t_ch.reqDesc):""}</span>`
         let desc = t_ch.desc
         if (t_ch.evo_desc && EVO.amt >= t_ch.evo_desc[0]) desc = desc.strike() + " " + t_ch.evo_desc[1]
         tmp.el.tree_desc.setHTML(

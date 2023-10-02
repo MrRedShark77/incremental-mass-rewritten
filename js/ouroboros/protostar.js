@@ -3,23 +3,23 @@ const PROTOSTAR = {
 		let tu_1 = hasZodiacUpg('taurus','u1')
 		let tu_3 = hasZodiacUpg('taurus','u3'), tu_3_eff = zodiacEff('taurus','u3')
 
-		let tt = tmp.evo
+		let tt = tmp.evo.neb
 		tt.dust_prod = E(tu_1 ? 1 : 0)
-		tt.nebula_res = {}
-		tt.nebula_eff = {}
-		tt.nebula_undim = {}
+		tt.res = {}
+		tt.eff = {}
+		tt.undim = {}
 
 		let dim_mult = Decimal.mul(appleEffect("ps_dim",E(1)).pow(-1),nebulaEff('ext1',[1])[0])
 		let protostar = player.evo.proto.star, dust = player.evo.proto.dust
 
 		for (var ni in this.nebulae) {
 			let n = this.nebulae[ni], nb = player.evo.proto.nebula, nbv = nb[ni], ext = ni.includes('ext')
-			tt.nebula_eff[ni] = n.eff(nbv)
-			tt.nebula_res[ni] = n.res ? n.res(nb) : ext ? dust : protostar
+			tt.eff[ni] = n.eff(nbv)
+			tt.res[ni] = n.res ? n.res(nb) : ext ? dust : protostar
 
 			let dim = n.undiminish(nb).mul(dim_mult)
 			if (tu_3 && !ext) dim = dim.mul(tu_3_eff) 
-			tt.nebula_undim[ni] = dim
+			tt.undim[ni] = dim
 			
 			tt.dust_prod = tu_1 ? tt.dust_prod.mul(nbv.add(1).log10().add(1)) : tt.dust_prod.add(nbv.add(1).log10())
 		}
@@ -29,13 +29,13 @@ const PROTOSTAR = {
 	},
 	calc(dt) {
 		if (EVO.amt >= 4 && player.qu.en.eth[0]) player.evo.proto.dust = player.evo.proto.dust.div(E(10).pow(dt).pow(player.qu.en.eth[3]))
-        else if (player.atom.unl) player.evo.proto.dust = player.evo.proto.dust.add(tmp.evo.dust_prod.mul(dt))
+        else if (player.atom.unl) player.evo.proto.dust = player.evo.proto.dust.add(tmp.evo.neb.dust_prod.mul(dt))
 
 		if (tmp.passive >= 3) player.evo.proto.star = player.evo.proto.star.add(tmp.atom.gain.mul(dt))
 
 		if (hasTree("qol1")) for (let x = 291; x <= Math.min(tmp.elements.unl_length[0], 362); x++) buyElement(x,0)
 		if (hasElement(293)) for (let x in NEBULAE_TIER) if (!x.includes('ext') || hasInfUpgrade(14)) this.nebula_click(x)
-		if (tmp.epUnl) player.evo.proto.exotic_atoms = player.evo.proto.exotic_atoms.add(tmp.evo.eaGain.mul(dt))
+		if (tmp.epUnl) player.evo.proto.exotic_atoms = player.evo.proto.exotic_atoms.add(tmp.evo.neb.eaGain.mul(dt))
 	},
 
 	eaGain() {
@@ -66,22 +66,22 @@ const PROTOSTAR = {
 	nebula_req(i) {
 		let t = NEBULAE_TIER[i]
 		if (i.includes('ext') && t == 1) {
-			return Decimal.pow(2, player.evo.proto.nebula[i].sub(tmp.evo.nebula_undim[i]).max(0).add(1).pow(1.5)).mul(EVO.amt >= 4 ? 5e15 : 5e49)
+			return Decimal.pow(2, player.evo.proto.nebula[i].sub(tmp.evo.neb.undim[i]).max(0).add(1).pow(1.5)).mul(EVO.amt >= 4 ? 5e15 : 5e49)
 		}
-		return player.evo.proto.nebula[i].sub(tmp.evo.nebula_undim[i]).max(0).add(1).pow(1+t).mul(10**t)
+		return player.evo.proto.nebula[i].sub(tmp.evo.neb.undim[i]).max(0).add(1).pow(1+t).mul(10**t)
 	},
 	nebula_bulk(i) {
 		let t = NEBULAE_TIER[i], ext = i.includes('ext')
 		if (ext && t == 1) {
 			if (tmp.c16.in) return E(0)
-			return tmp.evo.nebula_res[i].div(EVO.amt >= 4 ? 5e15 : 5e49).max(1).log(2).root(1.5).add(tmp.evo.nebula_undim[i]).floor()
+			return tmp.evo.neb.res[i].div(EVO.amt >= 4 ? 5e15 : 5e49).max(1).log(2).root(1.5).add(tmp.evo.neb.undim[i]).floor()
 		}
 		if (!ext && EVO.amt < 4) {
 			let cond1 = tmp.c16.in || player.qu.rip.active
 			let cond2 = !hasElement(169) || NEBULAE_TIER[i] > 1
 			if (cond1 && cond2) return E(0)
 		}
-		return tmp.evo.nebula_res[i].div(10**t).root(1+t).add(tmp.evo.nebula_undim[i]).floor()
+		return tmp.evo.neb.res[i].div(10**t).root(1+t).add(tmp.evo.neb.undim[i]).floor()
 	},
 	nebula_gain(i) {
 		return this.nebula_bulk(i).sub(player.evo.proto.nebula[i]).max(0)
@@ -221,8 +221,8 @@ const PROTOSTAR = {
 	html() {
 		tmp.el.proto_star.setTxt(player.evo.proto.star.format(0))
 		tmp.el.proto_dust.setHTML(player.evo.proto.dust.format(0))
-		tmp.el.proto_dust_prod.setTxt(player.evo.proto.dust.formatGain(tmp.evo.dust_prod))
-		tmp.el.ea_amount.setHTML(tmp.epUnl?`<h4>${format(player.evo.proto.exotic_atoms,0)}</h4> Exotic Atoms <span>${player.evo.proto.exotic_atoms.formatGain(tmp.evo.eaGain)}</span>`:"")
+		tmp.el.proto_dust_prod.setTxt(player.evo.proto.dust.formatGain(tmp.evo.neb.dust_prod))
+		tmp.el.ea_amount.setHTML(tmp.epUnl?`<h4>${format(player.evo.proto.exotic_atoms,0)}</h4> Exotic Atoms <span>${player.evo.proto.exotic_atoms.formatGain(tmp.evo.neb.eaGain)}</span>`:"")
 		for (var [i, ni] of Object.entries(Object.keys(this.nebulae))) {
 			let nb = this.nebulae[ni], amt = player.evo.proto.nebula[ni]
 			tmp.el["proto"+i].setDisplay(nb.unl ? nb.unl() : true)
@@ -232,7 +232,7 @@ const PROTOSTAR = {
 			(amt.lt(1e5) ? `Next: ${this.nebula_req(ni).format(0)} ${nb.resDisp??"Protostars"}<br>` : ``) +
 			`Reduced on ${this.nebulae[ni].undiminishDisp}`
 			)
-			tmp.el["proto_eff"+i].setHTML(nb.effDisp(tmp.evo.nebula_eff[ni]))
+			tmp.el["proto_eff"+i].setHTML(nb.effDisp(tmp.evo.neb.eff[ni]))
 		}
 	},
 }
@@ -244,5 +244,5 @@ const NEBULAE_TIER = (()=>{
 })()
 
 function nebulaEff(i, def = 1) {
-	return tmp.evo.nebula_eff[i] ?? def
+	return tmp.evo.neb.eff[i] ?? def
 }

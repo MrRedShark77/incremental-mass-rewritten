@@ -215,7 +215,7 @@ function resetTemp() {
 		el: tmp.el,
 		prevSave: tmp.prevSave,
 		start: tmp.start,
-		pass: 1,
+		pass: 5,
 	}, getTempData())
 }
 

@@ -1028,7 +1028,6 @@ function updateRanksHTML() {
             tmp.el.pre_beyond_ranks.setHTML(h)
 
             // Beyond Rank
-
             let t = tmp.beyond_ranks.max_tier
             h = ''
 
@@ -1130,7 +1129,7 @@ const GAL_PRESTIGE = {
                 if (gp.gte(4)) x = player.dark.matters.amt[12].add(1).log10().add(1).log10().add(1).pow(2).pow(gp.sub(3).root(1.5)).sub(1)
             break;
             case 3:
-                if (gp.gte(6)) x = (EVO.amt >= 4 && tmp.ouro.unl ? player.evo.proto.star : player.supernova.radiation.hz.add(1).log10()).add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5)).sub(1)
+                if (gp.gte(6)) x = (EVO.amt >= 4 && OURO.unl ? player.evo.proto.star : player.supernova.radiation.hz.add(1).log10()).add(1).log10().add(1).pow(2).pow(gp.sub(5).root(1.5)).sub(1)
             break;
             case 4:
                 if (gp.gte(9)) x = player.inf.cs_amount.add(1).log10().add(1).pow(2).pow(gp.sub(8).root(1.5)).sub(1)

@@ -122,16 +122,16 @@ const CHALS = {
     enter(ch=tmp.chal.ch) {
         if (player.chal.active == 0) {
             if (ch == 16) {
+                if (tmp.bh.unl) player.bh.mass = E(0)
                 player.dark.c16.first = true
-                tmp.c16.in = true
                 addQuote(10)
             }
             player.chal.active = ch
-            this.reset(ch, false)
+            this.reset(ch, true)
         } else if (ch != player.chal.active) {
             this.exit(true)
             player.chal.active = ch
-            this.reset(ch, false)
+            this.reset(ch, true)
         }
     },
     getResource(x) {
@@ -658,7 +658,7 @@ const CHALS = {
         unl() { return hasElement(290) },
         title: "The Reality III",
         desc: "You are trapped in C1-19 and dark run with 1500 all glyphs. Theorems in the Core don't work. This challenge resets main upgrades.",
-        get reward() { return `<span class="gold">Break the loop and evolve!</span>` + (OURO.unl() ? "" : "<br>(Unlock a new layer!)") },
+        get reward() { return `<span class="gold">Break the loop and evolve!</span>` + (OURO.unl ? "" : "<br>(Unlock a new layer!)") },
         max: E(1),
         inc: E(2),
         pow: E(1),

@@ -46,7 +46,7 @@ const FORMS = {
         if (tmp.star_unl) x = x.mul(tmp.stars.effect[0])
         if (hasTree("m1")) x = x.mul(treeEff("m1")[0])
         if (tmp.sn.boson) x = x.mul(tmp.sn.boson.effect.pos_w[0])
-        if (OURO.unl()) x = x.mul(appleEffect('mass')[0])
+        if (OURO.unl) x = x.mul(appleEffect('mass')[0])
 
         if (tmp.bh.unl) x = hasElement(201) ? x.pow(tmp.bh.effect) : x.mul(tmp.bh.effect)
 		if (tmp.atom.unl) {

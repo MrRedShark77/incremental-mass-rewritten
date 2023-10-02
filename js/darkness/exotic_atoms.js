@@ -215,10 +215,8 @@ const MUONIC_ELEM = {
         },{
             desc: `Double corrupted star’s speed per infinity theorem.`,
             get cost() { return EVO.amt >= 2 ? E('e4500') : E('e8100') },
-            eff() {
-                if (!tmp.inf_unl) return E(1)
-                return E(2).pow(player.inf.theorem)
-            },
+
+            eff: () => tmp.inf_unl ? E(2).pow(player.inf.theorem) : E(1),
             effDesc: x=>formatMult(x),
         },{
             cs: true,
@@ -244,30 +242,26 @@ const MUONIC_ELEM = {
             cs: true,
             desc: `Corrupted star boosts its speed at a reduced rate. Keep Supernovas on Infinity.`,
             cost: E('e150'),
-            eff() {
-                if (!tmp.inf_unl) return E(1)
-                return player.inf.cs_amount.add(1).overflow(10,0.5)
-            },
+
+            eff: () => tmp.inf_unl ? player.inf.cs_amount.add(1).overflow(10,0.5) : E(1),
             effDesc: x=>formatMult(x),
         },{
             get desc() { return EVO.amt >= 2 ? `Infinity Theorems raise Pions and Kaons, and boost its reward strength.` : `Hawking Theorem’s fifth star now affects black hole’s effect.` },
             get cost() { return EVO.amt >= 2 ? E('e5460') : E('e14900') },
+
+            eff: () => tmp.inf_unl ? player.inf.theorem.add(1).log10().add(1.5) : E(1),
+            effDesc: x=>formatPow(x),
         },{
             desc: `Pre-Infinity global speed now affects supernova generation.`,
             cost: E('e15900'),
-            eff() {
-                if (!tmp.inf_unl) return E(1)
-                return expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2)
-            },
+            eff: () => tmp.inf_unl ? expMult(tmp.preInfGlobalSpeed.max(1),0.5).pow(2) : E(1),
             effDesc: x=>formatMult(x),
         },{
             cs: true,
             desc: `Corrupted star boosts its reductions starting at a reduced rate.`,
             cost: E('e230'),
-            eff() {
-                if (!tmp.inf_unl) return E(1)
-                return player.inf.cs_amount.add(1).log10().add(1).pow(3)
-            },
+
+            eff: () => tmp.inf_unl ? player.inf.cs_amount.add(1).log10().add(1).pow(3) : E(1),
             effDesc: x=>formatMult(x),
         },{
             desc: `Pion’s second reward now affects black hole overflow^2 at a reduced rate.`,
@@ -320,10 +314,8 @@ const MUONIC_ELEM = {
         },{
             desc: `Muonic Iodine-53 is stronger based on Infinity Theorem.`,
             cost: E('e112800'),
-            eff() {
-                if (!tmp.inf_unl) return E(1)
-                return player.inf.theorem.div(10).add(1).root(2)
-            },
+
+            eff: () => tmp.inf_unl ? player.inf.theorem.div(10).add(1).root(2) : E(1),
             effDesc: x=>formatPow(x),
         },{
             cs: true,
@@ -475,7 +467,7 @@ const MUONIC_ELEM = {
             berry: true,
             desc: `Apple gain boosts apple tier multiplier.`,
             cost: E(1e14),
-            eff: () => tmp.ouro.apple_gain.pow(.1).max(3),
+            eff: () => OURO.unl ? tmp.ouro.apple_gain.pow(.1).max(3) : E(3),
             effDesc: x => formatMult(x),
         },{
             berry: true,
@@ -490,7 +482,7 @@ const MUONIC_ELEM = {
     getUnlLength() {
         let u = 11
 
-        if (OURO.unl()) u = [66,76,82,88,94,98,104][EVO.amt]
+        if (OURO.unl) u = [66,76,82,88,94,98,104][EVO.amt]
         else {
             if (tmp.inf_unl) u += 4
             if (hasInfUpgrade(9)) u += 3
@@ -580,13 +572,13 @@ const EXOTIC_ATOM = {
         if (hasPrestige(2,34)) x = x.mul(prestigeEff(2,34))
         if (hasPrestige(1,247)) x = x.mul(prestigeEff(1,247))
         if (hasElement(1,1) && hasElement(30,1)) x = x.mul(muElemEff(1))
-        if (EVO.amt >= 2 && hasElement(48, 1)) x = x.pow(player.inf.theorem.add(1).log10().add(1.5))
+        if (EVO.amt >= 2 && hasElement(48, 1)) x = x.pow(muElemEff(48))
 
         let y = xy.div(5)
         if (hasElement(1,1)) y = y.mul(muElemEff(1))
         if (hasElement(9,1)) y = y.mul(muElemEff(9))
         if (hasElement(12,1)&&hasPrestige(1,247)) y = y.mul(prestigeEff(1,247))
-        if (EVO.amt >= 2 && hasElement(48, 1)) y = y.pow(player.inf.theorem.add(1).log10().add(1.5))
+        if (EVO.amt >= 2 && hasElement(48, 1)) y = y.pow(muElemEff(48))
 
         if (hasPrestige(1,510)) [x,y] = [x.pow(1.1),y.pow(1.1)]
         return [x,y]

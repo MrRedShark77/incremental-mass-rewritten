@@ -1,11 +1,11 @@
 const SCALE_START = {
-    super: {
-        rank: E(50),
+	super: {
+		rank: E(50),
 		tier: E(10),
 		tetr: E(7),
 		pent: E(15),
 		hex: E(10),
-        massUpg: E(100),
+		massUpg: E(100),
 		tickspeed: E(100),
 		bh_condenser: E(100),
 		gamma_ray: E(100),
@@ -25,7 +25,7 @@ const SCALE_START = {
 		ascension0: E(20),
 		ascension1: E(10),
 		gal_prestige: E(10),
-    },
+	},
 	hyper: {
 		rank: E(120),
 		tier: E(200),
@@ -261,7 +261,6 @@ const C18_SCALING = [
 
 function updateScalingHTML() {
 	let s = SCALE_TYPE[player.scaling_ch]
-	// tmp.el.scaling_name.setTxt(FULL_SCALE_NAME[player.scaling_ch])
 	if (!tmp.scaling) return
 	for (let x = 0; x < SCALE_TYPE.length; x++) {
 		let type = SCALE_TYPE[x]
@@ -272,7 +271,7 @@ function updateScalingHTML() {
 				tmp.el['scaling_'+x+'_'+key+'_div'].setDisplay(have)
 				if (have) {
 					let p = tmp.scaling_power[type][key], q = Decimal.pow(SCALE_POWER[type][key],p)
-					tmp.el['scaling_'+x+'_'+key+'_power'].setTxt(format(p.mul(100))+"%, "+(x%4==3?q.format()+"^":"^"+q.format()+(x>=6?" to exponent":"")))
+					tmp.el['scaling_'+x+'_'+key+'_power'].setTxt(format(p.mul(100))+"%, "+(x%4==3?q.format(4)+"^":"^"+q.format(3)+(x>=6?" to exponent":"")))
 					tmp.el['scaling_'+x+'_'+key+'_start'].setTxt(format(tmp.scaling_start[type][key],0))
 				}
 			}
@@ -590,8 +589,8 @@ function getScalingPower(type, name) {
 		} else if (name=="supernova") {
 			if (hasElement(212)) power = power.mul(0.75)
 		}
-	} else if (type==5) {
-		if (name=='rank' && tmp.chal && hasAscension(0,22)) power = power.mul(tmp.chal.eff[5])
+	} else if (type==5 && name=='rank') {
+		if (tmp.chal && hasAscension(0,22)) power = power.mul(tmp.chal.eff[5])
 	}
 	if (hasUpgrade("atom",15) && name == "gamma_ray") power = power.mul(0.8)
 	if (hasElement(108) && ["rank","tier","tetr","pent"].includes(name) && type<4) power = power.mul(player.qu.rip.active?0.98:0.9)

@@ -151,7 +151,6 @@ function onPass(offline) {
 	if (!tmp.pass) return
 	tmp.pass = 0
 
-	EVO.update()
 	updateTemp()
 	player.atom.elements = chunkify(player.atom.elements)
 	player.atom.muonic_el = chunkify(player.atom.muonic_el)

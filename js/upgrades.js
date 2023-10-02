@@ -909,7 +909,7 @@ function updateUpgNotify() {
 			return
 		}
 	}
-	if ((player.atom.unl || OURO.unl()) && !hasZodiacUpg("aries", "u3")) {
+	if ((player.atom.unl || OURO.unl) && !hasZodiacUpg("aries", "u3")) {
 		for (var x = 0; x < 2; x++) {
 			for (var y = 1; y <= tmp.elements.unl_length[x]; y++) {
 				if (!ELEMENTS.canBuy(y, x)) continue

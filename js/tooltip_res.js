@@ -231,18 +231,14 @@ const TOOLTIP_RES = {
     ouroboros: {
         full: "Ouroboric",
         desc() {
-            if (!tmp.ouro.unl) return "Something Happened...";
+			if (!OURO.unl) return "Something happened...";
+			return `You're currently at Evolution <b class="snake">${player.evo.times}</b>.<br>
+				Evolving will cause something to be changed...<br><br>
 
-            let h = `
-            You're currently at Evolution <b class="limegreen">${player.evo.times}</b>. Evolving will cause something to be changed...
-            <br class='line'>
-            <i>
-            Complete <b class="yellow">Challenge 20</b> to Evolve.
-            <br>
-            Ouroboric resets everything up to this point, and so Apples!
-            </i>`
-
-            return h
+				Complete <b class="yellow">Challenge 20</b> to Evolve.
+				<br class='line'>
+				Ouroboric resets everything up to this point!<br>
+				(except Strawberries and Berry Elements)`
         },
     },
 }

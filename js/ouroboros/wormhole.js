@@ -2,7 +2,7 @@ const WORMHOLE = {
     step(x,t,i) {
         if (i != player.evo.wh.origin && x.eq(0)) return E(0)
 
-        let p = tmp.evo.wormhole_power, pp = Decimal.mul(2,p)
+        let p = tmp.evo.wh.power, pp = Decimal.mul(2,p)
         if (CHALS.inChal(8)) pp = pp.div(2)
 
         x = Decimal.pow(p.add(1.5), x.root(pp)).root(pp).add(t).pow(pp).log(p.add(1.5)).pow(pp)
@@ -12,12 +12,12 @@ const WORMHOLE = {
         return this.step(x,dt).sub(x)
     },
     calc(dt) {
-        const evo = EVO.amt, unls = tmp.evo.wormhole_unls, mass = player.evo.wh.mass
+        const evo = EVO.amt, unls = tmp.evo.wh.unls, mass = player.evo.wh.mass
         if (player.qu.en.hr[0]) player.evo.wh.fabric = player.evo.wh.fabric.div(E(10).pow(dt).pow(player.qu.en.hr[3]))
         else if (tmp.passive >= 2) player.evo.wh.fabric = player.evo.wh.fabric.add(tmp.bh.dm_gain.mul(dt))
 
         if (FORMS.bh.unl()) {
-            for (let i = 0; i < Math.min(unls, player.evo.wh.origin == 6 ? 7 : 6); i++) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wormhole_mult[i].mul(dt),i)
+            for (let i = 0; i < Math.min(unls, player.evo.wh.origin == 6 ? 7 : 6); i++) mass[i] = WORMHOLE.step(mass[i],tmp.evo.wh.mult[i].mul(dt),i)
         }
     },
     mult(i) {
@@ -50,20 +50,20 @@ const WORMHOLE = {
     },
     temp() {
         const unls = this.unlLength
-        tmp.evo.wormhole_unls = unls
+        tmp.evo.wh.unls = unls
 
         let p = appleEffect('wh_loss', E(1))
         if (hasElement(63)) p = p.mul(1.2)
-        tmp.evo.wormhole_power = p
+        tmp.evo.wh.power = p
 
-		tmp.evo.wormhole_mult = []
+		tmp.evo.wh.mult = []
         for (let [i,e] of Object.entries(this.effects)) {
-            tmp.evo.wormhole_eff[i] = e[0](i < unls ? player.evo.wh.mass[i] : E(1))
-            tmp.evo.wormhole_mult[i] = this.mult(i)
+            tmp.evo.wh.eff[i] = e[0](i < unls ? player.evo.wh.mass[i] : E(1))
+            tmp.evo.wh.mult[i] = this.mult(i)
         }
     },
     html() {
-        const unls = tmp.evo.wormhole_unls, wh = player.evo.wh, mass = wh.mass
+        const unls = tmp.evo.wh.unls, wh = player.evo.wh, mass = wh.mass
 
         for (let i = 0; i < WORMHOLE.maxLength; i++) {
             let unl = i < unls, id = 'wormhole'+i
@@ -77,11 +77,11 @@ const WORMHOLE = {
                     tmp.el[id+'-mult'].setHTML(wh.origin == i ? "[Origin]" : "")
                     tmp.el[id+'-mass'].setHTML("#" + (i+1))
                 } else {
-                    const m = mass[i], mult = tmp.evo.wormhole_mult[i]
+                    const m = mass[i], mult = tmp.evo.wh.mult[i]
                     tmp.el[id+'-div'].setClasses({ ["wormhole-div"]: true, anti: i == 6, none: m.eq(0) && i < 6, auto: wh.auto[i] })
                     tmp.el[id+'-id'].setHTML(i == 6 ? `` : `#${i+1} - Click to ${i != wh.origin ? (this.canAuto(i) ? "toggle automation" : "merge with #" + (wh.origin + 1)) : "split"}`)
-                    tmp.el[id+'-mult'].setHTML(formatMult(tmp.evo.wormhole_mult[i]))
-                    tmp.el[id+'-effect'].setHTML(this.effects[i][1](tmp.evo.wormhole_eff[i]))
+                    tmp.el[id+'-mult'].setHTML(formatMult(tmp.evo.wh.mult[i]))
+                    tmp.el[id+'-effect'].setHTML(this.effects[i][1](tmp.evo.wh.eff[i]))
 
                     let h = ``
                     if (i < 6) h = `${formatMass(m)}<br>${m.formatGain(this.calcGain(m,mult.div(FPS),i).mul(FPS),1)}`
@@ -145,7 +145,7 @@ const WORMHOLE = {
     },
 }
 
-function wormholeEffect(id,def=E(1)) { return id<tmp.evo.wormhole_unls && tmp.evo.wormhole_eff[id] ? tmp.evo.wormhole_eff[id] : def }
+function wormholeEffect(id,def=E(1)) { return id<tmp.evo.wh.unls && tmp.evo.wh.eff[id] ? tmp.evo.wh.eff[id] : def }
 
 function activateWormhole(id, auto) {
     const wh = player.evo.wh, mass = wh.mass
@@ -179,7 +179,7 @@ function splitWormhole(origin, mode) {
         mass[x] = mass[x].max(toAdd);
     }
     mass[origin] = mass[origin].sub(sum)
-    if (tmp.evo.wormhole_unls > 6 && tmp.c16.in) mass[6] = mass[6].add(sum.add(1).log10().mul(tmp.evo.wormhole_mult[6]))
+    if (tmp.evo.wh.unls > 6 && tmp.c16.in) mass[6] = mass[6].add(sum.add(1).log10().mul(tmp.evo.wh.mult[6]))
 }
 
 function setupWormholeHTML() {

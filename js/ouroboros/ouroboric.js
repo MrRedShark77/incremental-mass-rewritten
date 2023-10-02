@@ -1,6 +1,5 @@
 /* ORIGINAL BY AAREX, EDITED BY MRREDSHARK77 */
 const OURO = {
-    unl: () => tmp.ouro.unl,
     get save() {
         let s = {
             ouro: {
@@ -51,11 +50,14 @@ const OURO = {
         }
         return s
     },
-    load(force) {
-        let unl = force ?? player.ouro != undefined
-        if (unl) {
+    load(evo) {
+        if (evo == undefined) evo = evo ?? player.evo?.times ?? 0
+
+        this.unl = evo > 0
+        if (this.unl) {
 			resetSnake()
 			player = deepUndefinedAndDecimal(player, this.save)
+			player.evo.times = evo
 			for (var i of player.evo.cosmo.uni) if (i) i.tier = E(i.tier)
         } else {
             delete player.evo
@@ -63,67 +65,56 @@ const OURO = {
         }
 
         tmp.ouro = {
-            unl,
+            evo,
+            fed: {},
+
             apple_eff: {},
             escrow_boosts: {},
         }
+        for (let i = 1; i <= evo; i++) tmp.ouro.fed = Object.assign(tmp.ouro.fed, EVO.feed[i])
+
+		//tmp for evolution features
         tmp.evo = {
-            fed: {},
             meditation_eff: {},
-            wormhole_eff: [],
-            nebula_eff: {},
+            wh: { eff: {} },
+            neb: { eff: {} },
             zodiac: { eff: {} },
             cosmo: { eff: {} },
         }
-		EVO.update()
-
-        this.temp()
     },
 
     canReset: () => player.chal.comps[20].gte(1),
-    reset(force) {
-        if (!force && !this.canReset()) return
-
-        if (!tmp.ouro.unl) {
-            this.load(true)
-            addQuote(13)
-        }
+    reset() {
+        if (!this.canReset()) return
         if (canEvolve()) {
-            player.evo.times++
+            tmp.ouro.evo++
             setOuroScene()
         }
 
         this.doReset()
     },
-    doReset() {
-        player.build.pe.amt = E(0)
-        player.build.fvm.amt = E(0)
-        if (OURO.unl()) {
-			resetSnake()
-			player.ouro.apple = E(0)
-			player.ouro.energy = 0
-			player.ouro.purify = E(0)
-			player.evo.wh.origin = 0
-			player.evo.wh.unl = false
-			player.evo.const = this.save.evo.const
-			player.evo.const.upg = tmp.evo.zodiac.keep
-			EVO.update()
+    doReset(evo = EVO.amt) {
+		OURO.load(evo)
+        if (OURO.unl) {
+			player.ouro = deepUndefinedAndDecimal({ berry: player.ouro.berry }, this.save.ouro)
+			resetEvolutionSave("ouro")
 		}
 
-        for (let i in CORE) tmp.core_eff[i] = []
+        player.build.pe.amt = E(0)
+        player.build.fvm.amt = E(0)
         INF.doReset()
         INF.load(false)
 
         let keep = {
             atom: {
-				unl: EVO.amt >= 5,
+				unl: evo >= 5,
                 elements: keepElementsOnOuroboric(),
-                muonic_el: unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry && !EVO.isFed("e1_" + x))
+                muonic_el: evo ? unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry && !EVO.isFed("e1_" + x)) : []
             }
         }
 
         let newData = getPlayerData()
-        let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "mainUpg"]
+        let reset = ["rp", "bh", "chal", "atom", "stars", "supernova", "qu", "dark", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
 
 		tmp.rp.unl = false
@@ -132,6 +123,7 @@ const OURO = {
 		tmp.star_unl = false
 		tmp.sn = {}
 		tmp.asc.unl = false
+        for (let i in CORE) tmp.core_eff[i] = []
 		destroyOldData()
 
         tmp.tab = 0
@@ -142,7 +134,7 @@ const OURO = {
     },
 
     temp() {
-        if (!this.unl()) return
+        if (!this.unl) return
         tmp.ouro.powerups = getActivatedPowerups()
         tmp.ouro.escrow_boosts = this.escrow_boosts()
         tmp.ouro.apple_gain = appleGain()
@@ -158,7 +150,7 @@ const OURO = {
     },
 
     calc(dt) {
-        if (!this.unl()) return
+        if (!this.unl) return
         calcSnake(dt)
 
         const evo = EVO.amt
@@ -195,7 +187,7 @@ const OURO = {
 }
 
 const EVO = {
-    get amt() { return tmp.evo.amt ?? 0 },
+    get amt() { return tmp.ouro.evo ?? 0 },
 	msg: [
 		null,
 		[
@@ -235,8 +227,7 @@ const EVO = {
             e1_41: "paralyzed",
             e1_57: "paralyzed",
             ch8: "paralyzed",
-        },
-        {
+        }, {
             e0_221: "paralyzed",
             e1_19: "corrupted",
             e1_25: "corrupted",
@@ -249,8 +240,7 @@ const EVO = {
             e1_61: "paralyzed",
             cs_ea_reward: "paralyzed",
             ch15: "corrupted",
-        },
-        {
+        }, {
             e0_1: "corrupted",
             e0_119: "corrupted",
             e0_243: "corrupted",
@@ -265,25 +255,18 @@ const EVO = {
         corrupted: "".corrupt(),
         paralyzed: "<b class='saved_text'>[Paralyzed]</b>"
     },
-    isFed: x => tmp.evo.fed[x],
-    update() {
-        let tt = tmp.evo
-		tt.amt = OURO.unl() ? player.evo.times : 0
-        for (var i = 1; i <= tt.amt; i++) tt.fed = Object.assign(tt.fed, this.feed[i])
-    },
+    isFed: x => tmp.ouro.fed[x],
 }
 
 function escrowBoost(id,def=1) { return tmp.ouro.escrow_boosts[id] ?? def }
 
-function setOuroScene(show=true) {
-    tmp.el.ouro_scene.setDisplay(show);
+function setOuroScene(evo=tmp.ouro.evo) {
+	tmp.el.ouro_scene.setDisplay(evo)
+	if (!evo) return
 
-    if (show) {
-        const evo = EVO.msg[player.evo.times]
-
-        tmp.el.ouro_evo.setHTML(evo[0])
-        tmp.el.ouro_quotes.setHTML(evo[1])
-    }
+	const msg = EVO.msg[evo]
+	tmp.el.ouro_evo.setHTML(msg[0])
+	tmp.el.ouro_quotes.setHTML(msg[1])
 }
 
 function canEvolve() {
@@ -297,24 +280,23 @@ function updateOuroborosHTML() {
     if (map == 'mass') {
         let unl = evo >= 1 && FORMS.rp.unl()
         tmp.el.meditation_div.setDisplay(unl)
-        if (unl) {
-            let lvl_gain = MEDITATION.level_gain, lvl = player.evo.cp.level
+        if (!unl) return
 
-            tmp.el.meditation_btn.setHTML(`Meditate with all Calm Power.<br>(+${lvl_gain.format(0)} Level)`)
-            tmp.el.meditation_btn.setClasses({btn: true, locked: !MEDITATION.can()})
+		let lvl_gain = MEDITATION.level_gain, lvl = player.evo.cp.level
+		tmp.el.meditation_btn.setHTML(`Meditate with all Calm Power.<br>(+${lvl_gain.format(0)} Level)`)
+		tmp.el.meditation_btn.setClasses({btn: true, locked: !MEDITATION.can()})
 
-            let eff = tmp.evo.meditation_eff, h = `
-            <h4>Level: ${lvl.format(0)}</h4> ${lvl.gte(10) ? '(-'+lvl.div(100).format(2)+'/s)' : ""}
-            <br>${formatMult(eff.mass1)} to Muscler's power.
-            `
+		let eff = tmp.evo.meditation_eff, h = `
+		<h4>Level: ${lvl.format(0)}</h4> ${lvl.gte(10) ? '(-'+lvl.div(100).format(2)+'/s)' : ""}
+		<br>${formatMult(eff.mass1)} to Muscler's power.
+		`
 
-            if (eff.mass2) h += `<br>${formatMult(eff.mass2,2)} to Booster's power`
-            if (eff.mass3) h += `<br>${formatMult(eff.mass3,2)} to Stronger's power`
-            if (eff.mass3_softcap) h += `<br>${formatReduction(eff.mass3_softcap,2)} to Stronger softcaps' weakness`
-            if (eff.mass_softcap) h += `<br>${formatReduction(eff.mass_softcap,2)} to normal mass softcaps' weakness`
+		if (eff.mass2) h += `<br>${formatMult(eff.mass2,2)} to Booster's power`
+		if (eff.mass3) h += `<br>${formatMult(eff.mass3,2)} to Stronger's power`
+		if (eff.mass3_softcap) h += `<br>${formatReduction(eff.mass3_softcap,2)} to Stronger softcaps' weakness`
+		if (eff.mass_softcap) h += `<br>${formatReduction(eff.mass_softcap,2)} to normal mass softcaps' weakness`
 
-            tmp.el.meditation_desc.setHTML(h)
-        }
+		tmp.el.meditation_desc.setHTML(h)
     } else if (map == 'snake') {
         let head = snake.snakes[0]
         tmp.el.snake_stats.setHTML(
@@ -399,11 +381,13 @@ function keepElementsOnOuroboric(ek = []) {
 
 function resetEvolutionSave(order) {
 	let inf = order == "inf"
+	let s = OURO.save.evo
 	if (order == "bh" || inf) {
-		player.evo.cp.points = E(0)
-		if (!["bh", "atom"].includes(order)) player.evo.cp.best = E(0)
-		if (!hasElement(70,1) || (EVO.amt >= 2 && CHALS.inChal(6)) || inf) player.evo.cp.level = E(0)
-		player.evo.cp.m_time = 0
+		let keep = { unl: player.evo.cp.unl }
+		if (["bh", "atom"].includes(order)) keep.best = player.evo.cp.best
+		if (!inf && !(EVO.amt >= 2 && CHALS.inChal(6)) && hasElement(70,1)) keep.level = player.evo.cp.best
+
+		player.evo.cp = deepUndefinedAndDecimal(keep, s.cp)	
 	}
 	if (order == "atom" || inf) {
 		player.evo.wh.fabric = E(0)
@@ -414,13 +398,19 @@ function resetEvolutionSave(order) {
 			nebula: {},
 			ea: player.evo.proto.exotic_atoms
 		}
-		for (let [ni,x] of Object.entries(player.evo.proto.nebula)) keep.nebula[ni] = ni.includes('ext') ? x : E(0)
-		player.evo.proto = deepUndefinedAndDecimal(keep, OURO.save.evo.proto)
+		for (let [ni,x] of Object.entries(player.evo.proto.nebula)) keep.nebula[ni] = ni.includes('ext') && !inf ? x : E(0)
+		player.evo.proto = deepUndefinedAndDecimal(keep, s.proto)
 	}
 	if (order == "dark" || inf) {
 		player.evo.cosmo = deepUndefinedAndDecimal({
 			unl: player.evo.cosmo.unl,
 			roll_time: player.evo.cosmo.roll_time
-		}, OURO.save.evo.cosmo)
+		}, s.cosmo)
+	}
+
+	//Persistent
+	if (order == "ouro" || inf) {
+		player.evo.wh.origin = 0
+		player.evo.const = deepUndefinedAndDecimal({ upg: tmp.evo.zodiac.keep ?? {} }, s.const)
 	}
 }

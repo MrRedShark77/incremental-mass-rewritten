@@ -170,11 +170,11 @@ const RESOURCES_DIS = {
         resetBtn: () => INF.goInf(),
     },
     ouroboros: {
-        unl: ()=>OURO.unl() || player.chal.comps[20].gte(1),
+        unl: ()=>OURO.unl || player.chal.comps[20].gte(1),
         icon: "ouroboros",
         class: "snake",
 
-        desc: (gs)=>tmp.ouro.unl ? "Evolution "+player.evo.times+"<br>"+(player.chal.comps[20].gte(1)?"(Ready to Evolve)":"(Not Ready)") : "Something Happened...",
+        desc: (gs)=>OURO.unl ? "Evolution "+player.evo.times+"<br>"+(player.chal.comps[20].gte(1)?"(Ready to Evolve)":"(Not Ready)") : "Something Happened...",
 
         resetBtn() { OURO.reset() },
     },
