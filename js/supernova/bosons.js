@@ -6,7 +6,7 @@ const BOSONS = {
             
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -18,7 +18,7 @@ const BOSONS = {
             
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -29,7 +29,7 @@ const BOSONS = {
             let x = E(0.1).mul(tmp.sn.boson.effect.graviton?tmp.sn.boson.effect.graviton[0]:1)
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("sn4")) x = x.pow(1.5)
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -41,7 +41,7 @@ const BOSONS = {
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2")) x = x.mul(treeEff("bs2")[1])
             x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.photon[2]?tmp.sn.boson.upgs.photon[2].effect:1) : x.mul(tmp.sn.boson.upgs.photon[2]?tmp.sn.boson.upgs.photon[2].effect:1)
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -53,7 +53,7 @@ const BOSONS = {
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs2")) x = x.mul(treeEff("bs2")[0])
             x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[2]?tmp.sn.boson.upgs.gluon[2].effect:1) : x.mul(tmp.sn.boson.upgs.gluon[2]?tmp.sn.boson.upgs.gluon[2].effect:1)
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -63,7 +63,7 @@ const BOSONS = {
         graviton() {
             let x = E(0.1).mul(tmp.sn.boson.effect.graviton?tmp.sn.boson.effect.graviton[0]:1).mul(fermEff(1, 1))
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -74,7 +74,7 @@ const BOSONS = {
             let x = E(0.1).mul(fermEff(1, 1))
             if (hasTree('ct2')) x = x.mul(treeEff('ct2'))
             if (hasTree("bs1")) x = x.mul(treeEff("bs1"))
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[3])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[3])
             if (hasPrestige(1,3)) x = x.pow(prestigeEff(1,3))
 
             if (tmp.dark.run) x = expMult(x,mgEff(4)[0])
@@ -87,10 +87,10 @@ const BOSONS = {
             let a = x.add(1).pow(2e4)
             if (hasTree("qu2") && !player.qu.rip.active) a = a.pow(x.add(1).log10().add(1).pow(4/3).softcap(1e15,0.1,0))
             if (tmp.c16.in) a = overflow(a,10,0.5)
-            if (OURO.evo >= 2) a = a.min(E(10).pow(Number.MAX_VALUE))
+            if (EVO.amt >= 2) a = a.min(E(10).pow(Number.MAX_VALUE))
             let b = expMult(x.add(1),2/3,2)
             let c = E(1)
-            if (hasElement(250)) c = x.add(1).log10().add(1).root(OURO.evo >= 2 ? 20 : 10)
+            if (hasElement(250)) c = x.add(1).log10().add(1).root(EVO.amt >= 2 ? 20 : 10)
             return [a,b,c]
         },
         neg_w(x) {
@@ -106,11 +106,11 @@ const BOSONS = {
         },
         graviton(x) {
             let a = expMult(x.add(1),0.5).pow(tmp.sn.boson.effect.hb?tmp.sn.boson.effect.hb[0]:1)
-            if (OURO.evo < 2) a = a.overflow('eee3',0.5,2)
+            if (EVO.amt < 2) a = a.overflow('eee3',0.5,2)
             return [a]
         },
         hb(x) {
-            let a = x.add(1).log10().max(0).root(2).mul(tmp.prim.eff[4])
+            let a = x.add(1).log10().max(0).root(2).mul(tmp.qu.prim.eff[4])
             if (hasTree("qu10") && !player.qu.rip.active) a = a.mul(treeEff('qu10'))
             if (tmp.c16.in) a = a.pow(.2)
             return [a.overflow('e700',0.5)]
@@ -127,7 +127,7 @@ const BOSONS = {
         photon: [
             {
                 desc: "Gain more Dark Matters & Mass from Black Hole based on Photon.",
-                get unl() { return OURO.evo < 2 },
+                get unl() { return EVO.amt < 2 },
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
@@ -140,7 +140,7 @@ const BOSONS = {
                 effDesc(x) { return hasElement(204)?formatPow(x):format(x)+"x" },
             },{
                 desc: "Boost BH Condenser Power.",
-                get unl() { return OURO.evo < 2 },
+                get unl() { return EVO.amt < 2 },
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
@@ -178,24 +178,24 @@ const BOSONS = {
                 effDesc(x) { return hasElement(213)?formatPow(x):format(x)+"x" },
             },{
                 desc: "Boost Fabric.",
-                get unl() { return OURO.evo >= 2 },
+                get unl() { return EVO.amt >= 2 },
                 cost(x) { return E(1e5).pow(x.pow(1.5)) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1) ? x.log(1e5).root(1.5).add(1).floor() : E(0) },
                 effect: x => x.add(1).overflow('e50000',0.5),
                 effDesc(x) { return formatMult(x) },
             },{
                 desc: "Raise Wormhole Multiplier.",
-                get unl() { return OURO.evo >= 2 },
+                get unl() { return EVO.amt >= 2 },
                 cost(x) { return E(1e5).pow(x.pow(5).add(1)) },
                 bulk(x=player.supernova.bosons.photon) { return x.gte(1e5) ? x.sub(1).log(1e5).root(5).add(1).floor() : E(0) },
-                effect: x => x.add(1),
+                effect: x => x.add(1).overflow('e20000',0.5),
                 effDesc(x) { return formatPow(x) },
             },
         ],
         gluon: [
             {
                 desc: "Gain more Atoms & Atomic Powers based on Gluon.",
-                get unl() { return OURO.evo < 3 },
+                get unl() { return EVO.amt < 3 },
                 cost(x) { return E(1.5).pow(x.pow(1.25)).mul(10) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(10) ? x.div(10).max(1).log(1.5).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
@@ -208,7 +208,7 @@ const BOSONS = {
                 effDesc(x) { return hasElement(204)?formatPow(x):format(x)+"x" },
             },{
                 desc: "Boost Cosmic Ray Power.",
-                get unl() { return OURO.evo < 3 },
+                get unl() { return EVO.amt < 3 },
                 cost(x) { return E(2).pow(x.pow(1.25)).mul(100) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(100) ? x.div(100).max(1).log(2).root(1.25).add(1).floor() : E(0) },
                 effect(x) {
@@ -229,9 +229,9 @@ const BOSONS = {
                 effDesc(x) { return hasElement(204)?formatPow(x):format(x)+"x"+(x.gte(1e15)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: "Supernova requirement is decreased based on Gluon.",
-                get unl() { return OURO.evo < 2 },
+                get unl() { return EVO.amt < 2 },
                 cost(x) { return E(10).pow(x.pow(1.25)).mul(1e5) },
-                bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.div(1e5).max(1).log(10).root(1.25).add(1).floor() : E(0) },
+                bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.div(1e5).max(1).log10().root(1.25).add(1).floor() : E(0) },
                 effect(x) {
                     let y = player.supernova.bosons.gluon.add(1).log10().add(1).log10().mul(x.pow(fermEff(0, 3)).root(3)).div(10).add(1)
                     if (!hasPrestige(0,28)) y = y.softcap(5.5,0.25,0).softcap(10,0.25,0)
@@ -240,14 +240,14 @@ const BOSONS = {
                 effDesc(x) { return "/"+format(x)+(x.gte(5.5)&&!hasPrestige(0,28)?" <span class='soft'>(softcapped)</span>":"") },
             },{
                 desc: "Boost Protostars.",
-                get unl() { return OURO.evo >= 3 },
+                get unl() { return EVO.amt >= 3 },
                 cost(x) { return E(1e5).pow(x.pow(3).add(1)) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(1e5) ? x.sub(1).log(1e5).root(3).add(1).floor() : E(0) },
                 effect: x => x.add(1).overflow('e25000',0.5),
                 effDesc(x) { return formatMult(x) },
             },{
                 desc: "Gain more nebular dusts based on Gluon.",
-                get unl() { return OURO.evo >= 3 },
+                get unl() { return EVO.amt >= 3 },
                 cost(x) { return E(1e10).pow(x.pow(1.5).add(1)) },
                 bulk(x=player.supernova.bosons.gluon) { return x.gte(1e10) ? x.sub(1).log(1e10).root(1.5).add(1).floor() : E(0) },
                 effect: x => expMult(player.supernova.bosons.gluon.add(1).log10().add(1).pow(x.add(1).log10()),0.5),
@@ -314,7 +314,7 @@ function updateBosonsHTML() {
 
     for (let x in BOSONS.names) {
         let id = BOSONS.names[x]
-        tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.sn.boson.gain[id].mul(tmp.preQUGlobalSpeed)))
+        tmp.el[id+"_amt"].setTxt(format(player.supernova.bosons[id])+" "+formatGain(player.supernova.bosons[id],tmp.sn.boson.gain[id].mul(tmp.qu.speed)))
         if (tmp.sn.boson.effect[id]) for (let y in tmp.sn.boson.effect[id]) {
             if (y == '2' && id == 'pos_w') tmp.el[id+"_eff"+y].setHTML(hasElement(250) ? ',<br>and raise mass gain by ' + format(tmp.sn.boson.effect[id][y]) : '')
             else tmp.el[id+"_eff"+y].setTxt(format(tmp.sn.boson.effect[id][y]))

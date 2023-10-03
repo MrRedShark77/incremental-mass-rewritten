@@ -5,12 +5,11 @@ const TABS_DATA = {
     'star'  : { name: "Stars", style: "sn" },
     'bp'    : { name: "Indescribable Matter", style: "qu" },
     'tp'    : { name: "The Parallel", style: "inf" },
-    'snake' : { name: "The Snake", style: "snake" },
+    'snake' : { name: "The Snake", style: "snake", snake: true },
 
     'rank-reward': { name: "Ranks Rewards" },
     'scaling'    : { name: "Scaling" },
     'pres-reward': { name: "Prestige Rewards" },
-    'bd-reward'  : { name: "Beyond-Ranks Rewards" },
     'asc-reward' : { name: "Ascension Rewards" },
 
     'main-upg': { name: "Main Upgrades" },
@@ -46,10 +45,9 @@ const TABS_DATA = {
     'c-star'  : { name: "Corrupted Star" },
 
     'options' : { name: "Options" },
-    'res-hide': { name: "Resource Hider" },
 
     "wh"           : { name: "Wormhole", style: "bh" },
-    "proto"        : { name: "Protostar", style: "space" },
+    "proto"        : { name: "Protostar", style: "atom" },
     "constellation": { name: "Constellation", style: "sn" },
     "cosmo"        : { name: "Cosmic", style: "qu" },
 }
@@ -59,56 +57,56 @@ function chooseTab(x, stab=false) {
     else tmp.stab[tmp.tab] = x
 
     tmp.stab[tmp.tab] ??= 0
-	if (player.options.nav_hide[3]) PINS.open_menu()
+	if (player.options.nav_hide[2]) PINS.open_menu()
 
     updateTabTemp()
 }
 
 function updateTabTemp() {
-    let s = TABS[tmp.tab].stab
+	tmp.tab_name = ""
+	tmp.inSnake = false
 
+    let s = TABS[tmp.tab].stab
     if (s) {
         let t = s[tmp.stab[tmp.tab]]
-
         tmp.tab_name = Array.isArray(t) ? t[0] : t
-    } else {
-        tmp.tab_name = ""
+	    tmp.inSnake = TABS_DATA[tmp.tab_name].snake ?? false
     }
 }
 
 const TABS = [
     { name: "Main", icon: "pajamas:weight", stab: [
         'mass',
-        ['bh', () => FORMS.bh.unl(), () => OURO.evo < 2],
-        ['wh', () => FORMS.bh.unl(), () => OURO.evo == 2],
-        ['atomic', () => player.atom.unl, () => OURO.evo < 3 ],
-        ['star', () => tmp.star_unl, () => OURO.evo < 3 ],
-        ['elements', null, () => OURO.evo >= 3 ],
-        ['bp', () => quUnl(), () => OURO.evo < 3 ],
-        ['tp', () => hasInfUpgrade(9), () => OURO.evo < 1],
-        ['snake', null, () => OURO.evo > 0],
+        ['bh', () => FORMS.bh.unl(), () => EVO.amt < 2],
+        ['wh', () => FORMS.bh.unl(), () => EVO.amt == 2],
+        ['atomic', () => player.atom.unl, () => EVO.amt < 3 ],
+        ['star', () => tmp.star_unl, () => EVO.amt < 3 ],
+        ['elements', null, () => EVO.amt >= 3 ],
+        ['bp', () => quUnl(), () => EVO.amt < 3 ],
+        ['tp', () => hasInfUpgrade(9), () => EVO.amt < 1],
+        ['snake', null, () => EVO.amt > 0],
     ] },
-    { name: "Upgrades", icon: "carbon:upgrade", unl() { return [1,2].includes(OURO.evo) || tmp.upgs.unl }, stab: [
+    { name: "Upgrades", icon: "carbon:upgrade", unl() { return [1,2].includes(EVO.amt) || tmp.upgs.unl }, stab: [
         ['main-upg', () => tmp.upgs.unl],
-        ['elements', null, () => [1,2].includes(OURO.evo)],
+        ['elements', null, () => [1,2].includes(EVO.amt)],
     ] },
-    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl || OURO.evo==4 && player.qu.times.gte(200) }, stab: [
+    { name: "Challenges", icon: "material-symbols:star", unl() { return player.chal.unl }, stab: [
         ['chal', () => player.chal.unl],
-        ['qc', () => hasTree("unl3") || OURO.evo==4 && player.qu.times.gte(200), ()=>OURO.evo<5],
+        ['qc', () => hasTree("unl3") || EVO.amt == 4 && player.qu.times.gte(200), ()=>EVO.amt<5],
     ] },
-    { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && OURO.evo < 3 }, style: "atom", stab: [
+    { name: "Atom", icon: "eos-icons:atom-electron", color: "cyan", unl() { return player.atom.unl && EVO.amt < 3 }, style: "atom", stab: [
         'particles',
-        ['elements', () => player.chal.comps[7].gte(16) || tmp.sn.unl, () => OURO.evo < 1],
+        ['elements', () => player.chal.comps[7].gte(1) || tmp.sn.unl, () => EVO.amt < 1],
         ['dil', () => MASS_DILATION.unlocked()],
         ['break-dil', () => hasUpgrade("br",9)],
-        ['ext-atom', () => tmp.eaUnl],
+        ['ext-atom', () => tmp.ea.unl],
     ] },
-    { name: "Space", icon: "bx:planet", color: "space", unl() { return OURO.evo >= 3 }, style: "space", stab: [
+    { name: "Space", icon: "bx:planet", color: "space", unl() { return EVO.amt >= 3 }, style: "space", stab: [
         'wh',
         'proto',
         ['star', null, () => tmp.star_unl],
-        ['constellation', null, () => OURO.evo >= 4],
-        ['cosmo', ()=>quUnl(), () => OURO.evo >= 5],
+        ['constellation', null, () => EVO.amt >= 4],
+        ['cosmo', () => player.evo.cosmo.unl]
     ] },
     { name: "Supernova", icon: "material-symbols:explosion-outline", color: "magenta", unl() { return tmp.sn.unl }, style: "sn", stab: [
         'sn-tree',
@@ -116,9 +114,9 @@ const TABS = [
         ['ferm', () => player.supernova.fermions.unl],
         ['rad', () => hasTree("unl1")],
     ] },
-    { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() && OURO.evo < 5 }, style: "qu", stab: [
+    { name: "Quantum", icon: "material-symbols:grid-4x4-rounded", color: "lightgreen", unl() { return quUnl() }, style: "qu", stab: [
         'chroma',
-        ['bp', null, () => OURO.evo >= 3 ],
+        ['bp', null, () => EVO.amt >= 3 ],
         ['prim', () => PRIM.unl()],
         ['entropy', () => player.qu.en.unl],
         ['auto-qu', () => tmp.qu.mil_reached[6]],
@@ -134,19 +132,17 @@ const TABS = [
         'inf-core',
         'core-eff',
         'inf-upgs',
-        ['tp', () => hasInfUpgrade(9), () => OURO.evo > 0],
-        ['c-star', () => tmp.CS_unl],
+        ['tp', () => hasInfUpgrade(9), () => EVO.amt > 0],
+        ['c-star', () => tmp.cs.unl],
     ] },
-    { name: "Stats", icon: "material-symbols:query-stats", unl() { return !player.options.nav_hide[2] }, stab: [
+    { name: "Stats", icon: "material-symbols:query-stats", unl() { return player.quotes.includes(1) }, stab: [
         'rank-reward',
-        ['scaling', () => tmp.scaling && tmp.scaling.super.length>0],
+        ['scaling', () => tmp.scaling.super?.length>0],
         ['pres-reward', () => hasUpgrade("br",9)],
-        ['bd-reward', () => tmp.brUnl],
-        ['asc-reward', () => tmp.ascensions_unl],
+        ['asc-reward', () => tmp.asc.unl],
     ] },
-    { name: "Options", icon: "mdi:gear", unl() { return !player.options.nav_hide[2] }, stab: [
+    { name: "Options", icon: "mdi:gear", unl() { return player.quotes.includes(1) }, stab: [
         'options',
-        'res-hide',
     ] },
 ]
 
@@ -192,25 +188,29 @@ function updateTabsHTML() {
 		}
 
 		if (tab.stab) {
-			tmp.el["stabs"+x].setDisplay(x == tmp.tab)
-			if (x == tmp.tab) for (let [y,stab] of Object.entries(tab.stab))  {
-                let id, unl = true
+			let st_unl = 0
+			if (x == tmp.tab) {
+				for (let [y,stab] of Object.entries(tab.stab))  {
+					let id, unl = true
+					if (Array.isArray(stab)) {
+						if (stab[2]) {
+							unl = stab[2]()
+							tmp.el["stab_div"+x+"_"+y].setDisplay(unl)
+						}
 
-                if (Array.isArray(stab)) {
-                    if (stab[2]) {
-                        unl = stab[2]()
-                        tmp.el["stab_div"+x+"_"+y].setDisplay(unl)
-                    }
+						unl = unl && (!stab[1] || stab[1]())
+						tmp.el["stab"+x+"_"+y].setDisplay(unl)
+						id = stab[0]
+					} else id = stab
 
-                    tmp.el["stab"+x+"_"+y].setDisplay(unl && (!stab[1] || stab[1]()))
-                    id = stab[0]
-                }
-                else id = stab
-
-                td = TABS_DATA[id]
-				
-				if (unl) tmp.el["stab"+x+"_"+y].setClasses({btn_tab: true, [td.style ?? "normal"]: true, choosed: y == tmp.stab[x]})
+					td = TABS_DATA[id]
+					if (unl) {
+						st_unl++
+						tmp.el["stab"+x+"_"+y].setClasses({btn_tab: true, [td.style ?? "normal"]: true, choosed: y == tmp.stab[x]})
+					}
+				}
 			}
+			tmp.el["stabs"+x].setDisplay(x == tmp.tab && st_unl > 1)
 		}
 	}
 
@@ -244,17 +244,17 @@ const PINS = {
 		let pins = player.options.pins
 		if (pins.includes(i)) {
 			pins.splice(pins.indexOf(i),1)
-			if (pins.length == 0 && player.options.nav_hide[3]) PINS.open_menu()
+			if (pins.length == 0 && player.options.nav_hide[2]) PINS.open_menu()
 		} else if (pins.length >= PINS.max) addNotify(`Can't handle more than ${PINS.max} pins!`)
 		else pins.push(i)
 	},
 	go(i) {
 		i = player.options.pins[i]
-		if (!goToTab(i)) createConfirm("This tab might be locked or removed! Do you want to remove?",'cantGo',_=>PINS.pin(i))
+		if (!goToTab(i)) createConfirm("This tab might be locked or removed! Do you want to remove?",'cantGo',()=>PINS.pin(i))
 	},
 
 	open_menu() {
-		player.options.nav_hide[3] = !player.options.nav_hide[3]
+		player.options.nav_hide[2] = !player.options.nav_hide[2]
 		updateNavigation()
 	},
 
@@ -267,10 +267,10 @@ const PINS = {
 	},
 	update() {
 		tmp.el["nav_pin_hider"].setDisplay(player.options.pins.length > 0 && isPreferred("pin"))
-		tmp.el["pin_btn"].setDisplay(isPreferred("pin"))
+		tmp.el["pin_btn"].setDisplay(player.quotes.includes(1) && isPreferred("pin"))
 		tmp.el["pin_btn"].setTxt(player.options.pins.includes(tmp.tab_name) ? "Unpin" : "Pin")
-		tmp.el["pins_stabs"].setDisplay(player.options.nav_hide[3])
-		if (!player.options.nav_hide[3]) return
+		tmp.el["pins_stabs"].setDisplay(player.options.nav_hide[2])
+		if (!player.options.nav_hide[2]) return
 
 		for (let i = 0; i < PINS.max; i++) {
 			let p = player.options.pins[i]
@@ -278,8 +278,8 @@ const PINS = {
 			tmp.el["pin_div"+i].setDisplay(unl)
 			if (!unl) continue
 
-			tmp.el["pin"+i].setTxt(TABS_DATA[p].name)
-			tmp.el["pin"+i].setClasses({btn_tab: true, [ TABS_DATA[p].style ]: true, choosed: tmp.tab_name == p})
+			tmp.el["pin"+i].setTxt(TABS_DATA[p]?.name ?? "[removed]")
+			tmp.el["pin"+i].setClasses({btn_tab: true, [ TABS_DATA[p]?.style ]: true, choosed: tmp.tab_name == p})
 		}
 	},
 }

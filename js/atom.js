@@ -1,7 +1,7 @@
 const ATOM = {
     gain() {
         if (CHALS.inChal(12)) return E(0)
-        let x, evo = OURO.evo;
+        let x, evo = EVO.amt;
 		if (evo >= 3) {
             if (player.evo.wh.fabric.lt(1e3)) return E(0)
 			x = expMult(player.evo.wh.fabric.div(1e3), hasElement(93,1)?0.35:0.2)
@@ -14,6 +14,7 @@ const ATOM = {
             if (hasElement(303)) x = x.mul(elemEffect(303))
             if (tmp.sn.boson) x = x.mul(tmp.sn.boson.upgs.gluon[4].effect)
             if (evo >= 4) x = x.mul(getEnRewardEff(7))
+		    if (QCs.active() && evo >= 4) x = x.mul(tmp.qu.qc.eff[3])
 
             if (hasElement(169)) x = x.pow(1.05)
             if (tmp.inf_unl) x = x.pow(theoremEff('atom',5))
@@ -28,13 +29,13 @@ const ATOM = {
             x = x.root(5)
         }
 
-        if (hasUpgrade("rp",15)) x = x.mul(tmp.upgs?tmp.upgs[1][15].effect:E(1))
+        if (hasUpgrade("rp",15)) x = x.mul(upgEffect(1,15))
         if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[0].effect) : x.mul(tmp.sn.boson.upgs.gluon[0].effect)
         if (hasElement(17)) x = x.pow(1.1)
-        x = x.pow(tmp.prim.eff[3][0])
-        if (hasElement(111)) x = x.pow(tmp.elements.effect[111])
+        x = x.pow(tmp.qu.prim.eff[3][0])
+        if (hasElement(111)) x = x.pow(elemEffect(111))
 
-        if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+        if (QCs.active()) x = x.pow(tmp.qu.qc.eff[4])
         if (FERMIONS.onActive("10")) x = expMult(x,0.625)
 
         x = x.pow(glyphUpgEff(5))
@@ -46,47 +47,51 @@ const ATOM = {
     },
     quarkGain() {
 		let x = tmp.atom.gain
+        if (hasZodiacUpg("taurus", "u4")) x = x.max(player.evo.proto.star.div(10))
+
         if (x.lt(1)) return E(0)
-        let evo = OURO.evo
+        let evo = EVO.amt
 
 		if (evo >= 3) {
-            let k = E(1), s = E(1e9)
-
+            let k = E(1)
             if (hasElement(1)) k = k.add(0.25)
             if (hasElement(84,1)) k = k.add(0.25)
             if (hasElement(86,1)) k = k.add(0.1)
+            if (hasElement(305)) k = k.add(elemEffect(305, 0))
+            if (evo >= 4 && player.dark.unl) k = k.add(tmp.dark.shadowEff.qkf||0).add(tmp.dark.abEff.qkf||0)
+            if (evo >= 4 && hasElement(213)) k = k.add(.01)
+            if (evo >= 4 && tmp.inf_unl) k = k.add(theoremEff("atom", 1, 0))
 
+            let s = E(1e9)
             if (tmp.inf_unl) s = s.mul(theoremEff('time',4))
 
-            x = E(1.01).pow(expMult(x.overflow(s,hasElement(299)?2/3:0.5).sub(1), k)).floor()
+            x = expMult(x.overflow(s, hasElement(299) ? 2/3 : .5).sub(1), k)
+			x = E(1.01).pow(x)
         }
         else if (hasElement(1)) x = E(1.25).pow(x.max(1).log10())
-		else x = x.log10().pow(evo >= 2 ? 2 : 1.2).add(1)
+		else x = x.log10().pow(1.5).add(1)
 
         if (!tmp.c16.in) x = x.pow(escrowBoost("qk"))
 
         if (hasUpgrade("bh",13)) x = x.mul(10)
-        if (hasUpgrade("atom",8)) x = x.mul(tmp.upgs?tmp.upgs[3][8].effect:E(1))
+        if (hasUpgrade("atom",8)) x = x.mul(upgEffect(3,8))
         if (player.ranks.rank.gte(300)) x = x.mul(RANKS.effect.rank[300]())
-        if (hasElement(42)) x = x.mul(tmp.elements.effect[42])
+        if (hasElement(42)) x = x.mul(elemEffect(42))
         if (hasMDUpg(6)) x = x.mul(mdEff(6))
         x = x.mul(mdEff(9))
 
-        if (hasElement(6)) x = hasElement(276) ? x.pow(tmp.elements.effect[6]) : x.mul(tmp.elements.effect[6])
-        if (hasElement(67)) x = hasElement(236) || evo >= 2 ? x.pow(elemEffect(67)) : x.mul(tmp.elements.effect[67])
+        if (hasElement(6)) x = hasElement(276) ? x.pow(elemEffect(6)) : x.mul(elemEffect(6))
+        if (hasElement(67)) x = hasElement(236) || evo >= 2 ? x.pow(elemEffect(67)) : x.mul(elemEffect(67))
         if (hasElement(47)) x = x.pow(1.1)
         if (hasPrestige(1,7)) x = x.pow(prestigeEff(1,7))
-
         if (hasUpgrade('atom',17)) x = x.pow(upgEffect(3,17))
-
         if (tmp.inf_unl) x = x.pow(theoremEff('atom',0))
 
         if (tmp.dark.run) x = expMult(x,mgEff(2))
         if (tmp.inf_unl && evo >= 2) x = expMult(x,GPEffect(1).pow(-1))
 
         let os = E('ee90'), op = E(.5), o = x
-
-        if (hasElement(94,1)) os = EINF
+        if (evo >= 4) os = EINF
         else {
             if (evo >= 2) os = E("ee70")
             if (tmp.chal) os = os.pow(tmp.chal.eff[15])
@@ -111,21 +116,21 @@ const ATOM = {
     },
     canReset() { return tmp.atom.gain.gte(1) },
     reset() {
-        if (tmp.atom.canReset) {
-            if (player.confirms.atom) createConfirm("Are you sure you want to reset?",'atomReset',CONFIRMS_FUNCTION.atom)
-            else CONFIRMS_FUNCTION.atom()
-        }
+        if (tmp.atom.canReset) getResetConfirm("atom")
     },
     doReset(chal_reset=true) {
         player.atom.atomic = E(0)
         FORMS.bh.doReset()
-        if (OURO.evo >= 2) {
-			player.evo.wh.fabric = E(0)
-			for (var i = 0; i < 6; i++) player.evo.wh.mass[i] = E(0)
+        if (EVO.amt >= 2) {
+			resetEvolutionSave("atom")
 			return
 		}
 
-        if (!hasInfUpgrade(18)) resetMainUpgs(2,[5])
+        if (!hasInfUpgrade(18)) {
+			let k = [3,5]
+			if (hasUpgrade("atom", 3)) k.push(6)
+			resetMainUpgs(2,k)
+		}
         if (chal_reset && !hasUpgrade("atom",4) && !hasTree("chal2")) for (let x = 1; x <= 4; x++) player.chal.comps[x] = E(0)
 
         player.bh.dm = E(0)
@@ -136,11 +141,11 @@ const ATOM = {
             let greff = {eff: BUILDINGS.eff('cosmic_ray'),exp: BUILDINGS.eff('cosmic_ray', 'exp')}
 
             let x = greff.eff
-            if (hasElement(3)) x = x.mul(tmp.elements.effect[3])
-            if (hasElement(52)) x = x.mul(tmp.elements.effect[52])
+            if (hasElement(3)) x = x.mul(elemEffect(3))
+            if (hasElement(52)) x = x.mul(elemEffect(52))
             if (tmp.sn.boson) x = hasElement(204) ? x.pow(tmp.sn.boson.upgs.gluon[0].effect) : x.mul(tmp.sn.boson.upgs.gluon[0].effect)
 
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[4])
             if (FERMIONS.onActive("00")) x = expMult(x,0.6)
             if (tmp.md.in) x = expMult(x,tmp.md.pen)
 
@@ -151,11 +156,11 @@ const ATOM = {
             let o = x
             let os = tmp.c16.in ? E('e500') : E('ee82')
 			if (tmp.chal) os = os.pow(tmp.chal.eff[15])
-			if (tmp.c16.in && OURO.evo < 2) os = E("e500")
+			if (tmp.c16.in && EVO.amt < 2) os = E("e500")
             os = os.pow(tmp.dark.abEff.ApQ_Overflow||1)
             if (tmp.inf_unl) os = os.pow(theoremEff('atom',1))
 
-            if (hasAscension(0,13) || OURO.evo >= 2) os = EINF
+            if (hasAscension(0,13) || EVO.amt >= 2) os = EINF
             x = overflow(x,os,0.25)
 
             tmp.overflow.atomic = calcOverflow(o,x,os)
@@ -173,7 +178,7 @@ const ATOM = {
             x = overflow(x,'e2000',0.5)
 
             let y = 1
-            if (OURO.evo >= 1) y = expMult(player.atom.atomic.add(1).log10().div(5).add(1),0.5)
+            if (EVO.amt >= 1) y = expMult(player.atom.atomic.add(1).log10().div(5).add(1),0.5)
             return [x.floor(),y]
         },
     },
@@ -207,8 +212,8 @@ const ATOM = {
         },
         gain(i) {
             let x = tmp.atom.particles[i]?tmp.atom.particles[i].effect:E(0)
-            if (hasUpgrade("atom",7)) x = x.mul(tmp.upgs?tmp.upgs[3][7].effect:E(1))
-            if (QCs.active()) x = x.pow(tmp.qu.qc_eff[4])
+            if (hasUpgrade("atom",7)) x = x.mul(upgEffect(3,7))
+            if (QCs.active()) x = x.pow(tmp.qu.qc.eff[4])
             if (hasUpgrade('atom',21)) x = expMult(x,5)
             return x.div(10)
         },
@@ -222,14 +227,14 @@ const ATOM = {
             x=>{
                 let a = hasPrestige(1,400) ? overflow(Decimal.pow(2,x.add(1).log10().add(1).log10().root(2)),10,0.5) : hasElement(198) ? x.add(1).log10().add(1).log10().div(10).add(1).pow(2) : hasElement(105) ? x.add(1).log10().add(1).log10().root(2).div(10).add(1) : x.add(1).pow(2)
 
-				let bp = OURO.evo >= 1 ? Decimal.pow(2,player.evo.cp.points) : player.rp.points
+				let bp = EVO.amt >= 1 ? Decimal.pow(2,player.evo.cp.points) : player.rp.points
                 let b = hasUpgrade('atom',18)
                 ?Decimal.pow(1.1,
                     bp.add(1).log10().add(10).log10().mul(x.add(1).log10().add(10).log10()).root(3).sub(1)
                 )
                 .mul(player.mass.add(1).log10().add(10).log10())
                 :(hasElement(19)
-                ?player.mass.max(1).log10().add(1).pow(bp.max(1).log(10).mul(x.max(1).log(10)).root(2.75))
+                ?player.mass.max(1).log10().add(1).pow(bp.max(1).log10().mul(x.max(1).log10()).root(2.75))
                 :player.mass.max(1).log10().add(1).pow(bp.max(1).log(100).mul(x.max(1).log(100)).root(3))).min('ee200')
 				if (CHALS.inChal(17) && !hasUpgrade('atom',18)) b = E(1)
 
@@ -246,13 +251,13 @@ const ATOM = {
         ],
         desc: [
             x=>{ return `Boost Mass gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>`+
-                (OURO.evo == 0 ? `Increases Tickspeed Power by ${format(x.eff2.mul(100))}%` : ``)
+                (EVO.amt == 0 ? `Increases Tickspeed Power by ${format(x.eff2.mul(100))}%` : ``)
             },
             x=>{ return `Boost Rage Power gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>` +
-                (OURO.evo < 2 ? `Boost Mass gain based on Rage Powers - ${hasUpgrade('atom',18)?formatPow(x.eff2):format(x.eff2)+"x"}<br><br>` : ``)
+                (EVO.amt < 2 ? `Boost Mass gain based on Rage Powers - ${hasUpgrade('atom',18)?formatPow(x.eff2):format(x.eff2)+"x"}<br><br>` : ``)
             },
             x=>{ return `Boost Dark Matter gain by ${hasElement(105)?formatPow(x.eff1):format(x.eff1)+"x"}<br><br>`+
-                (OURO.evo < 2 ? `Increases BH Condenser Power by ${format(x.eff2)}` : ``)
+                (EVO.amt < 2 ? `Increases BH Condenser Power by ${format(x.eff2)}` : ``)
             },
         ],
         colors: ['#0f0','#ff0','#f00'],
@@ -264,11 +269,11 @@ const RATIO_ID = ["+1", '25%', '100%']
 
 function updateAtomTemp() {
     let tt = tmp.atom = {}
-    tt.unl = player.atom.unl && OURO.evo < 3
+    tt.unl = player.atom.unl && EVO.amt < 3
     tt.gain = ATOM.gain()
     tt.quarkGain = ATOM.quarkGain()
     tt.quarkGainSec = 0.05
-    if (hasElement(16)) tt.quarkGainSec += tmp.elements.effect[16]
+    if (hasElement(16)) tt.quarkGainSec += elemEffect(16, 0)
     tt.canReset = ATOM.canReset()
 
     updateMDTemp()
@@ -304,10 +309,10 @@ function setupAtomHTML() {
 }
 
 function updateAtomicHTML() {
-    tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain.mul(tmp.preQUGlobalSpeed)))
+    tmp.el.atomicAmt.setHTML(format(player.atom.atomic)+" "+formatGain(player.atom.atomic, tmp.atom.atomicGain.mul(tmp.qu.speed)))
 	tmp.el.atomicEff.setHTML(
         `Which provides <h4>${format(tmp.atom.atomicEff[0],0)+(tmp.atom.atomicEff[0].gte(5e4)?" <span class='soft'>(softcapped)</span>":"")}</h4> free Tickspeeds`
-        +(OURO.evo >= 1 ? ` and increases meditation's level by <h4>${formatMult(tmp.atom.atomicEff[1],2)}</h4>` : "")
+        +(EVO.amt >= 1 ? ` and increases meditation's level by <h4>${formatMult(tmp.atom.atomicEff[1],2)}</h4>` : "")
     )
 
     BUILDINGS.update('cosmic_ray')
@@ -322,10 +327,30 @@ function updateAtomHTML() {
     for (let x = 0; x < ATOM.particles.names.length; x++) {
         tmp.el["particle_"+x+"_amt"].setTxt(format(player.atom.particles[x],0))
         tmp.el["particle_"+x+"_amtEff"].setTxt(format(tmp.atom.particles[x].powerGain))
-        tmp.el["particle_"+x+"_power"].setTxt(format(player.atom.powers[x])+" "+formatGain(player.atom.powers[x],tmp.atom.particles[x].powerGain.mul(tmp.preQUGlobalSpeed)))
+        tmp.el["particle_"+x+"_power"].setTxt(format(player.atom.powers[x])+" "+formatGain(player.atom.powers[x],tmp.atom.particles[x].powerGain.mul(tmp.qu.speed)))
         tmp.el["particle_"+x+"_powerEff"].setHTML(ATOM.particles.desc[x](tmp.atom.particles[x].powerEffect))
     }
 
     tmp.el.quarkOverflow.setDisplay(player.atom.quarks.gte(tmp.overflow_start.quark))
     tmp.el.quarkOverflow.setHTML(`Because of quark overflow at <b>${format(tmp.overflow_start.quark)}</b>, your quark gain is ${overflowFormat(tmp.overflow.quark||1)}!`)
+}
+
+function calcAtoms(dt) {
+	let du_gs = tmp.qu.speed.mul(dt), inf_gs = tmp.preInfGlobalSpeed.mul(dt)
+
+	if (tmp.passive >= 3) player.atom.points = player.atom.points.add(tmp.atom.gain.mul(du_gs))
+	player.atom.atomic = player.atom.atomic.add(tmp.atom.atomicGain.mul(du_gs))
+
+	if (hasElement(30) && !(CHALS.inChal(9) || FERMIONS.onActive("12"))) for (let x = 0; x < 3; x++) player.atom.particles[x] = player.atom.particles[x].add(player.atom.quarks.mul(du_gs).div(10))
+	for (let x = 0; x < 3; x++) player.atom.powers[x] = player.atom.powers[x].add(tmp.atom.particles[x].powerGain.mul(du_gs))
+
+	player.md.mass = player.md.mass.add(tmp.md.mass_gain.mul(du_gs))
+	if (hasTree("qol3")) player.md.particles = player.md.particles.add(inMD() ? tmp.md.rp_gain.mul(du_gs) : tmp.md.passive_rp_gain.mul(du_gs))
+	if (hasElement(43)) for (let x = 0; x < MASS_DILATION.upgs.ids.length; x++) if ((hasTree("qol3") || player.md.upgs[x].gt(0)) && (MASS_DILATION.upgs.ids[x].unl?MASS_DILATION.upgs.ids[x].unl():true)) MASS_DILATION.upgs.buy(x)
+
+    if (hasUpgrade('br',9)) {
+        player.md.break.energy = player.md.break.energy.add(tmp.bd.energyGain.mul(inf_gs))
+        player.md.break.mass = player.md.break.mass.add(tmp.bd.massGain.mul(inf_gs))
+		if (hasElement(123)) for (let x = 0; x < MASS_DILATION.break.upgs.ids.length; x++) if (MASS_DILATION.break.upgs.ids[x].unl?MASS_DILATION.break.upgs.ids[x].unl():true) MASS_DILATION.break.upgs.buy(x)
+    }
 }

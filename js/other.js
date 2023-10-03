@@ -51,7 +51,7 @@ const POPUP_GROUPS = {
         M☉ (mass of Sun): 333,054 M⊕ = 1.989e33 g<br>
         MMWG (mass of Milky Way Galaxy): 1.5e12 M☉ = 2.9835e45 g<br>
         uni (mass of Universe): 50,276,520,864 MMWG = 1.5e56 g<br>
-        mlt (mass of Multiverse): 1e1e9 uni (logarithmic)<br>
+        mlt (mass of Multiverse): 1ee9 uni (logarithmic)<br>
         mgv (mass of Megaverse): 1e15 mlt<br>
         giv (mass of Gigaverse): 1e15 mgv<br>
         arv^n (mass of n-th Archverse): 1e15 arv^n-1<br>
@@ -62,6 +62,7 @@ const POPUP_GROUPS = {
             <button class="btn" style="font-family: 'Andy Bold';" onclick="player.options.font = 'Andy Bold'">Andy Bold</button>
             <button class="btn" style="font-family: Arial, Helvetica, sans-ser;" onclick="player.options.font = 'Arial, Helvetica, sans-ser'">Arial</button>
             <button class="btn" style="font-family: Bahnschrift;" onclick="player.options.font = 'Bahnschrift'">Bahnschrift</button>
+            <button class="btn" style="font-family: 'Better VCR';" onclick="player.options.font = 'Better VCR'">Better VCR</button>
             <button class="btn" style="font-family: Courier;" onclick="player.options.font = 'Courier'">Courier</button>
             <button class="btn" style="font-family: Cousine;" onclick="player.options.font = 'Cousine'">Cousine</button>
             <button class="btn" style="font-family: 'Flexi IBM VGA False';" onclick="player.options.font = 'Flexi IBM VGA False'">Flexi IBM VGA False</button>
@@ -79,21 +80,24 @@ const POPUP_GROUPS = {
             <button class="btn" style="font-family: 'Roboto Mono';" onclick="player.options.font = 'Roboto Mono'">Roboto Mono</button>
             <button class="btn" style="font-family: 'Source Sans Pro';" onclick="player.options.font = 'Source Sans Pro'">Source Sans Pro</button>
             <button class="btn" style="font-family: 'Source Serif Pro';" onclick="player.options.font = 'Source Serif Pro'">Source Serif Pro</button>
+            <button class="btn" style="font-family: 'VCR OSD Mono';" onclick="player.options.font = 'VCR OSD Mono'">VCR OSD Mono</button>
             <button class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="player.options.font = 'Verdana, Geneva, Tahoma, sans-serif'">Verdana</button>
         `,
     },
     notations: {
         html: `
-            <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
-            <button class="btn" onclick="player.options.notation = 'eng'">Engineering</button>
-            <button class="btn" onclick="player.options.notation = 'inf'">Infinity</button>
-            <button class="btn" onclick="player.options.notation = 'mixed_sc'">Mixed Scientific</button>
-            <button class="btn" onclick="player.options.notation = 'layer'">Prestige Layer</button>
+            <button class="btn" onclick="player.options.notation = 'mixed_sc'">Default</button>
             <button class="btn" onclick="player.options.notation = 'sc'">Scientific</button>
-            <button class="btn" onclick="player.options.notation = 'st'">Standard</button>
             <button class="btn" onclick="player.options.notation = 'old_sc'">Old Scientific</button>
+			<br class='line'>
+            <button class="btn" onclick="player.options.notation = 'eng'">Engineering</button>
+            <button class="btn" onclick="player.options.notation = 'st'">Standard</button>
+            <button class="btn" onclick="player.options.notation = 'elemental'">Elemental</button>
             <button class="btn" onclick="player.options.notation = 'omega'">Omega</button>
             <button class="btn" onclick="player.options.notation = 'omega_short'">Omega Short</button>
+            <button class="btn" onclick="player.options.notation = 'inf'">Infinity</button>
+            <button class="btn" onclick="player.options.notation = 'layer'">Prestige Layer</button>
+            <button class="btn" onclick="player.options.notation = 'upsital'">Bezier's Upsital</button>
         `,
     },
     supernova10: {
@@ -115,37 +119,6 @@ const POPUP_GROUPS = {
         `,
         width: 400,
         height: 150,
-        otherStyle: {
-            'font-size': "14px",
-        },
-    },
-    qu: {
-        html() { return `
-            Congratulations!<br><br>You have reached ${formatMass(mlt(1e4))} of mass after beating Challenge 12!<br><br>
-            <b>You need to go Quantum!</b>
-        `},
-        width: 400,
-        height: 150,
-        otherStyle: {
-            'font-size': "14px",
-        },
-    },
-    qus1: {
-        html() { return `
-            <img src="images/qu_story1.png"><br><br>
-            Mass has collapsed while going Quantum! It looks like evaporation! But at what cost?
-        `},
-        button: "Uhh Oh",
-        otherStyle: {
-            'font-size': "14px",
-        },
-    },
-    qus2: {
-        html() { return `
-            <img src="images/qu_story2.png"><br><br>
-            Don’t worry, new mechanics will arrive for you!
-        `},
-        button: "Cool",
         otherStyle: {
             'font-size': "14px",
         },
@@ -192,7 +165,7 @@ const QUOTES = [
     `,`
     <h2>Chapter 7: Scale to Quantum</h2><br>
     <img class='quote' src='images/quotes/7.png'><br>
-    Mass has collapsed in quantum scale! Good luck on new features!
+    Mass has collapsed by quantum fluctuation!
     `,`
     <h2>Chapter 8: Ripping Universe</h2><br>
     <img class='quote' src='images/quotes/8.png'><br>
@@ -367,7 +340,7 @@ function keyEvent(e) {
         else if (k == 68 || k == 39) recordMovement(1)
         else if (k == 83 || k == 40) recordMovement(2)
         else if (k == 65 || k == 37) recordMovement(3)
-    } else if (!player.options.nav_hide[3]) {
+    } else if (!player.options.nav_hide[2]) {
         if (k == 38 || k == 40) {
             let v = k == 40 ? 1 : -1, t = tmp.tab, s = t
     
@@ -411,10 +384,10 @@ function keyEvent(e) {
 function hideNavigation(i) { player.options.nav_hide[i] = !player.options.nav_hide[i]; updateNavigation() }
 
 function updateNavigation() {
-    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_extra_hider"],["nav_pin_hider"]]
+    let ids = [["nav_left_hider","tabs"],["nav_right_hider","resources_table"],["nav_pin_hider"]]
     let w = 450
 
-    for (let i in player.options.nav_hide) {
+    for (let i in ids) {
         let h = player.options.nav_hide[i]
 
         tmp.el[ids[i][0]].setClasses({toggled: h})
@@ -427,14 +400,14 @@ function updateNavigation() {
     tmp.el.main_app.changeStyle('width',p)
     tmp.el.nav_btns.changeStyle('width',p)
 
-	tmp.el.stabs.setDisplay(!player.options.nav_hide[3])
+	tmp.el.stabs.setDisplay(!player.options.nav_hide[2])
 	PINS.update()
 }
 
 function prefer(x) {
 	player.options.prefer[x] = !player.options.prefer[x]
 	if (x == "pin") {
-		player.options.nav_hide[3] = false
+		player.options.nav_hide[2] = false
 		updateNavigation()
 	}
 }
@@ -451,6 +424,7 @@ function setupStatsHTML() {
     for (let i in RANKS.names) {
         h += `<div id="stats_${RANKS.names[i]}_btn" style="width: 145px"><button class="btn_tab" onclick="player.ranks_reward = ${i}">${RANKS.fullNames[i]}</button></div>`
     }
+	h += `<div id="stats_beyond_rank_btn" style="width: 145px"><button class="btn_tab" onclick="player.ranks_reward = 'beyond'">Beyond</button></div>`
 
     new Element("ranks_reward_btn").setHTML(h)
 
@@ -479,11 +453,8 @@ function setupStatsHTML() {
     new Element("asc_reward_btn").setHTML(h)
 }
 
-function updateStatsHTML() {
-    if (tmp.tab_name == 'rank-reward') for (let i in RANKS.names) {
-        tmp.el[`stats_${RANKS.names[i]}_btn`].setDisplay(player.ranks[RANKS.names[i]].gt(0))
-    }
-    else if (tmp.tab_name == "scaling") for (let i in SCALE_TYPE) {
+function updateStatsHTML() { 
+    if (tmp.tab_name == "scaling") for (let i in SCALE_TYPE) {
         tmp.el[`stats_${SCALE_TYPE[i]}_btn`].setDisplay(tmp.scaling[SCALE_TYPE[i]].length>0)
     }
     else if (tmp.tab_name == "pres-reward") for (let i in PRESTIGES.names) {
@@ -500,3 +471,6 @@ function checkImage(imageSrc, good, bad) {
     img.onerror = bad;
     img.src = imageSrc;
 }
+
+//debugger
+devSpeed = 1

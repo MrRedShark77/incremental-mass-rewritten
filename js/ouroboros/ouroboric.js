@@ -1,12 +1,12 @@
 /* ORIGINAL BY AAREX, EDITED BY MRREDSHARK77 */
 const OURO = {
-    unl: () => tmp.ouro.unl,
     get save() {
         let s = {
             ouro: {
                 apple: E(0),
                 berry: E(0),
-                energy: 0
+                energy: 0,
+				purify: E(0)
             },
             evo: {
                 times: 0,
@@ -37,9 +37,9 @@ const OURO = {
                 cosmo: {
 					elixir: E(0),
 					roll_time: 15,
-					galaxy: [],
-					cluster: []
-				},
+					uni: [],
+					score: E(0)
+				}
             },
         }
         for (let x = 0; x < WORMHOLE.maxLength; x++) s.evo.wh.mass[x] = E(0)
@@ -48,112 +48,101 @@ const OURO = {
             amount: E(0),
             level: 0
         }
-        for (let i = 0; i < COSMIC.galaxy_len; i++) s.evo.cosmo.galaxy.push({ type: 0, tier: -1 })
-        for (let i = 0; i < COSMIC.cluster_len; i++) s.evo.cosmo.cluster.push(E(0))
         return s
     },
-    load(force) {
-        let unl = force ?? player.ouro != undefined
-        if (unl) player = deepUndefinedAndDecimal(player, this.save)
-        else {
+    load(evo) {
+        if (evo == undefined) evo = evo ?? player.evo?.times ?? 0
+
+        this.unl = evo > 0
+        if (this.unl) {
+			resetSnake()
+			player = deepUndefinedAndDecimal(player, this.save)
+			player.evo.times = evo
+			for (var i of player.evo.cosmo.uni) if (i) i.tier = E(i.tier)
+        } else {
             delete player.evo
             delete player.ouro
         }
 
         tmp.ouro = {
-            unl,
+            evo,
+            fed: {},
+
             apple_eff: {},
             escrow_boosts: {},
         }
+        for (let i = 1; i <= evo; i++) tmp.ouro.fed = Object.assign(tmp.ouro.fed, EVO.feed[i])
+
+		//tmp for evolution features
         tmp.evo = {
-            fed: {},
             meditation_eff: {},
-            wormhole_eff: [],
-            nebula_eff: {},
-
-            zodiac: {},
-            zodiac_eff: {},
-            zodiac_has: {},
-
+            wh: { eff: {} },
+            neb: { eff: {} },
+            zodiac: { eff: {} },
             cosmo: { eff: {} },
         }
-
-        for (let zi in CONSTELLATION.zodiac) {
-            tmp.evo.zodiac[zi] = {}
-            tmp.evo.zodiac_has[zi] = 0
-        }
-
-        this.temp()
     },
 
     canReset: () => player.chal.comps[20].gte(1),
-    reset(force) {
-        if (!force && !this.canReset()) return
-
-        if (!tmp.ouro.unl) {
-            this.load(true)
-            addQuote(13)
-        }
+    reset() {
+        if (!this.canReset()) return
         if (canEvolve()) {
-            player.evo.times++
+            tmp.ouro.evo++
             setOuroScene()
         }
 
         this.doReset()
     },
-    doReset() {
-        player.build.pe.amt = E(0)
-        player.build.fvm.amt = E(0)
-        if (OURO.unl()) {
-			player.ouro.apple = E(0)
-			player.evo.wh.origin = 0
-			player.evo.wh.unl = false
+    doReset(evo = EVO.amt) {
+		OURO.load(evo)
+        if (OURO.unl) {
+			player.ouro = deepUndefinedAndDecimal({ berry: player.ouro.berry }, this.save.ouro)
+			resetEvolutionSave("ouro")
 		}
 
-        player.evo.const = this.save.evo.const
-
-
-        for (let i in CORE) tmp.core_eff[i] = []
+        player.build.pe.amt = E(0)
+        player.build.fvm.amt = E(0)
         INF.doReset()
         INF.load(false)
 
-        let ek = []
-        if (OURO.evo >= 4) ek.push(293)
+		let o = keepElementsOnOuroboric()
         let keep = {
             atom: {
-                elements: ek,
-                muonic_el: unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry)
+				unl: evo >= 5,
+                elements: unchunkify(player.atom.elements).filter(x => o.includes(x)),
+                muonic_el: evo ? unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry && !EVO.isFed("e1_" + x)) : []
             }
         }
 
         let newData = getPlayerData()
-        let reset = ["rp", "bh", "chal", "atom", "supernova", "qu", "dark", "mainUpg"]
+        let reset = ["rp", "bh", "chal", "atom", "stars", "supernova", "qu", "dark", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
+		destroyOldData()
 
 		tmp.rp.unl = false
 		tmp.bh.unl = false
 		tmp.atom.unl = false
 		tmp.star_unl = false
 		tmp.sn = {}
-		destroyOldData()
+		tmp.asc.unl = false
+        for (let i in CORE) tmp.core_eff[i] = []
 
         tmp.tab = 0
 		tmp.stab = [0]
-		tmp.rank_tab = 0
-		player.options.nav_hide[3] = false
+		tmp.ranks.tab = 0
 		player.options.res_hide = {}
         updateMuonSymbol()
     },
 
     temp() {
-        if (!this.unl()) return
-        const evo = this.evo
-
-        tmp.ouro.escrow_boosts = this.escrow_boosts
+        if (!this.unl) return
+        tmp.ouro.powerups = getActivatedPowerups()
+        tmp.ouro.escrow_boosts = this.escrow_boosts()
         tmp.ouro.apple_gain = appleGain()
         tmp.ouro.berry_gain = berryGain()
         tmp.ouro.apple_eff = appleEffects()
 
+        const evo = EVO.amt
         if (evo >= 1) tmp.evo.meditation_eff = MEDITATION.eff(player.evo.cp.level)
         if (evo >= 2) WORMHOLE.temp()
         if (evo >= 3) PROTOSTAR.temp()
@@ -162,10 +151,10 @@ const OURO = {
     },
 
     calc(dt) {
-        if (!this.unl()) return
+        if (!this.unl) return
         calcSnake(dt)
 
-        const evo = this.evo
+        const evo = EVO.amt
         if (evo >= 1) MEDITATION.calc(dt)
         if (evo >= 2) WORMHOLE.calc(dt)
         if (evo >= 3) PROTOSTAR.calc(dt)
@@ -173,11 +162,8 @@ const OURO = {
         if (evo >= 5) COSMIC.calc(dt)
     },
 
-    get evo() { return player.evo ? player.evo.times : 0 },
-
-    get escrow_boosts() {
-        let x = {}, evo = this.evo
-
+    escrow_boosts() {
+        let x = {}, evo = EVO.amt
         if (evo == 1) {
             if (FORMS.bh.unl()) x.bhc = BUILDINGS.eff('mass_3','power',E(1)).div(3).max(1)
             if (player.dark.unl) {
@@ -195,12 +181,14 @@ const OURO = {
         } else if (evo == 3) {
             if (tmp.SN_passive && player.gal_prestige?.gt(0)) x.sn2 = Decimal.pow(2,player.gal_prestige.pow(1.25))
         }
+		if (evo < 4) x.dark = player.ouro.apple.div(1e6).add(1).cbrt()
 
         return x
     },
 }
 
 const EVO = {
+    get amt() { return tmp.ouro.evo ?? 0 },
 	msg: [
 		null,
 		[
@@ -220,8 +208,8 @@ const EVO = {
 			`No longer exploding, now start exploring.`
 		],
         [
-			`<img src="images/qu.png"> Quantum ➜ Cosmic <img src="images/test.png">`,
-			`Big Rip was a bad sign. You're reconstructing.`
+			`<img src="images/qu.png"> Quantum ➜ Cosmic <img src="images/evolution/universal_elixir.png">`,
+			`The universe is relinquishing with you.`
 		],
 	],
 
@@ -240,52 +228,46 @@ const EVO = {
             e1_41: "paralyzed",
             e1_57: "paralyzed",
             ch8: "paralyzed",
-        },
-        {
+        }, {
             e0_221: "paralyzed",
-            e1_19: "paralyzed",
-            e1_25: "paralyzed",
-            e1_29: "paralyzed",
+            e1_19: "corrupted",
+            e1_25: "corrupted",
+            e1_29: "corrupted",
             e1_32: "paralyzed",
             e1_34: "paralyzed",
-            e1_39: "paralyzed",
+            e1_39: "corrupted",
             e1_51: "paralyzed",
             e1_52: "paralyzed",
             e1_61: "paralyzed",
             cs_ea_reward: "paralyzed",
             ch15: "corrupted",
-        },
-        {
+        }, {
+            e0_1: "corrupted",
+            e0_119: "corrupted",
+            e0_243: "corrupted",
+            e0_299: "corrupted",
+            e1_84: "corrupted",
+            e1_86: "corrupted",
             cs_sn_speed: "paralyzed",
         },
-        {
-            
-        },
+        {},
     ],
     fed_msg: {
         corrupted: "".corrupt(),
         paralyzed: "<b class='saved_text'>[Paralyzed]</b>"
     },
-    isFed(x) {
-        return tmp.evo.fed[x]
-    },
-    update_fed() {
-        let tt = tmp.evo.fed = {}
-        for (var i = 1; i <= OURO.evo; i++) tt = Object.assign(tt, this.feed[i])
-    },
+    isFed: x => tmp.ouro.fed[x],
 }
 
 function escrowBoost(id,def=1) { return tmp.ouro.escrow_boosts[id] ?? def }
 
-function setOuroScene(show=true) {
-    tmp.el.ouro_scene.setDisplay(show);
+function setOuroScene(evo=tmp.ouro.evo) {
+	tmp.el.ouro_scene.setDisplay(evo)
+	if (!evo) return
 
-    if (show) {
-        const evo = EVO.msg[player.evo.times]
-
-        tmp.el.ouro_evo.setHTML(evo[0])
-        tmp.el.ouro_quotes.setHTML(evo[1])
-    }
+	const msg = EVO.msg[evo]
+	tmp.el.ouro_evo.setHTML(msg[0])
+	tmp.el.ouro_quotes.setHTML(msg[1])
 }
 
 function canEvolve() {
@@ -293,35 +275,33 @@ function canEvolve() {
 }
 
 function updateOuroborosHTML() {
-    const evo_unl = OURO.unl(), evo = OURO.evo
+    const evo = EVO.amt
 
     let map = tmp.tab_name
-
     if (map == 'mass') {
         let unl = evo >= 1 && FORMS.rp.unl()
-
         tmp.el.meditation_div.setDisplay(unl)
-        if (unl) {
-            let lvl_gain = MEDITATION.level_gain, lvl = player.evo.cp.level
+        if (!unl) return
 
-            tmp.el.meditation_btn.setHTML(`Meditate with all Calm Power.<br>(+${lvl_gain.format(0)} Level)`)
-            tmp.el.meditation_btn.setClasses({btn: true, locked: !MEDITATION.can()})
+		let lvl_gain = MEDITATION.level_gain, lvl = player.evo.cp.level
+		tmp.el.meditation_btn.setHTML(`Meditate with all Calm Power.<br>(+${lvl_gain.format(0)} Level)`)
+		tmp.el.meditation_btn.setClasses({btn: true, locked: !MEDITATION.can()})
 
-            let eff = tmp.evo.meditation_eff, h = `
-            <h4>Level: ${lvl.format(0)}</h4> ${lvl.gte(10) ? '(-'+lvl.div(100).format(2)+'/s)' : ""}
-            <br>${formatMult(eff.mass1)} to Muscler's power.
-            `
+		let eff = tmp.evo.meditation_eff, h = `
+		<h4>Level: ${lvl.format(0)}</h4> ${lvl.gte(10) ? '(-'+lvl.div(100).format(2)+'/s)' : ""}
+		<br>${formatMult(eff.mass1)} to Muscler's power.
+		`
 
-            if (eff.mass2) h += `<br>${formatMult(eff.mass2,2)} to Booster's power`
-            if (eff.mass3) h += `<br>${formatMult(eff.mass3,2)} to Stronger's power`
-            if (eff.mass3_softcap) h += `<br>${formatReduction(eff.mass3_softcap,2)} to Stronger softcaps' weakness`
-            if (eff.mass_softcap) h += `<br>${formatReduction(eff.mass_softcap,2)} to normal mass softcaps' weakness`
+		if (eff.mass2) h += `<br>${formatMult(eff.mass2,2)} to Booster's power`
+		if (eff.mass3) h += `<br>${formatMult(eff.mass3,2)} to Stronger's power`
+		if (eff.mass3_softcap) h += `<br>${formatReduction(eff.mass3_softcap,2)} to Stronger softcaps' weakness`
+		if (eff.mass_softcap) h += `<br>${formatReduction(eff.mass_softcap,2)} to normal mass softcaps' weakness`
 
-            tmp.el.meditation_desc.setHTML(h)
-        }
-    } else if (tmp.tab_name == 'snake') {
+		tmp.el.meditation_desc.setHTML(h)
+    } else if (map == 'snake') {
         let head = snake.snakes[0]
         tmp.el.snake_stats.setHTML(
+			snake.star > 0 ? "You ate a Starfruit! +5 seconds to Stardust and Zodiac production." :
             ('Length: '+head.len)+
             (snake.move_max < Infinity ? ' | Moves without Feeding: '+head.moves+' / '+snake.move_max : "")+
             (snake.powerup ? " | Powerup: "+capitalFirst(snake.powerup)+" ("+formatTime(snake.powerup_time,0)+")": "")
@@ -341,11 +321,9 @@ function updateOuroborosHTML() {
         if (eff.wh_loss) h += `<br>${formatMult(eff.wh_loss,2)} to Wormhole's lossless-ness`
         if (eff.ps) h += `<br>${formatMult(eff.ps,2)} to Protostars`
         if (eff.ps_dim) h += `<br>${formatReduction(eff.ps_dim,2)} to Nebulae diminishing returns`
-
-        if (eff.dark) h += `<br>${formatMult(eff.dark,2)} to Dark Rays`
         if (eff.glyph) h += `<br>${formatMult(eff.glyph,2)} to Mass Glyphs`
 
-        tmp.el.apples.setHTML(`You have <h3>${player.ouro.apple.format(0)}</h3> apples. (+${tmp.ouro.apple_gain.format(0)}/feed)<b class='sky'>${h}</b>`)
+        tmp.el.snake_boosts.setHTML(`<b class='sky'>${h}</b>`)
 
         h = ``, eff = tmp.ouro.escrow_boosts
 
@@ -358,25 +336,17 @@ function updateOuroborosHTML() {
         if (eff.rank) h += `Frequency weakens Super - Ultra Rank (<b>${formatReduction(eff.rank)}</b>)<br>`
 
         if (eff.sn2) h += `Galactic prestige boosts supernova generation (<b>${formatMult(eff.sn2)}</b>)<br>`
+        if (eff.dark) h += `<br>Apple boosts Dark Rays (<b>${formatMult(eff.dark,2)}</b>)`
 
-        if (eff.apple) h += `${[null, "Meditation", "Wormhole", "Protostar"][OURO.evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
+        if (eff.apple) h += `${[null, "Meditation", "Wormhole", "Protostar", "Stardust"][evo]} boosts apple feeded (<b>^${format(eff.apple)}</b>)<br>`
 
         tmp.el.escrow_boosts.setHTML(h)
-
-        h = `You have <h4>${player.ouro.berry.format(0)}</h4> strawberries that can be spent for muonic elements. (+${tmp.ouro.berry_gain.format(0)}/feed)<br>`
-        if (OURO.evo >= 2) h += `You have <h4>${format(player.ouro.energy)} / ${format(500,0)}</h4> energy. You need 200 energy before you can boom.<br>`
-
-        tmp.el.ouro_other_res.setHTML(h)
-        tmp.el.snake_boom.setDisplay(OURO.evo >= 2)
-    } else if (tmp.tab_name == 'wh') {
-        WORMHOLE.html()
-    } else if (tmp.tab_name == 'proto') {
-        PROTOSTAR.html()
-    } else if (tmp.tab_name == 'constellation') {
-        CONSTELLATION.html()
-    } else if (tmp.tab_name == 'cosmo') {
-        COSMIC.html()
-    }
+        tmp.el.escrow_boosts_div.setDisplay(h != "")
+        tmp.el.snake_boom.setDisplay(boomUnl())
+    } else if (map == 'wh') WORMHOLE.html()
+    else if (map == 'proto') PROTOSTAR.html()
+    else if (map == 'constellation') CONSTELLATION.html()
+    else if (map == 'cosmo') COSMIC.html()
 }
 
 function setupOuroHTML() {
@@ -399,5 +369,50 @@ function playSavedAnimation() {
 }
 
 function getEvo2Ch8Boost() {
-    return player.dark.exotic_atom.tier.min(7).add(6).div(10).max(1).pow(-.5)
+	return player.dark.exotic_atom.tier.min(7).add(6).div(10).max(1).pow(-.5)
+}
+
+function keepElementsOnOuroboric(ek = []) {
+	let e = EVO.amt
+	if (e >= 3) ek.push(285)
+	if (e >= 4) ek.push(24,262,293,304)
+	if (e >= 5) ek.push(14)
+	return ek
+}
+
+function resetEvolutionSave(order) {
+	let inf = order == "inf"
+	let s = OURO.save.evo
+	if (order == "bh" || inf) {
+		let keep = { unl: player.evo.cp.unl }
+		if (["bh", "atom"].includes(order)) keep.best = player.evo.cp.best
+		if (!inf && !(EVO.amt >= 2 && CHALS.inChal(6)) && hasElement(70,1)) keep.level = player.evo.cp.level
+
+		player.evo.cp = deepUndefinedAndDecimal(keep, s.cp)	
+	}
+	if (order == "atom" || inf) {
+		player.evo.wh.fabric = E(0)
+		for (var i = 0; i < 6; i++) player.evo.wh.mass[i] = E(0)
+	}
+	if (order == "sn" || inf) {
+		let keep = {
+			nebula: {},
+			ea: player.evo.proto.exotic_atoms
+		}
+		for (let [ni,x] of Object.entries(player.evo.proto.nebula)) keep.nebula[ni] = ni.includes('ext') && !inf ? x : E(0)
+		player.evo.proto = deepUndefinedAndDecimal(keep, s.proto)
+	}
+	if (order == "dark" || inf) {
+		player.evo.cosmo = deepUndefinedAndDecimal({
+			unl: player.evo.cosmo.unl,
+			roll_time: player.evo.cosmo.roll_time
+		}, s.cosmo)
+	}
+
+	//Persistent
+	if (order == "ouro" || inf) {
+		if (EVO.amt >= 4) CONSTELLATION.temp()
+		player.evo.wh.origin = 0
+		player.evo.const = deepUndefinedAndDecimal({ upg: tmp.evo.zodiac.keep ?? {} }, s.const)
+	}
 }

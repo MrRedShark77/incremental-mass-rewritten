@@ -156,7 +156,7 @@ const FORMATS = {
           parts.unshift([abbreviation, n])
         }
         if (parts.length >= max) {
-          return parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ");
+          return parts.map(x => this.formatElementalPart(x[0], x[1])).join(" + ");
         }
         const formattedMantissa = E(118).pow(log).toFixed(parts.length === 1 ? 3 : acc);
         if (parts.length === 0) {
@@ -165,7 +165,7 @@ const FORMATS = {
         if (parts.length === 1) {
           return `${formattedMantissa} × ${this.formatElementalPart(parts[0][0], parts[0][1])}`;
         }
-        return `${formattedMantissa} × (${parts.map((x) => this.formatElementalPart(x[0], x[1])).join(" + ")})`;
+        return `${formattedMantissa} × (${parts.map(x => this.formatElementalPart(x[0], x[1])).join(" + ")})`;
       },
     },
     old_sc: {
@@ -191,12 +191,8 @@ const FORMATS = {
       format(ex, acc) {
         ex = E(ex)
         let e = ex.log10().floor()
-        if (e.lt(9)) {
-          if (e.lt(3)) {
-              return ex.toFixed(acc)
-          }
-          return ex.floor().toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-        } else {
+        if (e.lt(6)) formatShort(ex)
+        else {
           if (ex.gte("eeee10")) {
             let slog = ex.slog()
             return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(4)) + "F" + this.format(slog.floor(), 0)
@@ -206,30 +202,37 @@ const FORMATS = {
         }
       },
     },
-    mixed_sc: {
-      format(ex, acc, max) {
-        ex = E(ex)
+    sc: {
+      format(ex, acc) {
         let e = ex.log10().floor()
-        if (e.lt(63) && e.gte(max)) return format(ex,acc,max,"st")
-        else {
-          let m = ex.div(E(10).pow(e))
-          return e.gte(1e3) ? (e.gte(1e9)?"":m.toFixed(4))+"e"+this.format(e,0,max) : format(ex,acc,max,"sc")
-        }
+		if (ex.lt(1e6)) {
+			return formatShort(ex, acc)
+		} else if (ex.gte("eeee10")) {
+			let slog = ex.slog()
+			return (slog.gte(1e9)?'':E(10).pow(slog.sub(slog.floor())).toFixed(3)) + "F" + format(slog.floor(), 0)
+		} else {
+			let m = ex.div(E(10).pow(e))
+			let a = E(4).sub(e.log10().floor())
+			return (a.lt(0)?'':m.toFixed(a))+'e'+format(e, 0)
+		}
       }
+    },
+    mixed_sc: {
+      format: (ex, acc) => FORMATS[ex.gte(1e6) && ex.lt(1e15) ? "st" : "sc"].format(ex,acc)
     },
     layer: {
       layers: ["infinity","eternity","reality","equality","affinity","celerity","identity","vitality","immunity","atrocity"],
-      format(ex, acc, max) {
+      format(ex, acc) {
         ex = E(ex)
         let layer = ex.max(1).log10().max(1).log(INFINITY_NUM.log10()).floor()
-        if (layer.lte(0)) return format(ex,acc,max,"sc")
+        if (layer.lte(0)) return format(ex,acc,"sc")
         ex = E(10).pow(ex.max(1).log10().div(INFINITY_NUM.log10().pow(layer)).sub(layer.gte(1)?1:0))
         let meta = layer.div(10).floor()
         let layer_id = layer.toNumber()%10-1
-        return format(ex,Math.max(4,acc),max,"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?formatPow(meta,0,max,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
+        return format(ex,layer.gte(1)?3:acc,"sc") + " " + (meta.gte(1)?"meta"+(meta.gte(2)?formatPow(meta,0,"sc"):"")+"-":"") + (isNaN(layer_id)?"nanity":this.layers[layer_id])
       },
     },
-    standard: {
+    st: {
       tier1(x) {
         return ST_NAMES[1][0][x % 10] +
         ST_NAMES[1][1][Math.floor(x / 10) % 10] +
@@ -248,6 +251,90 @@ const FORMATS = {
   
         return r
       },
+      tier3: x => ["", "Ka"][x] ?? "[?]",
+	  formatSeg(m, e3, tier, add) {
+		  let h = this["tier"+tier](e3)
+		  if (m > 1 || add) h = this["tier"+(tier-1)](Math.floor(m)) + h
+		  return h
+	  },
+	  format(ex, acc) {
+		  if (ex.lt(1e3)) return formatShort(ex, acc)
+		  ex = ex.div(1e3)
+
+		  let tier = 0, m1, m2, p
+		  while (!tier || ex.gte(1e3)) {
+			  let e3 = ex.log(1e3).floor()
+			  p = e3.max(1).log10().floor().toNumber() - 1
+			  m2 = ex.div(E(1e3).pow(e3.sub(1))).toNumber()
+			  m1 = Math.floor(m2 / 1e3)
+			  p += Math.floor(Math.log10(m1))
+			  m2 = Math.floor((m2 % 1e3) / 10**p) * 10**p
+			  ex = e3, tier++
+		  }
+		  ex = ex.toNumber()
+		  if (tier == 1) {
+			  let pre = ex < 4 ? ["K", "M", "B", "T"][ex] : this.tier1(ex)
+			  return (m1 + m2 / 1e3).toFixed(Math.min(3 - p, 3)) + " " + pre
+		  }
+
+		  let h = this.formatSeg(m1, ex, tier)
+		  if (m2 > 0) h += "-" + this.formatSeg(m2, ex-1, tier, true)
+		  return h
+	  }
+    },
+    upsital: {
+      //Standard modifiers
+      symbols: [
+		" kmgtpxzyrqvu",
+		" igireaeonun",
+		["Ki", "Di", "Tr", "Tet", "Pent", "Hex", "Hep", "Oct", "En", "Dec", "Hed"],
+	  ],
+	  tier1: x => FORMATS.st.tier1(x),
+      tier2(x) {
+		var h = ""
+		for (var i = 11; i >= 0; i--) {
+			var k = Math.floor(x / 12 ** i)
+			x -= k * 12 ** i
+			//console.log("12^"+i, k, "x", 12 ** i, "+", x)
+			if (k == 0) continue
+			if (k == i + 1) h += this.symbols[2][i]
+			else {
+				h += this.symbols[0][k].toUpperCase()
+				h += i ? this.symbols[0][i+1] : k == 12 ? "ue" : this.symbols[1][k]
+			}
+		}
+		return h
+      },
+	  formatSeg(m, e3, tier, add) {
+		  let h = this["tier"+tier](e3)
+		  if (m > 1 || add) h = this["tier"+(tier-1)](Math.floor(m)) + h
+		  return h
+	  },
+	  format(ex, acc) {
+		  if (ex.lt(1e3)) return formatShort(ex, acc)
+		  if (ex.gte("e3e26748301344768")) return format(ex, acc, "mixed_sc")
+		  ex = ex.div(1e3)
+
+		  let tier = 0, m1, m2, p
+		  while (tier ? ex.gte(1e3) && tier < 2 : true) {
+			  let e3 = ex.log(1e3).floor()
+			  p = e3.max(1).log10().floor().toNumber() - 1
+			  m2 = ex.div(E(1e3).pow(e3.sub(1))).toNumber()
+			  m1 = Math.floor(m2 / 1e3)
+			  p += Math.floor(Math.log10(m1))
+			  m2 = Math.floor((m2 % 1e3) / 10**p) * 10**p
+			  ex = e3, tier++
+		  }
+		  ex = ex.toNumber()
+		  if (tier == 1) {
+			  let pre = ex < 4 ? ["K", "M", "B", "T"][ex] : this.tier1(ex)
+			  return (m1 + m2 / 1e3).toFixed(Math.min(3 - p, 3)) + " " + pre
+		  }
+
+		  let h = this.formatSeg(m1, ex, tier)
+		  if (m2 > 0) h += "-" + this.formatSeg(m2, ex-1, tier, true)
+		  return h
+	  }
     },
     inf: {
       format(ex, acc, max) {
@@ -260,7 +347,7 @@ const FORMATS = {
           meta++
         }
   
-        if (meta == 0) return format(ex, acc, max, "sc")
+        if (meta == 0) return format(ex, acc, "mixed_sc")
         if (ex.gte(3)) return symbols2[meta] + symbols[meta] + "ω^"+format(ex.sub(1), acc, max, "sc")
         if (ex.gte(2)) return symbols2[meta] + "ω" + symbols[meta] + "-"+format(inf.pow(ex.sub(2)), acc, max, "sc")
         return symbols2[meta] + symbols[meta] + "-"+format(inf.pow(ex.sub(1)), acc, max, "sc")
@@ -268,19 +355,23 @@ const FORMATS = {
     },
 }
 
-
 const INFINITY_NUM = E(2).pow(1024);
 const SUBSCRIPT_NUMBERS = "₀₁₂₃₄₅₆₇₈₉";
 const SUPERSCRIPT_NUMBERS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 
+function formatShort(ex, acc = 0) {
+	let a = Math.max(acc - Math.max(ex.log10().floor().toNumber(), 0), 0)
+	return a>0?ex.toFixed(a):ex.toFixed(a).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+}
+
 function toSubscript(value) {
     return value.toFixed(0).split("")
-      .map((x) => x === "-" ? "₋" : SUBSCRIPT_NUMBERS[parseInt(x, 10)])
+      .map(x => x === "-" ? "₋" : SUBSCRIPT_NUMBERS[parseInt(x, 10)])
       .join("");
 }
 
 function toSuperscript(value) {
     return value.toFixed(0).split("")
-      .map((x) => x === "-" ? "₋" : SUPERSCRIPT_NUMBERS[parseInt(x, 10)])
+      .map(x => x === "-" ? "₋" : SUPERSCRIPT_NUMBERS[parseInt(x, 10)])
       .join("");
 }
