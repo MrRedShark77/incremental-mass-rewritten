@@ -99,7 +99,7 @@ const WORMHOLE = {
     get unlLength() {
         if (hasCharger(1)) return 7
         if (player.dark.unl) return 6
-        if (quUnl()) return 5
+        if (quUnl() || player.evo.cosmo.unl) return 5
         if (tmp.sn.boson) return 4
         if (player.atom.unl) return 3
         return 2

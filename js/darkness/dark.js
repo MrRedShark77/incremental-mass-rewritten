@@ -87,7 +87,7 @@ const DARK = {
         if (!hasElement(194)) for (let x = 0; x < player.prestiges.length; x++) player.prestiges[x] = E(0)
 
 		if (!hasElement(161)) {
-			let ke = []
+			let ke = keepElementsOnOuroboric()
 			let noReset = hasElement(143)
 			for (let e of unchunkify(player.atom.elements)) {
 				if (noReset ? e != 118 : e > 118) ke.push(e)

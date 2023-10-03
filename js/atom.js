@@ -58,9 +58,9 @@ const ATOM = {
             if (hasElement(84,1)) k = k.add(0.25)
             if (hasElement(86,1)) k = k.add(0.1)
             if (hasElement(305)) k = k.add(elemEffect(305, 0))
-            if (EVO.amt >= 4 && player.dark.unl) k = k.add(tmp.dark.shadowEff.qkf||0).add(tmp.dark.abEff.qkf||0)
-            if (EVO.amt >= 4 && hasElement(213)) k = k.add(.01)
-            if (EVO.amt >= 4 && tmp.inf_unl) k = k.add(theoremEff("atom", 1, 0))
+            if (evo >= 4 && player.dark.unl) k = k.add(tmp.dark.shadowEff.qkf||0).add(tmp.dark.abEff.qkf||0)
+            if (evo >= 4 && hasElement(213)) k = k.add(.01)
+            if (evo >= 4 && tmp.inf_unl) k = k.add(theoremEff("atom", 1, 0))
 
             let s = E(1e9)
             if (tmp.inf_unl) s = s.mul(theoremEff('time',4))

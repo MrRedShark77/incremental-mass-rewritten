@@ -620,7 +620,7 @@ function getScalingPower(type, name) {
 function noScalings(type,name) {
 	if (tmp.c18active && C18_SCALING.includes(name)) return false
 	if (hasElement(311) && ["tier", "pent", "hex"].includes(name)) return true
-	if (hasElement(313) && [2,3,4,5].includes(type)) return true
+	//if (hasElement(313) && [2,3,4,5].includes(type)) return true
 
 	let e = EVO.amt
 	if (name=="rank") {
@@ -639,11 +639,11 @@ function noScalings(type,name) {
 	} else if (name=="hex") {
 		if (type<2 && hasAscension(0,15)) return true
 	} else if (name=="massUpg") {
-		if (hasElement(313)) return true
+		//if (hasElement(313)) return true
 		if (type == 2 && e >= 2) return true
 		if (hasBeyondRank(2,15) && e < 2) return true
 	} else if (name=="massUpg4" || name=="cosmic_str") {
-		return hasElement(313)
+		//return hasElement(313)
 	} else if (name=="supernova") {
 		return tmp.sn.gen || type<3 && hasCharger(3)
 	} else if (name=="tickspeed") {

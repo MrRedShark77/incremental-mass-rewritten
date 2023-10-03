@@ -55,7 +55,7 @@ const RANKS = {
             '4': "reduce mass upgrade 3 scaling by 20%. Ranks boost mass by (x/3)^2.",
             '5': "mass upgrade 2 boosts itself.",
             '13': "triple mass gain.",
-            '17': "Rank 4 reward effect is better. [^2 -> ^x^1/3]",
+            '17': "Rank 4 reward effect is better. [^2 → ^x^1/3]",
             '34': "mass upgrade 3 softcaps 1.2x later.",
             '40': "adds tickspeed power based on ranks.",
             '45': "rank boosts Rage Powers gain.",
@@ -988,7 +988,7 @@ function beyondRankEffect(x,y,def=1) {
 }
 
 function updateRanksHTML() {
-    tmp.el.rank_tabs.setDisplay(hasUpgrade('br',9))
+    tmp.el.rank_tabs.setDisplay(hasUpgrade('br',9) || EVO.amt >= 5)
     tmp.el.asc_btn.setDisplay(tmp.asc.unl)
     for (let x = 0; x < 3; x++) tmp.el["rank_tab"+x].setDisplay(tmp.ranks.tab == x)
 

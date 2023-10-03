@@ -293,7 +293,7 @@ const FORMS = {
                 if (hasElement(72,1)) gain = gain.mul(muElemEff(72))
                 gain = gain.mul(wormholeEffect(2))
 			    gain = gain.mul(nebulaEff("green"))
-				if (evo == 2 && (tmp.dark.run)) gain = gain.pow(mgEff(1))
+				if (evo == 2 && tmp.dark.run) gain = gain.pow(mgEff(1))
             }
 
             return gain.floor()

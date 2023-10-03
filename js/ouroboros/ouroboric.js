@@ -105,10 +105,11 @@ const OURO = {
         INF.doReset()
         INF.load(false)
 
+		let o = keepElementsOnOuroboric()
         let keep = {
             atom: {
 				unl: evo >= 5,
-                elements: keepElementsOnOuroboric(),
+                elements: unchunkify(player.atom.elements).filter(x => o.includes(x)),
                 muonic_el: evo ? unchunkify(player.atom.muonic_el).filter(x => MUONIC_ELEM.upgs[x].berry && !EVO.isFed("e1_" + x)) : []
             }
         }
@@ -116,6 +117,7 @@ const OURO = {
         let newData = getPlayerData()
         let reset = ["rp", "bh", "chal", "atom", "stars", "supernova", "qu", "dark", "mainUpg"]
         for (var i of reset) player[i] = deepUndefinedAndDecimal(keep[i], newData[i])
+		destroyOldData()
 
 		tmp.rp.unl = false
 		tmp.bh.unl = false
@@ -124,7 +126,6 @@ const OURO = {
 		tmp.sn = {}
 		tmp.asc.unl = false
         for (let i in CORE) tmp.core_eff[i] = []
-		destroyOldData()
 
         tmp.tab = 0
 		tmp.stab = [0]
@@ -385,7 +386,7 @@ function resetEvolutionSave(order) {
 	if (order == "bh" || inf) {
 		let keep = { unl: player.evo.cp.unl }
 		if (["bh", "atom"].includes(order)) keep.best = player.evo.cp.best
-		if (!inf && !(EVO.amt >= 2 && CHALS.inChal(6)) && hasElement(70,1)) keep.level = player.evo.cp.best
+		if (!inf && !(EVO.amt >= 2 && CHALS.inChal(6)) && hasElement(70,1)) keep.level = player.evo.cp.level
 
 		player.evo.cp = deepUndefinedAndDecimal(keep, s.cp)	
 	}
@@ -410,6 +411,7 @@ function resetEvolutionSave(order) {
 
 	//Persistent
 	if (order == "ouro" || inf) {
+		if (EVO.amt >= 4) CONSTELLATION.temp()
 		player.evo.wh.origin = 0
 		player.evo.const = deepUndefinedAndDecimal({ upg: tmp.evo.zodiac.keep ?? {} }, s.const)
 	}
