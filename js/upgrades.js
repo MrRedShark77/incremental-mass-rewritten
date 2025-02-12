@@ -493,7 +493,7 @@ const UPGS = {
             },
             lens: 25,
             1: {
-                desc: "Mass Upgardes no longer spend mass.",
+                desc: "Mass Upgrades no longer spend mass.",
                 cost: E(1),
             },
             2: {
