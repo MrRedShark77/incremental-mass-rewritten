@@ -300,7 +300,7 @@ const PRESTIGES = {
 
         if (tmp.c16active || inDarkRun()) x = x.div(mgEff(5))
 
-        return x.overflow(2e4,0.5)
+        return x.overflow(2e4,0.75)
     },
     base() {
         let x = E(1)
