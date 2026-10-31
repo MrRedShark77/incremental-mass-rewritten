@@ -132,15 +132,15 @@ const RANKS = {
     effect: {
         rank: {
             '3'() {
-                let ret = player.build.mass_1.amt.div(20)
+                let ret = player.build.mass_1.amt.div(10)
                 return ret
             },
             '5'() {
-                let ret = player.build.mass_2.amt.div(40)
+                let ret = player.build.mass_2.amt.div(20)
                 return ret
             },
             '6'() {
-                let ret = player.ranks.rank.add(1).pow(player.ranks.rank.gte(17)?player.ranks.rank.add(1).root(3):2)
+                let ret = player.ranks.rank.add(10).pow(player.ranks.rank.gte(17)?player.ranks.rank.add(1).root(3):2)
                 return ret
             },
             '40'() {

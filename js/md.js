@@ -98,7 +98,7 @@ const MASS_DILATION = {
                 cost(x) { return E(10).pow(x).mul(10) },
                 bulk() { return player.md.mass.gte(10)?player.md.mass.div(10).max(1).log10().add(1).floor():E(0) },
                 effect(x) {
-                    let b = 2
+                    let b = 100
                     if (hasElement(25)) b++
                     return E(b).pow(x.mul(tmp.md.upgs[11].eff||1)).softcap('e1.2e4',0.96,2).overflow('ee11000',0.5,2)
                 },
